@@ -221,19 +221,43 @@ class _MonthlyPhotoCollage extends ConsumerWidget {
           if (openingStory) return;
           openingStory = true;
           try {
-            final catalog = await ref
-                .read(rescueRepositoryProvider)
-                .completeCaseCatalog(photo.caseId);
-            final records = catalog.items
-                .where(
-                  (record) =>
-                      record.id == photo.caseId &&
-                      record.kind == 'case' &&
-                      (record.status == 'approved' ||
-                          record.status == 'closed') &&
-                      supportStoryPhotos(record).isNotEmpty,
-                )
-                .toList();
+            // Match the rail's first occurrence of each case, starting at the
+            // selected ring. Revalidate every snapshot instead of reusing the
+            // historical impact projection or loading a global catalog.
+            final orderedCaseIds = <String>{
+              for (final entry in photos) entry.caseId,
+            }.toList();
+            final selectedIndex = orderedCaseIds.indexOf(photo.caseId);
+            if (selectedIndex < 0) return;
+            final repository = ref.read(rescueRepositoryProvider);
+            final records = <RescueRecord>[];
+            for (final caseId in orderedCaseIds.skip(selectedIndex)) {
+              DataPage<RescueRecord> catalog;
+              try {
+                catalog = await repository.completeCaseCatalog(caseId);
+              } catch (_) {
+                if (!context.mounted) return;
+                if (caseId == photo.caseId) rethrow;
+                // A later unavailable case cannot hide the verified selection.
+                // Omit it instead of falling back to the stale impact snapshot.
+                continue;
+              }
+              if (!context.mounted) return;
+              records.addAll(
+                catalog.items
+                    .where(
+                      (record) =>
+                          record.id == caseId &&
+                          record.kind == 'case' &&
+                          (record.status == 'approved' ||
+                              record.status == 'closed') &&
+                          supportStoryPhotos(record).isNotEmpty,
+                    )
+                    .take(1),
+              );
+              // Never substitute another case for the ring the person opened.
+              if (caseId == photo.caseId && records.isEmpty) break;
+            }
             if (!context.mounted) return;
             if (records.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -338,6 +362,7 @@ class _MonthlyCommunityMosaicState
                   value:
                       widget.community.urgentCasesCovered?.toString() ??
                       'Sin medición histórica',
+                  isTextualStatus: widget.community.urgentCasesCovered == null,
                   label: 'Casos con gastos urgentes totalmente cubiertos',
                   color: const Color(0xffefe8fb),
                 ),
@@ -382,24 +407,33 @@ class _ImpactMosaic extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final halfContent = (constraints.maxWidth - 12) / 2 - 48;
-      final amountNeedsRow = children.whereType<_ImpactStat>().any((stat) {
-        if (!stat.value.startsWith(r'$')) return false;
-        final painter = TextPainter(
-          text: TextSpan(
-            text: stat.value.split(' ').first,
-            style: _ImpactStat.valueStyle,
-          ),
-          textDirection: Directionality.of(context),
-          textScaler: MediaQuery.textScalerOf(context),
-        )..layout();
-        final needsRow = painter.width > halfContent;
-        painter.dispose();
-        return needsRow;
+      final valueNeedsRow = children.whereType<_ImpactStat>().any((stat) {
+        if (!stat.value.startsWith(r'$') && !stat.isTextualStatus) {
+          return false;
+        }
+        final words = stat.isTextualStatus
+            ? stat.value.split(' ')
+            : [stat.value.split(' ').first];
+        return words.any((word) {
+          final painter = TextPainter(
+            text: TextSpan(
+              text: word,
+              style: stat.isTextualStatus
+                  ? _ImpactStat.textualStatusStyle
+                  : _ImpactStat.valueStyle,
+            ),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+          )..layout();
+          final needsRow = painter.width > halfContent;
+          painter.dispose();
+          return needsRow;
+        });
       });
       final columns =
           MediaQuery.textScalerOf(context).scale(14) > 21 ||
               constraints.maxWidth < 280 ||
-              amountNeedsRow
+              valueNeedsRow
           ? 1
           : 2;
       final width = (constraints.maxWidth - (columns - 1) * 12) / columns;
@@ -419,14 +453,22 @@ class _ImpactStat extends StatelessWidget {
     required this.value,
     required this.label,
     required this.color,
+    this.isTextualStatus = false,
   });
   final String value, label;
   final Color color;
+  final bool isTextualStatus;
   static const valueStyle = TextStyle(
     fontFamily: 'Inter',
     fontSize: 42,
     height: 1.2,
     fontWeight: FontWeight.w800,
+  );
+  static const textualStatusStyle = TextStyle(
+    fontFamily: 'Inter',
+    fontSize: 20,
+    height: 1.4,
+    fontWeight: FontWeight.w700,
   );
   @override
   Widget build(BuildContext context) => Container(
@@ -495,7 +537,7 @@ class _ImpactStat extends StatelessWidget {
             },
           )
         else
-          Text(value, style: valueStyle),
+          Text(value, style: isTextualStatus ? textualStatusStyle : valueStyle),
         const SizedBox(height: 8),
         Text(
           label,

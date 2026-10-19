@@ -9,6 +9,8 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/monthly_impact_repository.dart';
 import 'package:dopmi_mobile/features/profile/monthly_impact_panel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -288,6 +290,79 @@ void main() {
         expect(repo.communityRequests.last, '2026-09-01');
         expect(find.text('Sin medición histórica'), findsOneWidget);
         expect(find.text('3'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final layout in [
+    (width: 377.0, scale: 1.0),
+    (width: 377.0, scale: 1.15),
+    (width: 320.0, scale: 2.0),
+  ]) {
+    testWidgets(
+      'historical measurement preserves whole words ${layout.width}/${layout.scale}',
+      (tester) async {
+        await (FontLoader(
+          'Inter',
+        )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+        tester.view.physicalSize = Size(layout.width, 700);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              monthlyImpactRepositoryProvider.overrideWithValue(
+                FakeMonthlyImpact(),
+              ),
+              communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            ],
+            child: MaterialApp(
+              theme: dopmiTheme(),
+              home: MediaQuery(
+                data: MediaQueryData(
+                  textScaler: TextScaler.linear(layout.scale),
+                ),
+                child: const Scaffold(
+                  body: SingleChildScrollView(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: MonthlyImpactPanel(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byTooltip('Mes anterior'));
+        await tester.pumpAndSettle();
+        const phrase = 'Sin medición histórica';
+        final status = find.text(phrase);
+        expect(status, findsOneWidget);
+        await tester.ensureVisible(status);
+        await tester.pumpAndSettle();
+        final paragraph = tester.renderObject<RenderParagraph>(status);
+        for (final word in RegExp(r'\S+').allMatches(phrase)) {
+          final boxes = paragraph.getBoxesForSelection(
+            TextSelection(baseOffset: word.start, extentOffset: word.end),
+          );
+          expect(boxes, isNotEmpty);
+          expect(
+            boxes.map((box) => box.top).toSet(),
+            hasLength(1),
+            reason: '${word.group(0)} must not split across lines',
+          );
+        }
+        expect(paragraph.didExceedMaxLines, isFalse);
+        final label = find.text(
+          'Casos con gastos urgentes totalmente cubiertos',
+        );
+        await tester.ensureVisible(label);
+        await tester.pumpAndSettle();
+        expect(label.hitTestable(), findsOneWidget);
+        expect(find.text('0'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
