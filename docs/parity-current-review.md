@@ -1,3 +1,15 @@
+## Actualización de matriz B2/B7 — QA321 y candidato c210a346, 19/10/2026
+
+Esta entrada supersede «teléfono todavía320» y no declara cierre integral. Publicado/instalado **Play2.3.3(321),3c43f351** en SM-S938B; sesión conservada, Perfil/gestión Guardián/Back y anillo→historia→detalle→Back comprobados. B2 reabierto por defectos demostrados: cola de un solo caso y palabras partidas en ausencia histórica al115%. Corregidos en **c210a34671abf9a3982edb9f0766b3a0893f0d23**: continuidad sin wrap desde seleccionado, revalidación y fallo aislado posterior; estado textual legible sin inventar0. Ocho escenarios de cola y tres de palabra renderizada Interreal añadidos;31focalesPASS/analyze0. Revisores producto/código independientes sin hallazgo material abierto; seguridad/release y CI[39215841224](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/39215841224) pendientes. No publicado/instalado aún este arreglo.
+
+| Grupo/batch | Evidencia nueva | Salida pendiente y dueño |
+|---|---|---|
+| B2 Guardián/historias | QA321 física reprodujo cierre temprano; RED/green y revisión de fix real | root: CI y nuevo candidato instalado, repetir avance entre casos/último/CTA exacto |
+| B2 Histórico/accesibilidad | QA normal/115%/320200 capturada con settings restaurados; regresión de palabras RED3FAIL→GREEN3PASS incluida en31 | root/producto: captura de mensaje y etiqueta en nuevo instalado; temporizador/hold físico no acreditados por posible efecto de semántica accesible |
+| B7 Distribución/sesión |321 actualizada desde Play/Vending; sesión y modo preservados | Auth/correo/reinicio para recuperación siguen pendientes; instalación no es aceptación |
+| Privacidad de contenido aprobado | Inventario independiente dos objetos/cinco snapshots; no nuevo acceso privado ni bypass | titular: decisión de retirada de dos originales y nueva revisión; legítimo admin requerido; ningún cambio ejecutado |
+| B3/B4/B5 | DEV video/Tienda OFF, Edge exactas; Preview admin configurado y login disponible | Stream/términos/tarjeta, admin positivo, urgencia y aceptación humana siguen abiertos |
+
 ## Paridad INTEGRAL20d21 — tablero vigente, 19/10/2026
 
 Fuente congelada20d21f484aa60726f0b236574d5493dcf5e05969; base952f281665890abf2260abbb1c65125cb589739f. Decisiones humanas en product-decisions.md, entrada integral18oct. Cobertura de código localizada NO acredita paridad ni ejecución verde. Estados finales separados: implementado, verificado, publicado, instalado, aceptado.
