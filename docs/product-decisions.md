@@ -1,3 +1,7 @@
+## 19/10/2026 — Stream DEV exclusivo: callback ante estado desconocido
+
+Titular: «Cuenta exclusiva: autorizo ese aviso y token temporal». Autoriza fijar el callbackDEV exacto video-media/webhook de ohqxranynackjignryep aun si reemplaza uno previo no visible, tras explicar404ambiguo; operadorretryStream:Edit sólo cuentaactual hasta20oct, memoria/API, y guardar sólo secretoavisosDEV. No clasificar404 como ausencia ni extender a video/cleanupON, subidas, borrados o dinero. Callbackextranjero visible detiene paquete. Configuración fue ejecutada/GET200exact y secretoEdge verificado; cierre tokenretry aún pendiente. Resultado y límites enprogress.md. Incidenteprimeroperador/revocaciónhumanaUI no autoriza sustituir tokenruntime ni borra salida histórica.
+
 ## 19/10/2026 — Retirada de dos casos TEST por fotos con datos personales
 
 Decisión explícita del titular en respuesta a la consulta de privacidad: **“Retirar ambos hasta corregir las fotos”**. Se autoriza la moderación existente changes_requested de los dos originales identificados en el paquete privado privacy-public-qa-content-review.private.md. Conserva archivos privados, historial y dineroTEST; deja de publicar los originales y de asignarles aportaciones futuras. Recuperar publicación requiere corrección de fotos por el dueño y nueva aprobación independiente. No es borrado de objetos, no autoriza cambios de roles/suplantación ni retocar fixtures consumidas. La decisión de contenido queda resuelta y no se vuelve a preguntar.
