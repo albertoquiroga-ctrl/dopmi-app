@@ -1,3 +1,9 @@
+## 20/10/2026 — Piloto bloqueado tras tres turnos sin progreso
+
+Tres revalidaciones ADB consecutivas: cero dispositivosonline, Samsung ausente; pregunta específica de entradaQA piloto sigue sinrespuesta. Auditorías privadas video-pilot-pending-audit-1/2/3. Paquete yreversión ya revisados, sin otraentrada técnica autónoma lista ni proceso vivo al que esperar. No iniciar ON/cargas ni repetir ensayovacío/fixtures/builds. Este bloqueo no reabre tokens ni limpieza ya completados.
+
+Conservar fuente48d65/Play2.3.3(323)/mock20d21; cierreúltimoverificado media/cleanupOFF,job6pausado,TiendaOFF,0assets/cola. No se reconsultaron flags en estos tres turnos, sólo conexiónUSB. Dueño root; siguiente titular reconecta/desbloqueaSamsung y responde piloto, después preflightfresco sesión/rol/flags y ejecución sólo autorizada. Authreal/fotourgencia/QAcompleta/aceptación siguen pendientes; paridad integral no terminada. DineroTEST, moderación/retención/permisos y cambiosajenos preservados.
+
 ## 20/10/2026 — Piloto privado de video preparado; decisión y Samsung pendientes
 
 Tras fase3vacíaPASS y cierreOFF/pausado, paquete video-private-pilot.proposed.md y SQLenable/disable preparados/revisados por código/seguridad, sin hallazgos materiales. Propuesta20min,1borradorTESTprivado/1clip1s115435bytes, flujo normal begin/TUS/procesamiento/playback/cancel/ausencia, sin publicar/revisar/dinero ni nuevascredenciales. Requiere decisión explícita entradaQA pese a circularidadREADME; no asumir DELETE/retryreal cumplidos. Pregunta enviada. Interrupciones/7fixtures/cámara/urgencia/evidencia/despedida/historias/impacto/ajeno/retrydurable completo siguen B4; no reducir alcance a piloto.
