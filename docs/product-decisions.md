@@ -1,3 +1,7 @@
+## 20/10/2026 — Ensayo de limpieza temporal autorizado y cerrado
+
+Titular: «Listo ya lo borre» para tokensetupretry y «Sí, probar y volver a OFF/pausado». Alcance cleanupDEV únicamente, ceroactivos/cola, máximo3ciclos/5min, sinmanualcalls ni uploads/borrados; cierreOFF+pausaobligatorio. Ejecutado y verificado: solicitud38356HTTP200removed0failed0, tresciclos,34digestsrestaurados/job6pausado/5jobsiguales. No autoriza ventanaQAmediaON, aceptaciónni dineroLIVE. Resultado/límites/retro enprogress.md; siguiente paquete debe resolver explícitamente entradaQA y gatecleanupreal sinbypass.
+
 ## 19/10/2026 — Stream DEV exclusivo: callback ante estado desconocido
 
 Titular: «Cuenta exclusiva: autorizo ese aviso y token temporal». Autoriza fijar el callbackDEV exacto video-media/webhook de ohqxranynackjignryep aun si reemplaza uno previo no visible, tras explicar404ambiguo; operadorretryStream:Edit sólo cuentaactual hasta20oct, memoria/API, y guardar sólo secretoavisosDEV. No clasificar404 como ausencia ni extender a video/cleanupON, subidas, borrados o dinero. Callbackextranjero visible detiene paquete. Configuración fue ejecutada/GET200exact y secretoEdge verificado; cierre tokenretry aún pendiente. Resultado y límites enprogress.md. Incidenteprimeroperador/revocaciónhumanaUI no autoriza sustituir tokenruntime ni borra salida histórica.

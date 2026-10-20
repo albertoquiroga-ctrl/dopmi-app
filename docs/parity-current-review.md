@@ -1,3 +1,15 @@
+## 20/10/2026 — Corte de evidencia B3/B4 tras ensayo de limpieza
+
+Referencia20d21 y candidato funcional48d65/Play2.3.3(323) sin cambios. Esta entrada actualiza los pendientes de proveedor históricos de la matriz; no declara aceptación global.
+
+| Grupo | Evidencia real vigente | Pendiente / dueño |
+|---|---|---|
+| B3 configuración/operación | WebhookGET200exact/secretoDEV; tokenstemporaleseliminadosUI; cron3ciclos, ID38356HTTP200removed0failed0; cierre34digestsrestaurados/job6pausado/5jobsiguales/0assetscola | DELETE/retryprovider real no probado; root prepara entradaQAcontrolada |
+| B4 producto de video | Código y fixtures locales vigentes, ningún video real cargado | Piloto privado1s/20min revisado, autorización y SamsungUSB pendientes; resto de matrizvideo conserva sus criterios, root |
+| B1/B5/B7 | Authreal pendiente; Tiendaadminreal ya comprobada/OFF;323publicadoinstalado/QAparcial | Participación enAuth, aceptacióninternaTienda y aceptaciónvisualintegral; no confundir configuración con paridad |
+
+Detalle probatorio y límites: progress.md entradas20oct Limpieza periódica y Piloto privado; no repetir callbacks/tokens/cron/probes/builds para actualizar este corte.
+
 ## 19/10/2026 — Tienda admin: borradores reales y bloqueo de publicación verificados
 
 Titular completó accesoVercel/admin en IAB; root ejecutó paquete qa-store-20d21-f751425b ya revisado. PreflightDEV0comercios/0productos/StoreOFF/videoOFF. Creación y edición UI del mismo comercio y producto; readback final exactamente1+1, ambosv2, comercio deshabilitado y permisos/derechos/enlacesfalse, producto publishedfalse/sinimagen/sinderechos. Un intento de publicación rechazado con «Faltan derechos de imagen o autorización comercial»; no incrementó versión ni publicó. Casilla no guardada restauradafalse. Recarga real conserva sesión y lista. REST anónimo con clavepublicable sinbearer: catálogoHTTP200/OFF/[] y enlaceHTTP200/null. No delete/activación/compra ni nueva build. Conservar ambos borradores identificados; no repetir creación ni borrar para limpiar.
