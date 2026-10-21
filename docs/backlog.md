@@ -1,3 +1,7 @@
+## 20/10/2026 — Sesión aprobada y único borrador privado de video guardado
+
+B4: acceso resuelto; único borrador QA creado y persistido por UI (draft/v2, sin archivos; recibo privado). Reutilizarlo. Pendiente respuesta sobre foto sintética adicional necesaria para acceder al video; no transferida/subida. Clip/ventana20min siguen autorizados, sin primerON. Completar prerrequisitos antes de ventana y revalidar flags/identidad. Evidencia/retro en progress.md; checkpoint en mock-sync-current.md. B1 Auth real, decisión foto urgencia de producto, QA completa e integración/aceptación B7 siguen pendientes. Fuente48d65/Play323/mock20d21, dineroTEST y TiendaOFF conservados.
+
 ## 20/10/2026 — Piloto autorizado; preflight identifica sesión sin verificación aprobada
 
 Titular confirmó Samsung y «Sí, piloto privado y cierre OFF»: entradaQA excepcional del paquete20min/1borradorprivado/1clip1s queda autorizada, no aceptación de producto ni resto de escenarios. SamsungSM-S938B/Play2.3.3(323)/Vending y sesiónabierta comprobados. Archivo115435bytes/SHAmanifest verificado y copiado únicamente a carpetaMoviesQA dedicada, sin sobrescribir; no selecciónGalería ni subida. Identidad no inferida de nombre: siete perfiles homónimos; actualización normal autenticada de modo identificó uno y conservó seis. Cambiar modo no concede privilegios.

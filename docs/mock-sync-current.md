@@ -1,3 +1,9 @@
+## 20/10/2026 — Sesión aprobada y único borrador privado de video guardado
+
+Acceso humano nuevo comprobado: sesión legítima activa/rescuer/approved, sin grants. Root creó por UI el único borrador TEST privado del piloto; servidor draft/v2/cero archivos y agradecimiento requerido. UI confirma Borrador guardado. Reutilizar ese borrador identificado en recibo privado video-private-draft-postflight; no duplicar ni tocar el original retirado (sigue v21).
+
+Piloto todavía no ON: Edge34 iguales/OFF en preflight; último SQL cero activos/cola, video/TiendaOFF, job6pausado. Para alcanzar el control de video la app exige foto principal y ocho campos. Foto sintética del mismo clip preparada sólo local; pregunta humana pendiente para añadirla a Supabase DEV. Autorización original clip/20min vigente, reloj no iniciado. Ver progreso/paquete privado para evidencia y retro; fuente48d65/Play323/mock20d21 intactos. Dueño root; siguiente respuesta → completar ESTE borrador antesON → preflight fresco/piloto/cierre. Paridad integral no aceptada.
+
 ## 20/10/2026 — Piloto autorizado; preflight identifica sesión sin verificación aprobada
 
 Titular confirmó Samsung y «Sí, piloto privado y cierre OFF»: entradaQA excepcional del paquete20min/1borradorprivado/1clip1s queda autorizada, no aceptación de producto ni resto de escenarios. SamsungSM-S938B/Play2.3.3(323)/Vending y sesiónabierta comprobados. Archivo115435bytes/SHAmanifest verificado y copiado únicamente a carpetaMoviesQA dedicada, sin sobrescribir; no selecciónGalería ni subida. Identidad no inferida de nombre: siete perfiles homónimos; actualización normal autenticada de modo identificó uno y conservó seis. Cambiar modo no concede privilegios.
