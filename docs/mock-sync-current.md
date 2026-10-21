@@ -1,3 +1,7 @@
+## 21/10/2026 — Bloqueo operacional confirmado
+
+Tres turnos consecutivos conservan bloqueo Samsung/instalación324 y respuesta ventanaQA. Últimos dos inventariosADB vacíos; primer turno agotó preparación independiente revisada, no proceso/build vivo pendiente. Meta bloqueada, no completada. Dueño root; titular reconecta/desbloqueaSamsung y responde propuestaQA. Retomar con preflight fresco, instalar desdePlay324/source17c8 y preservar OFF/pausado hasta permiso concreto. Sin nuevas cargas, builds ni fixtures. Evidencia y alcance pendientes en ledger/tablero existentes.
+
 ## 21/10/2026 — Preparación siguiente QA cerrada
 
 324 publicada/source17c8 sin cambios. ADBoffline sinserial→un reconnect→inventario vacío; no instalada. Paquete privado next-video-qa ampliado y helperlocal readonly revisados,4fixtures SHA/tamaño comprobados, sin ON/transferencias. Faltan picker/controles324 y restauración sobre dispositivo real; no es ready. Preguntas USB/ventanaQA siguen pendientes. Dueño root; siguiente reconexión→instalarPlay324→preflight autorizado; ledger21oct contiene evidencia/límites.
