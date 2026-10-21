@@ -1,3 +1,7 @@
+## 21/10/2026 — Ventana privada QA324 autorizada y consumida
+
+Titular: «Ya conecté y desbloqueé el cel. Sí, autorizo la ventana privada de QA propuesta de hasta 20 minutos; continúa con la 324 y deja todo apagado al terminar». Autoriza propuesta privada existente: cuatro archivos sintéticos, hasta tres activos secuenciales, mismo borrador TEST, sin publicación/revisión/dinero. No reabre permisos de producto, Tienda pública o credenciales. Ejecución/cierre y límites en ledger21oct: ventana consumida, no prolongable por silencio. Corte de red no ejecutado porque Wi-Fi y datos estaban activos; no se amplió a ambos sin preparación. Ninguna nueva aceptación de producto ni decisión de foto urgencia inferida.
+
 ## 21/10/2026 — Foto sintética autorizada para el piloto privado
 
 Titular: «Sí, añadir esa imagen sintética al borrador». Autoriza añadir al único borrador TEST privado existente la imagen extraída del mismo clip, en Supabase DEV, sin publicación ni envío a revisión. A Stream seguirá subiendo sólo el clip de un segundo. No usar fotos personales ni crear otro caso. Se conserva la ventana máxima de 20 minutos desde primer ON y el cierre media/cleanup OFF y trabajo pausado. Preparación de ficha antes de ON; resultados y evidencia en progress.md.

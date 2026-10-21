@@ -1,3 +1,7 @@
+## 21/10/2026 — B4 QA324 parcial completada; siguiente paquete pendiente
+
+Samsung324/Playinstalado comprobado. Ventana humana consumida y cerradaOFF/pausado<=20min: Q1tamañorechazado, Q2real60ready/play/delete, Q3real61providerdurationerror/delete. Dos recursos nuevosdeleted/cola0; fuente17c8 intacta, no nueva build. Q4corrupto/interrupción-byte-resume/retrydurable/falloConsulta324/cámara/admin/ajeno/otrospropósitos/historias siguen pendientes; no asumirlos del piloto. Authreal/decisiónfotourgencia/Tienda interna/aceptación integral pendientes. Root/colaFlutter única; siguiente preparar paquete restante antes otra activación. Ver checkpoint/ledger21oct, sin repetir Q1-Q3ni dineroTEST.
+
 ## 21/10/2026 — Release 324 publicada; instalación y QA pendientes
 
 Fuente de app 17c8e66b5b7fc30d6a396253aff992acb86ddd92, mock20d21 congelado. Codemagic63/6ad8db28e85f0c19d27daa60 terminó con13accionesSUCCESS; metadata acredita2.3.3(324)/GuardianTEST/GooglePlayinternal. Playrelease164 muestra Available to internal testers y bundle324. No instalada ni probada en Samsung ni aceptada; último ADB sin dispositivo, reconexión pendiente. Watch95142 terminado; no reenviar build. Nueva ventanaQA sigue sin respuesta/autorización; no ON ni nuevas cargas.

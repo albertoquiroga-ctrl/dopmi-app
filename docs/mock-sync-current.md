@@ -1,3 +1,11 @@
+## 21/10/2026 — QA324 privada ejecutada y cerrada OFF
+
+Samsung online y Play2.3.3(324)/Vending comprobados; fuente de artefacto17c8e66b5b7fc30d6a396253aff992acb86ddd92, mock20d21. Autorización humana nueva resuelve bloqueo previo, ventana consumida: referenciaantesON23:12:05UTC; Edge34baselineOFF23:27:06 y SQLpost23:27:30 mediaOFF/job6pausado/TiendaOFF. Sin nuevos builds.
+
+Q1>200MiB rechazo local sin reserva; Q2duration60 ready/pending, reproducción privada y cancelación; Q3providerrechaza duración61, failed/pending y cancelación. Dos activos nuevos, ambosdeleted, tresledgersretenidos/cola0, seisjobsiguales; borradordraftv9/foto1 y originalretiradov21 preservados. FuenteUI/código/seguridad/proceso revisados independientemente, sin material pendiente de estos recorridos.
+
+Q4corrupto NO iniciado por margen/cutoff; interrupción/reanudaciónbytes, retrydurable, fallo de consulta324, cámara/admin/ajeno/historias/otrospropósitos siguen pendientes. Authreal, decisiónfotourgencia, Tienda interna/aceptaciónintegral conservan pendientes. Dueño root/una colaFlutter. Paquete/evidencia privada video-status-release/qa324-*; ledger21oct contiene demo/retro/límites. Próximo QA necesita paquete concreto y ventana nueva; actualconsumida. Appreiniciada aInicio, misma sesión, wifi1/data1sin cambios. Paridad integral no aceptada.
+
 ## 21/10/2026 — Bloqueo operacional confirmado
 
 Tres turnos consecutivos conservan bloqueo Samsung/instalación324 y respuesta ventanaQA. Últimos dos inventariosADB vacíos; primer turno agotó preparación independiente revisada, no proceso/build vivo pendiente. Meta bloqueada, no completada. Dueño root; titular reconecta/desbloqueaSamsung y responde propuestaQA. Retomar con preflight fresco, instalar desdePlay324/source17c8 y preservar OFF/pausado hasta permiso concreto. Sin nuevas cargas, builds ni fixtures. Evidencia y alcance pendientes en ledger/tablero existentes.
