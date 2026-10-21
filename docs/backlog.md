@@ -1,3 +1,11 @@
+## 21/10/2026 — Release 324 publicada; instalación y QA pendientes
+
+Fuente de app 17c8e66b5b7fc30d6a396253aff992acb86ddd92, mock20d21 congelado. Codemagic63/6ad8db28e85f0c19d27daa60 terminó con13accionesSUCCESS; metadata acredita2.3.3(324)/GuardianTEST/GooglePlayinternal. Playrelease164 muestra Available to internal testers y bundle324. No instalada ni probada en Samsung ni aceptada; último ADB sin dispositivo, reconexión pendiente. Watch95142 terminado; no reenviar build. Nueva ventanaQA sigue sin respuesta/autorización; no ON ni nuevas cargas.
+
+Cierre16:24UTC: SQL82migraciones/max20261019062129, video/TiendaOFF,0activos/cola,1ledgerdeleted, seisjobs conservados/job6pausado. Edge34digests idénticos al baselineOFF. Dos funcionesv11 ya cotejadas con fuente exacta. Piloto anterior consumido, foto sintética/carga1s/reproducción/borrado reales sólo en323. No atribuir esos recorridos al candidato324.
+
+Dueño root/una colaFlutter. Siguiente: reconectarSamsung→actualizar desdePlay→verificar324/SHA/canal→demo; QA con ON sólo tras respuesta explícita y preflight. Authreal, decisión foto urgencia, Tienda interna móvil y aceptación integral pendientes. Paridad completa no terminada.
+
 ## 21/10/2026 — B3/B4 candidato correctivo en entrega
 
 Piloto único consumido y cerrado: carga/reproducción/borrado privados reales en323. Fix17c8e66b implementado/revisado, CI39623868974 cuatroSUCCESS y dosEdgeDEVv11 readbackexacto/OFF. CM63/6ad8db28e85f0c19d27daa60 compilando; siguiente mismohandle→artefacto/Play/instalación/demo, sin reenviar. Nueva ventanaQA20min propuesta y pregunta enviada, respuesta pendiente; no otroON/upload. Authreal, fotourgencia, QAcompleta, Tienda interna y aceptaciónintegral siguen pendientes. Dueño root/una colaFlutter; detalle en checkpoint yledger21oct.

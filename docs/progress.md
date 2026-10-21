@@ -1,3 +1,17 @@
+## 21/10/2026 — Entrega material 324 y cierre verificable
+
+Implementado/revisado independientemente: tras bytes recibidos y fallo de consulta, UI conserva recurso y ofrece Comprobar video sin afirmar procesamiento ni duplicar carga; duración negativa/no finita pendiente se normaliza sin relajar ready, firma o moderación. Causa de409/502 del piloto no demostrada. Fuente17c8e66b5b7fc30d6a396253aff992acb86ddd92/tagcodex/integral20d21-17c8e66b; documentación posterior no modifica app.
+
+Verificado CI39623868974 cuatroSUCCESS: format386/0cambios, analyze0, Flutter1332PASS+5capturas, prototipo4, admin48/build, backend960PASS/8skip, PostgreSQL316/OAuth11, config17, compilaciónsimuladoriOS. No iOSfísico. Correcciónlint anterior registradaC04; no repetir fixtures ni gates verdes.
+
+Publicado: CM63/6ad8db28e85f0c19d27daa60/13accionesSUCCESS; ZIPmetadata exacto dosentradas acredita2.3.3(324)/source17c8/GuardianTEST/canalPlayinterno. Playrelease164 disponible21oct10:16CDMX y bundle324 comprobados en UI. AAB no descargado/certificado no inspeccionado. Evidencia privada video-status-release: provider,artifact-verified,play-release164-available y dos capturas complementarias. InstalaciónSamsung/recorridos324/aceptación NO acreditados; USB ausente, pregunta pendiente.
+
+DEVmedia/cleanupv11 desplegadas una vez/readbackarchivoexacto. Cierre SQL16:24:37UTC:82migraciones/max20261019062129, video/TiendaOFF,0activos/cola,1ledgerdeleted; seisjobs/hash iguales y6pausado. Edge34digests baselineOFF iguales. Recibos sql-release-closed/edge-release-closed privados. Sin nueva activación/carga/credencial/migración/dinero. Ventana nuevaQA propuesta/revisada pero SIN respuesta; piloto anterior consumido.
+
+Mini recorrido324 pendiente: Agradecimiento→carga recibida/fallo consulta→mensaje preciso y Comprobar video sobre mismo recurso→señal de problema: duplicado, nueva carga o afirmar listo sin consultar. Demo real previa grabada en323: previewprivado→reproducir→contador0a14→cancelar/ausenciaStream; no presenta fix324. Dueño root/siguiente instalaciónPlay y QA autorizada. Alcance integral pendiente.
+
+Retro independiente cleanup_empty_retro inspeccionó fuentes/recibos: sin mejora nueva justificada; conservar separación publicación/instalación/QA/aceptación, C04 ya aplicada. Causa cola13min desconocida; no atribuir pago/capacidad/cache ni resolución a consulta del plan. Sin nuevo gate/suite/ceremonia.
+
 ## 21/10/2026 — Candidato17c8 verificado en CI, EdgeDEV v11 y build interna solicitada
 
 CI39623868974 comprobado sobre17c8e66b5b7fc30d6a396253aff992acb86ddd92: cuatro jobs SUCCESS (Flutter/Android, web-admin-PostgreSQL, identidad-adopción e iOSsim). Correcciónlint final analyze0/focal14PASS. Delta UI/código/seguridad revisado sin hallazgos materiales; el hallazgo cancel fue descartado con repositorio/test. Builder privado reforzado tras revisión: job6false/hash y frescura900s de readbacks; revisor comprobó cierre.
