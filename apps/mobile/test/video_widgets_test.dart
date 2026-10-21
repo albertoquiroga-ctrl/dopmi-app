@@ -146,8 +146,9 @@ void main() {
       final repo = VideoRepository(
         identity: () => 'owner:session',
         invoke: (body) async {
-          if (body['action'] == 'cancel')
+          if (body['action'] == 'cancel') {
             throw const VideoFailure('request_denied');
+          }
           if (body['action'] == 'begin') {
             return {
               'id': 'same-asset',
