@@ -1,6 +1,6 @@
-## 21/10/2026 — Piloto privado real cerrado; correcciones locales en revisión
+## 21/10/2026 — B3/B4 candidato correctivo en entrega
 
-B3/B4: piloto único consumido y cerrado OFF/pausado; carga/reproducción/borrado reales comprobados en323. Correcciones locales mensaje de status/normalización/diagnóstico pendientes de regresión final, SHA/CI y publicación. Ver ledger21oct para evidencia/límites; ninguna nueva ventana ON ni fixture autorizada por este checkpoint. Dueño root, una cola Flutter. B0–B7 y aceptación integral siguen abiertos.
+Piloto único consumido y cerrado: carga/reproducción/borrado privados reales en323. Fix17c8e66b implementado/revisado, CI39623868974 cuatroSUCCESS y dosEdgeDEVv11 readbackexacto/OFF. CM63/6ad8db28e85f0c19d27daa60 compilando; siguiente mismohandle→artefacto/Play/instalación/demo, sin reenviar. Nueva ventanaQA20min propuesta y pregunta enviada, respuesta pendiente; no otroON/upload. Authreal, fotourgencia, QAcompleta, Tienda interna y aceptaciónintegral siguen pendientes. Dueño root/una colaFlutter; detalle en checkpoint yledger21oct.
 
 ## 20/10/2026 — Sesión aprobada y único borrador privado de video guardado
 
