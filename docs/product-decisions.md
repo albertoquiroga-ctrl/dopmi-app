@@ -1,3 +1,9 @@
+## 20/10/2026 — Entrada a piloto privado de video autorizada
+
+Titular: «Listo» al teléfono y «Sí, piloto privado y cierre OFF». Autoriza paquete revisado20min desdeprimerON, unborradorTESTprivado y unclip sintético1s, carga/procesamiento/reproducciónprivada/cancelación/ausencia; sin publicación/revisión/dinero/compras y cierre mediaOFF+SQLoff/cleanupOFF+jobpausado. Acepta explícitamente entradaQA sustentada en pruebaslocales+cronvacío, manteniendo borrado/retryreal y resto como gates posteriores. Efecto globalDEV de agradecimientoobligatorio en casosnuevos informado; previos conservados. No autoriza cambiar permisos ni aprobarrescatistas para probar.
+
+Preflight se detuvo antesON porque sesiónactual sigueenrevisión. Autorización permanece vigente y reloj no iniciado; falta acceso legítimo aprobado. Resultado/evidencia enprogress.md, sin datos identificativos ni credenciales aquí.
+
 ## 20/10/2026 — Ensayo de limpieza temporal autorizado y cerrado
 
 Titular: «Listo ya lo borre» para tokensetupretry y «Sí, probar y volver a OFF/pausado». Alcance cleanupDEV únicamente, ceroactivos/cola, máximo3ciclos/5min, sinmanualcalls ni uploads/borrados; cierreOFF+pausaobligatorio. Ejecutado y verificado: solicitud38356HTTP200removed0failed0, tresciclos,34digestsrestaurados/job6pausado/5jobsiguales. No autoriza ventanaQAmediaON, aceptaciónni dineroLIVE. Resultado/límites/retro enprogress.md; siguiente paquete debe resolver explícitamente entradaQA y gatecleanupreal sinbypass.
