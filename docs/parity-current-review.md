@@ -1,3 +1,15 @@
+## 21/10/2026 — Corte B3/B4: piloto real cerrado y corrección candidata
+
+Referencia20d21 conservada. Piloto en Play323/fuente48d65; corrección fuente17c8e66b, CI39623868974 pendiente, sin nueva build todavía.
+
+| Grupo | Verificado | Pendiente / dueño |
+|---|---|---|
+| B3 proveedor | TUS real, ready1s, reproducción firmada privada, cancelación y ausencia en Stream; OFF/pausado tras menos20min | Corrección Edge preparada/revisada, CI verde/preflight/despliegue/readback; retry durable aún no probado; root |
+| B4 móvil | Clip sintético en único borrador privado; movimiento0→14; consulta mismo asset y UI final sin preview | Fix de mensaje local con14 focales/analyze0 y regresión1331; candidato instalado, escenarios negativos y demás propósitos pendientes; root |
+| B1/B5/B7 | Evidencia anterior válida conservada | Auth real, Tienda interna móvil/aceptación comercial separada, recorrido integrado/aceptación final pendientes |
+
+Detalles y límites probatorios en ledger21oct; no repetir piloto consumido ni inferir publicación/moderación/aceptación. Una cola Flutter, servicios apagados y dinero TEST.
+
 ## 20/10/2026 — Corte de evidencia B3/B4 tras ensayo de limpieza
 
 Referencia20d21 y candidato funcional48d65/Play2.3.3(323) sin cambios. Esta entrada actualiza los pendientes de proveedor históricos de la matriz; no declara aceptación global.
