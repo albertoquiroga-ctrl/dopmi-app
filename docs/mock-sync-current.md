@@ -1,3 +1,7 @@
+## 21/10/2026 — Preparación siguiente QA cerrada
+
+324 publicada/source17c8 sin cambios. ADBoffline sinserial→un reconnect→inventario vacío; no instalada. Paquete privado next-video-qa ampliado y helperlocal readonly revisados,4fixtures SHA/tamaño comprobados, sin ON/transferencias. Faltan picker/controles324 y restauración sobre dispositivo real; no es ready. Preguntas USB/ventanaQA siguen pendientes. Dueño root; siguiente reconexión→instalarPlay324→preflight autorizado; ledger21oct contiene evidencia/límites.
+
 ## 21/10/2026 — Release 324 publicada; instalación y QA pendientes
 
 Fuente de app 17c8e66b5b7fc30d6a396253aff992acb86ddd92, mock20d21 congelado. Codemagic63/6ad8db28e85f0c19d27daa60 terminó con13accionesSUCCESS; metadata acredita2.3.3(324)/GuardianTEST/GooglePlayinternal. Playrelease164 muestra Available to internal testers y bundle324. No instalada ni probada en Samsung ni aceptada; último ADB sin dispositivo, reconexión pendiente. Watch95142 terminado; no reenviar build. Nueva ventanaQA sigue sin respuesta/autorización; no ON ni nuevas cargas.

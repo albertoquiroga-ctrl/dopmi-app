@@ -1,3 +1,11 @@
+## 21/10/2026 — Preparación QA negativa y reconexión sin dispositivo
+
+Continuación: turno anterior produjo publicación324/cierreOFF verificables. Lectura del plan adjunto y memoriaC01/C03 desde checkout original; helperrecall no está en checkoutcandidato. Remoto comprobado a0ad2504df17fb98968d1499f54027e98b888ee3; tagfuente17c8e66b exacto. ADB mostró conexión sinserial/offline; un único reconnectoffline y lectura posterior inventario vacío. No reinicio de teléfono, cambio permisos ni instalación. No proceso build vivo que esperar.
+
+Trabajo independiente completado por prepare_video_cleanup_schedule: propuesta privada existente next-video-qa.proposed.md ampliada y preflight_next_qa.py sólolectura. Cuatrofixtures existentes223744012B tamaño/SHA exactos; ASTdriver identifica selección sólo1s vieja, falta retry/resume/selectores4archivos/conectividad. No importar driver ni ADB/red/UI/escritura. Revisor stream_phase2_code_review inspeccionó fuentes/propuesta y ejecutó inventario sinhashes: sin material, ready_for_onfalse. Hashes los ejecutó preparador, no atribuirlos al revisor. Sin nuevas fixtures/suites/ON/transporte.
+
+Restauración/corte de red sólo propuesta: baseline real/USBestable, inversa finalmente y comprobaciónreal; no mutadores ni ejecución sin evidencia nueva. El helper no habilita QA. Bloqueos vigentes Samsung controlable/instalar324 y respuesta ventanaQA; no respuesta supuesta por continuación genérica. Dueño root, siguiente reconexión→verificaciónPlay324→preflight y guardas sólo con autorización. Alcance integral sigue incompleto. Una colaFlutter, dineroTEST/Tiendaoculta y cambiosajenos preservados.
+
 ## 21/10/2026 — Entrega material 324 y cierre verificable
 
 Implementado/revisado independientemente: tras bytes recibidos y fallo de consulta, UI conserva recurso y ofrece Comprobar video sin afirmar procesamiento ni duplicar carga; duración negativa/no finita pendiente se normaliza sin relajar ready, firma o moderación. Causa de409/502 del piloto no demostrada. Fuente17c8e66b5b7fc30d6a396253aff992acb86ddd92/tagcodex/integral20d21-17c8e66b; documentación posterior no modifica app.
