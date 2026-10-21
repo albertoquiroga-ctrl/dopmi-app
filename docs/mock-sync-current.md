@@ -1,3 +1,9 @@
+## 21/10/2026 — Siguiente QA preparada; nueva ventana pendiente
+
+324/source17c8/Playinterno sin cambios; cierreQA anteriorOFF/pausado/cola0 en recibos23:27UTC. Paquete privado existente ampliado: corrupto64B + positivoexact200MiB1s, máximo2activos secuenciales/mismodraft9/20min/cutoff15, sin publicar. Archivo200MiB aún no transferido. Helperred AUTHFalse/defaultdryrun, cierreSQL previo reutilizado; enable exige3ledgersdeletedexactos. Código y seguridad independientes sin material, sólo simulación/local/readhelpAndroid, no nuevos ON/red/cargas/builds.
+
+Pregunta nueva enviada: autorizar ventana y cambios temporales Wi-Fi/datos con restauración, respuesta pendiente. Rootúnicooperador/colaFlutter. Tras respuesta: preflight real fresco→transporte autorizado→armar paquete revisado→ventana/cierre; sin respuesta no ejecutar. PorcentajeUI no acredita HEAD/PATCH numérico: requisito de cargas reanudables sigue pendiente, no opcional. Ledger21oct/qa-next-preparation.private.json guardan fuentes/límites; paridad integral pendiente.
+
 ## 21/10/2026 — QA324 privada ejecutada y cerrada OFF
 
 Samsung online y Play2.3.3(324)/Vending comprobados; fuente de artefacto17c8e66b5b7fc30d6a396253aff992acb86ddd92, mock20d21. Autorización humana nueva resuelve bloqueo previo, ventana consumida: referenciaantesON23:12:05UTC; Edge34baselineOFF23:27:06 y SQLpost23:27:30 mediaOFF/job6pausado/TiendaOFF. Sin nuevos builds.

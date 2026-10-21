@@ -1,3 +1,7 @@
+## 21/10/2026 — Próxima QA lista para decisión
+
+Corrupto + positivoexact200MiB/red preparados y revisados; nueva pregunta pendiente, ningúnON/transferencia/red efectiva. AUTHFalse, mismo324/17c8/draft9,20min/2activos/cierreOFF. La prueba funcional futura no acreditará offsets numéricos; cargas reanudables conserva requisito pendiente. Detalle checkpoint/ledger, no repetirQA324 válida.
+
 ## 21/10/2026 — B4 QA324 parcial completada; siguiente paquete pendiente
 
 Samsung324/Playinstalado comprobado. Ventana humana consumida y cerradaOFF/pausado<=20min: Q1tamañorechazado, Q2real60ready/play/delete, Q3real61providerdurationerror/delete. Dos recursos nuevosdeleted/cola0; fuente17c8 intacta, no nueva build. Q4corrupto/interrupción-byte-resume/retrydurable/falloConsulta324/cámara/admin/ajeno/otrospropósitos/historias siguen pendientes; no asumirlos del piloto. Authreal/decisiónfotourgencia/Tienda interna/aceptación integral pendientes. Root/colaFlutter única; siguiente preparar paquete restante antes otra activación. Ver checkpoint/ledger21oct, sin repetir Q1-Q3ni dineroTEST.
