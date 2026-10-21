@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHmac,randomUUID} from 'node:crypto';
-import {VIDEO_LIMITS,validateUpload,streamProvider,verifyStreamWebhook,createVideoHandler,drainVideoDeletionQueue} from '../../supabase/functions/_shared/video-media.mjs';
+import {VIDEO_LIMITS,VideoError,validateUpload,streamProvider,verifyStreamWebhook,createVideoHandler,drainVideoDeletionQueue} from '../../supabase/functions/_shared/video-media.mjs';
 const input=()=>({id:randomUUID(),parent_id:randomUUID(),parent_version:1,purpose:'thanks',request_key:randomUUID(),bytes:1024});
 const account='a'.repeat(32),id='b'.repeat(32);
 const response=(value)=>new Response(JSON.stringify({success:true,result:value}),{status:200});
@@ -24,6 +24,56 @@ test('provider deletion tolerates lost reply then already-absent without creatin
 test('server cleanup acknowledges only successful deletion and retains failed work',async()=>{const done=[];const result=await drainVideoDeletionQueue({provider:()=>({remove:async id=>{if(id==='failed')throw new Error('unavailable');}}),service:async data=>{if(data.action==='cleanup_list')return {items:['ok','failed']};done.push(data.provider_id);}});assert.deepEqual(result,{removed:1,failed:1});assert.deepEqual(done,['ok']);});
 
 test('pendingupload readback remains resumable instead of processing',async()=>{const p=streamProvider({accountId:account,apiToken:'x',fetcher:async()=>response({uid:id,requireSignedURLs:true,status:{state:'pendingupload'},readyToStream:false})});assert.deepEqual(await p.inspect(id),{state:'uploading',duration:null});});
+
+test('unfinished provider duration is nullable and never violates nonnegative SQL contract',async()=>{
+ for(const [providerState,expectedState] of [['pendingupload','uploading'],['queued','processing'],['inprogress','processing']]) {
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>response({uid:id,requireSignedURLs:true,status:{state:providerState},readyToStream:false,duration:-1})});
+  assert.deepEqual(await provider.inspect(id),{state:expectedState,duration:null});
+ }
+});
+
+test('handler failure emits only controlled action code status and preserves response',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ const handler=createVideoHandler(runtime({user:async()=>{throw new VideoError('video_provider_unavailable',502);}}));
+ const result=await handler(request({action:'status',id:randomUUID(),private_text:'NEVER_LOG_PRIVATE_BODY'}));
+ assert.equal(result.status,502);assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});
+ assert.deepEqual(logs,[{event:'video_request_failed',action:'status',code:'video_provider_unavailable',status:502}]);
+ assert.ok(!JSON.stringify(logs).includes('NEVER_LOG_PRIVATE_BODY'));
+});
+
+test('ready classification keeps positive duration and signed UID guards after normalization',async()=>{
+ for(const [duration,state,stored] of [[-1,'failed',null],[0,'failed',0],[1,'ready',1],[60,'ready',60],[61,'failed',61]]) {
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>response({uid:id,requireSignedURLs:true,status:{state:'ready'},readyToStream:true,duration})});
+  assert.deepEqual(await provider.inspect(id),{state,duration:stored});
+ }
+ for(const extra of [{requireSignedURLs:false},{uid:'c'.repeat(32)}]) {
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>response({uid:id,requireSignedURLs:true,status:{state:'ready'},readyToStream:true,duration:1,...extra})});
+  await assert.rejects(provider.inspect(id),{message:'unsafe_provider_asset'});
+ }
+});
+
+test('failure diagnostics never copy arbitrary action error or webhook material',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ const sentinel='NEVER_LOG_TOKEN_BODY_ID_URL_STACK';
+ const invalidAction=await createVideoHandler(runtime())(request({action:sentinel,id:sentinel}));
+ assert.equal(invalidAction.status,400);assert.deepEqual(await invalidAction.json(),{error:'invalid_action'});
+ const raw=JSON.stringify({uid:id,private_text:sentinel}),time=Math.floor(Date.now()/1000),secret='synthetic-signing-secret';
+ const signature=createHmac('sha256',secret).update(`${time}.${raw}`).digest('hex');
+ const handler=createVideoHandler(runtime({env:key=>key==='DOPMI_VIDEO_ENABLED'?'true':secret,provider:()=>({inspect:async()=>{throw new Error(sentinel);}})}));
+ const result=await handler(new Request(`https://dopmi.test/video-media/webhook?private=${sentinel}`,{method:'POST',headers:{'Webhook-Signature':`time=${time},sig1=${signature}`,'Authorization':`Bearer ${sentinel}`},body:raw}));
+ assert.equal(result.status,500);assert.deepEqual(await result.json(),{error:'video_request_failed'});
+ assert.deepEqual(logs,[
+  {event:'video_request_failed',action:'unknown',code:'invalid_action',status:400},
+  {event:'video_request_failed',action:'webhook',code:'video_request_failed',status:500},
+ ]);
+ for(const forbidden of [sentinel,secret,signature,id,'https://','stack'])assert.ok(!JSON.stringify(logs).includes(forbidden));
+});
+
+test('diagnostic sink failure cannot replace existing HTTP error response',async(t)=>{
+ t.mock.method(console,'warn',()=>{throw new Error('synthetic sink unavailable');});
+ const result=await createVideoHandler(runtime({user:async()=>{throw new VideoError('video_conflict',409);}}))(request({action:'status'}));
+ assert.equal(result.status,409);assert.deepEqual(await result.json(),{error:'video_conflict'});
+});
 test('a committed bind with a lost response is read back, never deleted',async()=>{let deletes=0;const handler=createVideoHandler(runtime({user:async()=>({id:'asset',technical_state:'reserved'}),provider:()=>({create:async()=>({provider_id:id,upload_url:'https://upload.videodelivery.net/cap'}),remove:async()=>{deletes++;}}),service:async data=>{if(data.action==='claim')return {claimed:true};if(data.action==='created')return {technical_state:'provisioning_unknown'};if(data.action==='bind')throw new Error('lost_reply');if(data.action==='binding')return {bound:true,id:'asset',technical_state:'uploading',upload_url:'https://upload.videodelivery.net/cap'};throw new Error('unexpected');}}));const result=await handler(request({action:'begin',...input()}));assert.equal(result.status,200);assert.equal((await result.json()).technical_state,'uploading');assert.equal(deletes,0);});
 test('uncommitted bind queues known upstream orphan durably rather than deleting blindly',async()=>{const operations=[];const handler=createVideoHandler(runtime({user:async()=>({id:'asset'}),provider:()=>({create:async()=>({provider_id:id,upload_url:'https://upload.videodelivery.net/cap'})}),service:async data=>{operations.push(data.action);if(data.action==='claim')return {claimed:true};if(data.action==='created')return {technical_state:'provisioning_unknown'};if(data.action==='bind')throw new Error('write_failed');if(data.action==='binding')return {bound:false};return {queued:true};}}));assert.equal((await handler(request({action:'begin',...input()}))).status,500);assert.deepEqual(operations,['claim','created','bind','binding','orphan_enqueue']);});
 test('withdrawal during token mint never returns a signed lease',async()=>{let calls=0;const handler=createVideoHandler(runtime({user:async()=>{if(++calls===3)throw new Error('withdrawn');return {id:'asset',provider_id:id,technical_state:'ready'};},provider:()=>({inspect:async()=>({state:'ready'}),playback:async()=>({hls:'private-signed-lease'})})}));const result=await handler(request({action:'playback',id:randomUUID()}));assert.equal(result.status,500);assert.ok(!(await result.text()).includes('private-signed-lease'));});

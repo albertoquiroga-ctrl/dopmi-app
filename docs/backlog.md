@@ -1,3 +1,7 @@
+## 21/10/2026 — Piloto privado real cerrado; correcciones locales en revisión
+
+B3/B4: piloto único consumido y cerrado OFF/pausado; carga/reproducción/borrado reales comprobados en323. Correcciones locales mensaje de status/normalización/diagnóstico pendientes de regresión final, SHA/CI y publicación. Ver ledger21oct para evidencia/límites; ninguna nueva ventana ON ni fixture autorizada por este checkpoint. Dueño root, una cola Flutter. B0–B7 y aceptación integral siguen abiertos.
+
 ## 20/10/2026 — Sesión aprobada y único borrador privado de video guardado
 
 B4: acceso resuelto; único borrador QA creado y persistido por UI (draft/v2, sin archivos; recibo privado). Reutilizarlo. Pendiente respuesta sobre foto sintética adicional necesaria para acceder al video; no transferida/subida. Clip/ventana20min siguen autorizados, sin primerON. Completar prerrequisitos antes de ventana y revalidar flags/identidad. Evidencia/retro en progress.md; checkpoint en mock-sync-current.md. B1 Auth real, decisión foto urgencia de producto, QA completa e integración/aceptación B7 siguen pendientes. Fuente48d65/Play323/mock20d21, dineroTEST y TiendaOFF conservados.

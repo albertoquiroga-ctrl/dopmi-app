@@ -1,3 +1,7 @@
+## 21/10/2026 — Foto sintética autorizada para el piloto privado
+
+Titular: «Sí, añadir esa imagen sintética al borrador». Autoriza añadir al único borrador TEST privado existente la imagen extraída del mismo clip, en Supabase DEV, sin publicación ni envío a revisión. A Stream seguirá subiendo sólo el clip de un segundo. No usar fotos personales ni crear otro caso. Se conserva la ventana máxima de 20 minutos desde primer ON y el cierre media/cleanup OFF y trabajo pausado. Preparación de ficha antes de ON; resultados y evidencia en progress.md.
+
 ## 20/10/2026 — Entrada a piloto privado de video autorizada
 
 Titular: «Listo» al teléfono y «Sí, piloto privado y cierre OFF». Autoriza paquete revisado20min desdeprimerON, unborradorTESTprivado y unclip sintético1s, carga/procesamiento/reproducciónprivada/cancelación/ausencia; sin publicación/revisión/dinero/compras y cierre mediaOFF+SQLoff/cleanupOFF+jobpausado. Acepta explícitamente entradaQA sustentada en pruebaslocales+cronvacío, manteniendo borrado/retryreal y resto como gates posteriores. Efecto globalDEV de agradecimientoobligatorio en casosnuevos informado; previos conservados. No autoriza cambiar permisos ni aprobarrescatistas para probar.

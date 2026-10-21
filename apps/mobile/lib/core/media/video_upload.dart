@@ -267,6 +267,16 @@ class _VideoUploadState extends State<VideoUpload> {
     VideoFailure(code: 'canceled') => 'Carga cancelada.',
     _ => 'No pudimos completar la carga. Puedes reintentar el mismo video.',
   };
+
+  // Acknowledged TUS bytes do not prove processing or publication. Keep the
+  // existing asset and check its status instead of offering another transfer.
+  bool get receivedAwaitingStatus =>
+      error != null &&
+      task?.assetId != null &&
+      task?.canceled != true &&
+      (task?.uploaded ?? 0) > 0 &&
+      progress == 1;
+
   @override
   Widget build(BuildContext context) {
     final state = asset?.state;
@@ -317,7 +327,9 @@ class _VideoUploadState extends State<VideoUpload> {
           ),
         if (error != null)
           Text(
-            error!,
+            receivedAwaitingStatus
+                ? 'La carga se recibió. Falta comprobar el estado del video.'
+                : error!,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         if (task != null)
@@ -326,6 +338,7 @@ class _VideoUploadState extends State<VideoUpload> {
             children: [
               if (!busy &&
                   error != null &&
+                  !receivedAwaitingStatus &&
                   task?.canceled != true &&
                   file != null)
                 TextButton(
