@@ -1,3 +1,19 @@
+## 21/10/2026 — QA325 física completada; cierre OFF y retro
+
+Mock congelado `20d21f484aa60726f0b236574d5493dcf5e05969`; candidato `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, Play interno **2.3.3 (325)** / release165. Samsung SM-S938B actualizado desde Play: package com.mycompany.dopmi, versionCode325/versionName2.3.3 e installer com.android.vending comprobados; sesión legítima conservada. Supersede bloqueo anterior de teléfono/permiso, sin nuevo build ni reiniciar aceptación integral.
+
+Titular autorizó call_eb161eda8b674198af4e748249883f40; ventana única 22oct04:42:47.237–04:59:40.816UTC (21octCDMX), límite05:02:47.237. Un clip sintético nuevo2s/225180B en el mismo borrador privado TEST. Navegación normal guardó versiones11/12; baseline11/target12 fijados y revisados antes de ejecutar, sin forzar SQL ni ampliar expediente. Paquete final manifest a3d6d685…; dos despliegues reales TEMPv31 y restauraciónv32. Recibos privados `video-retry-real/qa325-execution/` y XML/PNG `video-status-release/qa324-evidence/qa325-*`.
+
+Recorrido real: ready/pending→Cancelar una vez→fallos controlados ACK y consulta del mismo recurso→UI sin preview/Procesado/nueva carga, muestra «Comprobar cancelación»→restaurar canónico→Comprobar una vez→cancelado autoritativo y selector recuperado. No segunda carga, publicación, revisión, dinero, credenciales ni cambios de red. Implementado/local+CI/publicado/instalado/este recorrido físico verificados; **aceptación humana y paridad integral pendientes**.
+
+Limpieza: dos respuestas503 removed0/failed1; tercer ciclo200 removed1/failed0 y cola0. Logs reales de ruta /functions/v1/video-cleanup versión30 confirman503/503/200 a04:56:01.724/04:57:01.311/04:58:01.566UTC. No se capturó URL saliente→requestID; asociación individual con respuestas SQL sigue temporal. Código sólo demuestra fallo por elemento en provider.remove O cleanup_done; no causa Cloudflare/DB/404 demostrada. Revisión independiente código/seguridad/proceso sin defecto nuevo probado.
+
+Cierre: Edge34digests baseline exactos a04:58:53UTC, media/cleanupOFF; SQLfinal04:59:40 y observación04:59:47: video/TiendaOFF, job6pausado, otros5jobs exactos, cola0/activos0/HTTPpendiente0/runsabiertos0. Media35/cleanup31 archivos canónicos byteexactos Git17c8/0ba3; siete assets históricos intactos, borrador12/foto1 y protegido21 intactos. Permiso consumido: ningún nuevo ON/carga/despliegue temporal implícito.
+
+Retro independiente: recuperación duradera funcionó; causa de dos fallos no establecida. Mejora candidata única: backend distinguir etapas provider.remove/cleanup_done con etiquetas cerradas sin IDs/tokens/errores externos; comprobar localmente conservación de cola y ausencia de filtración, revertir si altera recuperación. No aplicada ni gate nuevo; no repetir QA remota para investigar esta muestra.
+
+Dueño root/una cola Flutter. Siguiente: demo/evaluación humana del mensaje de cancelación; resolver decisión ya consultada de foto de urgencia, y preparar siguientes escenarios faltantes con permisos específicos si necesitan ON. Persisten Auth/correo+reinicio real, cámara/admin/identidad ajena/historias/otros propósitos, Tienda interna y aceptación integral B1/B4/B5/B7; iOS físico no acreditado. Conservar alcance completo y fixtures consumidas, sin nueva build por este cierre.
+
 ## 21/10/2026 — Delta B4 Q7: recuperación durable real
 
 | Escenario | Evidencia vigente | Límite / siguiente |
