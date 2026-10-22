@@ -1,3 +1,7 @@
+## 22/10/2026 23:33 UTC — QA326 galería cerrada
+
+Checkpoint mock-sync-current y evidencia progress: galería→revisión/descartar sin recurso→Subir explícito único→play privado→cancelación/borrado comprobados en326/D377. Cierre OFF/OFF/job6pausado/Stream0/cola0, permiso consumido. Root conserva cola Flutter. Siguiente revisión independiente/demo y preparar siguiente paquete sin otro ON. Cámara326, audio escuchado, otros propósitos/admin/segunda identidad, Auth real, decisión de foto de urgencia y aceptación integral siguen abiertos; no repetir fixtures consumidas.
+
 ## 22/10/2026 23:12 UTC — 326 instalada; espera permiso QA
 
 Continuar checkpoint mock-sync-current: 2.3.3(326)/D377 instalada desde Play, sesión y aprobación de rescatista visibles. Pregunta pendiente para un clip sintético y ventana privada20min; sin ON ni transferencia. Root conserva cola Flutter; recibos local-preview-release y propuesta revisada local-preview-qa. Aceptación y alcance integral siguen abiertos.

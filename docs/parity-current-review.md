@@ -1,3 +1,7 @@
+## 22/10/2026 23:33 UTC — Evidencia física del delta local en galería326
+
+Referencia20d21/candidatoD377/Play2.3.3(326) conservados. Recorrido real autorizado: galería sintética→preview2.0s/reproducir inicialmente en silencio→Descartar sin nuevo recurso persistido→reseleccionar/Subir una vez→ready/pending/play privado→cancelar/deleted; SHA y tamaño exactos. CierreOFF/OFF/pausado/cola0/Stream0. Evidencia y límites en mock-sync-current/progress; no acredita cámara326, audio escuchado ni todos los propósitos, y no implica aceptación humana. Código, seguridad y producto revisaron fuentes/recibos/capturas sin hallazgos materiales; alcance integral sigue abierto.
+
 ## 22/10/2026 — Delta aprobado de video local
 
 Referencia20d21 conservada; decisión posterior explícita en product-decisions exige revisión antes de Subir para cámara/galería/todos propósitos. Fuente7f7c13d2 implementada y40focalesPASS/analyze/config; revisiones producto/código/seguridad cerradas. Capturas de fixture comprueban reflow, no imagen/audio/cámara física. CI final39863167445/d377b97c:4SUCCESS/1378FlutterPASS/compilacionesAndroid+iOSsimuladorPASS; publicación e instalación326 verificadas desde Play interno; QA física del cambio y aceptación pendientes; checkpoint mock-sync-current y ledger progress conservan resultados/límites. No fila aceptada por inferencia.

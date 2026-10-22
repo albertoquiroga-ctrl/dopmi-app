@@ -1,3 +1,11 @@
+## 22/10/2026 23:33 UTC — QA326 galería completada y cierre OFF
+
+Mock `20d21f484aa60726f0b236574d5493dcf5e05969`, candidato `d377b97c68bdf1f74c87ae87acb8752014c6e042`, Play interno release166 / **2.3.3 (326)** instalado desde Vending. CI39863167445 intacta: cuatro SUCCESS/1378 Flutter PASS. Sin cambio de código, build ni despliegue en esta QA.
+
+Titular autorizó call_258f3a099390426fbc2f08a70c1e45ae. Ventana23:24:36–23:32:43UTC, dentro20min. Galería sintético2s/15249B→revisión local/duración/reproducir en silencio→Descartar: nueve históricos completos intactos/ningún recurso nuevo. Reselección del mismo archivo→Subir una vez→único recurso thanks/v15, SHA/bytes exactos→ready/pending→reproducción privada observada→cancelar→deleted/URLnull. Continue normal cambió borrador14→15 antes de elegir; protegido21/foto1 intacto. Cero API durante selección se apoya en fuentes/tests, no se deduce del SQL.
+
+Cierre SQL23:32:43: media/TiendaOFF/job6pausado/seis jobs exactos/cola-HTTP-runs0. Edge34digests iguales al baselineOFF; Stream refrescado0videos; Samsung fuera del editor. Clip sintético conservado en Download. Permiso consumido. Evidencia privada `local-preview-qa/execution` y capturas reales qa326-* en `local-preview-release/dopmi-device-evidence`. Implementado/CI/publicado/instalado/este recorrido físico verificados; aceptación humana, cámara326, audio escuchado, otros propósitos/admin/segunda identidad y alcance integralB0–B7 pendientes. Dueño root/única cola Flutter. Código, seguridad y producto revisaron fuentes/evidencia real sin hallazgos materiales. Siguiente: demo/evaluación y preparar siguiente paquete pendiente sin ON implícito.
+
 ## 22/10/2026 23:12 UTC — 326 instalada desde Play; QA privada pendiente de permiso
 
 **2.3.3 (326)**, candidato `d377b97c68bdf1f74c87ae87acb8752014c6e042`, Play interno/release166. Codemagic único6ada90017a019bc72724e9c0 finished/13 SUCCESS; artefacto, build-info y Play coinciden. CI39863167445: cuatro SUCCESS y1378 pruebas Flutter aprobadas. Mock20d21 congelado.
