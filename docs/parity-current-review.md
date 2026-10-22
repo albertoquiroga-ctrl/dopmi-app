@@ -5,9 +5,9 @@
 | Cancelación con respuesta de confirmación fallida | Un clip2s225472B, ready/pending y reproducción privada324; Cancelar una vez, hook ACK despuésDELETE, canceled/URLnull/cola1 y Stream0 | Fallo inducido y acotado, no caída real de proveedor/DB ni HTTP404 observado |
 | Recuperación por ruta real | Canónico restaurado antescron;96568/request40527HTTP200 removed1/failed0, cola0, mismoUID | Ledger canceled es correcto, no forzar deleted |
 | Cierre operacional | Edge34baselineOFF01:01:55Z, SQL01:02:08Z media/TiendaOFF/job6pausado/otros5iguales/ceroHTTPpendiente, borrador10/protegido21 intactos | Ventana consumida, sin nueva autorizaciónON |
-| UI de cancelación incierta | Captura real y fuentes muestran Procesado/preview y texto de retryupload incoherentes | Defecto moderado confirmado; implementación/testRED en curso, no resuelto ni aceptado en324 |
+| UI de cancelación incierta | Defecto324 real corregido en0ba3: conciliaciónmismoID/sesión, bloqueo porIDreal antepolicyanterior;36focales/1347Flutter/analyze0/config17 y capturas locales inspeccionadas | CI39705440272 cuatroSUCCESS; CM único6ad96aae1a7f08ad463473af queued, todavía sin nueva versión/build/Play/QA física ni aceptación |
 
-Revisiones independientes código/seguridad/proceso inspeccionaron recibos/fuentes. Resto del alcance congelado20d21 intacto; siguiente correcciónUI local y revisión integrada, root única colaFlutter.
+Revisiones independientes código/seguridad/producto/proceso inspeccionaron recibos/fuentes/capturas. Resto del alcance congelado20d21 intacto; siguiente mismoCMhandle→artefacto/Play/dispositivo, root única colaFlutter. No otra ventana/ON por Q7 consumida.
 
 ## 21/10/2026 — Delta de evidencia B4: Q6
 
