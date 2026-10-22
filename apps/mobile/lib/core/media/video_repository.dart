@@ -23,6 +23,13 @@ class VideoFailure implements Exception {
   String toString() => 'VideoFailure($code)';
 }
 
+/// A stopped local transfer is not proof that its remote asset was canceled.
+/// [asset] is present only after a successful same-identity status read.
+class VideoCancellationPending extends VideoFailure {
+  const VideoCancellationPending({this.asset}) : super('cancel_pending');
+  final VideoAsset? asset;
+}
+
 /// Capabilities and playback leases stay in memory and are never preferences/cache keys.
 class VideoAsset {
   const VideoAsset({
@@ -232,9 +239,41 @@ class VideoRepository {
   }
 
   Future<void> cancel(VideoUploadTask task) async {
+    _check(task.identity);
     task.cancel();
     final id = task.assetId;
-    if (id != null) await _call({'action': 'cancel', 'id': id}, task.identity);
+    if (id == null) return;
+    try {
+      final reply = await _call({'action': 'cancel', 'id': id}, task.identity);
+      if (reply['id'] == id &&
+          ['canceled', 'deleted'].contains(reply['technical_state'])) {
+        return;
+      }
+    } catch (_) {
+      // Do not reconcile an earlier account's resource under a new identity.
+      _check(task.identity);
+    }
+    VideoAsset latest;
+    try {
+      latest = await cancellationStatus(task);
+    } catch (_) {
+      _check(task.identity);
+      throw const VideoCancellationPending();
+    }
+    if (['canceled', 'deleted'].contains(latest.state)) return;
+    throw VideoCancellationPending(asset: latest);
+  }
+
+  /// Read-only reconciliation bound to the original task, including its owner
+  /// session. It never reissues cancel, begins an upload or changes request keys.
+  Future<VideoAsset> cancellationStatus(VideoUploadTask task) async {
+    final id = task.assetId;
+    if (id == null) throw const VideoCancellationPending();
+    final value = VideoAsset.fromJson(
+      await _call({'action': 'status', 'id': id}, task.identity),
+    );
+    if (value.id != id) throw const VideoCancellationPending();
+    return value;
   }
 
   Future<VideoAsset> upload(

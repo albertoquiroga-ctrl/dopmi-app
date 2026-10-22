@@ -7,6 +7,139 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 
 void main() {
+  for (final status in ['canceled', 'deleted']) {
+    testWidgets(
+      'lost cancellation ACK clears restored asset only after authoritative $status',
+      (tester) async {
+        final operations = <Map<String, dynamic>>[];
+        final changes = <VideoAsset?>[];
+        final pendingEvents = <String?>[];
+        var statusReads = 0;
+        final repository = VideoRepository(
+          identity: () => 'owner:session',
+          invoke: (data) async {
+            operations.add(Map.of(data));
+            if (data['action'] == 'cancel') {
+              throw const VideoFailure('request_denied');
+            }
+            return {
+              'id': 'restored',
+              'technical_state': ++statusReads == 1 ? 'ready' : status,
+            };
+          },
+        );
+        addTearDown(repository.dispose);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: VideoUpload(
+                repository: repository,
+                parentId: 'case',
+                parentVersion: 1,
+                purpose: 'thanks',
+                initialAssets: const [
+                  {
+                    'id': 'restored',
+                    'parent_id': 'case',
+                    'parent_version': 1,
+                    'purpose': 'thanks',
+                    'technical_state': 'ready',
+                    'moderation_state': 'pending',
+                    'request_key': 'stable-key',
+                    'bytes': 3,
+                  },
+                ],
+                onReady: (_) =>
+                    fail('Cancel reconciliation must not announce readiness'),
+                onChanged: changes.add,
+                onCancellationPendingChanged: pendingEvents.add,
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Cancelar video'));
+        await tester.pumpAndSettle();
+        expect(changes, isEmpty);
+        expect(pendingEvents, ['restored']);
+        expect(find.textContaining('Video procesado.'), findsNothing);
+        expect(find.text('Comprobar cancelación'), findsOneWidget);
+        expect(find.text('Reintentar cancelación'), findsOneWidget);
+        expect(find.text('Elegir video'), findsNothing);
+        await tester.tap(find.text('Comprobar cancelación'));
+        await tester.pumpAndSettle();
+        expect(changes, [null]);
+        expect(pendingEvents, ['restored', null]);
+        expect(find.text('Elegir video'), findsOneWidget);
+        expect(find.text('Comprobar cancelación'), findsNothing);
+        expect(operations, [
+          {'action': 'cancel', 'id': 'restored'},
+          {'action': 'status', 'id': 'restored'},
+          {'action': 'status', 'id': 'restored'},
+        ]);
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+    );
+  }
+  testWidgets(
+    'failed cancellation status keeps the asset pending and offers read-only checking',
+    (tester) async {
+      final operations = <Map<String, dynamic>>[],
+          changes = <VideoAsset?>[],
+          pendingEvents = <String?>[];
+      final repository = VideoRepository(
+        identity: () => 'owner:session',
+        invoke: (data) async {
+          operations.add(Map.of(data));
+          throw const VideoFailure('request_denied');
+        },
+      );
+      addTearDown(repository.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: VideoUpload(
+              repository: repository,
+              parentId: 'case',
+              parentVersion: 1,
+              purpose: 'thanks',
+              initialAssets: const [
+                {
+                  'id': 'restored',
+                  'parent_id': 'case',
+                  'parent_version': 1,
+                  'purpose': 'thanks',
+                  'technical_state': 'ready',
+                  'moderation_state': 'pending',
+                  'request_key': 'stable-key',
+                  'bytes': 3,
+                },
+              ],
+              onReady: (_) =>
+                  fail('Pending cancellation cannot report readiness'),
+              onChanged: changes.add,
+              onCancellationPendingChanged: pendingEvents.add,
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Cancelar video'));
+      await tester.pumpAndSettle();
+      expect(find.text('Comprobar cancelación'), findsOneWidget);
+      expect(find.text('Reintentar cancelación'), findsNothing);
+      expect(find.text('Elegir video'), findsNothing);
+      expect(find.text('Reintentar carga'), findsNothing);
+      await tester.tap(find.text('Comprobar cancelación'));
+      await tester.pumpAndSettle();
+      expect(changes, isEmpty);
+      expect(pendingEvents, ['restored']);
+      expect(operations, [
+        {'action': 'cancel', 'id': 'restored'},
+        {'action': 'status', 'id': 'restored'},
+        {'action': 'status', 'id': 'restored'},
+      ]);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
   testWidgets(
     'canceling a restored asset permits a fresh replacement despite stale policy data',
     (tester) async {
@@ -16,7 +149,9 @@ void main() {
         identity: () => 'owner:session',
         invoke: (body) async {
           calls.add(Map.of(body));
-          if (body['action'] == 'cancel') return {};
+          if (body['action'] == 'cancel') {
+            return {'id': 'restored', 'technical_state': 'canceled'};
+          }
           if (body['action'] == 'begin') {
             return {
               'id': 'replacement',

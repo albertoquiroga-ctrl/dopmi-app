@@ -124,6 +124,9 @@ class RescueVideoSection extends ConsumerStatefulWidget {
 class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
   Future<VideoPolicy>? request;
   String? requestScope;
+  String? previewScope;
+  final suspendedPreviewPurposes = <String>{};
+  final canceledPreviewIds = <String>{};
   bool saving = false;
   String? saveError;
   Future<void> saveDraft() async {
@@ -171,7 +174,13 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
         ],
       );
     }
-    final current = '${repository.identity()}:${record.id}:${record.version}';
+    final actor = repository.identity();
+    final current = '$actor:${record.id}:${record.version}';
+    if (previewScope != current) {
+      previewScope = current;
+      suspendedPreviewPurposes.clear();
+      canceledPreviewIds.clear();
+    }
     if (request == null || requestScope != current) {
       requestScope = current;
       request = repository.policy(record.id);
@@ -218,7 +227,10 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                   'La despedida es opcional. Compartirla no reabre el caso ni cambia los apoyos.',
                 ),
               for (final value in policy.assets.where(
-                (item) => item['purpose'] == purpose,
+                (item) =>
+                    item['purpose'] == purpose &&
+                    !canceledPreviewIds.contains(item['id']) &&
+                    !suspendedPreviewPurposes.contains(purpose),
               )) ...[
                 if (value['matches_current_content'] == false)
                   const Text(
@@ -258,7 +270,27 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                       )
                       .toList(),
                   label: videoPurposeLabel(purpose),
-                  onChanged: (_) {
+                  onCancellationPendingChanged: (assetId) {
+                    if (assetId == null ||
+                        !mounted ||
+                        requestScope != current ||
+                        repository.identity() != actor) {
+                      return;
+                    }
+                    setState(() {
+                      suspendedPreviewPurposes.add(purpose);
+                      canceledPreviewIds.add(assetId);
+                    });
+                  },
+                  onChanged: (value) {
+                    if (!mounted ||
+                        requestScope != current ||
+                        repository.identity() != actor) {
+                      return;
+                    }
+                    // Keep stale policy previews hidden after a confirmed cancel.
+                    // A subsequent upload has its own asset and refreshes policy.
+                    if (value != null) suspendedPreviewPurposes.remove(purpose);
                     widget.onChanged?.call();
                     if (mounted) setState(() => request = null);
                   },

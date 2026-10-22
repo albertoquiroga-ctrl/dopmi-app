@@ -16,6 +16,7 @@ class VideoUpload extends StatefulWidget {
     required this.purpose,
     required this.onReady,
     this.onChanged,
+    this.onCancellationPendingChanged,
     this.label = 'Video',
     this.picker,
     this.initialAssets = const [],
@@ -26,6 +27,10 @@ class VideoUpload extends StatefulWidget {
   final int parentVersion;
   final ValueChanged<VideoAsset> onReady;
   final ValueChanged<VideoAsset?>? onChanged;
+
+  /// Hides a parent's cached preview while remote cancellation is unconfirmed.
+  /// Emitted only by asynchronous user actions, never during hydration/build.
+  final ValueChanged<String?>? onCancellationPendingChanged;
   final Future<XFile?> Function(ImageSource source)? picker;
   @override
   State<VideoUpload> createState() => _VideoUploadState();
@@ -40,6 +45,10 @@ class _VideoUploadState extends State<VideoUpload> {
   final canceledAssetIds = <String>{};
   double progress = 0;
   bool busy = false;
+  bool cancellationPending = false;
+  bool canRetryCancellation = false;
+  static const cancellationMessage =
+      'No pudimos confirmar la cancelación. Comprueba su estado antes de elegir otro video.';
   int generation = 0;
   Timer? timer;
   StreamSubscription<void>? identitySubscription;
@@ -113,6 +122,8 @@ class _VideoUploadState extends State<VideoUpload> {
     error = null;
     progress = 0;
     busy = false;
+    cancellationPending = false;
+    canRetryCancellation = false;
     scope = widget.repository.identity();
     hydrate();
     if (mounted) setState(() {});
@@ -130,7 +141,7 @@ class _VideoUploadState extends State<VideoUpload> {
   bool current(int value) =>
       mounted && value == generation && scope == widget.repository.identity();
   Future<void> pick(ImageSource source) async {
-    if (busy) return;
+    if (busy || cancellationPending) return;
     final run = ++generation;
     setState(() {
       busy = true;
@@ -178,7 +189,7 @@ class _VideoUploadState extends State<VideoUpload> {
   }
 
   Future<void> upload(int run) async {
-    if (file == null || task == null) return;
+    if (file == null || task == null || cancellationPending) return;
     if (current(run)) {
       setState(() {
         busy = true;
@@ -212,13 +223,30 @@ class _VideoUploadState extends State<VideoUpload> {
   }
 
   Future<void> refresh() async {
-    final id = task?.assetId;
-    if (id == null) return;
+    final previous = task;
+    final id = previous?.assetId;
+    if (id == null || busy) return;
+    final checkingCancellation = cancellationPending;
     final run = ++generation;
     setState(() => busy = true);
     try {
-      final value = await widget.repository.status(id);
+      final value = checkingCancellation
+          ? await widget.repository.cancellationStatus(previous!)
+          : await widget.repository.status(id);
       if (!current(run)) return;
+      if (checkingCancellation) {
+        if (['canceled', 'deleted'].contains(value.state)) {
+          completeCancellation(previous!);
+        } else {
+          setState(() {
+            asset = value;
+            busy = false;
+            canRetryCancellation = true;
+            error = cancellationMessage;
+          });
+        }
+        return;
+      }
       setState(() {
         asset = value;
         busy = false;
@@ -230,7 +258,10 @@ class _VideoUploadState extends State<VideoUpload> {
       if (current(run)) {
         setState(() {
           busy = false;
-          error = message(cause);
+          canRetryCancellation = checkingCancellation
+              ? false
+              : canRetryCancellation;
+          error = checkingCancellation ? cancellationMessage : message(cause);
         });
       }
     }
@@ -238,23 +269,40 @@ class _VideoUploadState extends State<VideoUpload> {
 
   Future<void> cancel() async {
     final previous = task;
-    if (previous == null) return;
+    if (previous == null || (cancellationPending && busy)) return;
     final run = ++generation;
-    setState(() => busy = true);
+    final notifyPending = !cancellationPending;
+    setState(() {
+      busy = true;
+      cancellationPending = true;
+      canRetryCancellation = false;
+      error = null;
+    });
+    if (notifyPending) {
+      widget.onCancellationPendingChanged?.call(previous.assetId);
+    }
     try {
       await widget.repository.cancel(previous);
       if (!current(run)) return;
-      if (previous.assetId != null) canceledAssetIds.add(previous.assetId!);
-      reset();
-      widget.onChanged?.call(null);
+      completeCancellation(previous);
     } catch (cause) {
       if (current(run)) {
         setState(() {
           busy = false;
-          error = message(cause);
+          canRetryCancellation =
+              cause is VideoCancellationPending && cause.asset != null;
+          error = cancellationMessage;
         });
       }
     }
+  }
+
+  void completeCancellation(VideoUploadTask previous) {
+    if (previous.assetId != null) canceledAssetIds.add(previous.assetId!);
+    reset();
+    // First invalidate the parent's stale policy; then clear its pending mask.
+    widget.onChanged?.call(null);
+    widget.onCancellationPendingChanged?.call(null);
   }
 
   String message(Object cause) => switch (cause) {
@@ -287,7 +335,9 @@ class _VideoUploadState extends State<VideoUpload> {
         const Text(
           'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
         ),
-        if (file == null && !['ready', 'processing', 'failed'].contains(state))
+        if (!cancellationPending &&
+            file == null &&
+            !['ready', 'processing', 'failed'].contains(state))
           Wrap(
             spacing: 8,
             children: [
@@ -315,13 +365,18 @@ class _VideoUploadState extends State<VideoUpload> {
           LinearProgressIndicator(
             value: progress > 0 && progress < 1 ? progress : null,
           ),
-          Text('Cargando ${(progress * 100).round()} %'),
+          Text(
+            cancellationPending
+                ? 'Cancelación en curso…'
+                : 'Cargando ${(progress * 100).round()} %',
+          ),
         ],
-        if (state == 'ready')
+        if (!cancellationPending && state == 'ready')
           const Text('Video procesado. La publicación requiere revisión.'),
-        if (state == 'processing' || state == 'uploading')
+        if (!cancellationPending &&
+            (state == 'processing' || state == 'uploading'))
           const Text('Estamos procesando tu video.'),
-        if (state == 'failed')
+        if (!cancellationPending && state == 'failed')
           const Text(
             'El video no pudo procesarse. Cancélalo y elige otro de hasta 60 segundos.',
           ),
@@ -339,6 +394,7 @@ class _VideoUploadState extends State<VideoUpload> {
               if (!busy &&
                   error != null &&
                   !receivedAwaitingStatus &&
+                  !cancellationPending &&
                   task?.canceled != true &&
                   file != null)
                 TextButton(
@@ -347,15 +403,30 @@ class _VideoUploadState extends State<VideoUpload> {
                 ),
               if (!busy &&
                   task?.assetId != null &&
-                  !['failed', 'canceled', 'deleted', 'ready'].contains(state))
+                  (cancellationPending ||
+                      ![
+                        'failed',
+                        'canceled',
+                        'deleted',
+                        'ready',
+                      ].contains(state)))
                 TextButton(
                   onPressed: refresh,
-                  child: const Text('Comprobar video'),
+                  child: Text(
+                    cancellationPending
+                        ? 'Comprobar cancelación'
+                        : 'Comprobar video',
+                  ),
                 ),
-              TextButton(
-                onPressed: cancel,
-                child: const Text('Cancelar video'),
-              ),
+              if (!cancellationPending || canRetryCancellation)
+                TextButton(
+                  onPressed: cancellationPending && busy ? null : cancel,
+                  child: Text(
+                    cancellationPending
+                        ? 'Reintentar cancelación'
+                        : 'Cancelar video',
+                  ),
+                ),
             ],
           ),
       ],

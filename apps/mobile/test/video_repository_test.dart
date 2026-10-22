@@ -21,6 +21,108 @@ VideoUploadTask task() => VideoUploadTask(
   requestKey: 'stable-key',
 );
 void main() {
+  for (final terminal in ['canceled', 'deleted']) {
+    test(
+      'lost cancel acknowledgement reconciles $terminal for the same identity and asset',
+      () async {
+        final calls = <Map<String, dynamic>>[];
+        final repo = VideoRepository(
+          identity: () => 'owner:session',
+          invoke: (data) async {
+            calls.add(Map.of(data));
+            if (data['action'] == 'cancel') {
+              throw const VideoFailure('request_denied');
+            }
+            return {
+              'id': 'asset',
+              'technical_state': terminal,
+              'moderation_state': 'pending',
+            };
+          },
+        );
+        final work = task()..assetId = 'asset';
+        await repo.cancel(work);
+        expect(calls, [
+          {'action': 'cancel', 'id': 'asset'},
+          {'action': 'status', 'id': 'asset'},
+        ]);
+        expect(work.assetId, 'asset');
+        expect(work.requestKey, 'stable-key');
+        repo.dispose();
+      },
+    );
+  }
+  for (final outcome in [
+    'ready',
+    'processing',
+    'status-failed',
+    'wrong-asset',
+  ]) {
+    test(
+      'cancel remains pending when reconciliation returns $outcome',
+      () async {
+        final calls = <Map<String, dynamic>>[];
+        final repo = VideoRepository(
+          identity: () => 'owner:session',
+          invoke: (data) async {
+            calls.add(Map.of(data));
+            if (data['action'] == 'cancel' || outcome == 'status-failed') {
+              throw const VideoFailure('request_denied');
+            }
+            return {
+              'id': outcome == 'wrong-asset' ? 'other-asset' : 'asset',
+              'technical_state': outcome == 'wrong-asset'
+                  ? 'canceled'
+                  : outcome,
+            };
+          },
+        );
+        final work = task()..assetId = 'asset';
+        await expectLater(
+          repo.cancel(work),
+          throwsA(
+            isA<VideoFailure>().having((e) => e.code, 'code', 'cancel_pending'),
+          ),
+        );
+        expect(calls, [
+          {'action': 'cancel', 'id': 'asset'},
+          {'action': 'status', 'id': 'asset'},
+        ]);
+        expect(
+          work.canceled,
+          isTrue,
+        ); // A local stop flag is not remote cancellation.
+        expect(work.assetId, 'asset');
+        expect(work.requestKey, 'stable-key');
+        repo.dispose();
+      },
+    );
+  }
+  test(
+    'cancel reconciliation never reads the old asset after identity changes',
+    () async {
+      var scope = 'owner:session';
+      final calls = <Map<String, dynamic>>[];
+      final repo = VideoRepository(
+        identity: () => scope,
+        invoke: (data) async {
+          calls.add(Map.of(data));
+          scope = 'other:session';
+          throw const VideoFailure('request_denied');
+        },
+      );
+      await expectLater(
+        repo.cancel(task()..assetId = 'asset'),
+        throwsA(
+          isA<VideoFailure>().having((e) => e.code, 'code', 'identity_changed'),
+        ),
+      );
+      expect(calls, [
+        {'action': 'cancel', 'id': 'asset'},
+      ]);
+      repo.dispose();
+    },
+  );
   test(
     'TUS streams bounded chunks and resumes from provider HEAD offset',
     () async {

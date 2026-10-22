@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/core/media/video_upload.dart';
+import 'package:dopmi_mobile/core/media/moderated_video.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:dopmi_mobile/core/ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -32,6 +38,33 @@ class PolicyVideoRepository extends VideoRepository {
 class VideoEditorSession {
   String actor = 'one:session';
   final events = StreamController<void>.broadcast();
+}
+
+class PendingCancellationRepository extends PolicyVideoRepository {
+  final cancellation = Completer<void>();
+  Future<VideoPolicy>? nextPolicy;
+  @override
+  Future<VideoPolicy> policy(String parentId) async =>
+      await nextPolicy ??
+      VideoPolicy(
+        enabled: true,
+        thanksRequired: true,
+        assets: [
+          for (final purpose in ['thanks', 'farewell'])
+            {
+              'id': 'own-$purpose',
+              'parent_id': parentId,
+              'parent_version': 7,
+              'purpose': purpose,
+              'technical_state': 'ready',
+              'moderation_state': 'pending',
+              'request_key': 'request-$purpose',
+              'bytes': 3,
+            },
+        ],
+      );
+  @override
+  Future<void> cancel(VideoUploadTask task) => cancellation.future;
 }
 
 class AccountVideoRepository extends VideoRepository {
@@ -69,6 +102,164 @@ RescueRecord videoRecord({String status = 'draft'}) => RescueRecord({
 });
 
 void main() {
+  for (final scale in [1.0, 1.15, 2.0]) {
+    testWidgets(
+      'uncertain cancellation removes only its own ready preview at $scale',
+      (tester) async {
+        final repo = PendingCancellationRepository();
+        addTearDown(repo.dispose);
+        final captureFolder = Platform.environment['DOPMI_VIDEO_CAPTURE_DIR'];
+        final captureKey = GlobalKey();
+        if (captureFolder != null) {
+          await tester.runAsync(() async {
+            for (final font in ['Inter', 'Fraunces']) {
+              await (FontLoader(
+                font,
+              )..addFont(rootBundle.load('assets/fonts/$font.ttf'))).load();
+            }
+          });
+        }
+        tester.view.physicalSize = Size(scale == 2 ? 320 : 400, 800);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [rescueVideosRepositoryProvider.overrideWithValue(repo)],
+            child: MaterialApp(
+              theme: dopmiTheme(rescuer: true),
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(textScaler: TextScaler.linear(scale)),
+                child: RepaintBoundary(key: captureKey, child: child!),
+              ),
+              home: Scaffold(
+                body: SingleChildScrollView(
+                  child: RescueVideoSection(
+                    record: videoRecord(),
+                    purposes: const ['thanks', 'farewell'],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(ModeratedVideo), findsNWidgets(2));
+        await tester.ensureVisible(find.text('Cancelar video').first);
+        await tester.tap(find.text('Cancelar video').first);
+        await tester.pump();
+        expect(find.byKey(const ValueKey('own:own-thanks')), findsNothing);
+        expect(find.byKey(const ValueKey('own:own-farewell')), findsOneWidget);
+        expect(
+          find.text('Video Agradecimiento: Procesado · Pendiente de revisión'),
+          findsNothing,
+        );
+        repo.cancellation.completeError(const VideoFailure('request_denied'));
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Comprobar cancelación'));
+        expect(
+          tester.getRect(find.text('Comprobar cancelación')).bottom,
+          lessThanOrEqualTo(800),
+        );
+        if (captureFolder != null) {
+          await tester.ensureVisible(
+            find.text(
+              'No pudimos confirmar la cancelación. Comprueba su estado antes de elegir otro video.',
+            ),
+          );
+          await tester.pumpAndSettle();
+          await tester.runAsync(() async {
+            final boundary =
+                captureKey.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary;
+            final image = await boundary.toImage(pixelRatio: 2);
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            await File('$captureFolder/cancel-pending-$scale.png')
+                .writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
+        expect(find.byKey(const ValueKey('own:own-thanks')), findsNothing);
+        expect(find.byKey(const ValueKey('own:own-farewell')), findsOneWidget);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+      },
+    );
+  }
+
+  testWidgets('replacement cannot remount canceled preview from stale policy', (
+    tester,
+  ) async {
+    final repo = PendingCancellationRepository();
+    addTearDown(repo.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [rescueVideosRepositoryProvider.overrideWithValue(repo)],
+        child: MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: RescueVideoSection(
+                record: videoRecord(),
+                purposes: const ['thanks'],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Cancelar video'));
+    await tester.tap(find.text('Cancelar video'));
+    await tester.pump();
+    repo.cancellation.complete();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('own:own-thanks')), findsNothing);
+    final policy = Completer<VideoPolicy>();
+    repo.nextPolicy = policy.future;
+    // Exercise the parent's upload-result boundary while its policy RPC waits.
+    tester
+        .widget<VideoUpload>(find.byType(VideoUpload))
+        .onChanged
+        ?.call(
+          const VideoAsset(
+            id: 'replacement',
+            state: 'ready',
+            moderation: 'pending',
+          ),
+        );
+    await tester.pump();
+    expect(find.byKey(const ValueKey('own:own-thanks')), findsNothing);
+    expect(find.byKey(const ValueKey('own:replacement')), findsNothing);
+    policy.complete(
+      VideoPolicy(
+        enabled: true,
+        thanksRequired: true,
+        assets: [
+          {
+            'id': 'replacement',
+            'parent_id': 'persisted-case',
+            'parent_version': 7,
+            'purpose': 'thanks',
+            'technical_state': 'ready',
+            'moderation_state': 'pending',
+            'request_key': 'new-request',
+            'bytes': 3,
+          },
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('own:own-thanks')), findsNothing);
+    expect(find.byKey(const ValueKey('own:replacement')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  });
+
   Future<void> mount(
     WidgetTester tester,
     PolicyVideoRepository repository,

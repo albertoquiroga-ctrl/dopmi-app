@@ -141,7 +141,7 @@ void main() {
     },
   );
   testWidgets(
-    'failed cancellation after ready keeps its error rather than asking for hidden status control',
+    'unconfirmed cancellation after ready offers cancellation reconciliation without upload or replacement',
     (tester) async {
       final repo = VideoRepository(
         identity: () => 'owner:session',
@@ -186,12 +186,21 @@ void main() {
       await tester.tap(find.text('Cancelar video'));
       await tester.pumpAndSettle();
       expect(
-        find.textContaining('No pudimos completar la carga.'),
+        find.text(
+          'No pudimos confirmar la cancelación. Comprueba su estado antes de elegir otro video.',
+        ),
         findsOneWidget,
       );
+      expect(
+        find.textContaining('No pudimos completar la carga.'),
+        findsNothing,
+      );
       expect(find.textContaining('La carga se recibió.'), findsNothing);
-      expect(find.text('Comprobar video'), findsNothing);
-      expect(find.text('Cancelar video'), findsOneWidget);
+      expect(find.textContaining('Video procesado.'), findsNothing);
+      expect(find.text('Comprobar cancelación'), findsOneWidget);
+      expect(find.text('Reintentar cancelación'), findsOneWidget);
+      expect(find.text('Reintentar carga'), findsNothing);
+      expect(find.text('Elegir video'), findsNothing);
       await tester.pumpWidget(const SizedBox());
       repo.dispose();
     },
