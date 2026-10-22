@@ -1,3 +1,13 @@
+## 21/10/2026 — Delta de evidencia B4: Q6
+
+| Escenario | Evidencia vigente | Límite |
+|---|---|---|
+| Cancelar durante procesamiento | 324/source17c8: lectura `processing` 00:18:20 UTC → Cancelar normal → mismo recurso `deleted` 00:18:29, URL nula, cola0 y proveedor vacío | Estado del expediente comprobado; no inspección de CPU del proveedor. GET sin firma no se ejecutó porque la rama de cancelación tuvo éxito. |
+| Cierre y conservación | Edge34 iguales al baseline OFF, SQL video/Tienda OFF, job6 pausado y otros cinco intactos, borrador10/foto1 y protegido21 | Captura intermedia Cancelar no atómica; usar `qa-processing-final-device` asentada. |
+| Reanudación exacta y retry de borrado | Tests nuevos del repositorio/handler verifican remanente byte a byte y tres respuestas perdidas; revisión independiente | Transporte/outbox simulados complementan Q5 real; no atribuir tests posteriores a la build324. Captura numérica adicional retirada del cambio a entregar, sin crear otro gate humano. Retry durable real sigue pendiente. |
+
+Ledger y backlog conservan responsables, siguiente paquete y pendientes de aceptación; sin cambio del alcance congelado.
+
 ## 21/10/2026 — Segunda ventana QA324 consumida y cerrada
 
 Fuente app17c8e66b5b7fc30d6a396253aff992acb86ddd92/Play2.3.3(324) internal/mock20d21, sin nuevo build. Titular autorizó dos archivos privados y corte de red; ventana23:45:23UTC→cierreEdge00:01:49UTC22oct(18:01CDMX21oct), antesdeadline00:05:23. Q4corrupt64B falla en proveedor, UIrecuperable, canceldeleted. Q5exact209715200B/1s:12%→único corteWiFi3s/datosOFF→error real→reintento33→60→processing→ready/pending; mismoasset/key/proveedor, sin duplicados ni publicación; canceldeleted. InversaWiFi emitida3.111s, flags originalesWiFi1/datos1 restaurados; flags no prueban conectividad efectiva posterior.

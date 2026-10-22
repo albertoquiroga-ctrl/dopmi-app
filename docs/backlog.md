@@ -1,3 +1,10 @@
+## 21/10/2026 — Actualización B4 después de Q6
+
+- Comprobado en 324: cancelación con estado `processing` observado, eliminación conciliada y cierre OFF. No repetir este escenario ni sus claves. Evidencia y límites en el ledger del 21/oct.
+- Reanudación B4: Q5 comprueba interrupción y recuperación reales sin duplicar recurso; la fuente publicada y tests de contrato cubren HEAD/PATCH y bytes del remanente. El offset numérico de esa ejecución no fue observado: es un límite, no un gate humano nuevo. Se retiró la instrumentación de producción preparada; no generar build/ventana sólo para ese diagnóstico. CI39697948742/1a886117: cuatro SUCCESS.
+- Siguiente paquete B4: raíz diseña con revisión independiente el fallo controlado → tarea persistida → recuperación real del mismo borrado, gate humano aún pendiente. Dependencias: mecanismo seguro revisado, reversión exacta y autorización operacional concreta antes de cualquier despliegue/ON. Salida: fallo y persistencia comprobados, recuperación por la ruta existente y cierre sin deuda oculta. No sustituir cuenta/token ni fabricar filas de cola para obtenerlo.
+- Conservar pendientes reales: retry durable contra proveedor, consulta fallida en dispositivo, cámara, revisión exacta, segunda identidad, historias/impacto y otros propósitos; Auth/correo/reinicio real, decisión de foto de urgencia, aceptación interna de Tienda e integral. No habilitar módulos ni enviar borrador a revisión por inferencia.
+
 ## 21/10/2026 — Segunda ventana QA324 consumida y cerrada
 
 Fuente app17c8e66b5b7fc30d6a396253aff992acb86ddd92/Play2.3.3(324) internal/mock20d21, sin nuevo build. Titular autorizó dos archivos privados y corte de red; ventana23:45:23UTC→cierreEdge00:01:49UTC22oct(18:01CDMX21oct), antesdeadline00:05:23. Q4corrupt64B falla en proveedor, UIrecuperable, canceldeleted. Q5exact209715200B/1s:12%→único corteWiFi3s/datosOFF→error real→reintento33→60→processing→ready/pending; mismoasset/key/proveedor, sin duplicados ni publicación; canceldeleted. InversaWiFi emitida3.111s, flags originalesWiFi1/datos1 restaurados; flags no prueban conectividad efectiva posterior.

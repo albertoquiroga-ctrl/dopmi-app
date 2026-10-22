@@ -1,3 +1,9 @@
+## 21/10/2026 — Q6: cancelación durante procesamiento comprobada y cerrada
+
+Play 2.3.3 (324), fuente `17c8e66b`, mock `20d21` intactos. Ventana nueva autorizada y consumida: 00:17:28–00:19:16 UTC del 22/oct (21/oct CDMX). Un único clip sintético de 59 s: servidor `processing` antes de Cancelar; mismo recurso eliminado, URL nula, cola0 y Stream vacío. Video/limpieza OFF, job6 pausado, 34 digests restaurados; borrador v10/foto1 y protegido v21 conservados. Red sin cambios. Revisiones de código, UI, seguridad y proceso sin hallazgos materiales; el par XML/PNG final asentado acredita el cierre.
+
+CI39697948742 de `1a886117` terminó con cuatro SUCCESS; añade sólo tests al producto instalado. La auditoría de alcance retiró el diagnóstico numérico no requerido del cambio a entregar; preparación conservada privada. Siguiente: diseñar y revisar el retry durable real pendiente, sin cambiar credenciales ni ampliar esta ventana. Dueño root, una cola Flutter. Paridad integral y aceptación humana abiertas.
+
 ## 21/10/2026 — Segunda ventana QA324 consumida y cerrada
 
 Fuente app17c8e66b5b7fc30d6a396253aff992acb86ddd92/Play2.3.3(324) internal/mock20d21, sin nuevo build. Titular autorizó dos archivos privados y corte de red; ventana23:45:23UTC→cierreEdge00:01:49UTC22oct(18:01CDMX21oct), antesdeadline00:05:23. Q4corrupt64B falla en proveedor, UIrecuperable, canceldeleted. Q5exact209715200B/1s:12%→único corteWiFi3s/datosOFF→error real→reintento33→60→processing→ready/pending; mismoasset/key/proveedor, sin duplicados ni publicación; canceldeleted. InversaWiFi emitida3.111s, flags originalesWiFi1/datos1 restaurados; flags no prueban conectividad efectiva posterior.
