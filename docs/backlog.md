@@ -1,6 +1,14 @@
+## 22/10/2026 23:04 UTC — Revisión local: 326 publicada
+
+Continuar desde mock-sync-current: Play interno release166/bundle326 disponible, SHA d377b97c; Samsung aún325 sin botón Actualizar. Dueño root: completar actualización Play, verificar sesión y después solicitar la QA privada ya preparada. Sin otro build ni ON implícito. Evidencia, límites y retro en progress; alcance integral B0–B7 sigue abierto.
+
+## 22/10/2026 22:36 UTC — Build de revisión local enviada una vez
+
+Candidato `d377b97c68bdf1f74c87ae87acb8752014c6e042`/mock20d21, CI39863167445 cuatroSUCCESS/1378FlutterPASS. Titular autorizó call_6c8becfaf44b463b97eca3077b38f31b única android-guardian-internal/publicaciónPlayinternal/updatePlaySamsung, sinON. Pin eac1f985… revisado por código/seguridad; preflightSQL22:33:20, flags34OFF/Edge43+39canónicos. Tag exacto codex/integral20d21-preview-d377b97c; CI redundante del tag39866118233 cancelado, éxito39863167445 intacto. POST único22:36:51 reservado→handle `6ada90017a019bc72724e9c0`, estadoqueued y fuente exacta comprobados. No repetir submit: usar status/reconcile del mismo handle. Versión/build2.3.3(326) aún expectativas. Root/colaFlutter única; siguiente observar misma build→artifact real→Play→instalación→demo; sin otra ventanaQA implícita. Recibos local-preview-release. Alcance integral pendiente.
+
 ## 22/10/2026 — B4 revisión local: implementación lista, gates y dispositivo pendientes
 
-Continuar checkpoint mock-sync-current y evidencia en progress22oct. Fuente7f7c13d2/mock20d21; decisión de revisión local aprobada en product-decisions.40focalesPASS/analyze/config; revisores cerrados. CI final, build autorizada, QA física y aceptación pendientes; no nuevas ventanas implícitas. Root conserva única colaFlutter y alcanceB0–B7.
+Continuar checkpoint mock-sync-current y evidencia en progress22oct. Fuente7f7c13d2/mock20d21; decisión de revisión local aprobada en product-decisions.40focalesPASS/analyze/config; revisores cerrados. CI39863167445 del candidato d377b97c:4SUCCESS/1378FlutterPASS/compilacionesAndroid+iOSsimuladorPASS; build autorizada, QA física y aceptación pendientes; no nuevas ventanas implícitas. Root conserva única colaFlutter y alcanceB0–B7.
 
 ## 22/10/2026 — Cámara manual: retorno sin revisión; carga cancelada y cierre OFF
 
