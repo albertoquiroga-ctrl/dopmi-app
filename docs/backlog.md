@@ -1,3 +1,7 @@
+## 21/10/2026 — B4/B7: correctivo publicado en Play325
+
+0ba3a4f0→Codemagic6ad96aae1a7f08ad463473af finished13SUCCESS→metadata/build-info2.3.3(325)/GuardianTEST/Playinternal exactos→Playrelease165/bundle325 disponible, lectura independiente02:10UTC22oct. Instalación y QA física del arreglo pendientes: ADB sin dispositivo, reconexión solicitada. Reutilizar este release; no nuevoPOST. Propuesta siguiente QA325 en preparación privada, sin ventana/ON implícitos; Q7 consumida. Mantener Auth/correo/reinicio real, decisión foto urgencia, cámara/admin/identidad ajena/historias/otros propósitos, Tienda interna y aceptación integral pendientes. Detalle y evidencia en checkpoint/ledger.
+
 ## 21/10/2026 — B4/B7: corrección verificada, entrega en cola
 
 UIQ7 corregida0ba3a4f0,1347Flutter/analyze0/config17 y36focalesPASS; revisiones independientes cerradas/capturas locales inspeccionadas. CI39705440272 cuatroSUCCESS, tagCIduplicado cancelado. CM único6ad96aae1a7f08ad463473af queued/sourceexacto/tagcancel0ba3; raíz sigue mismo status/reservation, jamás otro POST. Salida pendiente: compilar/publicar/artefactoversion-build-SHA-canal→Play separado→instalar/QA. Samsung sigue324; no build325 acreditada. DEVfreshOFF/pausado/cola0 comprobado antesenvío, gatevideo público cerrado. Q7 consumida, preguntafoto urgencia y resto del plan pendientes.

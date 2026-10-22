@@ -1,3 +1,13 @@
+## 21/10/2026 — Play 2.3.3 (325) publicado; dispositivo pendiente
+
+Candidato funcional `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, mock congelado `20d21f484aa60726f0b236574d5493dcf5e05969`. Mismo y único Codemagic `6ad96aae1a7f08ad463473af`: finished, 13 acciones SUCCESS. ZIPmetadata y build-info cotejados a las02:09:30UTC22oct:2.3.3(325), GuardianTEST, GooglePlayinternal, SHA exacto. Play independiente muestra release165 disponible para testers internos y bundle325; PNG/AX privados guardados. Seguridad y proceso inspeccionaron recibos/ZIP/imagen, sin hallazgos materiales. No se descargó AAB ni inspeccionó certificado binario.
+
+Implementado/verificado local y CI: corrección de cancelación incierta; publicado:325. **No instalado, no QA física del arreglo, no aceptado**. Último teléfono acreditado324; ADB sin dispositivos y solicitud de reconexión enviada. No reenviar build ni reutilizar fixtures consumidas. Dueño root, una colaFlutter. Próximo: Samsung legítimo→actualizar desdePlay→verificar325/Vending→demo; siguiente ventana QA exige paquete y permiso nuevos. Worker prepara propuesta privadaqa325, sin operaciones remotas. Q7 consumida/cerrada; última comprobación remotaOFF/pausado es preflight01:34:57–01:35UTC, no atribuir postflight remoto nuevo al publicar. Foto de urgencia y demás requisitos B1/B4/B5/B7/aceptación siguen abiertos; alcance integral intacto.
+
+## 21/10/2026 — Mismo build: pruebas SUCCESS, AAB en curso
+
+Codemagic6ad96aae1a7f08ad463473af/source0ba3: Unit and widget tests SUCCESS01:59:06.729UTC22oct; inició AAB firmado en ese instante. Sigue building, no nueva publicación/version/build atribuida; watcher84393 confirmado vivo. Evidencia actual actions-progress.private.json. Siguiente mismo handle→13SUCCESS→descargar metadata con helper revisado→Play independiente; dispositivo sigue no disponible. No reenviar ni cambiar flagsOFF.
+
 ## 21/10/2026 — Seguimiento del mismo candidato, 01:56 UTC22oct
 
 Único build6ad96aae1a7f08ad463473af sigue building/source0ba3 exacto: análisis estáticoSUCCESS y pruebas unitarias/widgets iniciadas01:49:31UTC; AAB/publicación aún no iniciados. Play leído de nuevo mantiene release164 anterior, sin atribuir publicación nueva. ADB ahora sin dispositivos: instalación pendiente de reconexión, no repetir fixtures ni activar video. Verificador privado download-cancel-pending-metadata.ps1 SHA274c520e9bb662eb3f1b976200089895f6e9a75e874a17746d78c0f1f4261ca7 revisado independientemente; sólo descarga ZIPmetadata tras13SUCCESS/source/tag exactos, no AAB ni publicación. Root mantiene mismo watcher84393/handle, nunca reenviar. Cierre remotoOFF/pausado de Q7 permanece; no nueva autorización de ventana implícita.
