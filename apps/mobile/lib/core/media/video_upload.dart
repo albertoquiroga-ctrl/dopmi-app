@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'local_video_preview.dart';
 import 'video_repository.dart';
 
 /// Shared editor: keeps one file/request key/asset while retrying a lost upload.
@@ -19,6 +21,7 @@ class VideoUpload extends StatefulWidget {
     this.onCancellationPendingChanged,
     this.label = 'Video',
     this.picker,
+    this.previewControllerFactory,
     this.initialAssets = const [],
   });
   final List<Map<String, dynamic>> initialAssets;
@@ -32,12 +35,15 @@ class VideoUpload extends StatefulWidget {
   /// Emitted only by asynchronous user actions, never during hydration/build.
   final ValueChanged<String?>? onCancellationPendingChanged;
   final Future<XFile?> Function(ImageSource source)? picker;
+  final LocalVideoControllerFactory? previewControllerFactory;
   @override
   State<VideoUpload> createState() => _VideoUploadState();
 }
 
 class _VideoUploadState extends State<VideoUpload> {
   XFile? file;
+  int? selectionBytes;
+  String? selectionFingerprint;
   VideoUploadTask? task;
   VideoAsset? asset;
   String? error;
@@ -45,6 +51,8 @@ class _VideoUploadState extends State<VideoUpload> {
   final canceledAssetIds = <String>{};
   double progress = 0;
   bool busy = false;
+  bool reviewingSelection = false;
+  bool picking = false;
   bool cancellationPending = false;
   bool canRetryCancellation = false;
   static const cancellationMessage =
@@ -117,11 +125,15 @@ class _VideoUploadState extends State<VideoUpload> {
     generation++;
     task?.cancel();
     file = null;
+    selectionBytes = null;
+    selectionFingerprint = null;
     task = null;
     asset = null;
     error = null;
     progress = 0;
     busy = false;
+    reviewingSelection = false;
+    picking = false;
     cancellationPending = false;
     canRetryCancellation = false;
     scope = widget.repository.identity();
@@ -145,6 +157,7 @@ class _VideoUploadState extends State<VideoUpload> {
     final run = ++generation;
     setState(() {
       busy = true;
+      picking = true;
       error = null;
     });
     try {
@@ -156,7 +169,10 @@ class _VideoUploadState extends State<VideoUpload> {
               ));
       if (!current(run)) return;
       if (selected == null) {
-        setState(() => busy = false);
+        setState(() {
+          busy = false;
+          picking = false;
+        });
         return;
       }
       if (scope == null) throw const VideoFailure('identity_changed');
@@ -168,24 +184,71 @@ class _VideoUploadState extends State<VideoUpload> {
       if (task?.assetId != null && task!.fileFingerprint == null) {
         throw const VideoFailure('file_changed');
       }
+      final fingerprint = (await sha256.bind(selected.openRead()).first)
+          .toString();
+      if (!current(run)) return;
+      if (task != null &&
+          ((task!.expectedBytes != null && task!.expectedBytes != size) ||
+              (task!.fileFingerprint != null &&
+                  task!.fileFingerprint != fingerprint))) {
+        throw const VideoFailure('file_changed');
+      }
       file = selected;
-      task ??= VideoUploadTask(
-        parentId: widget.parentId,
-        parentVersion: widget.parentVersion,
-        purpose: widget.purpose,
-        identity: scope!,
-      );
-      asset = null;
-      widget.onChanged?.call(null);
-      await upload(run);
+      selectionBytes = size;
+      selectionFingerprint = fingerprint;
+      setState(() {
+        reviewingSelection = true;
+        busy = false;
+        picking = false;
+      });
     } catch (cause) {
       if (current(run)) {
         setState(() {
           error = message(cause);
           busy = false;
+          picking = false;
         });
       }
     }
+  }
+
+  Future<void> confirmSelection() async {
+    if (!reviewingSelection ||
+        file == null ||
+        busy ||
+        cancellationPending ||
+        scope == null) {
+      return;
+    }
+    if (scope != widget.repository.identity()) {
+      reset();
+      return;
+    }
+    final run = ++generation;
+    reviewingSelection = false;
+    task ??= VideoUploadTask(
+      parentId: widget.parentId,
+      parentVersion: widget.parentVersion,
+      purpose: widget.purpose,
+      identity: scope!,
+      expectedBytes: selectionBytes,
+      fileFingerprint: selectionFingerprint,
+    );
+    asset = null;
+    widget.onChanged?.call(null);
+    await upload(run);
+  }
+
+  void discardSelection() {
+    if (!reviewingSelection || busy || cancellationPending) return;
+    generation++;
+    setState(() {
+      file = null;
+      selectionBytes = null;
+      selectionFingerprint = null;
+      reviewingSelection = false;
+      error = null;
+    });
   }
 
   Future<void> upload(int run) async {
@@ -335,6 +398,13 @@ class _VideoUploadState extends State<VideoUpload> {
         const Text(
           'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
         ),
+        if (reviewingSelection && file != null && !cancellationPending)
+          LocalVideoPreview(
+            file: file!,
+            controllerFactory: widget.previewControllerFactory,
+            onUpload: confirmSelection,
+            onDiscard: discardSelection,
+          ),
         if (!cancellationPending &&
             file == null &&
             !['ready', 'processing', 'failed'].contains(state))
@@ -368,6 +438,8 @@ class _VideoUploadState extends State<VideoUpload> {
           Text(
             cancellationPending
                 ? 'Cancelación en curso…'
+                : picking
+                ? 'Abriendo video…'
                 : 'Cargando ${(progress * 100).round()} %',
           ),
         ],
@@ -387,7 +459,7 @@ class _VideoUploadState extends State<VideoUpload> {
                 : error!,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
-        if (task != null)
+        if (task != null && !reviewingSelection)
           Wrap(
             spacing: 8,
             children: [

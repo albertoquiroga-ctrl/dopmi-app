@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'support/local_video_controller.dart';
+
 void main() {
   for (final status in ['canceled', 'deleted']) {
     testWidgets(
@@ -186,6 +188,7 @@ void main() {
                     'bytes': 3,
                   },
                 ],
+                previewControllerFactory: (_) => LocalVideoTestController(),
                 picker: (_) async => XFile.fromData(
                   Uint8List.fromList([1, 2, 3]),
                   name: 'replacement.mp4',
@@ -204,6 +207,10 @@ void main() {
       expect(find.text('Elegir mismo video para reanudar'), findsNothing);
       expect(find.text('Elegir video'), findsOneWidget);
       await tester.tap(find.text('Elegir video'));
+      await tester.pumpAndSettle();
+      expect(calls.where((call) => call['action'] == 'begin'), isEmpty);
+      expect(ready, isNull);
+      await tester.tap(find.text('Subir video'));
       await tester.pumpAndSettle();
       expect(
         calls.where((call) => call['action'] == 'cancel').single['id'],
