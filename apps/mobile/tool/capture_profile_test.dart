@@ -1296,6 +1296,12 @@ void main() {
       ('help-center-footer-large', '/help'),
       ('help-center-adoption', '/help'),
       ('help-center-adoption-large', '/help'),
+      ('help-center-account-deletion', '/help'),
+      ('help-center-account-deletion-samsung', '/help'),
+      ('help-center-account-deletion-large', '/help'),
+      ('help-center-account-edit', '/help'),
+      ('help-center-account-edit-samsung', '/help'),
+      ('help-center-account-edit-large', '/help'),
       ('help-center-support', '/help'),
       ('help-center-support-large', '/help'),
       ('help-center-support-keyboard', '/help'),
@@ -1947,6 +1953,7 @@ void main() {
           spec.$1.startsWith('public-profile-editor') ||
           spec.$1.startsWith('rescuer-settings') ||
           spec.$1.startsWith('help-center-support-rescuer') ||
+          spec.$1.startsWith('help-center-account-') ||
           spec.$1.startsWith('rescuer-notifications') ||
           spec.$1.startsWith('rescuer-help') ||
           spec.$1.startsWith('case-publication') ||
@@ -2540,6 +2547,58 @@ void main() {
         expect(answer, findsOneWidget);
         await tester.ensureVisible(answer);
         await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      }
+      if (spec.$1.startsWith('help-center-account-')) {
+        Future<void> reveal(Finder target, {double alignment = .5}) async {
+          if (target.evaluate().isEmpty) {
+            await tester.scrollUntilVisible(
+              target,
+              150,
+              scrollable: find.byType(Scrollable).first,
+            );
+          }
+          await Scrollable.ensureVisible(
+            tester.element(target),
+            alignment: alignment,
+          );
+          await tester.pumpAndSettle();
+          expect(target.hitTestable(), findsOneWidget);
+        }
+
+        final topic = find.widgetWithText(OutlinedButton, 'Mi cuenta');
+        await reveal(topic);
+        await tester.tap(topic);
+        await tester.pumpAndSettle();
+        final editing = spec.$1.startsWith('help-center-account-edit');
+        final faq = find.text(
+          editing ? '¿Cómo edito mis datos?' : '¿Cómo elimino mi cuenta?',
+        );
+        await reveal(faq);
+        await tester.tap(faq);
+        await tester.pumpAndSettle();
+        if (large || editing) {
+          final answer = find
+              .descendant(
+                of: find.ancestor(of: faq, matching: find.byType(Column)).first,
+                matching: find.byType(Text),
+              )
+              .last;
+          await Scrollable.ensureVisible(tester.element(answer), alignment: .1);
+          await tester.pumpAndSettle();
+          if (!editing) {
+            await tester.runAsync(
+              () => saveCapture(key, '${out.path}/${spec.$1}-answer.png'),
+            );
+          }
+        }
+        if (!editing) {
+          final deletion = find.widgetWithText(
+            OutlinedButton,
+            'Eliminar mi cuenta',
+          );
+          await reveal(deletion, alignment: 1);
+        }
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('public-profile-editor-keyboard')) {

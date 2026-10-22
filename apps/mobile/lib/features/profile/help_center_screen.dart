@@ -118,11 +118,11 @@ const _topics = <(String, String, List<(String, String)>)>[
       ),
       (
         '¿Cómo edito mis datos?',
-        'En Perfil toca editar junto a tu nombre para cambiar tu nombre completo, teléfono y ciudad.',
+        'Para cambiar los datos de tu cuenta, entra a Información básica desde las opciones de Cuenta y privacidad en Perfil.',
       ),
       (
         '¿Cómo elimino mi cuenta?',
-        'En Perfil abre Cuenta y privacidad y después Eliminar mi cuenta para revisar qué se borra, qué se conserva y las condiciones antes de confirmar.',
+        'Toca “Eliminar mi cuenta” en esta sección para revisar qué se borra, qué se conserva y las condiciones antes de confirmar.',
       ),
     ],
   ),
