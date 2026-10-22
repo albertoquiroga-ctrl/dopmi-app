@@ -1,3 +1,14 @@
+## 21/10/2026 — Delta B4 Q7: recuperación durable real
+
+| Escenario | Evidencia vigente | Límite / siguiente |
+|---|---|---|
+| Cancelación con respuesta de confirmación fallida | Un clip2s225472B, ready/pending y reproducción privada324; Cancelar una vez, hook ACK despuésDELETE, canceled/URLnull/cola1 y Stream0 | Fallo inducido y acotado, no caída real de proveedor/DB ni HTTP404 observado |
+| Recuperación por ruta real | Canónico restaurado antescron;96568/request40527HTTP200 removed1/failed0, cola0, mismoUID | Ledger canceled es correcto, no forzar deleted |
+| Cierre operacional | Edge34baselineOFF01:01:55Z, SQL01:02:08Z media/TiendaOFF/job6pausado/otros5iguales/ceroHTTPpendiente, borrador10/protegido21 intactos | Ventana consumida, sin nueva autorizaciónON |
+| UI de cancelación incierta | Captura real y fuentes muestran Procesado/preview y texto de retryupload incoherentes | Defecto moderado confirmado; implementación/testRED en curso, no resuelto ni aceptado en324 |
+
+Revisiones independientes código/seguridad/proceso inspeccionaron recibos/fuentes. Resto del alcance congelado20d21 intacto; siguiente correcciónUI local y revisión integrada, root única colaFlutter.
+
 ## 21/10/2026 — Delta de evidencia B4: Q6
 
 | Escenario | Evidencia vigente | Límite |

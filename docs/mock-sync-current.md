@@ -1,3 +1,21 @@
+## 21/10/2026 — Corrección Q7 publicada en GitHub; CI integral en curso
+
+Fuente candidata `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, push comprobado en rama vigente; mock20d21 intacto. Reconciliación de cancelación ligada a sesión/ID originales; incertidumbre bloquea nueva carga y oculta preview/Procesado, sólo terminal autoritativo limpia. Tombstones por ID real evitan remontaje con política anterior al reemplazo. Revisiones independientes código/seguridad/producto cerradas;36focalesPASS,1347FlutterPASS/analyze0/config17PASS; capturas locales normal115/320200 inspeccionadas. Ajuste posterior sólo de posición del scroll de captura:3capturasPASS; CI final comprueba fuente exacta.
+
+CI `39705440272` comprobado in_progress para0ba3; no build nueva ni instalación atribuida. Samsung sigue324/source17c8. Paquete release/video-retry-real preparado y revisado, pinoperacional aún bloqueado hastaCIverde y DEV fresco. Permiso de build interna nocturno18oct vigente, no otra pregunta rutinaria; Q7 consumida no autoriza ventana/ON/tempdeploy nuevo. Dueño root/única colaFlutter; siguiente mismoCIhandle→cuatrojobs→readbacksDEV/pin/review→único envíoCodemagic. Decisión foto urgencia consultada de nuevo por seguir abierta, sin respuesta; resto del alcance/aceptación conservados.
+
+## 21/10/2026 — Q7: retry duradero real comprobado; corrección UI en curso
+
+Ventana específica autorizada y consumida00:56:54–01:02:08UTC22oct (21octCDMX), dentro20min. Play2.3.3(324)/fuente17c8/mock20d21 intactos. Un clip sintético2s/225472B, mismo borrador10: ready/reproducción privada→Cancelar una vez→fallo ACK controlado tras DELETE→ledger canceled/URLnull/cola1 y Stream0. Función canónica restaurada byteexacta; cron96568/request40527HTTP200 removed1/failed0→cola0. Edge34baselineOFF verificado01:01:55; postflight01:02:08 video/TiendaOFF/job6pausado/cincootrosiguales/ningúnHTTPpendiente/borrador10-foto1 y protegido21 intactos. No HTTP404 ni caída real de proveedor/DB observados. Evidencia privada video-retry-real/outcome y recibos; revisiones independientes código/seguridad/proceso.
+
+Hallazgo UI demostrado: respuesta incierta de cancelación conserva preview/Procesado y copy falso de retry de carga. Worker tus_trace_prepare corrige repositorio/editor/tests; root única colaFlutter, revisión independiente antes candidato. No nueva ventana/ON/despliegue/carga autorizados por Q7 consumida. Authreal, decisiónfoto urgencia, cámara/admin/ajeno/historias/otrospropósitos, Tienda interna y aceptación integral conservan pendientes.
+
+## 21/10/2026 — Retry duradero real preparado; nueva autorización pendiente
+
+App instalada Play2.3.3(324)/fuente17c8 y mock20d21 intactos; Q6 consumida y cerrada OFF/pausado. Paquete privado video-retry-real preparado para un solo clip sintético2s/225472B, mismo borrador10: fallo controlado de confirmación tras DELETE real, restauración canónica y recuperación por cron. Requiere permiso nuevo para dos despliegues temporales en DEV y excepción mediaON/cleanupOFF inicial; máximo20min/cutoff15 y cierreOFF obligatorio. No ejecutado ni nuevoON. Sin GET unsigned ni diagnóstico numérico adicional.
+
+Código y seguridad revisaron wrapper/SQL sin hallazgos materiales; builder renderiza UUID/UID tipados del recibo real futuro, cuya evidencia y bundle aún deben contrastarse al existir. Cron pausado no demuestra por sí solo ausencia de HTTP asíncrono: comprobar operacionalmente antesON. Dueño root/una colaFlutter; siguiente autorización específica y preflight fresco. Paridad integral y aceptación pendientes.
+
 ## 21/10/2026 — Q6: cancelación durante procesamiento comprobada y cerrada
 
 Play 2.3.3 (324), fuente `17c8e66b`, mock `20d21` intactos. Ventana nueva autorizada y consumida: 00:17:28–00:19:16 UTC del 22/oct (21/oct CDMX). Un único clip sintético de 59 s: servidor `processing` antes de Cancelar; mismo recurso eliminado, URL nula, cola0 y Stream vacío. Video/limpieza OFF, job6 pausado, 34 digests restaurados; borrador v10/foto1 y protegido v21 conservados. Red sin cambios. Revisiones de código, UI, seguridad y proceso sin hallazgos materiales; el par XML/PNG final asentado acredita el cierre.

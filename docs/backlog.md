@@ -1,3 +1,9 @@
+## 21/10/2026 — B4 después de Q7: retry real cerrado, UI por corregir
+
+Retry duradero real comprobado con fallo ACK controlado tras DELETE: cola1→cron96568/request40527HTTP200 removed1/failed0→cola0. Función original restaurada, Edge34baseline/video y limpiezaOFF, job6pausado, TiendaOFF; ventana consumida. No repetir fixture/claves ni declarar caída real/HTTP404 observado. Detalle/evidencia en checkpoint y ledger.
+
+Siguiente tarea lista: corregir respuesta incierta de cancelación en editor/repositorio (preview obsoleto y mensaje de retryupload falso). Dueño tus_trace_prepare; root runnerFlutter único; código/producto/seguridad independientes. Salida: conciliación autoritativa del mismoasset, ningún nuevo upload por error de cancelación, pruebas de antes/después commit y cambio de sesión, candidato integrado según gates. Resto de alcance y aceptación conservados.
+
 ## 21/10/2026 — Actualización B4 después de Q6
 
 - Comprobado en 324: cancelación con estado `processing` observado, eliminación conciliada y cierre OFF. No repetir este escenario ni sus claves. Evidencia y límites en el ledger del 21/oct.
