@@ -1,3 +1,7 @@
+## 22/10/2026 — B4 revisión local: implementación lista, gates y dispositivo pendientes
+
+Continuar checkpoint mock-sync-current y evidencia en progress22oct. Fuente7f7c13d2/mock20d21; decisión de revisión local aprobada en product-decisions.40focalesPASS/analyze/config; revisores cerrados. CI final, build autorizada, QA física y aceptación pendientes; no nuevas ventanas implícitas. Root conserva única colaFlutter y alcanceB0–B7.
+
 ## 22/10/2026 — Cámara manual: retorno sin revisión; carga cancelada y cierre OFF
 
 App `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, Play interno 2.3.3 (325), mock `20d21f484aa60726f0b236574d5493dcf5e05969` sin cambios. Titular confirmó participación y autorizó `call_e237c3fc645645f79c6797464ebf4257`. Ventana 21:36:39.414 UTC (15:36 CDMX), plazo21:56:39.414. Preflight fresco: borrador13/foto1, protegido21/foto1, ocho históricos y seis jobs exactos, media/TiendaOFF/cola0; fuentes canónicas byteexactas y34digestsbaseline. SQL/EdgeON sólo los dos flags autorizados; Continue normal guardó v14, comprobada antes de abrir cámara.
