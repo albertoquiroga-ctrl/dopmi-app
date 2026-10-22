@@ -1,3 +1,11 @@
+## 22/10/2026 23:12 UTC — 326 instalada desde Play; QA privada pendiente de permiso
+
+**2.3.3 (326)**, candidato `d377b97c68bdf1f74c87ae87acb8752014c6e042`, Play interno/release166. Codemagic único6ada90017a019bc72724e9c0 finished/13 SUCCESS; artefacto, build-info y Play coinciden. CI39863167445: cuatro SUCCESS y1378 pruebas Flutter aprobadas. Mock20d21 congelado.
+
+Samsung SM-S938B conectado: package com.mycompany.dopmi/version326/installer com.android.vending comprobados por ADB. Actualizar y Abrir se pulsaron una vez desde la ficha correcta de Play con XML fresco; arranque y Perfil muestran sesión activa y cuenta rescatista aprobada. Sin cambio de cuenta ni credenciales. Capturas de Perfil contienen contacto privado: no compartir. Recibo installed326-verified en local-preview-release.
+
+Implementado, verificado en CI, publicado e instalado. **Pendientes:** QA física del cambio y aceptación. Video/Tienda/limpieza siguen OFF, job6 pausado; postpublicación nueve assets y expedientes intactos/cola0/Stream0. Se pidió permiso nuevo para local-preview-qa: un clip sintético nuevo2s/15.249B, galería→revisar→descartar sin recurso→reselect/Subir explícito→play privado/cancelación/cierre OFF en20min. Pregunta pendiente; ninguna ventana empezó ni se copió el clip. Dueño root/una cola Flutter. Siguiente: respuesta→preflight fresco/render revisado→ensayo autorizado o continuar sin ON. Alcance integral B0–B7 y preguntas anteriores conservados.
+
 ## 22/10/2026 23:04 UTC — 326 publicada; instalación pendiente
 
 **2.3.3 (326)**, SHA `d377b97c68bdf1f74c87ae87acb8752014c6e042`, Play interno: release166/bundle326 disponible. Codemagic `6ada90017a019bc72724e9c0`: 13 pasos SUCCESS; artefacto y build-info coinciden con SHA, Guardian TEST y canal. CI39863167445: cuatro jobs SUCCESS, 1378 pruebas Flutter aprobadas. Mock20d21 congelado. Permiso call_6c8becfaf44b463b97eca3077b38f31b consumido; consultar ese mismo handle, sin otro POST.

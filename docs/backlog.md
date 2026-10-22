@@ -1,3 +1,7 @@
+## 22/10/2026 23:12 UTC — 326 instalada; espera permiso QA
+
+Continuar checkpoint mock-sync-current: 2.3.3(326)/D377 instalada desde Play, sesión y aprobación de rescatista visibles. Pregunta pendiente para un clip sintético y ventana privada20min; sin ON ni transferencia. Root conserva cola Flutter; recibos local-preview-release y propuesta revisada local-preview-qa. Aceptación y alcance integral siguen abiertos.
+
 ## 22/10/2026 23:04 UTC — Revisión local: 326 publicada
 
 Continuar desde mock-sync-current: Play interno release166/bundle326 disponible, SHA d377b97c; Samsung aún325 sin botón Actualizar. Dueño root: completar actualización Play, verificar sesión y después solicitar la QA privada ya preparada. Sin otro build ni ON implícito. Evidencia, límites y retro en progress; alcance integral B0–B7 sigue abierto.

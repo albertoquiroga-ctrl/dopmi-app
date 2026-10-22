@@ -1,6 +1,6 @@
 ## 22/10/2026 — Delta aprobado de video local
 
-Referencia20d21 conservada; decisión posterior explícita en product-decisions exige revisión antes de Subir para cámara/galería/todos propósitos. Fuente7f7c13d2 implementada y40focalesPASS/analyze/config; revisiones producto/código/seguridad cerradas. Capturas de fixture comprueban reflow, no imagen/audio/cámara física. CI final39863167445/d377b97c:4SUCCESS/1378FlutterPASS/compilacionesAndroid+iOSsimuladorPASS; publicación326 verificada en Play interno; instalación/QA/aceptación pendientes; checkpoint mock-sync-current y ledger progress conservan resultados/límites. No fila aceptada por inferencia.
+Referencia20d21 conservada; decisión posterior explícita en product-decisions exige revisión antes de Subir para cámara/galería/todos propósitos. Fuente7f7c13d2 implementada y40focalesPASS/analyze/config; revisiones producto/código/seguridad cerradas. Capturas de fixture comprueban reflow, no imagen/audio/cámara física. CI final39863167445/d377b97c:4SUCCESS/1378FlutterPASS/compilacionesAndroid+iOSsimuladorPASS; publicación e instalación326 verificadas desde Play interno; QA física del cambio y aceptación pendientes; checkpoint mock-sync-current y ledger progress conservan resultados/límites. No fila aceptada por inferencia.
 
 ## 22/10/2026 — Cámara manual: retorno sin revisión; carga cancelada y cierre OFF
 
