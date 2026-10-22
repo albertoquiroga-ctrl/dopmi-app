@@ -99,6 +99,98 @@ void main() {
     expect(patches, 1);
     repo.dispose();
   });
+  test(
+    'remount after lost partial PATCH reply resumes only remaining bytes',
+    () async {
+      final bytes = Uint8List(videoChunkBytes + 17);
+      bytes.fillRange(0, videoChunkBytes, 41);
+      bytes.fillRange(videoChunkBytes, bytes.length, 93);
+      final received = BytesBuilder(copy: false);
+      final patchOffsets = <int>[];
+      final headOffsets = <int>[];
+      final begins = <Map<String, dynamic>>[];
+      var loseReply = true;
+      Future<Map<String, dynamic>> invoke(Map<String, dynamic> body) async {
+        if (body['action'] == 'begin') {
+          begins.add(Map.of(body));
+          return uploading();
+        }
+        expect(body, {'action': 'status', 'id': 'asset'});
+        return {
+          'id': 'asset',
+          'technical_state': 'processing',
+          'moderation_state': 'pending',
+        };
+      }
+
+      final transport = MockClient((request) async {
+        if (request.method == 'HEAD') {
+          headOffsets.add(received.length);
+          return http.Response(
+            '',
+            200,
+            headers: {
+              'upload-offset': '${received.length}',
+              'upload-length': '${bytes.length}',
+            },
+          );
+        }
+        expect(request.method, 'PATCH');
+        final offset = int.parse(request.headers['upload-offset']!);
+        patchOffsets.add(offset);
+        expect(offset, received.length);
+        received.add(request.bodyBytes);
+        if (loseReply) {
+          loseReply = false;
+          throw const VideoFailure('lost_reply');
+        }
+        return http.Response(
+          '',
+          204,
+          headers: {'upload-offset': '${received.length}'},
+        );
+      });
+      final original = task();
+      final first = VideoRepository(
+        identity: () => 'owner:session',
+        invoke: invoke,
+        transport: transport,
+      );
+      final file = XFile.fromData(bytes);
+      await expectLater(
+        first.upload(original, file),
+        throwsA(isA<VideoFailure>()),
+      );
+      expect(received.length, videoChunkBytes);
+      expect(original.uploaded, 0); // Reply was lost; local progress is stale.
+      first.dispose();
+
+      final second = VideoRepository(
+        identity: () => 'owner:session',
+        invoke: invoke,
+        transport: transport,
+      );
+      final resumed = VideoUploadTask(
+        parentId: original.parentId,
+        parentVersion: original.parentVersion,
+        purpose: original.purpose,
+        identity: original.identity,
+        requestKey: original.requestKey,
+        expectedBytes: bytes.length,
+        fileFingerprint: original.fileFingerprint,
+      )..assetId = original.assetId;
+      final result = await second.upload(resumed, file);
+      expect(result.state, 'processing');
+      expect(headOffsets, [0, videoChunkBytes]);
+      expect(patchOffsets, [0, videoChunkBytes]);
+      expect(received.takeBytes(), orderedEquals(bytes));
+      expect(begins.length, 2);
+      expect(begins[1], begins[0]);
+      expect(resumed.assetId, original.assetId);
+      expect(resumed.uploaded, bytes.length);
+      second.dispose();
+    },
+  );
   test('server denial never starts direct provider transport', () async {
     var calls = 0;
     final repo = VideoRepository(
