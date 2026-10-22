@@ -1,3 +1,11 @@
+## 21/10/2026 — Segunda ventana QA324 consumida y cerrada
+
+Fuente app17c8e66b5b7fc30d6a396253aff992acb86ddd92/Play2.3.3(324) internal/mock20d21, sin nuevo build. Titular autorizó dos archivos privados y corte de red; ventana23:45:23UTC→cierreEdge00:01:49UTC22oct(18:01CDMX21oct), antesdeadline00:05:23. Q4corrupt64B falla en proveedor, UIrecuperable, canceldeleted. Q5exact209715200B/1s:12%→único corteWiFi3s/datosOFF→error real→reintento33→60→processing→ready/pending; mismoasset/key/proveedor, sin duplicados ni publicación; canceldeleted. InversaWiFi emitida3.111s, flags originalesWiFi1/datos1 restaurados; flags no prueban conectividad efectiva posterior.
+
+Cierre independiente revisado:34digestsEdgebaselineexactos/videoOFF/cleanupOFF; SQLmediaOFF/TiendaOFF/job6pausado/cincootrosjobsiguales/cola0; cincoledgersdeletedpending/URLsnull; Streamrefrescado0videos. Borrador privadov10/foto1 y originalretiradov21 conservados. Evidencia privada video-status-release/qa-next-outcome,edge-closed,sql-closed,records-closed,provider-empty/network-state y qa324-evidence/qa-next-*; no credenciales/medios enGit. Código revisó select/confirm/retry/cancel contra fuentes/XML; seguridad y proceso inspeccionaron recibos, sin hallazgos materiales. Retro: mejoras previas aplicadas; no nueva ceremonia ni causa inventada.
+
+Recuperación funcional y frontera positiva verificadas; HEAD/PATCHnumérico exacto, retrydurable borrado, fallo consulta324, cámara/admin/ajeno/historias/otrospropósitos, Authreal/fotourgencia/Tiendaaceptaciónintegral siguen pendientes. No rebajar reanudación a opcional. Ventana consumida; ningún nuevoON implícito. Dueño root/una colaFlutter; siguiente preparar prueba exacta faltante y paquetes concretos manteniendoOFF. Implementado/publicado/instalado/QAparcial no equivalen aceptación integral.
+
 ## 21/10/2026 — Próxima QA lista para decisión
 
 Corrupto + positivoexact200MiB/red preparados y revisados; nueva pregunta pendiente, ningúnON/transferencia/red efectiva. AUTHFalse, mismo324/17c8/draft9,20min/2activos/cierreOFF. La prueba funcional futura no acreditará offsets numéricos; cargas reanudables conserva requisito pendiente. Detalle checkpoint/ledger, no repetirQA324 válida.
