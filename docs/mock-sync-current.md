@@ -1,3 +1,11 @@
+## 21/10/2026 — CI verde y única build correctiva en cola
+
+Candidato funcional `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, tag `codex/integral20d21-cancel-0ba3a4f0`, mock20d21. CI39705440272 terminó cuatroSUCCESS reales (Flutter/web-db/identidad-adopción/iOSsimulador); ejecución duplicada del tag39705601481 cancelada, sin reiniciar primaria.1347Flutter/analyze0/config17 y revisiones independientes/capturas locales normal115320200 conservados.
+
+Preflight DEV fresco01:34:57–01:35UTC:82migraciones/max20261019062129, media29/cleanup27 byteexactoscanónico17c8/candidato,34digestsbaseline/video-Tienda-cleanupOFF/job6pausado/otros5intactos,7ledgers6deleted1canceled/0activos-cola-HTTP, borrador10/protegido21 preservados. SeisRAW/ci-final/dev-final/pin y mecanismo revisados independientemente. Permiso nocturno documentado cubre build interna, sin pregunta rutinaria nueva; IDhistórico de autorización18oct remite a continuación registrada19oct, no nueva autoridad.
+
+Codemagic único POST confirmado: **6ad96aae1a7f08ad463473af**, workflowandroid-guardian-internal, APIqueued ysource0ba3exacto. Versión/buildNUEVOS NO comprobados (325sóloexpectativa); Play sigue324/release164 disponible por lectura independiente. No publicación nueva/instalación/QA física/aceptación atribuida. Root conserva reservation/handle en video-retry-real/release; siguiente **status del MISMO handle**, nunca submitde nuevo→artefacto/acciones→Play→Samsung. No nueva ventana/ON/tempdeploy/carga por Q7 consumida. Pregunta foto urgencia pendiente; alcance integral y demás validaciones abiertos. Una colaFlutter, dueño root.
+
 ## 21/10/2026 — Corrección Q7 publicada en GitHub; CI integral en curso
 
 Fuente candidata `0ba3a4f08adc708cd03dd4252ea810a3b6f5863f`, push comprobado en rama vigente; mock20d21 intacto. Reconciliación de cancelación ligada a sesión/ID originales; incertidumbre bloquea nueva carga y oculta preview/Procesado, sólo terminal autoritativo limpia. Tombstones por ID real evitan remontaje con política anterior al reemplazo. Revisiones independientes código/seguridad/producto cerradas;36focalesPASS,1347FlutterPASS/analyze0/config17PASS; capturas locales normal115/320200 inspeccionadas. Ajuste posterior sólo de posición del scroll de captura:3capturasPASS; CI final comprueba fuente exacta.

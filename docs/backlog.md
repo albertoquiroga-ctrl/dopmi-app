@@ -1,3 +1,7 @@
+## 21/10/2026 — B4/B7: corrección verificada, entrega en cola
+
+UIQ7 corregida0ba3a4f0,1347Flutter/analyze0/config17 y36focalesPASS; revisiones independientes cerradas/capturas locales inspeccionadas. CI39705440272 cuatroSUCCESS, tagCIduplicado cancelado. CM único6ad96aae1a7f08ad463473af queued/sourceexacto/tagcancel0ba3; raíz sigue mismo status/reservation, jamás otro POST. Salida pendiente: compilar/publicar/artefactoversion-build-SHA-canal→Play separado→instalar/QA. Samsung sigue324; no build325 acreditada. DEVfreshOFF/pausado/cola0 comprobado antesenvío, gatevideo público cerrado. Q7 consumida, preguntafoto urgencia y resto del plan pendientes.
+
 ## 21/10/2026 — B4 después de Q7: retry real cerrado, UI por corregir
 
 Retry duradero real comprobado con fallo ACK controlado tras DELETE: cola1→cron96568/request40527HTTP200 removed1/failed0→cola0. Función original restaurada, Edge34baseline/video y limpiezaOFF, job6pausado, TiendaOFF; ventana consumida. No repetir fixture/claves ni declarar caída real/HTTP404 observado. Detalle/evidencia en checkpoint y ledger.
