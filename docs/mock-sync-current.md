@@ -1,3 +1,9 @@
+## 22/10/2026 — Tienda candidata: CI integral aprobada; permisos concretos pendientes
+
+Fuente da14497e66d8790e8eda7ab6d83a249a89ddca09/mock20d21. CI39887729078 cuatrojobs completed/SUCCESS:1392Flutter/analyze0/capturas/Androiddebug, admin48/build/web4, backend979total/971PASS/8skip/0fail, PostgreSQL316/OAuth11/config17 e iOSsimuladorPASS. Verificación terminal por MCP y logs reales; lector local final timeout, sin repetir CI. Sin build distribución/publicación/instalación/aceptación: Samsung326/D377/Playinterno permanece.
+
+QA administrativa326 completa/cerradaOFF y modo restaurado; permiso consumido, evidencia y límites en progress. PaqueteDEV inerte Tienda payload932f5fa4…63bd revisado, nueve drifts rechazados/tresmutantesrollback/14postchecksPASS en ensayo sintético explícito; preflight real de preparación02:14:13UTC readytrue. No aplicado. Pregunta propia de migración enviada; cuentas/destino TEST también pendientes. Sólo respuesta explícita→preflight fresco→único apply/conciliación; no ON/grant/seed/build por inferencia. Dueño root/única colaFlutter, demás pendientes B0–B7 se conservan debajo.
+
 ## 22/10/2026 — QA administrativa326 cerrada; Tienda privada candidata
 
 Mock20d21 congelado. Instalado2.3.3(326)/D377/Play interno intacto. Fuente candidata da14497e66d8790e8eda7ab6d83a249a89ddca09 incorpora previewTEST Tienda por servidor sin admin ni cambios al catálogo comercial. Migración sólo local/defaultsOFF, grants/productos/destinos vacíos; ninguna aplicación/activación/build nueva. Revisiones producto/código/seguridad cerradas;29FlutterfocalesPASS/analyze0/6variantescaptura1PASS y9SQLfocalesPASS (6nuevas). CI39887729078 exacta en curso, no trasladar CI0d7 al nuevo SHA.
