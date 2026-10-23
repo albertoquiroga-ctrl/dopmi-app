@@ -142,7 +142,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
           if (mounted && foreground && visible) {
             unawaited(load());
           } else {
-            unawaited(controller?.pause());
+            unawaited(syncPlayback());
           }
         },
       );
@@ -166,20 +166,67 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     }
   }
 
+  Future<void> release(VideoPlayerController player) async {
+    try {
+      await player.pause();
+    } catch (_) {
+      // A failed platform command still needs disposal.
+    }
+    try {
+      await player.dispose();
+    } catch (_) {
+      // The failed controller must not restore an expired lease or controls.
+    }
+  }
+
+  void failPlayback(VideoPlayerController player, int run) {
+    if (!current(run) || controller != player) return;
+    player.removeListener(changed);
+    expiry?.cancel();
+    generation++;
+    holding = false;
+    evictPoster();
+    controller = null;
+    lease = null;
+    unawaited(release(player));
+    setState(
+      () => error = 'No pudimos reproducir este video. Comprueba tu conexión e inténtalo de nuevo.',
+    );
+  }
+
+  Future<void> toggleSound(VideoPlayerController player) async {
+    final run = generation;
+    if (!current(run) || controller != player) return;
+    final nextMuted = !muted;
+    try {
+      await player.setVolume(nextMuted ? 0 : 1);
+      if (current(run) && controller == player) {
+        setState(() => muted = nextMuted);
+      }
+    } catch (_) {
+      failPlayback(player, run);
+    }
+  }
+
   Future<void> syncPlayback() async {
     final player = controller;
-    if (player == null) return;
+    final run = generation;
+    if (player == null || !current(run)) return;
     final authorized =
         lease?.expiresAt.isAfter(DateTime.now().toUtc()) ?? false;
-    if (foreground &&
-        visible &&
-        !widget.paused &&
-        !holding &&
-        wantsPlaying &&
-        authorized) {
-      await player.play();
-    } else {
-      await player.pause();
+    try {
+      if (foreground &&
+          visible &&
+          !widget.paused &&
+          !holding &&
+          wantsPlaying &&
+          authorized) {
+        await player.play();
+      } else {
+        await player.pause();
+      }
+    } catch (_) {
+      failPlayback(player, run);
     }
   }
 
@@ -237,7 +284,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
       if (visible && foreground) {
         unawaited(load());
       } else {
-        unawaited(controller?.pause());
+        unawaited(syncPlayback());
       }
     }
   }
@@ -248,7 +295,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     if (foreground && visible) {
       unawaited(load());
     } else {
-      unawaited(controller?.pause());
+      unawaited(syncPlayback());
     }
   }
 
@@ -334,10 +381,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                         ),
                         IconButton.filledTonal(
                           tooltip: muted ? 'Activar sonido' : 'Silenciar video',
-                          onPressed: () async {
-                            setState(() => muted = !muted);
-                            await player.setVolume(muted ? 0 : 1);
-                          },
+                          onPressed: () => toggleSound(player),
                           icon: Icon(
                             muted ? Icons.volume_off : Icons.volume_up,
                           ),

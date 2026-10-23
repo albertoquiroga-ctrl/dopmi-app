@@ -1,3 +1,12 @@
+## Checkpoint vigente — 23/10/2026, cámara327 cerrada
+
+- Mock congelado20d21f484aa60726f0b236574d5493dcf5e05969. ProductoPlayinterno167:2.3.3(327), da14497e66d8790e8eda7ab6d83a249a89ddca09, CI39887729078 cuatroSUCCESS. Fuente documental15bcb3a6; branchcodex/finish-release-20261015. Root conserva única colaFlutter/dispositivo y cambios ajenos.
+- Cámara327: toma humana y confirmación nativa observadas; después volvió al formulario sin selección. Causa no establecida. No carga/nuevoasset. Revisión local/duración/audio de esta toma pendientes. Permiso call_d0936b consumido: no otra toma niON implícitos.
+- Cierre real: Edge34digestsOFF16:13:30UTC; SQL16:15:23UTC video/TiendaOFF/job6pausado/colaHTTP-runs0/12históricos y6jobs intactos. Límite16:17:16UTC respetado. Borrador26/foto1/necesidad/sin gastos conservados; Samsung restaurado Adoptante→Adoptar. Ruta/residuo local no acreditados ni borrados. Evidencia camera327-private-qa/execution y ledger23oct.
+- B1 recuperaciónTEST/código/reinicio real y claridad humana cerrados. Tienda327 QA privada técnica cerrada; preview/grant/enlacesOFF/revocado, aceptación interna pendiente y comercial separado. Matriz central parity-current-review contiene B0–B7, sin recortar alcance.
+- Candidato localB4: errores de controles ModeratedVideo corregidos con REDreal→43PASS/analyze0; código/producto/seguridad/retro independientes cerrados. CI del nuevo commit pendiente; aún no publicado ni instalado. No vincular este cambio con la selección de cámara desaparecida.
+- Pendientes: cámara/audio, otros propósitos/otraidentidad/publicación/historias-impacto, foto urgencia ya consultada sin respuesta, demo/aceptación integral e iOSfísico. Siguiente root: trabajo offline independiente/evidencia reutilizable y próximo paquete concreto; humanhandoff único Grabar→Detener→Aceptar nativo si aparece, Subir separado tras revisión. No reutilizar ventana ni fixtures consumidas.
+
 ## 23/10/2026 — Cámara327: paquete operacional revisado; ventana propia consultada
 
 B1cuentaTEST/código cerrada yclaridad aceptada por titular. Próximo paquete camera327-private-qa/operator-package.proposed.private.json97f9dfdd…95f9a: una toma≈2s humana, previewlocalpausado/mute/duración/imagen/audiohumano antesSubir1, unassetthanks/mismoborrador privado, playprivado/cancel/delete ycierre20min/5reservados/ambosOFF/job6pausado/Adoptarrestaurado. Tienda/enlacesOFF; sinpub/review/pagos/red/credenciales/deploy/build. Revisiónproducto/código/seguridad cerrada sinP1/P2 para baselinefijada;8testslocalesguardasPASS/noPostgreSQLnuevo. CanonicalEdge siete archivos byteexactos17c8e66b5b7fc30d6a396253aff992acb86ddd92/versiones49/45;34digeststrasreload igualesOFF. LecturaSQLpreparación15:35:05UTC:12históricos/seisjobs/schema83/draft25/protegido21/preview exactos. Sólo equivalenciadestinosvacíos[]↔0 documentada.
@@ -677,11 +686,3 @@ Hay cambios locales ajenos de admin, móvil, documentación legal/operativa y ot
 archivos sin publicar; no revisados ni incluidos en este cierre. No reset ni limpieza.
 Teléfono dejado en modo Rescatista, pantalla social con ambas conexiones; no se guardó
 el editor ni se restauró el modo previo Adoptante. No operar el teléfono al cerrar.
-
-## 23/10/2026 — Cámara 327: cierre parcial, servicios OFF y Adoptar restaurado
-
-Referencia mock20d21 y Play2.3.3(327)/da14497e conservadas. Paquete cámara97f9dfdd…95f9a autorizado call_d0936b y consumido: una toma humana, sin nueva build/despliegue/dinero/publicación. Nativa mostró Reproducir/Reintentar/Aceptar; dos intentos automatizados abortaron por UI stale ANTES de input. El titular reportó que tardó y desapareció; lectura posterior de Dopmi mostró paso2 sin selección. Causa de la desaparición no determinada. No hubo carga ni recurso nuevo; revisión local/duración/audio/reproducción propia y borrado de esta toma NO verificados. No se borraron medios locales; ubicación del archivo no acreditada.
-
-Cierre conservador: primera posibilidadON15:57:16.472593UTC, Edge34digests originalesOFF comprobados16:13:30.467UTC, antes de límite16:17:16.472593UTC. SQL16:15:23.263198 confirma video/TiendaOFF, job6pausado, cola/HTTP/runs0,12assets históricos y6jobs exactos,83migraciones y expediente protegido21 iguales; borrador25→26 conserva foto1/necesidad/sin gastos/snapshot. No hubo nuevo asset ni eliminación que conciliar. Teléfono restaurado por UI a modo Adoptante→Adoptar, snapshot camera327-closed-adoptar.
-
-Evidencia privada: .tools/integral20d21-20261018/camera327-private-qa/execution/{outcome.partial.private.json,post-close.actual.private.json,post-close-verified.private.json,edge-flags-closed.actual.private.json,camera327-closed-adoptar.*}. Implementado/publicado327 no equivale a aceptación cámara. Dueño root; siguiente: revisión independiente del cierre/retro y preparar siguiente paquete acotado, sin otra toma ni ON con este permiso. Alcance integralB0–B7 y pendientes restantes se conservan.
