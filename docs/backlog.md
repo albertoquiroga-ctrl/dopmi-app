@@ -1,3 +1,7 @@
+## 23/10/2026 — B5 preparada para permiso propio
+
+Root: paquete store-passive-expiry-qa dfaa59c6…17cd8e revisado producto/código/seguridad, siete pruebas PASS. Una QA propuesta20min/grant180s/329/misma cuentaTEST, sólo vencimiento pasivo de catálogo/filtros; cierre previewOFF y grantrevocado. Sin autoridad/ON/reserva todavía. Tras respuesta propia: sesión y lecturas frescas, payload exacto/revisión/reserva única, recorrido y cierre. No reabrir permisos329 consumidos. Otra identidad física/comercial y decisiones B4 existentes permanecen pendientes.
+
 ## 23/10/2026 — Frontera técnica posterior a329
 
 B6 técnicamente verificado por equivalencia y revisión independiente; aceptación integral pendiente, sin otra implementación genérica lista. Root espera las preguntas humanas existentes para concretar B4 público (persistencia y estimación20), con contenido/foto y clip P1 ya preparados sólo localmente. camera327_private_prep prepara store-passive-expiry-qa independiente para caducidad pasiva B5 con filtros abiertos; no ON/autoridad ni cambio comercial. No repetir cargas/fixtures/CI/builds consumidos. Mantener cámara/audio físico, otra identidad, historias/Impacto/despedida, iOS y aceptación integral en alcance.
