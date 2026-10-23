@@ -191,3 +191,72 @@ test('policy marks old processed video irrelevant after a saved content change',
  await saveCase(f,{...fields,story:'Historia corregida por su titular'},[],2);await actor(f.owner);
  const stale=(await db.query('select public.dopmi_video_policy($1) v',[f.parent])).rows[0].v.assets[0];assert.equal(stale.technical_state,'ready');assert.equal(stale.matches_current_content,false);assert.equal(stale.moderation_state,'stale');
 });
+
+test('farewell after the real case close preserves its closed snapshot and existing contributions',async()=>{
+ const f=await fixture(),photo=await uploadSyntheticPhoto(f);
+ const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
+ const thanks=await action(f,begin(f,{parent_version:saved.version}));
+ await ready(thanks); // Provider processing is simulated; all lifecycle RPCs below are real SQL.
+ await actor(f.owner);
+ const submitted=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,saved.version])).rows[0].v;
+ await action(f,{action:'review',id:thanks.id,parent_version:submitted.version,decision:'approved'},f.staff);
+ await actor(f.staff);
+ const approved=(await db.query("select public.dopmi_review_rescue($1,$2,'approved','Revision sintetica completa',0,false,'',true) v",[f.parent,submitted.version])).rows[0].v;
+ assert.equal(approved.status,'approved');
+
+ // A nonzero, entirely local financial fixture makes conservation observable.
+ // No payment provider is called, and the child expense is already approved.
+ const expense=randomUUID(),key=randomUUID(),suffix=randomUUID().replaceAll('-','');
+ await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,status,approved_snapshot,reimbursable_cents) values($1,$2,'expense',$3,'approved','{\"title\":\"Synthetic paid expense\"}',12000)",[expense,f.owner,f.parent]);
+ await db.query('insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled) values($1,$2,true,true)',[f.owner,'acct_'+suffix]);
+ await actor('','service_role');
+ const donation=(await db.query("select public.dopmi_oneoff_case_server('prepare',$1::jsonb) v",[JSON.stringify({actor:f.other,key,case_id:f.parent,gross_cents:10000,consent:true,consent_version:'oneoff-test-2026-10-15'})])).rows[0].v;
+ await db.query("select public.dopmi_oneoff_case_server('bind',$1::jsonb)",[JSON.stringify({actor:f.other,key,payment_intent_id:'pi_'+suffix})]);
+ await db.query("select public.dopmi_payment_server('settle',$1::jsonb)",[JSON.stringify({donation_id:donation.id,currency:'mxn',gross_cents:10000,stripe_fee_cents:600,charge_id:'ch_'+suffix,payment_intent_id:'pi_'+suffix})]);
+ assert.ok((await db.query('select count(*)::int n from private.dopmi_case_allocations where expense_id=$1',[expense])).rows[0].n>0);
+ const financialTables=['public.dopmi_donations','private.dopmi_case_allocations','private.dopmi_guardian_allocations','private.dopmi_guardian_settlements','private.dopmi_payment_jobs'];
+ async function financialEvidence(){
+  const rows={};
+  for(const table of financialTables)rows[table]=(await db.query('select to_jsonb(t) value from '+table+' t order by to_jsonb(t)::text')).rows;
+  return rows;
+ }
+ const finances=await financialEvidence();
+ await actor(f.owner);
+ const closed=(await db.query('select public.dopmi_close_support_case($1,$2) v',[f.parent,approved.version])).rows[0].v;
+ assert.equal(closed.status,'closed');assert.equal(closed.version,approved.version+1);
+ assert.deepEqual(closed.approved_snapshot,approved.approved_snapshot);
+ const parentBeforeMedia=(await db.query('select to_jsonb(r) v from public.dopmi_rescue_records r where id=$1',[f.parent])).rows[0].v;
+
+ await assert.rejects(action(f,begin(f,{purpose:'farewell',parent_version:closed.version}),f.other),e=>e.code==='42501');
+ await assert.rejects(action(f,begin(f,{purpose:'farewell',parent_version:approved.version})),e=>e.code==='40001');
+ for(const purpose of ['thanks','urgency','public_update']){
+  await assert.rejects(action(f,begin(f,{purpose,parent_version:closed.version})),e=>e.code==='22023');
+ }
+ const farewell=await action(f,begin(f,{purpose:'farewell',parent_version:closed.version,file_fingerprint:'f'.repeat(64)}));
+ await ready(farewell);
+ await assert.rejects(action(f,{action:'status',id:farewell.id},f.other),e=>e.code==='42501');
+ await assert.rejects(action(f,{action:'playback',id:farewell.id},f.other),e=>e.code==='42501');
+ assert.ok(!(await action(f,{action:'public_list',parent_id:f.parent},f.other)).items.some(a=>a.id===farewell.id));
+ await assert.rejects(action(f,{action:'review',id:farewell.id,parent_version:closed.version,decision:'approved'},f.other),e=>e.code==='42501');
+ await assert.rejects(action(f,{action:'review',id:farewell.id,parent_version:approved.version,decision:'approved'},f.staff),e=>e.code==='40001');
+ await action(f,{action:'review',id:farewell.id,parent_version:closed.version,decision:'approved'},f.staff);
+ await actor('','anon');await db.exec('set role anon');
+ try{
+  const list=(await db.query('select public.dopmi_video_action($1::jsonb) v',[JSON.stringify({action:'public_list',parent_id:f.parent})])).rows[0].v;
+  assert.ok(list.items.some(a=>a.id===farewell.id&&a.purpose==='farewell'));
+  const playback=(await db.query('select public.dopmi_video_action($1::jsonb) v',[JSON.stringify({action:'playback',id:farewell.id})])).rows[0].v;
+  assert.equal(playback.technical_state,'ready');assert.equal(playback.upload_url,null);
+ }finally{await db.exec('reset role');}
+
+ // A different published snapshot cannot reuse the approval. This injected
+ // mismatch is rolled back, not an owner operation or reopening of the case.
+ await db.exec('begin');
+ try{
+  await db.query("update public.dopmi_rescue_records set approved_snapshot=approved_snapshot||'{\"synthetic_revision\":true}'::jsonb where id=$1",[f.parent]);
+  const list=await action(f,{action:'public_list',parent_id:f.parent},f.other);
+  assert.ok(!list.items.some(a=>a.id===farewell.id));
+  await assert.rejects(action(f,{action:'playback',id:farewell.id},f.other),e=>e.code==='42501');
+ }finally{await db.exec('rollback');}
+ assert.deepEqual((await db.query('select to_jsonb(r) v from public.dopmi_rescue_records r where id=$1',[f.parent])).rows[0].v,parentBeforeMedia);
+ assert.deepEqual(await financialEvidence(),finances);
+});
