@@ -1,3 +1,9 @@
+## 23/10/2026 — B1: recuperación restaurada tras reinicio real; contraseña humana pendiente
+
+Titular confirmó código nuevo verificado yresetvacío. Lectura segura confirmó «Una nueva contraseña», doscamposvacíos yActualizar; capturas antes/después sin contactos/códigos. Reserva restart1→un force-stop y apertura normal deMainActivity327/da144, sinreinstalar/clear-data/prefs. Tras arranque conserva reset ydoscamposvacíos, no cae aPerfil/login. Recibo restart1-observed ydosXML/PNG reales; una ejecución no acredita todos modos ni enlace. Código usado sólo por titular, expiración anterior conservada comoresultado.
+
+Marcadorhuman-handoff reactivado ANTES de avisar: titular escribe/confirma/envía contraseña una vez ylogin posterior. Root no genera/conoce/envía valores ni observa pantalla duranteesa fase. Pendiente aviso Adoptar sin camposcredenciales→postflight identidad/modo/flags; aún no actualización/login niB1completo. Request/reenvíos consumidos, sin más correos/ON/build/config/dinero. Dueño root/colaúnica; otros pendientes integrales se conservan.
+
 ## 23/10/2026 — B1: reenvío adicional pedido por titular
 
 Titular informó código vencido y pidió otrocorreo; confirmó después Ocultar código. Se levantó marcador sólo para este reenvío y lectura segura confirmó0campos/errorvencido. Reserva propia resend2-user-authorized, un toqueReenviar; lectura posterior confirmó mensajeéxito ycooldown50s, sin repetir despacho ante latencia. Marcadorhuman-handoff reactivado inmediatamente. No código/contraseña inspeccionados ni update/login/reinicio acreditados. Nuevo handoff: código del mensaje nuevo, una verificación, avisar resetvacío ANTES de contraseña para reinicio único. Esta autorización amplía sólo un correo; los anteriores siguen consumidos. No build/ON/config/dinero; evidencia resend2-observed. Root espera aviso humano y conserva suspensión de dispositivo.
