@@ -1,3 +1,7 @@
+## 23/10/2026 — B4 paquete de detalle público y despedida preparado
+
+Decisiones de persistencia TEST trasCLOSED y retirada sólo estimación20 resueltas. public-video-qa-design/operation ed2c0f15…602fd, 15 pruebas puras y revisión independiente producto/código/seguridad cerrada. Prepara detalle target0 por enlace oficial, gracias aprobado, publicación/cierre y despedida aprobada con retención propuesta2clips4s; gastoDRAFT/PDF privados. No ON/carga/publicación/dispositivo ni aceptación nueva: permiso propio pendiente. EdgeOFF/casofoto públicos/metadatos/leases/copias diferenciados. No equivale a historias/Impacto ni otra identidad. Resultados reales anteriores329 se conservan, sin repetirCI/builds.
+
 ## 23/10/2026 — B5 caducidad pasiva verificada en329
 
 Samsung115%/2582/Play2.3.3(329): único grant180s, filtros abiertos→vencimiento servidor→captura sin filtros/catálogo/entrada inferior antes de cierre manual. Readback expirado conservó previewON/grant no revocado; cierre posteriorOFF/revocado, Adoptar restaurado y catálogo8/14assets/6jobs/finanzas preservados. Producto/código/seguridad independientes cerrados sin P1/P2 nuevos. DosPNG/XMLtemporizados, no grabacióncontinua ni latencia exacta; ausencia de entradaPerfil sólo reporteoperador. Otra cuenta legítima/comercio externo/iOS/aceptación siguen pendientes. No activar Tienda pública. Detalle/retro/outcome enprogress/checkpoint. Decisión estimación20 resuelta para futura propuesta; no publicación ni edición del caso.

@@ -1,3 +1,7 @@
+## 23/10/2026 — Persistencia pública del caso TEST tras cierre decidida
+
+Respuesta directa del titular: conservar el casoTEST público enDEV despuésdeCLOSED para probar despedida, claramente identificado como prueba y sin solicitar dinero. Resuelve la pregunta de persistencia; no reabrirla. Se prepara paquete P1detalle+P2despedida sin gastoaprobado/aportaciones, con estimación20 retirada sóloporUI según decisión anterior y childDRAFT/PDF privados conservados. El caso/foto/snapshot seguirán públicos tras cierre; apagar video/limpieza no retira esa publicación. No implica aceptaciónintegral, dinero real, permiso P3 de capacidad/asignaciones, nuevoON/build/deploy ni ejecución pública ahora: el titular pidió continuar PREPARANDO el paquete concreto para evaluar su autorización.
+
 ## 23/10/2026 — Contenido público TEST y QA de caducidad Tienda
 
 Respuesta directa call_7418378d…c959/item0: quitar sólo la estimación TEST de20 de la futura ficha pública, por UI, conservando gastoDRAFT y PDF privado. Define la propuesta; no publica ni activa servicios ni autoriza borrar el gasto. Persistencia del caso tras cierre sigue pendiente; no inferirla de esta respuesta.

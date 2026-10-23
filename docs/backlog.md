@@ -1,3 +1,11 @@
+## 23/10/2026 — P1+P2 preparado y revisado; autorización operativa pendiente
+
+Root: paquete público operation/ed2c0f15…602fd listo, 15 pruebas locales y producto/código/seguridad cerrados. Solicitar permiso concreto para ediciónTEST/sóloquitarplanned20/doscargas/reviews/publicar/cerrar/farewell/retener2clips; no dinero, childDRAFT/PDF intactos. Después respuesta: sesioneslegítimas+preflightfresco+payloadexacto+reservaúnica20min/stop15/cierreOFF aunparcial. Ninguna ejecución autorizada por la petición de preparar. Persistencia ya resuelta; no reiterar pregunta. Alcanceintegral y pendientes de historiasImpacto/otraidentidad/audio/iOS/aceptación conservados.
+
+## 23/10/2026 — Preparar paquete público elegido P1+P2
+
+Persistencia resuelta por titular: conservar TESTpublicDEVtrasCLOSED/sindinero; planned20retirado en futuro paquete, child/PDF privados preservados. Root cierrafreeze/revisiones deldeltaanónimo enpublic-video-qa-design/operation antespermiso propio. Propuesta retiene2clipsaprobados4s ycasefoto públicos, serviciosOFFfinal. No ejecutarpublicación/ON ahora. B3–B7restantes/audio/otraidentidad/historiasImpacto/iOS/aceptación conservados; no repetirTiendaQA329 ni builds consumidos.
+
 ## 23/10/2026 — B5 caducidad privada329 cerrada
 
 QA concedida ejecutada/consumida: filtros y catálogo retirados tras180s antesclosemanual, finalOFF/grantrevocado/Adoptar. Root: demo/evaluación y esperar decisión pública de persistencia ya consultada; retirada sóloestimación20 elegida y reflejada en propuesta, no editada remota. No otra activación/build autorizada por este permiso. Conservar otraidentidad/cámaraaudio/historiasImpactodespedida/comercio/iOS/aceptaciónintegral pendientes. Evidencia y límites encheckpoint/progress.
