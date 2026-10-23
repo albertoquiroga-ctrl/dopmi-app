@@ -1,3 +1,9 @@
+## Bloqueo de continuidad — 23/10/2026: respuestas pendientes
+
+Tres continuaciones consecutivas sin avance ejecutable por el mismo bloqueo humano. Preparación B5 dfaa59c6…17cd8e y B4 público terminadas/revisadas; permiso B5 sigue false/null. Agentes terminales, sin proceso vivo que esperar. No se han recibido las decisiones de persistencia pública/estimación20 ni autorización de caducidadTienda; no repetir preguntas. Los permisos329 están consumidos. No hay otra tarea técnica independiente lista demostrada; no repetir CI/builds/fixtures para ocupar espera. Objetivo integral NO completo: estado bloqueado hasta respuesta humana/cambio externo.
+
+Producto2582/2.3.3(329)/Play169, mock20d21; último cierre comprobado video/Tienda/limpiezaOFF/job6pausado. Root dueño/siguiente: incorporar respuestas existentes→paquete correspondiente/sesión y preflight frescos/payload exacto revisado→ejecución sólo autorizada y cierre. Conservar público/historias/Impacto/despedida/cámaraaudio/otraidentidad/iOS/aceptación en alcance y WIP ajeno. Bloqueado no equivale a aceptación ni cierre de B0–B7.
+
 ## 23/10/2026 — B5: paquete de caducidad pasiva listo, sin operación
 
 store-passive-expiry-qa preparado por camera327_private_prep y revisado de forma independiente por producto expense_private_prep_review, código playback_controls_review y seguridad store_preview_security. Manifest dfaa59c6…17cd8e; renderer7d5e9b1a…64986; siete pruebas puras PASS reproducidas por root y revisores. Escenario único: grant180s/misma cuentaTEST/329, catálogo y filtros abiertos hasta vencimiento natural, sin refresh/reanudación/reloj/red ni regrant. Registrar intervalo real del servidor y evidencia antes/después; sin evidencia temporal continua no afirmar movimiento. Otra identidad física queda separada.
