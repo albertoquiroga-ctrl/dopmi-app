@@ -1,3 +1,7 @@
+## 23/10/2026 —329 en cola; QA privada condicional autorizada
+
+Root sigueúnicoCodemagichandle6adbc5b325a11c66d1385905/source2582; permiso ítem0 consumido,noPOSTnuevo. Verificarartifactversión/build/SHA/canal→Play→Samsungupdate. Ítem1QAautorizado, no ventana iniciada: despuésinstalación/sesiónfresh ypayloadpropio→único clipevidence existente sobreDRAFT/PDF→cierreOFF-paused-Adoptar≤20min. NoThanks/expense/envío nuevos. Checkpoint/ledgerguardanpins/revisiones; B0–B7restante yaceptaciónintegral intactos.
+
 ## 23/10/2026 — Necesidad DRAFT: decisión implementada, siguiente candidato
 
 Root: cerrar CI d872 existente y validar candidato con control privado en necesidadDRAFT (34focal/analyze0/revisionescerradas); preparar distribución propia y QA del único clip evidencia sin usar sobre gasto/PDF retenidos. No repetir thanks/envío/gasto ni asumir permisoON/build. Decisión ya contestada; fuenteinstalada328 separada. Evidencia/retro en progress23oct; B0–B7 restante conservado.

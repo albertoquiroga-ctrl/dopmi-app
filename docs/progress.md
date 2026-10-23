@@ -1,3 +1,9 @@
+## 23/10/2026 —329 enviada con autoridad propia; QA posterior aún sin iniciar
+
+Humanoautorizóítems0/1 call_1f90c287bafc4bd49a1bd5b05649e663. Capturasautoridadprivadas separadas, QAcondicional noincluidaenbuild. Rootrefrescó SQLactual/Edge53-49/34OFF yCIexacta4SUCCESS; helpervalidó13ledgers/case31/expense4/finanzas/previewOFF/queue0. Código/seguridad inspeccionaron pinpropuesto2227cd1e…6c9e9,autoridad yhashesfresh; transiciónsóloestado/review_complete→pinreviewedc09f03f7…e0940. Sinrelajargates ni alterartiempos. adb confirmóSamsungonline, sinleercredenciales.
+
+Taginmutablecreado/pusheadoexact2582; checkreadonlyCodemagiccola libre/tag/source/workflow/TEST/CI/DEV PASS,payload eaa49f6f…afa832. ReservaCreateNew+POSTúnico→6adbc5b325a11c66d1385905; statusqueuedsource2582/versionnull. Permiso329consumido. CIautomáticadeltag40020724010cancel solicitada1vez20:38:49UTC, preservaroriginal40013783146. NadaON/QA/casos/dinero. Artefacto329/Play/install noverificados aún; nextmismohandle,noPOSTextra.
+
 ## 23/10/2026 — Bloqueo por permisos propios329/QA, preparación preservada
 
 Tres turnos consecutivos conlas mismas dos autorizaciones pendientes tras cerrarCI40013783146/1413Flutter. Último turno anterior fue sin progreso: revalidó autoridad ausente yCIterminal, no una espera de proceso vivo. Auditoría actual confirma ausenciahuman-authorization/reviewedpin/reservation/handle de329 ypermisoQA; agentes finalizados, no operación que conciliar. No hay trabajo independiente listo según revisión acotada B6/fuentes/resto deQA; avanzar dependiente exigiría respuesta humana. Se conserva objetivo integral no cumplido. Root retoma por las preguntas ya emitidas, sin duplicarlas ni consumir otra fixture. No nuevo build/ON/SQL/credenciales/dinero; estado de cierre y referencias encheckpoint.

@@ -1,3 +1,11 @@
+## Checkpoint — 23/10/2026:329 enviada una vez; QA autorizada condicional
+
+Root recibióambospermisos call_1f90c287…e663 (ítem0build/Play/update;ítem1QAprivada posterior). Source2582/CI40013783146 cuatroSUCCESS/1413Flutter; mock20d21. PreflightfreshSQL/2Edge53-49/7fuentesexactas17c8/34OFF/finanzas y13assets-caso31-child4 PASS. Pinfinalc09f03f71e5728d8fa01002a448ced8892a5b858406330eef0ec5130514e0940 revisadocódigo/seguridad yselladodeterminista. Tagcodex/integral20d21-need-editor-2582d6a6 remotoexacto.
+
+Únicareserva/POST→Codemagic6adbc5b325a11c66d1385905, últimaobservaciónqueued/source2582/workflowcorrecto/versionaúnnull. Permisodistribuciónconsumido; seguirhandle/status/reconcile, nuncaPOSTnuevo. CIduplicada deltag40020724010 cancel solicitada1vez; original40013783146seconserva. Build329/Play/install noafirmadoshastaartifact/readback. Samsungconectadoonline; últimoproducto328/Play168/93499.
+
+QAneed-editor-evidence-qa374a47e8…aa4acc autorizada peroNOiniciada: sólotras329Play/session/sourceverificados; un clipevidence existente/sameDRAFT-PDF, sinthanks/envíos/nuevoexpense. Freshbaseline≤120s/payloadreview/cierre20min15corte, root únicaFlutter/dispositivo. TodoOFF/job6pausado durantebuild. Siguiente: mismoCMhandle→metadatareal/Play/update→QAcondicionalconpinpropio. RestoB0–B7 yaceptaciónintegral pendientes, cambiosajenos preservados.
+
 ## Bloqueo de ejecución — 23/10/2026: permisos329 yQA sin respuesta
 
 Candidato2582d6a6b1eaf9225a7c459810b5e1138eeeeb10/CI40013783146 cuatroSUCCESS/1413Flutter, revisiones cerradas y paquetes preparados. Dos preguntas humanas siguen pendientes: una distribuciónandroid-guardian-internal329/Play/update, yunaQA privada20min condicional329instalada parael único clipevidence sobregasto/PDFretenidos. No autoridad/pinreviewed/reserva/tag/handle/ON creados; todos los agentes de esta fase terminaron yCIes terminal. Mismo bloqueo revalidado en tres turnos; sin otra tarea independiente lista demostrada. ParidadB0–B7 no completada ni aceptada.

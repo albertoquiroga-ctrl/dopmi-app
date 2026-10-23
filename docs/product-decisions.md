@@ -1,3 +1,9 @@
+## 23/10/2026 — Distribución329 y QA posterior autorizadas por paquete
+
+Titular respondió «Autorizo» a ambos ítems de call_1f90c287bafc4bd49a1bd5b05649e663. Ítem0: una buildandroid-guardian-internal de2582d6a6b1eaf9225a7c459810b5e1138eeeeb10, Playinterno yactualizaciónSamsung; previsto2.3.3(329) pendiente artefacto real, TEST/firma/identidad existentes, serviciosOFF. Permiso consumido porúnicareserva/POST hacia6adbc5b325a11c66d1385905. Sinrepetir envío.
+
+Ítem1: unaQADEVprivada≤20min sólo329instalada/sesiónlegítima verificada; único clip evidencia2s/194474B yaSamsung, mismocaso/gastoDRAFT/PDF retenidos, previewlocal/Subir1/privateplay/cancel/delete, sinthanks/expense/PDFnuevo/envío/publicación/pagos/red/cámara/credenciales/despliegues. Corte15min/cierreOFF-paused-Adoptar20min; flagglobalDEV/nuevoscasosrequierenagradecimiento reconocido. Autorización recibida y conservada, ventana NOiniciada ni consumida por distribución. Pin/receibos/condiciones deben verificarse antesON; no otra aprobación rutinaria del mismo alcance.
+
 ## 23/10/2026 — Video privado dentro de la necesidad DRAFT aprobado
 
 Titular respondió «Video privado dentro de la necesidad (recomendado)» a call_6b833b34ec5e4687981382306f3d973c. Comportamiento: casoDRAFT→necesidad nueva/existente→mismo control expense_evidence, revisión local antes de Subir, reproducción/cancelación sin enviar el caso a revisión. Guardar primero los cambios del gasto para vincular ID/versión vigentes; video no sustituye comprobante ni completa campos requeridos. Conservar validación, moderación y permisos existentes. Alternativa de abrir editor completo descartada para este alcance.
