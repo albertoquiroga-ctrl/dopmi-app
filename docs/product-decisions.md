@@ -1,3 +1,7 @@
+## 23/10/2026 — Autorización propia de distribución328 consumida
+
+El titular autorizó en call_9576e93ea90d4b388ff2530257531ed2 una única build android-guardian-internal de 93499ad7a6f0385e39842532e36f14fdc2451da8, publicación en Play interno y actualización del Samsung desde Play. No incluye QA con servicios ON, cámara/carga, casos públicos, despliegues, compras ni dinero. Reserva única y POST consumidos el 23oct17:25:10UTC; ejecución 6adb98753cd5b3092ecce8cf. Conciliar esa ejecución sin repetir POST. Versión prevista2.3.3(328) pendiente de comprobar en artefacto; instalada327 sigue separada.
+
 ## 23/10/2026 — TiendaTEST327: claridad de organización aceptada
 
 Titular call_c83c5503639c45849c180d3371d7222c: «Sí, esta organización se entiende», tras captura real de catálogo327 y pregunta sobre categorías/filtros/tarjetas. Acepta claridad de esa organización para evaluación interna; no activa Tienda/compras ni constituye aceptación integral de interacciones/B5/B0–B7, otra cuenta/vencimiento pasivo o derechos/comercios. Preview/grant/enlaces permanecenOFF/revocado. Recibo privado store-private-preview-device-qa/execution/human-organization-clarity.private.json; conservar QA técnica319s ya cerrada sin repetirla.

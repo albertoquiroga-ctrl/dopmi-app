@@ -1,3 +1,9 @@
+## Checkpoint breve — 23/10/2026, build328 en cola
+
+Mock20d21 congelado. Fuente93499ad7a6f0385e39842532e36f14fdc2451da8/CI39988317443 cuatroSUCCESS/1400Flutter; branch codex/finish-release-20261015. Titular autorizó única distribución interna328 y actualización Play, permiso consumido por reserva/POST17:25:10UTC. Handle6adb98753cd5b3092ecce8cf, última lectura queued. Seguir ese handle, nunca repetir envío. Artefacto/versión328/publicación/instalación aún pendientes. Samsung comprobado conectado/327/Vending17:26UTC. Video/Tienda/limpiezaOFF y trabajo pausado; sin nueva QAON autorizada.
+
+Siguiente root: artefacto exacto → publicación Play → actualizar Samsung desde Play → demo proporcional. Paquete playback-controls-release/pin21f4084b…90d6b y recibos conservados. B4E1 sólo preparación local revisada (PDF TEST y dos clips), ninguna transferencia/carga/gasto creado; faltan paquete operacional y permiso propios. Cámara/audio, demás propósitos, otra identidad, historias/impacto, despedida tras cierre, iOS físico y aceptación integral permanecen. Preservar cambios ajenos y cola única.
+
 ## Checkpoint vigente — 23/10/2026, cámara327 cerrada
 
 - Mock congelado20d21f484aa60726f0b236574d5493dcf5e05969. ProductoPlayinterno167:2.3.3(327), da14497e66d8790e8eda7ab6d83a249a89ddca09, CI39887729078 cuatroSUCCESS. Candidato93499ad7a6f0385e39842532e36f14fdc2451da8/CI39988317443 cuatroSUCCESS/1400FlutterPASS aún sin distribución; branchcodex/finish-release-20261015. Root conserva única colaFlutter/dispositivo y cambios ajenos.
@@ -5,6 +11,7 @@
 - Cierre real: Edge34digestsOFF16:13:30UTC; SQL16:15:23UTC video/TiendaOFF/job6pausado/colaHTTP-runs0/12históricos y6jobs intactos. Límite16:17:16UTC respetado. Borrador26/foto1/necesidad/sin gastos conservados; Samsung restaurado Adoptante→Adoptar. Ruta/residuo local no acreditados ni borrados. Evidencia camera327-private-qa/execution y ledger23oct.
 - B1 recuperaciónTEST/código/reinicio real y claridad humana cerrados. Tienda327 QA privada técnica cerrada; preview/grant/enlacesOFF/revocado, claridad de categorías/filtros/tarjetas aceptada por titular; aceptación integral de interacciones pendiente y comercial separado. Matriz central parity-current-review contiene B0–B7, sin recortar alcance.
 - Candidato localB4: errores de controles ModeratedVideo corregidos con REDreal→43PASS/analyze0; código/producto/seguridad/retro independientes cerrados. CI exacta39988317443 cuatroSUCCESS; paquete328 v2 6fead7ea…31cf2/8testsy3AST/revisores cerrados/DEVfinalrealvalidado, permiso propio pendiente. Aún no publicado ni instalado. No vincular este cambio con la selección de cámara desaparecida.
+- PreparaciónB4E1: metadatosreales17:05UTCcuentaTEST3rows/0closed/únicoexpensefinancieroexcluido. Worker investiga QAprivada conexpenseDRAFTnuevo sinpagos/publicación; nooperaciónautorizada niQAadmin/aftercloseacreditada. Rootesperapermiso328, conservagatesyúnicacola.
 - Pendientes: cámara/audio, otros propósitos/otraidentidad/publicación/historias-impacto, foto urgencia ya consultada sin respuesta, demo/aceptación integral e iOSfísico. Siguiente root: trabajo offline independiente/evidencia reutilizable y próximo paquete concreto; humanhandoff único Grabar→Detener→Aceptar nativo si aparece, Subir separado tras revisión. No reutilizar ventana ni fixtures consumidas.
 
 ## 23/10/2026 — Cámara327: paquete operacional revisado; ventana propia consultada
