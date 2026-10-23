@@ -1,3 +1,7 @@
+## 23/10/2026 — Navegación tras actualización328 aceptada
+
+Titular respondió «Sí, puedo navegar normalmente» a call_29017674d3964ec8b91e32148cc5bcea. Acepta navegación habitual después de actualizar desde Play a2.3.3(328)/93499ad7, sin bloqueo ni nuevo login reportados. No equivale a aceptación de reproducción/cámara/audio, QA B4E1 ni paridad integral. Recibo privado playback-controls-release/human-navigation-acceptance.private.json. No activar servicios ni renovar permisos por esta evaluación.
+
 ## 23/10/2026 — Autorización propia de distribución328 consumida
 
 El titular autorizó en call_9576e93ea90d4b388ff2530257531ed2 una única build android-guardian-internal de 93499ad7a6f0385e39842532e36f14fdc2451da8, publicación en Play interno y actualización del Samsung desde Play. No incluye QA con servicios ON, cámara/carga, casos públicos, despliegues, compras ni dinero. Reserva única y POST consumidos el 23oct17:25:10UTC; ejecución 6adb98753cd5b3092ecce8cf. Conciliar esa ejecución sin repetir POST. Versión prevista2.3.3(328) pendiente de comprobar en artefacto; instalada327 sigue separada.

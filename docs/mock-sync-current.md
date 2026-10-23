@@ -1,3 +1,12 @@
+## Checkpoint — 23/10/2026: B4E1 preparado, permiso pendiente
+
+- Referencia congelada: mock20d21. Runtime `93499ad7`, CI39988317443 con cuatro SUCCESS y 1,400 pruebas Flutter; Play interno168, 2.3.3(328), Samsung instalado desde Play y misma cuenta TEST comprobados. El titular aceptó la navegación tras actualizar; video y paridad integral siguen separados.
+- Servicios cerrados: video, Tienda y enlaces OFF; limpieza pausada. No empezó otra QA. Root conserva la única cola Flutter/dispositivo y los cambios ajenos.
+- B4E1: paquete privado `427fa840…9c4fd3`, 24 archivos vinculados, nueve pruebas puras y revisiones de producto/código/seguridad cerradas. Se consultó una ventana de 20 minutos para dos clips, un gasto DRAFT y un PDF privado retenidos. Respuesta pendiente; sin autoridad, ON, copias al teléfono ni gasto nuevo.
+- Evidencia: baseline UTF8 `50e0…6a311`, lectura18:03UTC, 12 assets/seis jobs/tres registros y finanzas protegidas. Preservación18:16UTC: caso26, cero hijos y bucket privado. La baseline inicial e168 es inválida por extracción local cp1252; original y corrección conservados. No hubo cambio remoto por ese incidente.
+- Siguiente acción de root: respuesta humana → sesión328 y coordinación administrativa → fuentes y SQL frescos, recibo≤120s y payload revisado → QA privada y cierre OFF. Explorer revisa sólo fuentes para preparar historias/impacto/cierre/despedida sin pagos ni operación remota.
+- Pendientes del alcance: cámara/audio, acceso ajeno, video público/historias/impacto/despedida tras cierre, iOS físico y aceptación integral. No repetir builds, ventanas ni fixtures consumidas. Detalle en las entradas de progress y product-decisions del23oct.
+
 ## Checkpoint breve — 23/10/2026, Play328 instalada
 
 Mock20d21 congelado; runtime93499ad7a6f0385e39842532e36f14fdc2451da8/CI39988317443 cuatroSUCCESS/1400Flutter. Buildúnica6adb98753cd5b3092ecce8cf13SUCCESS, artefacto2.3.3(328), Playinterno168 disponible y Samsung328/Vending/misma identidadTEST/Adoptante→Adoptar comprobados17:55UTC. Permiso call_9576 consumido; no repetirPOST. Media/comercial/preview/enlacesOFF/0grantactivo/cola0/job6pausado y34digestsbaseline exactos. Reproducciónfísica/aceptaciónhumana de328 pendientes, pregunta navegación enviada; paridadintegralB0–B7 no cerrada.

@@ -1,3 +1,9 @@
+## 23/10/2026 — B4E1 espera permiso; preparación pública independiente
+
+Root mantiene la única cola Flutter/dispositivo. Paquete B4E1 `427fa840…9c4fd3` preparado, revisado y consultado: no activar, copiar/subir archivos ni crear el gasto antes de la respuesta. Después: comprobar sesión328, coordinación administrativa, fuentes y recibo SQL≤120s; revisar payload, ejecutar QA≤20min y cerrar OFF. Conservar gasto/PDF/historial y finanzas anteriores. Baseline válida UTF8 `50e0`; e168 está invalidada.
+
+Explorer remaining_video_qa_scope investiga sólo fuentes para historias, impacto, cierre y despedida sin pagos. La navegación328 está aceptada; el resto de B0–B7 continúa abierto.
+
 ## 23/10/2026 — Release328 terminada; próximo paqueteB4E1
 
 Root comprobó artefacto328/Playinterno168/SamsungVending328/mismaTEST/Adoptante→Adoptar. Evaluaciónhumana pendiente y reproducciónfísica aparte. Ambos serviciosOFF/job6pausado/TiendaenlacesOFF/cola0. Distribución autorizada consumida; no nueva build/ON implícitos. Preparar paqueteoperacional de evidencia privada desde plan/fixturesrevisados; baseline completa fresca/coordinaciónadmin/permiso propio antes de gasto/cargas. Mantener cámara/audio/otrospropósitos/otraidentidad/historias-impacto/despedidatrascierre/iOS yaceptaciónintegral.
