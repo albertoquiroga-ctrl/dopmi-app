@@ -1,3 +1,19 @@
+## Relevo — 23/10/2026, después de la demo 329
+
+329/2582 publicada e instalada desde Play; QA privada de evidencia cerrada y revisada por producto/código/seguridad, sin P1/P2 nuevos. Servidor y Edge OFF, job6 pausado y Adoptar restaurado. No repetir permisos, carga ni clip consumidos. El cierre detallado y la retro están en progress; evidencias en los dos paquetes need-editor. Preguntas pendientes: claridad humana de la mejora329 y persistencia pública del futuro caso TEST cerrado. No son permiso de publicación ni dinero. Root dueño/siguiente: incorporar respuestas, propuesta local public-video-qa-design preparada por remaining_video_qa_scope y paquete concreto revisable; conservar B0–B7 y límites pendientes. Referencia20d21 congelada; fuente2582/CI40013783146 exactas.
+
+## Checkpoint — 23/10/2026: 329 instalada y QA privada de evidencia cerrada
+
+Referencia mock 20d21; producto 2582d6a6b1eaf9225a7c459810b5e1138eeeeb10. CI40013783146: cuatro jobs SUCCESS y 1,413 pruebas Flutter. Codemagic 6adbc5b325a11c66d1385905: único envío, 13 etapas SUCCESS; artefacto 2.3.3 (329), android-guardian-internal. Play release169 disponible; Samsung actualizado desde Play/Vending, misma cuenta TEST y Adoptar restaurado. La disponibilidad móvil tardó respecto de Console; no se ha aislado propagación, caché o elegibilidad como causa.
+
+QA autorizada ítem1 consumida: ventana 21:07:03–deadline21:27:03 UTC, cerrada SQL21:17:30 y Edge21:17:46. Un único clip sintético de evidencia, revisión local/2s/reproducción/Subir explícito/ready/reproducción propia/cancelación/deleted; Stream vacío. Antes de Subir había 13 recursos; después 14, con los 13 anteriores exactos. Caso DRAFT31→33 por guardados normales, contenido igual; hijo DRAFT4 y PDF privado iguales; finanzas, seis trabajos y Tienda intactos. Video/limpieza OFF, job6 pausado, cola/HTTP/runs0, 34 digests restaurados. Adoptar restaurado. Evidencia: need-editor-evidence-qa/execution/outcome.actual.private.json y capturas need329-* en expense-evidence-private-qa/execution.
+
+Incidente: primer enable rechazado antes de escribir por modo Adoptante; readback OFF/pausado/verified=true. Root corrigió el modo por la app y renovó preflight/payload dentro de la misma ventana, sin extenderla; hash efectivo 01f9169c…9044b separado del rechazado f26e2d86…2d059. No reutilizar estos permisos ni el clip. Root conserva una cola Flutter. Próximo: cerrar revisión independiente de evidencia y demo/evaluación, preparar alcance público de historias/Impacto/despedida y sus decisiones/paquete propios. Cámara/audio físico, otra identidad, iOS y aceptación integral B0–B7 siguen pendientes.
+
+## Checkpoint — 23/10/2026:329 publicada; propagación al Samsung pendiente
+
+Codemagic6adbc5b325a11c66d1385905 terminó13SUCCESS; metadatareal2.3.3(329)/2582d6a6/android-guardian-internal comprobada. PlayConsole release169 disponible para testers internos/código329. Samsung sigue328/Play; ficha muestraAbrir, noActualizar tras refresco. No reinstalar/sideload/resetdatos: esperar propagación y actualizar desdePlay. Permiso distribución consumido, noPOSTnuevo. QAítem1 autorizada condicional sigueNOiniciada, todoOFF/job6paused; requiere329instalada/sesiónfresh/preflight≤120s y payload propio. Root sigueúnica cola. Recorrido normal guardarápadre31→32→33 sincontenido; hijo4/PDFfinanzas se conservan; noforzarversiones. AlcanceB0–B7yaceptaciónintegral pendientes.
+
 ## Checkpoint — 23/10/2026:329 enviada una vez; QA autorizada condicional
 
 Root recibióambospermisos call_1f90c287…e663 (ítem0build/Play/update;ítem1QAprivada posterior). Source2582/CI40013783146 cuatroSUCCESS/1413Flutter; mock20d21. PreflightfreshSQL/2Edge53-49/7fuentesexactas17c8/34OFF/finanzas y13assets-caso31-child4 PASS. Pinfinalc09f03f71e5728d8fa01002a448ced8892a5b858406330eef0ec5130514e0940 revisadocódigo/seguridad yselladodeterminista. Tagcodex/integral20d21-need-editor-2582d6a6 remotoexacto.

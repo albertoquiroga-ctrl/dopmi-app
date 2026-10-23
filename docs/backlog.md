@@ -1,3 +1,7 @@
+## 23/10/2026 — 329 distribuida; evidencia privada en necesidad verificada
+
+Distribución y ventana privadas autorizadas ya consumidas y cerradas. Root: cerrar revisión independiente de evidencia/demo de 329 y preparar el siguiente paquete de B4 público, resolviendo primero persistencia de un caso TEST cerrado, identidades legítimas y alcance financiero TEST. No otro ON/build/carga con los permisos consumidos. Conservar pendientes cámara/audio físico, otra identidad autenticada, historias/Impacto/despedida, B6, iOS y aceptación integral; checkpoint distingue resultados reales y límites.
+
 ## 23/10/2026 —329 en cola; QA privada condicional autorizada
 
 Root sigueúnicoCodemagichandle6adbc5b325a11c66d1385905/source2582; permiso ítem0 consumido,noPOSTnuevo. Verificarartifactversión/build/SHA/canal→Play→Samsungupdate. Ítem1QAautorizado, no ventana iniciada: despuésinstalación/sesiónfresh ypayloadpropio→único clipevidence existente sobreDRAFT/PDF→cierreOFF-paused-Adoptar≤20min. NoThanks/expense/envío nuevos. Checkpoint/ledgerguardanpins/revisiones; B0–B7restante yaceptaciónintegral intactos.

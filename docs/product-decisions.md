@@ -1,3 +1,7 @@
+## 23/10/2026 — Permisos 329 ejecutados y agotados
+
+Los dos permisos de call_1f90c287…e663 se ejecutaron: una distribución 2.3.3 (329)/2582/Play interno y una ventana privada de evidencia sobre el mismo gasto DRAFT. Cierre OFF/pausado confirmado antes del límite, sin publicación, revisión administrativa ni dinero. El incremento del padre 31→33 corresponde a dos guardados normales sin cambio de contenido; no es otro caso ni otro gasto. La evaluación humana de la nueva experiencia y la aceptación integral siguen separadas. Otra operación remota requiere su paquete y permiso propios; estos permisos no se renuevan por continuidad.
+
 ## 23/10/2026 — Distribución329 y QA posterior autorizadas por paquete
 
 Titular respondió «Autorizo» a ambos ítems de call_1f90c287bafc4bd49a1bd5b05649e663. Ítem0: una buildandroid-guardian-internal de2582d6a6b1eaf9225a7c459810b5e1138eeeeb10, Playinterno yactualizaciónSamsung; previsto2.3.3(329) pendiente artefacto real, TEST/firma/identidad existentes, serviciosOFF. Permiso consumido porúnicareserva/POST hacia6adbc5b325a11c66d1385905. Sinrepetir envío.

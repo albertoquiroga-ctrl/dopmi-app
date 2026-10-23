@@ -1,3 +1,7 @@
+## 23/10/2026 — B4: evidencia privada dentro de necesidad verificada en 329
+
+Implementado, publicado e instalado: 2582/2.3.3(329), Google Play interno. Verificado en Samsung: necesidad DRAFT existente/PDF privado → revisión local 2s → Subir una vez → asset expense_evidence ready → reproducción propia → cancelación/borrado; servidor/Stream conciliados, ambos OFF y job6 pausado antes del límite. Caso DRAFT33 con contenido preservado, hijo DRAFT4/PDF iguales, 13 ledgers anteriores/finanzas/trabajos intactos. Evidencia bruta y límites en checkpoint/progress/outcome; pendiente evaluación humana. No acredita audio físico, otra identidad, revisión administrativa de esta evidencia, historias/Impacto/despedida, iOS ni paridad integral.
+
 ## 23/10/2026 — Precisión del alcance de historias e Impacto TEST
 
 La cautela anterior sobre gastos ficticios era del integrador, no una prohibición humana permanente de fixtures TEST. Las reglas ordinarias exigen gasto pagado/comprobantes; guardian-acceptance contempla capacidad de gastos aprobados de prueba. Una QA futura puede proponer excepción TEST explícita y trazable, sin presentarla como gasto real ni alterar reglas productivas. Requiere dueño/admin/donante legítimos distintos, contenido público autorizado, alcance financiero y cierre conciliado, con paquete/permiso propios. No hay aprobación/publicación/aportación autorizada ahora. Mantener recorridos pendientes, no excluirlos ni sustituirlos por detalle privado.
