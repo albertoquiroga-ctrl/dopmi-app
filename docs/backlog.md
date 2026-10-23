@@ -1,3 +1,7 @@
+## 23/10/2026 — Administración de video privada lista para permiso
+
+Paquete `admin-video-private-qa` con revisiones cerradas y prerrequisitos reales comprobados en lectura; autorización nueva pendiente para un thanks, envío normal, aprobación sólo del video, retiro a borrador, cancelación/borrado y cierre20min/OFF. Sin ON ni transferencia. Root conserva operación y única cola Flutter; CI39882153570 del candidato0d7eb5e0 sigue viva. Ver checkpoint/progress para límites y pendientes integrales.
+
 ## 23/10/2026 — Urgencia QA cerrada; paquete agrupado de UI/video
 
 Urgencia326 real verificada yOFF/pausado00:46:49UTC, permiso consumido; necesidadTESTprivada residual y archivo conservados, modo inicialAdoptante restaurado. D273CI4SUCCESS. Root/únicaFlutter: cerrar encabezado duplicado + finreal historias + carrera de controles, revisar fuentes/capturas/tests y ejecutar gate exacto de fuente nueva. Sin nueva release/ON por inferencia. Checkpoint/progress contienen límites y pendientes integrales.
