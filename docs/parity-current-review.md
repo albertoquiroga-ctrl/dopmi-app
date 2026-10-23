@@ -1,3 +1,7 @@
+## 23/10/2026 — B5 caducidad pasiva verificada en329
+
+Samsung115%/2582/Play2.3.3(329): único grant180s, filtros abiertos→vencimiento servidor→captura sin filtros/catálogo/entrada inferior antes de cierre manual. Readback expirado conservó previewON/grant no revocado; cierre posteriorOFF/revocado, Adoptar restaurado y catálogo8/14assets/6jobs/finanzas preservados. Producto/código/seguridad independientes cerrados sin P1/P2 nuevos. DosPNG/XMLtemporizados, no grabacióncontinua ni latencia exacta; ausencia de entradaPerfil sólo reporteoperador. Otra cuenta legítima/comercio externo/iOS/aceptación siguen pendientes. No activar Tienda pública. Detalle/retro/outcome enprogress/checkpoint. Decisión estimación20 resuelta para futura propuesta; no publicación ni edición del caso.
+
 ## 23/10/2026 — B4: evidencia privada dentro de necesidad verificada en 329
 
 Implementado, publicado e instalado: 2582/2.3.3(329), Google Play interno. Verificado en Samsung: necesidad DRAFT existente/PDF privado → revisión local 2s → Subir una vez → asset expense_evidence ready → reproducción propia → cancelación/borrado; servidor/Stream conciliados, ambos OFF y job6 pausado antes del límite. Caso DRAFT33 con contenido preservado, hijo DRAFT4/PDF iguales, 13 ledgers anteriores/finanzas/trabajos intactos. Evidencia bruta y límites en checkpoint/progress/outcome; pendiente evaluación humana. No acredita audio físico, otra identidad, revisión administrativa de esta evidencia, historias/Impacto/despedida, iOS ni paridad integral.

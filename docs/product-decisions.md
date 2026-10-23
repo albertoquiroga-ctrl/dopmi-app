@@ -1,3 +1,9 @@
+## 23/10/2026 — Contenido público TEST y QA de caducidad Tienda
+
+Respuesta directa call_7418378d…c959/item0: quitar sólo la estimación TEST de20 de la futura ficha pública, por UI, conservando gastoDRAFT y PDF privado. Define la propuesta; no publica ni activa servicios ni autoriza borrar el gasto. Persistencia del caso tras cierre sigue pendiente; no inferirla de esta respuesta.
+
+Respuesta directa call_60b6a161…3ea2/item0: autorizada una única ventana privadaDEV<=20min para caducidad pasivaTienda329 con cuentaTEST elegida/grant180s/ocho productos existentes, filtros abiertos hasta vencimiento sin refresh/extensión/reloj/red; cierreOFF/revocado. Comercial/enlaces/video/cleanupOFF/jobpausado, sin otraidentidad/compras/dinero/cargas/credenciales/deploy/build. Paquete dfaa59c6…17cd8e; preflight/payload y permisos independientes permanecen. Ejecución y consumo se registran en progress, no renovar autoridad por continuidad.
+
 ## 23/10/2026 — Permisos 329 ejecutados y agotados
 
 Los dos permisos de call_1f90c287…e663 se ejecutaron: una distribución 2.3.3 (329)/2582/Play interno y una ventana privada de evidencia sobre el mismo gasto DRAFT. Cierre OFF/pausado confirmado antes del límite, sin publicación, revisión administrativa ni dinero. El incremento del padre 31→33 corresponde a dos guardados normales sin cambio de contenido; no es otro caso ni otro gasto. La evaluación humana de la nueva experiencia y la aceptación integral siguen separadas. Otra operación remota requiere su paquete y permiso propios; estos permisos no se renuevan por continuidad.

@@ -1,3 +1,7 @@
+## 23/10/2026 — B5 caducidad privada329 cerrada
+
+QA concedida ejecutada/consumida: filtros y catálogo retirados tras180s antesclosemanual, finalOFF/grantrevocado/Adoptar. Root: demo/evaluación y esperar decisión pública de persistencia ya consultada; retirada sóloestimación20 elegida y reflejada en propuesta, no editada remota. No otra activación/build autorizada por este permiso. Conservar otraidentidad/cámaraaudio/historiasImpactodespedida/comercio/iOS/aceptaciónintegral pendientes. Evidencia y límites encheckpoint/progress.
+
 ## 23/10/2026 — B5 preparada para permiso propio
 
 Root: paquete store-passive-expiry-qa dfaa59c6…17cd8e revisado producto/código/seguridad, siete pruebas PASS. Una QA propuesta20min/grant180s/329/misma cuentaTEST, sólo vencimiento pasivo de catálogo/filtros; cierre previewOFF y grantrevocado. Sin autoridad/ON/reserva todavía. Tras respuesta propia: sesión y lecturas frescas, payload exacto/revisión/reserva única, recorrido y cierre. No reabrir permisos329 consumidos. Otra identidad física/comercial y decisiones B4 existentes permanecen pendientes.
