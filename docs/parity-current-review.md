@@ -1,3 +1,7 @@
+## 22/10/2026 — Corte incremental Tienda: build enviada; setup autorizado espera
+
+B5 fuente da14497e/CI39887729078 cuatroSUCCESS/1392Flutter, migración inerte20261023030801 aplicada14checksPASS/OFFvacía. CuentaSamsungTEST elegida/salida bloqueada; setup8fichas+grantREVOCADO/OFF autorizado sólo después de distribución, aún no aplicado. Única buildandroid-guardian-internal enviada tras permiso propio:6adad717358c69c21cb0817c en compilación, expectativa327 sin afirmarartefacto/Play/install. Samsung326/D377 sigue instalado. Siguiente root: mismo handle→artefacto/Play/update→setupfresh→paqueteQA propio revisado/permiso antesON. B6 dosFAQ del candidato se prueban físicamente tras327; navegación326 ya acreditada no se repite. Pendientes de B0–B7/aceptación e iOS físico intactos.
+
 ## 22/10/2026 — Corte incremental QA admin y Tienda TEST
 
 | Grupo | Comportamiento/alcance vigente | Evidencia nueva | Pendiente/dueño |

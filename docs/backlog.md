@@ -1,6 +1,6 @@
 ## 22/10/2026 — Tienda inerte aplicada; siguiente setup privado y distribución
 
-MigraciónDEV autorizada aplicada1vez/version20261023030801,14/14postcheckstrue/OFF/empty/hist83prev82exactas;permiso consumido. CuentaTESTSamsung/salidaexternabloqueada elegidas, no pendientes de selección. Root prepara setupprivadoREVOCADO/OFF+catálogo sintético y paquete de distribución antes de solicitar permisos concretos; sin seed/grant/ON/build por migración. CI da14497e cuatroSUCCESS e instalado326/D377 conservados. Ver checkpoint/progress/auditoría para discrepanciaCRLF reconciliada y límites; alcanceintegral sin cerrar.
+MigraciónDEV autorizada aplicada1vez/version20261023030801,14/14postcheckstrue/OFF/empty/hist83prev82exactas;permiso consumido. CuentaTESTSamsung/salidaexternabloqueada elegidas. Titular autorizó build exactada14497e y setupprivado8TEST+grantREVOCADO/OFF después de distribución; ver referencias propias en checkpoint/progress. ÚnicoPOST→handle6adad717358c69c21cb0817c en compilación: root observa mismo intento, verificaartefacto/Play/updateSamsung y después aplica setupúnico conpreflightfresh. No repetirPOST ni ON; no seed/grant mientras espera distribución. CI39887729078 cuatroSUCCESS e instalado326/D377 conservados. Ver auditoría para discrepanciaCRLF reconciliada y límites; alcanceintegral sin cerrar.
 
 ## 22/10/2026 — Da14497e verificado integral; operación inerte pendiente
 
