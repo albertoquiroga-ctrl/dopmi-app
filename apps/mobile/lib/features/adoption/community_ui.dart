@@ -20,6 +20,12 @@ class CommunityNav extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final experience = ref.watch(experienceProvider);
+    final store = ref.watch(storeCatalogProvider).asData?.value;
+    final storeActor = ref.watch(storeActorProvider);
+    final storeIdentityMatches =
+        store != null &&
+        storeActor.hasValue &&
+        storeActor.value == ref.watch(storeRepositoryProvider).userId;
     return ListenableBuilder(
       listenable: experience,
       builder: (context, _) {
@@ -34,8 +40,8 @@ class CommunityNav extends ConsumerWidget {
         return DopmiBottomBar(
           rescuer: rescuer,
           storeEnabled:
-              !rescuer &&
-              ref.watch(storeCatalogProvider).asData?.value.enabled == true,
+              !rescuer && storeIdentityMatches && store.enabled == true,
+          storePreview: store?.preview == true,
           selectedPath: selected,
           onSelected: (destination) {
             final shell = DopmiNavigationHost.of(context);

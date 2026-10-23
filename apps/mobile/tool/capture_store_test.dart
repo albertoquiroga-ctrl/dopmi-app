@@ -41,9 +41,12 @@ void main() {
     final out = Directory('../../.tools/integral20d21-20261018/store');
     await tester.runAsync(() => out.create(recursive: true));
     for (final variant in [
-      ('normal', 377.0, 852.0, 1.0),
-      ('samsung115', 377.0, 852.0, 1.15),
-      ('large', 320.0, 640.0, 2.0),
+      ('normal', 377.0, 852.0, 1.0, false),
+      ('samsung115', 377.0, 852.0, 1.15, false),
+      ('large', 320.0, 640.0, 2.0, false),
+      ('preview-normal', 377.0, 852.0, 1.0, true),
+      ('preview-samsung115', 377.0, 852.0, 1.15, true),
+      ('preview-large', 320.0, 640.0, 2.0, true),
     ]) {
       tester.view.physicalSize = Size(variant.$2, variant.$3);
       tester.platformDispatcher.textScaleFactorTestValue = variant.$4;
@@ -52,6 +55,27 @@ void main() {
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       await identity.setExperience('donor');
       final repo = StoreFake();
+      if (variant.$5) {
+        repo.preview = true;
+        repo.expiresAt = DateTime.now().add(const Duration(hours: 1));
+        repo.externalLinksEnabled = false;
+        repo.products = repo.products
+            .map(
+              (product) => StoreProduct(
+                id: product.id,
+                name: '${product.name} TEST',
+                brand: '${product.brand} TEST',
+                species: product.species,
+                age: product.age,
+                size: product.size,
+                weightKg: product.weightKg,
+                imageUrl: '',
+                merchantName: 'Dopmi TEST',
+                assetKey: 'croquetas-banner-pet',
+              ),
+            )
+            .toList(growable: false);
+      }
       final key = GlobalKey();
       await tester.pumpWidget(
         RepaintBoundary(
@@ -103,7 +127,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(Dialog), findsNothing);
       await tester.scrollUntilVisible(
-        find.text('Alimento uno'),
+        find.text(variant.$5 ? 'Alimento uno TEST' : 'Alimento uno'),
         180,
         scrollable: find
             .byWidgetPredicate(
@@ -114,7 +138,12 @@ void main() {
             .first,
       );
       await tester.pumpAndSettle();
-      expect(find.text('Alimento uno').hitTestable(), findsOneWidget);
+      expect(
+        find
+            .text(variant.$5 ? 'Alimento uno TEST' : 'Alimento uno')
+            .hitTestable(),
+        findsOneWidget,
+      );
       await tester.runAsync(
         () => saveCapture(
           key,

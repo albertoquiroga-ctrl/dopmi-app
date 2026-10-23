@@ -12,27 +12,54 @@ class StoreEntry extends ConsumerWidget {
   const StoreEntry.visible({super.key, required this.child});
   final Widget child;
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ref
-      .watch(storeCatalogProvider)
-      .when(
-        skipLoadingOnRefresh: false,
-        skipLoadingOnReload: false,
-        data: (catalog) => catalog.enabled ? child : const SizedBox.shrink(),
-        error: (_, _) => const SizedBox.shrink(),
-        loading: () => const SizedBox.shrink(),
-      );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final actor = ref.watch(storeActorProvider).asData?.value;
+    return ref
+        .watch(storeCatalogProvider)
+        .when(
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: false,
+          data: (catalog) =>
+              catalog.enabled &&
+                  ref.watch(storeActorProvider).hasValue &&
+                  ref.watch(storeRepositoryProvider).userId == actor
+              ? child
+              : const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
+          loading: () => const SizedBox.shrink(),
+        );
+  }
 }
 
-class StoreScreen extends ConsumerWidget {
+class StoreScreen extends ConsumerStatefulWidget {
   const StoreScreen({super.key, this.navigation});
   final Widget? navigation;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StoreScreen> createState() => _StoreScreenState();
+}
+
+class _StoreScreenState extends ConsumerState<StoreScreen> {
+  String? selectionScope;
+  _StoreSelection selection = _StoreSelection();
+  @override
+  Widget build(BuildContext context) {
     final actor = ref.watch(storeActorProvider).asData?.value;
     final catalog = ref.watch(storeCatalogProvider);
+    final resolved = catalog.asData?.value;
+    final actorCurrent =
+        resolved != null &&
+        ref.watch(storeActorProvider).hasValue &&
+        ref.watch(storeRepositoryProvider).userId == actor;
+    if (resolved != null) {
+      final scope = '$actor:${resolved.preview}';
+      if (selectionScope != scope) {
+        selectionScope = scope;
+        selection = _StoreSelection();
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: navigation,
+      bottomNavigationBar: widget.navigation,
       body: SafeArea(
         child: Column(
           children: [
@@ -79,11 +106,12 @@ class StoreScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                data: (value) => value.enabled
+                data: (value) => value.enabled && actorCurrent
                     ? _StoreContent(
-                        key: ValueKey(actor),
+                        key: ValueKey('$actor:${value.preview}'),
                         catalog: value,
                         actor: actor,
+                        selection: selection,
                       )
                     : const Center(
                         child: Padding(
@@ -114,29 +142,73 @@ const storeSizeLabels = {
   'large': 'Grande',
 };
 
+class _StoreSelection {
+  String species = 'dog';
+  String? age, size;
+  Set<String> brands = {};
+  bool descending = false;
+  double offset = 0;
+}
+
 class _StoreContent extends ConsumerStatefulWidget {
-  const _StoreContent({super.key, required this.catalog, required this.actor});
+  const _StoreContent({
+    super.key,
+    required this.catalog,
+    required this.actor,
+    required this.selection,
+  });
   final StoreCatalog catalog;
   final String? actor;
+  final _StoreSelection selection;
   @override
   ConsumerState<_StoreContent> createState() => _StoreContentState();
 }
 
 class _StoreContentState extends ConsumerState<_StoreContent> {
-  final scroll = ScrollController();
-  String species = 'dog';
-  String? age, size;
-  Set<String> brands = {};
-  bool descending = false;
+  late final ScrollController scroll;
+  DialogRoute<bool>? filterRoute;
+  String get species => widget.selection.species;
+  set species(String value) => widget.selection.species = value;
+  String? get age => widget.selection.age;
+  set age(String? value) => widget.selection.age = value;
+  String? get size => widget.selection.size;
+  set size(String? value) => widget.selection.size = value;
+  Set<String> get brands => widget.selection.brands;
+  set brands(Set<String> value) => widget.selection.brands = value;
+  bool get descending => widget.selection.descending;
+  set descending(bool value) => widget.selection.descending = value;
   String? opening;
   @override
+  void initState() {
+    super.initState();
+    scroll = ScrollController(
+      initialScrollOffset: widget.selection.offset,
+      keepScrollOffset: false,
+    );
+    scroll.addListener(() => widget.selection.offset = scroll.offset);
+  }
+
+  @override
   void dispose() {
+    final route = filterRoute;
+    final navigator = route?.navigator;
+    if (route != null && navigator != null) {
+      // The overlay belongs to this catalog/account. Remove only that route,
+      // after the current navigator frame releases its lock.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (navigator.mounted && route.isActive) navigator.removeRoute(route);
+      });
+    }
     scroll.dispose();
     super.dispose();
   }
 
   Future<void> openProduct(StoreProduct product) async {
-    if (opening != null) return;
+    if (opening != null ||
+        !widget.catalog.enabled ||
+        (widget.catalog.preview && !widget.catalog.externalLinksEnabled)) {
+      return;
+    }
     setState(() => opening = product.id);
     try {
       final repository = ref.read(storeRepositoryProvider);
@@ -162,6 +234,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
   }
 
   Future<void> showFilters() async {
+    if (filterRoute != null) return;
     String? draftAge = age, draftSize = size;
     final draftBrands = {...brands};
     final availableBrands =
@@ -171,7 +244,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
             .toSet()
             .toList()
           ..sort();
-    final applied = await showDialog<bool>(
+    final route = DialogRoute<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, update) {
@@ -344,7 +417,13 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         },
       ),
     );
-    if (applied == true && mounted) {
+    filterRoute = route;
+    final applied = await Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(route);
+    if (identical(filterRoute, route)) filterRoute = null;
+    if (applied == true && mounted && widget.catalog.enabled) {
       setState(() {
         age = draftAge;
         size = draftSize;
@@ -365,15 +444,17 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     );
     final activeFilters = age != null || size != null || brands.isNotEmpty;
     return SingleChildScrollView(
-      key: PageStorageKey('store-scroll-${widget.actor}'),
+      key: PageStorageKey(
+        'store-scroll-${widget.actor}-${widget.catalog.preview}',
+      ),
       controller: scroll,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Tienda Dopmi',
-            style: TextStyle(
+          Text(
+            widget.catalog.preview ? 'Vista previa de Tienda' : 'Tienda Dopmi',
+            style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 28,
               height: 1.1,
@@ -390,9 +471,11 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               border: Border.all(color: const Color(0xffbedbff)),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'Busca las croquetas de tu preferencia. Al seleccionar un producto, abrirás el comercio para comprar y pagar ahí. Las comisiones corresponden a Dopmi.',
-              style: TextStyle(
+            child: Text(
+              widget.catalog.preview
+                  ? 'Catálogo TEST. No permite compras reales. ${widget.catalog.externalLinksEnabled ? 'Sólo abre destinos de prueba autorizados.' : 'Salida de prueba no habilitada.'}'
+                  : 'Busca las croquetas de tu preferencia. Al seleccionar un producto, abrirás el comercio para comprar y pagar ahí. Las comisiones corresponden a Dopmi.',
+              style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
                 height: 20 / 14,
@@ -497,8 +580,15 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                         width: width,
                         child: _StoreCard(
                           product: product,
+                          preview: widget.catalog.preview,
+                          externalLinksEnabled:
+                              widget.catalog.externalLinksEnabled,
                           busy: opening == product.id,
-                          onTap: opening == null
+                          onTap:
+                              opening == null &&
+                                  widget.catalog.enabled &&
+                                  (!widget.catalog.preview ||
+                                      widget.catalog.externalLinksEnabled)
                               ? () => openProduct(product)
                               : null,
                         ),
@@ -580,10 +670,13 @@ class _StoreCard extends StatelessWidget {
     required this.product,
     required this.busy,
     required this.onTap,
+    required this.preview,
+    required this.externalLinksEnabled,
   });
   final StoreProduct product;
   final bool busy;
   final VoidCallback? onTap;
+  final bool preview, externalLinksEnabled;
   @override
   Widget build(BuildContext context) => Material(
     color: Colors.white,
@@ -607,17 +700,23 @@ class _StoreCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.contain,
-                semanticLabel: product.name,
-                errorBuilder: (_, _, _) => const Center(
-                  child: Icon(
-                    Icons.image_not_supported_outlined,
-                    semanticLabel: 'Imagen no disponible',
-                  ),
-                ),
-              ),
+              child: preview
+                  ? SvgPicture.asset(
+                      'assets/profile/croquetas-banner-pet.svg',
+                      fit: BoxFit.contain,
+                      semanticsLabel: product.name,
+                    )
+                  : Image.network(
+                      product.imageUrl,
+                      fit: BoxFit.contain,
+                      semanticLabel: product.name,
+                      errorBuilder: (_, _, _) => const Center(
+                        child: Icon(
+                          Icons.image_not_supported_outlined,
+                          semanticLabel: 'Imagen no disponible',
+                        ),
+                      ),
+                    ),
             ),
             const SizedBox(height: 10),
             Text(
@@ -650,7 +749,15 @@ class _StoreCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              busy ? 'Abriendo comercio…' : 'Ver en ${product.merchantName}',
+              preview
+                  ? (externalLinksEnabled
+                        ? (busy
+                              ? 'Abriendo destino de prueba…'
+                              : 'Abrir destino TEST')
+                        : 'Salida de prueba no habilitada')
+                  : (busy
+                        ? 'Abriendo comercio…'
+                        : 'Ver en ${product.merchantName}'),
               style: const TextStyle(color: DopmiTokens.muted, fontSize: 12),
             ),
           ],

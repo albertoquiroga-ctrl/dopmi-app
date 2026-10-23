@@ -5,8 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'design_tokens.dart';
 
 class DopmiDestination {
-  const DopmiDestination(this.label, this.path, this.asset, this.branch);
+  const DopmiDestination(
+    this.label,
+    this.path,
+    this.asset,
+    this.branch, {
+    this.semanticLabel,
+  });
   final String label, path, asset;
+  final String? semanticLabel;
   final int branch;
 }
 
@@ -29,6 +36,13 @@ const storeDestination = DopmiDestination(
   '/store',
   'icon-shop.svg',
   7,
+);
+const storePreviewDestination = DopmiDestination(
+  'Tienda TEST',
+  '/store',
+  'icon-shop.svg',
+  7,
+  semanticLabel: 'Vista previa de Tienda',
 );
 
 class DopmiNavigationHost extends InheritedWidget {
@@ -53,11 +67,13 @@ class DopmiBottomBar extends StatelessWidget {
     required this.selectedPath,
     required this.onSelected,
     this.storeEnabled = false,
+    this.storePreview = false,
   });
   final bool rescuer;
   final String selectedPath;
   final ValueChanged<DopmiDestination> onSelected;
   final bool storeEnabled;
+  final bool storePreview;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +82,7 @@ class DopmiBottomBar extends StatelessWidget {
         : [
             for (final destination in donorDestinations) ...[
               if (destination.path == '/profile' && storeEnabled)
-                storeDestination,
+                storePreview ? storePreviewDestination : storeDestination,
               destination,
             ],
           ];
@@ -252,7 +268,7 @@ class _NavigationItem extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: destination.label,
+      label: destination.semanticLabel ?? destination.label,
       onTap: onPressed,
       child: ExcludeSemantics(
         child: InkWell(

@@ -47,6 +47,9 @@ const storeFixtureProducts = [
 
 class StoreFake implements StoreRepository {
   bool enabled = true, fail = false;
+  bool preview = false, externalLinksEnabled = true;
+  DateTime? expiresAt;
+  int catalogCalls = 0;
   String? actor = 'one';
   List<StoreProduct> products = storeFixtureProducts;
   Uri? link = Uri.parse('https://shop.example/exact');
@@ -58,8 +61,15 @@ class StoreFake implements StoreRepository {
   Stream<String?> get actorChanges => changes.stream;
   @override
   Future<StoreCatalog> catalog() async {
+    catalogCalls++;
     if (fail) throw StateError('offline');
-    return StoreCatalog(enabled: enabled, products: products);
+    return StoreCatalog(
+      enabled: enabled,
+      products: products,
+      preview: preview,
+      expiresAt: expiresAt,
+      externalLinksEnabled: externalLinksEnabled,
+    );
   }
 
   @override
@@ -105,6 +115,119 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets(
+    'private TEST catalog labels the preview and cannot open an external link while closed',
+    (tester) async {
+      final repo = StoreFake()
+        ..preview = true
+        ..expiresAt = DateTime.now().add(const Duration(hours: 1))
+        ..externalLinksEnabled = false;
+      var opened = 0;
+      await open(
+        tester,
+        repo,
+        opener: (_) async {
+          opened++;
+          return true;
+        },
+      );
+      expect(find.text('Vista previa de Tienda'), findsOneWidget);
+      expect(
+        find.textContaining('Catálogo TEST. No permite compras reales.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Las comisiones corresponden'), findsNothing);
+      await tester.ensureVisible(find.text('Alimento dos'));
+      await tester.tap(find.text('Alimento dos'));
+      await tester.pumpAndSettle();
+      expect(repo.linked, isEmpty);
+      expect(opened, 0);
+      expect(find.text('Salida de prueba no habilitada'), findsWidgets);
+    },
+  );
+  testWidgets(
+    'foreground rechecks access and preserves selection only for the same catalog mode',
+    (tester) async {
+      final repo = StoreFake()
+        ..preview = true
+        ..expiresAt = DateTime.now().add(const Duration(hours: 1))
+        ..externalLinksEnabled = false;
+      await open(tester, repo);
+      await tester.tap(find.text('Gatos'));
+      await tester.pumpAndSettle();
+      expect(find.text('Alimento felino'), findsOneWidget);
+      final before = repo.catalogCalls;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(repo.catalogCalls, greaterThan(before));
+      expect(find.text('Alimento felino'), findsOneWidget);
+      repo.enabled = false;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(find.text('Alimento felino'), findsNothing);
+      expect(find.text('Vista previa de Tienda'), findsNothing);
+      expect(
+        find.text('La Tienda Dopmi todavía no está disponible.'),
+        findsOneWidget,
+      );
+    },
+  );
+  testWidgets(
+    'preview expiry rechecks availability and clears rendered inventory',
+    (tester) async {
+      final repo = StoreFake()
+        ..preview = true
+        ..expiresAt = DateTime.now().add(const Duration(seconds: 5));
+      await open(tester, repo);
+      expect(find.text('Vista previa de Tienda'), findsOneWidget);
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      expect(find.byType(Dialog), findsOneWidget);
+      repo.enabled = false;
+      await tester.pump(const Duration(seconds: 6));
+      await tester.pumpAndSettle();
+      expect(find.byType(Dialog), findsNothing);
+      expect(find.text('Alimento dos'), findsNothing);
+      expect(
+        find.text('La Tienda Dopmi todavía no está disponible.'),
+        findsOneWidget,
+      );
+    },
+  );
+  for (final reason in ['account', 'foreground']) {
+    testWidgets('open private filters are removed on $reason access change', (
+      tester,
+    ) async {
+      final repo = StoreFake()
+        ..preview = true
+        ..expiresAt = DateTime.now().add(const Duration(hours: 1));
+      await open(tester, repo);
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      expect(find.byType(Dialog), findsOneWidget);
+      repo.enabled = false;
+      if (reason == 'account') {
+        repo.switchActor('ordinary');
+      } else {
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.inactive,
+        );
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+      }
+      await tester.pumpAndSettle();
+      expect(find.byType(Dialog), findsNothing);
+      expect(find.text('Marca A'), findsNothing);
+      expect(
+        find.text('La Tienda Dopmi todavía no está disponible.'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
   testWidgets(
     'reference composition uses paw header, Inter title, inline species and a centered white filter dialog',
     (tester) async {
