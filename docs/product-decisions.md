@@ -1,3 +1,9 @@
+## 23/10/2026 — B4E1 autorizado, consumido y cerrado
+
+El titular autorizó call_bcfda206a6b84b5080b342c56dfe0c78, incluyendo ausencia de aprobación administrativa concurrente. Ventana única20min con dos clips sintéticos y PDF, gastoDRAFT retenido, caso sólo a revisión privada, cierre OFF y Adoptar. Se ejecutó parcialmente y cerró antes del límite; resultados en progress23oct. Este permiso queda consumido y no habilita otra carga/build/publicación.
+
+Consulta nueva pendiente: dónde gestionar video privado al editar una necesidad de casoDRAFT. Recomendación: mismo control compartido dentro de la necesidad; alternativa: botón al editor completo. No implementar la opción dependiente sin respuesta. Corregir dos textos que prometen publicación de expense_evidence respeta el acuerdo vigente de privacidad y no cambia permisos/moderación.
+
 ## 23/10/2026 — Navegación tras actualización328 aceptada
 
 Titular respondió «Sí, puedo navegar normalmente» a call_29017674d3964ec8b91e32148cc5bcea. Acepta navegación habitual después de actualizar desde Play a2.3.3(328)/93499ad7, sin bloqueo ni nuevo login reportados. No equivale a aceptación de reproducción/cámara/audio, QA B4E1 ni paridad integral. Recibo privado playback-controls-release/human-navigation-acceptance.private.json. No activar servicios ni renovar permisos por esta evaluación.

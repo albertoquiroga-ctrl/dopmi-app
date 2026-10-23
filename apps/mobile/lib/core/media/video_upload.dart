@@ -398,8 +398,10 @@ class _VideoUploadState extends State<VideoUpload> {
       children: [
         if (widget.showHeading)
           Text(widget.label, style: Theme.of(context).textTheme.titleMedium),
-        const Text(
-          'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
+        Text(
+          widget.purpose == 'expense_evidence'
+              ? 'Hasta 60 segundos. Este video es privado y se revisará como evidencia del gasto.'
+              : 'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
         ),
         if (reviewingSelection && file != null && !cancellationPending)
           LocalVideoPreview(
@@ -447,7 +449,11 @@ class _VideoUploadState extends State<VideoUpload> {
           ),
         ],
         if (!cancellationPending && state == 'ready')
-          const Text('Video procesado. La publicación requiere revisión.'),
+          Text(
+            widget.purpose == 'expense_evidence'
+                ? 'Video procesado. La evidencia del gasto requiere revisión.'
+                : 'Video procesado. La publicación requiere revisión.',
+          ),
         if (!cancellationPending &&
             (state == 'processing' || state == 'uploading'))
           const Text('Estamos procesando tu video.'),

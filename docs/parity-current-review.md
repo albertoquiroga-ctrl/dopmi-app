@@ -1,3 +1,13 @@
+## 23/10/2026 — Alcance público B4 pendiente: dependencias demostradas
+
+Inspección de fuentes, sin operación: detalle público y despedida posterior al cierre pueden probarse sin pagos, pero publicar exige revisión de video y caso por administrador legítimo distinto del dueño. Cerrar conserva snapshot público; archivar no lo retira. No prometer desaparición pública al terminar una futura ventana: preparar decisión explícita sobre persistencia del caso TEST antes de publicar.
+
+Historias de descubrimiento requieren objetivo proveniente de gastos públicos aprobados; la necesidad planeada y el DRAFT privado no equivalen. Impacto personal usa asignaciones del aportante; tener un caso propio no basta y la autoaportación está prohibida. Fuentes: support_home.dart, 20260927035600_public_case_guardian_progress.sql, 202609130006_rescue.sql, 20261006035705_rescuer_update_bccd.sql y 20261017160820_case_oneoff_allocations.sql. Mantener filas historias/impacto/despedida pendientes; no sustituirlas por detalle ni aprobar gastos ficticios para simular paridad. Dueño root, próximo paquete separado; no publicación autorizada ahora.
+
+## 23/10/2026 — B4E1: evidencia privada parcial
+
+Implementado en328: comprobante PDF privado y gastoDRAFT retenido. Verificado: agradecimiento ready→deleted, retiro del caso, cierre OFF antes del límite; no publicación. NO verificado: segundo video expense_evidence, audio ni otraidentidad. Detalle/recibos/retro en progress23oct. Brecha fuente demostrada: necesidad editable de casoDRAFT abre diálogo sin video; decisión de acceso consultada. Corrección de textos privados en fuente revisada, aún sin build. Root dueño; conservar criterios B4/B7 pendientes.
+
 ## 23/10/2026 — B4E1 listo para permiso, todavía sin QA remota
 
 Paquete427fa840…9c4fd3/24archivos revisados/código-seguridad-productocerrados/9testspuros/muestraSQLbloqueadaEXPIRADA. Baselinereal12assets6jobs3records yfinanzasexistentes protegidas, preservaciónhashesdatos/foto ybucketprivado; correcciónUTF8local documentada sincambiosremotos. Permisopropioventana20min/dosvideos/unDRAFT+PDFretenidos consultado,pendiente. Noaprobación/publicación/envíogasto/dinero. Navegación328 aceptada portitular; videoQAparcialfutura noaceptaciónintegral. Explorerprepara sólofactibilidadpúblico/historias-impacto/despedida sinpagos. Detalleenprogress/checkpoint.

@@ -1,3 +1,7 @@
+## 23/10/2026 — B4E1 parcial cerrado
+
+QA privada consumida y cerrada OFF; gasto DRAFT/PDF retenidos, agradecimiento borrado, clip expense_evidence sin usar. Evidencia y retro en progress, entrada B4E1 del23oct. Root: cerrar corrección de textos privados y decisión sobre acceso al video desde necesidad de caso DRAFT; no repetir ON/build ni fixtures consumidas. Mantener B0–B7 restante.
+
 ## 23/10/2026 — B4E1 espera permiso; preparación pública independiente
 
 Root mantiene la única cola Flutter/dispositivo. Paquete B4E1 `427fa840…9c4fd3` preparado, revisado y consultado: no activar, copiar/subir archivos ni crear el gasto antes de la respuesta. Después: comprobar sesión328, coordinación administrativa, fuentes y recibo SQL≤120s; revisar payload, ejecutar QA≤20min y cerrar OFF. Conservar gasto/PDF/historial y finanzas anteriores. Baseline válida UTF8 `50e0`; e168 está invalidada.

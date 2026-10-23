@@ -1,3 +1,9 @@
+## Checkpoint — 23/10/2026: B4E1 parcial cerrado OFF
+
+Mock20d21; branch codex/finish-release-20261015, HEAD previo3d141ffa; runtime93499ad7 / CI39988317443 cuatro SUCCESS /1400Flutter, Play168/2.3.3(328) Samsung. Permiso call_bcfda consumido: agradecimiento ready→deleted, casoDRAFT31, gastoDRAFT4/PDF privado retenidos; segundo clip no subido. Edge34OFF18:57:33 y SQL18:58:57 antes del límite18:59:15: job6pausado/cola0/finanzas e históricos intactos; Adoptar restaurado. Recibos y retro en progress23oct y expense-evidence-private-qa/execution/outcome.partial.actual.private.json.
+
+Root única cola. Corrección local de dos textos que prometían publicación de evidencia privada; revisión independiente cerrada, analyze0 y1,400Flutter PASS, sin distribución nueva. Pregunta pendiente: video privado dentro de necesidad DRAFT frente a abrir editor completo. No existe ruta UI normal328 al editor con video para hijo editable de padreDRAFT. Próximo paso: respuesta humana y paquete técnico acotado; cualquier ON/build con permiso propio. Cámara/audio/otraidentidad/historias-impacto/despedida/iOSfísico/aceptación integral pendientes.
+
 ## Checkpoint — 23/10/2026: B4E1 preparado, permiso pendiente
 
 - Referencia congelada: mock20d21. Runtime `93499ad7`, CI39988317443 con cuatro SUCCESS y 1,400 pruebas Flutter; Play interno168, 2.3.3(328), Samsung instalado desde Play y misma cuenta TEST comprobados. El titular aceptó la navegación tras actualizar; video y paridad integral siguen separados.
