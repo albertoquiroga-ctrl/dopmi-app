@@ -1,3 +1,17 @@
+## 23/10/2026 — Candidato93499ad7: CI integral y paquete328 preparados
+
+Fuente93499ad7a6f0385e39842532e36f14fdc2451da8 enviada/comprobada enorigin, mock20d21sin cambio. CI39988317443 terminó cuatroSUCCESS: logsreales1400FlutterPASSED/analyze0, web4/admin48/build, backend971PASS/8skip/0fail, PostgreSQL316/OAuth11/config17; capturasdelgate yAndroiddebug/iOSsimulador compilados. No distribución niQA física nueva; Playinterno167/2.3.3(327)/da144 conservados. Recibosrawjoblogs moderated-controls-ci-* yrunlive enbase privada, no inferir testcountdebooleans.
+
+Paqueteplayback-controls-release v2 manifest6fead7ea…31cf2 liga12archivos(13inclmanifest), candidataexpect328/2.3.3, únicaworkflowandroid-guardian-internal/publicaciónPlayinterno/updatePlaySamsung, sinON/otraQA/deploy/dinero. Código/seguridad independientes ejecutaron8tests/3ASTyverificaronhashes, sinP1/P2 abiertos. Lectorprovider/metadata adaptadosantespregunta: defaultbloqueado, reviewedpinhash/reservamismohandle/candidateCIworkflowtag328; límitesZIP/HTTPS/URLsredactadas. P2documentalcámara porclaimpreviewerror/descartesinprueba corregidoantesfreezecontrarawoutcome; no atribuir defectocámara alplaybackfix.
+
+Lecturasrealespreparatorias: provider16:53:11UTC0buildsactivas/latest327finished; SQL16:55:25UTC12ledgers6jobs/draft26/protegido21/schema83/preview8TESTrevocadoOFF0dest/colas0exactos; sieteEdgefiles51/47canónicos17c8;34digestsrecargados16:52:19igualesOFF. CIreceipt16:57:54. Helper--prepare validórecibosfrescos ycreóDEVfinal85345462…c981b, sinreemplazartimestamps. Revisiónseguridadrawbindingscerrada para solicitarpermiso, NOPOST. Noautoridad/reviewedpin/reserva/handle/tagbuildnuevos; refrescarpreflightantesúnicoenvío despuéspermiso.
+
+Dueño root/únicacolaFlutter. Siguiente solicitarpermiso concretopropio328 yregistrarrespuesta; si llega, pinfinalrevisado/preflightfresco→unareservayunPOST, conciliarincertidumbresinrepetir. RecuperaciónTEST/código+claridadcerradas; Tiendaorganizaciónclaridadaceptada conalcanceenproduct-decisions, noinferiraceptaciónintegral/comercial. Cámara/audioyotrospropósitos/identidad/publicación/historias-impacto, fotourgenciaconsultada ydemoaceptaciónintegral siguenabiertos.
+
+## 23/10/2026 — Demo Tienda327: respuesta de claridad
+
+Captura física store327qa-catalog-dogs presentada; titular confirmó que la organización de categorías/filtros/tarjetas se entiende (call_c83c5503639c45849c180d3371d7222c). Decisión acotada registrada en product-decisions; no aceptación integral ni activación. Sin operación remota/dispositivo/compra por esta respuesta. QA técnica ya vigente se reutiliza. Continúa CI39988317443/candidato93499ad7 y paquete de distribución propuesto sin build.
+
 ## 23/10/2026 — B4 reproducción autorizada: fallos de controles corregidos localmente
 
 Mock remoto20d21 reconsultado sin cambio; base documental15bcb3a6. Auditoría independiente descubrió Futures sin captura en volumen/play/pausa de ModeratedVideo; no defecto físico ni causa de cámara afirmados. Worker posee únicamente moderated_video.dart ymoderated_video_completion_test.dart; root única colaFlutter. PrimerRED volumen StateErrorvolume_failed/noerrorUI→GREEN3PASS. SegundoRED cinco rutasplay/pause/hold/background/offscreen0PASS5FAIL→corrección agrupada→GREEN43PASS con previewlocal/historias/widgets vigentes. Nuevas regresiones también cubren reintento, fallo inicialsinonReady y rechazo tardío tras sustituir recurso. Log real moderated-controls-{red,volume-green,platform-red,green}.log yreciboSHAprivate en .tools/integral20d21-20261018.

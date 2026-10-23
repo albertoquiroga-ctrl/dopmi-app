@@ -1,3 +1,7 @@
+## 23/10/2026 — TiendaTEST327: claridad de organización aceptada
+
+Titular call_c83c5503639c45849c180d3371d7222c: «Sí, esta organización se entiende», tras captura real de catálogo327 y pregunta sobre categorías/filtros/tarjetas. Acepta claridad de esa organización para evaluación interna; no activa Tienda/compras ni constituye aceptación integral de interacciones/B5/B0–B7, otra cuenta/vencimiento pasivo o derechos/comercios. Preview/grant/enlaces permanecenOFF/revocado. Recibo privado store-private-preview-device-qa/execution/human-organization-clarity.private.json; conservar QA técnica319s ya cerrada sin repetirla.
+
 ## 22/10/2026 — QA privada Tienda327 autorizada y consumida; comercial sigue cerrado
 
 call_b2fc0425dda345199871aa3bfd3180bf: «Autorizo» una ventanaDEV<=20min sólo cuentaSamsung elegida con8TEST/salidaexternabloqueada y cierreOFF/revocado. Ejecutadauna vez319.018s, cerrada/revisada; permiso consumido, nootraactivaciónniampliación. Se conservaroncatálogo/historial, ningún video/dinero/despliegue/build/comercio. Demo/evaluaciónhumana interna no se infiere de QA técnica ni activaTiendacomercial. Cuentas/destino siguenresueltos como antes; no conceder otrotester por inferencia ni reusar la referencia staged anterior.
