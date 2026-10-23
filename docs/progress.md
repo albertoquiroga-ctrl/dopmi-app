@@ -1,3 +1,7 @@
+## 23/10/2026 — Alcance financiero TEST aclarado sin operaciones
+
+Revisión independiente de fuentes corrigió una cautela de root: no era prohibición humana permanente de fixtures TEST. product-decisions exige gastos pagados en el flujo ordinario; guardian-acceptance líneas137/185 contempla gastos aprobados de prueba. Futuro paquete público/financiero explícito podría plantear excepciónQA claramenteTEST para capacidad/historias y asignaciónconfirmada de otrodonante paraImpacto, manteniendo regla productiva y prohibición de autoaporte. No elegir montos/identidades ni aprobar/publicar/aportar por inferencia. No nueva autorización, SQL ni implementación; matriz conserva alcance completo y límites de cierre público.
+
 ## 23/10/2026 — Candidato2582 aprobado por CI integral; listo para permisos concretos
 
 CI40013783146 completed/success de2582d6a6b1eaf9225a7c459810b5e1138eeeeb10, cuatrojobs SUCCESS verificados REST yMCP. Logs reales:1413Flutter/analyze0/Androiddebug, iOSsimulador compilado; admin48/web4/config17/backend971PASS+8skip/PostgreSQL316/OAuth11/concurrenciaurgencia6 yconcurrenciasGuardian/adopción. Integración local deAuth/adopción/rescate/comunidad5PASS. Recibos:need-editor-release/ci-final.private.json yci-log-excerpts.actual.private.json. No física iOS ni distribución inferida.

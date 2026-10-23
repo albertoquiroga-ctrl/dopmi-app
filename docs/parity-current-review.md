@@ -1,3 +1,7 @@
+## 23/10/2026 — Precisión del alcance de historias e Impacto TEST
+
+La cautela anterior sobre gastos ficticios era del integrador, no una prohibición humana permanente de fixtures TEST. Las reglas ordinarias exigen gasto pagado/comprobantes; guardian-acceptance contempla capacidad de gastos aprobados de prueba. Una QA futura puede proponer excepción TEST explícita y trazable, sin presentarla como gasto real ni alterar reglas productivas. Requiere dueño/admin/donante legítimos distintos, contenido público autorizado, alcance financiero y cierre conciliado, con paquete/permiso propios. No hay aprobación/publicación/aportación autorizada ahora. Mantener recorridos pendientes, no excluirlos ni sustituirlos por detalle privado.
+
 ## 23/10/2026 — Brecha necesidad DRAFT corregida en fuente
 
 Acceso a expense_evidence dentro de necesidadDRAFT aprobado e implementado;34focal/analyze0/24PNG y revisiones fuente/visual cerradas. No sustituye comprobante ni submit; guarda versión vigente y retira UI privada al cambiar identidad. Falta CI del nuevo candidato, distribución y recorrido real. Historial B4E1 privado no se presenta como prueba del video pendiente. Detalle en progress23oct.
@@ -8,7 +12,7 @@ Retirada pública contrastada con vía histórica: dopmi_review_rescue admite su
 
 Inspección de fuentes, sin operación: detalle público y despedida posterior al cierre pueden probarse sin pagos, pero publicar exige revisión de video y caso por administrador legítimo distinto del dueño. Cerrar conserva snapshot público; archivar no lo retira. No prometer desaparición pública al terminar una futura ventana: preparar decisión explícita sobre persistencia del caso TEST antes de publicar.
 
-Historias de descubrimiento requieren objetivo proveniente de gastos públicos aprobados; la necesidad planeada y el DRAFT privado no equivalen. Impacto personal usa asignaciones del aportante; tener un caso propio no basta y la autoaportación está prohibida. Fuentes: support_home.dart, 20260927035600_public_case_guardian_progress.sql, 202609130006_rescue.sql, 20261006035705_rescuer_update_bccd.sql y 20261017160820_case_oneoff_allocations.sql. Mantener filas historias/impacto/despedida pendientes; no sustituirlas por detalle ni aprobar gastos ficticios para simular paridad. Dueño root, próximo paquete separado; no publicación autorizada ahora.
+Historias de descubrimiento requieren objetivo proveniente de gastos públicos aprobados; la necesidad planeada y el DRAFT privado no equivalen. Impacto personal usa asignaciones del aportante; tener un caso propio no basta y la autoaportación está prohibida. Fuentes: support_home.dart, 20260927035600_public_case_guardian_progress.sql, 202609130006_rescue.sql, 20261006035705_rescuer_update_bccd.sql y 20261017160820_case_oneoff_allocations.sql. Mantener filas historias/impacto/despedida pendientes; no sustituirlas por detalle ni aprobar fixtures sin paquete y excepción TEST explícitos, ni atribuirles gasto real. Dueño root, próximo paquete separado; no publicación autorizada ahora.
 
 ## 23/10/2026 — B4E1: evidencia privada parcial
 
