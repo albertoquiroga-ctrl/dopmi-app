@@ -1,3 +1,7 @@
+## 23/10/2026 — Evaluación humana de recuperación327
+
+Titular respondió «El recorrido me quedó claro» a la evaluación propia de recuperación. Se acepta claridad de esta experiencia real de cuentaTEST/código/327, por separado del cierre técnico y sin extenderlo a enlace/otrosmodos/cuentas/aceptaciónintegral. Recibo human-experience-acceptance.private.json. Continúa preparación offline de cámara327; no cámara/ON/otra carga autorizados por esta evaluación.
+
 ## 23/10/2026 — B1 recuperación real327 cerrada para cuenta TEST/código
 
 Fuente da14497e/CI39887729078 cuatroSUCCESS/1392Flutter, Playinterno167/2.3.3(327). Titular confirmó contraseña actualizada yloginAdoptar. Root observó home0campos, perfilbásico coincide exactamente con identidadTEST elegida (sin almacenar correo/credenciales), volvióAdoptar; no presentar SELECTfijo como prueba por sí solo de sesión. SQL15:25:08UTC:donor/active/confirmed, preview/enlaces/comercial/videoOFF/job6pausado/grantrevocado. Edge15:27:36UTC:34digestsidénticosbaseline, video/cleanupOFF. Un reinicio real preservó resetvacío; password/login atribuídos al titular, no captura deenvío/mensajeéxito.
