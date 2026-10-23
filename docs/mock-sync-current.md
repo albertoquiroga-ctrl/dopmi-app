@@ -1,3 +1,9 @@
+## Checkpoint — 23/10/2026: CI40011439583 viva; decisión DRAFT pendiente
+
+Código d87290cd1a1b7f10d18309b76261db75e1f4ee8f subido y remoto comprobado. Delta: dos mensajes de video expense_evidence corregidos; producto/código cerrados, analyze0 y1,400Flutter locales PASS. CI integral40011439583 de ese SHA sigue viva: backend120612532009 yweb/db120612532311 SUCCESS; iOS120612532343 yFlutter120612532353 en curso. Seguir mismo run, nunca duplicarlo. La API REST autenticada sí lo muestra; el conector devolvió vacío incluso para SHA anterior conocido y no sirve como prueba de ausencia.
+
+Instalado Play168/2.3.3(328)/93499ad7; delta nuevo sin build. B4E1 cerrado OFF y permiso consumido, gastoDRAFT/PDF retenidos, segundo clip sin usar. Pregunta de producto sin respuesta: video en necesidadDRAFT o editor completo; no implementar por silencio. Root única cola. Siguiente: comprobar terminal y logs del mismo run; respuesta humana para accesoDRAFT; mantener pendientes B0–B7 y permisos propios. Sin nuevoON/build/publicación/dinero.
+
 ## Checkpoint — 23/10/2026: B4E1 parcial cerrado OFF
 
 Mock20d21; branch codex/finish-release-20261015, HEAD previo3d141ffa; runtime93499ad7 / CI39988317443 cuatro SUCCESS /1400Flutter, Play168/2.3.3(328) Samsung. Permiso call_bcfda consumido: agradecimiento ready→deleted, casoDRAFT31, gastoDRAFT4/PDF privado retenidos; segundo clip no subido. Edge34OFF18:57:33 y SQL18:58:57 antes del límite18:59:15: job6pausado/cola0/finanzas e históricos intactos; Adoptar restaurado. Recibos y retro en progress23oct y expense-evidence-private-qa/execution/outcome.partial.actual.private.json.

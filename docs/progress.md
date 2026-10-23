@@ -1,3 +1,7 @@
+## 23/10/2026 — CI del delta privado localizada y en curso
+
+Candidato d87290cd1a1b7f10d18309b76261db75e1f4ee8f remoto comprobado. REST GitHub confirma run40011439583: backend yweb/base de datos SUCCESS; iOS/Flutter siguen en curso al corte. Recibo private-copy-ci.actual.private.json. Conector vacío también para93499 conocido: no interpretar como ausencia deCI ni reiniciar. Seguir mismo handle hasta terminal; todavía sin CI integral final afirmada. Análisis y1,400Flutter locales aprobados. Instalado328 separado, sin nueva build/ON. Turno anterior fue progreso (corrección yQA reales); éste verifica espera de proceso vivo, no completa objetivo. Decisión de acceso videoDRAFT pendiente, sin cambio dependiente por inferencia.
+
 ## 23/10/2026 — Corrección local de mensajes de evidencia privada
 
 VideoUpload distingue expense_evidence en subtítulo y estado ready: revisión privada del gasto, sin prometer publicación. Propósitos públicos conservan textos; identidad, permisos, carga y moderación intactos. Producto y código inspeccionaron diff/callers y cerraron ambos P2. Root: flutter analyze sin hallazgos, 22 pruebas existentes video_widgets/rescue_video_editor PASS; suite Flutter completa: 1,400 PASS (12m51), exit0. No nueva build/distribución/ON; la328 instalada conserva texto anterior. Recibo privado private-copy-validation.actual.private.json en execution B4E1. Decisión sobre acceso al control desde necesidad DRAFT pendiente.
