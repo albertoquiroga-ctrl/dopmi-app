@@ -1,3 +1,9 @@
+## 22/10/2026 — Cuenta TEST elegida; migración inerte autorizada
+
+Respuesta call_a97b6156b72e4646a591d339f84550e7: «Cuenta TEST actual del Samsung; salida externa bloqueada por ahora». Fija destinatario de la futura vista privada; no seleccionar otras cuentas, no URL ni compra. La identidad de esa cuenta se volverá a comprobar legítimamente antes de conceder acceso. Preparar catálogo sintético y acceso sin rol administrativo; ON y acceso real se acreditarán con su paquete, sin interpretar esta selección como activación comercial.
+
+Respuesta call_67887b8d301242bcb9fad43aed9e4cab: «Sí, aplicar sólo la migración inerte DEV». Autoriza únicamente cuatro tablas privadas/tres funciones, Tienda/enlacesOFF e inventarios vacíos; excluye tester grants, catálogo, activación, Edge, build y compras. Ejecutada una vez y consumida; resultado/hashes/mapeo en progress/auditoría. No renueva ventanas de video ni permisos de distribución.
+
 ## 22/10/2026 — Tienda privada TEST elegida y QA administrativa autorizada
 
 Respuestas explícitas: call_71f917332e4e4ae5a4b4f5f1098126b3: «Vista privada TEST para cuentas elegidas (recomendado)»; call_8f0c600d6af1482f908f8e9feb03ef44: «Sí, autorizar revisión privada y cierre OFF». Superseden las preguntas pendientes anteriores sólo para esos alcances. Tienda: acceso por servidor para cuentas seleccionadas por el titular, sin conceder admin, catálogo sintético separado e identificado TEST, público/comercios pendientes/compras reales cerrados. Se consultaron cuentas concretas y destino autorizado; aún sin respuesta al corte. Preparar con grants vacíos y salida OFF; no inferir cuentas ni activar por esta elección. Una futura migración/despliegue/configuración/build conserva sus gates y paquete concreto.

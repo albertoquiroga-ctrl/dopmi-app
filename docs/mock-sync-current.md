@@ -1,3 +1,9 @@
+## 22/10/2026 — Migración privada TEST aplicada inerte; cuenta elegida
+
+Fuente da14497e/CI39887729078 cuatroSUCCESS/1392Flutter; HEADdocumental se registra por Git. SupabaseDEV migración20261023030801→local20261023013846 aplicada1vez tras permisoespecífico/preflightfresh;14postcheckstrue/historia83 con82previasexactas. Preview/enlacesOFF, grants/productos/destinos0, comercial/video/job6OFF. Transporte agregó sóloCRLFEOF: fuente932f…13730B, ejecutado/remoto48fd…13732B; bytes conciliados/revisados y amboshashes conservados, sinreapply. Detalleauditoría/progress/receipts existentes.
+
+Titular eligió cuentaTESTSamsung y salidaexternabloqueada. Siguiente root: preparar/revisar setupcatálogoTEST+grantREVOCADO/previewOFF y paquete nueva distribución para sus permisos concretos; ninguna activación/grant/seed/build autorizada por la migración. Antes de acceso, revalidar identidad legítima actual. Instalado326/D377/Playinterno, QA administrativa previa cerradaOFF/modoAdoptante. Una colaFlutter, mock20d21 y restantespendientesB0–B7 debajo; no aceptación integral.
+
 ## 22/10/2026 — Tienda candidata: CI integral aprobada; permisos concretos pendientes
 
 Fuente da14497e66d8790e8eda7ab6d83a249a89ddca09/mock20d21. CI39887729078 cuatrojobs completed/SUCCESS:1392Flutter/analyze0/capturas/Androiddebug, admin48/build/web4, backend979total/971PASS/8skip/0fail, PostgreSQL316/OAuth11/config17 e iOSsimuladorPASS. Verificación terminal por MCP y logs reales; lector local final timeout, sin repetir CI. Sin build distribución/publicación/instalación/aceptación: Samsung326/D377/Playinterno permanece.

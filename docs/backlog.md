@@ -1,3 +1,7 @@
+## 22/10/2026 — Tienda inerte aplicada; siguiente setup privado y distribución
+
+MigraciónDEV autorizada aplicada1vez/version20261023030801,14/14postcheckstrue/OFF/empty/hist83prev82exactas;permiso consumido. CuentaTESTSamsung/salidaexternabloqueada elegidas, no pendientes de selección. Root prepara setupprivadoREVOCADO/OFF+catálogo sintético y paquete de distribución antes de solicitar permisos concretos; sin seed/grant/ON/build por migración. CI da14497e cuatroSUCCESS e instalado326/D377 conservados. Ver checkpoint/progress/auditoría para discrepanciaCRLF reconciliada y límites; alcanceintegral sin cerrar.
+
 ## 22/10/2026 — Da14497e verificado integral; operación inerte pendiente
 
 CI39887729078 cuatroSUCCESS/1392Flutter y gates backend/admin/PostgreSQL/config/iOSsimulador aprobados. PaqueteDEV inerte revisado y ensayado, pregunta específica de autorización enviada; cuentas/destinoTiendaprivada también consultados, sin respuesta al corte. Root/únicaFlutter: respuesta→preflight fresco→unapply y postflight si autorizado; sin ON/grant/seed/build implícitos. Samsung326/D377 intacto y QA administrativa cerradaOFF. No cerrar B0–B7 ni aceptación integral por CI.
