@@ -1,3 +1,11 @@
+## 23/10/2026 — Encabezado del detalle sin gastos disponibles
+
+Titular eligió «Ocultar el encabezado sin gastos disponibles» en `call_8c2fcb8700814283af4c80222bda0da9/item0`. En el detalle público, ocultar sólo «Ayúdame a recuperar:» cuando no existan gastos elegibles para aportar; conservar historia, videos, aviso, gastos/historial y CTA deshabilitado. Con gastos disponibles, conservar el encabezado. No cambia autorización, pagos, disponibilidad del servidor ni activa video. El mock20d21 no era uniforme entre detalle y vista previa vacía; esta decisión resuelve la adaptación real. Implementación/pruebas/candidato nuevos se verifican por separado de la329 instalada.
+
+## 23/10/2026 — P1+P2 público TEST autorizado, ejecutado y cerrado OFF
+
+Titular autorizó `call_a0d969b8fd294cc2b0f68c93e6d6ca87/item0` para el paquete corregido e555c7b1…fb927f con entrada exacta ensayadaOFF. Ventana consumida: casoCLOSED40 públicoDEV, nombre/historia de prueba sin solicituddinero, planned20 retirado y gastoDRAFT4/PDF privados conservados. Thanks/farewell sintéticos2s aprobados por admin distinto, retenidos con foto/historial según decisión previa. CierreOFF/pausado/Adoptar comprobado anteslímite. No gastosaprobados/aportaciones/dinero. La reproducción pública de farewell enSamsung y aceptación integral no se acreditaron; permiso consumido no habilita otraON. No nueva decisión humana sobre el encabezado genérico target0 ni permisoP3financiero/admin deploy/build inferidos. Detalle/evidencia en checkpoint y progress.
+
 ## 23/10/2026 — Permiso P1+P2 consumido sin publicación
 
 El titular autorizó P1+P2 y cierre OFF (`call_2ef9beff44244507a794874bb9a85bd8/item0`). Intento detenido por entrada automática de texto antes de guardar o cargar; todos los servicios restaurados OFF/job6pausado y Adoptar. No quedan cargas ni publicación autorizadas por esa ventana. Se conserva la decisión de caso públicoTEST trasCLOSED, sin pedir dinero y retirando sólo estimación20; todavía no aplicada. Antes de otra ventana, preparar/verificar texto exacto con servicios apagados. Véase progress y outcome en public-video-qa-design/operation/execution. No es aceptación integral ni autorización P3/dinero.

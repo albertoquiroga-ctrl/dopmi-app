@@ -1,3 +1,11 @@
+## 23/10/2026 — B4 público: agradecimiento Samsung y despedida aprobada postcierre
+
+329/2582/115%: P1 uploadlocalpreview→adminreview38→casoapproved39→detallepúblico/cuadrorenderizadoSamsung; dueñoCLOSED40→P2previewlocal/upload/review40completaadmin. HTTPanon exact1→2clips yOFFemptydisabled; SQLanonparentCLOSEDtarget0/childausente, privadoDRAFT4/PDF intacto. Retención2clips/caso/foto acordada. CierreOFF/pausado/34digests/Adoptar antesdeadline, comparadorrealPASS. NO despedidapúblicoSamsung/audiofísico/movimientocontinuo/otraidentidad/iOS/aceptación. Hallazgos colaadminstale (fixlocalenprogreso) y encabezadotarget0 (diálogopendiente); detalle/retro/checkpoint enprogress. No cerrarB4/B7 ni repetirpermiso/clips.
+
+## 23/10/2026 — B4 preparación de contenido validadaOFF, público pendiente
+
+Samsung329/115%: nombre e historia exactos legibles, descartados sin guardar, Adoptar restaurado; SQLfullbaseline conservada. Freeze4 e555c7b1…fb927f cerrado por producto/código/seguridad,16 pruebas offline. Sólo demuestra entrada local; no caso público, despedida, historias/Impacto ni aceptación. B6 evidencia vigente confirmada por su responsable, sin nueva implementación/repetición requerida. Root espera permiso propio para operación propuesta; detalles checkpoint/progress.
+
 ## 23/10/2026 — P1+P2 autorizado, detenido por entrada de texto; cierre comprobado
 
 Permiso `call_2ef9beff44244507a794874bb9a85bd8/item0` CONSUMIDO. SQL ON desde reserva22:55:56UTC y Edge22:56:27; cierre SQL OFF/job6pausado/cola0 y Edge OFF antes del límite conservador23:14:34UTC. Receipt final SQL23:08:56 y Edge `edge-final.actual.private.json`: 34 digests exactamente iguales al inicio. Adoptante/Adoptar restaurados y capturados. No se guardó el formulario, subió ningún clip, revisó, publicó ni cerró el caso. Comparación completa del preflight final con el inicial, salvo hora, idéntica: casoDRAFT33, hijoDRAFT4/PDF, 14assets históricos, historial, seis trabajos, finanzas y Tienda intactos. La estimación20 sigue presente y privada; quitarla sigue decidido para la futura preparación por UI.

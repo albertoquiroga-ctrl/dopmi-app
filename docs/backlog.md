@@ -1,3 +1,11 @@
+## 23/10/2026 — P1 público y P2 revisión/retención acreditados; cierre OFF
+
+CasoTESTCLOSED40/2clipsaprobados/HTTPpúblico1→2→OFF, P1Samsungvisual/P2admincompleto; farewellpúblicoSamsung/audio/otraidentidad/historiasImpacto/iOS/aceptación pendientes. Cierre23:40 antesdeadline23:43, child4/PDF/finanzas preservados. Root integra fixadminfilaobsoleta (workerpropiedad VideoModeration.tsx/test), pruebas/revisiones antes paquete propio de deploy; producto coteja encabezadotarget0. Ver checkpoint/progress y execution2; no reabrir permiso/clips consumidos. Alcance B0–B7 intacto.
+
+## 23/10/2026 — Preparación P1+P2 corregida y revisada
+
+Entrada exacta nombre/historia probadaOFF y descartada; baseline33/4/14assets preservada. Paquete freeze4 e555c7b1…fb927f/16pruebas offline/revisiones producto-código-seguridad cerrado, sin ON/guardado/publicación. Root: permiso propio pendiente→sesiones/preflight fresco→única ventana con cierre. Checkpoint/progress contienen evidencia y límites; no repetir B6 técnicamente cubierto ni renovar permiso consumido. Alcance integral sigue abierto.
+
 ## 23/10/2026 — P1+P2 autorizado, detenido por entrada de texto; cierre comprobado
 
 Permiso `call_2ef9beff44244507a794874bb9a85bd8/item0` CONSUMIDO. SQL ON desde reserva22:55:56UTC y Edge22:56:27; cierre SQL OFF/job6pausado/cola0 y Edge OFF antes del límite conservador23:14:34UTC. Receipt final SQL23:08:56 y Edge `edge-final.actual.private.json`: 34 digests exactamente iguales al inicio. Adoptante/Adoptar restaurados y capturados. No se guardó el formulario, subió ningún clip, revisó, publicó ni cerró el caso. Comparación completa del preflight final con el inicial, salvo hora, idéntica: casoDRAFT33, hijoDRAFT4/PDF, 14assets históricos, historial, seis trabajos, finanzas y Tienda intactos. La estimación20 sigue presente y privada; quitarla sigue decidido para la futura preparación por UI.
