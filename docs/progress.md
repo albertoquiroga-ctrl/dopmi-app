@@ -1,3 +1,9 @@
+## 23/10/2026 — Candidato2582 aprobado por CI integral; listo para permisos concretos
+
+CI40013783146 completed/success de2582d6a6b1eaf9225a7c459810b5e1138eeeeb10, cuatrojobs SUCCESS verificados REST yMCP. Logs reales:1413Flutter/analyze0/Androiddebug, iOSsimulador compilado; admin48/web4/config17/backend971PASS+8skip/PostgreSQL316/OAuth11/concurrenciaurgencia6 yconcurrenciasGuardian/adopción. Integración local deAuth/adopción/rescate/comunidad5PASS. Recibos:need-editor-release/ci-final.private.json yci-log-excerpts.actual.private.json. No física iOS ni distribución inferida.
+
+Preflightreal nuevoSQL yEdge/34digests trasreload PASS: snapshot financiero/datos/13assets/seisjobs/cuatrorecords idénticos, media/comercial/preview/enlacesOFF, colaHTTP-runs0/job6pausado; sourceEdge53/49 siete archivosbyteexactos17c8 ycodemagicYAML exacto. Rootvalidador local comprobó contratoSQL/digests/edge/CI sin autoridad. Paquete329review36ecc017…01498 yQAcondicional374a47e8…aa4acc listos, permisospropios pendientes; proposedpinfalse/null, no reserva/tag/POST/ON. La328 instalada siguefuente93499ad7; compararartefacto/buildPlay329real trasautorizar. Repetir lecturas frescas antes de operar aunque preparacióngreen. B0–B7no cerrada.
+
 ## 23/10/2026 — Preparación329 y QA de necesidad cerradas; CI sigue viva
 
 Fuente2582 remota. CI40013783146 confirma backend/webdb/iOS SUCCESS; Flutter pasó pruebas/capturas y compila Android, sin conclusión integral todavía. La40011439583 anterior quedó3SUCCESS/Fluttercancelled por sustitución; no transferir éxito. Recibo need-editor-ci-jobs.actual.private.json, no nuevo proceso.

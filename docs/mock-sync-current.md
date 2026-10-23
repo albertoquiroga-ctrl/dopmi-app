@@ -1,3 +1,11 @@
+## Checkpoint — 23/10/2026:2582 CI completa; permisos329/QA pendientes
+
+Mock20d21; código2582d6a6b1eaf9225a7c459810b5e1138eeeeb10 remoto. CI40013783146 COMPLETED/SUCCESS cuatrojobs:Flutter120621103434/1413PASS/analyze0/Androiddebug, iOS120621102715 simulador, webdb120621103069 ybackend120621103318. Logs reales+CIrecibo enneed-editor-release.34focal/24PNGfixture/revisiones producto-código-seguridad cerradas; control privado dentro de necesidadDRAFT implementado, noinstalado.
+
+Distribución propuesta329/android-guardian-internal, paquete need-editor-release/manifest36ecc017…01498 revisado; sin autoridad/pinoperacional/reserva/tag/build. QAcondicional329instalada:need-editor-evidence-qa/manifest374a47e8…aa4acc revisada y4purePASS; único clipevidence existente/mismo gastoDRAFT4/PDF, sinThanks/envío/nuevoexpense. Permisos propios pendientes. Sample20389B12c51f61…009a37 EXPIRED/guardadoexactoUTF8/raiseanteswrites, nunca ejecutar.
+
+PreflightSQL/Edge/34OFF reciente PASS, tuplas53/49 y7fuentes byteexactas17c8;13assets6jobs4records/case31/child4/protegido21/oldexpense32/finanzas intactos ycola0. Repetir recibos alenvío/ON; no renovarhoras. Root única colaFlutter/dispositivo, próximo: autorización concreta→preflightfresh/pinreviewed→unadist329→Playinstall→QAconpermiso propio. Samsung sigue328/Play168/source93499ad7, Adoptar. TodoOFF/job6paused; B4E1consumida. Otros pendientes B0–B7/historiaseimpacto/cámaraaudio/otraidentidad/públicodespedida/iOSfísico/aceptación se conservan.
+
 ## Checkpoint — 23/10/2026 20:00UTC: candidato2582 y paquetes revisados
 
 Código2582d6a6b1eaf9225a7c459810b5e1138eeeeb10 remoto/branchcodex/finish-release-20261015; mock20d21. Control privado en necesidadDRAFT y mensajes privados implementados,34focal/analyze0/24PNGfixture/revisionesproducto-código-seguridad cerrados. CI40013783146 viva: backend120621103318,webdb120621103069,iOS120621102715 SUCCESS; Flutter120621103434 Androidbuild activo. Seguir mismo run hasta terminal; no duplicar. CIprevia40011439583:3SUCCESS yFluttercancelled al superseder candidato, no4SUCCESS.
