@@ -1,3 +1,13 @@
+## 22/10/2026 — Corte327: distribución real y setup privado revocado
+
+| Grupo | Estado comprobado | Límite/siguiente |
+|---|---|---|
+| B5 candidato | da14497e/CI39887729078;2.3.3(327)/artefacto/Playinterno167/SamsungVending/sesiónTESTconservada | QA catálogo real aún sinON/permiso, aceptación interna pendiente |
+| B5 setup | 8productosTEST/1grantREVOCADO/0destinos/preview-enlacesOFF/16checksTRUE; operación autorizadaúnica | Ventana propia20min preparada y revisada, respuesta pendiente; no activarcomercio |
+| B6 Ayuda | DosFAQ corregidas físicamente327/115%, legibles, regresoPerfilXMLexacto/productoreviewcerrado | No eliminación ni cambio de datos ejecutados; resto navegación326 se reutiliza |
+
+Video/cleanup/comercialOFF/job6pausado y34digestsEdgeexactos; no nuevas cargas/dinero/aceptación integral. Otros pendientes B0–B7 del checkpoint vigentes.
+
 ## 22/10/2026 — Corte incremental Tienda: build enviada; setup autorizado espera
 
 B5 fuente da14497e/CI39887729078 cuatroSUCCESS/1392Flutter, migración inerte20261023030801 aplicada14checksPASS/OFFvacía. CuentaSamsungTEST elegida/salida bloqueada; setup8fichas+grantREVOCADO/OFF autorizado sólo después de distribución, aún no aplicado. Única buildandroid-guardian-internal enviada tras permiso propio:6adad717358c69c21cb0817c en compilación, expectativa327 sin afirmarartefacto/Play/install. Samsung326/D377 sigue instalado. Siguiente root: mismo handle→artefacto/Play/update→setupfresh→paqueteQA propio revisado/permiso antesON. B6 dosFAQ del candidato se prueban físicamente tras327; navegación326 ya acreditada no se repite. Pendientes de B0–B7/aceptación e iOS físico intactos.

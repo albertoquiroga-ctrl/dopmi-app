@@ -1,3 +1,9 @@
+## 22/10/2026 — Distribución327 y catálogo TEST revocado autorizados y consumidos
+
+call_24d3d2135e7f44fea056d2310bccc28a: «autorizo» una buildandroid-guardian-internal/Playinterno/updateSamsung del SHAda14497e, sinQAON. Ejecutadauna vez6adad717358c69c21cb0817c,2.3.3(327)/release167/instalada desdePlay comprobados; permiso consumido. call_755bafd7d5c54703b6e5f97eed1e39ce: «Autorizo» setup8TEST+grantREVOCADO/OFF payloadb968…24c8 después de distribución; ejecutadouna vez/16checksTRUE, permiso consumido. No acceso efectivo, admin, compra o comercial por estas respuestas.
+
+La ventana móvil Tienda<=20min es una operación separada preparada/revisada y consultada, todavía sin respuesta al corte. Cuenta elegida y salida bloqueada siguen resueltas; no volver a preguntar esas decisiones ni interpretar selección/build/setup como ON. Activacióncommercial/aceptación interna y aceptaciónintegralB0–B7 continúan separadas.
+
 ## 22/10/2026 — Cuenta TEST elegida; migración inerte autorizada
 
 Respuesta call_a97b6156b72e4646a591d339f84550e7: «Cuenta TEST actual del Samsung; salida externa bloqueada por ahora». Fija destinatario de la futura vista privada; no seleccionar otras cuentas, no URL ni compra. La identidad de esa cuenta se volverá a comprobar legítimamente antes de conceder acceso. Preparar catálogo sintético y acceso sin rol administrativo; ON y acceso real se acreditarán con su paquete, sin interpretar esta selección como activación comercial.

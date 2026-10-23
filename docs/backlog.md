@@ -1,3 +1,7 @@
+## 22/10/2026 — 327 instalada y setup TEST cerrado; siguiente QA privada propia
+
+Root/únicaFlutter: esperar permiso específico de ventanaTienda327<=20min ya consultado; paquete revisado5tests/PGlite11rechazos+cierre. NoONsinrespuesta. Distribuciónautorizada completa2.3.3(327)/da14497e/Playinternorelease167/SamsungVendingsesiónconservada; build6adad717…terminó13SUCCESS, permiso consumido/noPOSTnuevo. Setupcall755b aplicado1vez16checksTRUE/8TEST/1grantREVOCADO/0destinos/preview-enlacesOFF; permiso consumido/noINSERTnuevo. SQL04:08:51 y34digestsEdgeOFF comprobados, job6pausado. DosFAQB6 verificadas físicamente327/productoreviewcerrado; reutilizar navegación326 restante vigente. Pendientesintegrales/aceptación en checkpoint/tablero.
+
 ## 22/10/2026 — Tienda inerte aplicada; siguiente setup privado y distribución
 
 MigraciónDEV autorizada aplicada1vez/version20261023030801,14/14postcheckstrue/OFF/empty/hist83prev82exactas;permiso consumido. CuentaTESTSamsung/salidaexternabloqueada elegidas. Titular autorizó build exactada14497e y setupprivado8TEST+grantREVOCADO/OFF después de distribución; ver referencias propias en checkpoint/progress. ÚnicoPOST→handle6adad717358c69c21cb0817c en compilación: root observa mismo intento, verificaartefacto/Play/updateSamsung y después aplica setupúnico conpreflightfresh. No repetirPOST ni ON; no seed/grant mientras espera distribución. CI39887729078 cuatroSUCCESS e instalado326/D377 conservados. Ver auditoría para discrepanciaCRLF reconciliada y límites; alcanceintegral sin cerrar.
