@@ -677,3 +677,11 @@ Hay cambios locales ajenos de admin, móvil, documentación legal/operativa y ot
 archivos sin publicar; no revisados ni incluidos en este cierre. No reset ni limpieza.
 Teléfono dejado en modo Rescatista, pantalla social con ambas conexiones; no se guardó
 el editor ni se restauró el modo previo Adoptante. No operar el teléfono al cerrar.
+
+## 23/10/2026 — Cámara 327: cierre parcial, servicios OFF y Adoptar restaurado
+
+Referencia mock20d21 y Play2.3.3(327)/da14497e conservadas. Paquete cámara97f9dfdd…95f9a autorizado call_d0936b y consumido: una toma humana, sin nueva build/despliegue/dinero/publicación. Nativa mostró Reproducir/Reintentar/Aceptar; dos intentos automatizados abortaron por UI stale ANTES de input. El titular reportó que tardó y desapareció; lectura posterior de Dopmi mostró paso2 sin selección. Causa de la desaparición no determinada. No hubo carga ni recurso nuevo; revisión local/duración/audio/reproducción propia y borrado de esta toma NO verificados. No se borraron medios locales; ubicación del archivo no acreditada.
+
+Cierre conservador: primera posibilidadON15:57:16.472593UTC, Edge34digests originalesOFF comprobados16:13:30.467UTC, antes de límite16:17:16.472593UTC. SQL16:15:23.263198 confirma video/TiendaOFF, job6pausado, cola/HTTP/runs0,12assets históricos y6jobs exactos,83migraciones y expediente protegido21 iguales; borrador25→26 conserva foto1/necesidad/sin gastos/snapshot. No hubo nuevo asset ni eliminación que conciliar. Teléfono restaurado por UI a modo Adoptante→Adoptar, snapshot camera327-closed-adoptar.
+
+Evidencia privada: .tools/integral20d21-20261018/camera327-private-qa/execution/{outcome.partial.private.json,post-close.actual.private.json,post-close-verified.private.json,edge-flags-closed.actual.private.json,camera327-closed-adoptar.*}. Implementado/publicado327 no equivale a aceptación cámara. Dueño root; siguiente: revisión independiente del cierre/retro y preparar siguiente paquete acotado, sin otra toma ni ON con este permiso. Alcance integralB0–B7 y pendientes restantes se conservan.
