@@ -1,3 +1,9 @@
+## 23/10/2026 — Candidato0d7eb5e0: CI integral aprobada
+
+CI39882153570 del SHA exacto0d7eb5e02fa72c76797817055698171cf40ae19c terminó con cuatro jobs SUCCESS. Logs reales:1380 Flutter PASS/analyze0, capturas del gate y Android debug compilado; admin48/build y web4, backend973 total/965PASS/8skip/0fail, PostgreSQL316, OAuth11 y configuración17 PASS. Paso iOS simulator compilation SUCCESS; no firma/dispositivo iOS acreditados. Recibos video-group-ci-live/verified y logs de jobs120181777281/120181777336; no resultado trasladado de otro SHA.
+
+Las correcciones de fin completo de historias y encabezado de urgencia quedan implementadas, revisadas y verificadas en CI. No hay nueva build de distribución, publicación, instalación ni aceptación: Play326/D377 se conserva. Preparación administrativa privada completa/revisada, pregunta de autorización pendiente; elección nueva de acceso interno Tienda también pendiente. No ON por silencio. Root conserva única cola Flutter y alcance integralB0–B7; demás pendientes físicos/humanos del checkpoint no se cierran por CI.
+
 ## 23/10/2026 — B5: límite de la evidencia y decisión interna consultada
 
 Explorer store_internal_acceptance_scope inspeccionó store_repository/store_screen, SQL y capturas/tests/ledger. No hay preview móvil autenticado con servidor OFF; evidencia positiva sigue siendo fixture. No equivale a bug del gate ni a aceptación integrada. Se consultó una decisión nueva de acceso para evaluar Tienda en el teléfono sin abrirla al público; alternativas/recomendación/ejemplo en product-decisions. Sin respuesta: no se implementa ni concede acceso. CI y preparación de video siguen independientes; no se reduce B5 a capturas ni se marca cerrado.
