@@ -1,3 +1,7 @@
+## 23/10/2026 — Frontera técnica posterior a329
+
+B6 técnicamente verificado por equivalencia y revisión independiente; aceptación integral pendiente, sin otra implementación genérica lista. Root espera las preguntas humanas existentes para concretar B4 público (persistencia y estimación20), con contenido/foto y clip P1 ya preparados sólo localmente. camera327_private_prep prepara store-passive-expiry-qa independiente para caducidad pasiva B5 con filtros abiertos; no ON/autoridad ni cambio comercial. No repetir cargas/fixtures/CI/builds consumidos. Mantener cámara/audio físico, otra identidad, historias/Impacto/despedida, iOS y aceptación integral en alcance.
+
 ## 23/10/2026 — 329 distribuida; evidencia privada en necesidad verificada
 
 Distribución y ventana privadas autorizadas ya consumidas y cerradas. Root: cerrar revisión independiente de evidencia/demo de 329 y preparar el siguiente paquete de B4 público, resolviendo primero persistencia de un caso TEST cerrado, identidades legítimas y alcance financiero TEST. No otro ON/build/carga con los permisos consumidos. Conservar pendientes cámara/audio físico, otra identidad autenticada, historias/Impacto/despedida, B6, iOS y aceptación integral; checkpoint distingue resultados reales y límites.
