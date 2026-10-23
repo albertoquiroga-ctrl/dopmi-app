@@ -1,3 +1,7 @@
+## 23/10/2026 — Permiso P1+P2 consumido sin publicación
+
+El titular autorizó P1+P2 y cierre OFF (`call_2ef9beff44244507a794874bb9a85bd8/item0`). Intento detenido por entrada automática de texto antes de guardar o cargar; todos los servicios restaurados OFF/job6pausado y Adoptar. No quedan cargas ni publicación autorizadas por esa ventana. Se conserva la decisión de caso públicoTEST trasCLOSED, sin pedir dinero y retirando sólo estimación20; todavía no aplicada. Antes de otra ventana, preparar/verificar texto exacto con servicios apagados. Véase progress y outcome en public-video-qa-design/operation/execution. No es aceptación integral ni autorización P3/dinero.
+
 ## 23/10/2026 — Persistencia pública del caso TEST tras cierre decidida
 
 Respuesta directa del titular: conservar el casoTEST público enDEV despuésdeCLOSED para probar despedida, claramente identificado como prueba y sin solicitar dinero. Resuelve la pregunta de persistencia; no reabrirla. Se prepara paquete P1detalle+P2despedida sin gastoaprobado/aportaciones, con estimación20 retirada sóloporUI según decisión anterior y childDRAFT/PDF privados conservados. El caso/foto/snapshot seguirán públicos tras cierre; apagar video/limpieza no retira esa publicación. No implica aceptaciónintegral, dinero real, permiso P3 de capacidad/asignaciones, nuevoON/build/deploy ni ejecución pública ahora: el titular pidió continuar PREPARANDO el paquete concreto para evaluar su autorización.
