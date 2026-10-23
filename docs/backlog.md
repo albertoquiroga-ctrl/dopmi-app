@@ -1,3 +1,7 @@
+## 23/10/2026 — Urgencia QA cerrada; paquete agrupado de UI/video
+
+Urgencia326 real verificada yOFF/pausado00:46:49UTC, permiso consumido; necesidadTESTprivada residual y archivo conservados, modo inicialAdoptante restaurado. D273CI4SUCCESS. Root/únicaFlutter: cerrar encabezado duplicado + finreal historias + carrera de controles, revisar fuentes/capturas/tests y ejecutar gate exacto de fuente nueva. Sin nueva release/ON por inferencia. Checkpoint/progress contienen límites y pendientes integrales.
+
 ## 23/10/2026 — Continuación B6 y video
 
 B74CI39875132745 cuatroSUCCESS; copy aún sin release. D273 incorpora cobertura local19PASS de despedida tras cierre y README; CI39877175393 en curso, sin trasladar resultado anterior. Root/colaFlutter única: completar gate exacto y preparar/revisar urgencia privada sin ON implícito. Instalado326/D377 intacto; galeríaQA cerradaOFF y permiso consumido. Checkpoint y progress conservan límites/pendientes integrales.

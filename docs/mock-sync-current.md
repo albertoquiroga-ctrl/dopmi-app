@@ -1,3 +1,11 @@
+## 23/10/2026 — Urgencia326 cerrada; candidato agrupado verificado localmente
+
+Mock `20d21` congelado. Instalado **2.3.3 (326), D377, Play interno**. Candidato **0d7eb5e02fa72c76797817055698171cf40ae19c**: fin completo de historias y un solo encabezado de urgencia. Revisiones independientes cerradas; dos regresiones nuevas, 28 vigentes, tres capturas normal/115 %/320 px al 200 % aprobadas y analyze sin incidencias. El recibo `video-group-verified` separa resultados de logs históricos mixtos. CI exacta **39882153570 en curso**; el éxito anterior de D273 no se traslada. Sin nueva build.
+
+QA de urgencia autorizada, 00:37:25–00:46:49 UTC: cerrada con video/limpieza OFF, trabajo 6 pausado, cola/HTTP/ejecuciones abiertas en cero y Stream vacío. Único video nuevo eliminado; diez históricos, seis trabajos y expediente protegido intactos. Borrador 18 conserva una foto y la necesidad prevista TEST de $20, privada; clip local conservado y modo Adoptante restaurado. Permiso consumido. Evidencia en `urgency-private-qa/execution`; detalle y retro en progress.
+
+Dueño: raíz, única cola Flutter. Siguiente: comprobar esa CI y terminar el paquete privado de administración antes de pedir su alcance propio; preparación offline a cargo de urgency_heading_impl. Pendientes: Auth/correo/reinicio real, cámara/audio, decisión de foto ya consultada, administración/otra identidad/otros propósitos/historias/impacto reales, Tienda interna y aceptación integral B0–B7. iOS físico sin acreditar. Implementado, verificado, publicado, instalado y aceptado siguen separados.
+
 ## 23/10/2026 00:24 UTC — CI B6 aprobada; despedida tras cierre cubierta localmente
 
 Mock20d21 congelado; instalado **2.3.3 (326)/D377/Play interno** intacto. B74 (`b74b9fc33fb639ba9828585dfeb64a13e67628f9`): CI39875132745 cuatro SUCCESS,1378 Flutter PASS/analyze0/capturas y Android debug; admin48/build, backend964PASS/8skip/0fail, PostgreSQL316, OAuth11 e iOS simulador aprobados. Dos FAQ corregidas aún no publicadas ni instaladas. No trasladar este éxito al commit siguiente.
