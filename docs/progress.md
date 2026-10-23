@@ -1,3 +1,13 @@
+## 23/10/2026 — Video privado en necesidad DRAFT implementado localmente
+
+Decisión humana call_6b833b34ec5e4687981382306f3d973c aplicada: CasePublicationNeedEditor reutiliza RescueVideoSection únicamente expense_evidence. Campos/urgencia/adjuntos sucios requieren guardar antes de vincular ID/versión del gasto; fallo conserva necesidad de guardar. No envía gasto/caso ni sustituye comprobante, campos requeridos o moderación. Cambio de identidad antes/durante save impide adoptar resultados y reemplaza formulario por aviso/Cerrar, sin datos ni accesos privados anteriores.
+
+Verificación root:34focalPASS (7integración nuevas,6layout,regresiones publicación/editor), flutter analyze0/33.7s, formato aplicado y diffcheck.24PNG de widget real normal/Samsung115/320200 con/sin inset260; producto inspeccionó muestra y fuente sin P1/P2. Código y seguridad cerrados tras corrección agrupada de retenciónUI. Evidencia: expense-evidence-private-qa/need-editor-validation.actual.private.json, need-editor-focused.actual.log y need-editor-layout. Repos/política/teclado son fixtures; no picker/decoder/upload real ni Samsung actualizado. CI del candidato nuevo pendiente; CI40011439583 verifica sólo d872 y sigue Androidbuild al corte, resto3SUCCESS.
+
+Retro independiente: se demostró que deshabilitar acciones no basta si los campos/adjuntos siguen visibles; motivo inicial de la omisión no demostrado. Una mejora root: conservar expectativa observable de ausencia de datos/accesos privados al cambiar identidad antes/durante save en estas pruebas existentes, sin otrogate. No borrado de memoria ni aislamiento remoto acreditados por esa prueba.
+
+Próximo root: CI exacta del candidato integrado→paquete concreto de distribución y permiso propio→actualización desde Play→QA privada propia con único clip expense_evidence aún sin usar y gasto/PDF retenidos, sin nuevo agradecimiento/envío/creación de gasto. Mantener todos los pendientes B0–B7, fuenteinstalada328 y serviciosOFF; no nueva operación remota autorizada por esta decisión UI.
+
 ## 23/10/2026 — CI del delta privado localizada y en curso
 
 Candidato d87290cd1a1b7f10d18309b76261db75e1f4ee8f remoto comprobado. REST GitHub confirma run40011439583: backend yweb/base de datos SUCCESS; iOS/Flutter siguen en curso al corte. Recibo private-copy-ci.actual.private.json. Conector vacío también para93499 conocido: no interpretar como ausencia deCI ni reiniciar. Seguir mismo handle hasta terminal; todavía sin CI integral final afirmada. Análisis y1,400Flutter locales aprobados. Instalado328 separado, sin nueva build/ON. Turno anterior fue progreso (corrección yQA reales); éste verifica espera de proceso vivo, no completa objetivo. Decisión de acceso videoDRAFT pendiente, sin cambio dependiente por inferencia.

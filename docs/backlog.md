@@ -1,3 +1,7 @@
+## 23/10/2026 — Necesidad DRAFT: decisión implementada, siguiente candidato
+
+Root: cerrar CI d872 existente y validar candidato con control privado en necesidadDRAFT (34focal/analyze0/revisionescerradas); preparar distribución propia y QA del único clip evidencia sin usar sobre gasto/PDF retenidos. No repetir thanks/envío/gasto ni asumir permisoON/build. Decisión ya contestada; fuenteinstalada328 separada. Evidencia/retro en progress23oct; B0–B7 restante conservado.
+
 ## 23/10/2026 — B4E1 parcial cerrado
 
 QA privada consumida y cerrada OFF; gasto DRAFT/PDF retenidos, agradecimiento borrado, clip expense_evidence sin usar. Evidencia y retro en progress, entrada B4E1 del23oct. Root: cerrar corrección de textos privados y decisión sobre acceso al video desde necesidad de caso DRAFT; no repetir ON/build ni fixtures consumidas. Mantener B0–B7 restante.

@@ -8,6 +8,7 @@ import '../adoption/community_repository.dart';
 import 'expense_evidence_card.dart';
 import 'rescue_public_photo.dart';
 import 'rescue_repository.dart';
+import 'rescue_videos.dart';
 
 /// Every attachment belongs to a real private expense draft. Nothing here submits,
 /// publishes or sets reimbursable capacity before independent moderation.
@@ -30,13 +31,32 @@ class _CasePublicationNeedEditorState
   final fields = <String, TextEditingController>{};
   RescueRecord? draft;
   List<Json> files = [];
-  bool busy = false, urgent = false;
+  bool busy = false, urgent = false, dirty = false;
+  String? actor, videoIdentity;
+  bool get sameSession =>
+      actor != null &&
+      ref.read(communityRepositoryProvider).userId == actor &&
+      (videoIdentity == null ||
+          ref.read(rescueVideosRepositoryProvider)?.identity() ==
+              videoIdentity) &&
+      (draft?.data['owner_id'] == null || draft!.data['owner_id'] == actor);
+
+  void requireSession() {
+    if (!sameSession) {
+      throw const FormatException(
+        'La sesión cambió. Retoma el borrador con su cuenta.',
+      );
+    }
+  }
+
   String? error;
   RescueRepository get repo => ref.read(rescueRepositoryProvider);
   @override
   void initState() {
     super.initState();
     draft = widget.record;
+    actor = ref.read(communityRepositoryProvider).userId;
+    videoIdentity = ref.read(rescueVideosRepositoryProvider)?.identity();
     files = [...?draft?.files];
     for (final key in [
       'title',
@@ -100,6 +120,7 @@ class _CasePublicationNeedEditorState
   }
 
   Future<void> save() async {
+    requireSession();
     final raw = fields['amount']!.text.trim();
     final cents = raw.isEmpty ? null : parsePesos(raw);
     if (raw.isNotEmpty && cents == null) {
@@ -126,10 +147,27 @@ class _CasePublicationNeedEditorState
       record: draft,
       parent: widget.caseId,
     );
-    if (mounted) setState(() => draft = value);
+    requireSession();
+    if (mounted) {
+      setState(() {
+        draft = value;
+        dirty = false;
+      });
+    }
+  }
+
+  Future<void> saveForVideo() async {
+    if (busy) return;
+    setState(() => busy = true);
+    try {
+      await save();
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   }
 
   Future<void> attach(String role) async {
+    requireSession();
     final actor = ref.read(communityRepositoryProvider).userId;
     if (actor == null) throw const FormatException('Vuelve a iniciar sesión.');
     await save();
@@ -152,13 +190,17 @@ class _CasePublicationNeedEditorState
     if (await file.length() > 5242880) {
       throw const FormatException('El archivo debe pesar hasta 5 MB.');
     }
+    final bytes = await file.readAsBytes();
+    requireSession();
     final path = await repo.upload(
       draft!.id,
-      await file.readAsBytes(),
+      bytes,
       pdf: file.name.toLowerCase().endsWith('.pdf'),
     );
     if (!mounted) return;
+    requireSession();
     setState(() {
+      dirty = true;
       files.removeWhere((f) => f['role'] == role);
       files.add({'role': role, 'path': path});
     });
@@ -187,7 +229,7 @@ class _CasePublicationNeedEditorState
         TextField(
           key: ValueKey('publication-need-$key'),
           controller: fields[key],
-          enabled: !busy,
+          enabled: !busy && sameSession,
           maxLines: lines,
           maxLength: key == 'description'
               ? 4000
@@ -208,7 +250,7 @@ class _CasePublicationNeedEditorState
                 : null,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
           ),
-          onChanged: (_) => setState(() {}),
+          onChanged: (_) => setState(() => dirty = true),
         ),
       ],
     ),
@@ -242,10 +284,13 @@ class _CasePublicationNeedEditorState
           fileIndexes: indexes,
           onOpen: (index) =>
               context.push('/rescue-file', extra: files[index]['path']),
-          onRemove: busy
+          onRemove: busy || !sameSession
               ? null
-              : (index) => setState(() => files.removeAt(index)),
-          onAttach: busy || files.length >= 12
+              : (index) => setState(() {
+                  files.removeAt(index);
+                  dirty = true;
+                }),
+          onAttach: busy || !sameSession || files.length >= 12
               ? null
               : () => run(() => attach(role)),
         ),
@@ -254,105 +299,138 @@ class _CasePublicationNeedEditorState
   }
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-    backgroundColor: Colors.white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    child: ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 393,
-        maxHeight: MediaQuery.sizeOf(context).height * .92,
-      ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${draft == null ? 'Agregar' : 'Editar'} ${const {'food': 'alimento', 'medicine': 'medicina', 'veterinary': 'servicio veterinario'}[widget.type] ?? 'gasto'}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      height: 1.5,
-                      fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    ref.watch(rescueVideoIdentityProvider);
+    ref.watch(communityRepositoryProvider);
+    if (!sameSession) {
+      return AlertDialog(
+        content: const Text(
+          'La sesión cambió. Retoma el borrador con su cuenta.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      );
+    }
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 393,
+          maxHeight: MediaQuery.sizeOf(context).height * .92,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${draft == null ? 'Agregar' : 'Editar'} ${const {'food': 'alimento', 'medicine': 'medicina', 'veterinary': 'servicio veterinario'}[widget.type] ?? 'gasto'}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        height: 1.5,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
+                  IconButton(
+                    tooltip: 'Cerrar',
+                    onPressed: busy ? null : () => Navigator.pop(context),
+                    icon: const Icon(Icons.close, size: 20),
+                  ),
+                ],
+              ),
+              const Text(
+                'Documenta un gasto que ya cubriste para que Dopmi pueda revisarlo.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: Color(0xff616174),
                 ),
-                IconButton(
-                  tooltip: 'Cerrar',
-                  onPressed: busy ? null : () => Navigator.pop(context),
-                  icon: const Icon(Icons.close, size: 20),
+              ),
+              field(
+                'title',
+                widget.type == 'medicine'
+                    ? 'Nombre de la medicina'
+                    : widget.type == 'food'
+                    ? 'Alimento comprado'
+                    : 'Descripción del servicio',
+              ),
+              field('amount', 'Monto pagado en MXN'),
+              field(
+                'description',
+                widget.type == 'medicine'
+                    ? 'Tratamiento relacionado'
+                    : 'Cómo ayudó a la mascota',
+                lines: 3,
+              ),
+              if (widget.type == 'food')
+                field('round_label', 'Ronda de alimento'),
+              evidence('receipt', 'Foto de Recibo *'),
+              evidence('proof', 'Foto de Evidencia *'),
+              field('paid_on', 'Fecha en que pagaste'),
+              field('vendor', 'Proveedor'),
+              field('receipt_reference', 'Folio o referencia del comprobante'),
+              if (widget.type != 'food') ...[
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: urgent,
+                  onChanged: busy || !sameSession
+                      ? null
+                      : (value) => setState(() {
+                          urgent = value;
+                          dirty = true;
+                        }),
+                  title: const Text('Marcar como urgente'),
+                  subtitle: const Text('Pasará por revisión de DopMi'),
                 ),
+                if (urgent)
+                  field('urgency_reason', 'Motivo de urgencia', lines: 2),
               ],
-            ),
-            const Text(
-              'Documenta un gasto que ya cubriste para que Dopmi pueda revisarlo.',
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.5,
-                color: Color(0xff616174),
-              ),
-            ),
-            field(
-              'title',
-              widget.type == 'medicine'
-                  ? 'Nombre de la medicina'
-                  : widget.type == 'food'
-                  ? 'Alimento comprado'
-                  : 'Descripción del servicio',
-            ),
-            field('amount', 'Monto pagado en MXN'),
-            field(
-              'description',
-              widget.type == 'medicine'
-                  ? 'Tratamiento relacionado'
-                  : 'Cómo ayudó a la mascota',
-              lines: 3,
-            ),
-            if (widget.type == 'food')
-              field('round_label', 'Ronda de alimento'),
-            evidence('receipt', 'Foto de Recibo *'),
-            evidence('proof', 'Foto de Evidencia *'),
-            field('paid_on', 'Fecha en que pagaste'),
-            field('vendor', 'Proveedor'),
-            field('receipt_reference', 'Folio o referencia del comprobante'),
-            if (widget.type != 'food') ...[
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                value: urgent,
-                onChanged: busy
+              if (!sameSession)
+                const Notice(
+                  'La sesión cambió. Retoma el borrador con su cuenta.',
+                  isError: true,
+                ),
+              if (sameSession)
+                RescueVideoSection(
+                  record: draft,
+                  purposes: const ['expense_evidence'],
+                  needsSave: dirty,
+                  enabled: !busy,
+                  onSave: saveForVideo,
+                ),
+              if (error != null) Notice(error!, isError: true),
+              const SizedBox(height: 20),
+              FilledButton(
+                onPressed: busy || !sameSession || !complete
                     ? null
-                    : (value) => setState(() => urgent = value),
-                title: const Text('Marcar como urgente'),
-                subtitle: const Text('Pasará por revisión de DopMi'),
+                    : () => run(() async {
+                        await save();
+                        if (context.mounted) Navigator.pop(context, draft);
+                      }),
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xff7841f2),
+                  minimumSize: const Size(0, 48),
+                ),
+                child: Text(
+                  busy
+                      ? 'Guardando...'
+                      : 'Guardar ${const {'food': 'alimento', 'medicine': 'medicina', 'veterinary': 'servicio'}[widget.type] ?? 'gasto'}',
+                ),
               ),
-              if (urgent)
-                field('urgency_reason', 'Motivo de urgencia', lines: 2),
             ],
-            if (error != null) Notice(error!, isError: true),
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: busy || !complete
-                  ? null
-                  : () => run(() async {
-                      await save();
-                      if (context.mounted) Navigator.pop(context, draft);
-                    }),
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xff7841f2),
-                minimumSize: const Size(0, 48),
-              ),
-              child: Text(
-                busy
-                    ? 'Guardando...'
-                    : 'Guardar ${const {'food': 'alimento', 'medicine': 'medicina', 'veterinary': 'servicio'}[widget.type] ?? 'gasto'}',
-              ),
-            ),
-          ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

@@ -1,3 +1,9 @@
+## Checkpoint — 23/10/2026: necesidad DRAFT con video, validación local cerrada
+
+Mock20d21/branchcodex/finish-release-20261015. Decisión humana video dentro de necesidadDRAFT implementada sobre d872; controlprivado compartido, saveID/versión, dirty y ocultación completa al cambiar sesión.34focal/analyze0,24PNGfixture y producto/código/seguridad cerrados; candidato integrado aún sin CI/build/install. FuenteSamsung sigue93499ad7/Play168/2.3.3(328). ServiciosOFF y B4E1consumida/PDF-gastoDRAFT retenidos/clip evidencia sin usar.
+
+CI40011439583 d872: backend/webdb/iOS SUCCESS, Flutter Androidbuild activo en última consulta. Root sigue mismo run, después CI del nuevo candidato. Única cola localFlutter/dispositivo; cambiosajenos preservados. Próximo: gates exactos→paquete distribución/permiso propio→QA privada del gasto retenido sin nuevo thanks/envío/caso. Cámara/audio/otraidentidad/historias-impacto/despedida/iOSfísico y aceptaciónintegral pendientes. No preguntaDRAFT pendiente: ya respondida. Detalle/retro/recibos en progress23oct.
+
 ## Checkpoint — 23/10/2026: CI40011439583 viva; decisión DRAFT pendiente
 
 Código d87290cd1a1b7f10d18309b76261db75e1f4ee8f subido y remoto comprobado. Delta: dos mensajes de video expense_evidence corregidos; producto/código cerrados, analyze0 y1,400Flutter locales PASS. CI integral40011439583 de ese SHA sigue viva: backend120612532009 yweb/db120612532311 SUCCESS; iOS120612532343 yFlutter120612532353 en curso. Seguir mismo run, nunca duplicarlo. La API REST autenticada sí lo muestra; el conector devolvió vacío incluso para SHA anterior conocido y no sirve como prueba de ausencia.

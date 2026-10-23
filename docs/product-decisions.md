@@ -1,3 +1,9 @@
+## 23/10/2026 — Video privado dentro de la necesidad DRAFT aprobado
+
+Titular respondió «Video privado dentro de la necesidad (recomendado)» a call_6b833b34ec5e4687981382306f3d973c. Comportamiento: casoDRAFT→necesidad nueva/existente→mismo control expense_evidence, revisión local antes de Subir, reproducción/cancelación sin enviar el caso a revisión. Guardar primero los cambios del gasto para vincular ID/versión vigentes; video no sustituye comprobante ni completa campos requeridos. Conservar validación, moderación y permisos existentes. Alternativa de abrir editor completo descartada para este alcance.
+
+Autoriza implementación técnica y pruebas locales de esta mejora; no incluye nuevo ON, carga remota, revisión/publicación, migración, build ni dinero. Root integra con una colaFlutter, worker dueño del editor de necesidad y test específico; revisión independiente de producto/código/seguridad antes de candidato.
+
 ## 23/10/2026 — B4E1 autorizado, consumido y cerrado
 
 El titular autorizó call_bcfda206a6b84b5080b342c56dfe0c78, incluyendo ausencia de aprobación administrativa concurrente. Ventana única20min con dos clips sintéticos y PDF, gastoDRAFT retenido, caso sólo a revisión privada, cierre OFF y Adoptar. Se ejecutó parcialmente y cerró antes del límite; resultados en progress23oct. Este permiso queda consumido y no habilita otra carga/build/publicación.

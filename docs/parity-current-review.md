@@ -1,3 +1,9 @@
+## 23/10/2026 — Brecha necesidad DRAFT corregida en fuente
+
+Acceso a expense_evidence dentro de necesidadDRAFT aprobado e implementado;34focal/analyze0/24PNG y revisiones fuente/visual cerradas. No sustituye comprobante ni submit; guarda versión vigente y retira UI privada al cambiar identidad. Falta CI del nuevo candidato, distribución y recorrido real. Historial B4E1 privado no se presenta como prueba del video pendiente. Detalle en progress23oct.
+
+Retirada pública contrastada con vía histórica: dopmi_review_rescue admite submitted yapproved→changes_requested, rechaza closed; UIadmin coincide. Los dos casos retirados por fotos eran approved v6/v20, no closed. No existe retirada de cerrado acreditada por esa evidencia; futura QA pública/despedida debe resolver persistencia antes de publicar.
+
 ## 23/10/2026 — Alcance público B4 pendiente: dependencias demostradas
 
 Inspección de fuentes, sin operación: detalle público y despedida posterior al cierre pueden probarse sin pagos, pero publicar exige revisión de video y caso por administrador legítimo distinto del dueño. Cerrar conserva snapshot público; archivar no lo retira. No prometer desaparición pública al terminar una futura ventana: preparar decisión explícita sobre persistencia del caso TEST antes de publicar.
