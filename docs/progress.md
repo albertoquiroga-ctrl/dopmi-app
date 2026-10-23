@@ -1,3 +1,7 @@
+## 22/10/2026 — Conciliación de matriz central con candidato327
+
+La matriz central conservaba B5 como no implementado y B7 en326 pese a cierres posteriores: corregidos header/B3–B7 y límites de navegación/publicación/ayuda con evidencia da14497e/CI39887729078/Play167/327, QA administrativa326 y Tienda327 cerradaOFF. Se conservan aceptación humana, cámara/audio, publicación/otra identidad/otros propósitos/historias-impacto, recuperación real e iOS físico pendientes. No otra build/ON ni repetición de fixtures. Preparación B1 revisada por código y seguridad sinP1/P2: diez hashes coinciden y configuración compatible; coordinación humana y preflight fresco siguen necesarios. Fuentes de credenciales no extraídas; cuota y mínimo de contraseña desconocidos no se infieren. Root mantiene sesión actual, sin correos ni logout.
+
 ## 22/10/2026 — Recuperación327 preparada; participación humana pendiente
 
 Fuente da14497e/Play interno167/2.3.3(327) instalada; no nueva build. Preparación B1 real en recovery-real327: fuentes vigentes y metadatos sin valores de credenciales, plantilla con código/enlace, código de ocho dígitos compatible, vigencia configurada3600s, SMTP habilitado/intervalo60s y callback móvil permitido comprobados en lectura. Cuota horaria y mínimo de contraseña no recuperados ni supuestos. Sin cambios de Auth/configuración, logout, correos ni actualización de contraseña.
