@@ -1,3 +1,13 @@
+## 23/10/2026 — Preparación329 y QA de necesidad cerradas; CI sigue viva
+
+Fuente2582 remota. CI40013783146 confirma backend/webdb/iOS SUCCESS; Flutter pasó pruebas/capturas y compila Android, sin conclusión integral todavía. La40011439583 anterior quedó3SUCCESS/Fluttercancelled por sustitución; no transferir éxito. Recibo need-editor-ci-jobs.actual.private.json, no nuevo proceso.
+
+Distribución329: need-editor-release/manifest36ecc017…01498, revisión código/seguridad cerrada; pinfalse/null, sin permiso/tag/reserva/POST. Dos P2 corregidos antes de operar: destinos sóloint0 equivale[] sin alterarraw (rechazaFalse/1/nonempty); expectativas Edge53/49 reales tras comparar siete fuentes byteexactas17c8 (no versiones arbitrarias). Root repitió controlespuros yAST3PASS. BaselineSQLreal19:45:59 íntegra13assets/4records/finanzas;34digestsUI trasreload OFF exactos. No cambios remotos por esta preparación.
+
+QA futura: need-editor-evidence-qa/manifest374a47e8…aa4acc, revisiónproducto/código/seguridad cerrada,4testspuros rootPASS. Único clipevidence yaSamsung/no nuevoThanks/expense/PDF/envío. Caso31 puede guardar32 al entrar porUI; child4/PDF/campos/finanzas se conservan. Sample20389B12c51f61…009a37 EXPIRED/raiseincondicional, root comprobó igualdad exacta a función ymanifest. Se corrigió transporte de saltos de línea y flechas ilegibles delrunbook; source/query/authority sin cambios. Wrapperproveniencia derivado de rawMCP verdadero yqueryverificada antes del SELECT; primer nestinginterno erróneo bloqueóguardas y fue corregido alrawcompleto, sin SQL/horas inventadas.
+
+Pendientes concretos: CI terminal/logs exactos, freshpreflight y permiso específico329; instalación real y permisoQApropio antesON. Todo sigueOFF/jobpausado. Preparación noespublicación/QA física/aceptación; alcanceB0–B7 no cerrado.
+
 ## 23/10/2026 — Video privado en necesidad DRAFT implementado localmente
 
 Decisión humana call_6b833b34ec5e4687981382306f3d973c aplicada: CasePublicationNeedEditor reutiliza RescueVideoSection únicamente expense_evidence. Campos/urgencia/adjuntos sucios requieren guardar antes de vincular ID/versión del gasto; fallo conserva necesidad de guardar. No envía gasto/caso ni sustituye comprobante, campos requeridos o moderación. Cambio de identidad antes/durante save impide adoptar resultados y reemplaza formulario por aviso/Cerrar, sin datos ni accesos privados anteriores.
