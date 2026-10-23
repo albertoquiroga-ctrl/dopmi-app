@@ -1,3 +1,7 @@
+## 23/10/2026 — Tablero reconciliado con evidencia vigente
+
+CI B74 cuatroSUCCESS/1378FlutterPASS; D273 test de despedida tras cierre19PASS local y README, CI propia39877175393 en curso. Matrices existentes actualizadas para retirar bloqueos de proveedor ya superados y distinguir QA parcial de aceptación; historia preservada abajo. Mock20d21/instalado326D377 conservados, sin nueva build ni ON. Detalles y límites en checkpoint/progress.
+
 ## 22/10/2026 23:59 UTC — B6 evidencia física y ayuda corregida
 
 Referencia20d21/instaladoD377-326 intactos; candidatob74b9fc33fb639ba9828585dfeb64a13e67628f9 corrige dos FAQ detectadas en24capturas físicas/6regresos exactos. Fuentes y7capturas normal115/320200 revisadas sin hallazgos materiales restantes del paquete; no nueva instalación/aceptación. CI39875132745 cuatro jobs en curso. RecuperaciónAuth, video restante, decisión urgencia, Tienda interna y aceptación integral siguen abiertos; evidencia/retro en progress y checkpoint.
@@ -171,26 +175,24 @@ Esta entrada supersede «teléfono todavía320» y no declara cierre integral. P
 | Privacidad de contenido aprobado | Inventario independiente dos objetos/cinco snapshots; no nuevo acceso privado ni bypass | titular: decisión de retirada de dos originales y nueva revisión; legítimo admin requerido; ningún cambio ejecutado |
 | B3/B4/B5 | DEV video/Tienda OFF, Edge exactas; Preview admin configurado y login disponible | Stream/términos/tarjeta, admin positivo, urgencia y aceptación humana siguen abiertos |
 
-## Paridad INTEGRAL20d21 — tablero vigente, 19/10/2026
+## Paridad INTEGRAL20d21 — tablero vigente, 23/10/2026 UTC
 
-Fuente congelada20d21f484aa60726f0b236574d5493dcf5e05969; base952f281665890abf2260abbb1c65125cb589739f. Decisiones humanas en product-decisions.md, entrada integral18oct. Cobertura de código localizada NO acredita paridad ni ejecución verde. Estados finales separados: implementado, verificado, publicado, instalado, aceptado.
+Referencia congelada20d21f484aa60726f0b236574d5493dcf5e05969; base952f2816/continuacióncodex. Instalado Play2.3.3(326)/D377; nuevo código b74b9fc33fb639ba9828585dfeb64a13e67628f9 sólo corrige2FAQ. CI39875132745/B74: cuatro SUCCESS/1378FlutterPASS. D273 añade test y README, sin lógica productiva; CI39877175393 en curso, sin transferir éxito previo. No confundir commits documentales con fuente instalada ni aceptación humana.
 
-| Batch | Dueño/dependencia | Objetivo/escenarios y salida |
+| Batch | Dueño/dependencia | Evidencia actual y criterio de salida pendiente |
 |---|---|---|
-| B0 Inventario integral | Integrador/primero | Conciliar cola, preservar WIP y matriz de toda app; registrado |
-| B1 Acceso/estructura | Worker identidad UI; integrador router/controller/repositorio/colaFlutter; B0 | Recuperación/mode/OTP/errores/Back implementados,51 dirigidasPASS y captura recovery20d21PASS; Auth/correo/reinicio físico y candidato pendientes |
-| B2 Guardián/apoyo | Worker móvil especializado + integrador; B1 | Composición/estados/anillos→historias implementados; regresiones/capturas normal115200 y gesto PASS; corrección importe revisada independientemente. QA física del candidato pendiente |
-| B3 Video infraestructura | Worker backendmedia; admin separado; B0, paralelo B1/B2 | DEV remoto20261019062129 aplicado:82/81previas exactas,22cuerpos/RLS/roles/OFF; dosEdgev1 archivos exactos y5HTTP cerradosPASS. Previewadmin3c43 Ready/login+2RESTPASS, sin sesión admin positiva. Stream real bloqueado por acceso/términos/pago |
-| B4 Video en producto | Worker móvil + integrador; B3/B2 | Implementación móvil preparada; foto urgencia sólo complemento vs galería pendiente humano y Stream real sin acceso; gateOFF |
-| B5 Tienda | Worker backendcatálogo/admin; móvil separado; B0 | Catálogo/admin/móvil implementados; admin48PASS/build; composición/filtros/limpiar capturados y revisados. DEV catálogoanonOFF/vacío200/adminanon401. Demo interna con fixtures; permisos comerciales/catálogo/aceptación pendientes; gate públicoOFF |
-| B6 Otras superficies | Propietarios por grupo + integrador; contratos anteriores | Auditoría independiente de equivalencia acotada y fullCI1318PASS; cobertura/evidencia heredada documentadas abajo, con límites de PNG históricos ausentes. Candidato físico integrado pendiente |
-| B7 Candidato integrado | Integrador + revisores independientes; B1-B6 | CI39206829906/3c43f351 cuatroSUCCESS; CM60 única6ad5b7cd5470ce6a0cb66863 finished/13acciones success, artefacto2.3.3(321)/SHAexacto; Playinterno161 disponible. Teléfono todavía320, actualización normal/QA/Stream/decisión urgencia/aceptación pendientes |
+| B0 Inventario integral | Integrador/primero | Alcance20d21 y propietarios conciliados, WIP preservado; cerrado para este corte, pushes nuevos aparte. |
+| B1 Acceso/estructura | Integrador identidad/router/única colaFlutter; B0 | Recuperación/mode/OTP/reenvío/Back implementados y pruebas/capturas/CI vigentes. Falta Auth/correo y reinicio real con acceso legítimo; no sustituir con cliente reinicializado. |
+| B2 Guardián/apoyo | Móvil+integrador; B1 | Composición/estados/anillos→cola historias/detalle corregidos, QA321–323 y normal115/320200 documentadas; retirada de fotos autorizada y evicción física comprobadas. Conservar reglas financieras y evidencia TEST. Faltan temporalidad/hold físico, video público integrado y aceptación; no repetir pagos consumidos. |
+| B3 Infraestructura video | Backend/admin separados; B0 | DEV migración82/20261019062129 auditada, proveedor/webhook/cron configurados, TUS/reanudación/ready/play privado/cancel/delete/retry reales probados. Último cierre OFF/pausado/cola0/Stream0. Faltan escenarios administrativos/privacidad de otra identidad y propósitos de B4; una nueva ventana requiere paquete propio. |
+| B4 Video producto | Móvil+integrador; B3/B2 | Límites/corrupto/interrupción/reintento/borrado/cancelación incierta reales QA324–325; revisión local explícita y galería/play privado/descartar sin recurso/cancelar comprobados326. Cámara326/audio escuchado, moderación exacta/publicación, evidencia/despedida/historias/impacto reales siguen pendientes. Foto de urgencia ya consultada: no asumir ubicación. Cobertura explícita farewell closed19/19PASS local con proveedor simulado; no ejecución remota. |
+| B5 Tienda | Catálogo/admin+móvil; B0 | Editor y móvil/filtros/orden/regreso implementados, fixtures/capturas y CI; administración real crear/editar/rechazar publicación inválida comprobada y catálogo anónimoOFF. Aceptación interna pendiente; activación comercial separada y bloqueada hasta catálogo/derechos/enlaces/permisos válidos. PúblicoOFF. |
+| B6 Otras superficies | Propietarios por grupo+integrador | Equivalencia mock y evidencia histórica reutilizadas con límites.24 capturas físicas326/4FAQ/6regresos exactos/legales17oct;2imprecisiones de ayuda agrupadas y corregidas enB74,7capturas finales revisadas normal115200. CI B74 cuatroSUCCESS/1378FlutterPASS; nueva instalación del copy pendiente; no atribuir ejecución física de todoB6. |
+| B7 Candidato integrado | Integrador+revisores; B1–B6 |326/D377 publicado/instalado/QA parcial. B74:4jobsCI SUCCESS; D273 test/docs con CI propia en curso, sin nueva build. Faltan gates restantes, preparación/autorización propia de release, instalación y demo comparativa/aceptación del titular; iOS físico no acreditado. |
 
 ### Estado verificable del lote local
 
-B0 completado. B1 implementado/51dirigidasPASS; Auth/correo con reinicio real pendientes. B2 corregido/capturado normal115200 y gestos/importe accesible revisados. B3 desplegado DEV apagado y verificado; B4 preparado, Stream sin configurar y pregunta foto de urgencia abierta. B5 preparado/oculto y revisado con fixtures; aceptación interna/comercial separadas. B6 equivalencia acotada auditada con límites explícitos. B7:1318FlutterPASS/analyze0 y23focales/capturas, CI39206829906/3c43f351 cuatroSUCCESS; CM60 finished/AAB321/Publishing, Play161 disponible por comprobación separada. Historial fallido/retrabajo conservado; teléfono320 pendiente actualización normal, QA y aceptación. No se reconsume QA financiera/social anterior.
-
-Evidencia privada vigente `.tools/integral20d21-20261018/`: backend-full.log952PASS/8skip; admin-serial-tests.log48PASS/admin-serial-build.log; config-final.log17PASS; video-lifecycle-verification36PASS+rollback real de migración/lifecycle SQL request→finalize. Las revisiones nuevas/capturas se registrarán al terminar, sin sustituir ejecuciones fallidas por fuentes localizadas.
+Desarrollo y evidencia técnica avanzados no equivalen a paridad integral aceptada. Los cierres reales y permisos consumidos de QA324/325/326 se conservan en progress/checkpoint y no se repiten. Cloudflare y acceso admin ya están disponibles; los bloqueos históricos de login/tarjeta no describen el estado actual. Dinero exclusivamente TEST, privacidad, moderación, firma y gates vigentes; Tienda/video/limpieza OFF al último cierre verificado. La lectura B6 posterior23:44:29UTC conservó diez ledgers, expedientes/seisjobs exactos y cola/HTTP/runs0. Próxima acción root: CI deB74 y pruebas locales preparadas; después paquetes concretos de QA faltante/participación humana, sin ON implícito.
 
 ### Auditoría independiente B6 — equivalencia acotada
 
@@ -200,30 +202,32 @@ Evidencia documental reutilizable: docs/design-reviews/parity-closeout/adopt-con
 
 ### Matriz integral — estado de evidencia por grupo
 
-| Grupo | Referencia/cobertura real localizada | Brecha o evidencia pendiente |
-|---|---|---|
-| Acceso/alta/onboarding/legales | identity, consentimiento y Auth reales | Recuperación implementada;51 dirigidas y capturasPASS. Contratos AuthCI PASS; correo real/reinicio físico nuevo pendientes. |
-| Navegación ambos modos | core/navigation/router; rutas equivalentes | Aliases/rutas/Storegated implementados; full1318PASS y capturas con navegación. Integración en candidato instalado pendiente. |
-| Recuperación | solicitud/confirmación/OTP/PKCE | Mode/OTP/reenvío/Back/limpieza implementados y pruebas/capturasPASS. Auth/correo/reinicio real no sustituido por mocks. |
-| Descubrir/adopción/filtros/gestos | discovery y suites existentes | Sin delta de función mock; auditoríaB6 y evidencia histórica42+18/55 reutilizada, full1318PASS. PNG históricas parcialmente no disponibles; nueva aceptación pendiente. |
-| Detalle/galería/favoritos | adoption_detail/catalog/saved | Referencia funcional idéntica, snapshots/retirada preservados;11fixtures favoritos e informe adopción reutilizados. No nueva galería física. |
-| Mis match/chat | messages/match_favorites | Referencia idéntica;14+19fixtures/informe normal115200 reutilizados, participant-only conservado y backendCI PASS. Sin mensajes externos repetidos. |
-| Notificaciones/historial | notification_activity y registros reales | Referencia idéntica; destino vigente/retirada y lectura propia conservados, SQL/Auth histórico reutilizado y regresión localPASS. Sin nuevos eventos financieros. |
-| Apoyar/caso/historias | support_home/support_stories/case_detail | Anillos→historias públicas→detalle implementado, casos aprobados/cerrados y retirada probados; video cliente preparado, Stream real pendiente. |
-| Guardián/impacto/métodos | pago/registro/impacto existentes | Composición/hero/collage/mosaico/gestos/estados corregidos,64dirigidas y capturas normal115200PASS; producto/código sin defecto material. Nuevo teléfono/aceptación pendientes. |
-| Perfil adoptante/cuenta | profile/settings/privacy | Banner/entradaStore preparados bajo gateOFF; eliminación/consentimiento conservados, recuperación y full1318PASS. Proveedor real/candidato pendiente. |
-| Perfil público | public_profile con moderación | ElegibilidadSQL acepta apoyo real y filtrosmodal corregidos, SQL/API+fullPASS; contactos/snapshots/privacidad preservados. Aplicación remota pendiente. |
-| Inicio rescatista | métricas/funnel/tips reales | BannerStore gated y métricas reales conservados; no métricas simuladas. FullPASS; evidencia visual previa reutilizada donde no cambió mock. |
-| Casos propios/cierre | owned_cases/rescue | Despedida opcional cliente/SQL preparados incluso cerrado, sin cambiar finanzas ni reabrir; revisión/pruebasPASS. Proveedor real pendiente. |
-| Publicar/preview | publication/rescue y fotos privadas | Gracias requerido NUEVOS casos bajo gatevideo, moderación exacta y fotos preservadas; complemento único foto/video preparado. Decisión foto sólo complemento vs galería abierta; Stream pendiente. |
-| Verificación/Connect/redes | verification/private files/Stripe | Referencia idéntica salvo mapa step=form; conservar Connect/documentos privados/permisos reales. EvidenciaTEST previa y full/backendCI reutilizados; sin repetir concesiones. |
-| Evidencia/comida | gasto pagado/comprobante/revisión | Video privado separado de public_update y revisión exacta implementados; admin48PASS/build y backendCI PASS. Archivos/Stream reales e integración física pendientes. |
-| Ayuda/institucional/privacidad | help/information/versionado legal | Copy rutas reales corregido, funciones mock idénticas y pruebas vigentes/full1318PASS; finanzasTEST/gates legales intactos. |
-| Tienda | mock SupportCause, productos/tarjetas ficticios | Catálogo/admin/móvil/filtros/limpiar implementados;23focales/capturas y revisión independientePASS. Fixtures internos; gate públicoOFF, derechos/catálogo/enlaces y aceptación no acreditados. |
-| Videos | seis superficies del mock, mayormente posters/markers | Contratos/TUS/cliente/admin/SQL preparados,48integradas y CI backend955PASS/8skip +6carrerasPGPASS. Stream/cámara/reproducción reales bloqueados por cuenta/provisión/autorización. |
-| Mapa/modoprueba/herramientas | herramientas del prototipo | Se conservan como herramientas del prototipo; exclusión pública vigente. No trasladar simulaciones a negocio real. |
+Esta matriz conserva escenarios no dibujados y actualiza los pendientes iniciales de19oct; evidencia detallada/hashes y límites permanecen en progress. Producto y código inspeccionan fuentes y capturas; seguridad según riesgo. No absorber pushes posteriores a20d21.
 
-Cada revisión de producto/código/seguridad inspecciona fuentes y evidencia. Fotografías/fixtures/datos equivalentes; normal,115%,320px/200%; movimiento con evidencia temporal. Nueva función no invalida evidencia intacta. Proveedor y SQL remoto aún no ejecutados; integración real/dispositivo y aceptación final pendientes.
+| Grupo | Evidencia real y reutilizable | Pendiente / límite actual |
+|---|---|---|
+| Acceso/alta/onboarding/legales | Auth/consentimiento vigentes y CI; lectura física326 de términos y privacidad17oct y regresos. | Recuperación con correo/reinicio real y aceptación del titular; leer no acepta documentos. |
+| Navegación ambos modos | Rutas/Storegated, suites/capturas y evidencia anterior;326 conserva sesiónRescatista y regreso en seis estados conXML idéntico. | Nueva fuenteB74 no instalada; no atribuir navegación de todas las pantallas a estos seis regresos. |
+| Recuperación | Mode/OTP/PKCE/reenvío/Back/limpieza implementados y51 dirigidas/capturas, regresión integral deD377 válida. | Auth/correo/reinicio físico nuevo pendiente; sin cambiar credenciales sin titular. |
+| Descubrir/adopción/filtros/gestos | Funciónmock sin delta; auditoríaB6 y42+18/55 históricos reutilizados por equivalencia y CI. | PNG históricas parcialmente no disponibles; aceptación del nuevo alcance pendiente, sin reconsumir fixtures. |
+| Detalle/galería/favoritos | Referencia funcional idéntica, snapshots/retirada y11fixtures favoritos/informe adopción preservados. | No nueva galería física atribuida a326. |
+| Mis match/chat |14+19fixtures e informe normal115200, participant-only/backend vigentes; sin delta mock. | No nuevos mensajes ni acceso administrativo general a conversaciones privadas. |
+| Notificaciones/historial | Destinos/retirada/lectura propia preservados y SQL/Auth histórico/CI reutilizados. | Sin nuevos eventos financieros; no afirmar ejecución física nueva por pruebas de fuentes. |
+| Apoyar/caso/historias | Anillos→historias→caso correcto/último cierre probados322–323; retirada de fotos y refresco físico comprobados. | Videos aprobados en historias/hold/background públicos reales y aceptación pendientes. |
+| Guardián/impacto/métodos | Composición/hero/collage/mosaico/estados corregidos;64dirigidas/capturas y QA321–323, historial rotulado legible115/320200. ReglasTEST conservadas. | No nueva cobranza para repetir evidencia; aceptación integral y video aprobado en impacto pendientes. |
+| Perfil adoptante/cuenta | Storegated, contratos privacidad/consentimiento, suites y evidencia anterior conservados. | Ausencia deTienda en PerfilRescatista no demuestra por sí sola gate Adoptante; usar pruebas/catalogOFF acreditados. |
+| Perfil público | Moderación/SQL aplicada en migración auditada y suites elegibilidad/filtros; contactos/snapshots privados preservados. | QA real nueva/aceptación no sustituidas por localizar código. |
+| Inicio rescatista | Métricas/funnel/tips reales, Storegated y evidencia visual previa equivalente. | Sin métricas simuladas ni QA física nueva de cada estado. |
+| Casos propios/cierre |326 lista propia final igual a inicial; despedida opcional cliente/SQL para closed implementados. | Prueba local explícita19PASS con RPC de cierre y finanzas no nulas conservadas; integración real despedida sin reabrir/alterar finanzas pendiente. |
+| Publicar/preview | Gracias obligatorio NUEVOS bajo gatevideo; galería326→revisión/descartar sin recurso→Subir único→ready/play privado/cancel/delete. | Envío/revisión/publicación reales del nuevo caso, cámara326 y decisión ubicación de foto urgencia pendientes. |
+| Verificación/Connect/redes | Referencia equivalente, documentos privados/permisos reales y evidenciaTEST/CI reutilizados; sesión rescueraprobada en326. | No repetir concesiones, KYC ni asumir que modo concede autorización. |
+| Evidencia/comida | Video privado separado de public_update; revisión exacta/pruebas/admin vigentes. | Archivo real ligado a gasto y moderación/otra identidad pendientes; no sustituye receipt/proof ni crear dinero. |
+| Ayuda/institucional/privacidad |326 cuatroFAQ/legales/regresos; B74 corrige orientación datoscuenta/eliminación,16focales y7capturas normal115200 revisadas. | CI B74 aprobada; nueva instalación de2respuestas y aceptación; sin borrar cuenta, enviar soporte ni aceptar legal durante lectura. |
+| Tienda | Editor/admin/móvil, filtros/orden/regreso/capturas fixtures y gates; admin real crear/editar/rechazar inválido y públicoOFF comprobados. | Aceptación interna pendiente; catálogo/derechos/enlaces/comercios válidos no acreditados; activación comercial separada. |
+| Videos | TUS/ready/play firmado privado/cancel/delete reales; corrupto200MiB/interrupción/retry mismo recurso, cancelación incierta y limpieza durable probados;326preview explícito galería. | Cámara/audio, otros propósitos/admin público/segunda identidad/historias/impacto pendientes; límites locales/CI no equivalen a esos recorridos. |
+| Mapa/modoprueba/herramientas | Herramientas de prototipo excluidas de producto por acuerdo. | No trasladar simulaciones a negocio real. |
+
+Proveedor y SQL DEV ya preparados/aplicados/probados en alcances concretos; no producción ni activación pública por inferencia. Implementado, verificado, publicado, instalado, probado físicamente y aceptado siguen separados. Datos equivalentes y normal115/320200 donde se acreditan; movimiento sólo con evidencia temporal. Una cola Flutter/root, gates y demás decisiones conservados.
 
 ### Historial del corte estrecho y entregas anteriores
 
