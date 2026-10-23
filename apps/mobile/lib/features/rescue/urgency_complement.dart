@@ -241,6 +241,7 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
               RescueVideoSection(
                 record: record,
                 purposes: const ['urgency'],
+                showHeading: false,
                 enabled: widget.enabled && !busy,
                 onChanged: refresh,
               ),

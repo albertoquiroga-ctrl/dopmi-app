@@ -20,6 +20,7 @@ class VideoUpload extends StatefulWidget {
     this.onChanged,
     this.onCancellationPendingChanged,
     this.label = 'Video',
+    this.showHeading = true,
     this.picker,
     this.previewControllerFactory,
     this.initialAssets = const [],
@@ -27,6 +28,7 @@ class VideoUpload extends StatefulWidget {
   final List<Map<String, dynamic>> initialAssets;
   final VideoRepository repository;
   final String parentId, purpose, label;
+  final bool showHeading;
   final int parentVersion;
   final ValueChanged<VideoAsset> onReady;
   final ValueChanged<VideoAsset?>? onChanged;
@@ -394,7 +396,8 @@ class _VideoUploadState extends State<VideoUpload> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label, style: Theme.of(context).textTheme.titleMedium),
+        if (widget.showHeading)
+          Text(widget.label, style: Theme.of(context).textTheme.titleMedium),
         const Text(
           'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
         ),

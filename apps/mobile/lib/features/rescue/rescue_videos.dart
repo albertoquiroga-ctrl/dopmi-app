@@ -111,10 +111,11 @@ class RescueVideoSection extends ConsumerStatefulWidget {
     this.onSave,
     this.enabled = true,
     this.onChanged,
+    this.showHeading = true,
   });
   final RescueRecord? record;
   final List<String> purposes;
-  final bool needsSave, enabled;
+  final bool needsSave, enabled, showHeading;
   final Future<void> Function()? onSave;
   final VoidCallback? onChanged;
   @override
@@ -239,7 +240,7 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    'Video ${videoPurposeLabel(purpose)}: ${videoStateLabel(value['technical_state'] as String?)} · ${videoReviewLabel(value['moderation_state'] as String?)}',
+                    '${widget.showHeading ? 'Video ${videoPurposeLabel(purpose)}: ' : ''}${videoStateLabel(value['technical_state'] as String?)} · ${videoReviewLabel(value['moderation_state'] as String?)}',
                   ),
                 ),
                 if (value['technical_state'] == 'ready' &&
@@ -270,6 +271,7 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                       )
                       .toList(),
                   label: videoPurposeLabel(purpose),
+                  showHeading: widget.showHeading,
                   onCancellationPendingChanged: (assetId) {
                     if (assetId == null ||
                         !mounted ||

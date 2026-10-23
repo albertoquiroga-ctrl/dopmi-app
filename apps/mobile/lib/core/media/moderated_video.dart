@@ -17,6 +17,7 @@ class ModeratedVideo extends StatefulWidget {
     this.onComplete,
     this.onProgress,
     this.onPlaybackReady,
+    this.controllerFactory,
     this.semanticLabel = 'Video del caso',
   });
   final VideoRepository repository;
@@ -24,6 +25,7 @@ class ModeratedVideo extends StatefulWidget {
   final bool autoplay, paused;
   final VoidCallback? onComplete, onPlaybackReady;
   final ValueChanged<double>? onProgress;
+  final VideoPlayerController Function(Uri hls)? controllerFactory;
   @override
   State<ModeratedVideo> createState() => _ModeratedVideoState();
 }
@@ -108,11 +110,13 @@ class _ModeratedVideoState extends State<ModeratedVideo>
       lease = granted;
       setState(() {});
       // HLS can contain protected segments; do not persist controllers or leases.
-      created = VideoPlayerController.networkUrl(
-        granted.hls,
-        formatHint: VideoFormat.hls,
-        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false),
-      );
+      created =
+          widget.controllerFactory?.call(granted.hls) ??
+          VideoPlayerController.networkUrl(
+            granted.hls,
+            formatHint: VideoFormat.hls,
+            videoPlayerOptions: VideoPlayerOptions(mixWithOthers: false),
+          );
       await created.initialize();
       if (!current(run)) {
         await created.dispose();
@@ -200,7 +204,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
           .clamp(0.0, 1.0)
           .toDouble();
       widget.onProgress?.call(progress);
-      if (!completed && progress >= 0.995) {
+      if (!completed && player.value.isCompleted) {
         completed = true;
         widget.onComplete?.call();
       }
@@ -289,6 +293,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
           unawaited(syncPlayback());
         },
         onLongPressCancel: () {
+          if (!holding) return;
           holding = false;
           unawaited(syncPlayback());
         },
