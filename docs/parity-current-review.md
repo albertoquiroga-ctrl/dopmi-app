@@ -1,3 +1,7 @@
+## 23/10/2026 — B7 distribución328 y navegación verificadas
+
+Runtime93499ad7/CI39988317443 cuatroSUCCESS/1400Flutter; artefacto2.3.3(328), Playinterno168 disponible y Samsung328/Vending/mismaTEST/Adoptante/Adoptar comprobados. Video/Tienda/limpiezaOFF/job6pausado/34digests exactos; sinQAON. FixB4 verificado local+CI, reproducciónfísica pendiente. Evaluación humana navegación328 consultada, no aceptacióninferida. B1 claridad recuperación y B5 claridadcategorías/filtros/tarjetas yaaceptadas en327; no reabrir ni extender aaceptaciónintegral. B4E1 sólo plan/fixturesoffline; faltan paqueteoperacional y permiso propio. TableroB0–B7sigueabierto.
+
 ## 23/10/2026 — B4 errores recuperables de reproducción, candidato local
 
 ModeratedVideo sonido/play/pausa/hold/background/offscreen: REDvolumen y5plataforma reales→GREEN43focales/analyze0; capturaerrores, retiracontroller/leasefallidos, reintentoactual yguardascontrarechazotardío. Revisiónproducto/código/seguridadcerrada. Noequivale aQA física niarreglocámara; CI39988317443/93499ad7 cuatroSUCCESS/1400FlutterPASS; distribución328propuesta/revisada ypermiso propiopendiente, publicación/instalaciónnoejecutadas. Evidencialogs/retro/alcance enprogress23oct; Play327/da144vigente.

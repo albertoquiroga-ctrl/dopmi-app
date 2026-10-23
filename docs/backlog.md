@@ -1,3 +1,7 @@
+## 23/10/2026 — Release328 terminada; próximo paqueteB4E1
+
+Root comprobó artefacto328/Playinterno168/SamsungVending328/mismaTEST/Adoptante→Adoptar. Evaluaciónhumana pendiente y reproducciónfísica aparte. Ambos serviciosOFF/job6pausado/TiendaenlacesOFF/cola0. Distribución autorizada consumida; no nueva build/ON implícitos. Preparar paqueteoperacional de evidencia privada desde plan/fixturesrevisados; baseline completa fresca/coordinaciónadmin/permiso propio antes de gasto/cargas. Mantener cámara/audio/otrospropósitos/otraidentidad/historias-impacto/despedidatrascierre/iOS yaceptaciónintegral.
+
 ## 23/10/2026 — Siguiente acción: seguir la ejecución328 existente
 
 Root: observar build6adb98753cd5b3092ecce8cf, fuente93499ad7, autorizada y enviada una sola vez; comprobar artefacto2.3.3(328), publicación Play interna y actualización desde Play del Samsung. No repetir POST/reserva. Instalación actual327 separada; video/Tienda/limpiezaOFF. Después demo y verificación proporcional, sin ventana de video implícita. B4E1 tiene viabilidad/fixtures locales revisadas; preparar paquete operacional y permiso propio antes de ON/subir/crear gasto. B0–B7 y aceptación integral siguen abiertos.

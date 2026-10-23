@@ -1,3 +1,9 @@
+## Checkpoint breve — 23/10/2026, Play328 instalada
+
+Mock20d21 congelado; runtime93499ad7a6f0385e39842532e36f14fdc2451da8/CI39988317443 cuatroSUCCESS/1400Flutter. Buildúnica6adb98753cd5b3092ecce8cf13SUCCESS, artefacto2.3.3(328), Playinterno168 disponible y Samsung328/Vending/misma identidadTEST/Adoptante→Adoptar comprobados17:55UTC. Permiso call_9576 consumido; no repetirPOST. Media/comercial/preview/enlacesOFF/0grantactivo/cola0/job6pausado y34digestsbaseline exactos. Reproducciónfísica/aceptaciónhumana de328 pendientes, pregunta navegación enviada; paridadintegralB0–B7 no cerrada.
+
+Siguiente root: cerrar revisiones de evidencia/retro y preparar paqueteoperacionalB4E1 (gastoDRAFTnuevo/comprobanteprivado/2videos) con baseline y permisos propios. Sólofixtures yplanoffline preparados/revisados; nada transferido/subido/creado. Cámara/audio, otrospropósitos/otraidentidad/historias-impacto/despedidatrascierre/iOSfísico yaceptaciónintegral conservados. RootúnicacolaFlutter/dispositivo; preservarcambiosajenos. Últimosresultadossuperseden loscortes históricos inferiores.
+
 ## Checkpoint breve — 23/10/2026, build328 en cola
 
 Mock20d21 congelado. Fuente93499ad7a6f0385e39842532e36f14fdc2451da8/CI39988317443 cuatroSUCCESS/1400Flutter; branch codex/finish-release-20261015. Titular autorizó única distribución interna328 y actualización Play, permiso consumido por reserva/POST17:25:10UTC. Handle6adb98753cd5b3092ecce8cf, última lectura queued. Seguir ese handle, nunca repetir envío. Artefacto/versión328/publicación/instalación aún pendientes. Samsung comprobado conectado/327/Vending17:26UTC. Video/Tienda/limpiezaOFF y trabajo pausado; sin nueva QAON autorizada.
