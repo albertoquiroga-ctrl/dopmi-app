@@ -52,14 +52,20 @@ export default function VideoModeration({api}:{api:VideoModerationApi}) {
   useEffect(()=>{
     mounted.current=true;
     let active=true;const run=++generation.current;
-    setRows([]);setSelected(undefined);setPreview(undefined);setWatched(false);setError('');
+    setRows([]);setSelected(undefined);setPreview(undefined);setWatched(false);setPlayingReady(false);setBusy(false);setError('');
     void api.list().then(items=>{if(active&&run===generation.current)setRows(items);}).catch(()=>{if(active&&run===generation.current)setError('No pudimos cargar los videos.');});
     const stop=api.watch(()=>{generation.current++;setRows([]);setSelected(undefined);setPreview(undefined);setWatched(false);setBusy(false);setError('Tu sesión cambió. Vuelve a abrir la sección.');});
     return()=>{active=false;mounted.current=false;generation.current++;stop();};
   },[api]);
   async function open(row:VideoReviewRow) {
-    const run=++generation.current;setSelected(row);setPreview(undefined);setNote('');setWatched(false);setPlayingReady(false);setError('');setNotice('');setBusy(true);
-    try{const value=await api.playback(row.id);validPreview(value);if(mounted.current&&run===generation.current)setPreview(value);}
+    const run=++generation.current;setSelected(undefined);setPreview(undefined);setNote('');setWatched(false);setPlayingReady(false);setError('');setNotice('');setBusy(true);
+    try{
+      const items=await api.list();if(!mounted.current||run!==generation.current)return;
+      setRows(items);const current=items.find(item=>item.id===row.id);
+      if(!current||current.parent_id!==row.parent_id||current.parent_version!==row.parent_version||current.purpose!==row.purpose||current.technical_state!=='ready'||!Number.isSafeInteger(current.current_parent_version))throw new Error('unavailable_current_video');
+      setSelected(current);
+      const value=await api.playback(current.id);validPreview(value);if(mounted.current&&run===generation.current)setPreview(value);
+    }
     catch{if(mounted.current&&run===generation.current)setError('No pudimos abrir el video. No se ha revisado.');}
     finally{if(mounted.current&&run===generation.current)setBusy(false);}
   }
@@ -79,7 +85,7 @@ export default function VideoModeration({api}:{api:VideoModerationApi}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[preview]);
   async function review(decision:'approved'|'rejected') {
-    if(!selected||!preview||!watched||!playingReady||busy||preview.expires_at*1000<=Date.now()||!Number.isSafeInteger(selected.current_parent_version))return;
+    if(!selected||selected.technical_state!=='ready'||!preview||!watched||!playingReady||busy||preview.expires_at*1000<=Date.now()||!Number.isSafeInteger(selected.current_parent_version))return;
     const run=++generation.current;setBusy(true);setError('');setNotice('');
     try{await api.review(selected,decision,note);const items=await api.list();if(mounted.current&&run===generation.current){setRows(items);setSelected(undefined);setPreview(undefined);setWatched(false);setNotice(decision==='approved'?'Video aprobado. La publicación también depende del expediente.':'Video rechazado.');}}
     catch{if(mounted.current&&run===generation.current){setWatched(false);setError('No pudimos guardar la revisión. Recarga el expediente y reproduce el video otra vez.');}}

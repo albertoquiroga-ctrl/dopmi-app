@@ -578,18 +578,20 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          const Text(
-                            'Ayúdame a recuperar:',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              height: 1.3,
-                              color: ink,
+                          if (widget.preview || eligible.isNotEmpty) ...[
+                            const Text(
+                              'Ayúdame a recuperar:',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                height: 1.3,
+                                color: ink,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
+                            const SizedBox(height: 12),
+                          ],
                           widget.needs,
                           if (photoPaths.isNotEmpty) ...[
                             const SizedBox(height: 20),

@@ -1,3 +1,7 @@
+## 23/10/2026 — Correcciones tras P1+P2 preparadas
+
+Admin: refresh de fila vigente, 57 pruebas/build PASS, revisiones de código/producto/seguridad cerradas. Móvil: encabezado sin gastos conforme decisión humana, 29 pruebas/analyze0/seis capturas, código/producto cerrados. Root fija candidato conjunto y CI integral; faltan despliegue/build con permisos propios, instalación y validación real del nuevo candidato. Conservar servicios OFF y caso CLOSED40/ambos clips; no repetir cargas consumidas ni confundir pruebas de la329 con las correcciones locales.
+
 ## 23/10/2026 — P1 público y P2 revisión/retención acreditados; cierre OFF
 
 CasoTESTCLOSED40/2clipsaprobados/HTTPpúblico1→2→OFF, P1Samsungvisual/P2admincompleto; farewellpúblicoSamsung/audio/otraidentidad/historiasImpacto/iOS/aceptación pendientes. Cierre23:40 antesdeadline23:43, child4/PDF/finanzas preservados. Root integra fixadminfilaobsoleta (workerpropiedad VideoModeration.tsx/test), pruebas/revisiones antes paquete propio de deploy; producto coteja encabezadotarget0. Ver checkpoint/progress y execution2; no reabrir permiso/clips consumidos. Alcance B0–B7 intacto.

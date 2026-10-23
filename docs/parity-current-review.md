@@ -1,3 +1,7 @@
+## 23/10/2026 — Correcciones de QA verificadas localmente
+
+Encabezado sin gastos elegibles oculto por decisión call_8c2…; historia/videos/aviso/CTA conservados.29 tests/analyze0/seis capturas y producto/código cerrados. Cola admin renueva fila antes del playback, fail-closed ante retiro/error/respuesta obsoleta;57 tests/build y tres revisiones cerradas. Pendientes CI del SHA conjunto y distribución/despliegue real; instalada329 permanece2582. No acredita despedida pública Samsung/audio/otraidentidad ni aceptación integral. Evidencia y siguientes gates en checkpoint/progress.
+
 ## 23/10/2026 — B4 público: agradecimiento Samsung y despedida aprobada postcierre
 
 329/2582/115%: P1 uploadlocalpreview→adminreview38→casoapproved39→detallepúblico/cuadrorenderizadoSamsung; dueñoCLOSED40→P2previewlocal/upload/review40completaadmin. HTTPanon exact1→2clips yOFFemptydisabled; SQLanonparentCLOSEDtarget0/childausente, privadoDRAFT4/PDF intacto. Retención2clips/caso/foto acordada. CierreOFF/pausado/34digests/Adoptar antesdeadline, comparadorrealPASS. NO despedidapúblicoSamsung/audiofísico/movimientocontinuo/otraidentidad/iOS/aceptación. Hallazgos colaadminstale (fixlocalenprogreso) y encabezadotarget0 (diálogopendiente); detalle/retro/checkpoint enprogress. No cerrarB4/B7 ni repetirpermiso/clips.

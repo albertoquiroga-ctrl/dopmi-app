@@ -27,6 +27,7 @@ import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
 
 class FakeRescue extends RescueRepository {
   FakeRescue()
@@ -308,6 +309,18 @@ class RetrySupportRescue extends FakeRescue {
     if (failCatalog) throw Exception('offline');
     return super.catalog(page, caseId: caseId);
   }
+}
+
+class EmptyPublicCaseRescue extends FakeRescue {
+  @override
+  Future<DataPage<RescueRecord>> catalog(int page, {String? caseId}) async =>
+      DataPage([
+        RescueRecord({
+          ...caseRecord.data,
+          'target_cents': 0,
+          'funded_cents': 0,
+        }),
+      ], 1);
 }
 
 class ClosedPublicCaseRescue extends FakeRescue {
@@ -1147,10 +1160,43 @@ void main() {
       },
     );
   }
+  for (final scale in [1.0, 1.15, 2.0]) {
+    testWidgets(
+      'case without available expenses keeps content without solicitation; scale=$scale',
+      (tester) async {
+        await startPublicCase(
+          tester,
+          EmptyPublicCaseRescue(),
+          large: scale == 2,
+        );
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        await tester.pumpAndSettle();
+        expect(find.text('Ayúdame a recuperar:'), findsNothing);
+        expect(find.text('Mi historia'), findsOneWidget);
+        expect(find.byType(PublicRescueVideos), findsOneWidget);
+        final notice = find.text(
+          'Este caso no tiene gastos disponibles para aportar.',
+        );
+        await tester.scrollUntilVisible(
+          notice,
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(notice, findsOneWidget);
+        final footer = find.widgetWithText(
+          FilledButton,
+          'Sin gastos disponibles',
+        );
+        expect(tester.widget<FilledButton>(footer).onPressed, isNull);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets(
     'closed public case keeps history and disables every contribution entry',
     (tester) async {
       await startPublicCase(tester, ClosedPublicCaseRescue());
+      expect(find.text('Ayúdame a recuperar:'), findsNothing);
       final footer = find.widgetWithText(
         FilledButton,
         'Sin gastos disponibles',
