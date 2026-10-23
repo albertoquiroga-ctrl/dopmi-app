@@ -1,3 +1,7 @@
+## 23/10/2026 — B1: reenvío adicional pedido por titular
+
+Titular informó código vencido y pidió otrocorreo; confirmó después Ocultar código. Se levantó marcador sólo para este reenvío y lectura segura confirmó0campos/errorvencido. Reserva propia resend2-user-authorized, un toqueReenviar; lectura posterior confirmó mensajeéxito ycooldown50s, sin repetir despacho ante latencia. Marcadorhuman-handoff reactivado inmediatamente. No código/contraseña inspeccionados ni update/login/reinicio acreditados. Nuevo handoff: código del mensaje nuevo, una verificación, avisar resetvacío ANTES de contraseña para reinicio único. Esta autorización amplía sólo un correo; los anteriores siguen consumidos. No build/ON/config/dinero; evidencia resend2-observed. Root espera aviso humano y conserva suspensión de dispositivo.
+
 ## 23/10/2026 — Retro independiente del instrumento B1
 
 Revisor de proceso no implementador inspeccionó fuente y recibos: causa comprobada delP2 fue XML temporal sin retirada garantizada ante excepción;finallyrm y guardhumanos actuales corrigen futuros usos. Tres casosmock bloquean read/back/tap con0ADB; no prueban ausencia global de residuos ni ejecutan recuperación. No evidenciaOTP/passwordcapturados, sin elevarlo a garantía absoluta. Una mejora root: reutilizar el lector temporal protegido, sin copiar variantes puntuales; verificar en próximo uso autorizado misma salidafinally y0ADB durante handoff, sin otro envío ni repetirQA. Estado actual conserva marcador, request1/reenvío consumidos, reinicio/update/login pendientes de aviso humano resetvacío.
