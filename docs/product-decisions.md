@@ -1,3 +1,7 @@
+## 22/10/2026 — QA privada Tienda327 autorizada y consumida; comercial sigue cerrado
+
+call_b2fc0425dda345199871aa3bfd3180bf: «Autorizo» una ventanaDEV<=20min sólo cuentaSamsung elegida con8TEST/salidaexternabloqueada y cierreOFF/revocado. Ejecutadauna vez319.018s, cerrada/revisada; permiso consumido, nootraactivaciónniampliación. Se conservaroncatálogo/historial, ningún video/dinero/despliegue/build/comercio. Demo/evaluaciónhumana interna no se infiere de QA técnica ni activaTiendacomercial. Cuentas/destino siguenresueltos como antes; no conceder otrotester por inferencia ni reusar la referencia staged anterior.
+
 ## 22/10/2026 — Distribución327 y catálogo TEST revocado autorizados y consumidos
 
 call_24d3d2135e7f44fea056d2310bccc28a: «autorizo» una buildandroid-guardian-internal/Playinterno/updateSamsung del SHAda14497e, sinQAON. Ejecutadauna vez6adad717358c69c21cb0817c,2.3.3(327)/release167/instalada desdePlay comprobados; permiso consumido. call_755bafd7d5c54703b6e5f97eed1e39ce: «Autorizo» setup8TEST+grantREVOCADO/OFF payloadb968…24c8 después de distribución; ejecutadouna vez/16checksTRUE, permiso consumido. No acceso efectivo, admin, compra o comercial por estas respuestas.

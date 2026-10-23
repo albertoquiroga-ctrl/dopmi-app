@@ -1,3 +1,7 @@
+## 22/10/2026 — QA Tienda327 completada y cerrada; aceptación interna pendiente
+
+call_b2fc0425dda345199871aa3bfd3180bf consumido: QA privada única319s/26pares reales/4perros4gatos/filtros-orden-vacío-limpiar/tarjetabloqueada/retornoyresumeXMLexacto/revocaciónretiraoverlay. Preview/enlaces/comercial/video/cleanupOFF/job6pausado/8TESTconservados/grantrevocado,34digests/doceledgers/seisjobs intactos. 327/da14497e/Playinterno167 sin cambios. Revisores independientes cerrados, retrocolaADBregistrada. Root: demo/evaluaciónhumana y próximo paquete listoB0–B7; no volver a pedir cuenta/destinoresueltos ni reactivar/usarpreflightstagedconsumido. Otra cuenta ordinaria/vencimiento pasivo/comercio real no acreditados; flagscomerciales siguenbloqueados. Alcanceintegral/aceptación/iOSfísico pendientes en checkpoint/tablero.
+
 ## 22/10/2026 — 327 instalada y setup TEST cerrado; siguiente QA privada propia
 
 Root/únicaFlutter: esperar permiso específico de ventanaTienda327<=20min ya consultado; paquete revisado5tests/PGlite11rechazos+cierre. NoONsinrespuesta. Distribuciónautorizada completa2.3.3(327)/da14497e/Playinternorelease167/SamsungVendingsesiónconservada; build6adad717…terminó13SUCCESS, permiso consumido/noPOSTnuevo. Setupcall755b aplicado1vez16checksTRUE/8TEST/1grantREVOCADO/0destinos/preview-enlacesOFF; permiso consumido/noINSERTnuevo. SQL04:08:51 y34digestsEdgeOFF comprobados, job6pausado. DosFAQB6 verificadas físicamente327/productoreviewcerrado; reutilizar navegación326 restante vigente. Pendientesintegrales/aceptación en checkpoint/tablero.

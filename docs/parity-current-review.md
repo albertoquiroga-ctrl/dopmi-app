@@ -1,3 +1,14 @@
+## 22/10/2026 — B5 Tienda327: recorrido privado real cerrado
+
+| Escenario | Evidencia física Samsung115% | Estado/límite |
+|---|---|---|
+| Catálogo/filtros/orden |4perros4gatos; asc/desc;adulto+chico+MarcaDos→1gato7kg;senior+chico+Dos→vacío;limpiarXMLexacto | Verificado con8TEST, no catálogo comercial |
+| Tarjeta/navegación |TarjetaOFF permaneceDopmi; XMLdesplazadode708…idéntico alvolverPerfil yresumeHOME | Verificado; sincomercioautorizado/noida-vueltaexterna |
+| Revocación |Close319s/OFF/grantrevocado; refrescar retira catálogo/diálogoabierto/entrada; AdoptarXMLrestaurado | Verificado; no esperavencimientopasivo ni otra cuenta legítima |
+| Preservación |8productos/12ledgers/6jobs/casos/necesidad/historia/colas/34digests exactos | Verificado; comercial/video/cleanupOFF/job6pausado |
+
+327/da14497e/Playinterno167 sin nueva build. Código/producto/seguridad independientes cerrados;26paresXML/PNG. Aceptaciónhumana interna pendiente, comercial y B0–B7 no cerrados; 320200 sólo capturas previas, iOSfísico pendiente. Detalle de incidenteinstrumento/retro enprogress; permisoQAconsumido.
+
 ## 22/10/2026 — Corte327: distribución real y setup privado revocado
 
 | Grupo | Estado comprobado | Límite/siguiente |
