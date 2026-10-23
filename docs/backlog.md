@@ -1,3 +1,7 @@
+## 22/10/2026 — QA administrativa cerrada; Tienda privada en implementación
+
+Thanks326: carga/revisión administrativa exacta/ausencia pública/retiro/borrado cerrados en12m03s/OFF y modo restaurado; permiso consumido, evidencia y retro en progress. Nueva vista privada TEST elegida, cuentas/destino consultados y pendientes: implementar/verificar local con concesiones vacías, preparar paquete remoto y distribución propios antes de habilitar. Root conserva única cola Flutter, B0–B7 y demás pendientes del checkpoint. No cerrar aceptación integral por esta QA.
+
 ## 23/10/2026 — Administración de video privada lista para permiso
 
 Paquete `admin-video-private-qa` con revisiones cerradas y prerrequisitos reales comprobados en lectura; autorización nueva pendiente para un thanks, envío normal, aprobación sólo del video, retiro a borrador, cancelación/borrado y cierre20min/OFF. Sin ON ni transferencia. Root conserva operación y única cola Flutter; CI39882153570 del candidato0d7eb5e0 aprobada: cuatroSUCCESS/1380FlutterPASS. Ver checkpoint/progress para límites y pendientes integrales.

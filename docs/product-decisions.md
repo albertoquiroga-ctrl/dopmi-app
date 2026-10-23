@@ -1,3 +1,9 @@
+## 22/10/2026 — Tienda privada TEST elegida y QA administrativa autorizada
+
+Respuestas explícitas: call_71f917332e4e4ae5a4b4f5f1098126b3: «Vista privada TEST para cuentas elegidas (recomendado)»; call_8f0c600d6af1482f908f8e9feb03ef44: «Sí, autorizar revisión privada y cierre OFF». Superseden las preguntas pendientes anteriores sólo para esos alcances. Tienda: acceso por servidor para cuentas seleccionadas por el titular, sin conceder admin, catálogo sintético separado e identificado TEST, público/comercios pendientes/compras reales cerrados. Se consultaron cuentas concretas y destino autorizado; aún sin respuesta al corte. Preparar con grants vacíos y salida OFF; no inferir cuentas ni activar por esta elección. Una futura migración/despliegue/configuración/build conserva sus gates y paquete concreto.
+
+QA administrativa autorizó un único thanks sintético2s/14472B en el mismo borrador, envío normal, reproducción completa y aprobación sólo del video desde sesión administrativa legítima, ausencia pública, retiro/cancelación/borrado y cierre20min/OFF/restauración de modo. Ejecutada y consumida; ledger22oct conserva resultados. No autoriza otra ventana, publicación de caso, dinero ni nueva build.
+
 ## 23/10/2026 — Tienda: acceso para evaluación interna pendiente de decisión
 
 Investigación de fuentes, sin cambios: el móvil consulta sólo dopmi_store_catalog; servidor OFF bloquea la ruta incluso para administradores. El catálogo editorial autenticado es otra superficie. Las pruebas positivas móviles usan repositorio/identidad fixture y opener falso; no acreditan navegación física de ida/regreso a un comercio. El CRUD administrativo real parcial y el rechazo comercial conservan OFF y no sustituyen ese recorrido. No se encontró un defecto contractual por mantener el cierre público.

@@ -1,3 +1,12 @@
+## 22/10/2026 — Corte incremental QA admin y Tienda TEST
+
+| Grupo | Comportamiento/alcance vigente | Evidencia nueva | Pendiente/dueño |
+|---|---|---|---|
+| B4 revisión video privada | Aprobar video no publica expediente; withdraw antes de cancelar en app | 326 real: thanks/caso24/reviewexacta/ended/adminlegítimo/anonvacío/draft25/deleted/OFF; reviewerproducto cerrado | Otros propósitos/identidad ordinaria/publicstories/impacto/audio/aceptación, root |
+| B5 preview Tienda | Vista privada TEST elegida, servidor por cuentas seleccionadas sin admin; comercialOFF | Candidata da14497e, SQL6nuevas+3comercialesPASS,29FlutterPASS/analyze0/capturas6variantes; overlays privados se retiran al perder acceso | CI39887729078, paqueteDEV inerte, cuentas/destino consultados, aplicación/build/QA física/aceptación; root |
+
+No nuevo SHA de mock ni cierre integral. El catálogo fixture no prueba integración móvil remota ni regreso externo. Detalle/decisión/retro/evidencia en fuentes canónicas existentes.
+
 ## 23/10/2026 — Tablero reconciliado con evidencia vigente
 
 CI B74 cuatroSUCCESS/1378FlutterPASS; D273 test de despedida tras cierre19PASS local y README, CI propia39877175393 en curso. Matrices existentes actualizadas para retirar bloqueos de proveedor ya superados y distinguir QA parcial de aceptación; historia preservada abajo. Mock20d21/instalado326D377 conservados, sin nueva build ni ON. Detalles y límites en checkpoint/progress.
