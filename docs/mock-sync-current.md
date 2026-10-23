@@ -1,3 +1,11 @@
+## 22/10/2026 23:59 UTC — B6 navegación326 y corrección de ayuda candidata
+
+Mock20d21 congelado. Instalado **2.3.3 (326)/D377/Play interno** intacto. Nuevo código candidato `b74b9fc33fb639ba9828585dfeb64a13e67628f9` corrige sólo dos respuestas: edición dirige a Información básica (datos de cuenta); eliminación usa su CTA existente para revisar condiciones. Sin rutas, permisos ni lógica de borrado modificados. Producto/código cerraron hallazgos agrupados; seguridad confirmó alcance de navegación. Siete capturas finales normal/115/320200 PASS,16 pruebas dirigidas y analyze limpio durante el paquete; CI39875132745 del SHA final con cuatro jobs en curso, sin nueva build/publicación/instalación/aceptación.
+
+QA física326 B6:24 XML/PNG con hashes verificados, cuatro FAQ, lectura términos/privacidad17oct y seis regresos con XML idéntico. P2 encontrados en esa lectura corregidos localmente; no atribuir nuevo copy al teléfono. SQL23:44:29 confirma media/TiendaOFF/job6pausado/cola-HTTP-runs0; diez assets y expedientes idénticos al cierre QA326. No cámara, mensajes, dinero ni aceptación documental. Recibos b6-device-outcome/b6-help-candidate; detalle/retro en progress.
+
+Root conserva única cola Flutter. Siguiente: observar CI exacta del nuevo candidato, conservar326 y preparar los paquetes faltantes antes de otro permiso/ON. Continúan pendientes Auth/correo/reinicio real, cámara326/audio escuchado, foto de urgencia ya consultada, otros propósitos/admin/segunda identidad/historias/impacto, Tienda interna y aceptación integralB0–B7. Pregunta de evaluación de revisión local sigue sin respuesta, no equivale a aceptación.
+
 ## 22/10/2026 23:33 UTC — QA326 galería completada y cierre OFF
 
 Mock `20d21f484aa60726f0b236574d5493dcf5e05969`, candidato `d377b97c68bdf1f74c87ae87acb8752014c6e042`, Play interno release166 / **2.3.3 (326)** instalado desde Vending. CI39863167445 intacta: cuatro SUCCESS/1378 Flutter PASS. Sin cambio de código, build ni despliegue en esta QA.

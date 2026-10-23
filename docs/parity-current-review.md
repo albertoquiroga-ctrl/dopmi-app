@@ -1,3 +1,7 @@
+## 22/10/2026 23:59 UTC — B6 evidencia física y ayuda corregida
+
+Referencia20d21/instaladoD377-326 intactos; candidatob74b9fc33fb639ba9828585dfeb64a13e67628f9 corrige dos FAQ detectadas en24capturas físicas/6regresos exactos. Fuentes y7capturas normal115/320200 revisadas sin hallazgos materiales restantes del paquete; no nueva instalación/aceptación. CI39875132745 cuatro jobs en curso. RecuperaciónAuth, video restante, decisión urgencia, Tienda interna y aceptación integral siguen abiertos; evidencia/retro en progress y checkpoint.
+
 ## 22/10/2026 23:33 UTC — Evidencia física del delta local en galería326
 
 Referencia20d21/candidatoD377/Play2.3.3(326) conservados. Recorrido real autorizado: galería sintética→preview2.0s/reproducir inicialmente en silencio→Descartar sin nuevo recurso persistido→reseleccionar/Subir una vez→ready/pending/play privado→cancelar/deleted; SHA y tamaño exactos. CierreOFF/OFF/pausado/cola0/Stream0. Evidencia y límites en mock-sync-current/progress; no acredita cámara326, audio escuchado ni todos los propósitos, y no implica aceptación humana. Código, seguridad y producto revisaron fuentes/recibos/capturas sin hallazgos materiales; alcance integral sigue abierto.

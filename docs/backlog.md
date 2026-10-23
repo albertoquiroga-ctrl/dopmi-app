@@ -1,3 +1,7 @@
+## 22/10/2026 23:59 UTC — B6 candidato de ayuda
+
+Continuar checkpoint vigente: nuevo fuenteb74b9fc3 sólo2FAQ y7capturas, revisiones cerradas/CI39875132745 cuatro jobs en curso. B6 físico326:24capturas/6regresos, dos imprecisiones de orientación corregidas sin lógica nueva. Root/una cola Flutter; ninguna nueva build u ON. Alcance integral y gates humanos conservados.
+
 ## 22/10/2026 23:33 UTC — QA326 galería cerrada
 
 Checkpoint mock-sync-current y evidencia progress: galería→revisión/descartar sin recurso→Subir explícito único→play privado→cancelación/borrado comprobados en326/D377. Cierre OFF/OFF/job6pausado/Stream0/cola0, permiso consumido. Root conserva cola Flutter. Siguiente revisión independiente/demo y preparar siguiente paquete sin otro ON. Cámara326, audio escuchado, otros propósitos/admin/segunda identidad, Auth real, decisión de foto de urgencia y aceptación integral siguen abiertos; no repetir fixtures consumidas.
