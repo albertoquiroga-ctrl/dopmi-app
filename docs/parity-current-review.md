@@ -2,14 +2,14 @@
 
 Producto f348/Play2.3.3(331) instalado Samsung/Vending; QA física115% y revisión
 independiente de14estados/recorridos encontraron6P2+1P3 de presentación,
-agrupados en correctivo332/f60195a1d30ee0a1077963d8ec705f7c40d12735 (CI en curso;
+agrupados en correctivo332/f7b77a0bf57732be273da7bd813ce77fc9c1fb17 (CI40082326137 en curso;
 distribución aún pendiente). Capturas correctivas16PNG y revisiones cerradas.
 Tienda b9 verificada/cerrada; tres SDKStripe conservados. No es aceptación UX.
 Autoridad autónoma/límite originales en product-decisions y checkpoint.
 
 | Grupo integral | Resultado de contraste / evidencia reutilizable | Cierre pendiente |
 |---|---|---|
-| Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. No repetir credenciales; otra sesión legítima pendiente. |
+| Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. No repetir credenciales. La sesión pendiente es la del donante P3, no recuperación ni owner331. |
 | Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 331Play/Samsung115% conserva sesión y cambio de modo; correctivos332 pendientes de distribución. |
 | Adopción | Swipe/detalle/contacto/filtros OR equivalentes en SQL y local; PNG b9 | 331 swipe corto/completo en video, filtros2 persistidos y detalle/scroll/regreso verificados; no contacto nuevo. |
 | Favoritos | Guardar/quitar/paginación/retiradas/regreso; canvas W4R | 331 Mis match/favoritos e hilo propios legibles; guardar/quitar/paginación vigentes reutilizados. |
@@ -36,12 +36,15 @@ Correctivo332 conserva donante/método histórico y privacidad; código/segurida
 cerrados, capturas y regresiones en progress. No sumar suites superpuestas ni
 sustituir QA física/aceptación por compilación. Cierre financiero/histórico intacto.
 
-| Grupo / referencia | Brecha comprobada | Decisión / evidencia pendiente |
+Contraste inicial del delta b9 (las correcciones ya realizadas y su evidencia
+vigente están en la matriz superior; esta tabla no reabre trabajo completado):
+
+| Grupo / referencia | Brecha inicial comprobada | Decisión / tratamiento del delta |
 |---|---|---|
 | Fundación/nav b9 CSS14000+ y App238–277 | Paleta/tipografía/CTA anteriores e iconos activos sin sólidos | Warm-trust aprobada; comparar render y texto escalado. Conservar contraste accesible. |
 | Adoptar App1764–1784,2194,2406–2418 | Personalidad pierde selección múltiple, corazón outline, carta/capas y composición anteriores | Corregir fuente y regresiones; imagen/gestos con evidencia equivalente. |
 | Impacto App4755–4804 y Perfil App6277 | Tablero mensual intercalado antes del feed y confusión con historial financiero | Guardián abre feed sin mensual previo; sin Guardián conserva promoción como el mock. Perfil → Mi historial de pagos → movimientos. Mensual en Apoyar Guardián; sin acceso extra en Perfil, decisión call_7ddb7182. |
-| Historial App5914/CSS6631,6739 | Título heredaba muted, fondo blanco y vacío sin tarjeta | Tres ajustes agrupados conforme b9: ink/ellipsis con semántica y reflujo accesible, DonorCanvas donante y vacío crema.9regresiones+captura10PASS; revisión independiente cerrada. Método histórico ausente se declara abajo. |
+| Historial App5914/CSS6631,6739 | Título heredaba muted, fondo blanco y vacío sin tarjeta | Tres ajustes agrupados conforme b9: ink/ellipsis con semántica y reflujo accesible, DonorCanvas donante y vacío crema.9regresiones+captura10PASS; revisión independiente cerrada. Método histórico implementado W4H; legado nullable y límite de QA remota se declaran abajo. |
 | Guardián/Perfil CSS14784–14804,15189–15204 | Tarjeta activa negra y collage taupe/jerarquía anterior | Blanco/café/acentos aprobados; mostrar variantes reales y texto ampliado. |
 | Perfiles/notificaciones/chat App5514–5521,CSS15249–15466 | Badge/tab/read tones anteriores y vacío sin Descubrir | Aplicar delta sin tocar autorización; comprobar vacío inicial y búsqueda sin resultados separados. |
 | Tienda App6059–6128,CSS2589–2715 | Toolbar separada y cards contain/atributos apilados | Catálogo privado TEST y salida externa bloqueada se conservan; imagen cuadrada y pie compacto, regreso/expiración sin regresión. |
@@ -60,7 +63,7 @@ está en product-decisions; root conserva los siguientes límites visibles:
 |---|---|
 | Formularios simulados de tarjeta/alta financiera | Excepción explícita del titular24oct: conservar PaymentSheet de aportación puntual y Guardián, más onboarding Stripe Connect. Fuentes/rutas y runtime TEST331 confirmados independientemente; f60195a1 no cambia adaptadores/configuración. Datos sensibles/autenticación permanecen en Stripe. No sustituirlos por formularios del mock. |
 | Acceso al alta financiera del rescatista | Hoy: modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. No es paso automático del asistente de publicar. Conservar condiciones nativas Android/iOS y fallback Stripe; localizarlo en demo sin afirmar onboarding físico no comprobado. No se decidió añadir un paso nuevo. |
-| Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No publicar cifras ficticias. |
+| Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No presentar cifras simuladas como actividad real. Se conserva la excepción explícita DEV TEST $100/$20 de P3; todavía no ejecutada. |
 | Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
 | Resumen mensual para quien sólo aporta una vez | Datos/servicio se conservan; el mock no dibuja acceso equivalente sin Guardián. No se añadió el botón de Perfil propuesto, por decisión del titular. Fallback histórico existente conservado: Impacto → promoción → Ver mi impacto → feed, sin mensual ni contratar; es adaptación declarada, distinta de Mi historial de pagos. |
 | Método de pago en cada movimiento | W4H implementa snapshot privado brand/last4 del Charge exacto conciliado y UI equivalente, nunca tarjeta actual como histórica. DEV aplicado/verificado20261024071929 y4lectores79/97/97/90, CI40072205329 verde. Legado sin prueba exacta sigue nullable y sin backfill; receptor sin método ni identidad del donante (RPC no los expone). No inventar Visa4242 ni donantes. 331 muestra legado nullable; filas receptoras b9 corregidas en f60195a1, física332 pendiente. Falta un nuevo aporte TEST legítimo para verificar captura remota del snapshot. |

@@ -1,3 +1,30 @@
+## 24/10/2026 — f7b77a0b: formato exacto antes del candidato332
+
+bc4/CI40081994864 Flutter120837417701 paró antes de pruebas: al acortar la
+expectativa root omitió ejecutar dartformat y CI detectó4líneas→1. Corrección
+f7b77a0bf57732be273da7bd813ce77fc9c1fb17 sóloformato; dryrun416lib/test/tool
+0cambios/código independiente cerrado. La suite5PASS previa sigue equivalente;
+no repetirla por formato. Nueva CI delSHA requerido, sin envío Codemagic aún.
+CI40082326137 cuatrojobs en curso09:34UTC. Se pospone rebindpaquete hastaCIverde para evitar rehacer referencias de runs
+no elegibles. No tocar producto ni añadir pruebas/ceremonia por este incidente.
+Retro incremental independiente confirma causas de assertantiguo/formato y
+falsaalarma cp1252; hasta dos ajustes del método existente: integrador contrasta
+expectativas afectadas y ejecuta formato antespush; revisores usan lectorUTF8 y
+canonical operativo. Éxito: formatoCIpasa/assertsprivacidadintactos/hash2336 y
+preflight utilizable120s. Sin otrogate ni ahorro/causalidad global atribuidos.
+
+## 24/10/2026 — Rebind final bc4cee6c tras expectativa obsoleta en CI
+
+CI40081429317/f601:Flutter1425PASS/1FAIL, único fallo rescuer_profile_published
+esperaba placeholder antiguo. bc4cee6c3f3ee89dd9424abcc4f712beb3abb466 cambia
+sólo esa expectativa a «Cuéntanos sobre ti.»; mantiene los asserts de retiro de
+nombre/bio aprobados y ausencia de campos privados. Suite5PASS/código cerrado.
+CI40081994864 del nuevoSHA en curso, no reenviar f601 ni dar CI anterior porverde.
+Paquete332 rebind ca0e77d6…cfb2/12pure/3AST/6defaults, sin reservar ni POST.
+Alerta de hashpreview fue falsa: revisor había leído UTF8 con cp1252; helperreal
+UTF8 produce2336…caf9f6 exacto. No hubo patchbaseline/hashes por esaalerta.
+Evidencia relevante de CI y log focal guardados en final-warm-corrective-release.
+
 ## 24/10/2026 — Correctivo final f60195a1 congelado, Stripe preservado
 
 Fuente f60195a1d30ee0a1077963d8ec705f7c40d12735 subida;16archivos móviles,

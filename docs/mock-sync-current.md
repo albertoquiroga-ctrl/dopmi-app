@@ -13,7 +13,7 @@ QA física331/115%:14estados/recorridos representativos, filtros multiselección
 video real de swipe corto/completo, detalle/scroll, mensajes, perfiles, Connect
 TEST ready, Guardián activo/Impacto vacío, historial/métodos, ayuda/documento.
 Revisor independiente encontró6P2+1P3 de presentación; correctivo agrupado en
-fuente f60195a1d30ee0a1077963d8ec705f7c40d12735, subida para CI final332.
+fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17, CI40082326137 en curso para332.
 Capturas/revisiones correctivas cerradas; no publicar otro delta aislado.
 Tienda331: una grant600s08:35:05UTC, filtros/orden/vacío/Gatos/posición iguales,
 salidas bloqueadas; OFF/revocada08:40:46 y fullbaseline08:40:47 exacto salvo
@@ -25,7 +25,7 @@ job6pausado. Teléfono restaurado Adoptar/owner actual. No P3caso/gasto/aporte/O
 P3freeze bb65a68b…5873 preparado; falta sesión legítima del donante elegido,
 solicitada sin cerrar owner. Cámara/audio humanos, iOS físico y aceptación UX
 no se inventan. Dueño root/una colaFlutter. Siguiente: cerrar capturas/revisiones
-correctivas cerradas → CI final f60195a1 → UN paquete332/Play/Samsung → comprobar sólo delta.
+correctivas cerradas → CI final f7b77a0b → UN paquete332/Play/Samsung → comprobar sólo delta.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

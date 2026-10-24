@@ -13,7 +13,8 @@ La revisión física final encontró diferencias concretas, reunidas en UN lote:
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
 OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
 W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
-Fuente correctiva final f60195a1d30ee0a1077963d8ec705f7c40d12735 subida para CI.
+Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 en curso;
+delta posterior a f601: expectativa de placeholder actualizada y formateada.
 Límite original13:08:18UTC24oct; actualfuenteinstalada f348. No afirmar332
 publicada, instalada ni aceptada. Detalle y fuentes de continuidad en checkpoint.
 
