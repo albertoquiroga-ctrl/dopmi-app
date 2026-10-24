@@ -22,7 +22,11 @@ cerraron hallazgos materiales del delta. CI0bc: tresSUCCESS, Flutter1413PASS/10F
 por expectativas/gestos de prueba; corrección agrupada64PASS. Fixtures actuales
 de notificaciones e historial corregidos/captura1PASS. Historial final: nueve
 regresiones financieras y captura normal/200%/vacío,10PASS; producto/código cierran
-título ink, Canvas donante y tarjeta vacía. Nuevo SHA/CI final por fijar.
+título ink, Canvas donante y tarjeta vacía. CIbce40066495414: tresSUCCESS,
+Flutter1419PASS/4FAIL por cast del test de reflujo al wrapper semántico. Se
+localizó el RichText único sin relajar exigencias; cuatro reflow+nueve ledger+
+captura14PASS/22s y revisión de código cerrada. Fuente de producto bce intacta;
+commit sólo de prueba y su CI final por fijar.
 No sumar suites superpuestas ni confundir fixtures con teléfono.
 
 Root siguiente: fijar commit correctivo → push/CI4jobs exactos → cerrar paquete331

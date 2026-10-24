@@ -1,3 +1,22 @@
+## 23/10/2026 — Reflujo: localizador semántico corregido sin cambiar producto
+
+CI40066495414/bce75788 terminó con web/PostgreSQL, integración e iOSsim SUCCESS;
+Flutter1419PASS/4FAIL. Los cuatro fallos son el mismo cast de
+payment_activity_reflow_test:54: el Text con semanticsLabel devuelve
+RenderSemanticsAnnotations, no RenderParagraph. No son cuatro regresiones de UI
+demostradas. El test ahora encuentra su RichText descendiente único y mide ese
+párrafo. Se conservan cuatro variantes donante/recibido y115%/200%, ancho de
+palabra, fecha, posición y céntimos5075/.75, sin modificar fuente productiva.
+
+hist​ory-reflow-corrective.log: cuatro reflow+nueve ledger+captura14PASS/22s;
+código independiente cerró el diff. Root omitió la suite de reflujo del mismo
+componente en la selección previa de10; no repetir capturadores históricos ni
+modificar UI para satisfacer un localizador obsoleto. Congelar literales del
+paquete una vez después de CI terminal evita recálculos/revisiones prematuros;
+no es gate nuevo ni ahorro demostrado. Producto continúa bce, instalada330;
+ninguna autorización, reserva, build o servicio ON nuevo. Raw de los cuatro
+fallos conservado en ci-bce-four-reflow-failures.actual.log.
+
 ## 23/10/2026 — Historial final conforme al mock, sin acceso mensual adicional
 
 La decisión call_7ddb7182 se implementa sin reabrir alternativas: Perfil contiene

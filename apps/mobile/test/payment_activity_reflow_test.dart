@@ -51,7 +51,12 @@ void main() {
         final date = find.text('8/10/2026');
         final status = find.text('Neto asignado');
         final amount = find.byType(ActivityMoney);
-        final paragraph = tester.renderObject<RenderParagraph>(titleFinder);
+        final titleParagraph = find.descendant(
+          of: titleFinder,
+          matching: find.byType(RichText),
+        );
+        expect(titleParagraph, findsOneWidget);
+        final paragraph = tester.renderObject<RenderParagraph>(titleParagraph);
         final word = TextPainter(
           text: const TextSpan(
             text: 'veterinaria',
