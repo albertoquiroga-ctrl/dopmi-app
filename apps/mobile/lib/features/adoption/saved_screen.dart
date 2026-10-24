@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
+import '../identity/experience_controller.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 
@@ -178,52 +180,57 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
         ),
       ],
     ),
-    body: SafeArea(
-      top: false,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (kind == SavedKind.adoption) ...[
-              const Text(
-                'Solo aparecen los compañeritos que marcaste con like o guardaste para adoptar.',
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.45,
-                  letterSpacing: 0,
-                  color: muted,
+    body: DonorCanvas(
+      enabled:
+          kind == SavedKind.adoption &&
+          ref.watch(experienceProvider).value != AccountExperience.rescuer,
+      child: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (kind == SavedKind.adoption) ...[
+                const Text(
+                  'Solo aparecen los compañeritos que marcaste con like o guardaste para adoptar.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.45,
+                    letterSpacing: 0,
+                    color: muted,
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+              if (error != null) Notice(error!, isError: true),
+              LiveSection<DataPage<SavedEntry>>(
+                key: ValueKey('$kind:$page:$revision'),
+                tables: const ['dopmi_favorites', 'dopmi_saved_cases'],
+                load: load,
+                builder: (result, _) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (result.items.isEmpty) _empty(),
+                    for (final item in result.items)
+                      _SavedCard(
+                        item,
+                        kind: kind,
+                        remove: () => remove(item),
+                        busy: removing.contains('$kind:${item.id}'),
+                      ),
+                    if (result.total > 20 || page > 1)
+                      PageControls(
+                        page: page,
+                        total: result.total,
+                        size: 20,
+                        change: (value) => setState(() => page = value),
+                      ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
             ],
-            if (error != null) Notice(error!, isError: true),
-            LiveSection<DataPage<SavedEntry>>(
-              key: ValueKey('$kind:$page:$revision'),
-              tables: const ['dopmi_favorites', 'dopmi_saved_cases'],
-              load: load,
-              builder: (result, _) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (result.items.isEmpty) _empty(),
-                  for (final item in result.items)
-                    _SavedCard(
-                      item,
-                      kind: kind,
-                      remove: () => remove(item),
-                      busy: removing.contains('$kind:${item.id}'),
-                    ),
-                  if (result.total > 20 || page > 1)
-                    PageControls(
-                      page: page,
-                      total: result.total,
-                      size: 20,
-                      change: (value) => setState(() => page = value),
-                    ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     ),

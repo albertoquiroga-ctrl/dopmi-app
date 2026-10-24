@@ -1,3 +1,5 @@
+import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
+
 // Portable core: the same code runs in Supabase Edge and Node acceptance tests.
 export class PaymentError extends Error {
   constructor(code, status = 409, context = {}) { super(code); this.code = code; this.status = status; this.context = context; }
@@ -168,7 +170,8 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     if (!account || account.owner_id !== d.rescuer_id) throw new PaymentError('destination_mismatch');
     await refreshAccount(account);
     return rpc('settle', { donation_id: d.id, currency: pi.currency, gross_cents: pi.amount_received,
-      charge_id: charge.id, payment_intent_id: pi.id, stripe_fee_cents: balance.fee });
+      charge_id: charge.id, payment_intent_id: pi.id, stripe_fee_cents: balance.fee,
+      ...chargePaymentMethodSnapshot(charge) });
   }
   async function reconcileIntent(id, expectedDonationId) {
     let pi = await stripe(`payment_intents/${id}`);

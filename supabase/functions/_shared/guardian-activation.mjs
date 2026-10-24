@@ -1,5 +1,6 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
 import { paymentLog } from './payments.mjs';
+import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
 
 export const guardianConsentVersion = 'guardian-2026-09-24';
 const fail = code => { throw new GuardianBillingError(code); };
@@ -56,7 +57,8 @@ export function guardianInitialEvidence(session, intent, activation) {
   if (net <= 0) fail('processor_fee_exceeds_payment');
   return { donor_id: activation.donor_id, checkout_session_id: session.id,
     customer_id: customer, payment_method_id: method, payment_intent_id: intent.id, charge_id: charge.id,
-    gross_cents: activation.gross_cents, platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net };
+    gross_cents: activation.gross_cents, platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net,
+    ...chargePaymentMethodSnapshot(charge) };
 }
 
 export function guardianActivationService({ stripe, rpc, settle, returnUrl, logger = console }) {

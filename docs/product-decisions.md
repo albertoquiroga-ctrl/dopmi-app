@@ -1,3 +1,17 @@
+## 24/10/2026 — Cierre integral autónomo, sin renovaciones rutinarias
+
+Objetivo directo del titular: terminar dopmi-app funcional y visualmente como el
+mock, entregar al final adaptaciones y flujos ausentes, y continuar sin pedir
+autorizaciones rutinarias para programar/usar Codemagic/Stream mientras está lejos.
+Se conserva el límite original de ocho horas:05:08:18–13:08:18UTC del24oct.
+La autorización implícita de ese objetivo permite ejecutar paquetes técnicos
+necesarios y revisados en DEV y distribución interna, sin presentar de nuevo
+preguntas de aprobación ya resueltas. Se mantienen operaciones acotadas,
+conciliación/idempotencia, TEST, privacidad, cierreOFF e identidad/firma existentes.
+No autoriza dinero real, inventar sesiones, nuevas condiciones vinculantes ni
+capturar cámara/audio personal sin poder comprobar neutralidad. Los SDK Stripe
+de la decisión inmediata inferior siguen siendo excepción explícita al mock.
+
 ## 24/10/2026 — Conservar los tres componentes seguros de Stripe
 
 Mensaje directo del titular en este chat: mantener los componentes embebidos de

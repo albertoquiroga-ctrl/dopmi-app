@@ -126,6 +126,7 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
                   final id = widget.profile['id'];
                   final selected = await showDialog<Json>(
                     context: context,
+                    barrierColor: const Color(0x29000000),
                     builder: (_) => DiscoveryFilters({
                       ...filters,
                       if (species != null) 'species': species,

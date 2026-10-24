@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
 import '../../core/donor_canvas.dart';
+import '../../core/css_linear_gradient.dart';
 
 class NotificationFrame extends StatelessWidget {
   const NotificationFrame({
@@ -37,19 +38,42 @@ class NotificationFrame extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: const ColoredBox(
-              color: Color(0xf5ffffff),
-              child: SizedBox.expand(),
+        flexibleSpace: DecoratedBox(
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x1446281d),
+                offset: Offset(0, 6),
+                blurRadius: 22,
+              ),
+            ],
+          ),
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 26, sigmaY: 26),
+              child: const DecoratedBox(
+                decoration: BoxDecoration(color: Color(0x1affffff)),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: CssLinearGradient(
+                      degrees: 165,
+                      colors: [
+                        Color(0x29ffffff),
+                        Color(0x47ffffff),
+                        Color(0x5cffffff),
+                      ],
+                      stops: [0, .52, 1],
+                    ),
+                  ),
+                  child: SizedBox.expand(),
+                ),
+              ),
             ),
           ),
         ),
-        shape: Border(
-          bottom: BorderSide(
-            color: rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd),
-          ),
+        shape: const Border(
+          top: BorderSide(color: Color(0xb8ffffff)),
+          bottom: BorderSide(color: Color(0x6bffffff)),
         ),
         leading: Padding(
           padding: const EdgeInsets.only(left: 12),

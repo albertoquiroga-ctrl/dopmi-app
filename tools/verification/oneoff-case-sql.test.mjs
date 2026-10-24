@@ -79,6 +79,20 @@ async function settle(d,fee=600) {
  await call('bind',{payment_intent_id:'pi_case'});
  return (await db.query('select public.dopmi_payment_server($1,$2::jsonb) value',['settle',JSON.stringify({donation_id:d.id,currency:'mxn',gross_cents:10000,charge_id:'ch_case',payment_intent_id:'pi_case',stripe_fee_cents:fee})])).rows[0].value;
 }
+
+test('case settlement records historical method atomically and malformed metadata rolls the entire settlement back',async()=>{
+ const d=await call('prepare',payload);await call('bind',{payment_intent_id:'pi_case'});
+ const method={type:'card',brand:'visa',last4:'0052'};
+ const proof={donation_id:d.id,currency:'mxn',gross_cents:10000,charge_id:'ch_case',payment_intent_id:'pi_case',stripe_fee_cents:600,payment_method:method};
+ const send=data=>db.query("select public.dopmi_payment_server('settle',$1::jsonb) value",[JSON.stringify(data)]).then(r=>r.rows[0].value);
+ await rejected(()=>send({...proof,payment_method:{...method,last4:'12345'}}),/histórico inválido/);
+ assert.equal((await db.query('select processed_at from public.dopmi_donations where id=$1',[d.id])).rows[0].processed_at,null);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_payment_jobs where donation_id=$1',[d.id])).rows[0].n,0);
+ assert.equal((await db.query('select count(*)::int n from private.dopmi_payment_method_snapshots')).rows[0].n,0);
+ const settled=await send(proof);assert.equal(settled.allocated_cents,9200);
+ assert.equal((await send(proof)).id,d.id);
+ assert.deepEqual((await db.query('select brand,last4 from private.dopmi_payment_method_snapshots where payment_id=$1',[d.id])).rows[0],{brand:'visa',last4:'0052'});
+});
 test('case preparation reserves ordered multiple expenses atomically and retries same parent',async()=>{
  await splitExpenses(); const d=await call('prepare',payload);
  assert.equal(d.expense_id,null);assert.equal(d.case_id,caseId);assert.equal(d.contribution_scope,'case');

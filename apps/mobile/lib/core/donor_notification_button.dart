@@ -65,7 +65,7 @@ class DonorNotificationButton extends ConsumerWidget {
                 width: 20,
                 height: 20,
                 colorFilter: ColorFilter.mode(
-                  rescuer ? const Color(0xff7c3aed) : ink,
+                  rescuer ? purple : ink,
                   BlendMode.srcIn,
                 ),
               ),

@@ -126,6 +126,8 @@ class PublicProfileCaptureCommunity extends FakeCommunity {
   PublicProfileCaptureCommunity({this.reference = false});
   final bool reference;
   @override
+  Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
+  @override
   Future<Json?> publicProfile(String id) async => {
     ...?await super.publicProfile(id),
     'verified': true,
@@ -1406,6 +1408,7 @@ void main() {
       ('public-profile', '/people/owner'),
       ('public-profile-large', '/people/owner'),
       ('public-profile-reference', '/people/owner'),
+      ('public-profile-reference-samsung', '/people/owner'),
       ('public-profile-reference-large', '/people/owner'),
       ('public-profile-state-loading', '/people/owner'),
       ('public-profile-state-loading-large', '/people/owner'),
@@ -1418,7 +1421,11 @@ void main() {
       ('public-profile-metrics-stats', '/people/owner'),
       ('public-profile-metrics-stats-large', '/people/owner'),
       ('public-profile-adoptions', '/people/owner'),
+      ('public-profile-adoptions-samsung', '/people/owner'),
       ('public-profile-adoptions-large', '/people/owner'),
+      ('public-profile-adoptions-filter', '/people/owner'),
+      ('public-profile-adoptions-filter-samsung', '/people/owner'),
+      ('public-profile-adoptions-filter-large', '/people/owner'),
       ('public-profile-report-reference-error', '/people/owner'),
       ('public-profile-report-reference-error-large', '/people/owner'),
       ('public-profile-report-reference-sending', '/people/owner'),
@@ -1877,6 +1884,14 @@ void main() {
             )
           : FakeCommunity();
       if (spec.$1.startsWith('adoption-empty')) community.discoveryItems = [];
+      if (spec.$1.startsWith('public-profile-adoptions')) {
+        // Existing authorized capture image; FixturePhotoClient never opens a socket.
+        community.post = Adoption({
+          ...community.post.data,
+          'pet_name': 'Rocky',
+          'photos': ['fixture/rocky.png'],
+        });
+      }
       if ((spec.$1.startsWith('publish-photo-grid') ||
           (spec.$1.startsWith('publish-information') ||
               spec.$1.startsWith('publish-review') ||
@@ -2157,8 +2172,23 @@ void main() {
                 spec.$1.endsWith('-empty')
                     ? []
                     : [
-                        history_fixture.cycle(),
-                        {...history_fixture.donation(), 'title': 'Comida'},
+                        {
+                          ...history_fixture.cycle(),
+                          'payment_method': {
+                            'type': 'card',
+                            'brand': 'visa',
+                            'last4': '4242',
+                          },
+                        },
+                        {
+                          ...history_fixture.donation(),
+                          'title': 'Comida',
+                          'payment_method': {
+                            'type': 'card',
+                            'brand': 'mastercard',
+                            'last4': '5556',
+                          },
+                        },
                       ],
               ),
             ),
@@ -2791,15 +2821,48 @@ void main() {
         expect(tester.takeException(), isNull);
       }
       if (spec.$1.startsWith('public-profile-adoptions')) {
+        expect(find.byType(PublicProfileIdentity), findsOneWidget);
+        final adoptionTab = find.widgetWithText(TextButton, 'Adopción');
         await Scrollable.ensureVisible(
-          tester.element(find.text('En adopción')),
+          tester.element(adoptionTab),
           alignment: .3,
         );
         await tester.pumpAndSettle();
-        await tester.tap(find.text('En adopción'));
+        expect(adoptionTab.hitTestable(), findsOneWidget);
+        await tester.tap(adoptionTab);
+        for (var phase = 0; phase < 3; phase++) {
+          await tester.pump(const Duration(seconds: 1));
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 100)),
+          );
+        }
         await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text('Conoce la historia de Luna'));
+        final adoption = find.byKey(const ValueKey('public-adoption-post'));
+        expect(adoption, findsOneWidget);
+        await tester.ensureVisible(adoption);
         await tester.pumpAndSettle();
+        expect(adoption.hitTestable(), findsOneWidget);
+        final photo = find.descendant(
+          of: adoption,
+          matching: find.byType(RawImage),
+        );
+        expect(photo, findsOneWidget);
+        expect(tester.widget<RawImage>(photo).image, isNotNull);
+        if (spec.$1.contains('-filter')) {
+          final filter = find.widgetWithText(OutlinedButton, 'Filtrar');
+          await tester.ensureVisible(filter);
+          await tester.pumpAndSettle();
+          expect(filter.hitTestable(), findsOneWidget);
+          await tester.tap(filter);
+          await tester.pumpAndSettle();
+          expect(find.text('Filtros'), findsOneWidget);
+          expect(find.text('Aplicar filtros'), findsOneWidget);
+          final barrier = tester
+              .widgetList<ModalBarrier>(find.byType(ModalBarrier))
+              .where((item) => item.color != null)
+              .last;
+          expect(barrier.color, const Color(0x29000000));
+        }
       }
       if (spec.$1.startsWith('public-profile-metrics')) {
         final target = spec.$1.contains('-stats')
@@ -4558,7 +4621,20 @@ void main() {
             spec.$1.startsWith('connect-account')) {
           expect(container.read(routerProvider).state.uri.path, spec.$2);
         }
-        if (spec.$1 == 'public-profile-reference') {
+        if (spec.$1.startsWith('public-profile-reference')) {
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/people/owner',
+          );
+          expect(find.byType(PublicProfileIdentity), findsOneWidget);
+          for (final label in [
+            'Mascotas están buscando un hogar.',
+            'Mascotas encontraron un hogar.',
+            'Mascotas están recibiendo apoyo.',
+            'Mascotas recibieron apoyo.',
+          ]) {
+            expect(find.text(label), findsOneWidget);
+          }
           final identity = tester.widget<PublicProfileIdentity>(
             find.byType(PublicProfileIdentity),
           );
@@ -4567,13 +4643,13 @@ void main() {
             'avatar': find.byWidget(identity.avatar),
             'name': find.text(identity.name),
             'city': find.text(identity.city),
-            'count': find.text('${identity.caseCount} casos publicados'),
             'bio': find.text(identity.bio),
-            'socialHeading': find.text('Redes sociales'),
-            'instagram': find.widgetWithText(OutlinedButton, 'Instagram'),
-            'facebook': find.widgetWithText(OutlinedButton, 'Facebook'),
+            'instagram': find.widgetWithText(TextButton, 'Instagram'),
+            'facebook': find.widgetWithText(TextButton, 'Facebook'),
             'tabs': find.byType(PublicProfileTabs),
-            'activityTab': find.widgetWithText(TextButton, 'Actividad'),
+            'summaryTab': find.widgetWithText(TextButton, 'Resumen'),
+            'adoptionTab': find.widgetWithText(TextButton, 'Adopción'),
+            'supportTab': find.widgetWithText(TextButton, 'Apoyo'),
           };
           final metrics = <String, Object>{};
           for (final entry in targets.entries) {

@@ -29,6 +29,33 @@ const paymentActivityStatuses = {
   'reversed': 'Transferencia revertida',
 };
 
+// A historical Charge snapshot is independent from the user's current wallet.
+// Never display a donor's card in the receiver's ledger, even for malformed data.
+String? _historicalCardLabel(Json item, {required bool received}) {
+  if (received) return null;
+  final method = item['payment_method'];
+  if (method is! Map || method['type'] != 'card') return null;
+  final last4 = method['last4'];
+  if (last4 is! String || !RegExp(r'^[0-9]{4}$').hasMatch(last4)) {
+    return null;
+  }
+  final brand = switch (method['brand']) {
+    'visa' => 'Visa',
+    'mastercard' => 'Mastercard',
+    'amex' => 'American Express',
+    'cartes_bancaires' => 'Cartes Bancaires',
+    'diners' => 'Diners Club',
+    'discover' => 'Discover',
+    'eftpos_au' => 'eftpos',
+    'jcb' => 'JCB',
+    'link' => 'Link',
+    'unionpay' => 'UnionPay',
+    'unknown' => 'Tarjeta',
+    _ => null,
+  };
+  return brand == null ? null : '$brand *$last4';
+}
+
 class PaymentActivityScreen extends ConsumerWidget {
   const PaymentActivityScreen({
     super.key,
@@ -368,6 +395,10 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
     final date = DateTime.tryParse(d['created_at']?.toString() ?? '')
         ?.toLocal();
     final status = paymentActivityStatuses[d['status']] ?? 'En revisión';
+    final method = _historicalCardLabel(d, received: widget.received);
+    final statusInDetails =
+        method != null &&
+        const ['confirmed', 'assigned', 'transferred'].contains(d['status']);
     final count = (d['allocation_count'] as num? ?? 0).toInt();
     final title = guardian
         ? '${d['title']} · $count ${count == 1 ? 'asignación' : 'asignaciones'}'
@@ -468,14 +499,38 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                                 color: muted,
                               ),
                             ),
-                            Text(
-                              status,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                height: 1.5,
-                                color: muted,
+                            if (method != null)
+                              Tooltip(
+                                message: method,
+                                excludeFromSemantics: true,
+                                child: Text(
+                                  method,
+                                  semanticsLabel: method.replaceFirst(
+                                    '*',
+                                    ', tarjeta terminada en ',
+                                  ),
+                                  maxLines: enlargedTitle ? null : 1,
+                                  overflow: enlargedTitle
+                                      ? TextOverflow.clip
+                                      : TextOverflow.ellipsis,
+                                  softWrap: enlargedTitle,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    height: 1.35,
+                                    fontWeight: FontWeight.w500,
+                                    color: muted,
+                                  ),
+                                ),
                               ),
-                            ),
+                            if (!statusInDetails)
+                              Text(
+                                status,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  height: 1.5,
+                                  color: muted,
+                                ),
+                              ),
                           ],
                         );
                         final moneyWidget = ActivityMoney(
@@ -526,6 +581,12 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                             minimumTextWidth = width;
                           }
                         }
+                        if (method != null) {
+                          final width = textWidth(method, 12);
+                          if (width > minimumTextWidth) {
+                            minimumTextWidth = width;
+                          }
+                        }
                         final amountWidth = textWidth(
                           '+${contributionMoney((d['amount_cents'] as num? ?? 0).toInt()).replaceAll(' MXN', '')}',
                           15,
@@ -567,6 +628,15 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      if (statusInDetails)
+                        Text(
+                          status,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            height: 1.5,
+                            color: muted,
+                          ),
+                        ),
                       amount(
                         widget.received
                             ? 'Neto asignado'

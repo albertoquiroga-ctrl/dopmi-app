@@ -1,4 +1,37 @@
-# Checkpoint vigente — 24/10/2026, warm-trust b9f6d5f
+# Checkpoint vigente — 24/10/2026, cierre integral autónomo
+
+Repositorio de producto dopmi-app/codex/finish-release-20261015; mock sólo
+referencia b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust. Conservar los
+tres SDK Stripe (aporte puntual, Guardián y Connect rescatista).
+
+El objetivo activo del titular autoriza continuar programación, operaciones DEV
+revisadas, Stream y distribución interna sin renovaciones rutinarias. Esta
+instrucción posterior supersede la espera de permiso331 indicada abajo; no
+supersede TEST, privacidad, identidad legítima ni restricciones de credenciales.
+Inicio registrado05:08:18UTC; límite original13:08:18UTC del24oct, sin reiniciarlo.
+
+Ada0c4f6/CI40068127871 cuatroSUCCESS/1423Flutter es base verificada, no entrega
+final. Auditoría independiente de20grupos encontró cuatro deltas visuales
+acotados: Perfil público, chrome rescatista, cabecera notificaciones y consumo
+del canvas donante. Se agrupan con método histórico real de tarjeta antes de
+la distribución final;331 todavía sin tag/reserva/POST. Backend local981PASS/
+8SKIP y delta22PASS; móvil residual55PASS. Cambios nuevos aún sin CI integrada,
+despliegue ni teléfono. Dueños root/una colaFlutter, worker backend cedió fuentes;
+revisión independiente de código/seguridad en curso. Detalle en matriz vigente.
+
+Instalada/publicada sigue2.3.3(330)/7f6d7e90/Play interno170. Última comprobación
+ADB330/Vending; sesión/modo no se han alterado en este delta. DEV06:26UTC sólo
+lecturas; no ON/migración/Edge/backfill/caso/gasto/aporte nuevo. Preservar caso
+TESTCLOSED40/dosclips aprobados y DRAFT4/PDF privados, finanzas/TiendaOFF.
+
+Siguiente: terminar batch residual/capturas y revisiones → candidato integrado/
+CI exacta → operación DEV revisada (migración histórica antes de Edge) → una
+distribución interna y QA real disponible con cierreOFF. Cámara/audio humanos,
+actor donante legítimo, iOS físico y aceptación UX no se inventan por autonomía.
+
+## Checkpoint anterior (supersedido por el corte vigente superior)
+
+# Checkpoint — 24/10/2026, warm-trust b9f6d5f
 
 Producto **dopmi-app**, mock sólo referencia congelada:
 `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust elegida por titular.

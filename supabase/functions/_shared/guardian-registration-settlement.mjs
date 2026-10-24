@@ -1,5 +1,6 @@
 import { PaymentError } from './payments.mjs';
 import { registrationPaymentEvidence } from './guardian-registration-payment.mjs';
+import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
 
 const id = value => typeof value === 'string' ? value : value?.id;
 
@@ -29,7 +30,8 @@ export function registrationSettlementEvidence(attempt, intent) {
   return { registration_attempt_id: attempt.id, donor_id: attempt.owner_id,
     customer_id: attempt.customer_id, payment_method_id: attempt.payment_method_id,
     payment_intent_id: intent.id, charge_id: charge.id, gross_cents: attempt.gross_cents,
-    platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net };
+    platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net,
+    ...chargePaymentMethodSnapshot(charge) };
 }
 
 export async function readRegistrationSettlementEvidence(stripe, attempt) {

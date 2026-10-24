@@ -13,6 +13,7 @@ import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'notification_tile.dart';
@@ -780,234 +781,243 @@ class _ThreadState extends ConsumerState<ThreadScreen>
               ),
           ],
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (loading) const Center(child: CircularProgressIndicator()),
-                  if (error != null) Notice(error!, isError: true),
-                  if (!loading && thread == null)
-                    ActionButton('Volver a cargar', onPressed: refresh),
-                  if (thread != null) ...[
-                    if (hasOlder && messages.isNotEmpty)
-                      TextButton(
-                        onPressed: olderBusy ? null : older,
-                        child: Text(
-                          olderBusy ? 'Cargando…' : 'Ver mensajes anteriores',
+        body: DonorCanvas(
+          enabled: !rescuer,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    if (loading)
+                      const Center(child: CircularProgressIndicator()),
+                    if (error != null) Notice(error!, isError: true),
+                    if (!loading && thread == null)
+                      ActionButton('Volver a cargar', onPressed: refresh),
+                    if (thread != null) ...[
+                      if (hasOlder && messages.isNotEmpty)
+                        TextButton(
+                          onPressed: olderBusy ? null : older,
+                          child: Text(
+                            olderBusy ? 'Cargando…' : 'Ver mensajes anteriores',
+                          ),
                         ),
-                      ),
-                    if (messages.isEmpty)
-                      const Text(
-                        'Saluda y cuéntale por qué te interesa esta adopción.',
-                        style: TextStyle(color: muted),
-                      ),
-                    for (final message in messages)
-                      ChatMessageBubble(
-                        message,
-                        mine: message['sender_id'] == repo.userId,
-                      ),
-                    if (thread!['status'] == 'closed')
-                      const Notice(
-                        'Esta conversación está cerrada. Puedes consultar su historial.',
-                      ),
+                      if (messages.isEmpty)
+                        const Text(
+                          'Saluda y cuéntale por qué te interesa esta adopción.',
+                          style: TextStyle(color: muted),
+                        ),
+                      for (final message in messages)
+                        ChatMessageBubble(
+                          message,
+                          mine: message['sender_id'] == repo.userId,
+                        ),
+                      if (thread!['status'] == 'closed')
+                        const Notice(
+                          'Esta conversación está cerrada. Puedes consultar su historial.',
+                        ),
+                    ],
                   ],
-                ],
-              ),
-            ),
-            if (thread != null && thread!['status'] != 'closed')
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(top: BorderSide(color: line)),
                 ),
-                child: SafeArea(
-                  top: false,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (photoBytes != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.memory(
-                                    photoBytes!,
-                                    key: const ValueKey('chat-photo-preview'),
-                                    width: 96,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, _, _) => const SizedBox(
+              ),
+              if (thread != null && thread!['status'] != 'closed')
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: line)),
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (photoBytes != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.memory(
+                                      photoBytes!,
+                                      key: const ValueKey('chat-photo-preview'),
                                       width: 96,
                                       height: 80,
-                                      child: Icon(Icons.broken_image_outlined),
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, _, _) => const SizedBox(
+                                        width: 96,
+                                        height: 80,
+                                        child: Icon(
+                                          Icons.broken_image_outlined,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                  tooltip: 'Quitar foto',
-                                  onPressed: busy ? null : clearComposition,
-                                  icon: const Icon(Icons.close),
-                                ),
-                              ],
-                            ),
-                          ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: composer,
-                                minLines: 1,
-                                maxLines: 5,
-                                maxLength: 2000,
-                                readOnly: busy || pendingId != null,
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 16,
-                                  height: 1.25,
-                                  letterSpacing: 0,
-                                  color: textInk,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: 'Escribe un mensaje...',
-                                  hintMaxLines: 1,
-                                  constraints: BoxConstraints(
-                                    minHeight:
-                                        MediaQuery.textScalerOf(context)
-                                                .scale(16) *
-                                            1.25 +
-                                        26,
+                                  IconButton(
+                                    tooltip: 'Quitar foto',
+                                    onPressed: busy ? null : clearComposition,
+                                    icon: const Icon(Icons.close),
                                   ),
-                                  hintStyle: TextStyle(
-                                    color: textMuted,
+                                ],
+                              ),
+                            ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: composer,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  maxLength: 2000,
+                                  readOnly: busy || pendingId != null,
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
                                     fontSize: 16,
                                     height: 1.25,
                                     letterSpacing: 0,
+                                    color: textInk,
                                   ),
-                                  counterText: '',
-                                  isDense: true,
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 12,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                    borderSide: BorderSide(color: line),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                    borderSide: BorderSide(
-                                      color: rescuer ? purple : ink,
+                                  decoration: InputDecoration(
+                                    hintText: 'Escribe un mensaje...',
+                                    hintMaxLines: 1,
+                                    constraints: BoxConstraints(
+                                      minHeight:
+                                          MediaQuery.textScalerOf(context)
+                                                  .scale(16) *
+                                              1.25 +
+                                          26,
                                     ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              key: const ValueKey('chat-attach-photo'),
-                              constraints: const BoxConstraints.tightFor(
-                                width: 40,
-                                height: 40,
-                              ),
-                              padding: EdgeInsets.zero,
-                              style: IconButton.styleFrom(
-                                minimumSize: const Size(40, 40),
-                                maximumSize: const Size(40, 40),
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              tooltip: 'Adjuntar foto',
-                              onPressed: busy || pendingId != null
-                                  ? null
-                                  : pickPhoto,
-                              icon: SvgPicture.asset(
-                                'assets/profile/paperclip.svg',
-                                width: 22,
-                                height: 22,
-                                colorFilter: ColorFilter.mode(
-                                  const Color(0xff5c574f),
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            ValueListenableBuilder<TextEditingValue>(
-                              valueListenable: composer,
-                              builder: (context, value, _) => SizedBox(
-                                width: 40,
-                                height:
-                                    MediaQuery.textScalerOf(context).scale(16) *
-                                        1.25 +
-                                    26,
-                                child: IconButton(
-                                  tooltip: pendingId == null
-                                      ? 'Enviar mensaje'
-                                      : 'Reintentar envío',
-                                  onPressed:
-                                      busy ||
-                                          (value.text.trim().isEmpty &&
-                                              photoBytes == null)
-                                      ? null
-                                      : send,
-                                  style: IconButton.styleFrom(
-                                    overlayColor: Colors.transparent,
-                                    backgroundColor: accent,
-                                    disabledBackgroundColor: accent.withValues(
-                                      alpha: .5,
+                                    hintStyle: TextStyle(
+                                      color: textMuted,
+                                      fontSize: 16,
+                                      height: 1.25,
+                                      letterSpacing: 0,
                                     ),
-                                    foregroundColor: foreground,
-                                    shape: RoundedRectangleBorder(
+                                    counterText: '',
+                                    isDense: true,
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 12,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(color: line),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: BorderSide(
+                                        color: rescuer ? purple : ink,
+                                      ),
                                     ),
                                   ),
-                                  icon: busy
-                                      ? const SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : SvgPicture.string(
-                                          "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"15.9857\" height=\"15.9857\" viewBox=\"0 0 15.9857 15.9857\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"Icon\" clip-path=\"url(#clip0_0_19)\"><path id=\"Vector\" d=\"M9.68201 14.4444C9.70731 14.5075 9.7513 14.5613 9.80808 14.5986C9.86485 14.636 9.93169 14.6551 9.99962 14.6533C10.0675 14.6516 10.1333 14.6291 10.1881 14.5889C10.2429 14.5487 10.2841 14.4927 10.3061 14.4284L14.6356 1.77308C14.6569 1.71406 14.661 1.65019 14.6473 1.58895C14.6336 1.5277 14.6028 1.47161 14.5585 1.42724C14.5141 1.38287 14.458 1.35205 14.3968 1.3384C14.3355 1.32474 14.2716 1.32881 14.2126 1.35013L1.55727 5.67959C1.493 5.70163 1.437 5.74281 1.3968 5.79759C1.3566 5.85238 1.33412 5.91815 1.33238 5.98608C1.33064 6.05402 1.34972 6.12085 1.38706 6.17763C1.42441 6.2344 1.47822 6.27839 1.54129 6.30369L6.82323 8.4218C6.99021 8.48865 7.14191 8.58862 7.26921 8.71569C7.3965 8.84276 7.49675 8.99428 7.5639 9.16114L9.68201 14.4444Z\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path id=\"Vector_2\" d=\"M14.5563 1.43005L7.2695 8.7162\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><defs><clipPath id=\"clip0_0_19\"><rect width=\"15.9857\" height=\"15.9857\" fill=\"white\"/></clipPath></defs></svg>",
-                                          width: 16,
-                                          height: 16,
-                                          colorFilter: ColorFilter.mode(
-                                            foreground,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        if (pendingId != null) ...[
-                          ActionButton(
-                            'Reintentar envío',
-                            busy: busy,
-                            onPressed: send,
+                              const SizedBox(width: 8),
+                              IconButton(
+                                key: const ValueKey('chat-attach-photo'),
+                                constraints: const BoxConstraints.tightFor(
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                padding: EdgeInsets.zero,
+                                style: IconButton.styleFrom(
+                                  minimumSize: const Size(40, 40),
+                                  maximumSize: const Size(40, 40),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                tooltip: 'Adjuntar foto',
+                                onPressed: busy || pendingId != null
+                                    ? null
+                                    : pickPhoto,
+                                icon: SvgPicture.asset(
+                                  'assets/profile/paperclip.svg',
+                                  width: 22,
+                                  height: 22,
+                                  colorFilter: ColorFilter.mode(
+                                    const Color(0xff5c574f),
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: composer,
+                                builder: (context, value, _) => SizedBox(
+                                  width: 40,
+                                  height:
+                                      MediaQuery.textScalerOf(context)
+                                              .scale(16) *
+                                          1.25 +
+                                      26,
+                                  child: IconButton(
+                                    tooltip: pendingId == null
+                                        ? 'Enviar mensaje'
+                                        : 'Reintentar envío',
+                                    onPressed:
+                                        busy ||
+                                            (value.text.trim().isEmpty &&
+                                                photoBytes == null)
+                                        ? null
+                                        : send,
+                                    style: IconButton.styleFrom(
+                                      overlayColor: Colors.transparent,
+                                      backgroundColor: accent,
+                                      disabledBackgroundColor: accent
+                                          .withValues(alpha: .5),
+                                      foregroundColor: foreground,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    icon: busy
+                                        ? const SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : SvgPicture.string(
+                                            "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"15.9857\" height=\"15.9857\" viewBox=\"0 0 15.9857 15.9857\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"Icon\" clip-path=\"url(#clip0_0_19)\"><path id=\"Vector\" d=\"M9.68201 14.4444C9.70731 14.5075 9.7513 14.5613 9.80808 14.5986C9.86485 14.636 9.93169 14.6551 9.99962 14.6533C10.0675 14.6516 10.1333 14.6291 10.1881 14.5889C10.2429 14.5487 10.2841 14.4927 10.3061 14.4284L14.6356 1.77308C14.6569 1.71406 14.661 1.65019 14.6473 1.58895C14.6336 1.5277 14.6028 1.47161 14.5585 1.42724C14.5141 1.38287 14.458 1.35205 14.3968 1.3384C14.3355 1.32474 14.2716 1.32881 14.2126 1.35013L1.55727 5.67959C1.493 5.70163 1.437 5.74281 1.3968 5.79759C1.3566 5.85238 1.33412 5.91815 1.33238 5.98608C1.33064 6.05402 1.34972 6.12085 1.38706 6.17763C1.42441 6.2344 1.47822 6.27839 1.54129 6.30369L6.82323 8.4218C6.99021 8.48865 7.14191 8.58862 7.26921 8.71569C7.3965 8.84276 7.49675 8.99428 7.5639 9.16114L9.68201 14.4444Z\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path id=\"Vector_2\" d=\"M14.5563 1.43005L7.2695 8.7162\" stroke=\"#FCFBFF\" stroke-width=\"1.33214\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g><defs><clipPath id=\"clip0_0_19\"><rect width=\"15.9857\" height=\"15.9857\" fill=\"white\"/></clipPath></defs></svg>",
+                                            width: 16,
+                                            height: 16,
+                                            colorFilter: ColorFilter.mode(
+                                              foreground,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          if (!busy)
-                            TextButton(
-                              onPressed: clearComposition,
-                              child: const Text('Cancelar reintento y editar'),
+                          if (pendingId != null) ...[
+                            ActionButton(
+                              'Reintentar envío',
+                              busy: busy,
+                              onPressed: send,
                             ),
+                            if (!busy)
+                              TextButton(
+                                onPressed: clearComposition,
+                                child: const Text(
+                                  'Cancelar reintento y editar',
+                                ),
+                              ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       );
     },

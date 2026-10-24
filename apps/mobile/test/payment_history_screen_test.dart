@@ -278,6 +278,72 @@ void main() {
       expect(find.textContaining('Comisión Dopmi:'), findsNothing);
     },
   );
+  testWidgets(
+    'historical card belongs to the paid movement, not the current wallet',
+    (tester) async {
+      await mount(
+        tester,
+        RouteActivity([
+          {
+            ...donation(),
+            'payment_method': {
+              'type': 'card',
+              'brand': 'visa',
+              'last4': '1234',
+            },
+          },
+          {
+            ...cycle(),
+            'payment_method': {
+              'type': 'card',
+              'brand': 'mastercard',
+              'last4': '9876',
+            },
+          },
+        ]),
+      );
+      expect(find.text('Visa *1234'), findsOneWidget);
+      expect(find.text('Mastercard *9876'), findsOneWidget);
+      expect(find.text('Neto asignado'), findsNothing);
+      await tester.tap(find.text('Medicamentos - Choco'));
+      await tester.pumpAndSettle();
+      expect(find.text('Neto asignado'), findsOneWidget);
+      expect(find.text('Importe pagado: \$75.25 MXN'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'receiver never exposes a donor card even if a snapshot is present',
+    (tester) async {
+      final row = {
+        ...donation(),
+        'payment_method': {'type': 'card', 'brand': 'visa', 'last4': '1234'},
+      };
+      await mount(tester, RouteActivity([row]), received: true);
+      expect(find.textContaining('1234'), findsNothing);
+      expect(find.text('Neto asignado'), findsOneWidget);
+    },
+  );
+  testWidgets('legacy or invalid method preserves real reconciliation status', (
+    tester,
+  ) async {
+    await mount(
+      tester,
+      RouteActivity([
+        {
+          ...donation(pending: true),
+          'payment_method': {
+            'type': 'card',
+            'brand': 'visa',
+            'last4': '123456789',
+          },
+        },
+        {...cycle(skipped: true), 'payment_method': null},
+      ]),
+    );
+    expect(find.textContaining('123456789'), findsNothing);
+    expect(find.text('En conciliación'), findsOneWidget);
+    expect(find.text('Ciclo omitido sin cargo ni deuda'), findsOneWidget);
+  });
   testWidgets('skipped cycle never claims paid even with activation disabled', (
     tester,
   ) async {

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
@@ -1208,358 +1209,360 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       return ContributionFrame(
         title: 'Métodos de pago',
         back: () => context.canPop() ? context.pop() : context.go('/settings'),
-        child: Stack(
-          children: [
-            RefreshIndicator(
-              color: ink,
-              backgroundColor: Colors.white,
-              onRefresh: () async {
-                if (!busy && !confirming && current) await load();
-              },
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-                children: [
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 23.4),
-                    child: const Text(
-                      'Tarjetas guardadas',
-                      style: TextStyle(
-                        fontSize: 18,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
+        child: DonorCanvas(
+          child: Stack(
+            children: [
+              RefreshIndicator(
+                color: ink,
+                backgroundColor: Colors.white,
+                onRefresh: () async {
+                  if (!busy && !confirming && current) await load();
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 23.4),
+                      child: const Text(
+                        'Tarjetas guardadas',
+                        style: TextStyle(
+                          fontSize: 18,
+                          height: 1.3,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (enabled) ...[
-                    Text(
-                      !fresh
-                          ? 'Consultando el estado de tu método de pago…'
-                          : cardsError != null
-                          ? 'No se pudo confirmar tu método de pago.'
-                          : (cards ?? []).any((card) => card.isDefault)
-                          ? 'Método predeterminado confirmado por Stripe.'
-                          : 'Aún no tienes un método predeterminado confirmado.',
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Guardar o cambiar una tarjeta no realiza una aportación.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: muted,
-                        height: 1.45,
+                    const SizedBox(height: 10),
+                    if (enabled) ...[
+                      Text(
+                        !fresh
+                            ? 'Consultando el estado de tu método de pago…'
+                            : cardsError != null
+                            ? 'No se pudo confirmar tu método de pago.'
+                            : (cards ?? []).any((card) => card.isDefault)
+                            ? 'Método predeterminado confirmado por Stripe.'
+                            : 'Aún no tienes un método predeterminado confirmado.',
                       ),
-                    ),
-                    if (status == 'active') ...[
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Guardar o cambiar una tarjeta no realiza una aportación.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: muted,
+                          height: 1.45,
+                        ),
+                      ),
+                      if (status == 'active') ...[
+                        const SizedBox(height: 12),
+                        OutlinedButton.icon(
+                          onPressed:
+                              busy ||
+                                  confirming ||
+                                  !fresh ||
+                                  !verified ||
+                                  data?['method_change_available'] != true ||
+                                  intent != null ||
+                                  savedCardIntent != null ||
+                                  walletIntent != null ||
+                                  independentIntent != null
+                              ? null
+                              : () => submit(method: true),
+                          icon: const Icon(Icons.credit_card),
+                          label: const Text('Cambiar tarjeta'),
+                        ),
+                      ],
                       const SizedBox(height: 12),
+                    ],
+                    if (enabled && registrationError != null)
+                      Notice(registrationError!, isError: true),
+                    if (enabled &&
+                        registration?.status == 'registered' &&
+                        registrationError == null)
+                      GuardianRegistrationMethodControl(
+                        key: ValueKey(
+                          'registration-method:$owner:${registration!.id}',
+                        ),
+                        owner: owner,
+                        registration: registration!,
+                        currentCard:
+                            fresh &&
+                                cardsError == null &&
+                                (cards ?? [])
+                                        .where((card) => card.guardianCurrent)
+                                        .length ==
+                                    1
+                            ? cards!.firstWhere((card) => card.guardianCurrent)
+                            : null,
+                        onUpdated: () => load(),
+                      ),
+                    if (enabled && registration?.status == 'method_pending')
+                      const Notice(
+                        'Tu registro Guardián tiene un método pendiente. Continúa la misma solicitud desde Suscripción y pagos.',
+                      ),
+                    if (enabled && walletCollectionPending)
+                      const Notice(
+                        'Hay un apoyo pendiente de confirmación. Podrás cambiar o eliminar tarjetas cuando termine.',
+                      ),
+                    if (enabled && cardsError != null) Notice(cardsError!),
+                    if (enabled && cards != null && cards!.isNotEmpty)
+                      for (var i = 0; i < cards!.length; i++) ...[
+                        if (i > 0) const SizedBox(height: 10),
+                        GuardianPaymentCardRow(
+                          card: cards![i],
+                          showMakeDefault:
+                              walletIntent == null &&
+                              verified &&
+                              (status == 'active' ||
+                                  (independentWallet && independentFresh)),
+                          showRemove:
+                              walletIntent == null &&
+                              verified &&
+                              (status == 'active' ||
+                                  (independentWallet && independentFresh)),
+                          onRemove:
+                              busy ||
+                                  confirming ||
+                                  !fresh ||
+                                  intent != null ||
+                                  savedCardIntent != null ||
+                                  independentIntent != null ||
+                                  (!independentWallet &&
+                                      data?['method_change_available'] != true)
+                              ? null
+                              : () => independentWallet
+                                    ? changeIndependentMethod(
+                                        card: cards![i],
+                                        remove: true,
+                                      )
+                                    : submit(
+                                        method: true,
+                                        selectedCard: cards![i],
+                                        removeCard: true,
+                                      ),
+                          onMakeDefault:
+                              busy ||
+                                  confirming ||
+                                  !fresh ||
+                                  intent != null ||
+                                  savedCardIntent != null ||
+                                  independentIntent != null ||
+                                  (!independentWallet &&
+                                      data?['method_change_available'] != true)
+                              ? null
+                              : () => independentWallet
+                                    ? changeIndependentMethod(card: cards![i])
+                                    : submit(
+                                        method: true,
+                                        selectedCard: cards![i],
+                                      ),
+                        ),
+                      ],
+                    if (cards == null || cards!.isEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xffe6e2dd)),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: const BoxDecoration(
+                                color: Color(0xffefede8),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/profile/icon-card.svg',
+                                  width: 18,
+                                  height: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                !enabled
+                                    ? 'Guardián no está disponible en esta versión.'
+                                    : error != null && !fresh
+                                    ? 'No se pudo confirmar tu medio de pago.'
+                                    : busy && data == null
+                                    ? 'Consultando tus tarjetas…'
+                                    : 'Aún no tienes tarjetas guardadas.',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    if (enabled && paymentIssueMessage != null)
+                      Notice(paymentIssueMessage!),
+                    if (error != null) Notice(error!),
+                    if (message != null) Notice(message!),
+                    if (enabled &&
+                        methodSetup != null &&
+                        methodsNotice != null &&
+                        message != methodsNotice)
+                      Notice(methodsNotice ?? 'Medio de pago en revisión.'),
+                    const SizedBox(height: 10),
+                    if (enabled)
                       OutlinedButton.icon(
+                        style:
+                            OutlinedButton.styleFrom(
+                              foregroundColor: ink,
+                              minimumSize: const Size.fromHeight(56),
+                              side: const BorderSide(color: Color(0xffd5cfc6)),
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              shape: const PaymentMethodBorder(),
+                              splashFactory: NoSplash.splashFactory,
+                            ).copyWith(
+                              overlayColor: WidgetStateProperty.resolveWith(
+                                (states) => states.contains(WidgetState.pressed)
+                                    ? Colors.transparent
+                                    : null,
+                              ),
+                            ),
                         onPressed:
                             busy ||
                                 confirming ||
                                 !fresh ||
                                 !verified ||
-                                data?['method_change_available'] != true ||
+                                !savedCardFresh ||
+                                !independentFresh ||
                                 intent != null ||
                                 savedCardIntent != null ||
                                 walletIntent != null ||
                                 independentIntent != null
                             ? null
-                            : () => submit(method: true),
-                        icon: const Icon(Icons.credit_card),
-                        label: const Text('Cambiar tarjeta'),
+                            : addSavedCard,
+                        icon: SvgPicture.asset(
+                          'assets/profile/icon-plus.svg',
+                          width: 18,
+                          height: 18,
+                        ),
+                        label: const Text('Agregar tarjeta'),
                       ),
-                    ],
-                    const SizedBox(height: 12),
-                  ],
-                  if (enabled && registrationError != null)
-                    Notice(registrationError!, isError: true),
-                  if (enabled &&
-                      registration?.status == 'registered' &&
-                      registrationError == null)
-                    GuardianRegistrationMethodControl(
-                      key: ValueKey(
-                        'registration-method:$owner:${registration!.id}',
+                    if (ref.read(nativeWalletSdkProvider).provider != null) ...[
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Billeteras digitales',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                        ),
                       ),
-                      owner: owner,
-                      registration: registration!,
-                      currentCard:
-                          fresh &&
-                              cardsError == null &&
-                              (cards ?? [])
-                                      .where((card) => card.guardianCurrent)
-                                      .length ==
-                                  1
-                          ? cards!.firstWhere((card) => card.guardianCurrent)
-                          : null,
-                      onUpdated: () => load(),
-                    ),
-                  if (enabled && registration?.status == 'method_pending')
-                    const Notice(
-                      'Tu registro Guardián tiene un método pendiente. Continúa la misma solicitud desde Suscripción y pagos.',
-                    ),
-                  if (enabled && walletCollectionPending)
-                    const Notice(
-                      'Hay un apoyo pendiente de confirmación. Podrás cambiar o eliminar tarjetas cuando termine.',
-                    ),
-                  if (enabled && cardsError != null) Notice(cardsError!),
-                  if (enabled && cards != null && cards!.isNotEmpty)
-                    for (var i = 0; i < cards!.length; i++) ...[
-                      if (i > 0) const SizedBox(height: 10),
-                      GuardianPaymentCardRow(
-                        card: cards![i],
-                        showMakeDefault:
-                            walletIntent == null &&
-                            verified &&
-                            (status == 'active' ||
-                                (independentWallet && independentFresh)),
-                        showRemove:
-                            walletIntent == null &&
-                            verified &&
-                            (status == 'active' ||
-                                (independentWallet && independentFresh)),
-                        onRemove:
+                      const SizedBox(height: 10),
+                      NativeWalletButtons(
+                        availableProvider: walletProvider,
+                        onPressed:
                             busy ||
                                 confirming ||
+                                !verified ||
                                 !fresh ||
                                 intent != null ||
                                 savedCardIntent != null ||
                                 independentIntent != null ||
-                                (!independentWallet &&
-                                    data?['method_change_available'] != true)
+                                walletStatus?['status'] == 'attention' ||
+                                walletError != null
                             ? null
-                            : () => independentWallet
-                                  ? changeIndependentMethod(
-                                      card: cards![i],
-                                      remove: true,
-                                    )
-                                  : submit(
-                                      method: true,
-                                      selectedCard: cards![i],
-                                      removeCard: true,
-                                    ),
-                        onMakeDefault:
-                            busy ||
-                                confirming ||
-                                !fresh ||
-                                intent != null ||
-                                savedCardIntent != null ||
-                                independentIntent != null ||
-                                (!independentWallet &&
-                                    data?['method_change_available'] != true)
-                            ? null
-                            : () => independentWallet
-                                  ? changeIndependentMethod(card: cards![i])
-                                  : submit(
-                                      method: true,
-                                      selectedCard: cards![i],
-                                    ),
+                            : addWallet,
                       ),
+                      if (walletError != null)
+                        Notice(walletError!, isError: true),
+                      if (walletIntent != null &&
+                          walletStatus?['status'] == 'attention')
+                        const Notice(
+                          'La autorización de tu billetera requiere revisión. Conservamos tu solicitud.',
+                        ),
+                      if (walletIntent != null &&
+                          walletStatus?['status'] != 'attention')
+                        ActionButton(
+                          'Continuar autorización',
+                          busy: busy,
+                          onPressed:
+                              busy ||
+                                  confirming ||
+                                  walletStatus?['status'] == 'attention'
+                              ? null
+                              : () => addWallet(walletIntent!['wallet_type']),
+                        ),
                     ],
-                  if (cards == null || cards!.isEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xffe6e2dd)),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: const BoxDecoration(
-                              color: Color(0xffefede8),
-                              shape: BoxShape.circle,
+                    if (independentError != null)
+                      Notice(independentError!, isError: true),
+                    if (independentIntent != null)
+                      independentStatus?['status'] == 'attention'
+                          ? const Notice(
+                              'El cambio de tarjeta requiere revisión. Conservamos tu solicitud.',
+                            )
+                          : ActionButton(
+                              independentIntent?['action'] == 'remove'
+                                  ? 'Reintentar eliminación'
+                                  : 'Continuar actualización',
+                              busy: busy,
+                              onPressed: busy || confirming
+                                  ? null
+                                  : () => changeIndependentMethod(),
                             ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/profile/icon-card.svg',
-                                width: 18,
-                                height: 18,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              !enabled
-                                  ? 'Guardián no está disponible en esta versión.'
-                                  : error != null && !fresh
-                                  ? 'No se pudo confirmar tu medio de pago.'
-                                  : busy && data == null
-                                  ? 'Consultando tus tarjetas…'
-                                  : 'Aún no tienes tarjetas guardadas.',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  if (enabled && paymentIssueMessage != null)
-                    Notice(paymentIssueMessage!),
-                  if (error != null) Notice(error!),
-                  if (message != null) Notice(message!),
-                  if (enabled &&
-                      methodSetup != null &&
-                      methodsNotice != null &&
-                      message != methodsNotice)
-                    Notice(methodsNotice ?? 'Medio de pago en revisión.'),
-                  const SizedBox(height: 10),
-                  if (enabled)
-                    OutlinedButton.icon(
-                      style:
-                          OutlinedButton.styleFrom(
-                            foregroundColor: ink,
-                            minimumSize: const Size.fromHeight(56),
-                            side: const BorderSide(color: Color(0xffd5cfc6)),
-                            textStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            shape: const PaymentMethodBorder(),
-                            splashFactory: NoSplash.splashFactory,
-                          ).copyWith(
-                            overlayColor: WidgetStateProperty.resolveWith(
-                              (states) => states.contains(WidgetState.pressed)
-                                  ? Colors.transparent
-                                  : null,
-                            ),
-                          ),
-                      onPressed:
-                          busy ||
-                              confirming ||
-                              !fresh ||
-                              !verified ||
-                              !savedCardFresh ||
-                              !independentFresh ||
-                              intent != null ||
-                              savedCardIntent != null ||
-                              walletIntent != null ||
-                              independentIntent != null
-                          ? null
-                          : addSavedCard,
-                      icon: SvgPicture.asset(
-                        'assets/profile/icon-plus.svg',
-                        width: 18,
-                        height: 18,
-                      ),
-                      label: const Text('Agregar tarjeta'),
-                    ),
-                  if (ref.read(nativeWalletSdkProvider).provider != null) ...[
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Billeteras digitales',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    NativeWalletButtons(
-                      availableProvider: walletProvider,
-                      onPressed:
-                          busy ||
-                              confirming ||
-                              !verified ||
-                              !fresh ||
-                              intent != null ||
-                              savedCardIntent != null ||
-                              independentIntent != null ||
-                              walletStatus?['status'] == 'attention' ||
-                              walletError != null
-                          ? null
-                          : addWallet,
-                    ),
-                    if (walletError != null)
-                      Notice(walletError!, isError: true),
-                    if (walletIntent != null &&
-                        walletStatus?['status'] == 'attention')
+                    if (savedCardError != null)
+                      Notice(savedCardError!, isError: true),
+                    if (savedCardIntent != null &&
+                        savedCardStatus?['status'] == 'attention')
                       const Notice(
-                        'La autorización de tu billetera requiere revisión. Conservamos tu solicitud.',
+                        'El alta de tu tarjeta requiere revisión. Conservamos tu solicitud.',
                       ),
-                    if (walletIntent != null &&
-                        walletStatus?['status'] != 'attention')
+                    if (savedCardIntent != null &&
+                        savedCardStatus?['status'] != 'attention')
                       ActionButton(
-                        'Continuar autorización',
+                        'Reintentar alta de tarjeta',
                         busy: busy,
                         onPressed:
                             busy ||
                                 confirming ||
-                                walletStatus?['status'] == 'attention'
+                                !fresh ||
+                                !verified ||
+                                intent != null
                             ? null
-                            : () => addWallet(walletIntent!['wallet_type']),
+                            : addSavedCard,
                       ),
+                    if (enabled && intent?['kind'] == 'method')
+                      ActionButton(
+                        methodRetryLabel,
+                        busy: busy,
+                        onPressed: canSubmit ? () => submit() : null,
+                      ),
+                    TextButton(
+                      style: TextButton.styleFrom(foregroundColor: ink),
+                      onPressed: busy || confirming ? null : () => load(),
+                      child: const Text('Actualizar estado'),
+                    ),
                   ],
-                  if (independentError != null)
-                    Notice(independentError!, isError: true),
-                  if (independentIntent != null)
-                    independentStatus?['status'] == 'attention'
-                        ? const Notice(
-                            'El cambio de tarjeta requiere revisión. Conservamos tu solicitud.',
-                          )
-                        : ActionButton(
-                            independentIntent?['action'] == 'remove'
-                                ? 'Reintentar eliminación'
-                                : 'Continuar actualización',
-                            busy: busy,
-                            onPressed: busy || confirming
-                                ? null
-                                : () => changeIndependentMethod(),
-                          ),
-                  if (savedCardError != null)
-                    Notice(savedCardError!, isError: true),
-                  if (savedCardIntent != null &&
-                      savedCardStatus?['status'] == 'attention')
-                    const Notice(
-                      'El alta de tu tarjeta requiere revisión. Conservamos tu solicitud.',
-                    ),
-                  if (savedCardIntent != null &&
-                      savedCardStatus?['status'] != 'attention')
-                    ActionButton(
-                      'Reintentar alta de tarjeta',
-                      busy: busy,
-                      onPressed:
-                          busy ||
-                              confirming ||
-                              !fresh ||
-                              !verified ||
-                              intent != null
-                          ? null
-                          : addSavedCard,
-                    ),
-                  if (enabled && intent?['kind'] == 'method')
-                    ActionButton(
-                      methodRetryLabel,
-                      busy: busy,
-                      onPressed: canSubmit ? () => submit() : null,
-                    ),
-                  TextButton(
-                    style: TextButton.styleFrom(foregroundColor: ink),
-                    onPressed: busy || confirming ? null : () => load(),
-                    child: const Text('Actualizar estado'),
-                  ),
-                ],
-              ),
-            ),
-            if (methodsFeedback != null)
-              Positioned(
-                left: 16,
-                right: 16,
-                bottom: 24,
-                child: PaymentMethodsFeedback(
-                  key: ValueKey(methodsFeedbackKey),
-                  message: methodsFeedback!,
-                  visible: !feedbackIsRemoval,
-                  onDone: () {
-                    if (current) setState(() => methodsFeedback = null);
-                  },
                 ),
               ),
-          ],
+              if (methodsFeedback != null)
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 24,
+                  child: PaymentMethodsFeedback(
+                    key: ValueKey(methodsFeedbackKey),
+                    message: methodsFeedback!,
+                    visible: !feedbackIsRemoval,
+                    onDone: () {
+                      if (current) setState(() => methodsFeedback = null);
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       );
     }
@@ -1709,183 +1712,185 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     return ContributionFrame(
       title: 'Suscripción y pagos',
       back: () => context.canPop() ? context.pop() : context.go('/settings'),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 10,
-          children: [
-            const Text(
-              'Suscripción Dopmi',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                height: 1.3,
-              ),
-            ),
-            if (enabled && fresh && p == null && canStart && intent == null)
-              GuardianInactiveCard(
-                onSubscribe: busy || confirming ? null : beginEnrollment,
-              ),
-            if (enabled && p != null)
-              GuardianMembershipCard(
-                status: status,
-                cents: p['gross_cents'] as int,
-                nextBilling: p['next_billing_at'],
-              ),
-            if (enabled && canChange && intent == null)
-              ContributionButton(
-                'Cambiar cantidad',
-                onPressed: busy || confirming || !fresh || !verified
-                    ? null
-                    : changeAmount,
-              ),
-            if (enabled && canCancel)
-              ContributionButton(
-                'Cancelar suscripción',
-                secondary: true,
-                onPressed: busy || confirming || !fresh
-                    ? null
-                    : () => submit(cancel: true),
-              ),
-            if (enabled && fresh) ...[
-              const Padding(
-                padding: EdgeInsets.only(top: 12),
-                child: Text(
-                  'Historial de pagos',
-                  style: TextStyle(
-                    fontSize: 18,
-                    height: 1.3,
-                    fontWeight: FontWeight.w700,
-                  ),
+      child: DonorCanvas(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 10,
+            children: [
+              const Text(
+                'Suscripción Dopmi',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  height: 1.3,
                 ),
               ),
-              GuardianHistoryPreview(key: ValueKey(owner), owner: owner),
-            ],
-            if (!enabled)
-              const Notice(
-                'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
-              ),
-            if (enabled) ...[
-              TextButton(
-                onPressed: () => context.push('/guardian/history'),
-                child: const Text('Ver historial de ciclos'),
-              ),
-              if (p != null)
-                TextButton.icon(
-                  onPressed: () => context.push('/impact'),
-                  icon: const Icon(Icons.auto_stories_outlined),
-                  label: const Text('Ver mi impacto'),
+              if (enabled && fresh && p == null && canStart && intent == null)
+                GuardianInactiveCard(
+                  onSubscribe: busy || confirming ? null : beginEnrollment,
                 ),
-              if (methodSetup != null && status == 'active')
-                Notice(
-                  guardianMethodNotice(methodSetup) ??
-                      'Medio de pago en revisión.',
+              if (enabled && p != null)
+                GuardianMembershipCard(
+                  status: status,
+                  cents: p['gross_cents'] as int,
+                  nextBilling: p['next_billing_at'],
                 ),
-              if (paymentIssueMessage != null) Notice(paymentIssueMessage!),
-              if (verified &&
-                  status == 'active' &&
-                  data?['method_change_available'] == true &&
-                  intent == null)
-                TextButton(
+              if (enabled && canChange && intent == null)
+                ContributionButton(
+                  'Cambiar cantidad',
+                  onPressed: busy || confirming || !fresh || !verified
+                      ? null
+                      : changeAmount,
+                ),
+              if (enabled && canCancel)
+                ContributionButton(
+                  'Cancelar suscripción',
+                  secondary: true,
                   onPressed: busy || confirming || !fresh
                       ? null
-                      : () => submit(method: true),
-                  child: const Text('Actualizar medio de pago'),
+                      : () => submit(cancel: true),
                 ),
-              if (pending is Map && pending['review_reason'] != null)
-                Notice(
-                  guardianReviewLabels[pending['review_reason']] ??
-                      'El cambio está en revisión.',
-                ),
-              if (pending is Map &&
-                  pending['can_withdraw'] == true &&
-                  intent == null)
-                TextButton(
-                  onPressed: busy || confirming || !fresh
-                      ? null
-                      : () => submit(withdraw: true),
-                  child: const Text('Retirar cambio de monto'),
-                ),
-              if (intent?['kind'] == 'withdraw_amount')
-                ActionButton(
-                  'Reintentar retiro del cambio',
-                  busy: busy,
-                  onPressed: canSubmit ? () => submit() : null,
-                ),
-              if (intent?['kind'] == 'method')
-                ActionButton(
-                  methodRetryLabel,
-                  busy: busy,
-                  onPressed: canSubmit ? () => submit() : null,
-                ),
-              if (activation?['cancellation_requested_at'] != null)
-                Notice(switch (activation?['cancellation_status']) {
-                  'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
-                  'attention' =>
-                    'Cancelación del alta en revisión. No inicies otro pago.',
-                  _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
-                }),
-              const Notice(
-                'Solo modo de prueba. No uses datos de una tarjeta real.',
-              ),
-              if (busy) const LinearProgressIndicator(),
-              if (p != null) ...[
-                Text(switch (status) {
-                  'active' => 'Plan activo',
-                  'cancel_requested' =>
-                    'Cancelación solicitada: futuros cobros detenidos',
-                  'canceled' => 'Plan cancelado',
-                  _ => 'Estado por confirmar',
-                }, style: Theme.of(context).textTheme.titleLarge),
-                Text(
-                  'Monto autorizado: ${pesos(p['gross_cents'] as int)} al mes',
-                ),
-                if (pending is Map)
-                  Notice(
-                    pending['kind'] == 'cancel'
-                        ? 'Estamos confirmando la cancelación con Stripe.'
-                        : 'Cambio a ${pesos(pending['new_gross_cents'] as int)} solicitado. El importe anterior se conserva hasta confirmar la aplicación.',
-                  ),
-                if (p['payment_in_flight'] == true)
-                  const Notice(
-                    'Hay un pago previamente iniciado en conciliación. Cancelar no confirma su devolución.',
-                  ),
-                for (final r in p['requests'] as List? ?? [])
-                  ListTile(
-                    title: Text(
-                      r['kind'] == 'cancel'
-                          ? 'Cancelación'
-                          : 'Cambio a ${pesos(r['new_gross_cents'] as int)}',
+              if (enabled && fresh) ...[
+                const Padding(
+                  padding: EdgeInsets.only(top: 12),
+                  child: Text(
+                    'Historial de pagos',
+                    style: TextStyle(
+                      fontSize: 18,
+                      height: 1.3,
+                      fontWeight: FontWeight.w700,
                     ),
-                    subtitle: Text(switch (r['status']) {
-                      'applied' =>
-                        r['kind'] == 'amount'
-                            ? 'Confirmado. Aplica desde ${date(r['effective_at'])}.'
-                            : 'Cancelación confirmada.',
-                      'superseded' => 'Sustituido por cancelación.',
-                      'withdrawn' =>
-                        'Solicitud retirada; se conservó el monto anterior.',
-                      _ => 'Pendiente de confirmación.',
-                    }),
                   ),
-              ] else if (activation != null)
-                Notice(
-                  guardianActivationLabels[activation!['status']] ??
-                      'Estado del alta en revisión. No vuelvas a pagar.',
                 ),
-              const Notice(
-                'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
-              ),
-              if (showForm) ...enrollmentWidgets,
-              if (error != null) Notice(error!, isError: true),
-              if (message != null) Notice(message!),
-              TextButton(
-                onPressed: busy || confirming ? null : () => load(),
-                child: const Text('Actualizar estado'),
-              ),
+                GuardianHistoryPreview(key: ValueKey(owner), owner: owner),
+              ],
+              if (!enabled)
+                const Notice(
+                  'Guardián todavía no está disponible. Te avisaremos cuando puedas activar tu plan.',
+                ),
+              if (enabled) ...[
+                TextButton(
+                  onPressed: () => context.push('/guardian/history'),
+                  child: const Text('Ver historial de ciclos'),
+                ),
+                if (p != null)
+                  TextButton.icon(
+                    onPressed: () => context.push('/impact'),
+                    icon: const Icon(Icons.auto_stories_outlined),
+                    label: const Text('Ver mi impacto'),
+                  ),
+                if (methodSetup != null && status == 'active')
+                  Notice(
+                    guardianMethodNotice(methodSetup) ??
+                        'Medio de pago en revisión.',
+                  ),
+                if (paymentIssueMessage != null) Notice(paymentIssueMessage!),
+                if (verified &&
+                    status == 'active' &&
+                    data?['method_change_available'] == true &&
+                    intent == null)
+                  TextButton(
+                    onPressed: busy || confirming || !fresh
+                        ? null
+                        : () => submit(method: true),
+                    child: const Text('Actualizar medio de pago'),
+                  ),
+                if (pending is Map && pending['review_reason'] != null)
+                  Notice(
+                    guardianReviewLabels[pending['review_reason']] ??
+                        'El cambio está en revisión.',
+                  ),
+                if (pending is Map &&
+                    pending['can_withdraw'] == true &&
+                    intent == null)
+                  TextButton(
+                    onPressed: busy || confirming || !fresh
+                        ? null
+                        : () => submit(withdraw: true),
+                    child: const Text('Retirar cambio de monto'),
+                  ),
+                if (intent?['kind'] == 'withdraw_amount')
+                  ActionButton(
+                    'Reintentar retiro del cambio',
+                    busy: busy,
+                    onPressed: canSubmit ? () => submit() : null,
+                  ),
+                if (intent?['kind'] == 'method')
+                  ActionButton(
+                    methodRetryLabel,
+                    busy: busy,
+                    onPressed: canSubmit ? () => submit() : null,
+                  ),
+                if (activation?['cancellation_requested_at'] != null)
+                  Notice(switch (activation?['cancellation_status']) {
+                    'stopped' => 'Alta detenida. Consulta abajo el estado del primer pago; detener el alta no confirma una devolución.',
+                    'attention' =>
+                      'Cancelación del alta en revisión. No inicies otro pago.',
+                    _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
+                  }),
+                const Notice(
+                  'Solo modo de prueba. No uses datos de una tarjeta real.',
+                ),
+                if (busy) const LinearProgressIndicator(),
+                if (p != null) ...[
+                  Text(switch (status) {
+                    'active' => 'Plan activo',
+                    'cancel_requested' =>
+                      'Cancelación solicitada: futuros cobros detenidos',
+                    'canceled' => 'Plan cancelado',
+                    _ => 'Estado por confirmar',
+                  }, style: Theme.of(context).textTheme.titleLarge),
+                  Text(
+                    'Monto autorizado: ${pesos(p['gross_cents'] as int)} al mes',
+                  ),
+                  if (pending is Map)
+                    Notice(
+                      pending['kind'] == 'cancel'
+                          ? 'Estamos confirmando la cancelación con Stripe.'
+                          : 'Cambio a ${pesos(pending['new_gross_cents'] as int)} solicitado. El importe anterior se conserva hasta confirmar la aplicación.',
+                    ),
+                  if (p['payment_in_flight'] == true)
+                    const Notice(
+                      'Hay un pago previamente iniciado en conciliación. Cancelar no confirma su devolución.',
+                    ),
+                  for (final r in p['requests'] as List? ?? [])
+                    ListTile(
+                      title: Text(
+                        r['kind'] == 'cancel'
+                            ? 'Cancelación'
+                            : 'Cambio a ${pesos(r['new_gross_cents'] as int)}',
+                      ),
+                      subtitle: Text(switch (r['status']) {
+                        'applied' =>
+                          r['kind'] == 'amount'
+                              ? 'Confirmado. Aplica desde ${date(r['effective_at'])}.'
+                              : 'Cancelación confirmada.',
+                        'superseded' => 'Sustituido por cancelación.',
+                        'withdrawn' =>
+                          'Solicitud retirada; se conservó el monto anterior.',
+                        _ => 'Pendiente de confirmación.',
+                      }),
+                    ),
+                ] else if (activation != null)
+                  Notice(
+                    guardianActivationLabels[activation!['status']] ??
+                        'Estado del alta en revisión. No vuelvas a pagar.',
+                  ),
+                const Notice(
+                  'Solo se cobra si el neto completo puede asignarse a gastos aprobados. Si no hay capacidad, ese mes se omite sin cargo ni deuda. Dopmi descuenta el 2% y los costos de Stripe; el neto se asigna por prioridad. Puedes cancelar los ciclos futuros.',
+                ),
+                if (showForm) ...enrollmentWidgets,
+                if (error != null) Notice(error!, isError: true),
+                if (message != null) Notice(message!),
+                TextButton(
+                  onPressed: busy || confirming ? null : () => load(),
+                  child: const Text('Actualizar estado'),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

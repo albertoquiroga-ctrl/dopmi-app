@@ -54,6 +54,18 @@ export function registerGuardianRegistrationSqlCases(getDb, { donor, other, staf
       payment_method_id: a.payment_method_id, payment_intent_id: 'pi_registration1', charge_id: 'ch_registration1',
       gross_cents: 2000, platform_fee_cents: 40, stripe_fee_cents: 100, net_cents: 1860 } };
   };
+  test('registration settlement atomically retains the historical card separately from immutable financial evidence', async () => {
+    const db=getDb(); const {a,data}=await paidAttempt();
+    const method={type:'card',brand:'visa',last4:'0804'};
+    const first=await settlement({...data,payment_method:method});
+    assert.deepEqual(await settlement(data),first);
+    assert.deepEqual(await settlement({...data,payment_method:method}),first);
+    const row=(await db.query('select brand,last4,owner_id from private.dopmi_payment_method_snapshots where kind=\'guardian\' and payment_id=$1',[a.reservation_id])).rows[0];
+    assert.deepEqual(row,{brand:method.brand,last4:method.last4,owner_id:donor});
+    assert.deepEqual((await db.query('select evidence from private.dopmi_guardian_settlements where cycle_id=$1',[a.reservation_id])).rows[0].evidence,data);
+    await reject(()=>settlement({...data,payment_method:{...method,last4:'9999'}}),/otro método/);
+    assert.equal((await db.query('select count(*)::int n from private.dopmi_guardian_settlements')).rows[0].n,1);
+  });
   const projection = async () => (await getDb().query('select public.dopmi_guardian_registration_state() value')).rows[0].value;
   const bank = async (r, a, owner = donor) => (await getDb().query(
     'select public.dopmi_guardian_registration_bank_action($1,$2,$3) value', [owner,r,a])).rows[0].value;
@@ -149,6 +161,7 @@ export function registerGuardianRegistrationSqlCases(getDb, { donor, other, staf
             latest_charge: { id: 'ch_integrated', livemode: false, payment_intent: id,
               customer: a.customer_id, currency: 'mxn', amount: 2000, paid: true, captured: true,
               disputed: false, refunded: false, amount_refunded: 0,
+              payment_method_details: { type: 'card', card: { brand: 'mastercard', last4: '0371', fingerprint: 'synthetic-private' } },
               balance_transaction: { id: 'txn_integrated', source: 'ch_integrated', currency: 'mxn', amount: 2000, fee: 100, net: 1900 } } };
           return processor;
         },
@@ -159,6 +172,7 @@ export function registerGuardianRegistrationSqlCases(getDb, { donor, other, staf
     const stored = await payment('get', { id: a.id });
     assert.ok(stored.resolved_at); assert.equal(stored.settlement.status, 'allocated');
     assert.equal(Number(stored.settlement.allocated_cents), 1860);
+    assert.deepEqual((await getDb().query('select brand,last4 from private.dopmi_payment_method_snapshots where payment_id=$1',[a.reservation_id])).rows[0],{brand:'mastercard',last4:'0371'});
     assert.deepEqual(await worker.reconcile({ allowNewPayments: true }), { observed: 0, finalized: 0, failed: 0 });
     assert.equal(created, 1); assert.equal(confirmed, 1);
   });

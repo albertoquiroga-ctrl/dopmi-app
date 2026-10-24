@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/measurement.dart';
 import '../../core/reference_input_border.dart';
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import 'account_photo_card.dart';
@@ -305,270 +306,274 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
           child: Divider(height: 1, color: Color(0xffe6e2dd)),
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: Stack(
-          children: [
-            ListView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-              children: [
-                if (loading)
-                  const Center(
-                    child: CircularProgressIndicator(
-                      semanticsLabel: 'Cargando perfil',
+      body: DonorCanvas(
+        enabled:
+            ref.watch(experienceProvider).value != AccountExperience.rescuer,
+        child: SafeArea(
+          top: false,
+          child: Stack(
+            children: [
+              ListView(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                children: [
+                  if (loading)
+                    const Center(
+                      child: CircularProgressIndicator(
+                        semanticsLabel: 'Cargando perfil',
+                      ),
                     ),
-                  ),
-                if (!loading && profile == null) ...[
-                  Notice(
-                    error ?? 'No pudimos cargar tu perfil.',
-                    isError: true,
-                  ),
-                  ActionButton('Volver a intentar', onPressed: load),
-                ],
-                if (!loading && profile != null) ...[
-                  if (suspended)
-                    const Notice(
-                      'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
+                  if (!loading && profile == null) ...[
+                    Notice(
+                      error ?? 'No pudimos cargar tu perfil.',
                       isError: true,
                     ),
-                  Form(
-                    key: form,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AccountPhotoCard(
-                          name: name.text,
-                          bytes: photoBytes,
-                          url: photoUrl,
-                          source: visiblePhotoPath == null
-                              ? null
-                              : PhotoRef(
-                                  path: visiblePhotoPath,
-                                  purpose: MediaPurpose.accountAvatar,
-                                  persistence: PhotoPersistence.ordinary,
-                                  sign: () => ref
-                                      .read(accountPhotoRepositoryProvider)
-                                      .signedUrl(visiblePhotoPath),
-                                ),
-                          onEdit:
-                              suspended ||
-                                  busy ||
-                                  photoLoading ||
-                                  photoError != null
-                              ? null
-                              : choosePhoto,
-                        ),
-                        if (photoLoading)
-                          const LinearProgressIndicator(
-                            semanticsLabel: 'Cargando foto de perfil',
-                          ),
-                        if (photoError != null) ...[
-                          Notice(photoError!, isError: true),
-                          TextButton(
-                            onPressed: busy ? null : loadPhoto,
-                            child: const Text('Volver a cargar foto'),
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-                        _BasicInfoField(
-                          label: 'Nombre *',
-                          child: TextFormField(
-                            controller: name,
-                            onChanged: (_) => setState(() {}),
-                            enabled: !suspended && !busy,
-                            maxLength: 80,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                              color: ink,
-                            ),
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 14.8,
-                              ),
-                              constraints: BoxConstraints(minHeight: 44),
-                            ),
-                            validator: (value) => (value ?? '').trim().isEmpty
-                                ? 'Escribe tu nombre.'
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _BasicInfoField(
-                          label: 'Apellido *',
-                          child: TextFormField(
-                            controller: lastName,
-                            onChanged: (_) => setState(() {}),
-                            enabled: !suspended && !busy,
-                            maxLength: 80,
-                            textCapitalization: TextCapitalization.words,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                              color: ink,
-                            ),
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 14.8,
-                              ),
-                              constraints: BoxConstraints(minHeight: 44),
-                            ),
-                            validator: (_) => lastName.text.trim().isEmpty
-                                ? 'Escribe tu apellido.'
-                                : '${name.text.trim()} ${lastName.text.trim()}'
-                                          .trim()
-                                          .length >
-                                      80
-                                ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
-                                : null,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _BasicInfoField(
-                          label: 'Correo electrónico *',
-                          child: TextFormField(
-                            controller: email,
-                            onChanged: (_) => setState(() {}),
-                            enabled: !suspended && !busy,
-                            keyboardType: TextInputType.emailAddress,
-                            autocorrect: false,
-                            maxLength: 254,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                              color: ink,
-                            ),
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 14.8,
-                              ),
-                              constraints: BoxConstraints(minHeight: 44),
-                            ),
-                            validator: (value) =>
-                                RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
-                                    .hasMatch((value ?? '').trim())
+                    ActionButton('Volver a intentar', onPressed: load),
+                  ],
+                  if (!loading && profile != null) ...[
+                    if (suspended)
+                      const Notice(
+                        'Tu cuenta está suspendida. Contacta al equipo Dopmi para revisar tu acceso.',
+                        isError: true,
+                      ),
+                    Form(
+                      key: form,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AccountPhotoCard(
+                            name: name.text,
+                            bytes: photoBytes,
+                            url: photoUrl,
+                            source: visiblePhotoPath == null
                                 ? null
-                                : 'Escribe un correo electrónico válido.',
+                                : PhotoRef(
+                                    path: visiblePhotoPath,
+                                    purpose: MediaPurpose.accountAvatar,
+                                    persistence: PhotoPersistence.ordinary,
+                                    sign: () => ref
+                                        .read(accountPhotoRepositoryProvider)
+                                        .signedUrl(visiblePhotoPath),
+                                  ),
+                            onEdit:
+                                suspended ||
+                                    busy ||
+                                    photoLoading ||
+                                    photoError != null
+                                ? null
+                                : choosePhoto,
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        _BasicInfoField(
-                          label: 'Teléfono',
-                          child: TextFormField(
-                            controller: phone,
-                            enabled: !suspended && !busy,
-                            maxLength: 24,
-                            keyboardType: TextInputType.phone,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                              color: ink,
+                          if (photoLoading)
+                            const LinearProgressIndicator(
+                              semanticsLabel: 'Cargando foto de perfil',
                             ),
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 14.8,
-                              ),
-                              constraints: BoxConstraints(minHeight: 44),
+                          if (photoError != null) ...[
+                            Notice(photoError!, isError: true),
+                            TextButton(
+                              onPressed: busy ? null : loadPhoto,
+                              child: const Text('Volver a cargar foto'),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _BasicInfoField(
-                          label: 'Ciudad / estado',
-                          child: TextFormField(
-                            controller: city,
-                            enabled: !suspended && !busy,
-                            maxLength: 100,
-                            textCapitalization: TextCapitalization.words,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
-                              color: ink,
-                            ),
-                            decoration: const InputDecoration(
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 14.8,
-                              ),
-                              constraints: BoxConstraints(minHeight: 44),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (error != null) Notice(error!, isError: true),
-                        if (message != null) Notice(message!),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 48),
-                          child: FilledButton(
-                            style: FilledButton.styleFrom(
-                              splashFactory: NoSplash.splashFactory,
-                              overlayColor: Colors.transparent,
-                              animationDuration: Duration.zero,
-                              textStyle: const TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16,
+                          ],
+                          const SizedBox(height: 16),
+                          _BasicInfoField(
+                            label: 'Nombre *',
+                            child: TextFormField(
+                              controller: name,
+                              onChanged: (_) => setState(() {}),
+                              enabled: !suspended && !busy,
+                              maxLength: 80,
+                              style: const TextStyle(
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 height: 1.2,
+                                color: ink,
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
+                              decoration: const InputDecoration(
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14.8,
+                                ),
+                                constraints: BoxConstraints(minHeight: 44),
+                              ),
+                              validator: (value) => (value ?? '').trim().isEmpty
+                                  ? 'Escribe tu nombre.'
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _BasicInfoField(
+                            label: 'Apellido *',
+                            child: TextFormField(
+                              controller: lastName,
+                              onChanged: (_) => setState(() {}),
+                              enabled: !suspended && !busy,
+                              maxLength: 80,
+                              textCapitalization: TextCapitalization.words,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                                color: ink,
+                              ),
+                              decoration: const InputDecoration(
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14.8,
+                                ),
+                                constraints: BoxConstraints(minHeight: 44),
+                              ),
+                              validator: (_) => lastName.text.trim().isEmpty
+                                  ? 'Escribe tu apellido.'
+                                  : '${name.text.trim()} ${lastName.text.trim()}'
+                                            .trim()
+                                            .length >
+                                        80
+                                  ? 'El nombre y apellido deben sumar hasta 80 caracteres.'
+                                  : null,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _BasicInfoField(
+                            label: 'Correo electrónico *',
+                            child: TextFormField(
+                              controller: email,
+                              onChanged: (_) => setState(() {}),
+                              enabled: !suspended && !busy,
+                              keyboardType: TextInputType.emailAddress,
+                              autocorrect: false,
+                              maxLength: 254,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                                color: ink,
+                              ),
+                              decoration: const InputDecoration(
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14.8,
+                                ),
+                                constraints: BoxConstraints(minHeight: 44),
+                              ),
+                              validator: (value) =>
+                                  RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$')
+                                      .hasMatch((value ?? '').trim())
+                                  ? null
+                                  : 'Escribe un correo electrónico válido.',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _BasicInfoField(
+                            label: 'Teléfono',
+                            child: TextFormField(
+                              controller: phone,
+                              enabled: !suspended && !busy,
+                              maxLength: 24,
+                              keyboardType: TextInputType.phone,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                                color: ink,
+                              ),
+                              decoration: const InputDecoration(
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14.8,
+                                ),
+                                constraints: BoxConstraints(minHeight: 44),
                               ),
                             ),
-                            onPressed:
-                                suspended || busy || !requiredFieldsComplete
-                                ? null
-                                : save,
-                            child: busy
-                                ? Semantics(
-                                    label: 'Procesando',
-                                    child: const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  )
-                                : const Text(
-                                    'Guardar cambios',
-                                    textAlign: TextAlign.center,
-                                  ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          _BasicInfoField(
+                            label: 'Ciudad / estado',
+                            child: TextFormField(
+                              controller: city,
+                              enabled: !suspended && !busy,
+                              maxLength: 100,
+                              textCapitalization: TextCapitalization.words,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                                color: ink,
+                              ),
+                              decoration: const InputDecoration(
+                                counterText: '',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 14.8,
+                                ),
+                                constraints: BoxConstraints(minHeight: 44),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          if (error != null) Notice(error!, isError: true),
+                          if (message != null) Notice(message!),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(minHeight: 48),
+                            child: FilledButton(
+                              style: FilledButton.styleFrom(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: Colors.transparent,
+                                animationDuration: Duration.zero,
+                                textStyle: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.2,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 18,
+                                  vertical: 12,
+                                ),
+                              ),
+                              onPressed:
+                                  suspended || busy || !requiredFieldsComplete
+                                  ? null
+                                  : save,
+                              child: busy
+                                  ? Semantics(
+                                      label: 'Procesando',
+                                      child: const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Guardar cambios',
+                                      textAlign: TextAlign.center,
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
-            ),
-            if (showSaved)
-              const Positioned(
-                left: 16,
-                right: 16,
-                bottom: 24,
-                child: _BasicInfoSavedToast(),
               ),
-          ],
+              if (showSaved)
+                const Positioned(
+                  left: 16,
+                  right: 16,
+                  bottom: 24,
+                  child: _BasicInfoSavedToast(),
+                ),
+            ],
+          ),
         ),
       ),
     );

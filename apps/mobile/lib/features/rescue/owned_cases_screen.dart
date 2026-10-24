@@ -304,7 +304,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SvgPicture.asset(
-                        'assets/profile/logo-paw.svg',
+                        'assets/profile/logo-paw-naranja.svg',
                         width: 40,
                         height: 40,
                         semanticsLabel: 'Dopmi',

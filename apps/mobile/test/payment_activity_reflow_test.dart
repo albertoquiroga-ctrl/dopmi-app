@@ -38,6 +38,11 @@ void main() {
                         'created_at': '2026-10-08T12:00:00Z',
                         'amount_cents': 5075,
                         'status': 'assigned',
+                        'payment_method': {
+                          'type': 'card',
+                          'brand': 'mastercard',
+                          'last4': '1234',
+                        },
                       },
                     ),
                   ),
@@ -49,7 +54,11 @@ void main() {
         await tester.pump();
         final titleFinder = find.text(title);
         final date = find.text('8/10/2026');
-        final status = find.text('Neto asignado');
+        final status = find.text(
+          received ? 'Neto asignado' : 'Mastercard *1234',
+        );
+        expect(status, findsOneWidget);
+        if (received) expect(find.textContaining('1234'), findsNothing);
         final amount = find.byType(ActivityMoney);
         final titleParagraph = find.descendant(
           of: titleFinder,

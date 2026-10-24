@@ -16,6 +16,7 @@ import { registerChatPhotoSqlCases } from './chat-photos-dde1-sql-cases.mjs';
 import { registerPaymentActivitySqlCases } from './payment-activity-dde1-sql-cases.mjs';
 import { registerNotificationEventsSqlCases } from './notification-events-dde1-sql-cases.mjs';
 import { registerGuardianRegistrationSqlCases } from './guardian-registration-sql-cases.mjs';
+import { registerPaymentMethodSnapshotSqlCases } from './payment-method-snapshot-sql-cases.mjs';
 
 let db;
 const donor = '70000000-0000-4000-8000-000000000001';
@@ -255,6 +256,7 @@ registerChatPhotoSqlCases(() => db, { donor, rescuer, other, staff });
 registerPaymentActivitySqlCases(() => db, { donor, rescuer, other, staff, expense });
 registerNotificationEventsSqlCases(() => db, { donor, rescuer, other, staff, expense });
 registerGuardianRegistrationSqlCases(() => db, { donor, other, staff, key });
+registerPaymentMethodSnapshotSqlCases(() => db, { donor, rescuer, other, staff, expense });
 const rpc = async (operation,data) => {
   if (operation === 'refund_begin' || operation === 'refund_finish') return (await db.query('select public.dopmi_refund_adjustment($1,$2::jsonb) as value',[operation === 'refund_begin' ? 'begin' : 'finish',JSON.stringify(data)])).rows[0].value;
   if (operation === 'finish_job') return (await db.query('select public.dopmi_payment_job_finish($1::jsonb) as value',[JSON.stringify(data)])).rows[0].value;
@@ -283,6 +285,25 @@ function stripeFixture(d, overrides={}) {
   }};
 }
 const serviceFor = (stripe, overrideRpc=rpc) => paymentService({rpc:overrideRpc,stripe,returnUrl:'https://example.test/return',logger:{}});
+
+test('oneoff reconciles the exact Charge card without reading the current wallet or persisting other card details',async()=>{
+  const d=await prepare(); const base=stripeFixture(d); const path='payment_intents/pi_one?expand[]=latest_charge.balance_transaction';
+  const intent=await base.stripe(path); intent.livemode=false;
+  Object.assign(intent.latest_charge,{livemode:false,payment_method:'pm_removed',
+    payment_method_details:{type:'card',card:{brand:'visa',last4:'0029',fingerprint:'synthetic-private',number:'synthetic-full-number'}}});
+  const f=stripeFixture(d,{[path]:async()=>structuredClone(intent)});
+  const settled=await serviceFor(f.stripe).settleIntent('pi_one',d.id);
+  assert.equal(settled.allocated_cents,9200);
+  const row=(await db.query('select brand,last4,owner_id from private.dopmi_payment_method_snapshots where kind=\'contribution\' and payment_id=$1',[d.id])).rows[0];
+  assert.deepEqual(row,{brand:'visa',last4:'0029',owner_id:donor});
+  delete intent.latest_charge.payment_method;
+  assert.equal((await serviceFor(f.stripe).settleIntent('pi_one',d.id)).id,d.id);
+  assert.equal(f.calls.some(c=>c.path.startsWith('payment_methods/')||c.path.startsWith('customers/')),false);
+  await role(donor);
+  const own=(await db.query('select public.dopmi_payment_activity() value')).rows[0].value.items.find(i=>i.id===d.id);
+  assert.deepEqual(own.payment_method,{type:'card',brand:'visa',last4:'0029'});
+  assert.equal(JSON.stringify(own).includes('synthetic-private'),false);
+});
 test('personality preserves legacy data, supports new traits and removes edited posts from discovery', async () => {
   const post='30000000-0000-4000-8000-000000000001';
   await db.query("insert into dopmi_adoptions(id,owner_id,status,personality) values($1,$2,'published',array['calm','alegre'])",[post,rescuer]);
@@ -1390,6 +1411,18 @@ function guardianStripeFixture() {
     lookupSubscription:stripe_subscription_id=>guardianRegistry('lookup',{stripe_subscription_id}),logger:{}});
   return {stripe,calls,charge,invoice,subscription,transfers,refunds,service};
 }
+
+test('Guardian renewal captures its exact historical card without changing immutable settlement evidence',async()=>{
+  const cycle=await boundGuardian(); const f=guardianStripeFixture();
+  const method={type:'card',brand:'mastercard',last4:'0091'};
+  f.charge.payment_method_details={type:'card',card:{brand:method.brand,last4:method.last4}};
+  const result=await f.service().reconcileInvoice('in_guardian1');
+  assert.equal(result.cycle_id,cycle.id);
+  assert.deepEqual((await db.query('select brand,last4 from private.dopmi_payment_method_snapshots where payment_id=$1',[cycle.id])).rows[0],{brand:method.brand,last4:method.last4});
+  assert.deepEqual((await db.query('select evidence from private.dopmi_guardian_settlements where cycle_id=$1',[cycle.id])).rows[0].evidence,guardianEvidence);
+  assert.deepEqual(await guardianSettlement('settle',{...guardianEvidence,payment_method:method}),result);
+  assert.deepEqual(await guardianSettlement('settle',guardianEvidence),result);
+});
 test('Guardian worker reconciles confirmed invoice, transfers exact net and repeated runs perform no new payment',async () => {
   const cycle=await boundGuardian();const f=guardianStripeFixture();
   assert.deepEqual(await f.service().reconcile(),{reconciled:1,processed:1,failed:0});
@@ -1512,6 +1545,18 @@ function initialFixture(rpcOverride=activationRpc) {
   const paid=()=>Object.assign([...sessions.values()][0],{status:'complete',payment_status:'paid'});
   return {...f,sessions,creations,intent,initial:service,paid};
 }
+
+test('legacy Guardian initial Checkout retains exact Charge card independently of wallet changes',async()=>{
+  const f=initialFixture(); const opened=await f.initial.checkout(donor,initialInput); f.paid();
+  f.charge.payment_method_details={type:'card',card:{brand:'amex',last4:'0712'}};
+  const settled=await f.initial.reconcileSession('cs_test_initial1');
+  assert.equal(settled.cycle_id,opened.cycle_id);
+  const snapshot=async()=>(await db.query('select brand,last4 from private.dopmi_payment_method_snapshots where payment_id=$1',[opened.cycle_id])).rows[0];
+  assert.deepEqual(await snapshot(),{brand:'amex',last4:'0712'});
+  assert.equal((await db.query('select evidence ? \'payment_method\' leaked from private.dopmi_guardian_settlements where cycle_id=$1',[opened.cycle_id])).rows[0].leaked,false);
+  f.intent.payment_method='pm_changed';
+  assert.deepEqual(await snapshot(),{brand:'amex',last4:'0712'});
+});
 
 test('Guardian initial consent and full capacity are required before any Stripe write',async()=>{
   const f=initialFixture();

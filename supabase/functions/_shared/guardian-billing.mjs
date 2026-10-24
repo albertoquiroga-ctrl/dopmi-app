@@ -1,3 +1,5 @@
+import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
+
 // Guardián renewals are never collected from a webhook alone. The server must
 // find the persisted owner/subscription pair, verify this fail-closed Stripe
 // configuration, reserve the whole net in PostgreSQL, and only then decide
@@ -96,7 +98,7 @@ export function guardianPaidInvoice(invoice, subscription, expected, invoicePaym
     invoice_payment_id: payment.id,
     payment_intent_id: paymentIntent.id, charge_id: charge.id,
     gross_cents: expected.gross_cents, platform_fee_cents: platformFee,
-    stripe_fee_cents: balance.fee, net_cents: net };
+    stripe_fee_cents: balance.fee, net_cents: net, ...chargePaymentMethodSnapshot(charge) };
 }
 
 // Price evidence after a billing boundary is not evidence of payment. Inspect

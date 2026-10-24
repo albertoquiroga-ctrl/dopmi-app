@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import 'community_repository.dart';
 
 /// These four public counts come from the server's approved projections.
@@ -27,29 +28,29 @@ class PublicProfileMetrics extends StatelessWidget {
           'active_adoptions',
           'Mascotas están buscando un hogar.',
           'rtab-home',
-          const Color(0xfff5f0ff),
-          const Color(0xff6d28d9),
+          DopmiTokens.saffronSoft,
+          DopmiTokens.yellow,
         ),
         (
           'adopted_count',
           'Mascotas encontraron un hogar.',
           'check-circle',
-          const Color(0xfffff4eb),
-          const Color(0xffea580c),
+          const Color(0xffffe8d6),
+          DopmiTokens.orange,
         ),
         (
           'active_donation_cases',
           'Mascotas están recibiendo apoyo.',
           'tab-donate',
-          const Color(0xffeef5ff),
-          const Color(0xff2563eb),
+          const Color(0xffefe4d8),
+          ink,
         ),
         (
           'received_support_pets',
           'Mascotas recibieron apoyo.',
           'icon-heart',
-          const Color(0xffecfdf3),
-          const Color(0xff16a34a),
+          DopmiTokens.sky,
+          ink,
         ),
       ];
       Widget card(int index) {

@@ -1,4 +1,22 @@
-# Cola vigente — delta b9f6d5f warm-trust, 24/10/2026
+# Cola vigente — cierre integral autónomo, 24/10/2026
+
+Se conserva W1–W3 verificado enada0c4f6. La auditoría integral20grupos completa
+W4 con los siguientes paquetes finitos, sin otra espera rutinaria de permiso:
+
+| Batch | Dueño / dependencia | Escenarios y salida |
+|---|---|---|
+| W4R Residuales visuales | Worker móvil + root/cola única; auditoría b9 | Perfil público/filtros/métricas, logos/campana rescatista, cabecera notificaciones y canvas en superficies donantes equivalentes; normal/115/320200 y revisión independiente. SDK Stripe intactos. |
+| W4H Método histórico | Backend worker + root UI; W4R independiente | Snapshot privado exactCharge/brand/last4, legado nullable, receptor sin tarjeta, inmutable/atómico; pruebas y código/seguridad, historia SQL real antes de aplicar, migración antes de Edge. |
+| W4I Integración y distribución | Root + revisores; W4R/W4H | Candidato final único, cuatro gates CI, preflight real y una reserva/POST Codemagic→Play→Samsung; versión/build/SHA/canal comprobados por separado. |
+| W4Q QA y entrega | Root; W4I y sesiones legítimas | Comparación instalada/gestos y escenarios positivos pendientes con TEST autorizado, cierreOFF; demo proporcional, informe de adaptaciones y bloqueos externos concretos; aceptación humana separada. |
+
+Límite original del objetivo13:08:18UTC24oct. Instalada330; ninguna331 enviada.
+Autoridad vigente en product-decisions/checkpoint. Reusar QA válida, no repetir
+correo/contraseña/KYC/pagos/fixtures para fabricar evidencia.
+
+## Cola anterior (supersedida por el corte vigente superior)
+
+# Cola — delta b9f6d5f warm-trust, 24/10/2026
 
 Decisión y límites en product-decisions; checkpoint en mock-sync-current. Esta
 cola supersede prioridades históricas inferiores, conserva resultados válidos
