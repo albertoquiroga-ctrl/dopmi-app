@@ -1,3 +1,26 @@
+## 23/10/2026 — Captura exclusiva Guardián: restauración de variable de dibujo
+
+CI40067280750/41b33286: analyze y1423 pruebas regulares PASS; capture_design y
+perfil con filtros exactos de CI PASS. Después falló la captura exclusiva
+integral-guardian por debugAssertAllPaintingVarsUnset: debugDisableShadows=false
+se mantenía en el earlyreturn, omitiendo el resettrue de la salida normal. El
+addTearDown ocurre después de ese invariante. Las capturas locales mixtas
+anteriores habían alcanzado la salida normal; no equivalían al modo exclusivo.
+
+Se restauró el mismo flag antes de ese retorno, sin cambiar sombras durante
+captura, comprobar menos invariantes ni tocar producto. Reproducción exacta del
+comando exclusivo: guardian-exclusive-corrective.log,1PASS/26s; revisión de código
+independiente cerrada. Se reutiliza el PASS de la ruta normal del mismo CI,
+inalterada por el fix. Log CI completo y excepción conservados en b9delta.
+
+Retro independiente warm_process_review identifica selección local incompleta,
+no defectos financieros/UI demostrados. Root agrupa suites hermanas del
+componente y conserva los modos condicionales exactos del gate existente;
+éxito: esos fallos se detectan localmente antes del próximo push. Root cierra
+SHA/hashes del paquete sólo después de CI verde; éxito: un cierre del paquete
+ligado al candidato verde. Sin nuevo gate/harness ni ahorro atribuido.
+Instalada330, servicios OFF y producto bce intactos. CI final propio pendiente.
+
 ## 23/10/2026 — Reflujo: localizador semántico corregido sin cambiar producto
 
 CI40066495414/bce75788 terminó con web/PostgreSQL, integración e iOSsim SUCCESS;
@@ -8,7 +31,7 @@ demostradas. El test ahora encuentra su RichText descendiente único y mide ese
 párrafo. Se conservan cuatro variantes donante/recibido y115%/200%, ancho de
 palabra, fecha, posición y céntimos5075/.75, sin modificar fuente productiva.
 
-hist​ory-reflow-corrective.log: cuatro reflow+nueve ledger+captura14PASS/22s;
+history-reflow-corrective.log: cuatro reflow+nueve ledger+captura14PASS/22s;
 código independiente cerró el diff. Root omitió la suite de reflujo del mismo
 componente en la selección previa de10; no repetir capturadores históricos ni
 modificar UI para satisfacer un localizador obsoleto. Congelar literales del

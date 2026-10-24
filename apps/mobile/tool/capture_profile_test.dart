@@ -943,6 +943,9 @@ void main() {
         requestedCaptures.every(
           (value) => value.startsWith('integral-guardian'),
         )) {
+      // Flutter checks painting globals before addTearDown callbacks run.
+      // Restore the same invariant as the ordinary capture completion path.
+      debugDisableShadows = true;
       return;
     }
 

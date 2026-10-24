@@ -26,7 +26,10 @@ título ink, Canvas donante y tarjeta vacía. CIbce40066495414: tresSUCCESS,
 Flutter1419PASS/4FAIL por cast del test de reflujo al wrapper semántico. Se
 localizó el RichText único sin relajar exigencias; cuatro reflow+nueve ledger+
 captura14PASS/22s y revisión de código cerrada. Fuente de producto bce intacta;
-commit sólo de prueba y su CI final por fijar.
+commit41b33286 sólo de prueba; CI40067280750 aprobó1423regulares y capturas de
+diseño/perfil, pero la captura EXCLUSIVA integral-guardian omitía restaurar la
+variable de sombras antes del retorno. Fix sólo del capturador, reproducción
+exacta exclusiva1PASS/26s; código independiente cerrado. Nuevo CI final pendiente.
 No sumar suites superpuestas ni confundir fixtures con teléfono.
 
 Root siguiente: fijar commit correctivo → push/CI4jobs exactos → cerrar paquete331
