@@ -11,7 +11,8 @@ SUCCESS/1426 Flutter; CM6adc801cc2c4416cf7f39490 trece SUCCESS/un POST/artefacto
 concordante. Correctivo físico al115%:6P2+1P3 cerrados por revisión independiente.
 Reutilizar QA331, Tienda331, correo327 y video329/330 válidos; no repetir fixtures.
 
-Titular reanudó15:11UTC; objetivo activo. Su límite original13:08:18UTC ya pasó,
+Titular reanudó15:11UTC; trabajo independiente cerrado. Bloqueo externo revalidado
+en tres turnos al15:43UTC, sin aviso del dueño. Su límite original13:08:18UTC ya pasó,
 sin inferir otras ocho horas. Donante elegido real verificado por hash UI15:12,
 sin credenciales; historial cargado/vacío y ausencia de TiendaOFF comprobados
 físicamente y revisados por producto. No prueba movimientos ni previewON ajeno.
