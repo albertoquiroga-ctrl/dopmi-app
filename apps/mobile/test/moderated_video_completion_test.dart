@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:video_player/video_player.dart';
 
 import 'support/local_video_controller.dart';
 
@@ -24,6 +25,105 @@ VideoRepository playbackRepository() => VideoRepository(
 );
 
 void main() {
+  for (final size in [const Size(640, 360), const Size(360, 640)]) {
+    for (final fit in [null, BoxFit.cover]) {
+      testWidgets(
+        'media fitting preserves frame and controls; size=$size fit=$fit',
+        (tester) async {
+          final controller = LocalVideoTestController();
+          final repository = playbackRepository();
+          const frameKey = ValueKey('video-frame');
+          const overlayKey = ValueKey('media-treatment');
+          addTearDown(() async {
+            await tester.pumpWidget(const SizedBox());
+            await tester.pump();
+            repository.dispose();
+          });
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: SizedBox(
+                    key: frameKey,
+                    width: 320,
+                    height: 560,
+                    child: ModeratedVideo(
+                      repository: repository,
+                      assetId: 'approved-clip',
+                      autoplay: false,
+                      controllerFactory: (_) => controller,
+                      fit: fit,
+                      mediaOverlay: const ColoredBox(
+                        key: overlayKey,
+                        color: Colors.black12,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+          await tester.pumpAndSettle();
+          controller.value = controller.value.copyWith(size: size);
+          await tester.pump();
+          final frame = tester.renderObject<RenderBox>(find.byKey(frameKey));
+          final video = tester.renderObject<RenderBox>(
+            find.byType(VideoPlayer),
+          );
+          final projected = MatrixUtils.transformRect(
+            video.getTransformTo(frame),
+            Offset.zero & video.size,
+          );
+          final frameRect = Offset.zero & frame.size;
+          expect(frame.size, const Size(320, 560));
+          if (fit == null) {
+            // Existing embedded-player layout remains unchanged by default.
+            expect(projected, frameRect);
+            expect(find.byType(FittedBox), findsNothing);
+          } else {
+            expect(
+              projected.width / projected.height,
+              closeTo(size.aspectRatio, .000001),
+            );
+            expect(projected.left, lessThanOrEqualTo(.001));
+            expect(projected.top, lessThanOrEqualTo(.001));
+            expect(
+              projected.right,
+              greaterThanOrEqualTo(frameRect.right - .001),
+            );
+            expect(
+              projected.bottom,
+              greaterThanOrEqualTo(frameRect.bottom - .001),
+            );
+            final fitted = tester.widget<FittedBox>(find.byType(FittedBox));
+            expect(fitted.clipBehavior, Clip.hardEdge);
+          }
+          expect(
+            tester.getRect(find.byKey(overlayKey)),
+            tester.getRect(find.byKey(frameKey)),
+          );
+          for (final label in ['Reproducir video', 'Activar sonido']) {
+            final control = tester.renderObject<RenderBox>(
+              find.byTooltip(label),
+            );
+            final projectedControl = MatrixUtils.transformRect(
+              control.getTransformTo(frame),
+              Offset.zero & control.size,
+            );
+            expect(projectedControl.width, closeTo(control.size.width, .001));
+            expect(projectedControl.height, closeTo(control.size.height, .001));
+            expect(
+              projectedControl.width,
+              closeTo(projectedControl.height, .001),
+            );
+            expect(frameRect.contains(projectedControl.center), isTrue);
+          }
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
+
   testWidgets('media overlay preserves visible and working playback controls', (
     tester,
   ) async {

@@ -54,10 +54,13 @@ no precisiónmilisegundos/audio físico. Feed individual vía Perfil→tarjetaGu
 promoción→Ver mi impacto muestra caso/asignación y abre detalle; sin contratar.
 No confundir ese acceso con el CTA de Apoyar que sí abre altaGuardián.
 
-QA positiva descubrió DOS P2 visuales de historias: degradado oscurecePlay/Sonido
-y statusbarnegra sobre fondooscuro. Worker agrupa arreglo de capas+AnnotatedRegion
-local en cuatro archivos Flutter; root única cola de pruebas/revisión y después
-candidato333 propuesto. Aún no CI/compilación/publicación/instalación333 ni aceptación.
+QA positiva y contraste final descubrieron TRES P2 visuales de historias: degradado
+oscurecePlay/Sonido, statusbarnegra y cliphorizontalestirado. Mockb9 styles.css
+3931–3939/3986–3998 exigeobject-fit:cover, no nueva decisión humana. Worker agrupa
+capas+AnnotatedRegion+fitcoverlocal en cuatroarchivosFlutter. Primer cortee3f57980/
+CI40138448116 esintermedio (35focal/analyze0 para2P2), nofuente final/build enviada.
+Root única cola focales/analyze/revisión del tercerP2 y CI del nuevoSHA antes de333.
+Aún sin reserva/POSTCodemagic, publicación/instalación333 ni aceptación.
 
 Preflight global encontró una factura0 TEST histórica de ensayo de método; padre
 cancelado/precio0 y nueve vínculosDB0 comprobados. Se conserva intacta. Guard fijo
@@ -72,7 +75,7 @@ Video/Tienda/enlaces/cleanupOFF, job6pausado/cola0; único pagoP3 retenido segú
 Evidencia única `.tools/integral20d21-20261018/public-video-qa-design/p3-preparation/`:
 `operation/` paquete revisado, `resume332/` autoridad/lecturas/capturas reales.
 
-Siguiente root: terminar lote UI de los dosP2 (capas/contraste/statusbarrestaurada),
+Siguiente root: terminar lote UI de los tresP2 (capas/contraste/statusbar/cover),
 focales/analyze/capturas, revisiones independientes, CI integral delSHAfinal y una
 distribución333 revisada bajo autonomía humana vigente. Reusar sólo caso/clip/pago
 retenidos para comprobación de lectura del candidato corregido; no otro pago ni

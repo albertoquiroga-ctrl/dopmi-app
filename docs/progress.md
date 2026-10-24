@@ -1,4 +1,19 @@
-## 24/10/2026 — P3/332 positivo cerrado; dos P2 de historias corregidos en fuente
+## 24/10/2026 — P3/332 positivo cerrado; tres P2 de historias agrupados en fuente
+
+ContrastefinalantesCodemagic confirmó tercerP2: mockb9 congelado styles.css3931–
+3939/3986–3998 exigeobject-fit:cover, pero clip640x360 seestiraba en marcovertical.
+Producto contrastó PNG332/fuente/mock; no nueva decisión. Worker añadió fitnullable
+defaultnull y sólohistoriasBoxFit.cover: VideoPlayer dimensiónintrínseca/FittedBox/
+hardEdge, controles+gradiente fuera del escalado. Embebidos conservancomposición.
+Cuatrocasos640x360/360x640×null/cover prueban geometríaproyectada/proporción/crop y
+controles noescalados. Primeraejecución35PASS/4FAIL sóloporsupuesto48px incorrecto
+enfixture40; se corrigió invariant de rectproyectadoversustamañonatural, no producto.
+Únicarepetición deesos4PASS, analyze0; CIintegral delSHAfinal cubreconjunto. Logs
+realesfocal-final/geometry-corrected/analyze-final en story-controls-release.
+Fuenteintermediae3f57980/CI40138448116 nunca enviada aCodemagic; no hayreserva/POST.
+Se congelará nuevoSHA/CI/tag y se ligará una vez paquete333/QApropia W4S10min/stop7,
+únicalectura delmismoclip/caso/donante, sin otroaporte/carga/fixture ni renovaciónP3.
+No marcar333 publicado/instalado ni los3P2verificadosfísicamente por esoslogs.
 
 Aviso humano21:48 «Listo ya inicié sesión» atendido. Donante elegido8b3e confirmado
 21:49 por hash del correo ordinario visible, sin credenciales. Handoff archivado.

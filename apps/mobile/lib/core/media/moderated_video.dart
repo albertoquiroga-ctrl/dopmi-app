@@ -19,6 +19,7 @@ class ModeratedVideo extends StatefulWidget {
     this.onPlaybackReady,
     this.controllerFactory,
     this.mediaOverlay,
+    this.fit,
     this.semanticLabel = 'Video del caso',
   });
   final VideoRepository repository;
@@ -30,6 +31,9 @@ class ModeratedVideo extends StatefulWidget {
 
   /// Decorative media treatment, painted below controls without taking gestures.
   final Widget? mediaOverlay;
+
+  /// Optional intrinsic-size media fitting; controls keep their frame size.
+  final BoxFit? fit;
   @override
   State<ModeratedVideo> createState() => _ModeratedVideoState();
 }
@@ -361,7 +365,17 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                   errorBuilder: (_, error, stack) => const SizedBox.shrink(),
                 ),
               if (player != null && player.value.isInitialized)
-                VideoPlayer(player)
+                widget.fit == null
+                    ? VideoPlayer(player)
+                    : FittedBox(
+                        fit: widget.fit!,
+                        clipBehavior: Clip.hardEdge,
+                        child: SizedBox(
+                          width: player.value.size.width,
+                          height: player.value.size.height,
+                          child: VideoPlayer(player),
+                        ),
+                      )
               else
                 const Center(child: CircularProgressIndicator()),
               if (widget.mediaOverlay != null)

@@ -30,7 +30,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Otra cuenta/comercio externo no probados. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. DosP2visuales nuevos (controles bajo degradado/statusbar negra) agrupados en fuente; QA del candidato333, cámara/audio físico e iOS siguen pendientes. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. QA del candidato333, cámara/audio físico e iOS siguen pendientes. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
