@@ -1,3 +1,54 @@
+## 24/10/2026 — 333 publicada, cierre OFF; instalación bloqueada por USB
+
+Fuente de producto **3408abc0411ae7707f98e62add31290416aa1c23**, mock congelado
+b9f6d5f/warm-trust. CI40139787853: cuatro jobs completed/SUCCESS. Código/producto/
+seguridad cierran los tres P2 agrupados de historias: controles sobre degradado,
+statusbar local/restauración y cover intrínseco sin estirar. No cambios de SDK,
+backend, esquema ni adaptadores Stripe. CI integral vigente; no atribuirle el
+conteo1426 del candidato anterior ni repetir fixtures cubiertas.
+
+Release real **2.3.3 (333)**, android-guardian-internal, Google Play internal.
+Un único POST/handle **6add39b3a1e66d7a9bdc8ecb**, trece accionesSUCCESS.
+Pin78eecc21…5ff37; artifactmetadata ee86101f…ad57e / texto c823a097…10bb9
+concuerdan con fuente,333,GuardianTEST/canal. No se descargó AAB ni inspeccionó
+certificado binario; configuración/firma/identidad vigentes preservadas.
+Registro Publishing2498B/7a7258ea…da2c1 acredita publicación y GET posterior:
+com.mycompany.dopmi / internal / completed /2.3.3/333. No confundir con instalación.
+CI duplicada deltag40141266522 cancelada; run verde40139787853 conservado.
+
+Cierre real posterior: SQL **2026-10-24T23:19:00.932811+00:00**, Edge **2026-10-24T23:19:12.860Z**.
+FullP3 y snapshot exactos,34digests baseline, video/Tienda/limpiezaOFF,
+job6pausado/cola0/17assets. Conserva caso9/gasto11/único20TESTnet15.17transferido,
+CLOSED40/dosclips/DRAFT4PDF/expediente21/finanzas/catálogo/seisjobs. Esta distribución
+no encendió servicios ni creó recursos/pagos. Autoridad vigente ligada al objetivo
+humano/reanudación real; no inventar nueva aprobación333 ni ocho horas.
+
+**Bloqueo concreto:** ADB no detecta el Samsung tras la publicación. Petición de
+reconexión ya pendiente; instalada conocida332/f7, donante legítimo/Adoptar al último
+acceso. W4S QA propia revisada10min/stop7 sólo videoON/MISMOclip20s, todavía sin
+pin/reserva/ON. Reanudar desde actualización Play y verificación de actor; no otro
+POST, pago, carga, review ni renovación P3V2. Cámara/audio humano, iOS físico y
+aceptación UX integral conservan sus límites; no declarar paridad total.
+
+Mini recorrido333 **previsto, no ejecutado en dispositivo**:
+
+| Pantalla → acción | Resultado esperado | Señal de problema |
+|---|---|---|
+| Apoyar → anillo → clip existente | Controles visibles; video llena el marco conservando proporción mediante recorte | Play/Sonido ocultos o imagen estirada |
+| Historia → cerrar X / Back Android | Barra exterior recupera su estilo y se puede volver a Adoptar | Hora/iconos ilegibles o navegación bloqueada |
+| Perfil → Mi historial de pagos | Mismo aporte20TEST y Visa4242, sin duplicados | Importe distinto, sesión perdida o datos ajenos |
+
+Retro proporcional con la evaluación independiente de proceso ya recibida:
+causas comprobadas: orden de pintado del degradado, falta de estilo local de
+statusbar y escala del video ligada a constraints en vez de tamaño intrínseco.
+Las pruebas previas de presencia semántica no demostraban contraste ni encuadre.
+Una mejora, dueño root/implementador: conservar las pruebas de píxeles/geometría
+y usar UNA comprobación del MISMOclip instalado para cerrar el correctivo.
+Efecto local: regresiones y CI verde; efecto visual físico aún pendiente.
+No atribuir ahorro de tiempo ni causa de las30horas al conjunto desde esta muestra.
+Fuentes/RAW en story-controls-release y story-controls-device-qa; tablero/informe
+actualizados sin modificar el histórico ni baseline de cambios ajenos.
+
 ## 24/10/2026 — P3/332 positivo cerrado; tres P2 de historias agrupados en fuente
 
 ContrastefinalantesCodemagic confirmó tercerP2: mockb9 congelado styles.css3931–

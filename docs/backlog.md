@@ -1,4 +1,4 @@
-# Cola vigente — 332 entregada, cierre integral pendiente, 24/10/2026
+# Cola vigente — 333 publicada; QA instalada bloqueada por USB, 24/10/2026
 
 W1–W3 y W4H conservan evidencia válida; W4I entregó331/f348 desde Play.
 La revisión física final encontró diferencias concretas, reunidas en UN lote:
@@ -7,19 +7,25 @@ La revisión física final encontró diferencias concretas, reunidas en UN lote:
 |---|---|---|
 | W4C Correctivo331 | Cerrado; root única colaFlutter | Siete grupos corregidos, capturas normal/115/320200 y código/seguridad/producto cerrados. QA física332/115% confirma cierre sin nuevos P1/P2. Sin backend/SDK ni funciones nuevas. |
 | W4I Candidato332 | Cerrado técnicamente; root | f7b77a0b/CI40082326137 cuatroSUCCESS; una reserva/POST CM6adc801cc2c4416cf7f39490. Artefacto2.3.3(332), Play interno y Samsung/Vending comprobados por separado. |
-| W4S Historias: correctivo agrupado | Workerstory_controls_fix + root / P3positivo332 | TresP2 reales: gradiente tapaPlay/Sonido, statusbar negra y video horizontal estirado. Mockb9 exigecover: conservar proporción/recorte sólohistorias. Agrupar overlay/AnnotatedRegion/fit, focales/analyze/revisión; una distribución333 trasCI delSHAfinal yQAproporcional. e3/CI401384 es corteintermedio, no candidato final ni build enviada. Sin cambio negocio/SDK/servidor. |
+| W4S Historias: correctivo agrupado | Workerstory_controls_fix + root / P3positivo332 | TresP2 reales: gradiente tapaPlay/Sonido, statusbar negra y video horizontal estirado. Mockb9 exigecover: conservar proporción/recorte sólohistorias. Overlay/AnnotatedRegion/fit corregidos y revisados; CI40139787853/3408 cuatroSUCCESS, CM6add39b3a1e66d7a9bdc8ecb treceSUCCESS, Play2.3.3(333) internal/completed. Falta instalación/QA proporcional: USB ausente. e3/CI401384 es corteintermedio, no candidato final ni build enviada. Sin cambio negocio/SDK/servidor. |
 | W4Q Cierre integral | Abierto; root / W4S | P3real: único20TEST conciliado/neto15.17 transferido, snapshotVisa4242 ligado al mismoCharge e historialSamsung; anillo/clip20s/hold/BG e Impacto individual comprobados, V2OFF/cierreexacto. DonanteAdoptar restaurado. Cámara/audio humano, iOS físico y UX siguen pendientes. Reusar caso/clip/aporte retenidos, sin otro pago/fixture. |
 
 331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
 OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
 W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
-Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
+Fuente instalada332 f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
 delta posterior a f601: expectativa de placeholder actualizada y formateada.
 Distribución332 terminada, publicada e instalada; QA del delta cerrada.
 CierreV2 SQL22:13:28/34digests22:12:44 íntegros/OFF/job6pausado/cola0; caso/clip/gasto/aporteTEST conservados. Donante legítimo enAdoptar, sin handoff activo.
 Límite original13:08:18UTC24oct; no confundir instalación con aceptación UX ni
-cerrar P3 positivo pendiente de actor legítimo. Fuentes y siguiente en checkpoint.
+reabrir P3 positivo: ya se ejecutó con actor legítimo distinto. Fuentes y siguiente en checkpoint.
+
+
+333 tiene artefacto y publicación comprobados; instalación, QA física y aceptación
+siguen separados. Cierre posterior a publicación conserva fullP3/34digests OFF/
+job6pausado/cola0. W4S QA propia10min/stop7 preparada, sin autoridad/pin/reserva/ON;
+esperar Samsung y333 desdePlay. No repetir pago/carga/review ni renovar P3V2.
 
 ## Cola anterior (supersedida por el corte vigente superior)
 

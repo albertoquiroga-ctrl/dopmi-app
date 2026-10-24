@@ -1,88 +1,62 @@
-# Checkpoint vigente — 24/10/2026, 332 y reanudación P3
+# Checkpoint vigente — 24/10/2026, 333 publicada / USB pendiente
 
-Producto **dopmi-app**, `codex/finish-release-20261015`, checkout
+Producto **dopmi-app**, rama `codex/finish-release-20261015`, checkout
 `C:/Users/betoq/Paperclip-Dopmi/development/dopa39/candidate-git-20261014`.
-Mock sólo referencia **b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef**, warm-trust.
-Conservar los tres SDK Stripe. Root/única cola Flutter; cambios ajenos intactos.
+Mock sólo referencia congelada **b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef**,
+warm-trust, `.tools/reference-d304535`. Preservar tres componentes Stripe,
+privacidad, TEST, identidad/firma y cambios ajenos. Root: única cola móvil/operaciones.
 
-**2.3.3 (332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17**, publicada
-Play interno e instalada desde Play en Samsung SM-S938B. CI40082326137 cuatro
-SUCCESS/1426 Flutter; CM6adc801cc2c4416cf7f39490 trece SUCCESS/un POST/artefacto
-concordante. Correctivo físico al115%:6P2+1P3 cerrados por revisión independiente.
-Reutilizar QA331, Tienda331, correo327 y video329/330 válidos; no repetir fixtures.
+**Instalada:2.3.3(332)/f7b77a0bf57732be273da7bd813ce77fc9c1fb17** desde Play,
+Samsung/Vending. QA332 cierra seis P2 y un P3 de331; reutilizar331/Tienda/correo327/
+video329/330 válidos. No repetir fixtures ni cobros.
 
-Aviso humano de cuenta aprobada atendido: dueño TEST legítimo confirmado20:12UTC,
-sin credenciales. El bloqueo anterior de identidad quedó resuelto; el estado de
-get_goal seguía blocked, sin inventar active ni renovar ocho horas. Límite original
-13:08:18UTC ya transcurrido. La instrucción humana directa permitió continuar el
-paquete revisado. Donante elegido8b3e verificado15:12, historial vacío y TiendaOFF;
-confirmó poder cambiar dueño→donante. Aviso humano21:48 atendido y donante8b3e
-verificado por hashUI21:49, sin credenciales. Handoff cerrado; Samsung quedó en
-Adoptar con ese donante después de la QA. No cambio de cuenta pendiente para P3.
+**Candidato333:3408abc0411ae7707f98e62add31290416aa1c23**. CI40139787853:
+cuatro jobs completed/SUCCESS. Tres P2 de historias corregidos/revisados: controles
+sobre degradado, statusbar local y cover intrínseco sin estirar sólo el video.
+Embebidos conservan fitnull; X/Back restauran barra.35focales previas PASS y4
+geometrías corregidas PASS/analyze0; la CI final integral está aprobada.
+Corte e3/CI401384 es histórico sin envío. Fuente y runtime/firma no cambiaron.
 
-P3 ligado a332: manifest **0fb6fb6f…73c82**, scopefac4c9a1…1d054,
-renderer3c026268…8e243, permiso v3/autoridad de la reanudación real. Código y
-seguridad cerraron rebase exacto Store332 y11pruebas puras; guardas intactas.
-Preparador root local UTF8/fechas reales revisado, sin otraCI/build ni backend.
-Máximos: un caso/thanks20s/gasto100/aporte20TEST, dos ventanas20min/stop15,
-retención y cierreOFF. **V1 y V2 consumidas/cerradas; único pago TEST conciliado.**
+Distribución333 **terminada y publicada**, una única reserva/POST en Codemagic:
+**6add39b3a1e66d7a9bdc8ecb**, `android-guardian-internal`, tag inmutable
+`codex/story-controls-3408abc0`. Trece accionesSUCCESS; metadataAAB/build-info
+verifican2.3.3(333)/3408/TEST/internal. Log2498B y GET posterior del canal confirman
+Google Play internal/completed/333. Instalación y aceptación aún no comprobadas. Paquete `story-controls-release`:
+reviewed pin **78eecc21540dc4b2e1f3fb49542c089ba50e164b3bd1237c1248d95fc635ff37**,
+DEV fresh1f621402…3de73 validado, código/seguridad cierran recibos. Manifest actualizado
+tras completar hashes. La CI duplicada del tag40141266522 quedó cancelled;
+conservar la CI success40139787853. No segundo POST ni nueva reserva ante incertidumbre.
 
-P3 real: caso970f8f92…639c «Prueba de historias» APPROVED9, portada sintética y
-texto TEST sin mascota/tratamiento reales. Único thanks47e3e1a8…5133,20s/1844011B,
-fingerprint61a1fca…4c2e3, ready+approved con snapshot exacto. Admin distinto40a
-reprodujo rango completo0→20.053332s antes de revisar versión8; caso aprobado9.
-Sin audio físico atribuido. Ventana inició21:09:05UTC; EdgeOFF21:16:47 y SQL
-postflight21:17:00: job6pausado/cola0/34digests restaurados. B1/pin/cierre verificados
-independientemente, otros16assets/CLOSED40/DRAFT4-PDF/finanzas/Store íntegros.
+P3 real en332 cerrado: caso970f…639c APPROVED9, thanks47e…5133 aprobado20s,
+gasto9adb…14e1 APPROVED11 ficticio100MXN con PDF/proof privados. Único aporte
+960b…5033 del donante8b3e:20−0.40Dopmi−4.43Stripe=15.17asignado/transferred.
+Snapshot del MISMO Charge/Intent/owner y Visa4242/20 en historialSamsung; StripeTEST
+primario concordante. V1/V2 consumidas, cierre SQL22:13:28 y Edge22:12:44 exactos.
+Readbacks23:03 mantienen todoOFF/34digests/job6pausado/cola0/17assets y estado P3.
+CLOSED40/dosclips/DRAFT4-PDF/expediente21/finanzas/catálogo/seisjobs preservados.
+AnilloApoyar→foto→clip20s completo, mute/toggle, hold6s y BG6s conservando posición
+comprobados en MP4. Perfil→tarjetaGuardián→promoción→Ver mi impacto abre feed;
+feed→detalle. CTA de Apoyar abre altaGuardián; historial financiero está separado.
+Sin resumen mensual individual extra, por decisión humana. No audio físico acreditado.
 
-Con serviciosOFF, único gasto9adb9ce1…14e1 APPROVED11 por10000centavos ficticios.
-PDF2432B «SIN VALIDEZ/SIN PAGO REAL» y proofJPEG sintético separados/privados;
-sin foto pública de gasto. Preflight financiero real pasó antes de aprobación;
-C_EXPENSE/pin verificaron campos/snapshots/actores exactos antes de la aportación.
+Donante legítimo verificado21:49 tras aviso humano21:48, sin credenciales; terminó
+Adoptar. **ADB vacío tras publicación**, petición humana de reconexión pendiente; no cambiar cuenta.
+Objetivo histórico/get_goal sigue blocked; no falsificar active ni renovar ocho horas.
+La instrucción humana directa/autonomía y su reanudación real sustentan esta operación.
 
-Único pago960bde43…5033 confirmado/transferred:2000 bruto−40Dopmi−443Stripe=
-1517centavos asignados sólo al gasto9adb; UUIDdurable f14afcc8…a3dd. PrimariaStripe
-TEST succeeded/paid verifica443=382fee+61tax, sin guardar clientsecret. Snapshot
-histórico del MISMO pago ligado por SQL a dueño/Intent/Charge; historialSamsung
-Visa4242/$20 concordante. C_PAY/pin y revisión independiente PASS; no otro cobro.
-
-V2 lectura21:59:12→EdgeOFF22:12:44, SQLfinal22:13:28/34digestsbaseline/job6pausado/
-cola0/fullbaseline C_PAY exacto. Anillo→foto→thanks20s completo; silencio inicial,
-toggle de sonido, hold6s pausa1.133→continúa sinreset. BG: antesHome1.400, seis
-segundos fuera, trascarga primerframe reproducido1.867→19.933, sin consumir6s fuera;
-no precisiónmilisegundos/audio físico. Feed individual vía Perfil→tarjetaGuardián→
-promoción→Ver mi impacto muestra caso/asignación y abre detalle; sin contratar.
-No confundir ese acceso con el CTA de Apoyar que sí abre altaGuardián.
-
-QA positiva y contraste final descubrieron TRES P2 visuales de historias: degradado
-oscurecePlay/Sonido, statusbarnegra y cliphorizontalestirado. Mockb9 styles.css
-3931–3939/3986–3998 exigeobject-fit:cover, no nueva decisión humana. Worker agrupa
-capas+AnnotatedRegion+fitcoverlocal en cuatroarchivosFlutter. Primer cortee3f57980/
-CI40138448116 esintermedio (35focal/analyze0 para2P2), nofuente final/build enviada.
-Root única cola focales/analyze/revisión del tercerP2 y CI del nuevoSHA antes de333.
-Aún sin reserva/POSTCodemagic, publicación/instalación333 ni aceptación.
-
-Preflight global encontró una factura0 TEST histórica de ensayo de método; padre
-cancelado/precio0 y nueve vínculosDB0 comprobados. Se conserva intacta. Guard fijo
-revisado exige exactamente esa única factura inerte global, open0, keys originales,
-cuenta/filtros/facts exactos, no-linksraw y freshness; cualquier deriva bloquea.
-Nunca filtrar a una sub para fingircount0, borrar/void factura ni cambiar finanzas.
-SQL iniciales contrim quedan sólo históricos; nuevos wrappers conservan bytes exactos.
-
-Cierre vigenteV1 y C_EXPENSE:84historia/17assets, con sólo el nuevo clip retenido;
-CLOSED40/dosclips/DRAFT4-PDF/finanzas previas/seisjobs/catálogo conservados.
-Video/Tienda/enlaces/cleanupOFF, job6pausado/cola0; único pagoP3 retenido según decisión.
-Evidencia única `.tools/integral20d21-20261018/public-video-qa-design/p3-preparation/`:
-`operation/` paquete revisado, `resume332/` autoridad/lecturas/capturas reales.
-
-Siguiente root: terminar lote UI de los tresP2 (capas/contraste/statusbar/cover),
-focales/analyze/capturas, revisiones independientes, CI integral delSHAfinal y una
-distribución333 revisada bajo autonomía humana vigente. Reusar sólo caso/clip/pago
-retenidos para comprobación de lectura del candidato corregido; no otro pago ni
-fixture. V1/V2 no se renuevan: nueva QA tendría paquete propio, sin aprobación
-rutinaria según decisión24oct. Cámara/audio humanos, iOS físico y UX siguen
-pendientes; P3 financiero/histórico/gestos ya acreditado con sus límites anteriores.
-Tablero/informe en parity-current-review; evidencia y retro en progress.
+Siguiente root: cuando vuelva el Samsung, actualizar333 DESDE Play y verificar
+Vending/versión/SHA ligado al artefacto, sesión legítima del mismo donante/Adoptar.
+Artefacto ee86101f…ad57e; texto c823a097…10bb9; publicación 7a7258ea…da2c1.
+Paquete y recibos finales:story-controls-release. Cierre posterior a publicación
+closure.verified.actual.private.json confirma fullP3/snapshot/34digestsOFF/job6pausado.
+No nuevos backend/SDK/esquema/cargas/pagos. W4S propia propuesta story-controls-device-qa
+(scope1ffcd3d8…69860/operator37111589…b5eab), código/seguridad cerrados: tras333
+instalada/cuenta verificada, autoridad/pin propios y seis capturas frescas≤120s;
+UNA ventana10min/stop7 sólo videoON, cleanupOFF/job6pausado, MISMO clip20s para
+contraste/cover/statusbarX/Back; cero fixtures/pagos/cargas. CierreOFF yAdoptar aunfallo.
+QA aún sin pin/reserva/ON; no renovar P3V2. Cámara/audio humano, iOS físico y aceptación
+UX integral siguen sin acreditar. Matriz/informe:parity-current-review; cola:backlog;
+ledger/retro:progress. RAW/pinsP3:public-video-qa-design/p3-preparation/resume332.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

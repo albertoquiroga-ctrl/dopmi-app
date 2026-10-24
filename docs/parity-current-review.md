@@ -1,17 +1,29 @@
-# Corte vigente — b9f6d5f warm-trust, QA332 del 24/10/2026
+# Corte vigente — b9f6d5f warm-trust, 333 publicada / instalación pendiente
+
+
+**Disponible en Play interno: 2.3.3 (333), fuente
+3408abc0411ae7707f98e62add31290416aa1c23**. CI40139787853: cuatro SUCCESS;
+CM6add39b3a1e66d7a9bdc8ecb: trece SUCCESS, un POST, metadata concordante y
+lectura posterior de Google Play track internal/completed/333. Corrige los tres
+P2 de historias: controles, barra de estado y cover sin deformación.
+**Instalación y QA333 no realizadas: ADB no detecta el Samsung.** La instalada
+sigue siendo332; no transferir automáticamente su QA a los cambios333.
+Cierre posterior a publicación: SQL/34digests exactos, video/Tienda/limpieza OFF,
+job6 pausado, P3 y todos los datos retenidos. No nueva ventana ON ni otro pago.
 
 Producto **f7b77a0bf57732be273da7bd813ce77fc9c1fb17 / 2.3.3 (332)** publicado
 en Play interno e instalado desde Play en Samsung/Vending. CI40082326137:
 cuatroSUCCESS/1426Flutter/capturas/Androiddebug/iOSsim. CM6adc801cc2c4416cf7f39490:
 13accionesSUCCESS; artefacto/build-info concuerdan. QA física332/115% y revisión
-independiente de10PNG/XML cierran los6P2+1P3 encontrados en331; sin nuevosP1/P2.
+independiente de10PNG/XML cierran los6P2+1P3 de331. Esa revisión precede a P3,
+que después encontró los tres correctivos de historias de333.
 Se reutiliza QA331 de14estados/recorridos y evidencia anterior válida.
 Tienda b9 verificada/cerrada; tres SDKStripe conservados. No es aceptación UX.
 Autoridad autónoma/límite originales en product-decisions y checkpoint.
 
 | Grupo integral | Resultado de contraste / evidencia reutilizable | Cierre pendiente |
 |---|---|---|
-| Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. Dueño TEST332 verificado20:12; cambio humano al donante pendiente, sin repetir recuperación. |
+| Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. Dueño TEST332 y donante legítimo distinto verificados; P3 y regreso a Adoptar completados. No repetir recuperación. |
 | Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST verificada; ambos modos y regreso a Adoptar comprobados. |
 | Adopción | Swipe/detalle/contacto/filtros OR equivalentes en SQL y local; PNG b9 | 331 swipe corto/completo en video, filtros2 persistidos y detalle/scroll/regreso verificados; no contacto nuevo. |
 | Favoritos | Guardar/quitar/paginación/retiradas/regreso; canvas W4R | 331 Mis match/favoritos e hilo propios legibles; guardar/quitar/paginación vigentes reutilizados. |
@@ -29,8 +41,8 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Configuración | Cuenta/privacidad/banco-Connect; QA326; canvas básico W4R | 331 BasicInfo/cuenta/métodos/ConnectTEST ready y regresos; sin onboarding/borrado/cambio tarjeta. |
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
-| Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Otra cuenta/comercio externo no probados. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. QA del candidato333, cámara/audio físico e iOS siguen pendientes. |
+| Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. 333/3408 publicada; su QA instalada está bloqueada por USB. Cámara/audio físico e iOS siguen pendientes. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
@@ -64,7 +76,7 @@ está en product-decisions; root conserva los siguientes límites visibles:
 
 | Elemento del mock / ausencia | Tratamiento real o pendiente |
 |---|---|
-| Formularios simulados de tarjeta/alta financiera | Excepción explícita del titular24oct: conservar PaymentSheet de aportación puntual y Guardián, más onboarding Stripe Connect. Fuentes/rutas y runtime TEST331 confirmados independientemente; f60195a1 no cambia adaptadores/configuración. Datos sensibles/autenticación permanecen en Stripe. No sustituirlos por formularios del mock. |
+| Formularios simulados de tarjeta/alta financiera | Excepción explícita del titular24oct: conservar PaymentSheet de aportación puntual y Guardián, más onboarding Stripe Connect. Fuentes/rutas y runtime TEST conservados en f7/3408; el correctivo333 no cambia adaptadores/configuración. Datos sensibles/autenticación permanecen en Stripe. No sustituirlos por formularios del mock. |
 | Acceso al alta financiera del rescatista | Hoy: modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. No es paso automático del asistente de publicar. Conservar condiciones nativas Android/iOS y fallback Stripe; localizarlo en demo sin afirmar onboarding físico no comprobado. No se decidió añadir un paso nuevo. |
 | Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No presentar cifras simuladas como actividad real. Excepción DEV TEST P3 ejecutada y retenida: gasto ficticio100 y únicoaporte20TEST;20−0.40Dopmi−4.43Stripe=15.17asignado, conciliado contraStripeTEST. |
 | Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
@@ -76,7 +88,7 @@ está en product-decisions; root conserva los siguientes límites visibles:
 | Textos sin gastos y caso cerrado | Conservar historia/medios y aviso/CTA deshabilitado; ocultar encabezado de solicitud sin capacidad según decisión previa. Cierre no borra publicación ni reabre al añadir despedida. |
 | Contraste pequeño naranja/blanco y foco | Colores del mock para decoración; texto pequeño café y botón naranja oscurecido para AA. Grain feTurbulence, saturate e inset-shadow CSS no se reproducen literalmente. |
 | Errores, vacío, permisos, interrupciones y sesión | Conservar reintento, revisión legítima, bloqueo de duplicados, recuperación tras reinicio y retiro de datos al cambiar identidad. Nunca simular éxito. |
-| Aceptación pendiente | Comparación UX integral del candidato corregido, cámara/audio físico e iOS físico. Historias/Impacto positivos y método histórico ya tienen evidenciaP3; quedan los dosP2visuales descubiertos por esa QA y su comprobación en333. Cuentaordinaria sinTienda332 comprobadaOFF; no equivale a contraste simultáneo durantepreviewON. Capturas/iOSsim no sustituyen dispositivo/aceptación. |
+| Aceptación pendiente | Comparación UX integral del candidato corregido, cámara/audio físico e iOS físico. Historias/Impacto positivos y método histórico ya tienen evidenciaP3; quedan los tres P2 visuales (controles, barra de estado y encuadre cover), corregidos en fuente333 y pendientes de comprobación física. Cuentaordinaria sinTienda332 comprobadaOFF; no equivale a contraste simultáneo durantepreviewON. Capturas/iOSsim no sustituyen dispositivo/aceptación. |
 
 Recomendación no incorporada: acceso adicional «Resumen del mes» en Perfil.
 El titular prefirió conservar la presentación del mock y recibir este informe.
