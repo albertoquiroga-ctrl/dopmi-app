@@ -1,3 +1,29 @@
+## 24/10/2026 — Candidato warm-trust integrado, distribución propia pendiente
+
+Candidatoada0c4f649e357bae308633aecfb1d581a9edf7d, mockb9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef.
+CI40068127871 exacta completed/SUCCESS: web/PostgreSQL, integración identidad/
+adopción, iOSsim y Flutter. Log final confirma1423 pruebas, capturas exigidas y
+APKdebug compilada; no es Play ni instalación. Producto bce idéntico en apps/mobile/lib,
+assets/admin/Supabase respecto a los dos últimos fixes sólo de tests/capturador.
+Rawrun/jobs, recibo CI y ci-ada-flutter.actual.log preservados.
+
+Lecturas DEV06:04:18–46UTC:34digests exactos/OFF, SQL06:04:39.905835 fullbaseline
+PASS (83migraciones,16assets, CLOSED40/DRAFT4-PDF/finanzas/seisjobs/catálogo8revocado
+sin cambios), Edge62/58 siete archivos canónicos17c8e66. Helper --prepare validó
+recibos reales, devsha f37362ab…679ee, sin crear autoridad ni pin operativo. Las
+horas no se renuevan; lecturas caducadas se sustituyen con observaciones nuevas.
+
+Paquete warm-trust-release final manifestc2d8bb3c…195d1a/pinpropuesto4ace324a…167c29;
+9pure/3AST/6defaults bloqueados aprobados. Revisiones de fuente/producto y retro
+independiente conservadas; código y seguridad cerraron los literales finales sin
+P1/P2 demostrados, hashes y raws contrastados en reviews.final.private.json.
+Sin permiso331/reserva/POST/build/ON/pago/publicación de casos nuevos. Instalada
+330/Vending conserva su estado; no lectura ni cambio de sesión/modo del teléfono.
+Root: pedir un permiso concreto de build/publicación Play interno/actualización,
+comprobar artefacto/Play/instalación y demostrar después con servicios OFF. Informe
+solicitado en parity-current-review. La aceptación UX y escenarios físicos
+pendientes siguen abiertos; P3 condicionado a330 no se transfiere automáticamente.
+
 ## 23/10/2026 — Captura exclusiva Guardián: restauración de variable de dibujo
 
 CI40067280750/41b33286: analyze y1423 pruebas regulares PASS; capture_design y

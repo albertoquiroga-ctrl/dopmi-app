@@ -1,8 +1,9 @@
-# Corte vigente — b9f6d5f warm-trust, 23/10/2026
+# Corte vigente — b9f6d5f warm-trust, 24/10/2026
 
 UX compara contra el mock nuevo; titular confirmó warm-trust. No afirmar paridad
 por localizar código o por pruebas unitarias. Candidato instalado330 es7f6d7e9;
-implementación local nueva aún sin publicación/aceptación.
+candidatoada0c4f6/CI40068127871 cuatroSUCCESS/1423Flutter, compilaciones
+Androiddebug/iOSsim y capturas aprobadas; aún sin publicación/aceptación.
 
 | Grupo / referencia | Brecha comprobada | Decisión / evidencia pendiente |
 |---|---|---|

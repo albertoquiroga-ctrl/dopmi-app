@@ -1,52 +1,44 @@
-# Checkpoint vigente — 23/10/2026, warm-trust b9f6d5f
+# Checkpoint vigente — 24/10/2026, warm-trust b9f6d5f
 
-Producto: **dopmi-app**. Mock sólo referencia, congelada en
+Producto **dopmi-app**, mock sólo referencia congelada:
 `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust elegida por titular.
-Cola única Flutter/root en checkout candidate-git-20261014,
-`codex/finish-release-20261015`, sobre base documental `5e1d8b9`; implementación0bc201bb,
-corrección f3dc0554 y cierre visual de historial agrupado en candidato final.
-Distribuido/instalado sigue **7f6d7e90 / Play interno 2.3.3(330), release170**.
-Este delta local todavía no está publicado, instalado ni aceptado por UX.
+Candidato **ada0c4f649e357bae308633aecfb1d581a9edf7d**, rama
+`codex/finish-release-20261015`, checkout candidate-git-20261014. Cola Flutter/root.
+Fuente de producto bce75788; los dos commits finales sólo corrigen pruebas.
 
-Implementado W1–W3: fundación/nav, Adoptar/filtros múltiples/detalle, Guardián y
-Perfil, chat/notificaciones, Tienda privada y composición de historias por
-propósito. Impacto es feed; Perfil contiene historial de pagos; mensual en Apoyar
-Guardián, sin botón extra en Perfil conforme call_7ddb7182. Informe de adaptaciones
-y flujos no dibujados en parity-current-review, sin nueva decisión pendiente.
+Implementado W1–W3: fundación/nav, Adoptar/filtros/detalle, Guardián/collage,
+Perfil, chat/notificaciones, Tienda privada e historias por propósito. Impacto es
+feed; Perfil → Mi historial de pagos → movimientos; mensual en Apoyar Guardián,
+sin botón adicional en Perfil, conforme call_7ddb7182. Informe solicitado en
+parity-current-review; no nueva decisión de producto pendiente.
 
-Evidencia local en `.tools/integral20d21-20261018/b9f6d5f-delta/`:
-format416/0; analyze completo88.8s y delta final75.7s sin incidencias;
-final-visual-and-impact86PASS; controles/expiry y detalle safearea verificados en
-suites dirigidas; capturas normal/115%/320px200%. Código/producto independientes
-cerraron hallazgos materiales del delta. CI0bc: tresSUCCESS, Flutter1413PASS/10FAIL
-por expectativas/gestos de prueba; corrección agrupada64PASS. Fixtures actuales
-de notificaciones e historial corregidos/captura1PASS. Historial final: nueve
-regresiones financieras y captura normal/200%/vacío,10PASS; producto/código cierran
-título ink, Canvas donante y tarjeta vacía. CIbce40066495414: tresSUCCESS,
-Flutter1419PASS/4FAIL por cast del test de reflujo al wrapper semántico. Se
-localizó el RichText único sin relajar exigencias; cuatro reflow+nueve ledger+
-captura14PASS/22s y revisión de código cerrada. Fuente de producto bce intacta;
-commit41b33286 sólo de prueba; CI40067280750 aprobó1423regulares y capturas de
-diseño/perfil, pero la captura EXCLUSIVA integral-guardian omitía restaurar la
-variable de sombras antes del retorno. Fix sólo del capturador, reproducción
-exacta exclusiva1PASS/26s; código independiente cerrado. Nuevo CI final pendiente.
-No sumar suites superpuestas ni confundir fixtures con teléfono.
+**CI40068127871 completed/SUCCESS, cuatro jobs,1423 pruebas Flutter**, analyze,
+capturas de gates, Androiddebug e iOSsim aprobados. Historial local14PASS y
+captura exclusiva Guardián1PASS/26s; causa/correcciones/retro en progress.
+Producto/código/seguridad inspeccionaron fuentes y evidencia del delta; el
+registro del paquete conserva el cierre independiente de sus últimos literales,
+cerrado por código y seguridad sin nuevos P1/P2. Commits documentales posteriores
+conservan el candidato fuente exacto anterior.
+No sumar suites superpuestas ni confundir fixtures/compilación con teléfono.
 
-Root siguiente: fijar commit correctivo → push/CI4jobs exactos → cerrar paquete331
-preparado con revisión independiente y pedir permiso propio de distribución.
-Ninguna reserva/build/POST331 ni autorización operativa nueva todavía.
+Publicado/instalado sigue **7f6d7e90 / Play interno2.3.3(330), release170**,
+330/Vending comprobado en Samsung en esta sesión. Candidata331 aún sin permiso,
+reserva, POST, publicación, instalación ni aceptación UX. Paquete propuesto
+warm-trust-release: manifestc2d8bb3c…195d1a, pinpropuesto4ace324a…167c29;
+CI y DEV reales validados por helper, sin pin operativo ni autoridad creada.
 
-Sólo lecturas DEV04:51–04:53UTC: fullbaseline16/CLOSED40/DRAFT4-PDF/83 intacto,
-34digestsOFF, trabajo6 pausado; Edge62/58 canónicas. No dispositivo, ON ni
-mutaciones remotas durante el delta. Recibos en warm-trust-release, no renovar horas.
-P3 condicionado a330 conserva preflight/copia locales, **cero caso/gasto/aporte/
-video y ninguna ventana ON iniciada**; no transferirlo a otro candidato. Samsung
-quedó en selector de publicación/Rescatista sin nuevo borrador. Conservar caso
-TEST CLOSED40, dos clips aprobados, gasto DRAFT4/PDF privado y dinero sólo TEST.
+Sólo lecturas DEV06:04UTC:83migraciones,16assets (14terminales+2aprobados retenidos),
+CLOSED40 público/DRAFT4-PDF privados, finanzas/seisjobs/catálogo8-revocado íntegros;
+34digests exactos, video/Tienda/cleanupOFF, job6pausado/cola0; Edge62/58 canónicas.
+Conservar horas reales; repetir lecturas caducadas antes de operar, nunca renovarlas.
+P3 condicionado a330 sigue sin caso/gasto/aporte/ON y no se traslada a331.
+Modo/sesión del teléfono no se han vuelto a leer ni modificar en este delta.
 
-Pendientes de alcance global: comparación UX del candidato instalado, cámara/
-audio físico, historias/Impacto reales, otra cuenta sin Tienda e iOS físico.
-No son bloqueos para implementación local ni aceptación inferida.
+Dueño root. Siguiente: permiso propio de una distribución331 → preflight fresco,
+pin revisado/tag exacto → una reserva/POST, conciliando incertidumbre sin repetir.
+Después verificar artefacto/Play/instalación y demo OFF por separado. Alcance
+global pendiente: comparación UX instalada, cámara/audio físico, historias/Impacto
+reales/otra cuenta y iOS físico. No marcar paridad integral ni aceptación por CI.
 
 ## Historial de checkpoints (supersedido por el corte vigente superior)
 

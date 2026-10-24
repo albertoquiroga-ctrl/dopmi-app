@@ -1,4 +1,4 @@
-# Cola vigente — delta b9f6d5f warm-trust, 23/10/2026
+# Cola vigente — delta b9f6d5f warm-trust, 24/10/2026
 
 Decisión y límites en product-decisions; checkpoint en mock-sync-current. Esta
 cola supersede prioridades históricas inferiores, conserva resultados válidos
@@ -14,6 +14,10 @@ y no renueva permisos consumidos. Una cola Flutter, root integrador.
 P3 financiero en330 y cámara coordinada se conservan pendientes mientras se
 corrige fidelidad; no requieren más preparación repetida ni bloquean W1–W3.
 Nuevas decisiones sólo si el contraste descubre ambigüedad material.
+
+W4: candidatoada0c4f6/CI40068127871 cuatroSUCCESS/1423Flutter y compilaciones
+Androiddebug/iOSsim. Paquete331 propuesto con permiso humano propio pendiente;
+instalada330 y aceptación UX no cambian. Checkpoint conserva siguiente acción.
 
 ## Historial de cola (no ejecutar por antigüedad)
 
