@@ -10,22 +10,26 @@ instrucción posterior supersede la espera de permiso331 indicada abajo; no
 supersede TEST, privacidad, identidad legítima ni restricciones de credenciales.
 Inicio registrado05:08:18UTC; límite original13:08:18UTC del24oct, sin reiniciarlo.
 
-Ada0c4f6/CI40068127871 cuatroSUCCESS/1423Flutter es base verificada, no entrega
-final. Auditoría independiente de20grupos encontró cuatro deltas visuales
+**Candidato actual f348383fdb539bcf16d3234c630a7824984ee766**, CI40072205329 en
+ejecución; incluye residuales y snapshot histórico. Ada0c4f6/CI40068127871
+cuatroSUCCESS/1423Flutter es base anterior, no entrega final.
+Auditoría independiente de20grupos encontró cuatro deltas visuales
 acotados: Perfil público, chrome rescatista, cabecera notificaciones y consumo
 del canvas donante. Se agrupan con método histórico real de tarjeta antes de
-la distribución final;331 todavía sin tag/reserva/POST. Backend local981PASS/
-8SKIP y delta22PASS; móvil residual55PASS. Cambios nuevos aún sin CI integrada,
-despliegue ni teléfono. Dueños root/una colaFlutter, worker backend cedió fuentes;
-revisión independiente de código/seguridad en curso. Detalle en matriz vigente.
+la distribución final;331 todavía sin tag/reserva/POST. Backend981PASS/8SKIP y
+delta22PASS; móvil55PASS+145PASS, capturas13y12estados y correctivo12PASS (no sumar
+suites). Formato420/0, analyze focal corregido sin issues. Producto/código/
+seguridad cerrados, también operación DEV c9daa01d…3057d7f/b7710d3f…3c16ad.
+Todavía sin CI final completa, despliegue ni teléfono nuevos. Dueño root/una
+colaFlutter. Detalle y retro en matriz/progress.
 
 Instalada/publicada sigue2.3.3(330)/7f6d7e90/Play interno170. Última comprobación
-ADB330/Vending; sesión/modo no se han alterado en este delta. DEV06:26UTC sólo
+ADB330/Vending; sesión/modo no se han alterado en este delta. DEV06:52UTC sólo
 lecturas; no ON/migración/Edge/backfill/caso/gasto/aporte nuevo. Preservar caso
 TESTCLOSED40/dosclips aprobados y DRAFT4/PDF privados, finanzas/TiendaOFF.
 
-Siguiente: terminar batch residual/capturas y revisiones → candidato integrado/
-CI exacta → operación DEV revisada (migración histórica antes de Edge) → una
+Siguiente: CI exacta final → operación DEV revisada (migración histórica antes
+de Edge, once postchecks) → una
 distribución interna y QA real disponible con cierreOFF. Cámara/audio humanos,
 actor donante legítimo, iOS físico y aceptación UX no se inventan por autonomía.
 
