@@ -114,15 +114,15 @@ void main() {
         // must not inherit white labels, placeholders or close icons at night.
         expect(
           value.toJson()['appearance']['colors'],
-          containsPair('secondaryText', '#FF554E48'),
+          containsPair('secondaryText', '#FF7A655C'),
         );
         expect(
           value.toJson()['appearance']['colors'],
-          containsPair('placeholderText', '#FF554E48'),
+          containsPair('placeholderText', '#FF7A655C'),
         );
         expect(
           value.toJson()['appearance']['colors'],
-          containsPair('icon', '#FF15110D'),
+          containsPair('icon', '#FF46281D'),
         );
         expect(
           value.toJson()['appearance']['colors'],

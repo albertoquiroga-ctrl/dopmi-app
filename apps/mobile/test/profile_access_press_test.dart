@@ -23,8 +23,8 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         const items = [
           ('Métodos de pago', Icons.credit_card, '/settings/payment-methods'),
-          ('Suscripción y pagos', Icons.receipt_long_outlined, '/guardian'),
-          ('Mi historial', Icons.access_time, '/payments'),
+          ('Suscripción Guardián', Icons.receipt_long_outlined, '/guardian'),
+          ('Mi historial de pagos', Icons.access_time, '/payments'),
         ];
         final router = GoRouter(
           routes: [
@@ -170,7 +170,7 @@ void main() {
     },
   );
   testWidgets(
-    'profile feature preserves dark surface while pressed and Source subtitle alpha',
+    'profile feature preserves dark surface while pressed and b9 subtitle alpha',
     (tester) async {
       var calls = 0;
       final key = GlobalKey();
@@ -195,7 +195,7 @@ void main() {
             .widget<Text>(find.text('Apoyo mensual con reportes de impacto'))
             .style!
             .color,
-        const Color.from(alpha: .72, red: 1, green: 1, blue: 1),
+        const Color.from(alpha: .92, red: 1, green: 1, blue: 1),
       );
       final rect = tester.getRect(find.byType(DonorFeature));
       Future<List<int>?> sample() => tester.runAsync(() async {
@@ -213,10 +213,10 @@ void main() {
         image.dispose();
         return color;
       });
-      expect(await sample(), [21, 17, 13, 255]);
+      expect(await sample(), [70, 40, 29, 255]);
       final gesture = await tester.startGesture(rect.center);
       await tester.pump(const Duration(milliseconds: 200));
-      expect(await sample(), [21, 17, 13, 255]);
+      expect(await sample(), [70, 40, 29, 255]);
       expect(calls, 0);
       await gesture.up();
       await tester.pumpAndSettle();

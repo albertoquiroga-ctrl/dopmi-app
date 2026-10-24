@@ -1,3 +1,42 @@
+## 23/10/2026 — Correcciones agrupadas de CI y fixtures actuales de historial
+
+CI40063764310 del candidato0bc201bb terminó con web/PostgreSQL, integración de
+identidad/adopción e iOSsim SUCCESS; Flutter1413PASS/10FAIL. Siete fallos eran
+expectativas de paleta anterior en seis suites; tres intentaban tocar Cancelar
+fuera del viewport. Se corrigieron expectativas, centrado/hitTestable del gesto
+sin relajar ruta/cero escrituras, y subtítulo real de Perfil.72→.92 conforme CSSb9.
+Recheck de las siete suites:64PASS. Código independiente cerró ese delta.
+
+La captura general ampliada encontró preparaciones obsoletas: /notifications y
+/payments ya usan repositorios de actividad que el capturador no inyectaba. El
+PNG/JSON de notificaciones probó ProviderException por Supabase.instance sin
+inicializar, no fallo visual del producto. Se adaptaron sólo fixtures a las APIs
+actuales, sin inicializar Supabase/red ni simular apertura de destinos; tres
+notificaciones y pagos positivos/vacíos se comprobaron en captura focal1PASS/6s.
+El orden de fixtures se alineó después con fechas descendentes del RPC; la
+recaptura exacta y CI final se registran por separado. Format416/0 correcto.
+
+La captura TOTAL no pasó: además alcanzó un override duplicado del fixture
+contribution-review. Esa ampliación al capturador histórico fue del integrador;
+se conserva el fallo y se vuelve al conjunto finito vigente y gates existentes,
+sin presentar el total como verificado ni alterar ese flujo real/fixtures remotos.
+No confundir screenshots anteriores de error con contenido positivo aceptado.
+
+Retro independiente warm_process_review confirmó agrupación incompleta del
+impacto del tema:86PASS anteriores eran válidos pero no cubrían estas siete
+suites. Dos mejoras del mismo método: root+código localizar expectativas de
+consumidores al cambiar tokens globales (éxito: no nuevos fallos por literales
+heredados conocidos); implementador comprobar hitTestable después de scroll de
+footer lazy (éxito: nueve salidas y cero escrituras). Sin nuevos gates/harness,
+sin atribuir ahorro no medido. Fixture faltante es causa comprobada adicional;
+no se atribuye a un error de la app ni del servidor.
+
+Lecturas preparatorias DEV04:51–04:53UTC: baseline completo16/CLOSED40/DRAFT4-PDF/
+finanzas/esquema83 preservado, cola0/job6pausado,34digests exactosOFF, Edge62/58 con
+siete archivos canónicos. Sólo lectura; las horas no se renuevan y deben ser
+frescas antes de operar. Ningún permiso331, build, ON, pago o publicación nuevos.
+Root fija el candidato correctivo y su CI; distribución/instalación/UX pendientes.
+
 ## 23/10/2026 — Delta warm-trust implementado; candidato integrado en preparación
 
 Referencia nueva autorizada b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef. Sólo dopmi-app

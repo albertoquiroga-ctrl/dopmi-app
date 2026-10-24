@@ -5,7 +5,7 @@ import '../test/guardian_registration_screen_test.dart'
     show RegistrationGuardian, registration;
 
 import 'package:dopmi_mobile/features/adoption/community_ui.dart'
-    show adoptionPhotoSource;
+    show adoptionPhotoSource, LiveSection;
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
 import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
@@ -15,12 +15,15 @@ import 'bccd_cases_fixtures.dart';
 import 'bccd_messages_fixtures.dart';
 
 import 'package:dopmi_mobile/features/communication/notification_tile.dart';
+import 'package:dopmi_mobile/features/communication/notification_frame.dart';
+import 'package:dopmi_mobile/features/communication/notification_activity_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 
 import 'dart:async';
 import 'dart:convert';
 
 import '../test/notifications_test.dart' show NotificationCommunity;
+import '../test/payment_history_screen_test.dart' as history_fixture;
 
 import 'package:dopmi_mobile/features/communication/match_thread_row.dart';
 import 'package:dopmi_mobile/features/rescue/support_home.dart';
@@ -76,6 +79,7 @@ import '../test/expense_field_test.dart'
 import '../test/payments_test.dart' show FakePayments;
 
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_activity_repository.dart';
 
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/owned_case_history.dart';
@@ -752,6 +756,21 @@ class NotificationSourceCaptureCommunity extends NotificationCommunity {
         },
     ], 3);
   }
+}
+
+/// Adapt existing offline notification fixtures to the current /notifications
+/// repository. Capture scenarios do not exercise opening notification targets.
+class CaptureNotificationActivity extends NotificationActivityRepository {
+  CaptureNotificationActivity(this.source) : super(FakeRescue().client);
+  final CommunityRepository source;
+
+  @override
+  Future<DataPage<Json>> page(int page) => source.notifications(page);
+
+  @override
+  Future<Json> open(String id) => throw UnsupportedError(
+    'Notification targets are outside this visual capture fixture.',
+  );
 }
 
 class NotificationCountCaptureCommunity extends FakeCommunity {
@@ -2043,6 +2062,10 @@ void main() {
             emptyAccountPhotoRepository(repo),
           ),
           communityRepositoryProvider.overrideWithValue(community),
+          if (spec.$2 == '/notifications')
+            notificationActivityRepositoryProvider.overrideWithValue(
+              CaptureNotificationActivity(community),
+            ),
           if (spec.$1.startsWith('public-profile-cases'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('private-file'))
@@ -2124,6 +2147,17 @@ void main() {
           if (spec.$1.startsWith('payment-history'))
             paymentRepositoryProvider.overrideWithValue(
               HistoryCapturePayments(empty: spec.$1.endsWith('-empty')),
+            ),
+          if (spec.$1.startsWith('payment-history'))
+            paymentActivityRepositoryProvider.overrideWithValue(
+              history_fixture.RouteActivity(
+                spec.$1.endsWith('-empty')
+                    ? []
+                    : [
+                        history_fixture.cycle(),
+                        {...history_fixture.donation(), 'title': 'Comida'},
+                      ],
+              ),
             ),
           if (spec.$1.startsWith('connect-account'))
             paymentRepositoryProvider.overrideWithValue(
@@ -4610,7 +4644,7 @@ void main() {
               findsOneWidget,
             );
           } else {
-            final title = find.text('Choco - Comida');
+            final title = find.text('Comida - Choco');
             expect(title, findsOneWidget);
             if (large) {
               await tester.ensureVisible(title);
@@ -4666,6 +4700,50 @@ void main() {
         TestGesture? savedHold;
         if (spec.$1 == 'notifications-source') {
           final cards = find.byType(NotificationTile);
+          final loadSection = find.byWidgetPredicate(
+            (widget) => widget is LiveSection<DataPage<Json>>,
+          );
+          final dynamic loadState = loadSection.evaluate().length == 1
+              ? tester.state(loadSection)
+              : null;
+          final inkWells = find.descendant(
+            of: cards,
+            matching: find.byType(InkWell),
+          );
+          await tester.runAsync(() async {
+            await saveCapture(
+              key,
+              '${out.path}/notifications-source-diagnostic.png',
+            );
+            await File('${out.path}/notifications-source-diagnostic.json')
+                .writeAsString(
+                  jsonEncode({
+                    'route': container.read(routerProvider).state.uri.path,
+                    'frames': find.byType(NotificationFrame).evaluate().length,
+                    'cards': cards.evaluate().length,
+                    'inkWells': inkWells.evaluate().length,
+                    'repositoryType': community.runtimeType.toString(),
+                    'loadError': loadState?.error?.toString(),
+                    'loadingIndicators': find
+                        .byType(CircularProgressIndicator)
+                        .evaluate()
+                        .length,
+                  }),
+                );
+          });
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/notifications',
+          );
+          expect(find.byType(NotificationFrame), findsOneWidget);
+          expect(
+            cards,
+            findsNWidgets(3),
+            reason:
+                'The three notification fixtures must be mounted before '
+                'measuring their geometry.',
+          );
+          expect(inkWells, findsNWidgets(3));
           final geometry = [
             for (var i = 0; i < 3; i++)
               tester.getRect(

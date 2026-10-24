@@ -54,7 +54,7 @@ void main() {
         return color;
       });
       final before = await sample();
-      expect(before, [21, 17, 13, 255]);
+      expect(before, [70, 40, 29, 255]);
       final gesture = await tester.startGesture(rect.center);
       await tester.pump(const Duration(milliseconds: 200));
       expect(await sample(), before);

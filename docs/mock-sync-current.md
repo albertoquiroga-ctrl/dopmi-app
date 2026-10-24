@@ -3,7 +3,7 @@
 Producto: **dopmi-app**. Mock sólo referencia, congelada en
 `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust elegida por titular.
 Cola única Flutter/root en checkout candidate-git-20261014,
-`codex/finish-release-20261015`, sobre HEAD documental `5e1d8b9`.
+`codex/finish-release-20261015`, sobre base documental `5e1d8b9`; implementación0bc201bb más corrección agrupada.
 Distribuido/instalado sigue **7f6d7e90 / Play interno 2.3.3(330), release170**.
 Este delta local todavía no está publicado, instalado ni aceptado por UX.
 
@@ -17,15 +17,18 @@ Evidencia local en `.tools/integral20d21-20261018/b9f6d5f-delta/`:
 format416/0; analyze completo88.8s y delta final75.7s sin incidencias;
 final-visual-and-impact86PASS; controles/expiry y detalle safearea verificados en
 suites dirigidas; capturas normal/115%/320px200%. Código/producto independientes
-cerraron hallazgos materiales del delta. CI integral del SHA congelado pendiente.
+cerraron hallazgos materiales del delta. CI0bc: tresSUCCESS, Flutter1413PASS/10FAIL
+por expectativas/gestos de prueba; corrección agrupada64PASS. Fixtures actuales
+de notificaciones e historial corregidos/captura1PASS. Nuevo SHA/CI por fijar.
 No sumar suites superpuestas ni confundir fixtures con teléfono.
 
-Root siguiente: fijar commit único → push/CI4jobs exactos → cerrar paquete331
+Root siguiente: fijar commit correctivo → push/CI4jobs exactos → cerrar paquete331
 preparado con revisión independiente y pedir permiso propio de distribución.
 Ninguna reserva/build/POST331 ni autorización operativa nueva todavía.
 
-No se operó DEV ni dispositivo durante este delta. Última lectura remota
-24/oct03:20UTC: video/Tienda/cleanup OFF, trabajo6 pausado,16assets históricos.
+Sólo lecturas DEV04:51–04:53UTC: fullbaseline16/CLOSED40/DRAFT4-PDF/83 intacto,
+34digestsOFF, trabajo6 pausado; Edge62/58 canónicas. No dispositivo, ON ni
+mutaciones remotas durante el delta. Recibos en warm-trust-release, no renovar horas.
 P3 condicionado a330 conserva preflight/copia locales, **cero caso/gasto/aporte/
 video y ninguna ventana ON iniciada**; no transferirlo a otro candidato. Samsung
 quedó en selector de publicación/Rescatista sin nuevo borrador. Conservar caso

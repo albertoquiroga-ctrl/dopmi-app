@@ -133,6 +133,13 @@ void main() {
                 )
                 .first,
           );
+          // The lazy list can build the footer while its button's centre is
+          // still below the viewport. Settle layout, then bring the whole
+          // control into view before exercising its real pointer handler.
+          await tester.pumpAndSettle();
+          await Scrollable.ensureVisible(tester.element(cancel), alignment: .5);
+          await tester.pumpAndSettle();
+          expect(cancel.hitTestable(), findsOneWidget);
           await tester.tap(cancel);
         } else if (action == 'Volver') {
           await tester.tap(find.byTooltip('Volver'));

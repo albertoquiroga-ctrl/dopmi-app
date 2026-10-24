@@ -70,11 +70,11 @@ void main() {
           image.dispose();
           return color;
         });
-        expect(await sample(), [21, 17, 13, 255]);
+        expect(await sample(), [70, 40, 29, 255]);
         final gesture = await tester.startGesture(rect.center);
         await tester.pump(const Duration(milliseconds: 200));
         expect(tester.getRect(button), rect);
-        expect(await sample(), [21, 17, 13, 255]);
+        expect(await sample(), [70, 40, 29, 255]);
         expect(
           container.read(routerProvider).state.uri.path,
           route.$1.split('?').first,

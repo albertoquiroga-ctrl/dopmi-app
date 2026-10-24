@@ -658,11 +658,11 @@ void main() {
         );
         expect(
           field.style!.color,
-          rescuer ? const Color(0xff151423) : const Color(0xff15110d),
+          rescuer ? const Color(0xff151423) : const Color(0xff46281d),
         );
         expect(
           field.decoration!.hintStyle!.color,
-          rescuer ? const Color(0xff4f4e5c) : const Color(0xff554e48),
+          rescuer ? const Color(0xff4f4e5c) : const Color(0xff7a655c),
         );
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);
         addTearDown(tester.view.resetViewInsets);

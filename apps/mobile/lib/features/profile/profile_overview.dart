@@ -1109,7 +1109,7 @@ class _DonorFeatureState extends State<DonorFeature> {
                               widget.rescuer || light || widget.guardianActive
                               ? muted
                               : const Color.from(
-                                  alpha: .72,
+                                  alpha: .92,
                                   red: 1,
                                   green: 1,
                                   blue: 1,
