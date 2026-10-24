@@ -1,3 +1,43 @@
+## 24/10/2026 — Reanudación332: donante legítimo y paquete P3 preparado
+
+Titular reanudó15:11UTC con teléfono/cuenta donante y autorizó las pruebas necesarias;
+get_goal real vuelve active. Límite original13:08:18 ya transcurrido, no se reinicia.
+Samsung332/Vending/f7 y donante elegido verificados15:12 por correo visible hasheado,
+sin credenciales. Perfil→historial consultado/vacío y Tienda ausente conOFF: PNG/XML
+privados y revisión producto concordantes conb9; no pago ni previewON atribuidos.
+Pidió coordinación normal de sesiones; titular confirmó que puede cambiar dueño→
+donante. Adoptar restaurado y handoff de credenciales15:18 activo, esperando aviso
+«Listo, rescatista»; no observaciones/input de teléfono mientras escribe accesos.
+
+Paquete privadoP3 rebased332/f7: scopefac4c9a1…1d054 y máximos/actores/100-20/dos
+ventanas/retención idénticos. Guard globaldraft0 detectó1facturaTEST histórica0,
+no relacionada con la sub preservada: fixture guardian-method-stripe-acceptance;
+padre cancelado/precio0 y SQL2705B/SHA71fcbc…26051 devolvió nueve vínculos0 a15:27:44.
+Sin mutar factura/sub/clock/flags financieros. Baseline fijaebbabbeb…426d4 y guard
+revisado por código/seguridad exigen exactamente esa1 global/open0,17+11keys
+originales/facts/cuenta/filtros y no-linksraw frescos; deriva bloquea. Manifest
+bc734641…f2798/renderercb2421fd…2d9f1,10purePASS2.524s (nuevevigentes+tabla22rechazos).
+Permisov20b041602…fe6d46/autoridaddelta1c015f4f…e5b2ac ligados a objetivo/reanudación
+reales, revisión independiente cerrada. No nuevaaprobación rutinaria ni build/CI.
+
+Cierre SQL real15:37:35 y34digests15:39:24: baseline entero idéntico al inicialsalvohora,
+84historia/16assets/CLOSED40/DRAFT4-PDF/finanzas/seisjobs/catálogo conservados;
+video/Tienda/enlaces/cleanupOFF/job6pausado/cola0. P3 sigue0casos/gastos/videos/aportes.
+Recibos exactos en p3-preparation/resume332; operación todavía no iniciada. Falta
+aviso del dueño y readbacksfresh/pins; mismoaporte20TEST deberá verificar además
+snapshotremoto del métodohistórico y pantalla propia, sin pagoextra/backfill.
+
+Retro independiente de proceso (no implementó): comprobado el guardglobal0 causó
+falso positivo ante fixtureinertahistórico; trim alteró bytes de SQL inicial y primera
+normalización erró automatic_finalizes_at. Se preservaron esosraws y los siguientes
+usan bytesJSONexactos/automatically_finalizes_at presente, sin inventarNULL ni freshness.
+Hipótesis: la captura histórica draft0 pudo usar otroalcance; filtros no demostrados.
+Mejoras(2): integrador/revisores conservar baseline fija revisada; verificar sólo en
+próximopreflight autorizado que acepta ese1intacto y bloquea deriva. Integrador
+transportarSQLsintransformar y exigirpresenciakeysAPI; hash/bytes del wrapperreal y
+próximacaptura necesaria compruebanefecto. Decodificadores y permiso realv2 PASS;
+no se atribuye ahorro, aceptación ni causa de30horas previas a estoshechos.
+
 ## 24/10/2026 — Tercera auditoría: impasse de validación integral
 
 Turno anterior: no avance del producto ni de su aceptación; se descartó la ruta

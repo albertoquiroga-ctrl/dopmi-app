@@ -7,7 +7,7 @@ La revisión física final encontró diferencias concretas, reunidas en UN lote:
 |---|---|---|
 | W4C Correctivo331 | Cerrado; root única colaFlutter | Siete grupos corregidos, capturas normal/115/320200 y código/seguridad/producto cerrados. QA física332/115% confirma cierre sin nuevos P1/P2. Sin backend/SDK ni funciones nuevas. |
 | W4I Candidato332 | Cerrado técnicamente; root | f7b77a0b/CI40082326137 cuatroSUCCESS; una reserva/POST CM6adc801cc2c4416cf7f39490. Artefacto2.3.3(332), Play interno y Samsung/Vending comprobados por separado. |
-| W4Q Cierre integral | Abierto por dependencias humanas; root | Delta332 verificado y demo/informe preparados; QA331 válida reutilizada. Falta sesión legítima del donante P3, cámara/audio humano, iOS físico y aceptación UX. No otra build/fixture por rutina. |
+| W4Q Cierre integral | Abierto por dependencias humanas; root | Delta332 verificado y demo/informe preparados; QA331 válida reutilizada. Donante legítimo verificado332; falta aviso del cambio humano al dueño para P3, luego regreso al donante, cámara/audio humano, iOS físico y UX. Paquete332 revisado/10purePASS, sin P3 creado ni ON. No otra build/fixture por rutina. |
 
 331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
@@ -16,7 +16,7 @@ W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
 Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
 delta posterior a f601: expectativa de placeholder actualizada y formateada.
 Distribución332 terminada, publicada e instalada; QA del delta cerrada.
-Cierre SQL10:20:31/34digests10:21:06 íntegros/OFF/job6pausado/Adoptar restaurado.
+Cierre reanudación SQL15:37:35/34digests15:39:24 íntegros/OFF/job6pausado; handoff de credenciales activo sin lecturas del teléfono.
 Límite original13:08:18UTC24oct; no confundir instalación con aceptación UX ni
 cerrar P3 positivo pendiente de actor legítimo. Fuentes y siguiente en checkpoint.
 

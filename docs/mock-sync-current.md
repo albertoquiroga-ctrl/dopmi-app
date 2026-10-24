@@ -1,49 +1,48 @@
-# Checkpoint vigente — 24/10/2026, entrega interna 332
+# Checkpoint vigente — 24/10/2026, 332 y reanudación P3
 
-Producto **dopmi-app**, rama `codex/finish-release-20261015`, checkout vigente
+Producto **dopmi-app**, `codex/finish-release-20261015`, checkout
 `C:/Users/betoq/Paperclip-Dopmi/development/dopa39/candidate-git-20261014`.
-Mock sólo referencia: `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust;
-remoto reconsultado sin cambios. Conservar los tres componentes Stripe.
-Alcance integral sin completar; bloqueo externo auditado en tres turnos consecutivos.
-Límite ORIGINAL **13:08:18 UTC del 24/oct**, sin reiniciar.
+Mock sólo referencia **b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef**, warm-trust.
+Conservar los tres SDK Stripe. Root/única cola Flutter; cambios ajenos intactos.
 
-**2.3.3 (332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17**, publicada en
-Play interno e instalada desde Play en Samsung SM-S938B (`com.android.vending`).
-CI40082326137: cuatro SUCCESS, 1426 pruebas Flutter, análisis y capturas obligatorias,
-Android debug e iOS simulador. Codemagic6adc801cc2c4416cf7f39490: un POST,
-13 acciones SUCCESS. Artefacto y build-info coinciden; metadata SHA4587ecf1…d40b1.
-Paquete e2bc84f8…eb0fe/pin36286aca…467c6. CI redundante del tag cancelada y comprobada.
+**2.3.3 (332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17**, publicada
+Play interno e instalada desde Play en Samsung SM-S938B. CI40082326137 cuatro
+SUCCESS/1426 Flutter; CM6adc801cc2c4416cf7f39490 trece SUCCESS/un POST/artefacto
+concordante. Correctivo físico al115%:6P2+1P3 cerrados por revisión independiente.
+Reutilizar QA331, Tienda331, correo327 y video329/330 válidos; no repetir fixtures.
 
-QA focal física332 al115% y revisión independiente de10 PNG/XML cierran los seis P2
-y el P3: badge/logo, gradiente, filas receptoras, margen de campana, contraste Android,
-Ayuda y Listo. Sin nuevos P1/P2 demostrados. Sesión TEST legítima conservada y
-verificada por hash del correo visible, sin leer credenciales; Adoptar restaurado.
-Reutilizar QA331 de14 recorridos y Tienda b9 (catálogo8 TEST/filtros/orden/vacío/Gatos/
-posición; acceso revocado), correo real327 y QA de video válida; no repetir fixtures.
+Titular reanudó15:11UTC; objetivo activo. Su límite original13:08:18UTC ya pasó,
+sin inferir otras ocho horas. Donante elegido real verificado por hash UI15:12,
+sin credenciales; historial cargado/vacío y ausencia de TiendaOFF comprobados
+físicamente y revisados por producto. No prueba movimientos ni previewON ajeno.
+Confirmó poder cambiar dueño→donante; **handoff de credenciales activo desde15:18**,
+sin lecturas/capturas del teléfono hasta «Listo, rescatista». No cerrar/entrar por él.
 
-Cierre real: SQL10:20:31 y34 digests10:21:06 UTC íntegros. DEV84/lectores79/97/97/90,
-16 assets (dos clips aprobados retenidos), CLOSED40 público TEST, DRAFT4/PDF privados,
-finanzas/seis jobs/catálogo conservados. Video/Tienda/enlaces/limpieza OFF; job6 pausado.
-Evidencia privada: `.tools/integral20d21-20261018/final-warm-corrective-release/`.
-Tablero/informe solicitado en `parity-current-review.md`; ledger/retro en `progress.md`.
+P3 ligado a332: manifest **bc734641…f2798**, scopefac4c9a1…1d054,
+renderercb2421fd…2d9f1, permiso v20b041602…fe6d46 bajo objetivo/reanudación reales.
+Código/seguridad revisaron fuentes, autoridad y10pruebas purasPASS, sin otraCI/build.
+Se conserva un caso/thanks20s/gasto100/aporte20TEST, dos ventanas20min/stop15,
+retención y cierreOFF. **Aún no hay caso/gasto/video/aporte P3 ni reservas ON.**
 
-**Alcance integral todavía abierto:** falta sesión legítima del donante elegido para
-P3 positivo de historias/Impacto, coordinación humana de cámara/audio, iOS físico y
-aceptación UX. No se creó caso/gasto/aporte ni ventana ON nuevos. P3 preparado
-bb65a68b…5873 no se ejecuta automáticamente sobre332: ligar candidato y actores reales
-antes de operar. Pregunta de coordinación pendiente, sin cerrar la sesión del dueño.
-Dueño root, única cola Flutter. Siguiente acción dependiente: coordinar ese acceso y
-la intervención humana; el trabajo técnico independiente de este correctivo está cerrado.
-Revalidado10:33UTC: Samsung sigue en la cuenta propietaria (hash UI, sin credenciales),
-sin sesión del donante ni iPhone conectado. Auditoría de rutas descartó un acceso
-alternativo: el deep link del CLOSED40 abre detalle, no historias; no añadir ruta QA.
-Tercera revalidación10:42UTC: mismo dueño legítimo en332, Adoptar restaurado,
-sin sesión del donante ni iPhone. Revisor independiente de cola/matriz confirma
-W4C/W4I cerrados y ninguna otra tarea técnica lista. Snapshot histórico remoto
-se valida con el aporte P3 pendiente; contraste Tienda sin acceso necesita otra
-sesión y salida comercial conserva el bloqueo de destino/permisos. No otro ON,
-build, fixture o suite. Umbral de bloqueo satisfecho; siguiente acción requiere
-acceso legítimo seleccionado y participación humana, sin reducir el alcance.
+Preflight global encontró una factura0 TEST histórica de ensayo de método; padre
+cancelado/precio0 y nueve vínculosDB0 comprobados. Se conserva intacta. Guard fijo
+revisado exige exactamente esa única factura inerte global, open0, keys originales,
+cuenta/filtros/facts exactos, no-linksraw y freshness; cualquier deriva bloquea.
+Nunca filtrar a una sub para fingircount0, borrar/void factura ni cambiar finanzas.
+SQL iniciales contrim quedan sólo históricos; nuevos wrappers conservan bytes exactos.
+
+Cierre real15:37:35UTC:84historia/16assets/CLOSED40/dosclips/DRAFT4-PDF/finanzas/
+seisjobs/catálogo intactos y sin delta salvohora frente15:16. Video/Tienda/enlaces
+OFF, job6pausado/cola0.34digests15:39:24 exactamente iguales, video/cleanupOFF.
+Evidencia única `.tools/integral20d21-20261018/public-video-qa-design/p3-preparation/`:
+`operation/` paquete revisado, `resume332/` autoridad/lecturas/capturas reales.
+
+Siguiente root: aviso humano → retirar handoff → verificar dueño UI/Rescatista,
+admin40a por users.list+auditoría y ConnectTEST. Crear sólo porUI; antesON/checkout
+readbacks frescos≤120s y pins reales. Después gasto, cambio humano a donante y mismo
+intento20TEST conciliado. Leer snapshot histórico del MISMO pago, sin otro cargo.
+P3, cámara/audio humanos, iOS físico y UX siguen pendientes. Alcance integral abierto.
+Tablero/informe en parity-current-review; evidencia y retro en progress.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 
