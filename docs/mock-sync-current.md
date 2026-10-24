@@ -33,6 +33,9 @@ bb65a68b…5873 no se ejecuta automáticamente sobre332: ligar candidato y actor
 antes de operar. Pregunta de coordinación pendiente, sin cerrar la sesión del dueño.
 Dueño root, única cola Flutter. Siguiente acción dependiente: coordinar ese acceso y
 la intervención humana; el trabajo técnico independiente de este correctivo está cerrado.
+Revalidado10:33UTC: Samsung sigue en la cuenta propietaria (hash UI, sin credenciales),
+sin sesión del donante ni iPhone conectado. Auditoría de rutas descartó un acceso
+alternativo: el deep link del CLOSED40 abre detalle, no historias; no añadir ruta QA.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 
