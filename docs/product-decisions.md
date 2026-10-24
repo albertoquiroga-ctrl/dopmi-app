@@ -1,3 +1,9 @@
+## 23/10/2026 — Evaluación humana de ficha330 y consumo de P2
+
+Titular respondió «Se entiende la prueba y el cierre» en call_54fb51545957496c866bf8e990582426/item0, tras captura real330. Aceptación puntual de claridad de esa ficha, sin nueva decisión de badge ni aceptación integral/videos/audio/iOS. No reabrir acuerdo resuelto.
+
+La lecturaP2 call_420db…item0 quedó consumida por una ventana real00:44:09→cierre comprobado00:52:12UTC. Conservó CLOSED40/dosclips aprobados/DRAFT4PDF/finanzas; todoOFF/job6pausado/34digests restaurados. No renueva permisoON ni amplía a historias/Impacto, cámara o dinero. Evidencia y siguiente acción en checkpoint.
+
 ## 23/10/2026 — Lectura pública P2 retenida autorizada tras330
 
 Titular respondió «Autorizo lectura P2 y cierre OFF» en call_420db186b6ad4c108a6b2053739e8690/item0 al paquete5d86374c…2b998. Una ventanaDEV máxima20min, stopnuevo15, sólo después de330desdePlay/sesión legítima/preflight fresco: reproducir despedida sintética existente sin nuevas cargas, revisión, publicación, cancelación, borrado ni dinero. Acepta expresamente cleanupOFF/job6pausado y conservar ambosclips en lugar de cancelación habitualQA; verificar infraestructura/reintentos previamente probados. Sólo videoON globalDEV temporal (nuevoscasos exigiríanagradecimiento), cierreOFF/Adoptar incluso fallo/límite; Tienda/enlacesOFF. CLOSED40/foto/DRAFT4-PDF/finanzas intactos; OFF no elimina metadata/copias/leases120s. No cámara/otraidentidad/historiasImpacto/red/credenciales/deploy/build. Permiso propio no consumido mientras no exista reserva/ON; estado operativo y evidencia en checkpoint, no inferir aceptación de experiencia ni audio físico.
@@ -299,3 +305,8 @@ habilita este encargo separado pese a la exclusión histórica de Meta del MVP.
 No acredita identidad legal, propiedad de URLs no devueltas por el proveedor,
 aprobación de perfiles ni aceptación humana del nuevo flujo. Estado y gates:
 [meta-social-verification.md](meta-social-verification.md).
+## 23/10/2026 — Preparación P3 financiera TEST y disponibilidad de cámara
+
+El titular eligió «Preparar ese escenario TEST de $100/$20» (call_bd473bfa0c7b45e0a6ead6277ffda667/item0): preparar un caso nuevo con gasto ficticio de $100 MXN, comprobante sintético sin validez y aportación individual de $20 MXN desde otra cuenta TEST legítima distinta del rescatista. Sólo preparación; falta fijar donante, paquete y permiso de ejecución para crear, aprobar, publicar o cobrar. Conservar intactos el caso cerrado público y su gasto/PDF privados. La cuenta Stripe comprobada es TEST; la comprobación de reloj e invoices es de lectura y no autoriza cambios.
+
+«Puedo participar con el teléfono ahora» (call_4e04498a5c9f4389b272c4a4218ab1b3/item0) confirma disponibilidad para Grabar/Detener, sin renovar permisos consumidos de cámara o servicios. Preparar una toma privada en un nuevo borrador conservado requiere su paquete y permiso propios; no incluye el escenario financiero. El titular ya aceptó la claridad de prueba/cierre en la ficha 330 (call_54fb51545957496c866bf8e990582426/item0); no reabrir esa decisión ni extenderla a aceptación integral.

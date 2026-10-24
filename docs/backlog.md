@@ -629,3 +629,6 @@ Implementado a941815, aún no entregado. Cola y evidencia únicas:
 [meta-social-verification.md](meta-social-verification.md). Configuración mínima
 Meta/secretos DEV, OAuth real, gate CI, candidato Play y teléfono pendientes.
 Conservar el pendiente SMS real de Play308; no repetir QA válida.
+## 23/10/2026 — Cámara330 y preparación P3
+
+Root: cerrar revisiones del paquete camera330-newdraft-qa y solicitar permiso concreto para máximo un nuevo borrador/foto sintética con servicios OFF y una toma privada con revisión local, carga segura o descarte y cierre OFF/pausado. Disponibilidad humana confirmada; sin autoridad operativa todavía. P3 $100/$20 elegido sólo para preparación: identificar donante distinto y completar actores, conciliación, capacidad y cierre antes de pedir ejecución. Stripe TEST de lectura: reloj ready, invoices draft/open cero en el corte; refrescar antes de cualquier capacidad nueva. Conservar CLOSED40/DRAFT4/PDF/16assets y cinco trabajos ajenos.
