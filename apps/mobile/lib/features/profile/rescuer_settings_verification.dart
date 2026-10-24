@@ -1,10 +1,12 @@
 import '../../core/css_linear_gradient.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../rescue/rescue_repository.dart';
@@ -103,7 +105,7 @@ class SettingsVerificationCard extends StatelessWidget {
         ? const Color(0xff0b7a5d)
         : correction
         ? const Color(0xffb51224)
-        : const Color(0xff7841f2);
+        : DopmiTokens.purple;
     final gradient = approved
         ? const [Color(0x1f2dc08e), Color(0x0d2dc08e)]
         : correction
@@ -188,7 +190,7 @@ class SettingsVerificationCard extends StatelessWidget {
                 child: FilledButton(
                   onPressed: onPressed,
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xff7841f2),
+                    backgroundColor: DopmiTokens.purple,
                     foregroundColor: const Color(0xfffbfbff),
                     minimumSize: const Size(48, 48),
                     padding: const EdgeInsets.symmetric(

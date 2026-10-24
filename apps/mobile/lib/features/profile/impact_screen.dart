@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/content_links.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_notification_button.dart';
@@ -83,10 +84,14 @@ class ImpactScreen extends ConsumerWidget {
     this.refreshRegistration,
     this.supportEntry = false,
     this.membershipPending = false,
+    this.historyOnly = false,
   });
   final GuardianRegistration? registration;
   final VoidCallback? refreshRegistration;
   final bool supportEntry, membershipPending;
+  // Historical fallback hides membership actions. The monthly dashboard
+  // belongs to Apoyar; Impacto is the case feed in the frozen mock.
+  final bool historyOnly;
   Future<List<Json>> loadImpact(WidgetRef ref) async {
     final items = await ref.read(communityRepositoryProvider).personalImpact();
     return Future.wait(
@@ -122,7 +127,7 @@ class ImpactScreen extends ConsumerWidget {
             automaticallyImplyLeading: false,
             centerTitle: false,
             title: SvgPicture.asset(
-              'assets/profile/logo-paw.svg',
+              'assets/profile/logo-paw-naranja.svg',
               width: 40,
               height: 40,
               semanticsLabel: 'Dopmi',
@@ -156,132 +161,146 @@ class ImpactScreen extends ConsumerWidget {
           )
         : null,
     bottomNavigationBar: CommunityNav(supportEntry ? 1 : 3),
-    body: SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (membershipPending) ...[
-              const Text(
-                'Tu solicitud Guardián sigue pendiente. Consulta el mismo intento para conocer su resultado.',
-                style: TextStyle(color: muted, fontSize: 13, height: 1.4),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await context.push('/guardian');
-                  if (context.mounted) refreshRegistration?.call();
-                },
-                child: const Text('Consultar solicitud Guardián'),
-              ),
-            ],
-            if (registration != null) ...[
-              Text(
-                registration!.summary,
-                style: const TextStyle(color: muted, fontSize: 13, height: 1.4),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await context.push('/guardian');
-                  if (context.mounted) refreshRegistration?.call();
-                },
-                child: const Text('Consultar registro Guardián'),
-              ),
-            ],
-            if (!supportEntry)
-              Padding(
-                padding: EdgeInsets.fromLTRB(12, 6, 12, 18),
-                child: Column(
-                  children: [
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        supportEntry
-                            ? 'Tu impacto Guardián'
-                            : 'Vidas que continúan gracias a ti.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          height: 1.25,
-                          letterSpacing: .07,
-                          fontWeight: FontWeight.w700,
-                          color: ink,
+    body: DonorCanvas(
+      child: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (membershipPending) ...[
+                const Text(
+                  'Tu solicitud Guardián sigue pendiente. Consulta el mismo intento para conocer su resultado.',
+                  style: TextStyle(color: muted, fontSize: 13, height: 1.4),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await context.push('/guardian');
+                    if (context.mounted) refreshRegistration?.call();
+                  },
+                  child: const Text('Consultar solicitud Guardián'),
+                ),
+              ],
+              if (registration != null) ...[
+                Text(
+                  registration!.summary,
+                  style: const TextStyle(
+                    color: muted,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await context.push('/guardian');
+                    if (context.mounted) refreshRegistration?.call();
+                  },
+                  child: const Text('Consultar registro Guardián'),
+                ),
+              ],
+              if (!supportEntry)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(12, 6, 12, 18),
+                  child: Column(
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          supportEntry
+                              ? 'Tu impacto Guardián'
+                              : 'Vidas que continúan gracias a ti.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            height: 1.25,
+                            letterSpacing: .07,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Avances públicos de los casos a los que tus aportaciones sí fueron asignadas.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 20 / 14,
-                        color: muted,
+                      SizedBox(height: 8),
+                      Text(
+                        'Avances públicos de los casos a los que tus aportaciones sí fueron asignadas.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 20 / 14,
+                          color: muted,
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+              if (supportEntry && !historyOnly) ...[
+                const SizedBox(height: 16),
+                MonthlyImpactPanel(
+                  key: ValueKey(
+                    ref.watch(identityControllerProvider).identity?.id,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Semantics(
+                  header: true,
+                  child: const Text(
+                    'Historial de tu impacto',
+                    style: TextStyle(
+                      fontSize: 20,
+                      height: 1.25,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
                     ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Casos apoyados en todos los meses',
+                  style: TextStyle(fontSize: 14, height: 20 / 14, color: muted),
+                ),
+                const SizedBox(height: 16),
+              ],
+              LiveSection<List<Json>>(
+                load: () => loadImpact(ref),
+                errorMessage: (_) =>
+                    'No pudimos consultar tus avances. Vuelve a intentarlo.',
+                builder: (items, _) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (items.isEmpty) const ImpactEmptyCard(),
+                    for (final item in items) ...[
+                      ImpactCaseCard(item, key: ValueKey(item['case_id'])),
+                      const SizedBox(height: 16),
+                    ],
+                    if (!supportEntry &&
+                        !historyOnly &&
+                        items.isNotEmpty &&
+                        ref.watch(guardianEnabledProvider))
+                      membershipAction(context),
                   ],
                 ),
               ),
-            const SizedBox(height: 16),
-            MonthlyImpactPanel(
-              key: ValueKey(ref.watch(identityControllerProvider).identity?.id),
-            ),
-            const SizedBox(height: 24),
-            Semantics(
-              header: true,
-              child: const Text(
-                'Historial de tu impacto',
-                style: TextStyle(
-                  fontSize: 20,
-                  height: 1.25,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Casos apoyados en todos los meses',
-              style: TextStyle(fontSize: 14, height: 20 / 14, color: muted),
-            ),
-            const SizedBox(height: 16),
-            LiveSection<List<Json>>(
-              load: () => loadImpact(ref),
-              errorMessage: (_) =>
-                  'No pudimos consultar tus avances. Vuelve a intentarlo.',
-              builder: (items, _) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (items.isEmpty) const ImpactEmptyCard(),
-                  for (final item in items) ...[
-                    ImpactCaseCard(item, key: ValueKey(item['case_id'])),
-                    const SizedBox(height: 16),
-                  ],
-                ],
-              ),
-            ),
-            if (ref.watch(guardianEnabledProvider)) ...[
-              const SizedBox(height: 16),
-              ContributionButton(
-                registration != null
-                    ? 'Administrar registro Guardián'
-                    : 'Administrar suscripción',
-                secondary: true,
-                onPressed: () async {
-                  await context.push('/guardian');
-                  if (context.mounted) refreshRegistration?.call();
-                },
-              ),
-              if (!supportEntry && registration == null)
-                TextButton(
-                  onPressed: () => context.push('/impact/guardian'),
-                  child: const Text('Conoce Guardián'),
-                ),
+              if (supportEntry &&
+                  !historyOnly &&
+                  ref.watch(guardianEnabledProvider)) ...[
+                const SizedBox(height: 16),
+                membershipAction(context),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     ),
+  );
+
+  Widget membershipAction(BuildContext context) => ContributionButton(
+    registration != null
+        ? 'Administrar registro Guardián'
+        : 'Administrar suscripción',
+    secondary: true,
+    onPressed: () async {
+      await context.push('/guardian');
+      if (context.mounted) refreshRegistration?.call();
+    },
   );
 }
 
@@ -297,14 +316,7 @@ class ImpactEmptyCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xffe6e2dd)),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x2415110d),
-              blurRadius: 32,
-              offset: Offset(0, 12),
-            ),
-          ],
+          border: Border.all(color: DopmiTokens.line),
         ),
         child: Column(
           children: [
@@ -330,12 +342,11 @@ class ImpactEmptyCard extends StatelessWidget {
                 'Aquí verás las mascotas que hayas apoyado',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Fraunces',
-                  fontSize: 26,
-                  fontVariations: DopmiTokens.display26Variations,
-                  height: 1.2,
-                  letterSpacing: -.52,
-                  fontWeight: FontWeight.w600,
+                  fontFamily: DopmiTokens.bodyFont,
+                  fontSize: 28,
+                  height: 1.1,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w700,
                   color: ink,
                 ),
               ),

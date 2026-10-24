@@ -1,10 +1,13 @@
 {
   "repository": "albertoquiroga-ctrl/dopmi-functional-mockup",
   "branch": "irlanda/apoyar-detalle-perfil",
-  "observed_sha": "a3c969cd9103fd46dc5cd886999912526ce75efb",
-  "observed_at": "2026-09-30",
+  "observed_sha": "b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef",
+  "observed_at": "2026-10-23",
+  "delivery_reference_sha": "b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef",
+  "presentation": "warm-trust",
+  "previous_delivery_reference_sha": "20d21f484aa60726f0b236574d5493dcf5e05969",
   "files_snapshot_sha": "a246fa6f42ec517aae264d7fbd2358d647c4f840",
-  "policy": "Follow latest branch; observation is not visual acceptance.",
+  "policy": "Frozen authorized delivery reference; later pushes require a separate scoped inventory. Historical files_snapshot_sha and files below are not the current delivery inventory. Observation is not visual acceptance.",
   "files": {
     ".cursor/rules/dopmi-i18n-a11y.mdc": "d94d757a75a8cc272dae29942c9d15cd7d9847eef996b34e59a13954cad77254",
     ".gitignore": "9a4582306c71b001d39aa9d90e131897436ce647c2fc5d797f86d27e8bb5f1ff",

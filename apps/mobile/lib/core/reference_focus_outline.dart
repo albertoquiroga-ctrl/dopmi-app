@@ -80,7 +80,9 @@ class _ReferenceFocusOutlineState extends State<ReferenceFocusOutline> {
                   key: const ValueKey('reference-keyboard-outline'),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: const Color(0x4d7841f2),
+                      // Opaque warm-trust orange keeps the keyboard boundary
+                      // above non-text3:1 on white (translucent CSS does not).
+                      color: const Color(0xffeb6425),
                       width: 3,
                     ),
                     borderRadius:

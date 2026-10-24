@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../rescue/rescue_public_photo.dart';
 
@@ -177,29 +178,42 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
         final collageWidth = math.min(width - 28, 272.0);
         const collageHeight = 248.0;
         final heroSize = (width * .36).clamp(118.0, 148.0);
-        double headingHeight(String text, double size) {
+        double headingHeight(
+          String text,
+          double size, {
+          double height = 1.3,
+          FontWeight weight = FontWeight.w700,
+          double? letterSpacing,
+        }) {
           final painter = TextPainter(
             text: TextSpan(
               text: text,
               style: DefaultTextStyle.of(context).style.copyWith(
                 fontSize: size,
-                height: 1.3,
-                fontWeight: FontWeight.w700,
+                height: height,
+                fontWeight: weight,
+                letterSpacing: letterSpacing,
               ),
             ),
             textScaler: scaler,
             textDirection: Directionality.of(context),
           )..layout(maxWidth: width - 32);
-          final height = painter.height;
+          final measuredHeight = painter.height;
           painter.dispose();
-          return height;
+          return measuredHeight;
         }
 
         final surfaceTop = railHeight + 22;
         final collageTop =
             surfaceTop +
-            headingHeight('Ayudar se siente bien', 22) +
-            headingHeight('¡Gracias!', 26) +
+            headingHeight('Ayudar se siente bien', 22, letterSpacing: -.44) +
+            headingHeight(
+              '¡Gracias!',
+              28,
+              height: 1.1,
+              weight: FontWeight.w800,
+              letterSpacing: -.84,
+            ) +
             36;
         final footerLabelStyle = DefaultTextStyle.of(context).style
             .copyWith(fontSize: 14, height: 1.3, color: muted);
@@ -214,7 +228,8 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
             style: DefaultTextStyle.of(context).style.copyWith(
               fontSize: 28,
               fontWeight: FontWeight.w800,
-              height: 1.3,
+              height: 1,
+              letterSpacing: -.84,
             ),
           ),
           textScaler: scaler,
@@ -268,7 +283,8 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                     collageTop - surfaceTop + collageHeight + footerHeight - 6,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xfff0eeea),
+                    color: DopmiTokens.canvasMuted,
+                    border: Border.all(color: DopmiTokens.line),
                     borderRadius: BorderRadius.circular(28),
                   ),
                 ),
@@ -279,14 +295,25 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                 top: surfaceTop + 18,
                 child: Column(
                   children: [
-                    const Text(
-                      'Ayudar se siente bien',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: ink,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
+                    DecoratedBox(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: DopmiTokens.yellowStrong,
+                            width: 3,
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Ayudar se siente bien',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: ink,
+                          letterSpacing: -.44,
+                          height: 1.3,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -294,10 +321,11 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                       '¡Gracias!',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 26,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
-                        color: muted,
+                        fontSize: 28,
+                        height: 1.1,
+                        letterSpacing: -.84,
+                        fontWeight: FontWeight.w800,
+                        color: ink,
                       ),
                     ),
                   ],
@@ -390,8 +418,9 @@ class _ImpactPhotoJourneyState extends State<ImpactPhotoJourney> {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 28,
-                        color: ink,
-                        height: 1.3,
+                        color: DopmiTokens.orange,
+                        height: 1,
+                        letterSpacing: -.84,
                         fontWeight: FontWeight.w800,
                       ),
                     ),

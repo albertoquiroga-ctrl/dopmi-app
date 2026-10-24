@@ -1,3 +1,22 @@
+# Cola vigente — delta b9f6d5f warm-trust, 23/10/2026
+
+Decisión y límites en product-decisions; checkpoint en mock-sync-current. Esta
+cola supersede prioridades históricas inferiores, conserva resultados válidos
+y no renueva permisos consumidos. Una cola Flutter, root integrador.
+
+| Batch | Dueño / dependencia | Escenarios y criterio de salida |
+|---|---|---|
+| W1 Fundación y entrada de Impacto | Core worker + root / referencia confirmada | Paleta, Inter, CTA e iconos sólidos. Impacto es feed; Perfil contiene historial de pagos; mensual sólo en Apoyar Guardián. Sin botón adicional de resumen, conforme decisión humana. Pruebas y comparación revisadas. |
+| W2 Superficies del delta | Adoptar worker, Perfil worker y root Tienda / W1 | Filtros multiselección, swipe/carta/detalle; Guardián/perfiles/notificaciones/chat vacío; Tienda privada con controles/card nuevos. Vacíos, error, texto ampliado y gates existentes conservados. |
+| W3 Historias y brechas previas | Video worker + root / W1 y contratos existentes | Orden y composición por propósito, urgencia/agradecimiento/avances/despedida; evidencia privada excluida y llegadas async sin saltos. Revisión de producto/código/seguridad y regresiones pertinentes. |
+| W4 Candidato integrado | Root + revisores independientes / W1–W3 | Matriz completa con evidencia o bloqueo concreto; normal/115%/320px200%, gates del SHA final. Preparar una distribución revisable y sus QA pendientes sin repetir fixtures válidas. Publicación, instalación y aceptación se registran por separado. |
+
+P3 financiero en330 y cámara coordinada se conservan pendientes mientras se
+corrige fidelidad; no requieren más preparación repetida ni bloquean W1–W3.
+Nuevas decisiones sólo si el contraste descubre ambigüedad material.
+
+## Historial de cola (no ejecutar por antigüedad)
+
 ## 23/10/2026 — Correcciones tras P1+P2 preparadas
 
 Admin: refresh de fila vigente, 57 pruebas/build PASS, revisiones de código/producto/seguridad cerradas. Móvil: encabezado sin gastos conforme decisión humana, 29 pruebas/analyze0/seis capturas, código/producto cerrados. Root fija candidato conjunto y CI integral; faltan despliegue/build con permisos propios, instalación y validación real del nuevo candidato. Conservar servicios OFF y caso CLOSED40/ambos clips; no repetir cargas consumidas ni confundir pruebas de la329 con las correcciones locales.

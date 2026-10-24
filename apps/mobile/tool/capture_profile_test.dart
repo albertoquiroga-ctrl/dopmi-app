@@ -910,12 +910,20 @@ void main() {
     }
     final out = Directory('../../.tools/design-review');
     const integralFilter = String.fromEnvironment('CAPTURE_FILTER');
-    if (integralFilter.startsWith('integral-guardian')) {
-      try {
-        await captureIntegralGuardian(tester, out, integralFilter);
-      } finally {
-        debugDisableShadows = true;
-      }
+    final requestedCaptures = integralFilter
+        .split(',')
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList();
+    for (final filter in requestedCaptures.where(
+      (value) => value.startsWith('integral-guardian'),
+    )) {
+      await captureIntegralGuardian(tester, out, filter);
+    }
+    if (requestedCaptures.isNotEmpty &&
+        requestedCaptures.every(
+          (value) => value.startsWith('integral-guardian'),
+        )) {
       return;
     }
 
@@ -2814,7 +2822,7 @@ void main() {
         expect(cta.bottom, lessThanOrEqualTo(852 - 92));
       }
       if (spec.$1 == 'adoption-empty') {
-        // Effective Source cascade measured in IAB at377x852, a3c969c.
+        // Effective b9f6d5f warm-trust DOM at377x852, DPR1.25.
         final card = tester.getRect(
           find.byKey(const ValueKey('discovery-empty-card')),
         );
@@ -2824,10 +2832,11 @@ void main() {
         debugPrint(
           'Empty metrics: card=$card action=$action title=${tester.getRect(find.byKey(const ValueKey('discovery-empty-heading')))}',
         );
-        expect(card.top, closeTo(144, 1));
+        expect(card.top, closeTo(144.8, 1));
         expect(card.width, closeTo(320, 1));
-        expect(card.height, closeTo(277.265625, .1));
-        expect(action.top, closeTo(336.265625, .1));
+        // CSS hairlines round to .8px at DPR1.25; Flutter paints1px here.
+        expect(card.height, closeTo(276.1, 1));
+        expect(action.top, closeTo(336.1, 1));
         expect(action.width, closeTo(270.4, 1));
       }
       if (spec.$1 == 'guardian-promotion-controls-large') {

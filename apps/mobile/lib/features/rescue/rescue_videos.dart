@@ -26,20 +26,91 @@ const publicRescueVideoPurposes = {
   'public_update',
   'farewell',
 };
+
+/// Metadata from the public-list endpoint, not an authorization decision.
+/// Playback still obtains a fresh server-authorized lease for the asset ID.
+class PublicRescueVideo {
+  const PublicRescueVideo({
+    required this.id,
+    required this.parentId,
+    required this.purpose,
+    this.duration,
+    this.createdAt,
+  });
+  final String id, parentId, purpose;
+  final double? duration;
+  final DateTime? createdAt;
+
+  String get label => switch (purpose) {
+    'urgency' => 'Urgencia',
+    'thanks' => 'Agradecimiento',
+    'public_update' => 'Avance público',
+    'farewell' => 'Despedida',
+    _ => 'Video del caso',
+  };
+  String get semanticLabel => switch (purpose) {
+    'urgency' => 'Video de urgencia',
+    'thanks' => 'Video de agradecimiento',
+    'public_update' => 'Video de avance público',
+    'farewell' => 'Video de despedida',
+    _ => 'Video del caso',
+  };
+}
+
+/// Keep endpoint order within each purpose; do not infer approval from owner
+/// uploads or accept private evidence under a generic video label.
+List<PublicRescueVideo> publicRescueVideoMetadata(
+  List<Map<String, dynamic>> values,
+  String parentId,
+) {
+  final seen = <String>{};
+  final bindings = <String, (Object?, Object?)>{};
+  final conflicting = <String>{};
+  for (final value in values) {
+    final id = value['id'];
+    if (id is! String) continue;
+    final binding = (value['parent_id'], value['purpose']);
+    if (bindings[id] != null && bindings[id] != binding) conflicting.add(id);
+    bindings.putIfAbsent(id, () => binding);
+  }
+  final videos = <PublicRescueVideo>[];
+  for (final value in values) {
+    final id = value['id'];
+    final purpose = value['purpose'];
+    if (value['parent_id'] != parentId ||
+        !publicRescueVideoPurposes.contains(purpose) ||
+        id is! String ||
+        id.trim().isEmpty ||
+        id != id.trim() ||
+        conflicting.contains(id) ||
+        !seen.add(id)) {
+      continue;
+    }
+    videos.add(
+      PublicRescueVideo(
+        id: id,
+        parentId: parentId,
+        purpose: purpose as String,
+        duration: value['duration'] is num
+            ? (value['duration'] as num).toDouble()
+            : null,
+        createdAt: value['created_at'] is String
+            ? DateTime.tryParse(value['created_at'] as String)
+            : null,
+      ),
+    );
+  }
+  return videos;
+}
+
+/// Compatibility for existing callers that only need IDs, in endpoint order.
 List<String> publicRescueVideoIds(
   List<Map<String, dynamic>> values,
   String parentId,
-) => values
-    .where(
-      (value) =>
-          value['parent_id'] == parentId &&
-          publicRescueVideoPurposes.contains(value['purpose']),
-    )
-    .map((value) => value['id'])
-    .whereType<String>()
-    .where((id) => id.isNotEmpty)
-    .toSet()
-    .toList();
+) => publicRescueVideoMetadata(
+  values,
+  parentId,
+).map((video) => video.id).toList();
 
 class PublicRescueVideos extends ConsumerStatefulWidget {
   const PublicRescueVideos(this.parentId, {super.key});
@@ -49,7 +120,7 @@ class PublicRescueVideos extends ConsumerStatefulWidget {
 }
 
 class _PublicRescueVideosState extends ConsumerState<PublicRescueVideos> {
-  Future<List<String>>? request;
+  Future<List<PublicRescueVideo>>? request;
   String? scope;
   @override
   Widget build(BuildContext context) {
@@ -61,9 +132,9 @@ class _PublicRescueVideosState extends ConsumerState<PublicRescueVideos> {
       scope = current;
       request = repository
           .publicVideos(widget.parentId)
-          .then((items) => publicRescueVideoIds(items, widget.parentId));
+          .then((items) => publicRescueVideoMetadata(items, widget.parentId));
     }
-    return FutureBuilder<List<String>>(
+    return FutureBuilder<List<PublicRescueVideo>>(
       key: ValueKey(current),
       future: request,
       builder: (context, snapshot) {
@@ -73,8 +144,8 @@ class _PublicRescueVideosState extends ConsumerState<PublicRescueVideos> {
             child: const Text('Reintentar videos públicos'),
           );
         }
-        final ids = snapshot.data;
-        if (ids == null || ids.isEmpty) return const SizedBox.shrink();
+        final videos = snapshot.data;
+        if (videos == null || videos.isEmpty) return const SizedBox.shrink();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -83,14 +154,22 @@ class _PublicRescueVideosState extends ConsumerState<PublicRescueVideos> {
               'Videos del caso',
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
             ),
-            for (final id in ids)
+            for (final video in videos)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
-                child: ModeratedVideo(
-                  key: ValueKey('$current:$id'),
-                  repository: repository,
-                  assetId: id,
-                  autoplay: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(video.label),
+                    const SizedBox(height: 6),
+                    ModeratedVideo(
+                      key: ValueKey('$current:${video.id}'),
+                      repository: repository,
+                      assetId: video.id,
+                      autoplay: false,
+                      semanticLabel: video.semanticLabel,
+                    ),
+                  ],
                 ),
               ),
           ],

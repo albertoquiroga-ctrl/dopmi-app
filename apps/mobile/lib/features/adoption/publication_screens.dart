@@ -1,12 +1,14 @@
 import 'publication_age.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import 'community_repository.dart';
@@ -382,7 +384,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           builder: (context) => AlertDialog(
             icon: const Icon(
               Icons.check_circle_outline,
-              color: Color(0xff7841f2),
+              color: DopmiTokens.purple,
               size: 48,
             ),
             title: const Text('Enviado a revisión'),
@@ -760,7 +762,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                         ),
                         side: BorderSide(
                           color: coexistence.contains(item.key)
-                              ? const Color(0xff7841f2)
+                              ? DopmiTokens.purple
                               : const Color(0xffe3e4ed),
                         ),
                         shape: RoundedRectangleBorder(

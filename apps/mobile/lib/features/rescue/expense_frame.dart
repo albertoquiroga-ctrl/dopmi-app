@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/design_tokens.dart';
 
 class ExpenseFrame extends StatelessWidget {
   const ExpenseFrame({
@@ -204,7 +207,7 @@ class ExpenseActions extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith(
           (states) => states.contains(WidgetState.disabled)
               ? const Color(0xffbba0f8)
-              : const Color(0xff7841f2),
+              : DopmiTokens.purple,
         ),
       ),
       child: Text(primaryLabel, textAlign: TextAlign.center),
@@ -243,7 +246,7 @@ class ExpenseSubmitted extends StatelessWidget {
           height: 48,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0x1f7841f2),
+            color: Color(0x1f46281d),
           ),
           alignment: Alignment.center,
           child: SvgPicture.asset(
@@ -285,7 +288,7 @@ class ExpenseSubmitted extends StatelessWidget {
         onPressed: onClose,
         style: FilledButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: const Color(0xff7841f2),
+          backgroundColor: DopmiTokens.purple,
           minimumSize: const Size(0, 36),
           padding: MediaQuery.textScalerOf(context).scale(14) > 21
               ? const EdgeInsets.symmetric(horizontal: 18, vertical: 10)

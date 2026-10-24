@@ -285,11 +285,9 @@ void main() {
       await tester.pumpAndSettle();
       // Server-backed favorite state uses .pet-detail-save.is-on treatment.
       expect(decoration('Guardada').boxShadow, const [
-        BoxShadow(
-          color: Color(0x59f7cb2d),
-          offset: Offset(0, 4),
-          blurRadius: 12,
-        ),
+        BoxShadow(color: Color(0x24eb6425), spreadRadius: 1),
+        BoxShadow(color: Color(0x47eb6425), blurRadius: 10),
+        BoxShadow(color: Color(0x24eb6425), blurRadius: 16),
       ]);
       await tester.tap(find.byTooltip('Guardada'));
       await tester.pumpAndSettle();
@@ -307,10 +305,11 @@ void main() {
         await open(tester);
         final cta = find.widgetWithText(FilledButton, 'Quiero saber más');
         final before = tester.getRect(cta);
-        // Source889 fixes shell specificity: the bar reaches the viewport edge
-        // and keeps padding14 plus the native bottom safe area.
+        // b9 CSS11531–11538 keeps grid padding14 + native safe area.
+        // Final save height58 (14489–14504) sets the grid row; CTA stretches
+        // to that row despite its base min-height52. Preserve the bottom edge.
         expect(before.bottom, 852 - bottomInset - 14);
-        expect(before.height, 52);
+        expect(before.height, 58);
         await tester.drag(
           find.byType(SingleChildScrollView).first,
           const Offset(0, -350),

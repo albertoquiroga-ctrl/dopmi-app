@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/design_tokens.dart';
 import 'rescue_fields.dart';
 
 /// Presentation only: the editor retains controllers, privacy and persistence.
@@ -39,7 +40,7 @@ class ExpenseField extends StatelessWidget {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xff7841f2)),
+        borderSide: const BorderSide(color: DopmiTokens.purple),
       ),
     );
     return Padding(

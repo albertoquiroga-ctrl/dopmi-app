@@ -14,15 +14,132 @@ import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 import 'rescue_videos.dart';
 
+const _thankYouStyle = TextStyle(
+  fontSize: 26,
+  height: 1.2,
+  fontWeight: FontWeight.w600,
+  color: Colors.white,
+  shadows: [
+    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0xbf000000)),
+    Shadow(offset: Offset(0, 2), blurRadius: 8, color: Color(0x73000000)),
+  ],
+);
+
 /// Only approved public snapshot photos; never private evidence or receipts.
 List<String> supportStoryPhotos(RescueRecord record) =>
-    (record.status == 'approved' || record.status == 'closed')
+    record.kind == 'case' &&
+        (record.status == 'approved' || record.status == 'closed')
     ? (record.publicData['photos'] as List? ?? const [])
           .whereType<String>()
           .where((p) => p.trim().isNotEmpty)
           .toSet()
           .toList()
     : const [];
+
+enum SupportStoryKind {
+  hero,
+  urgency,
+  thanks,
+  casePhoto,
+  publicUpdate,
+  farewell,
+}
+
+class SupportStorySegment {
+  const SupportStorySegment({
+    required this.id,
+    required this.kind,
+    this.photo,
+    this.video,
+    this.update,
+  });
+  final String id;
+  final SupportStoryKind kind;
+  final String? photo;
+  final PublicRescueVideo? video;
+  final CaseUpdate? update;
+  String get label => switch (kind) {
+    SupportStoryKind.hero => 'Historia del caso',
+    SupportStoryKind.urgency => 'Urgencia',
+    SupportStoryKind.thanks => 'Agradecimiento',
+    SupportStoryKind.casePhoto => 'Foto del caso',
+    SupportStoryKind.publicUpdate => 'Avance público',
+    SupportStoryKind.farewell => 'Despedida',
+  };
+}
+
+/// Build from approved public snapshots and the public-list/update endpoints.
+/// No record.files, private_data, expense receipts or private evidence is read.
+List<SupportStorySegment> supportStorySegments(
+  RescueRecord record, {
+  List<PublicRescueVideo> videos = const [],
+  List<CaseUpdate> updates = const [],
+}) {
+  if (record.kind != 'case' ||
+      !{'approved', 'closed'}.contains(record.status)) {
+    return const [];
+  }
+  final photos = supportStoryPhotos(record);
+  final result = <SupportStorySegment>[];
+  final seenPhotos = <String>{};
+  final seenVideos = <String>{};
+  final privateOrForeignIds = videos
+      .where(
+        (video) =>
+            video.parentId != record.id ||
+            !publicRescueVideoPurposes.contains(video.purpose),
+      )
+      .map((video) => video.id)
+      .toSet();
+  void photo(String path, SupportStoryKind kind, {CaseUpdate? update}) {
+    if (path.trim().isEmpty || !seenPhotos.add(path)) return;
+    result.add(
+      SupportStorySegment(
+        id: 'photo:$path',
+        kind: kind,
+        photo: path,
+        update: update,
+      ),
+    );
+  }
+
+  void clips(String purpose, SupportStoryKind kind) {
+    for (final video in videos) {
+      if (video.parentId != record.id ||
+          video.purpose != purpose ||
+          !publicRescueVideoPurposes.contains(video.purpose) ||
+          video.id.trim().isEmpty ||
+          video.id != video.id.trim() ||
+          privateOrForeignIds.contains(video.id) ||
+          !seenVideos.add(video.id)) {
+        continue;
+      }
+      result.add(
+        SupportStorySegment(id: 'video:${video.id}', kind: kind, video: video),
+      );
+    }
+  }
+
+  if (photos.isNotEmpty) photo(photos.first, SupportStoryKind.hero);
+  final urgencyPhoto = record.publicData['urgency_photo_path'];
+  if (urgencyPhoto is String && photos.contains(urgencyPhoto)) {
+    photo(urgencyPhoto, SupportStoryKind.urgency);
+  }
+  clips('urgency', SupportStoryKind.urgency);
+  clips('thanks', SupportStoryKind.thanks);
+  for (final path in photos.skip(1)) {
+    photo(path, SupportStoryKind.casePhoto);
+  }
+  for (final update in updates) {
+    if (update.caseId != record.id || update.publishedAt == null) continue;
+    for (final path in update.photos) {
+      photo(path, SupportStoryKind.publicUpdate, update: update);
+    }
+  }
+  clips('public_update', SupportStoryKind.publicUpdate);
+  clips('farewell', SupportStoryKind.farewell);
+  return result;
+}
 
 class SupportStories extends ConsumerStatefulWidget {
   const SupportStories({super.key, required this.records});
@@ -43,7 +160,11 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
         if (progress.value >= 1 && !finished && currentVideo == null) next();
       });
   late final queue = widget.records
-      .where((r) => r.status == 'approved' || r.status == 'closed')
+      .where(
+        (r) =>
+            r.kind == 'case' &&
+            (r.status == 'approved' || r.status == 'closed'),
+      )
       .toList();
   int caseIndex = 0, photoIndex = 0;
   bool held = false, manual = false, background = false, displayed = false;
@@ -56,34 +177,115 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   final loadedVideos = <String>{};
   final loadingVideos = <String>{};
   final failedVideos = <String>{};
-  final publicVideos = <String, List<String>>{};
+  final publicVideos = <String, List<PublicRescueVideo>>{};
+  final lateSegments = <String, Map<String, List<String>>>{};
   final videoPaused = ValueNotifier<bool>(false);
   final loadingUpdates = <String>{};
   final failedUpdates = <String>{};
-  (String, int)? waitingForUpdates;
+  (String, String)? waitingForUpdates;
   final needTypes = <String, Set<String>>{};
   final publicUpdates = <String, List<CaseUpdate>>{};
   RescueRecord get record => queue[caseIndex];
   List<CaseUpdate> get updates => publicUpdates[record.id] ?? const [];
-  List<String> get photos => <String>{
-    ...supportStoryPhotos(record),
-    ...updates.expand((u) => u.photos),
-    ...(publicVideos[record.id] ?? const []).map((id) => 'video:$id'),
-  }.toList();
-  String? get currentVideo {
-    if (queue.isEmpty || photoIndex >= photos.length) return null;
-    final path = photos[photoIndex];
-    return path.startsWith('video:') ? path.substring(6) : null;
+  List<SupportStorySegment> get segments {
+    final result = supportStorySegments(
+      record,
+      videos: publicVideos[record.id] ?? const [],
+      updates: updates,
+    );
+    // A successful retry can reveal an earlier-purpose clip after the user has
+    // already reached a later photo. Keep that photo in place, then show the
+    // newly recovered segments on the next step instead of jumping or skipping.
+    final placements =
+        lateSegments[record.id] ?? const <String, List<String>>{};
+    for (final placement in placements.entries) {
+      final recovered = result
+          .where((s) => placement.value.contains(s.id))
+          .toList();
+      result.removeWhere((s) => placement.value.contains(s.id));
+      final anchor = result.indexWhere((s) => s.id == placement.key);
+      result.insertAll(anchor < 0 ? result.length : anchor + 1, recovered);
+    }
+    return result;
   }
 
-  CaseUpdate? get currentUpdate {
-    if (currentVideo != null) return null;
-    final path = photos[photoIndex];
-    if (supportStoryPhotos(record).contains(path)) return null;
-    for (final update in updates) {
-      if (update.photos.contains(path)) return update;
+  SupportStorySegment? get currentSegment {
+    if (queue.isEmpty) return null;
+    final items = segments;
+    return photoIndex < items.length ? items[photoIndex] : null;
+  }
+
+  String? get currentVideo => currentSegment?.video?.id;
+  CaseUpdate? get currentUpdate => currentSegment?.update;
+  String get currentSegmentId => currentSegment?.id ?? 'empty';
+
+  bool isCurrent(String caseId, String segmentId) =>
+      mounted &&
+      !finished &&
+      queue.isNotEmpty &&
+      record.id == caseId &&
+      currentSegmentId == segmentId;
+
+  void replacePublicMedia(String id, VoidCallback replace) {
+    final active = queue.isNotEmpty && record.id == id;
+    final before = active ? segments : const <SupportStorySegment>[];
+    final key = active ? currentSegment?.id : null;
+    setState(() {
+      replace();
+      if (!active) return;
+      final updated = segments;
+      if (key == null) {
+        photoIndex = 0;
+        if (updated.isNotEmpty) waitingForUpdates = null;
+        return;
+      }
+      final anchor = updated.indexWhere((s) => s.id == key);
+      if (anchor < 0) {
+        photoIndex = updated.isEmpty
+            ? 0
+            : photoIndex.clamp(0, updated.length - 1).toInt();
+        displayed = false;
+        waitingForUpdates = null;
+        progress.reset();
+        return;
+      }
+      final known = before.map((s) => s.id).toSet();
+      final recovered = updated
+          .take(anchor)
+          .where((s) => !known.contains(s.id))
+          .map((s) => s.id)
+          .toList();
+      if (recovered.isNotEmpty) {
+        final placements = lateSegments.putIfAbsent(id, () => {});
+        placements.putIfAbsent(key, () => []).addAll(recovered);
+      }
+      photoIndex = segments.indexWhere((s) => s.id == key);
+    });
+  }
+
+  bool get awaitingMedia {
+    if (!loadedVideos.contains(record.id)) return true;
+    final items = segments;
+    final next = photoIndex + 1 < items.length ? items[photoIndex + 1] : null;
+    // Public update photos must precede public-update/farewell videos. Earlier
+    // photos and urgency/thanks clips can still be viewed while updates load.
+    return !loadedUpdates.contains(record.id) &&
+        (next == null ||
+            next.kind == SupportStoryKind.publicUpdate ||
+            next.kind == SupportStoryKind.farewell);
+  }
+
+  void advanceWaiting() {
+    if (finished ||
+        queue.isEmpty ||
+        held ||
+        background ||
+        !TickerMode.valuesOf(context).enabled ||
+        waitingForUpdates != (record.id, currentSegmentId) ||
+        awaitingMedia) {
+      return;
     }
-    return null;
+    next();
   }
 
   Future<void> loadVideos() async {
@@ -103,27 +305,20 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     try {
       final items = await repository.publicVideos(id);
       if (!mounted || finished) return;
-      setState(() {
+      replacePublicMedia(id, () {
         loadingVideos.remove(id);
         loadedVideos.add(id);
-        publicVideos[id] = publicRescueVideoIds(items, id);
+        publicVideos[id] = publicRescueVideoMetadata(items, id);
       });
-      if (waitingForUpdates == (id, photoIndex) &&
-          record.id == id &&
-          loadedUpdates.contains(id)) {
-        waitingForUpdates = null;
-        next();
-      }
+      advanceWaiting();
     } catch (_) {
       if (!mounted || finished) return;
-      final wasWaiting = waitingForUpdates?.$1 == id;
       setState(() {
         loadingVideos.remove(id);
         loadedVideos.add(id);
         failedVideos.add(id);
-        if (waitingForUpdates?.$1 == id) waitingForUpdates = null;
       });
-      if (wasWaiting && record.id == id && loadedUpdates.contains(id)) next();
+      advanceWaiting();
     }
   }
 
@@ -143,23 +338,19 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     try {
       final result = await ref.read(caseUpdateRepositoryProvider).publicFor(id);
       if (!mounted || finished) return;
-      setState(() {
+      replacePublicMedia(id, () {
         loadingUpdates.remove(id);
         loadedUpdates.add(id);
         publicUpdates[id] = result
             .where((u) => u.caseId == id && u.publishedAt != null)
             .toList();
       });
-      if (waitingForUpdates == (id, photoIndex) && record.id == id) {
-        waitingForUpdates = null;
-        next();
-      }
+      advanceWaiting();
     } catch (_) {
       if (!mounted || finished) return;
       setState(() {
         loadingUpdates.remove(id);
         failedUpdates.add(id);
-        if (waitingForUpdates?.$1 == id) waitingForUpdates = null;
       });
     }
   }
@@ -214,6 +405,11 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   void resume() {
     videoPaused.value =
         held || background || !TickerMode.valuesOf(context).enabled;
+    if (waitingForUpdates != null && !held && !background) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !finished) advanceWaiting();
+      });
+    }
     if (currentVideo != null) {
       progress.stop();
       return;
@@ -247,16 +443,14 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
 
   void next() {
     if (finished) return;
-    if (photoIndex + 1 >= photos.length &&
-        (!loadedUpdates.contains(record.id) ||
-            !loadedVideos.contains(record.id))) {
-      waitingForUpdates = (record.id, photoIndex);
+    if (awaitingMedia) {
+      waitingForUpdates = (record.id, currentSegmentId);
       progress.stop();
       setState(() {});
       return;
     }
     waitingForUpdates = null;
-    if (photoIndex + 1 < photos.length) {
+    if (photoIndex + 1 < segments.length) {
       setState(() => photoIndex++);
     } else if (caseIndex + 1 < queue.length) {
       setState(() {
@@ -287,7 +481,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     } else if (caseIndex > 0) {
       setState(() {
         caseIndex--;
-        photoIndex = photos.isEmpty ? 0 : photos.length - 1;
+        photoIndex = segments.isEmpty ? 0 : segments.length - 1;
       });
     }
     displayed = false;
@@ -312,7 +506,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
         body: const Center(child: Text('No hay fotos públicas disponibles.')),
       );
     }
-    if (photos.isEmpty) {
+    if (segments.isEmpty) {
       return Scaffold(
         appBar: AppBar(title: const Text('Historias')),
         body: Center(
@@ -339,7 +533,10 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
         ),
       );
     }
-    final hero = photoIndex == 0;
+    final visibleSegments = segments;
+    final segment = visibleSegments[photoIndex];
+    final activeCaseId = record.id;
+    final hero = segment.kind == SupportStoryKind.hero;
     return Scaffold(
       backgroundColor: const Color(0xff0d0d0d),
       body: SafeArea(
@@ -430,7 +627,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                       builder: (context, paused, _) =>
                                           ModeratedVideo(
                                             key: ValueKey(
-                                              '${record.id}:$currentVideo',
+                                              '$activeCaseId:${segment.id}',
                                             ),
                                             repository: ref.read(
                                               rescueVideosRepositoryProvider,
@@ -438,13 +635,31 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                             assetId: currentVideo!,
                                             autoplay: !manual,
                                             paused: paused,
-                                            onComplete: next,
+                                            semanticLabel:
+                                                segment.video!.semanticLabel,
+                                            onComplete: () {
+                                              if (isCurrent(
+                                                activeCaseId,
+                                                segment.id,
+                                              )) {
+                                                next();
+                                              }
+                                            },
                                             onPlaybackReady: () {
+                                              if (!isCurrent(
+                                                activeCaseId,
+                                                segment.id,
+                                              )) {
+                                                return;
+                                              }
                                               displayed = true;
                                               resume();
                                             },
                                             onProgress: (value) {
-                                              if (mounted && !finished) {
+                                              if (isCurrent(
+                                                activeCaseId,
+                                                segment.id,
+                                              )) {
                                                 progress.value = value.clamp(
                                                   0.0,
                                                   .999999,
@@ -454,10 +669,25 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                           ),
                                     )
                                   : _StoryPhoto(
-                                      photos[photoIndex],
+                                      segment.photo!,
                                       isUpdate: currentUpdate != null,
-                                      key: ValueKey('${record.id}:$photoIndex'),
+                                      key: ValueKey(
+                                        '$activeCaseId:${segment.id}',
+                                      ),
+                                      semanticLabel:
+                                          segment.kind ==
+                                              SupportStoryKind.urgency
+                                          ? 'Foto de urgencia'
+                                          : currentUpdate != null
+                                          ? 'Foto del avance público'
+                                          : 'Foto pública del caso',
                                       onDisplayed: () {
+                                        if (!isCurrent(
+                                          activeCaseId,
+                                          segment.id,
+                                        )) {
+                                          return;
+                                        }
                                         displayed = true;
                                         resume();
                                       },
@@ -488,7 +718,11 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                               animation: progress,
                               builder: (_, _) => Row(
                                 children: [
-                                  for (var i = 0; i < photos.length; i++)
+                                  for (
+                                    var i = 0;
+                                    i < visibleSegments.length;
+                                    i++
+                                  )
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -546,15 +780,105 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    record.title,
-                                    style: const TextStyle(
-                                      fontSize: 34,
-                                      height: 1.05,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
+                                  if (segment.kind == SupportStoryKind.thanks)
+                                    Semantics(
+                                      label: 'Agradecimiento',
+                                      child: const Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Da un pequeño gesto,',
+                                            style: _thankYouStyle,
+                                          ),
+                                          SizedBox(height: 4),
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(text: 'haz una '),
+                                                TextSpan(
+                                                  text: 'GRAN',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    letterSpacing: .52,
+                                                  ),
+                                                ),
+                                                TextSpan(text: ' diferencia.'),
+                                              ],
+                                            ),
+                                            style: _thankYouStyle,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  else ...[
+                                    Text(
+                                      record.title,
+                                      style: const TextStyle(
+                                        fontSize: 34,
+                                        height: 1.05,
+                                        letterSpacing: -.68,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(0, 1),
+                                            blurRadius: 2,
+                                            color: Color(0xa6000000),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                    if (segment.kind ==
+                                        SupportStoryKind.urgency) ...[
+                                      const SizedBox(height: 8),
+                                      Semantics(
+                                        label: 'Urgencia',
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              'assets/profile/icon-alert-circle.svg',
+                                              width: 20,
+                                              height: 20,
+                                              excludeFromSemantics: true,
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                    Color(0xffffb020),
+                                                    BlendMode.srcIn,
+                                                  ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            const Flexible(
+                                              child: Text(
+                                                'Apoyo urgente',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  height: 1.3,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                  shadows: [
+                                                    Shadow(
+                                                      offset: Offset(0, 1),
+                                                      blurRadius: 2,
+                                                      color: Color(0xbf000000),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ] else if (!hero)
+                                      Text(
+                                        segment.label,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                  ],
                                   if (currentUpdate != null)
                                     Text(
                                       currentUpdate!.body,
@@ -632,23 +956,27 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                       ],
                                     ),
                                   ),
-                                  LinearProgressIndicator(
-                                    value: record.targetCents <= 0
-                                        ? 0
-                                        : (record.fundedCents /
-                                                  record.targetCents)
-                                              .clamp(0.0, 1.0),
-                                    color: yellow,
-                                    backgroundColor: Colors.white24,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
+                                  if (segment.kind != SupportStoryKind.thanks &&
+                                      segment.kind !=
+                                          SupportStoryKind.urgency) ...[
+                                    LinearProgressIndicator(
+                                      value: record.targetCents <= 0
+                                          ? 0
+                                          : (record.fundedCents /
+                                                    record.targetCents)
+                                                .clamp(0.0, 1.0),
+                                      color: yellow,
+                                      backgroundColor: Colors.white24,
                                     ),
-                                  ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -702,7 +1030,9 @@ class _StoryPhoto extends ConsumerWidget {
     super.key,
     required this.onDisplayed,
     required this.isUpdate,
+    this.semanticLabel = 'Foto pública del caso',
   });
+  final String semanticLabel;
   final String path;
   final bool isUpdate;
   final VoidCallback onDisplayed;
@@ -717,7 +1047,7 @@ class _StoryPhoto extends ConsumerWidget {
           )
         : rescuePhotoSource(ref.read(rescueRepositoryProvider), path),
     onDisplayed: onDisplayed,
-    semanticLabel: 'Foto pública del caso',
+    semanticLabel: semanticLabel,
     loading: const Center(
       child: CircularProgressIndicator(semanticsLabel: 'Cargando foto'),
     ),

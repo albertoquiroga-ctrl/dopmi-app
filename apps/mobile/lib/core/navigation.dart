@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -11,17 +13,42 @@ class DopmiDestination {
     this.asset,
     this.branch, {
     this.semanticLabel,
+    this.activeAsset,
   });
   final String label, path, asset;
-  final String? semanticLabel;
+  final String? semanticLabel, activeAsset;
   final int branch;
 }
 
 const donorDestinations = [
-  DopmiDestination('Adoptar', '/adoptions', 'rtab-home.svg', 0),
-  DopmiDestination('Mis match', '/messages', 'icon-heart.svg', 6),
-  DopmiDestination('Apoyar', '/rescue-cases', 'tab-donate.svg', 1),
-  DopmiDestination('Perfil', '/profile', 'tab-profile.svg', 2),
+  DopmiDestination(
+    'Adoptar',
+    '/adoptions',
+    'rtab-home.svg',
+    0,
+    activeAsset: 'nav-home-solid.svg',
+  ),
+  DopmiDestination(
+    'Mis match',
+    '/messages',
+    'icon-heart.svg',
+    6,
+    activeAsset: 'nav-heart-solid.svg',
+  ),
+  DopmiDestination(
+    'Apoyar',
+    '/rescue-cases',
+    'tab-donate.svg',
+    1,
+    activeAsset: 'nav-donate-solid.svg',
+  ),
+  DopmiDestination(
+    'Perfil',
+    '/profile',
+    'tab-profile.svg',
+    2,
+    activeAsset: 'nav-profile-solid.svg',
+  ),
 ];
 const rescuerDestinations = [
   DopmiDestination('Inicio', '/rescuer', 'rtab-home.svg', 3),
@@ -36,12 +63,14 @@ const storeDestination = DopmiDestination(
   '/store',
   'icon-shop.svg',
   7,
+  activeAsset: 'nav-shop-solid.svg',
 );
 const storePreviewDestination = DopmiDestination(
   'Tienda TEST',
   '/store',
   'icon-shop.svg',
   7,
+  activeAsset: 'nav-shop-solid.svg',
   semanticLabel: 'Vista previa de Tienda',
 );
 
@@ -95,36 +124,70 @@ class DopmiBottomBar extends StatelessWidget {
           child: Center(
             heightFactor: 1,
             child: Container(
-              width: storeEnabled ? 296 : 240,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              width: storeEnabled ? 282 : 230,
               decoration: BoxDecoration(
-                color: DopmiTokens.ink,
                 borderRadius: BorderRadius.circular(999),
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x5215110d),
+                    color: Color(0x1446281d),
                     offset: Offset(0, 8),
-                    blurRadius: 24,
+                    blurRadius: 28,
                   ),
                   BoxShadow(
-                    color: Color(0x3315110d),
-                    offset: Offset(0, 2),
-                    blurRadius: 8,
+                    color: Color(0x1fffffff),
+                    offset: Offset(0, 4),
+                    blurRadius: 16,
                   ),
                 ],
               ),
-              child: Row(
-                children: [
-                  for (var index = 0; index < destinations.length; index++) ...[
-                    if (index > 0) const SizedBox(width: 8),
-                    _NavigationItem(
-                      destination: destinations[index],
-                      selected: selectedPath == destinations[index].path,
-                      rescuer: false,
-                      onPressed: () => onSelected(destinations[index]),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(999),
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: 34, sigmaY: 34),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: MediaQuery.highContrastOf(context)
+                          ? DopmiTokens.surface
+                          : const Color(0x24ffffff),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0x1affffff),
+                          Color(0x38ffffff),
+                          Color(0x4dffffff),
+                        ],
+                      ),
+                      border: Border.all(color: const Color(0x8cffffff)),
+                      borderRadius: BorderRadius.circular(999),
                     ),
-                  ],
-                ],
+                    child: Padding(
+                      // CSS padding 12/8 plus the 1px painted border.
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 13,
+                        vertical: 9,
+                      ),
+                      child: Row(
+                        children: [
+                          for (
+                            var index = 0;
+                            index < destinations.length;
+                            index++
+                          ) ...[
+                            if (index > 0) const SizedBox(width: 4),
+                            _NavigationItem(
+                              destination: destinations[index],
+                              selected:
+                                  selectedPath == destinations[index].path,
+                              rescuer: false,
+                              onPressed: () => onSelected(destinations[index]),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -212,10 +275,10 @@ class DopmiBottomBar extends StatelessWidget {
                   selected: selectedPath == '/publish',
                   label: 'Publicar',
                   child: Material(
-                    color: DopmiTokens.purple,
+                    color: DopmiTokens.ink,
                     shape: const CircleBorder(),
-                    elevation: 8,
-                    shadowColor: const Color(0x617c3aed),
+                    elevation: 2,
+                    shadowColor: const Color(0x0f000000),
                     child: InkWell(
                       onTap: () => onSelected(publish),
                       customBorder: const CircleBorder(),
@@ -258,13 +321,15 @@ class _NavigationItem extends StatelessWidget {
   final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
-    final color = selected && rescuer
-        ? const Color(0xff151423)
-        : selected
-        ? DopmiTokens.ink
-        : rescuer
-        ? const Color(0xff4f4e5c)
-        : const Color(0xffe3e2e2);
+    // Orange meets non-text 3:1 on white; 9px labels use the accessible
+    // ink/muted tokens instead of the reference's low-contrast orange/beige.
+    final iconColor = selected
+        ? DopmiTokens.orange
+        : DopmiTokens.navigationInactive;
+    final labelColor = selected ? DopmiTokens.ink : DopmiTokens.muted;
+    final asset = selected && !rescuer
+        ? destination.activeAsset ?? destination.asset
+        : destination.asset;
     return Semantics(
       button: true,
       selected: selected,
@@ -286,32 +351,57 @@ class _NavigationItem extends StatelessWidget {
                 Container(
                   width: rescuer ? 28 : 48,
                   height: rescuer ? 28 : 48,
-                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(selected && !rescuer ? 2 : 0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: selected && !rescuer
-                        ? DopmiTokens.yellow
-                        : rescuer
-                        ? Colors.transparent
-                        : const Color(0xff3a342e),
+                    gradient: selected && !rescuer
+                        ? const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              DopmiTokens.orange,
+                              DopmiTokens.sky,
+                              DopmiTokens.saffronSoft,
+                            ],
+                          )
+                        : null,
+                    boxShadow: selected && !rescuer
+                        ? const [
+                            BoxShadow(color: Color(0x57eb6425), blurRadius: 10),
+                            BoxShadow(color: Color(0x47cbe8fa), blurRadius: 16),
+                            BoxShadow(color: Color(0x38fef3d4), blurRadius: 22),
+                          ]
+                        : null,
                   ),
-                  child: SvgPicture.asset(
-                    'assets/navigation/${destination.asset}',
-                    width:
-                        rescuer ||
-                            destination.path == '/profile' ||
-                            destination.path == '/messages'
-                        ? 20
-                        : 22,
-                    height:
-                        rescuer ||
-                            destination.path == '/profile' ||
-                            destination.path == '/messages'
-                        ? 20
-                        : 22,
-                    colorFilter: ColorFilter.mode(
-                      rescuer && !selected ? const Color(0xff8a8799) : color,
-                      BlendMode.srcIn,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: selected && !rescuer
+                          ? DopmiTokens.surface
+                          : Colors.transparent,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/navigation/$asset',
+                        width:
+                            rescuer ||
+                                destination.path == '/profile' ||
+                                destination.path == '/messages' ||
+                                destination.path == '/store'
+                            ? 20
+                            : 22,
+                        height:
+                            rescuer ||
+                                destination.path == '/profile' ||
+                                destination.path == '/messages' ||
+                                destination.path == '/store'
+                            ? 20
+                            : 22,
+                        colorFilter: ColorFilter.mode(
+                          iconColor,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -325,8 +415,8 @@ class _NavigationItem extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 9,
                       height: 1.2,
-                      color: color,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: labelColor,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                     ),
                   ),
                 ],
@@ -354,8 +444,14 @@ class _RescuerNavigationSurface extends CustomPainter {
     final notch = Path()
       ..addOval(Rect.fromCircle(center: Offset(size.width / 2, 0), radius: 36));
     final path = Path.combine(PathOperation.difference, surface, notch);
-    canvas.drawShadow(path, const Color(0x1415110d), 8, false);
-    canvas.drawPath(path, Paint()..color = Colors.white);
+    canvas.drawPath(path, Paint()..color = DopmiTokens.surface);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = DopmiTokens.line
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
   }
 
   @override

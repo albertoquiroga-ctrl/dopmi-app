@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart' show Notice;
@@ -339,13 +341,11 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
                               fontSize: 14,
                               height: 1.2,
                               fontWeight: FontWeight.w600,
-                              color: unreadOnly
-                                  ? const Color(0xff7841f2)
-                                  : _muted,
+                              color: unreadOnly ? DopmiTokens.purple : _muted,
                               decoration: unreadOnly
                                   ? TextDecoration.underline
                                   : null,
-                              decorationColor: const Color(0xff7841f2),
+                              decorationColor: DopmiTokens.purple,
                             ),
                           ),
                         ),
@@ -388,7 +388,7 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
                         borderRadius: BorderRadius.circular(22),
                         boxShadow: const [
                           BoxShadow(
-                            color: Color(0x0f7841f2),
+                            color: Color(0x0f46281d),
                             offset: Offset(0, 2),
                             blurRadius: 14,
                           ),
@@ -524,14 +524,14 @@ class RescuerPetFilter extends StatelessWidget {
                 color: Colors.white,
                 border: Border.all(
                   color: selected
-                      ? const Color(0x597841f2)
+                      ? const Color(0x5946281d)
                       : const Color(0xffe6e2dd),
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
                     color: selected
-                        ? const Color(0x247841f2)
+                        ? const Color(0x2446281d)
                         : const Color(0x0f15110d),
                     offset: Offset(0, selected ? 8 : 2),
                     blurRadius: selected ? 22 : 12,
@@ -569,7 +569,7 @@ class RescuerPetFilter extends StatelessWidget {
                                 width: 22,
                                 height: 22,
                                 colorFilter: const ColorFilter.mode(
-                                  Color(0xff7841f2),
+                                  DopmiTokens.purple,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -587,7 +587,7 @@ class RescuerPetFilter extends StatelessWidget {
                                   minHeight: 18,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xff7841f2),
+                                  color: DopmiTokens.purple,
                                   borderRadius: BorderRadius.circular(99),
                                   boxShadow: const [
                                     BoxShadow(
@@ -799,7 +799,7 @@ class _RescuerInboxGroupState extends ConsumerState<RescuerInboxGroup> {
                                           ),
                                           child: Icon(
                                             Icons.pets,
-                                            color: Color(0xff7841f2),
+                                            color: DopmiTokens.purple,
                                             size: 24,
                                           ),
                                         )
@@ -823,7 +823,7 @@ class _RescuerInboxGroupState extends ConsumerState<RescuerInboxGroup> {
                                       ),
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xff7841f2),
+                                        color: DopmiTokens.purple,
                                         borderRadius: BorderRadius.circular(
                                           999,
                                         ),
@@ -975,7 +975,7 @@ class RescuerMessagesEmpty extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
-            backgroundColor: const Color(0xff7841f2),
+            backgroundColor: DopmiTokens.purple,
             foregroundColor: const Color(0xfffbfbff),
             overlayColor: Colors.transparent,
             animationDuration: Duration.zero,
@@ -1034,7 +1034,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xff7841f2),
+                    color: DopmiTokens.purple,
                   ),
                 ),
               )
@@ -1060,7 +1060,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
               padding: const EdgeInsets.symmetric(horizontal: 7),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: const Color(0xff7841f2),
+                color: DopmiTokens.purple,
                 borderRadius: BorderRadius.circular(99),
               ),
               child: Text(
@@ -1225,7 +1225,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
             height: 1.2,
             letterSpacing: 0,
             fontWeight: FontWeight.w700,
-            color: Color(0xff7841f2),
+            color: DopmiTokens.purple,
           ),
         ),
       ),
@@ -1320,7 +1320,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0xff7841f2),
+              color: DopmiTokens.purple,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Text(

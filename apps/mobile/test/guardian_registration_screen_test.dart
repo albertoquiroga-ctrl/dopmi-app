@@ -354,7 +354,7 @@ void main() {
             find.byKey(const ValueKey('guardian-registration-membership-card')),
             findsOneWidget,
           );
-          expect(find.text('Suscripción y pagos'), findsOneWidget);
+          expect(find.text('Suscripción Guardián'), findsOneWidget);
           expect(find.text('Suscripción Guardián'), findsOneWidget);
           expect(
             find.byKey(const ValueKey('guardian-registration-monthly-amount')),
@@ -456,7 +456,7 @@ void main() {
     (const Size(320, 640), 2.0),
   ]) {
     testWidgets(
-      'canceled registration opens monthly impact and returns without financial mutations scale${variant.$2}',
+      'canceled registration opens historical impact and returns without financial mutations scale${variant.$2}',
       (tester) async {
         final repo = CanceledImpactGuardian()
           ..registrationValue = registration(
@@ -495,22 +495,9 @@ void main() {
         await tester.pumpAndSettle();
         expect(router.state.uri.path, '/impact');
         expect(router.state.uri.queryParameters['history'], '1');
-        expect(monthly.personalRequests, isNotEmpty);
-        expect(monthly.communityRequests, isNotEmpty);
-        expect(
-          find.descendant(
-            of: find.byType(MonthlyImpactPanel),
-            matching: find.text('Asignados de tus aportaciones'),
-          ),
-          findsOneWidget,
-        );
-        expect(
-          find.descendant(
-            of: find.byType(MonthlyImpactPanel),
-            matching: find.text('Casos apoyados por la comunidad'),
-          ),
-          findsOneWidget,
-        );
+        expect(monthly.personalRequests, isEmpty);
+        expect(monthly.communityRequests, isEmpty);
+        expect(find.byType(MonthlyImpactPanel), findsNothing);
         await tester.binding.handlePopRoute();
         await tester.pumpAndSettle();
         expect(router.state.uri.toString(), entry);

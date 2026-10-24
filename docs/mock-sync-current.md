@@ -1,3 +1,42 @@
+# Checkpoint vigente — 23/10/2026, warm-trust b9f6d5f
+
+Producto: **dopmi-app**. Mock sólo referencia, congelada en
+`b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust elegida por titular.
+Cola única Flutter/root en checkout candidate-git-20261014,
+`codex/finish-release-20261015`, sobre HEAD documental `5e1d8b9`.
+Distribuido/instalado sigue **7f6d7e90 / Play interno 2.3.3(330), release170**.
+Este delta local todavía no está publicado, instalado ni aceptado por UX.
+
+Implementado W1–W3: fundación/nav, Adoptar/filtros múltiples/detalle, Guardián y
+Perfil, chat/notificaciones, Tienda privada y composición de historias por
+propósito. Impacto es feed; Perfil contiene historial de pagos; mensual en Apoyar
+Guardián, sin botón extra en Perfil conforme call_7ddb7182. Informe de adaptaciones
+y flujos no dibujados en parity-current-review, sin nueva decisión pendiente.
+
+Evidencia local en `.tools/integral20d21-20261018/b9f6d5f-delta/`:
+format416/0; analyze completo88.8s y delta final75.7s sin incidencias;
+final-visual-and-impact86PASS; controles/expiry y detalle safearea verificados en
+suites dirigidas; capturas normal/115%/320px200%. Código/producto independientes
+cerraron hallazgos materiales del delta. CI integral del SHA congelado pendiente.
+No sumar suites superpuestas ni confundir fixtures con teléfono.
+
+Root siguiente: fijar commit único → push/CI4jobs exactos → cerrar paquete331
+preparado con revisión independiente y pedir permiso propio de distribución.
+Ninguna reserva/build/POST331 ni autorización operativa nueva todavía.
+
+No se operó DEV ni dispositivo durante este delta. Última lectura remota
+24/oct03:20UTC: video/Tienda/cleanup OFF, trabajo6 pausado,16assets históricos.
+P3 condicionado a330 conserva preflight/copia locales, **cero caso/gasto/aporte/
+video y ninguna ventana ON iniciada**; no transferirlo a otro candidato. Samsung
+quedó en selector de publicación/Rescatista sin nuevo borrador. Conservar caso
+TEST CLOSED40, dos clips aprobados, gasto DRAFT4/PDF privado y dinero sólo TEST.
+
+Pendientes de alcance global: comparación UX del candidato instalado, cámara/
+audio físico, historias/Impacto reales, otra cuenta sin Tienda e iOS físico.
+No son bloqueos para implementación local ni aceptación inferida.
+
+## Historial de checkpoints (supersedido por el corte vigente superior)
+
 ## 23/10/2026 — P2 pública reproducida en Samsung330; cierre OFF comprobado
 
 Permiso `call_420db186b6ad4c108a6b2053739e8690/item0` **consumido**. Paquete5d86374c…2b998, producto7f6d7e90/Play2.3.3(330)/release170 y mock20d21 intactos. Preflight real completo y dispositivo330/Vending/cuentaTEST/Adoptar comprobados. Renderer bloqueó el primer wrapper mal formado antes de reserva/ON; se preservó y guardó el MCP completo con la misma observación. Reserva única00:44:09.355UTC, SQLON00:44:18.479 y EdgeON confirmado después: sólo video cambió, cleanupOFF/job6pausado toda la ventana. Stopnuevo00:59:09/deadline01:04:09UTC, no se alcanzaron.

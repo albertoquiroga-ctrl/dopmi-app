@@ -1,5 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 
+import '../../core/css_linear_gradient.dart';
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../../core/reference_focus_outline.dart';
 import 'community_repository.dart';
@@ -54,17 +58,20 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
-          decoration: BoxDecoration(
-            color: const Color(0xfff2f1ea),
-            borderRadius: BorderRadius.circular(28),
-          ),
+        _PublicProfileFrostCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PublicProfileIdentity(
-                avatar: widget.avatar,
+                avatar: Theme(
+                  data: Theme.of(context).copyWith(
+                    colorScheme: Theme.of(context).colorScheme.copyWith(
+                      primaryContainer: DopmiTokens.sky,
+                      onPrimaryContainer: ink,
+                    ),
+                  ),
+                  child: widget.avatar,
+                ),
                 name: profile['name'] as String? ?? '',
                 city: [
                   profile['city'],
@@ -161,4 +168,51 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
       ],
     );
   }
+}
+
+/// b9 warm-trust public identity surface; approved avatar/data stay with callers.
+class _PublicProfileFrostCard extends StatelessWidget {
+  const _PublicProfileFrostCard({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(28),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x0f46281d),
+          offset: Offset(0, 10),
+          blurRadius: 32,
+        ),
+        BoxShadow(
+          color: Color(0x38ffffff),
+          offset: Offset(0, 6),
+          blurRadius: 20,
+        ),
+      ],
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: const Color(0x52ffffff),
+            gradient: const CssLinearGradient(
+              degrees: 165,
+              colors: [Color(0x61ffffff), Color(0xb8ffffff), Color(0xd1ffffff)],
+              stops: [0, .52, 1],
+            ),
+            border: Border.all(color: const Color(0xc7ffffff)),
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+            child: child,
+          ),
+        ),
+      ),
+    ),
+  );
 }

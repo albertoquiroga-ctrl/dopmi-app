@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 
 class NotificationFrame extends StatelessWidget {
   const NotificationFrame({
@@ -66,16 +67,19 @@ class NotificationFrame extends StatelessWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            88 + MediaQuery.paddingOf(context).top,
-            16,
-            32,
+      body: DonorCanvas(
+        enabled: !rescuer,
+        child: SafeArea(
+          top: false,
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              88 + MediaQuery.paddingOf(context).top,
+              16,
+              32,
+            ),
+            children: children,
           ),
-          children: children,
         ),
       ),
     ),

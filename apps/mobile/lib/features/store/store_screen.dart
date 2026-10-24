@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
+import '../../core/warm_filter_dialog.dart';
 import '../../core/donor_notification_button.dart';
 import 'store_repository.dart';
 
@@ -60,71 +62,75 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: widget.navigation,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: SvgPicture.asset(
-                        'assets/profile/logo-paw.svg',
-                        width: 40,
-                        height: 40,
-                        semanticsLabel: 'Dopmi',
+      body: DonorCanvas(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: SvgPicture.asset(
+                          'assets/profile/logo-paw-naranja.svg',
+                          width: 40,
+                          height: 40,
+                          semanticsLabel: 'Dopmi',
+                        ),
                       ),
                     ),
-                  ),
-                  const DonorNotificationButton(),
-                ],
-              ),
-            ),
-            Expanded(
-              child: catalog.when(
-                skipLoadingOnRefresh: false,
-                skipLoadingOnReload: false,
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, _) => Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'No pudimos cargar la Tienda. Intenta de nuevo.',
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        OutlinedButton(
-                          onPressed: () => ref.invalidate(storeCatalogProvider),
-                          child: const Text('Reintentar'),
-                        ),
-                      ],
-                    ),
-                  ),
+                    const DonorNotificationButton(),
+                  ],
                 ),
-                data: (value) => value.enabled && actorCurrent
-                    ? _StoreContent(
-                        key: ValueKey('$actor:${value.preview}'),
-                        catalog: value,
-                        actor: actor,
-                        selection: selection,
-                      )
-                    : const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Text(
-                            'La Tienda Dopmi todavía no está disponible.',
+              ),
+              Expanded(
+                child: catalog.when(
+                  skipLoadingOnRefresh: false,
+                  skipLoadingOnReload: false,
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (_, _) => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'No pudimos cargar la Tienda. Intenta de nuevo.',
                             textAlign: TextAlign.center,
                           ),
-                        ),
+                          const SizedBox(height: 12),
+                          OutlinedButton(
+                            onPressed: () =>
+                                ref.invalidate(storeCatalogProvider),
+                            child: const Text('Reintentar'),
+                          ),
+                        ],
                       ),
+                    ),
+                  ),
+                  data: (value) => value.enabled && actorCurrent
+                      ? _StoreContent(
+                          key: ValueKey('$actor:${value.preview}'),
+                          catalog: value,
+                          actor: actor,
+                          selection: selection,
+                        )
+                      : const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Text(
+                              'La Tienda Dopmi todavía no está disponible.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -246,6 +252,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
           ..sort();
     final route = DialogRoute<bool>(
       context: context,
+      barrierColor: const Color(0x29000000),
       builder: (context) => StatefulBuilder(
         builder: (context, update) {
           Widget choices(
@@ -284,17 +291,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               );
             },
           );
-          return Dialog(
-            backgroundColor: Colors.white,
-            surfaceTintColor: Colors.transparent,
-            elevation: 0,
-            insetPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 24,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
+          return WarmFilterDialog(
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: 361,
@@ -384,8 +381,8 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                     const SizedBox(height: 16),
                     FilledButton(
                       style: FilledButton.styleFrom(
-                        backgroundColor: DopmiTokens.yellow,
-                        foregroundColor: DopmiTokens.ink,
+                        backgroundColor: DopmiTokens.orangeButton,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -456,20 +453,20 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
             widget.catalog.preview ? 'Vista previa de Tienda' : 'Tienda Dopmi',
             style: const TextStyle(
               fontFamily: 'Inter',
-              fontSize: 28,
+              fontSize: 32,
               height: 1.1,
-              letterSpacing: 0,
-              fontWeight: FontWeight.w700,
+              letterSpacing: -.64,
+              fontWeight: FontWeight.w800,
               color: DopmiTokens.ink,
             ),
           ),
           const SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xffeff6ff),
-              border: Border.all(color: const Color(0xffbedbff)),
-              borderRadius: BorderRadius.circular(20),
+              color: DopmiTokens.saffronSoft,
+              border: Border.all(color: DopmiTokens.line),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Text(
               widget.catalog.preview
@@ -477,9 +474,9 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                   : 'Busca las croquetas de tu preferencia. Al seleccionar un producto, abrirás el comercio para comprar y pagar ahí. Las comisiones corresponden a Dopmi.',
               style: const TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 14,
-                height: 20 / 14,
-                color: Color(0xff1c398e),
+                fontSize: 12,
+                height: 1.45,
+                color: DopmiTokens.ink,
               ),
             ),
           ),
@@ -488,7 +485,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
             children: [
               Expanded(
                 child: Wrap(
-                  spacing: 18,
+                  spacing: 14,
                   runSpacing: 8,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
@@ -507,10 +504,10 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             foregroundColor: species == choice.$1
                                 ? DopmiTokens.ink
-                                : const Color(0xff777067),
+                                : DopmiTokens.muted,
                             textStyle: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: species == choice.$1 ? 28 : 22,
+                              fontSize: species == choice.$1 ? 18 : 16,
                               height: 1.1,
                               fontWeight: species == choice.$1
                                   ? FontWeight.w700
@@ -518,18 +515,39 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                             ),
                           ),
                           onPressed: () => setState(() => species = choice.$1),
-                          child: Text(choice.$2),
+                          child: Container(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: species == choice.$1
+                                      ? DopmiTokens.orange
+                                      : Colors.transparent,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                            child: Text(choice.$2),
+                          ),
                         ),
                       ),
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),
+              IconButton(
+                key: const ValueKey('store-sort'),
+                tooltip:
+                    'Ordenar: ${descending ? 'Mayor a menor kg' : 'Menor a mayor kg'}',
+                color: DopmiTokens.muted,
+                onPressed: () => setState(() => descending = !descending),
+                icon: const Icon(Icons.unfold_more, size: 22),
+              ),
               IconButton(
                 tooltip: activeFilters ? 'Filtros activos' : 'Filtros',
                 style: IconButton.styleFrom(
                   backgroundColor: activeFilters
-                      ? const Color(0xfff3eaff)
+                      ? DopmiTokens.orangeSoft
                       : Colors.transparent,
                   foregroundColor: DopmiTokens.ink,
                 ),
@@ -538,23 +556,16 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                   '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.5" cy="7" r="2.25" fill="#15110d"/><path d="M4 17h16" stroke="#15110d" stroke-width="1.8" stroke-linecap="round"/><circle cx="7.5" cy="17" r="2.25" fill="#15110d"/></svg>',
                   width: 22,
                   height: 22,
+                  colorFilter: ColorFilter.mode(
+                    activeFilters ? DopmiTokens.orange : DopmiTokens.muted,
+                    BlendMode.srcIn,
+                  ),
                   excludeFromSemantics: true,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: () => setState(() => descending = !descending),
-              icon: const Icon(Icons.swap_vert),
-              label: Text(
-                'Ordenar: ${descending ? 'Mayor a menor kg' : 'Menor a mayor kg'}',
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           if (products.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
@@ -570,10 +581,10 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                   ? 1
                   : 2;
               final width =
-                  (constraints.maxWidth - (columns - 1) * 12) / columns;
+                  (constraints.maxWidth - (columns - 1) * 14) / columns;
               return Wrap(
-                spacing: 12,
-                runSpacing: 12,
+                spacing: 14,
+                runSpacing: 14,
                 children: products
                     .map(
                       (product) => SizedBox(
@@ -621,12 +632,10 @@ class _StoreFilterChoice extends StatelessWidget {
     selected: selected,
     child: OutlinedButton(
       style: OutlinedButton.styleFrom(
-        backgroundColor: selected ? const Color(0xfff4efff) : Colors.white,
+        backgroundColor: selected ? DopmiTokens.saffronSoft : Colors.white,
         foregroundColor: DopmiTokens.ink,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        side: BorderSide(
-          color: selected ? DopmiTokens.purple : DopmiTokens.line,
-        ),
+        side: BorderSide(color: selected ? DopmiTokens.ink : DopmiTokens.line),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(sizeIcon == null ? 14 : 20),
         ),
@@ -678,89 +687,123 @@ class _StoreCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool preview, externalLinksEnabled;
   @override
-  Widget build(BuildContext context) => Material(
-    color: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18),
-      side: const BorderSide(color: DopmiTokens.line),
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x0d15110d),
+          blurRadius: 10,
+          offset: Offset(0, 2),
+        ),
+      ],
     ),
-    clipBehavior: Clip.antiAlias,
-    child: InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 104,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xfff7f4ef),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: preview
-                  ? SvgPicture.asset(
-                      'assets/profile/croquetas-banner-pet.svg',
-                      fit: BoxFit.contain,
-                      semanticsLabel: product.name,
-                    )
-                  : Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.contain,
-                      semanticLabel: product.name,
-                      errorBuilder: (_, _, _) => const Center(
-                        child: Icon(
-                          Icons.image_not_supported_outlined,
-                          semanticLabel: 'Imagen no disponible',
-                        ),
-                      ),
-                    ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              product.brand,
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-            ),
-            const SizedBox(height: 8),
-            Text(product.name),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 6,
-              children: [
-                Text(
-                  '${product.weightKg.toStringAsFixed(product.weightKg % 1 == 0 ? 0 : 1)} kg',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
+    child: Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(color: DopmiTokens.line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AspectRatio(
+                aspectRatio: 1,
+                child: Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xfffff0ba),
-                    borderRadius: BorderRadius.circular(30),
+                    color: const Color(0xfff5f5f5),
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Text(storeAgeLabels[product.age] ?? product.age),
+                  clipBehavior: Clip.antiAlias,
+                  child: preview
+                      ? SvgPicture.asset(
+                          'assets/profile/croquetas-banner-pet.svg',
+                          fit: BoxFit.cover,
+                          semanticsLabel: product.name,
+                        )
+                      : Image.network(
+                          product.imageUrl,
+                          fit: BoxFit.cover,
+                          semanticLabel: product.name,
+                          errorBuilder: (_, _, _) => const Center(
+                            child: Icon(
+                              Icons.image_not_supported_outlined,
+                              semanticLabel: 'Imagen no disponible',
+                            ),
+                          ),
+                        ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              preview
-                  ? (externalLinksEnabled
-                        ? (busy
-                              ? 'Abriendo destino de prueba…'
-                              : 'Abrir destino TEST')
-                        : 'Salida de prueba no habilitada')
-                  : (busy
-                        ? 'Abriendo comercio…'
-                        : 'Ver en ${product.merchantName}'),
-              style: const TextStyle(color: DopmiTokens.muted, fontSize: 12),
-            ),
-          ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.brand,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15,
+                            height: 1.25,
+                            color: DopmiTokens.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          product.name,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.3,
+                            color: DopmiTokens.muted,
+                          ),
+                        ),
+                        Text(
+                          storeAgeLabels[product.age] ?? product.age,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.3,
+                            color: DopmiTokens.muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${product.weightKg.toStringAsFixed(product.weightKg % 1 == 0 ? 0 : 1)} kg',
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      height: 1.2,
+                      color: DopmiTokens.ink,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                preview
+                    ? (externalLinksEnabled
+                          ? (busy
+                                ? 'Abriendo destino de prueba…'
+                                : 'Abrir destino TEST')
+                          : 'Salida de prueba no habilitada')
+                    : (busy
+                          ? 'Abriendo comercio…'
+                          : 'Ver en ${product.merchantName}'),
+                style: const TextStyle(color: DopmiTokens.muted, fontSize: 12),
+              ),
+            ],
+          ),
         ),
       ),
     ),

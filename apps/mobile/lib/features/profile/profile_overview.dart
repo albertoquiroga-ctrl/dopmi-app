@@ -11,7 +11,9 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/donor_notification_button.dart';
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import 'rescuer_profile_hero.dart';
 import 'account_profile_avatar.dart';
 import 'rescuer_profile_access.dart';
@@ -224,7 +226,7 @@ class RescuerDonorModeCard extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
                   color: settings
-                      ? const Color(0xff7841f2)
+                      ? DopmiTokens.purple
                       : const Color(0xffdad7d2),
                   borderRadius: BorderRadius.circular(99),
                 ),
@@ -607,181 +609,185 @@ class DonorProfileView extends ConsumerWidget {
     extendBody: true,
     backgroundColor: Colors.white,
     bottomNavigationBar: const CommunityNav(4),
-    body: SafeArea(
-      bottom: false,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
-        children: [
-          SizedBox(
-            height: 42,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/profile/logo-paw.svg',
-                  width: 40,
-                  height: 40,
-                  semanticsLabel: 'Dopmi',
-                ),
-                const Spacer(),
-                const DonorNotificationButton(),
-              ],
+    body: DonorCanvas(
+      child: SafeArea(
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
+          children: [
+            SizedBox(
+              height: 42,
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/profile/logo-paw-naranja.svg',
+                    width: 40,
+                    height: 40,
+                    semanticsLabel: 'Dopmi',
+                  ),
+                  const Spacer(),
+                  const DonorNotificationButton(),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 40),
-              child: const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Mi perfil',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: ink,
-                    height: 1.1,
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 40),
+                child: const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Mi perfil',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
+                      height: 1.1,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x0f15110d),
-                  blurRadius: 24,
-                  offset: Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                AccountProfileAvatar(name: profile.name),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        profile.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          height: 1.25,
-                          fontWeight: FontWeight.w700,
-                          color: ink,
-                        ),
-                      ),
-                      if (profile.city.isNotEmpty) ...[
-                        const SizedBox(height: 2),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x0f15110d),
+                    blurRadius: 24,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  AccountProfileAvatar(name: profile.name),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          profile.city,
+                          profile.name,
                           style: const TextStyle(
-                            fontSize: 13,
-                            height: 1.3,
-                            color: muted,
+                            fontSize: 16,
+                            height: 1.25,
+                            fontWeight: FontWeight.w700,
+                            color: ink,
                           ),
                         ),
+                        if (profile.city.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            profile.city,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              height: 1.3,
+                              color: muted,
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  tooltip: 'Editar información básica',
-                  onPressed: () => context.push('/basic-info'),
-                  icon: SvgPicture.asset(
-                    'assets/profile/icon-edit.svg',
-                    width: 18,
-                    height: 18,
+                  IconButton(
+                    tooltip: 'Editar información básica',
+                    onPressed: () => context.push('/basic-info'),
+                    icon: SvgPicture.asset(
+                      'assets/profile/icon-edit.svg',
+                      width: 18,
+                      height: 18,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: const Color(0xfff3f0ea),
+                      overlayColor: Colors.transparent,
+                    ),
                   ),
-                  style: IconButton.styleFrom(
-                    backgroundColor: const Color(0xfff3f0ea),
-                    overlayColor: Colors.transparent,
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (ref.watch(guardianEnabledProvider))
+              const DonorGuardianFeature(),
+            const SizedBox(height: 12),
+            const StorePromotion(),
+            DonorAccessGroup(
+              title: 'Pagos y suscripciones',
+              items: [
+                if (ref.watch(guardianEnabledProvider)) ...[
+                  (
+                    'Métodos de pago',
+                    Icons.credit_card,
+                    '/settings/payment-methods',
                   ),
-                ),
+                  (
+                    'Suscripción Guardián',
+                    Icons.receipt_long_outlined,
+                    '/guardian',
+                  ),
+                ],
+                ('Mi historial de pagos', Icons.access_time, '/payments'),
               ],
             ),
-          ),
-          const SizedBox(height: 12),
-          if (ref.watch(guardianEnabledProvider)) const DonorGuardianFeature(),
-          const SizedBox(height: 12),
-          const StorePromotion(),
-          DonorAccessGroup(
-            title: 'Pagos y suscripciones',
-            items: [
-              if (ref.watch(guardianEnabledProvider)) ...[
-                (
-                  'Métodos de pago',
-                  Icons.credit_card,
-                  '/settings/payment-methods',
-                ),
-                (
-                  'Suscripción y pagos',
-                  Icons.receipt_long_outlined,
-                  '/guardian',
-                ),
-              ],
-              ('Mi historial', Icons.access_time, '/payments'),
-            ],
-          ),
-          const SizedBox(height: 12),
-          DonorFeature(
-            title: 'Publica un caso de adopción',
-            subtitle: 'Cambia tu perfil a modo Rescatista. Siempre podrás regresar a la navegación como Adoptante.',
-            icon: Icons.add,
-            light: true,
-            onPressed: busy || profile.status != 'active'
-                ? null
-                : () => confirmMode(context),
-          ),
-          if (busy)
-            const LinearProgressIndicator(
-              semanticsLabel: 'Cambiando experiencia',
+            const SizedBox(height: 12),
+            DonorFeature(
+              title: 'Publica un caso de adopción',
+              subtitle: 'Cambia tu perfil a modo Rescatista. Siempre podrás regresar a la navegación como Adoptante.',
+              icon: Icons.add,
+              light: true,
+              onPressed: busy || profile.status != 'active'
+                  ? null
+                  : () => confirmMode(context),
             ),
-          if (error != null) Notice(error!, isError: true),
-          const SizedBox(height: 12),
-          DonorSupportRow(
-            title: 'Sobre Nosotros',
-            asset: 'icon-doc.svg',
-            onPressed: () => context.push('/about'),
-          ),
-          const SizedBox(height: 10),
-          DonorSupportRow(
-            title: 'Centro de ayuda',
-            asset: 'icon-help.svg',
-            onPressed: () => context.push('/help'),
-          ),
-          const SizedBox(height: 12),
-          DonorSupportRow(
-            title: 'Cuenta y privacidad',
-            asset: 'icon-doc.svg',
-            onPressed: () => context.push('/settings/account'),
-          ),
-          const SizedBox(height: 12),
-          ProfileRow(
-            title: 'Mis mascotas',
-            icon: Icons.favorite_border,
-            path: '/messages',
-          ),
-          const SizedBox(height: 12),
-          DonorLogoutRow(
-            onPressed: () async {
-              try {
-                await ref.read(identityControllerProvider).logout();
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(identityError(e))));
+            if (busy)
+              const LinearProgressIndicator(
+                semanticsLabel: 'Cambiando experiencia',
+              ),
+            if (error != null) Notice(error!, isError: true),
+            const SizedBox(height: 12),
+            DonorSupportRow(
+              title: 'Sobre Nosotros',
+              asset: 'icon-doc.svg',
+              onPressed: () => context.push('/about'),
+            ),
+            const SizedBox(height: 10),
+            DonorSupportRow(
+              title: 'Centro de ayuda',
+              asset: 'icon-help.svg',
+              onPressed: () => context.push('/help'),
+            ),
+            const SizedBox(height: 12),
+            DonorSupportRow(
+              title: 'Cuenta y privacidad',
+              asset: 'icon-doc.svg',
+              onPressed: () => context.push('/settings/account'),
+            ),
+            const SizedBox(height: 12),
+            ProfileRow(
+              title: 'Mis mascotas',
+              icon: Icons.favorite_border,
+              path: '/messages',
+            ),
+            const SizedBox(height: 12),
+            DonorLogoutRow(
+              onPressed: () async {
+                try {
+                  await ref.read(identityControllerProvider).logout();
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(identityError(e))));
+                  }
                 }
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -982,6 +988,7 @@ class _DonorGuardianFeatureState extends ConsumerState<DonorGuardianFeature> {
       final active = snapshot.data?['plan']?['status'] == 'active';
       return DonorFeature(
         title: active ? '¡Ya eres Guardián!' : 'Sé un Guardián',
+        guardianActive: active,
         subtitle: active
             ? 'Consulta mi impacto a la manada'
             : 'Apoyo mensual con reportes de impacto',
@@ -1006,11 +1013,12 @@ class DonorFeature extends StatefulWidget {
     required this.onPressed,
     this.light = false,
     this.rescuer = false,
+    this.guardianActive = false,
   });
   final String title, subtitle;
   final IconData icon;
   final VoidCallback? onPressed;
-  final bool light, rescuer;
+  final bool light, rescuer, guardianActive;
   @override
   State<DonorFeature> createState() => _DonorFeatureState();
 }
@@ -1032,24 +1040,38 @@ class _DonorFeatureState extends State<DonorFeature> {
     child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: widget.rescuer
-                ? const Color(0x1f7841f2)
-                : light
-                ? const Color(0x1415110d)
-                : const Color(0x4715110d),
-            blurRadius: widget.rescuer ? 24 : 32,
-            offset: Offset(0, widget.rescuer ? 8 : 12),
-          ),
-        ],
+        border: widget.rescuer || light
+            ? Border.all(
+                color: widget.rescuer
+                    ? DopmiTokens.line
+                    : const Color(0xffb8ddf5),
+              )
+            : null,
+        boxShadow: widget.rescuer || light
+            ? const []
+            : [
+                BoxShadow(
+                  color: widget.guardianActive
+                      ? const Color(0x0f15110d)
+                      : light
+                      ? const Color(0x1415110d)
+                      : const Color(0x2e46281d),
+                  blurRadius: widget.rescuer || widget.guardianActive ? 24 : 32,
+                  offset: Offset(
+                    0,
+                    widget.rescuer || widget.guardianActive ? 8 : 12,
+                  ),
+                ),
+              ],
       ),
       child: Material(
         color: widget.rescuer
-            ? const Color(0xffefe8ff)
+            ? Colors.white
+            : widget.guardianActive
+            ? Colors.white
             : light
-            ? const Color(0xfffff8e0)
-            : const Color(0xff15110d),
+            ? DopmiTokens.sky
+            : DopmiTokens.ink,
         borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onPressed,
@@ -1071,9 +1093,8 @@ class _DonorFeatureState extends State<DonorFeature> {
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           height: 1.2,
-                          color: widget.rescuer
-                              ? const Color(0xff3b1a8c)
-                              : light
+                          color:
+                              widget.rescuer || light || widget.guardianActive
                               ? ink
                               : Colors.white,
                         ),
@@ -1084,9 +1105,8 @@ class _DonorFeatureState extends State<DonorFeature> {
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.35,
-                          color: widget.rescuer
-                              ? const Color(0xff5c4f7a)
-                              : light
+                          color:
+                              widget.rescuer || light || widget.guardianActive
                               ? muted
                               : const Color.from(
                                   alpha: .72,
@@ -1104,17 +1124,12 @@ class _DonorFeatureState extends State<DonorFeature> {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: light ? ink : yellow,
+                    color: widget.guardianActive || !light
+                        ? DopmiTokens.saffronSoft
+                        : light
+                        ? ink
+                        : yellow,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: light
-                            ? const Color(0x3815110d)
-                            : const Color(0x59f7cb2d),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: SvgPicture.asset(
@@ -1415,7 +1430,7 @@ class ProfileFrame extends StatelessWidget {
               child: Row(
                 children: [
                   SvgPicture.asset(
-                    'assets/profile/logo-paw.svg',
+                    'assets/profile/logo-paw-naranja.svg',
                     width: 40,
                     height: 40,
                     semanticsLabel: 'Dopmi',

@@ -169,17 +169,23 @@ void main() {
   );
 
   testWidgets(
-    'choosing a personality replaces the previous one and toggles off',
+    'personalities accumulate and each selected trait toggles off independently',
     (tester) async {
       final repo = await open(tester);
       await tester.tap(label('Juguetón'));
       await tester.tap(label('Tímido'));
       await tester.tap(label('Aplicar filtros'));
       await tester.pumpAndSettle();
-      expect(repo.queries.last['personality'], ['timido']);
+      expect(repo.queries.last['personality'], ['playful', 'timido']);
       await tester.tap(find.byTooltip('Filtros'));
       await tester.pumpAndSettle();
       await tester.tap(label('Tímido'));
+      await tester.tap(label('Aplicar filtros'));
+      await tester.pumpAndSettle();
+      expect(repo.queries.last['personality'], ['playful']);
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      await tester.tap(label('Juguetón'));
       await tester.tap(label('Aplicar filtros'));
       await tester.pumpAndSettle();
       expect(repo.queries.last.containsKey('personality'), isFalse);
@@ -241,6 +247,7 @@ void main() {
     final repo = await open(tester);
     await tester.tap(label('Hembra'));
     await tester.tap(find.byTooltip('Mediano'));
+    await tester.tap(label('Alegre'));
     await tester.tap(label('Tranquilo'));
     await tester.tap(label('Aplicar filtros'));
     await tester.pumpAndSettle();
@@ -248,16 +255,46 @@ void main() {
       'species': 'dog',
       'sex': 'female',
       'size': 'medium',
-      'personality': ['tranquilo'],
+      'personality': ['alegre', 'tranquilo'],
     });
     await tester.tap(find.byTooltip('Filtros'));
     await tester.pumpAndSettle();
-    final selected = tester.widget<FilterOption>(
-      find
-          .ancestor(of: label('Tranquilo'), matching: find.byType(FilterOption))
-          .first,
+    for (final trait in ['Alegre', 'Tranquilo']) {
+      expect(
+        tester
+            .widget<FilterOption>(
+              find
+                  .ancestor(
+                    of: label(trait),
+                    matching: find.byType(FilterOption),
+                  )
+                  .first,
+            )
+            .selected,
+        true,
+      );
+    }
+    // Reapplying a reopened sheet must preserve every selected server key.
+    await tester.tap(label('Aplicar filtros'));
+    await tester.pumpAndSettle();
+    expect(repo.queries.last['personality'], ['alegre', 'tranquilo']);
+    await tester.tap(find.byTooltip('Filtros'));
+    await tester.pumpAndSettle();
+    await tester.tap(label('Alegre'));
+    await tester.pump();
+    expect(
+      tester
+          .widget<FilterOption>(
+            find
+                .ancestor(
+                  of: label('Tranquilo'),
+                  matching: find.byType(FilterOption),
+                )
+                .first,
+          )
+          .selected,
+      true,
     );
-    expect(selected.selected, true);
     await tester.tap(label('Limpiar filtros'));
     await tester.pumpAndSettle();
     expect(repo.queries.last, {'species': 'dog'});

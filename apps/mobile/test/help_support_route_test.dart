@@ -133,7 +133,7 @@ void main() {
                     .border
                 as Border;
         expect(border.top.width, 3);
-        expect(border.top.color, const Color(0x4d7841f2));
+        expect(border.top.color, const Color(0xffeb6425));
         expect(tester.getRect(outline), tester.getRect(message).inflate(5));
         tester.view.viewInsets = const FakeViewPadding(bottom: 300);
         await tester.pumpAndSettle();

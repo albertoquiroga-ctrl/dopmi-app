@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
@@ -694,7 +695,7 @@ class _PublicRescuerAvatar extends ConsumerWidget {
         style: const TextStyle(
           fontSize: 34,
           fontWeight: FontWeight.w800,
-          color: Color(0xff6b5000),
+          color: DopmiTokens.ink,
         ),
       ),
     );
@@ -703,7 +704,7 @@ class _PublicRescuerAvatar extends ConsumerWidget {
         width: 88,
         height: 88,
         child: ColoredBox(
-          color: const Color(0xfffff2b8),
+          color: DopmiTokens.sky,
           child: path == null || path!.isEmpty
               ? fallback
               : RemotePhoto(

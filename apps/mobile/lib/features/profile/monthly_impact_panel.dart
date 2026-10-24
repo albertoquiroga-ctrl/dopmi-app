@@ -92,6 +92,7 @@ class _MonthlyImpactPanelState extends ConsumerState<MonthlyImpactPanel> {
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
+                    color: ink,
                   ),
                 ),
               ),
@@ -113,7 +114,11 @@ class _MonthlyImpactPanelState extends ConsumerState<MonthlyImpactPanel> {
           const SizedBox(height: 24),
           const Text(
             'Tu impacto',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: ink,
+            ),
           ),
           const SizedBox(height: 12),
           _ImpactMosaic(
@@ -140,7 +145,11 @@ class _MonthlyImpactPanelState extends ConsumerState<MonthlyImpactPanel> {
           const SizedBox(height: 28),
           const Text(
             'Este mes logramos',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: ink,
+            ),
           ),
           const SizedBox(height: 6),
           const Text(
@@ -364,7 +373,8 @@ class _MonthlyCommunityMosaicState
                       'Sin medición histórica',
                   isTextualStatus: widget.community.urgentCasesCovered == null,
                   label: 'Casos con gastos urgentes totalmente cubiertos',
-                  color: const Color(0xffefe8fb),
+                  color: const Color(0xff15110d),
+                  foreground: Colors.white,
                 ),
                 if (photos.length > 2) photoTile(2),
                 if (photos.isNotEmpty)
@@ -453,23 +463,29 @@ class _ImpactStat extends StatelessWidget {
     required this.value,
     required this.label,
     required this.color,
+    this.foreground = ink,
     this.isTextualStatus = false,
   });
   final String value, label;
-  final Color color;
+  final Color color, foreground;
   final bool isTextualStatus;
   static const valueStyle = TextStyle(
+    color: ink,
     fontFamily: 'Inter',
     fontSize: 42,
     height: 1.2,
     fontWeight: FontWeight.w800,
   );
   static const textualStatusStyle = TextStyle(
+    color: ink,
     fontFamily: 'Inter',
     fontSize: 20,
     height: 1.4,
     fontWeight: FontWeight.w700,
   );
+  TextStyle get effectiveValueStyle => valueStyle.copyWith(color: foreground);
+  TextStyle get effectiveTextualStyle =>
+      textualStatusStyle.copyWith(color: foreground);
   @override
   Widget build(BuildContext context) => Container(
     key: ValueKey('impact-stat-$label'),
@@ -485,18 +501,18 @@ class _ImpactStat extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final painter = TextPainter(
-                text: TextSpan(text: value, style: valueStyle),
+                text: TextSpan(text: value, style: effectiveValueStyle),
                 textDirection: Directionality.of(context),
                 textScaler: MediaQuery.textScalerOf(context),
               )..layout();
               final overflow = painter.width > constraints.maxWidth;
               painter.dispose();
-              if (!overflow) return Text(value, style: valueStyle);
+              if (!overflow) return Text(value, style: effectiveValueStyle);
               final parts = value.split(' ');
               final number = parts.first;
               final unit = parts.skip(1).join(' ');
               final numberPainter = TextPainter(
-                text: TextSpan(text: number, style: valueStyle),
+                text: TextSpan(text: number, style: effectiveValueStyle),
                 textDirection: Directionality.of(context),
                 textScaler: MediaQuery.textScalerOf(context),
               )..layout();
@@ -513,23 +529,28 @@ class _ImpactStat extends StatelessWidget {
                       key: ValueKey('impact-amount-scroll-$label'),
                       scrollDirection: Axis.horizontal,
                       child: ExcludeSemantics(
-                        child: Text(number, style: valueStyle, softWrap: false),
+                        child: Text(
+                          number,
+                          style: effectiveValueStyle,
+                          softWrap: false,
+                        ),
                       ),
                     ),
                     if (unit.isNotEmpty)
                       ExcludeSemantics(
                         child: Text(
                           unit,
-                          style: const TextStyle(
+                          style: TextStyle(
+                            color: foreground,
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     if (numberOverflows)
-                      const Text(
+                      Text(
                         'Desliza para ver el importe completo',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 12, color: foreground),
                       ),
                   ],
                 ),
@@ -537,11 +558,17 @@ class _ImpactStat extends StatelessWidget {
             },
           )
         else
-          Text(value, style: isTextualStatus ? textualStatusStyle : valueStyle),
+          Text(
+            value,
+            style: isTextualStatus
+                ? effectiveTextualStyle
+                : effectiveValueStyle,
+          ),
         const SizedBox(height: 8),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
+            color: foreground,
             fontSize: 16,
             height: 1.4,
             fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/reference_focus_outline.dart';
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart' show localDate, AdoptionPhoto;
@@ -55,15 +56,10 @@ class NotificationTile extends StatelessWidget {
     final tone = item['tone'];
     final photo = item['photo_path'] as String?;
     final toneBackground = switch (tone) {
-      'positive' => const Color(0xffecfdf5),
-      'negative' => const Color(0xfffef2f2),
-      'pending' => const Color(0xfffffbeb),
-      _ =>
-        kind == 'message'
-            ? const Color(0xffeff6ff)
-            : kind == 'case'
-            ? const Color(0xfffaf5ff)
-            : const Color(0xfffefce8),
+      'positive' => DopmiTokens.saffronSoft,
+      'negative' => DopmiTokens.orangeSoft,
+      'pending' => DopmiTokens.sky,
+      _ => kind == 'message' ? DopmiTokens.sky : DopmiTokens.saffronSoft,
     };
     final title = Text(
       item['title'] as String,
@@ -101,10 +97,10 @@ class NotificationTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
                 color: unread
-                    ? const Color(0xfff3d45d)
+                    ? const Color(0x73fab919)
                     : rescuer
                     ? const Color(0xffe3e4ed)
-                    : const Color(0xffe6e2dd),
+                    : DopmiTokens.line,
               ),
               boxShadow: unread
                   ? const [
@@ -140,7 +136,7 @@ class NotificationTile extends StatelessWidget {
                         alignment: Alignment.center,
                         child: item['thumb_style'] == 'brand'
                             ? SvgPicture.asset(
-                                'assets/profile/logo-paw.svg',
+                                'assets/profile/logo-paw-naranja.svg',
                                 width: 40,
                                 height: 40,
                               )
@@ -159,6 +155,21 @@ class NotificationTile extends StatelessWidget {
                                     : 'assets/profile/notif-$kind.svg',
                                 width: 20,
                                 height: 20,
+                                colorFilter: switch (tone) {
+                                  'positive' => const ColorFilter.mode(
+                                    DopmiTokens.yellowStrong,
+                                    BlendMode.srcIn,
+                                  ),
+                                  'negative' => const ColorFilter.mode(
+                                    DopmiTokens.orange,
+                                    BlendMode.srcIn,
+                                  ),
+                                  'pending' => const ColorFilter.mode(
+                                    ink,
+                                    BlendMode.srcIn,
+                                  ),
+                                  _ => null,
+                                },
                               ),
                       ),
                       const SizedBox(width: 12),

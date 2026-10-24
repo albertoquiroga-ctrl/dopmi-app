@@ -10,13 +10,20 @@ const yellow = DopmiTokens.yellow;
 const muted = DopmiTokens.muted;
 
 ThemeData dopmiTheme({bool rescuer = false}) {
-  final colors = ColorScheme.fromSeed(seedColor: purple).copyWith(
-    primary: rescuer ? purple : yellow,
-    onPrimary: rescuer ? Colors.white : ink,
+  final colors = ColorScheme.fromSeed(seedColor: ink).copyWith(
+    primary: ink,
+    onPrimary: Colors.white,
+    primaryContainer: DopmiTokens.saffronSoft,
+    onPrimaryContainer: ink,
     secondary: yellow,
     onSecondary: ink,
+    secondaryContainer: DopmiTokens.yellowSoft,
+    onSecondaryContainer: ink,
     surface: cream,
     onSurface: ink,
+    surfaceTint: Colors.transparent,
+    outline: DopmiTokens.line,
+    outlineVariant: DopmiTokens.line,
     error: DopmiTokens.danger,
   );
   return ThemeData(
@@ -40,30 +47,30 @@ ThemeData dopmiTheme({bool rescuer = false}) {
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: const Color(0xff59408f)),
+      style: TextButton.styleFrom(foregroundColor: ink),
     ),
     colorScheme: colors,
     scaffoldBackgroundColor: cream,
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
         fontFamily: DopmiTokens.displayFont,
-        fontSize: 32,
-        fontVariations: DopmiTokens.display32Variations,
+        fontSize: 24,
         fontWeight: FontWeight.w600,
-        height: 1.15,
+        height: 1.25,
+        letterSpacing: -.48,
         color: ink,
       ),
       headlineMedium: TextStyle(
         fontFamily: DopmiTokens.displayFont,
-        fontSize: 28,
-        fontVariations: DopmiTokens.display28Variations,
+        fontSize: 19,
         fontWeight: FontWeight.w600,
-        height: 1.2,
+        height: 1.3,
+        letterSpacing: -.19,
         color: ink,
       ),
       titleLarge: TextStyle(
         fontSize: 19,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w600,
         color: ink,
         letterSpacing: 0,
       ),
@@ -79,7 +86,7 @@ ThemeData dopmiTheme({bool rescuer = false}) {
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        height: 1.5,
+        height: 1.55,
         color: muted,
         letterSpacing: 0,
       ),
@@ -92,13 +99,15 @@ ThemeData dopmiTheme({bool rescuer = false}) {
       filled: true,
       fillColor: Colors.white,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DopmiTokens.fieldRadius),
+      ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(DopmiTokens.fieldRadius),
         borderSide: const BorderSide(color: DopmiTokens.line),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(DopmiTokens.fieldRadius),
         borderSide: const BorderSide(color: DopmiTokens.yellowInk, width: 2),
       ),
       errorMaxLines: 3,
@@ -116,7 +125,7 @@ ThemeData dopmiTheme({bool rescuer = false}) {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: rescuer ? purple : ink,
+        foregroundColor: ink,
         minimumSize: const Size.fromHeight(48),
         shape: const StadiumBorder(),
       ),
@@ -206,7 +215,7 @@ class Heading extends StatelessWidget {
         Text(
           eyebrow!,
           style: const TextStyle(
-            color: purple,
+            color: muted,
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
           ),
@@ -218,7 +227,7 @@ class Heading extends StatelessWidget {
         child: Text(title, style: Theme.of(context).textTheme.headlineLarge),
       ),
       const SizedBox(height: 12),
-      Text(description, style: Theme.of(context).textTheme.bodyLarge),
+      Text(description, style: Theme.of(context).textTheme.bodyMedium),
       const SizedBox(height: 28),
     ],
   );
@@ -235,7 +244,7 @@ class Notice extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isError ? const Color(0xffffeded) : const Color(0xffeee7fc),
+        color: isError ? const Color(0xffffeded) : DopmiTokens.saffronSoft,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(

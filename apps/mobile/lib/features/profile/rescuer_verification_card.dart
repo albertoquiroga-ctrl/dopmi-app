@@ -1,7 +1,10 @@
 import '../../core/reference_focus_outline.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/design_tokens.dart';
 
 class RescuerVerificationCard extends StatefulWidget {
   const RescuerVerificationCard({
@@ -54,7 +57,7 @@ class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: approved
-                  ? const Color(0x477841f2)
+                  ? const Color(0x4746281d)
                   : hovered
                   ? const Color(0xffd8d2ca)
                   : const Color(0xffe3e4ed),
@@ -93,7 +96,7 @@ class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
                         height: 44,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: const Color(0x1f7841f2),
+                          color: const Color(0x1f46281d),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: SvgPicture.asset(
@@ -101,7 +104,7 @@ class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
                           width: 20,
                           height: 20,
                           colorFilter: const ColorFilter.mode(
-                            Color(0xff7841f2),
+                            DopmiTokens.purple,
                             BlendMode.srcIn,
                           ),
                         ),

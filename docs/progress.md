@@ -1,3 +1,45 @@
+## 23/10/2026 — Delta warm-trust implementado; candidato integrado en preparación
+
+Referencia nueva autorizada b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef. Sólo dopmi-app
+modificado; mock limpio de cambios de producto. W1–W3 abarcan paleta/Inter/CTA/nav,
+Adoptar/filtros múltiples/carta/detalle, Guardián/collage/mosaico, Perfil/perfil
+público/chat/notificaciones, Tienda privada e historias por propósito con filtros
+públicos y cursores estables. Impacto feed y Perfil→historial de pagos siguen el
+mock; no botón mensual extra, decisión call_7ddb7182. Informe de adaptaciones y
+flujos ausentes en parity-current-review. No se inventó tarjeta histórica4242.
+
+Validación local: format416/0; analyze completo sin incidencias88.8s y último
+delta75.7s; final-visual-and-impact86PASS/1m45; detail-capture-recheck19PASS;
+refined-ui-final73PASS/4fallos reveló CTA52 frente58 y expectativas de sombra
+anteriores, corregidos sin relajar safearea14; suite visual previa26PASS/2m46.
+Logs separados en b9f6d5f-delta, sin sumar pruebas superpuestas. Recaptura puntual Perfil1PASS/5s confirma etiqueta final. Capturas Flutter
+con fixtures autorizadas normal/115%/320px200%, no dispositivo ni aceptación.
+Código warm_code_review y producto warm_product_review inspeccionaron fuentes y
+PNG frescos y cerraron P1/P2 del delta; seguridad warm_video_security_review cerró sin P1/P2 demostrados.
+Paquete331 local preparado, sin autoridad, reserva ni pin operativo. CI integral,
+publicación, Play, instalación y evaluación UX siguen separados y pendientes.
+
+Retro: primera evaluación independiente warm_process_review sobre logs señaló
+expectativas antiguas y fixture fuera de scroll como retrabajo demostrado; no
+probó ahorro global ni origen del byte inválido. Root además comprobó regresiones
+de alpha (multiplicación Flutter), clip después de padding y referencia estática
+omitida al ajustar estilos; se corrigieron en fuentes/capturas, sin operación
+remota. El cambio tardío de etiqueta Perfil dejó una captura obsoleta y exigió
+recaptura puntual. No atribuir esas demoras al usuario o a la plataforma sin datos.
+Hasta tres mejoras: (1) implementador+código contrastan expectativas y claves
+reales al cambiar comportamiento; verificar ausencia de fallos heredados en el
+siguiente lote; (2) producto revisa una superficie compartida antes de expandir
+capturas; verificar que sus hallazgos se corrijan una vez en el componente;
+(3) root congela fuentes antes de captura final y analiza el delta antes de la
+suite; verificar timestamps/cero compilaciones abortadas después del freeze.
+Son ajustes del método existente, sin hooks, timer ni gates nuevos; efecto sobre
+el tiempo total aún no medido.
+
+Sin DEV/ON/cargas/dinero/dispositivo en este delta. Último remoto03:20UTC OFF/
+pausado/16assets; CLOSED40/dos clips retenidos/DRAFT4-PDF preservados. P3 de330 no
+iniciado ni transferible implícitamente. Root dueño: commit final, CI y paquete
+revisable331; aceptación integral y pruebas físicas siguen abiertas.
+
 ## 23/10/2026 — P2 pública móvil verificada; cierre íntegro OFF
 
 Producto7f6d/Playinterno2.3.3(330)/release170, mock20d21 congelado. Permiso call_420db…item0 consumido. Preflight fullbaseline/330cuenta/34digests/Edges canónicas reales; primer wrapper mal formado bloqueado antes reserva/ON y preservado, corregida envoltura usando mismoMCPreal/hora sin repetirquery. Reserva00:44:09.355, SQLON00:44:18.479; sólo EdgevideoON (primera lectura inmediata aún digestviejo; segunda confirmó persistencia sin repetirSave). CleanupOFF/job6pausado siempre. Stopnuevo00:59:09 y deadline01:04:09 no alcanzados.

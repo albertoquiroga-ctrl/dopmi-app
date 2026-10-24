@@ -1,8 +1,10 @@
 import '../../core/reference_focus_outline.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../payments/payment_repository.dart';
 import '../rescue/rescue_repository.dart';
@@ -91,7 +93,7 @@ class RescuerProfileActivity extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            backgroundColor: const Color(0xff7841f2),
+                            backgroundColor: DopmiTokens.purple,
                             overlayColor: Colors.transparent,
                             foregroundColor: const Color(0xfffbfbff),
                             textStyle: const TextStyle(
@@ -104,8 +106,8 @@ class RescuerProfileActivity extends StatelessWidget {
                             animationDuration: Duration.zero,
                             backgroundColor: WidgetStateProperty.resolveWith(
                               (states) => states.contains(WidgetState.hovered)
-                                  ? const Color(0xff6d28d9)
-                                  : const Color(0xff7841f2),
+                                  ? DopmiTokens.cafeStrong
+                                  : DopmiTokens.purple,
                             ),
                           ),
                       child: Text(
@@ -172,7 +174,7 @@ class _RescuerActivityHomeLinkState extends State<RescuerActivityHomeLink> {
           minimumSize: const Size(48, 44),
           tapTargetSize: MaterialTapTargetSize.padded,
           padding: const EdgeInsets.symmetric(horizontal: 4),
-          foregroundColor: const Color(0xff7841f2),
+          foregroundColor: DopmiTokens.purple,
           backgroundColor: Colors.transparent,
           overlayColor: Colors.transparent,
           shape: const RoundedRectangleBorder(),
@@ -190,7 +192,7 @@ class _RescuerActivityHomeLinkState extends State<RescuerActivityHomeLink> {
             decoration: hovered
                 ? TextDecoration.underline
                 : TextDecoration.none,
-            decorationColor: const Color(0xff7841f2),
+            decorationColor: DopmiTokens.purple,
           ),
         ),
       ),

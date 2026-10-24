@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/design_tokens.dart';
 
 class VerificationIntroScreen extends StatelessWidget {
   const VerificationIntroScreen({
@@ -8,7 +11,7 @@ class VerificationIntroScreen extends StatelessWidget {
     required this.onLater,
   });
   final VoidCallback onContinue, onLater;
-  static const purple = Color(0xff7841f2);
+  static const purple = DopmiTokens.purple;
   static const ink = Color(0xff15110d);
   static const muted = Color(0xff554e48);
   Widget icon(String name, double size, {Color color = purple}) =>

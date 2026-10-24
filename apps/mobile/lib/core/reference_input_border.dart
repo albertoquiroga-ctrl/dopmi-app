@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'design_tokens.dart';
+
 /// Paints the CSS focus outline around the input, excluding validation text.
 class ReferenceInputBorder extends OutlineInputBorder {
   const ReferenceInputBorder({
@@ -71,8 +73,7 @@ class ReferenceInputBorder extends OutlineInputBorder {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3
-        ..color = const Color(0xff7841f2)
-            .withValues(alpha: .3 * outlineStrength),
+        ..color = DopmiTokens.purple.withValues(alpha: .3 * outlineStrength),
     );
   }
 }

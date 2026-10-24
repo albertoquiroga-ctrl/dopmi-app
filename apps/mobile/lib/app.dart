@@ -462,7 +462,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/impact',
             builder: (_, state) => state.uri.queryParameters['history'] == '1'
-                ? ImpactScreen(key: ValueKey(identity.identity?.id))
+                ? ImpactScreen(
+                    key: ValueKey(identity.identity?.id),
+                    historyOnly: true,
+                  )
                 : ImpactEntryScreen(key: ValueKey(identity.identity?.id)),
           ),
           GoRoute(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
@@ -38,10 +39,8 @@ class ChatMessageBubble extends ConsumerWidget {
             ),
             decoration: BoxDecoration(
               color: mine
-                  ? (rescuer ? purple : yellow)
-                  : (rescuer
-                        ? const Color(0xfff0eff8)
-                        : const Color(0xffefede8)),
+                  ? DopmiTokens.saffronSoft
+                  : (rescuer ? const Color(0xfff0eff8) : DopmiTokens.sky),
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(24),
                 topRight: const Radius.circular(24),
@@ -72,7 +71,9 @@ class ChatMessageBubble extends ConsumerWidget {
                           fontFamily: 'Inter',
                           fontSize: 14,
                           height: 1.55,
-                          color: mine && rescuer ? Colors.white : ink,
+                          color: !mine && rescuer
+                              ? const Color(0xff151423)
+                              : ink,
                         ),
                       ),
                     ),
@@ -91,9 +92,9 @@ class ChatMessageBubble extends ConsumerWidget {
                               fontFamily: 'Inter',
                               fontSize: 10,
                               height: 1.2,
-                              color: mine && rescuer
-                                  ? Colors.white.withValues(alpha: .92)
-                                  : (mine ? muted : const Color(0xff777289)),
+                              color: !mine && rescuer
+                                  ? const Color(0xff777289)
+                                  : muted,
                             ),
                           ),
                         ),

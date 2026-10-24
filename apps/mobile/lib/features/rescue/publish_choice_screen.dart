@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../../core/donor_notification_button.dart';
 import '../adoption/community_ui.dart';
@@ -165,8 +167,8 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   subtitle: 'Publica una mascota que esté lista para encontrar un hogar',
                                   asset: 'assets/profile/publish-adopter.svg',
                                   colors: const [
-                                    Color(0xff7841f2),
-                                    Color(0xff7841f2),
+                                    DopmiTokens.purple,
+                                    DopmiTokens.purple,
                                   ],
                                   selected: selected == 'adoption',
                                   onPressed: busy
@@ -183,8 +185,8 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   subtitle: 'Crea un caso para apoyarte a solventar los gastos que ya hayas cubierto recientemente de una mascota.',
                                   asset: 'assets/profile/tab-donate.svg',
                                   colors: const [
-                                    Color(0xff7841f2),
-                                    Color(0xff7841f2),
+                                    DopmiTokens.purple,
+                                    DopmiTokens.purple,
                                   ],
                                   selected: selected == 'donation',
                                   verification: true,
@@ -277,7 +279,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   ),
                                 ),
                                 style: TextButton.styleFrom(
-                                  foregroundColor: const Color(0xff7841f2),
+                                  foregroundColor: DopmiTokens.purple,
                                   minimumSize: Size.zero,
                                   padding: EdgeInsets.zero,
                                   tapTargetSize:
@@ -403,7 +405,7 @@ class PublishTypeCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: selected ? const Color(0xfff3eeff) : Colors.white,
               border: Border.all(
-                color: const Color(0xff7841f2),
+                color: DopmiTokens.purple,
                 width: selected ? 2 : 1.5,
               ),
             ),

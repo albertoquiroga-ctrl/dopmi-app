@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'design_tokens.dart';
+
 class ReferenceSwitch extends StatelessWidget {
   const ReferenceSwitch({
     super.key,
@@ -30,7 +32,7 @@ class ReferenceSwitch extends StatelessWidget {
             padding: const EdgeInsets.all(1),
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
-              color: value ? const Color(0xff7841f2) : const Color(0xffdad7d2),
+              color: value ? DopmiTokens.purple : const Color(0xffdad7d2),
               borderRadius: BorderRadius.circular(99),
             ),
             child: AnimatedContainer(

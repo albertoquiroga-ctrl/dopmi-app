@@ -15,6 +15,7 @@ import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dopmi_mobile/features/profile/impact_screen.dart';
+import 'package:dopmi_mobile/features/profile/monthly_impact_panel.dart';
 import 'package:dopmi_mobile/core/content_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -80,6 +81,7 @@ void main() {
     double scale = 1,
     FakeGuardian? guardian,
     RescueRepository? rescue,
+    String location = '/impact',
   }) async {
     tester.view.physicalSize = const Size(320, 640);
     tester.view.devicePixelRatio = 1;
@@ -97,7 +99,7 @@ void main() {
         guardianEnabledProvider.overrideWithValue(guardian != null),
         if (guardian != null)
           guardianRepositoryProvider.overrideWithValue(guardian),
-        routerInitialLocationProvider.overrideWithValue('/impact'),
+        routerInitialLocationProvider.overrideWithValue(location),
       ],
     );
     addTearDown(() async {
@@ -131,8 +133,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(guardian.registration!.summary), findsOneWidget);
     expect(find.text('Consultar registro Guardián'), findsOneWidget);
-    expect(find.text('Historial de tu impacto'), findsOneWidget);
-    expect(find.text('Casos apoyados en todos los meses'), findsOneWidget);
+    expect(find.text('Historial de tu impacto'), findsNothing);
+    expect(find.text('Casos apoyados en todos los meses'), findsNothing);
     expect(find.text('Asignados de tus aportaciones'), findsNothing);
     await tester.tap(find.text('Consultar registro Guardián'));
     await tester.pumpAndSettle();
@@ -264,7 +266,32 @@ void main() {
       await start(tester, repo, guardian: guardian);
       expect(find.text('Caso aprobado'), findsOneWidget);
       expect(find.byType(PageView), findsNothing);
+      expect(find.byType(MonthlyImpactPanel), findsNothing);
       expect(guardian.calls, isEmpty);
+    },
+  );
+  testWidgets(
+    'Historical impact opens the authorized feed without a monthly dashboard',
+    (tester) async {
+      final repo = ImpactCommunity()..items = [contributionCase];
+      final guardian = FakeGuardian()
+        ..value = {'plan': activePlan(), 'activation': null};
+      await start(
+        tester,
+        repo,
+        guardian: guardian,
+        location: '/impact?history=1',
+      );
+      expect(find.text('Vidas que continúan gracias a ti.'), findsOneWidget);
+      expect(find.text('Avance publicado'), findsOneWidget);
+      expect(find.text(r'$75.25 MXN'), findsOneWidget);
+      expect(find.byType(MonthlyImpactPanel), findsNothing);
+      expect(find.text('Historial de tu impacto'), findsNothing);
+      expect(find.text('Administrar suscripción'), findsNothing);
+      expect(find.text('Conoce Guardián'), findsNothing);
+      expect(find.byType(PageView), findsNothing);
+      expect(guardian.calls, isEmpty);
+      expect(tester.takeException(), isNull);
     },
   );
   testWidgets('Membership error never implies inactive and can retry', (

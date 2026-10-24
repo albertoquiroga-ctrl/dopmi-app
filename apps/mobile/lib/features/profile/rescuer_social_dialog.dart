@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
@@ -279,7 +281,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                              color: const Color(0x4d7841f2),
+                                              color: const Color(0x4d46281d),
                                               width: 3,
                                             ),
                                             borderRadius: BorderRadius.circular(
@@ -322,11 +324,9 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                       ? save
                                       : null,
                                   style: FilledButton.styleFrom(
-                                    backgroundColor: const Color(0xff7841f2),
+                                    backgroundColor: DopmiTokens.purple,
                                     foregroundColor: const Color(0xfffbfbff),
-                                    disabledBackgroundColor: const Color(
-                                      0xff7841f2,
-                                    ),
+                                    disabledBackgroundColor: DopmiTokens.purple,
                                     disabledForegroundColor: const Color(
                                       0xfffbfbff,
                                     ),
@@ -365,7 +365,7 @@ class _RescuerSocialDialogState extends ConsumerState<RescuerSocialDialog> {
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 0,
                                   ),
-                                  foregroundColor: const Color(0xff7841f2),
+                                  foregroundColor: DopmiTokens.purple,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(99),
                                   ),

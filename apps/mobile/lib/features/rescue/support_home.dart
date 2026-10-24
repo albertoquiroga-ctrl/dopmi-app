@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/media/remote_photo.dart';
 import '../adoption/community_repository.dart';
@@ -58,151 +59,154 @@ class SupportHomePage extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       backgroundColor: Colors.white,
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: Stack(
-          children: [
-            CustomScrollView(
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
-                  sliver: SliverList.list(
-                    children: [
-                      SizedBox(
-                        height: 42,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SvgPicture.asset(
-                              'assets/profile/logo-paw.svg',
-                              width: 40,
-                              height: 40,
-                              semanticsLabel: 'Dopmi',
-                            ),
-                            const DonorNotificationButton(),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        constraints: const BoxConstraints(minHeight: 46),
-                        padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-                        alignment: Alignment.centerLeft,
-                        child: Semantics(
-                          header: true,
-                          child: const Text(
-                            'Ayudar se siente bien',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                              height: 1.1,
-                              color: ink,
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (eligible.isNotEmpty || status != null)
-                        const SizedBox(height: 12),
-                      if (error != null) Notice(error!, isError: true),
-                      if (status != null)
-                        status!
-                      else if (eligible.isNotEmpty)
+      body: DonorCanvas(
+        child: SafeArea(
+          top: true,
+          bottom: false,
+          child: Stack(
+            children: [
+              CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
+                    sliver: SliverList.list(
+                      children: [
                         SizedBox(
-                          height: 100 + scaler.scale(26.4) + (large ? 4 : 0),
-                          child: ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(2, 4, 2, 8),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: eligible.length,
-                            separatorBuilder: (_, _) =>
-                                const SizedBox(width: 16),
-                            itemBuilder: (_, index) => SupportCaseRing(
-                              eligible[index],
-                              queue: eligible.sublist(index),
+                          height: 42,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/profile/logo-paw-naranja.svg',
+                                width: 40,
+                                height: 40,
+                                semanticsLabel: 'Dopmi',
+                              ),
+                              const DonorNotificationButton(),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Container(
+                          constraints: const BoxConstraints(minHeight: 46),
+                          padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                          alignment: Alignment.centerLeft,
+                          child: Semantics(
+                            header: true,
+                            child: const Text(
+                              'Ayudar se siente bien',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 28,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                                height: 1.1,
+                                color: ink,
+                              ),
                             ),
                           ),
-                        )
-                      else
-                        Semantics(
-                          liveRegion: true,
-                          label: 'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
-                          child: const SizedBox.shrink(),
                         ),
-                      if (data.total > 20)
-                        PageControls(
-                          page: page,
-                          total: data.total,
-                          size: 20,
-                          change: changePage,
-                        ),
-                      SizedBox(
-                        height: eligible.isEmpty && status == null ? 24 : 12,
-                      ),
-                    ],
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18),
-                  sliver: SliverLayoutBuilder(
-                    builder: (context, constraints) {
-                      final dockHeight = _guardianDockHeight(
-                        context,
-                        constraints.crossAxisExtent - 36,
-                      );
-                      final bottom = dockBottom;
-                      final height = math.max(
-                        _guardianDockStacks(
-                              context,
-                              constraints.crossAxisExtent - 36,
-                            )
-                            ? (constraints.crossAxisExtent - 52) * 1280 / 720
-                            : 260.0,
-                        constraints.viewportMainAxisExtent -
-                            constraints.precedingScrollExtent -
-                            dockHeight -
-                            bottom -
-                            12,
-                      );
-                      return SliverToBoxAdapter(
-                        child: Column(
-                          children: [
-                            GuardianSupportCard(
-                              height: height,
-                              onOpenEnrollment: () => openGuardian(context),
+                        if (eligible.isNotEmpty || status != null)
+                          const SizedBox(height: 12),
+                        if (error != null) Notice(error!, isError: true),
+                        if (status != null)
+                          status!
+                        else if (eligible.isNotEmpty)
+                          SizedBox(
+                            height: 100 + scaler.scale(26.4) + (large ? 4 : 0),
+                            child: ListView.separated(
+                              padding: const EdgeInsets.fromLTRB(2, 4, 2, 8),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: eligible.length,
+                              separatorBuilder: (_, _) =>
+                                  const SizedBox(width: 16),
+                              itemBuilder: (_, index) => SupportCaseRing(
+                                eligible[index],
+                                queue: eligible.sublist(index),
+                              ),
                             ),
-                            const SizedBox(height: 12),
-                            if (large)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                ),
-                                child: GuardianSupportDock(
-                                  onOpenEnrollment: () => openGuardian(context),
-                                ),
-                              )
-                            else
-                              SizedBox(height: dockHeight),
-                            SizedBox(height: bottom),
-                          ],
+                          )
+                        else
+                          Semantics(
+                            liveRegion: true,
+                            label: 'No hay casos para apoyar. Por ahora no hay gastos aprobados disponibles.',
+                            child: const SizedBox.shrink(),
+                          ),
+                        if (data.total > 20)
+                          PageControls(
+                            page: page,
+                            total: data.total,
+                            size: 20,
+                            change: changePage,
+                          ),
+                        SizedBox(
+                          height: eligible.isEmpty && status == null ? 24 : 12,
                         ),
-                      );
-                    },
+                      ],
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    sliver: SliverLayoutBuilder(
+                      builder: (context, constraints) {
+                        final dockHeight = _guardianDockHeight(
+                          context,
+                          constraints.crossAxisExtent - 36,
+                        );
+                        final bottom = dockBottom;
+                        final height = math.max(
+                          _guardianDockStacks(
+                                context,
+                                constraints.crossAxisExtent - 36,
+                              )
+                              ? (constraints.crossAxisExtent - 52) * 1280 / 720
+                              : 260.0,
+                          constraints.viewportMainAxisExtent -
+                              constraints.precedingScrollExtent -
+                              dockHeight -
+                              bottom -
+                              12,
+                        );
+                        return SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              GuardianSupportCard(
+                                height: height,
+                                onOpenEnrollment: () => openGuardian(context),
+                              ),
+                              const SizedBox(height: 12),
+                              if (large)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 18,
+                                  ),
+                                  child: GuardianSupportDock(
+                                    onOpenEnrollment: () =>
+                                        openGuardian(context),
+                                  ),
+                                )
+                              else
+                                SizedBox(height: dockHeight),
+                              SizedBox(height: bottom),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              if (!large)
+                Positioned(
+                  left: 36,
+                  right: 36,
+                  bottom: dockBottom,
+                  child: GuardianSupportDock(
+                    onOpenEnrollment: () => openGuardian(context),
                   ),
                 ),
-              ],
-            ),
-            if (!large)
-              Positioned(
-                left: 36,
-                right: 36,
-                bottom: dockBottom,
-                child: GuardianSupportDock(
-                  onOpenEnrollment: () => openGuardian(context),
-                ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

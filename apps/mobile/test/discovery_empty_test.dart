@@ -65,7 +65,7 @@ void main() {
         tester
             .getSize(find.byKey(const ValueKey('discovery-empty-heading')))
             .width,
-        closeTo(scale == 1 ? 244.244 : 270, .5),
+        closeTo(scale == 1 ? 258.59 : 270, .5),
       );
       for (final word in ['No', 'hay', 'mascotas', 'disponibles']) {
         final paragraph = tester.renderObject<RenderParagraph>(find.text(word));

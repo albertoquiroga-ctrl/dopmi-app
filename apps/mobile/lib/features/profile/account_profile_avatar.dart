@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
+import '../../core/design_tokens.dart';
 import '../identity/identity_controller.dart';
 import 'account_photo_repository.dart';
 
@@ -31,8 +32,8 @@ class AccountProfileAvatar extends ConsumerWidget {
       final actor = ref.read(identityControllerProvider).identity?.id;
       final fallback = CircleAvatar(
         radius: size / 2,
-        backgroundColor: const Color(0xfff3f0ea),
-        foregroundColor: const Color(0xff15110d),
+        backgroundColor: DopmiTokens.orange,
+        foregroundColor: Colors.white,
         child: Text(
           name.isEmpty ? '?' : name.characters.first.toUpperCase(),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),

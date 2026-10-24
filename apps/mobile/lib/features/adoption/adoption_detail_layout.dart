@@ -77,16 +77,14 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   }
 
   Widget svg(String name, double size) => SvgPicture.asset(
-    'assets/profile/$name.svg',
+    'assets/profile/${name == 'icon-verified' ? 'icon-verified-celeste' : name}.svg',
     width: size,
     height: size,
     colorFilter: name == 'icon-verified'
         ? null
         : ColorFilter.mode(
             name == 'location'
-                ? (widget.preview
-                      ? DopmiTokens.purple
-                      : const Color(0xff6b5000))
+                ? DopmiTokens.ink
                 : name == 'icon-alert-circle'
                 ? muted
                 : ink,
@@ -96,7 +94,7 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    final heartColor = widget.saved ? '#15110d' : '#6b5000';
+    final heartColor = widget.saved ? '#eb6425' : '#8a837c';
     final heroHeight = widget.preview
         ? (MediaQuery.sizeOf(context).height * .32).clamp(180.0, 240.0)
         : math.max(
@@ -187,78 +185,86 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                             child: DecoratedBox(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(99),
+                                gradient: _detailVeil,
+                                border: Border.all(
+                                  color: const Color(0xc7ffffff),
+                                ),
                                 boxShadow: const [
                                   BoxShadow(
-                                    color: Color(0x1f15110d),
+                                    color: Color(0x1446281d),
                                     offset: Offset(0, 4),
                                     blurRadius: 14,
                                   ),
                                 ],
                               ),
-                              child: Material(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(99),
-                                child: InkWell(
-                                  splashFactory: NoSplash.splashFactory,
-                                  overlayColor: const WidgetStatePropertyAll(
-                                    Colors.transparent,
-                                  ),
+                              child: _DetailBackdrop(
+                                blur: 14,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(99),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
                                   borderRadius: BorderRadius.circular(99),
-                                  onTap: widget.preview
-                                      ? null
-                                      : () => context.push(
-                                          '/people/${post.owner}',
-                                        ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      12,
-                                      5,
-                                      6,
-                                      5,
+                                  child: InkWell(
+                                    splashFactory: NoSplash.splashFactory,
+                                    overlayColor: const WidgetStatePropertyAll(
+                                      Colors.transparent,
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            post.text('publisher_name'),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontFamily: 'Inter',
-                                              letterSpacing: 0,
-                                              fontSize: 13,
-                                              height: 1.55,
-                                              fontWeight: FontWeight.w600,
-                                              color: ink,
+                                    borderRadius: BorderRadius.circular(99),
+                                    onTap: widget.preview
+                                        ? null
+                                        : () => context.push(
+                                            '/people/${post.owner}',
+                                          ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        5,
+                                        6,
+                                        5,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              post.text('publisher_name'),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter',
+                                                letterSpacing: 0,
+                                                fontSize: 13,
+                                                height: 1.55,
+                                                fontWeight: FontWeight.w600,
+                                                color: ink,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        CircleAvatar(
-                                          radius: 14,
-                                          backgroundColor: widget.preview
-                                              ? DopmiTokens.purple
-                                              : yellow,
-                                          foregroundColor: widget.preview
-                                              ? Colors.white
-                                              : ink,
-                                          child: Text(
-                                            post.text('publisher_name').isEmpty
-                                                ? ''
-                                                : post
+                                          const SizedBox(width: 8),
+                                          CircleAvatar(
+                                            radius: 14,
+                                            backgroundColor: DopmiTokens.sky,
+                                            foregroundColor: DopmiTokens.ink,
+                                            child: Text(
+                                              post
                                                       .text('publisher_name')
-                                                      .characters
-                                                      .first,
-                                            style: const TextStyle(
-                                              fontFamily: 'Inter',
-                                              letterSpacing: 0,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
+                                                      .isEmpty
+                                                  ? ''
+                                                  : post
+                                                        .text('publisher_name')
+                                                        .characters
+                                                        .first,
+                                              style: const TextStyle(
+                                                fontFamily: 'Inter',
+                                                letterSpacing: 0,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -323,385 +329,413 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                   padding: EdgeInsets.only(top: heroHeight - 22),
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Colors.white,
+                      gradient: _detailVeil,
+                      border: Border(top: BorderSide(color: Color(0xc7ffffff))),
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(28),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0x0f15110d),
-                          offset: Offset(0, -8),
-                          blurRadius: 24,
+                          color: Color(0x1446281d),
+                          offset: Offset(0, 5),
+                          blurRadius: 12,
+                          spreadRadius: -2,
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    child: _DetailBackdrop(
+                      blur: 22,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(28),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    post.name,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      letterSpacing: -.56,
-                                      fontSize: 28,
-                                      height: 1.15,
-                                      fontWeight: FontWeight.w700,
-                                      color: ink,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      svg('location', 14),
-                                      const SizedBox(width: 6),
-                                      Expanded(
-                                        child: Text(
-                                          [
-                                                post.text('city'),
-                                                post.text('region'),
-                                              ]
-                                              .where((s) => s.isNotEmpty)
-                                              .join(', '),
-                                          style: TextStyle(
-                                            fontFamily: 'Inter',
-                                            letterSpacing: 0,
-                                            fontSize: 13,
-                                            height: 1.55,
-                                            fontWeight: FontWeight.w600,
-                                            color: widget.preview
-                                                ? DopmiTokens.purple
-                                                : const Color(0xff6b5000),
-                                          ),
+                                      Text(
+                                        post.name,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          letterSpacing: -.56,
+                                          fontSize: 28,
+                                          height: 1.15,
+                                          fontWeight: FontWeight.w700,
+                                          color: DopmiTokens.orange,
                                         ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          svg('location', 14),
+                                          const SizedBox(width: 6),
+                                          Expanded(
+                                            child: Text(
+                                              [
+                                                    post.text('city'),
+                                                    post.text('region'),
+                                                  ]
+                                                  .where((s) => s.isNotEmpty)
+                                                  .join(', '),
+                                              style: TextStyle(
+                                                fontFamily: 'Inter',
+                                                letterSpacing: 0,
+                                                fontSize: 13,
+                                                height: 1.55,
+                                                fontWeight: FontWeight.w600,
+                                                color: DopmiTokens.ink,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      LiveSection<Json?>(
+                                        key: ValueKey('verified:${post.owner}'),
+                                        load: () async {
+                                          try {
+                                            return await repository(context)
+                                                .publicProfile(post.owner);
+                                          } catch (_) {
+                                            return null;
+                                          }
+                                        },
+                                        builder: (profile, _) =>
+                                            profile?['verified'] == true
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 8,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    svg('icon-verified', 16),
+                                                    const SizedBox(width: 6),
+                                                    const Expanded(
+                                                      child: Text(
+                                                        'Rescatista verificado',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Inter',
+                                                          letterSpacing: 0,
+                                                          fontSize: 12,
+                                                          height: 1.55,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: muted,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
                                       ),
                                     ],
                                   ),
-                                  LiveSection<Json?>(
-                                    key: ValueKey('verified:${post.owner}'),
-                                    load: () async {
-                                      try {
-                                        return await repository(context)
-                                            .publicProfile(post.owner);
-                                      } catch (_) {
-                                        return null;
-                                      }
-                                    },
-                                    builder: (profile, _) =>
-                                        profile?['verified'] == true
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 8,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                svg('icon-verified', 16),
-                                                const SizedBox(width: 6),
-                                                const Expanded(
-                                                  child: Text(
-                                                    'Rescatista verificado',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Inter',
-                                                      letterSpacing: 0,
-                                                      fontSize: 12,
-                                                      height: 1.55,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: muted,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            if (widget.preview)
-                              ExcludeSemantics(
-                                child: SizedBox(
-                                  width: 42,
-                                  height: 42,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
+                                ),
+                                const SizedBox(width: 12),
+                                if (widget.preview)
+                                  ExcludeSemantics(
+                                    child: SizedBox(
+                                      width: 42,
+                                      height: 42,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: DopmiTokens.line,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: svg('icon-share', 18),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  IconButton(
+                                    tooltip: 'Compartir',
+                                    onPressed: widget.share,
+                                    style: IconButton.styleFrom(
+                                      overlayColor: Colors.transparent,
+                                      minimumSize: const Size(42, 42),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      maximumSize: const Size(42, 42),
+                                      side: const BorderSide(
                                         color: DopmiTokens.line,
                                         width: 1.5,
                                       ),
                                     ),
-                                    child: Center(child: svg('icon-share', 18)),
-                                  ),
-                                ),
-                              )
-                            else
-                              IconButton(
-                                tooltip: 'Compartir',
-                                onPressed: widget.share,
-                                style: IconButton.styleFrom(
-                                  overlayColor: Colors.transparent,
-                                  minimumSize: const Size(42, 42),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  maximumSize: const Size(42, 42),
-                                  side: const BorderSide(
-                                    color: DopmiTokens.line,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                icon: svg('icon-share', 18),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        LayoutBuilder(
-                          builder: (context, box) => Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: [
-                              for (final stat in [
-                                (
-                                  post.text('sex') == 'female'
-                                      ? 'Hembra'
-                                      : 'Macho',
-                                  'Sexo',
-                                ),
-                                (
-                                  {
-                                        'small': 'Chico',
-                                        'medium': 'Mediano',
-                                        'large': 'Grande',
-                                      }[post.text('size')] ??
-                                      'Sin definir',
-                                  'Tamaño',
-                                ),
-                                (post.displayAge, 'Edad'),
-                              ])
-                                SizedBox(
-                                  width:
-                                      MediaQuery.textScalerOf(context)
-                                              .scale(15) >
-                                          22
-                                      ? box.maxWidth
-                                      : (box.maxWidth - 20) / 3,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 14,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: DopmiTokens.line,
-                                      ),
-                                      borderRadius: BorderRadius.circular(18),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Color(0x0a15110d),
-                                          offset: Offset(0, 4),
-                                          blurRadius: 12,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          stat.$2,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            letterSpacing: 0,
-                                            fontSize: 12,
-                                            height: 15 / 12,
-                                            color: muted,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          stat.$1,
-                                          style: const TextStyle(
-                                            fontFamily: 'Inter',
-                                            letterSpacing: 0,
-                                            fontSize: 15,
-                                            height: 19 / 15,
-                                            fontWeight: FontWeight.w700,
-                                            color: ink,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Su historia',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            letterSpacing: 0,
-                            fontSize: 18,
-                            height: 1.3,
-                            fontWeight: FontWeight.w700,
-                            color: ink,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          post.text('story'),
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            letterSpacing: 0,
-                            fontSize: 14,
-                            height: 1.55,
-                            color: muted,
-                          ),
-                        ),
-                        if (post.data['distance_km'] is num) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            'Distancia: ${(post.data['distance_km'] as num).toStringAsFixed(1)} km',
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              color: muted,
-                            ),
-                          ),
-                        ],
-                        _AdoptionCharacteristics(post),
-                        if (post.text('special_care').isNotEmpty) ...[
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Cuidados especiales',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: ink,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            post.text('special_care'),
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0,
-                              fontSize: 14,
-                              height: 1.55,
-                              color: muted,
-                            ),
-                          ),
-                        ],
-                        if (!widget.preview) const SizedBox(height: 40),
-                        if (!widget.preview)
-                          Material(
-                            color: Colors.white,
-                            child: ExpansionTile(
-                              tilePadding: EdgeInsets.zero,
-                              title: const Text(
-                                'Más sobre su salud y cuidados',
-                              ),
-                              children: [
-                                for (final entry in {
-                                  'age': 'Edad',
-                                  'breed': 'Raza',
-                                  'vaccinated': 'Vacunas al día',
-                                  'sterilized': 'Esterilización',
-                                  'social_dogs': 'Convive con perros',
-                                  'social_cats': 'Convive con gatos',
-                                  'social_children':
-                                      'Convive con niñas y niños',
-                                }.entries)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        '${entry.value}: ${entry.key == 'age'
-                                            ? post.age
-                                            : entry.key == 'breed'
-                                            ? (post.text('breed').isEmpty ? 'Sin especificar' : post.text('breed'))
-                                            : post.data[entry.key] == null
-                                            ? 'Por confirmar'
-                                            : post.data[entry.key] == true
-                                            ? 'Sí'
-                                            : 'No'}',
-                                      ),
-                                    ),
+                                    icon: svg('icon-share', 18),
                                   ),
                               ],
                             ),
-                          ),
-                        const SizedBox(height: 20),
-                        if (!widget.preview)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: TextButton(
-                              onPressed: widget.busy ? null : widget.report,
-                              style: TextButton.styleFrom(
-                                splashFactory: NoSplash.splashFactory,
-                                overlayColor: Colors.transparent,
-                                animationDuration: Duration.zero,
-                                foregroundColor: muted,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                padding: EdgeInsets.zero,
-                                textStyle: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  letterSpacing: 0,
-                                  fontSize: 13,
-                                  height: 1.4,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                            const SizedBox(height: 20),
+                            LayoutBuilder(
+                              builder: (context, box) => Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
                                 children: [
-                                  svg('icon-alert-circle', 16),
-                                  const SizedBox(width: 6),
-                                  const Flexible(
-                                    child: Text('Reportar publicación'),
-                                  ),
+                                  for (final stat in [
+                                    (
+                                      post.text('sex') == 'female'
+                                          ? 'Hembra'
+                                          : 'Macho',
+                                      'Sexo',
+                                    ),
+                                    (
+                                      {
+                                            'small': 'Chico',
+                                            'medium': 'Mediano',
+                                            'large': 'Grande',
+                                          }[post.text('size')] ??
+                                          'Sin definir',
+                                      'Tamaño',
+                                    ),
+                                    (post.displayAge, 'Edad'),
+                                  ])
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.textScalerOf(context)
+                                                  .scale(15) >
+                                              22
+                                          ? box.maxWidth
+                                          : (box.maxWidth - 20) / 3,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 14,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0x59ffffff),
+                                          border: Border.all(
+                                            color: DopmiTokens.line,
+                                            width: 1.5,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Color(0x1246281d),
+                                              offset: Offset(0, 4),
+                                              blurRadius: 10,
+                                              spreadRadius: -2,
+                                            ),
+                                          ],
+                                        ),
+                                        child: _DetailBackdrop(
+                                          blur: 12,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(18),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                stat.$2,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0,
+                                                  fontSize: 12,
+                                                  height: 15 / 12,
+                                                  color: ink,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                stat.$1,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0,
+                                                  fontSize: 15,
+                                                  height: 19 / 15,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: ink,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
-                          ),
-                        if (widget.preview)
-                          ExcludeSemantics(
-                            child: Row(
-                              children: [
-                                svg('icon-alert-circle', 16),
-                                const SizedBox(width: 6),
-                                const Expanded(
-                                  child: Text(
-                                    'Reportar publicación',
-                                    style: TextStyle(
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Su historia',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0,
+                                fontSize: 18,
+                                height: 1.3,
+                                fontWeight: FontWeight.w700,
+                                color: ink,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              post.text('story'),
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0,
+                                fontSize: 14,
+                                height: 1.55,
+                                color: muted,
+                              ),
+                            ),
+                            if (post.data['distance_km'] is num) ...[
+                              const SizedBox(height: 12),
+                              Text(
+                                'Distancia: ${(post.data['distance_km'] as num).toStringAsFixed(1)} km',
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 12,
+                                  color: muted,
+                                ),
+                              ),
+                            ],
+                            Semantics(
+                              container: true,
+                              label: 'Características de la mascota',
+                              child: _AdoptionCharacteristics(post),
+                            ),
+                            if (post.text('special_care').isNotEmpty) ...[
+                              const SizedBox(height: 20),
+                              const Text(
+                                'Cuidados especiales',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: ink,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                post.text('special_care'),
+                                style: const TextStyle(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0,
+                                  fontSize: 14,
+                                  height: 1.55,
+                                  color: muted,
+                                ),
+                              ),
+                            ],
+                            if (!widget.preview) const SizedBox(height: 40),
+                            if (!widget.preview)
+                              Material(
+                                color: Colors.white,
+                                child: ExpansionTile(
+                                  tilePadding: EdgeInsets.zero,
+                                  title: const Text(
+                                    'Más sobre su salud y cuidados',
+                                  ),
+                                  children: [
+                                    for (final entry in {
+                                      'age': 'Edad',
+                                      'breed': 'Raza',
+                                      'vaccinated': 'Vacunas al día',
+                                      'sterilized': 'Esterilización',
+                                      'social_dogs': 'Convive con perros',
+                                      'social_cats': 'Convive con gatos',
+                                      'social_children':
+                                          'Convive con niñas y niños',
+                                    }.entries)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8,
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '${entry.value}: ${entry.key == 'age'
+                                                ? post.age
+                                                : entry.key == 'breed'
+                                                ? (post.text('breed').isEmpty ? 'Sin especificar' : post.text('breed'))
+                                                : post.data[entry.key] == null
+                                                ? 'Por confirmar'
+                                                : post.data[entry.key] == true
+                                                ? 'Sí'
+                                                : 'No'}',
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            const SizedBox(height: 20),
+                            if (!widget.preview)
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton(
+                                  onPressed: widget.busy ? null : widget.report,
+                                  style: TextButton.styleFrom(
+                                    splashFactory: NoSplash.splashFactory,
+                                    overlayColor: Colors.transparent,
+                                    animationDuration: Duration.zero,
+                                    foregroundColor: muted,
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    padding: EdgeInsets.zero,
+                                    textStyle: const TextStyle(
                                       fontFamily: 'Inter',
+                                      letterSpacing: 0,
                                       fontSize: 13,
                                       height: 1.4,
                                       fontWeight: FontWeight.w600,
-                                      color: muted,
                                     ),
                                   ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      svg('icon-alert-circle', 16),
+                                      const SizedBox(width: 6),
+                                      const Flexible(
+                                        child: Text('Reportar publicación'),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        if (widget.error != null)
-                          Notice(widget.error!, isError: true),
-                      ],
+                              ),
+                            if (widget.preview)
+                              ExcludeSemantics(
+                                child: Row(
+                                  children: [
+                                    svg('icon-alert-circle', 16),
+                                    const SizedBox(width: 6),
+                                    const Expanded(
+                                      child: Text(
+                                        'Reportar publicación',
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 13,
+                                          height: 1.4,
+                                          fontWeight: FontWeight.w600,
+                                          color: muted,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            if (widget.error != null)
+                              Notice(widget.error!, isError: true),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -712,105 +746,116 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
         if (!widget.preview)
           Container(
             decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: DopmiTokens.line)),
+              gradient: _detailFooterVeil,
+              border: Border(top: BorderSide(color: Color(0xc7ffffff))),
               boxShadow: [
                 BoxShadow(
-                  color: Color(0x0f15110d),
-                  offset: Offset(0, -8),
-                  blurRadius: 24,
+                  color: Color(0x0846281d),
+                  offset: Offset(0, -6),
+                  blurRadius: 22,
                 ),
               ],
             ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-                child: Row(
-                  children: [
-                    Semantics(
-                      button: true,
-                      selected: widget.saved,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: widget.saved
-                              ? const [
-                                  BoxShadow(
-                                    color: Color(0x59f7cb2d),
-                                    offset: Offset(0, 4),
-                                    blurRadius: 12,
-                                  ),
-                                ]
-                              : null,
-                        ),
-                        child: IconButton(
-                          tooltip: widget.saved ? 'Guardada' : 'Guardar',
-                          onPressed: widget.busy ? null : widget.favorite,
-                          style: IconButton.styleFrom(
-                            overlayColor: Colors.transparent,
-                            minimumSize: const Size(52, 52),
-                            maximumSize: const Size(52, 52),
-                            backgroundColor: widget.saved
-                                ? yellow
-                                : Colors.white,
-                            foregroundColor: widget.saved
-                                ? ink
-                                : const Color(0xff6b5000),
-                            shape: const CircleBorder(),
-                            side: BorderSide(
-                              color: widget.saved ? Colors.transparent : yellow,
-                              width: 2,
+            child: _DetailBackdrop(
+              blur: 28,
+              borderRadius: BorderRadius.zero,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  child: Row(
+                    children: [
+                      Semantics(
+                        button: true,
+                        selected: widget.saved,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: widget.saved
+                                ? const [
+                                    BoxShadow(
+                                      color: Color(0x24eb6425),
+                                      spreadRadius: 1,
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0x47eb6425),
+                                      blurRadius: 10,
+                                    ),
+                                    BoxShadow(
+                                      color: Color(0x24eb6425),
+                                      blurRadius: 16,
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: IconButton(
+                            tooltip: widget.saved ? 'Guardada' : 'Guardar',
+                            onPressed: widget.busy ? null : widget.favorite,
+                            style: IconButton.styleFrom(
+                              overlayColor: Colors.transparent,
+                              minimumSize: const Size(58, 58),
+                              maximumSize: const Size(58, 58),
+                              backgroundColor: Colors.white,
+                              foregroundColor: widget.saved
+                                  ? DopmiTokens.orange
+                                  : DopmiTokens.navigationInactive,
+                              shape: const CircleBorder(),
+                              side: BorderSide(
+                                color: DopmiTokens.orange,
+                                width: 1.5,
+                              ),
+                            ),
+                            icon: SvgPicture.string(
+                              '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.566Z" fill="${widget.saved ? heartColor : 'none'}" stroke="$heartColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                              width: widget.saved ? 23.32 : 22,
+                              height: widget.saved ? 23.32 : 22,
                             ),
                           ),
-                          icon: SvgPicture.string(
-                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.566Z" fill="${widget.saved ? heartColor : 'none'}" stroke="$heartColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-                            width: widget.saved ? 23.32 : 22,
-                            height: widget.saved ? 23.32 : 22,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: widget.busy ? null : widget.contact,
+                          style: FilledButton.styleFrom(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: Colors.transparent,
+                            animationDuration: Duration.zero,
+                            backgroundColor: DopmiTokens.orangeButton,
+                            foregroundColor: Colors.white,
+                            // CSS grid row follows the final 58px Save control. Keep
+                            // a minimum, not a fixed height, so 200% text can wrap.
+                            minimumSize: const Size(0, 58),
+                            padding:
+                                MediaQuery.textScalerOf(context).scale(16) > 25
+                                ? const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  )
+                                : null,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              letterSpacing: 0,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          child: Text(
+                            widget.owner
+                                ? 'Administrar mi publicación'
+                                : 'Quiero saber más',
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: widget.busy ? null : widget.contact,
-                        style: FilledButton.styleFrom(
-                          splashFactory: NoSplash.splashFactory,
-                          overlayColor: Colors.transparent,
-                          animationDuration: Duration.zero,
-                          backgroundColor: ink,
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(0, 52),
-                          padding:
-                              MediaQuery.textScalerOf(context).scale(16) > 25
-                              ? const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 12,
-                                )
-                              : null,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: const TextStyle(
-                            fontFamily: 'Inter',
-                            letterSpacing: 0,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        child: Text(
-                          widget.owner
-                              ? 'Administrar mi publicación'
-                              : 'Quiero saber más',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -828,7 +873,7 @@ class _AdoptionCharacteristics extends StatelessWidget {
   final Adoption post;
 
   Widget section(String heading, Widget child) => Padding(
-    padding: const EdgeInsets.only(top: 24),
+    padding: const EdgeInsets.only(top: 18),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -876,13 +921,27 @@ class _AdoptionCharacteristics extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          personalityColors[trait] ?? const Color(0xfffafafd),
+                      color: Colors.transparent,
                       border: Border.all(
+                        width: 1.5,
                         color:
-                            personalityBorderColors[trait] ??
-                            const Color(0xffe3e4ed),
+                            personalityBorderColors[trait] ?? DopmiTokens.line,
                       ),
+                      boxShadow: [
+                        for (final glow in [
+                          (1.0, 0.0, .16),
+                          (0.0, 8.0, .26),
+                          (0.0, 14.0, .12),
+                        ])
+                          BoxShadow(
+                            color:
+                                (personalityBorderColors[trait] ??
+                                        DopmiTokens.line)
+                                    .withValues(alpha: glow.$3),
+                            spreadRadius: glow.$1,
+                            blurRadius: glow.$2,
+                          ),
+                      ],
                       borderRadius: BorderRadius.circular(99),
                     ),
                     child: Text(
@@ -920,7 +979,7 @@ class _AdoptionCharacteristics extends StatelessWidget {
                             width: 16,
                             height: 16,
                             colorFilter: const ColorFilter.mode(
-                              Color(0xff1d6b59),
+                              DopmiTokens.yellow,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -932,9 +991,9 @@ class _AdoptionCharacteristics extends StatelessWidget {
                             style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 14,
-                              height: 1.45,
-                              fontWeight: FontWeight.w500,
-                              color: ink,
+                              height: 1.55,
+                              fontWeight: FontWeight.w400,
+                              color: muted,
                             ),
                           ),
                         ),
@@ -960,7 +1019,7 @@ class _AdoptionCharacteristics extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xffe3e4ed)),
+                      border: Border.all(color: DopmiTokens.sky, width: 1.5),
                       boxShadow: const [
                         BoxShadow(
                           color: Color(0x0a15110d),
@@ -986,4 +1045,47 @@ class _AdoptionCharacteristics extends StatelessWidget {
       ],
     );
   }
+}
+
+// CSS source-over: white .22 base + white .38/.72/.82 veil.
+const _detailVeil = LinearGradient(
+  begin: Alignment(-.259, -.966),
+  end: Alignment(.259, .966),
+  colors: [
+    Color.from(alpha: 0.5164, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.7816, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.8596, red: 1, green: 1, blue: 1),
+  ],
+  stops: [0, .52, 1],
+);
+
+// Footer uses the same veil over a white .06 base, not .22.
+const _detailFooterVeil = LinearGradient(
+  begin: Alignment(-.259, -.966),
+  end: Alignment(.259, .966),
+  colors: [
+    Color.from(alpha: 0.4172, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.7368, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.8308, red: 1, green: 1, blue: 1),
+  ],
+  stops: [0, .52, 1],
+);
+
+class _DetailBackdrop extends StatelessWidget {
+  const _DetailBackdrop({
+    required this.child,
+    required this.blur,
+    required this.borderRadius,
+  });
+  final Widget child;
+  final double blur;
+  final BorderRadius borderRadius;
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: borderRadius,
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+      child: child,
+    ),
+  );
 }

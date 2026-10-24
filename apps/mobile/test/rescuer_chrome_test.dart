@@ -144,7 +144,7 @@ void main() {
           );
           expect(
             selected.style!.foregroundColor!.resolve({}),
-            const Color(0xff7841f2),
+            const Color(0xff46281d),
           );
           if (systemBack) {
             await tester.binding.handlePopRoute();

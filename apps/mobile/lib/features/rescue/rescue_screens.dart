@@ -10,6 +10,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../core/design_tokens.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 import '../../core/ui.dart';
@@ -1053,7 +1056,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         builder: (context) => AlertDialog(
           icon: const Icon(
             Icons.check_circle_outline,
-            color: Color(0xff7841f2),
+            color: DopmiTokens.purple,
             size: 48,
           ),
           title: const Text('Enviado a revisión'),
@@ -1188,7 +1191,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   enabledBorder: border,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xff7841f2)),
+                    borderSide: const BorderSide(color: DopmiTokens.purple),
                   ),
                 ),
                 onChanged: (_) => setState(() => dirty = true),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'store_screen.dart';
 import 'store_repository.dart';
+import '../../core/design_tokens.dart';
 
 class StorePromotion extends ConsumerWidget {
   const StorePromotion({super.key});
@@ -16,7 +17,7 @@ class StorePromotion extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Material(
-          color: const Color(0xffffefbb),
+          color: DopmiTokens.saffronSoft,
           borderRadius: BorderRadius.circular(24),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
@@ -42,14 +43,32 @@ class StorePromotion extends ConsumerWidget {
                             : 'Encuentra alimento y compra en comercios autorizados. Las comisiones ayudan a mantener Dopmi.',
                       ),
                       const SizedBox(height: 16),
-                      const Row(
-                        children: [
-                          Text(
-                            'Ver más',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          Icon(Icons.chevron_right, size: 20),
-                        ],
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: DopmiTokens.orangeButton,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Ver más',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              size: 20,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
@@ -15,6 +16,7 @@ import '../../core/media/photo_runtime.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 import 'adopt_start_dialog.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
@@ -408,7 +410,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   Future<void> openFilters() async {
     final result = await showDialog<Json>(
       context: context,
-      barrierColor: ink.withValues(alpha: .48),
+      barrierColor: const Color(0x29000000),
       animationStyle: AnimationStyle.noAnimation,
       builder: (_) => DiscoveryFilters(filters),
     );
@@ -478,180 +480,186 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         extendBody: true,
         backgroundColor: Colors.white,
         bottomNavigationBar: const CommunityNav(0),
-        body: SafeArea(
-          bottom: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
-            children: [
-              SizedBox(
-                height: 42,
-                child: Row(
-                  children: [
-                    Tooltip(
-                      message: 'Elegir ubicación',
-                      child: TextButton(
-                        onPressed: acting ? null : openLocation,
-                        style: TextButton.styleFrom(
-                          alignment: Alignment.centerLeft,
-                          foregroundColor: ink,
-                          padding: EdgeInsets.zero,
-                          overlayColor: Colors.transparent,
-                          splashFactory: NoSplash.splashFactory,
-                        ),
-                        child: Semantics(
-                          label: filters['city'] == null
-                              ? 'Dopmi. Elegir ubicación'
-                              : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
-                          child: ExcludeSemantics(
-                            child: Image.asset(
-                              'assets/dopmi-wordmark.png',
-                              width: 108,
-                              height: 36,
-                              fit: BoxFit.contain,
+        body: DonorCanvas(
+          child: SafeArea(
+            bottom: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
+              children: [
+                SizedBox(
+                  height: 42,
+                  child: Row(
+                    children: [
+                      Tooltip(
+                        message: 'Elegir ubicación',
+                        child: TextButton(
+                          onPressed: acting ? null : openLocation,
+                          style: TextButton.styleFrom(
+                            alignment: Alignment.centerLeft,
+                            foregroundColor: ink,
+                            padding: EdgeInsets.zero,
+                            overlayColor: Colors.transparent,
+                            splashFactory: NoSplash.splashFactory,
+                          ),
+                          child: Semantics(
+                            label: filters['city'] == null
+                                ? 'Dopmi. Elegir ubicación'
+                                : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
+                            child: ExcludeSemantics(
+                              child: Image.asset(
+                                'assets/dopmi-wordmark.png',
+                                width: 108,
+                                height: 36,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                           ),
                         ),
                       ),
+                      const Spacer(),
+                      const DonorNotificationButton(),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Wrap(
+                        spacing: 18,
+                        children: [
+                          for (final species in const [
+                            ('dog', 'Perros'),
+                            ('cat', 'Gatos'),
+                          ])
+                            TextButton(
+                              onPressed: acting
+                                  ? null
+                                  : () => chooseSpecies(species.$1),
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(0, 48),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
+                                foregroundColor:
+                                    filters['species'] == species.$1
+                                    ? ink
+                                    : const Color(0xff9a9289),
+                                textStyle: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: filters['species'] == species.$1
+                                      ? 28
+                                      : 22,
+                                  fontWeight: filters['species'] == species.$1
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  letterSpacing: 0,
+                                ),
+                              ),
+                              child: Text(species.$2),
+                            ),
+                        ],
+                      ),
                     ),
-                    const Spacer(),
-                    const DonorNotificationButton(),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      tooltip: 'Filtros',
+                      onPressed: acting ? null : openFilters,
+                      icon: SvgPicture.string(
+                        discoveryFilterSvg,
+                        width: 22,
+                        height: 22,
+                        colorFilter: ColorFilter.mode(
+                          filters.keys.any(
+                                (key) => [
+                                  'sex',
+                                  'size',
+                                  'personality',
+                                ].contains(key),
+                              )
+                              ? ink
+                              : const Color(0xff9a9289),
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: Wrap(
-                      spacing: 18,
-                      children: [
-                        for (final species in const [
-                          ('dog', 'Perros'),
-                          ('cat', 'Gatos'),
-                        ])
-                          TextButton(
-                            onPressed: acting
-                                ? null
-                                : () => chooseSpecies(species.$1),
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size(0, 48),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 2,
-                              ),
-                              foregroundColor: filters['species'] == species.$1
-                                  ? ink
-                                  : const Color(0xff9a9289),
-                              textStyle: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: filters['species'] == species.$1
-                                    ? 28
-                                    : 22,
-                                fontWeight: filters['species'] == species.$1
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                letterSpacing: 0,
-                              ),
-                            ),
-                            child: Text(species.$2),
-                          ),
-                      ],
-                    ),
+                SizedBox(height: current == null && !loading ? 20 : 36),
+                for (final failed in failedFavorites.values) ...[
+                  Notice(
+                    'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
+                    isError: true,
                   ),
-                  const SizedBox(width: 10),
-                  IconButton(
-                    tooltip: 'Filtros',
-                    onPressed: acting ? null : openFilters,
-                    icon: SvgPicture.string(
-                      discoveryFilterSvg,
-                      width: 22,
-                      height: 22,
-                      colorFilter: ColorFilter.mode(
-                        filters.keys.any(
-                              (key) =>
-                                  ['sex', 'size', 'personality'].contains(key),
-                            )
-                            ? ink
-                            : const Color(0xff9a9289),
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                  TextButton(
+                    onPressed: pendingFavorites.contains(failed.id)
+                        ? null
+                        : () => persistFavorite(failed),
+                    child: const Text('Volver a intentar'),
                   ),
                 ],
-              ),
-              SizedBox(height: current == null && !loading ? 14 : 36),
-              for (final failed in failedFavorites.values) ...[
-                Notice(
-                  'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
-                  isError: true,
-                ),
-                TextButton(
-                  onPressed: pendingFavorites.contains(failed.id)
-                      ? null
-                      : () => persistFavorite(failed),
-                  child: const Text('Volver a intentar'),
-                ),
+                if (error != null) ...[
+                  Notice(error!, isError: true),
+                  TextButton(
+                    onPressed: () => load(reset: cards.isEmpty),
+                    child: const Text('Volver a intentar'),
+                  ),
+                ],
+                if (loading && current == null)
+                  const SizedBox(
+                    height: 420,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (current == null)
+                  cards.isEmpty
+                      ? DiscoveryEmpty(
+                          filtered: filters.keys.any((key) => key != 'species'),
+                          global: allSpeciesEmpty,
+                          species: filters['species'] as String,
+                          clear: () {
+                            filters.removeWhere((key, _) => key != 'species');
+                            load(reset: true);
+                          },
+                          switchSpecies: () {
+                            filters['species'] = filters['species'] == 'dog'
+                                ? 'cat'
+                                : 'dog';
+                            load(reset: true);
+                          },
+                        )
+                      : DiscoveryEnd(
+                          restart: () => load(reset: true),
+                          minimumHeight:
+                              MediaQuery.textScalerOf(context).scale(28) > 40
+                              ? 0
+                              : math.max(
+                                  0.0,
+                                  MediaQuery.sizeOf(context).height -
+                                      MediaQuery.paddingOf(context).vertical -
+                                      240,
+                                ),
+                          photos: cards
+                              .where((post) => post.photos.isNotEmpty)
+                              .take(4)
+                              .map((post) => post.photos.first)
+                              .toList(),
+                        )
+                else
+                  DiscoveryStack(
+                    key: deckKey,
+                    currentIdentity: cardIdentity(current),
+                    nextIdentity: next == null ? null : cardIdentity(next),
+                    footerHeight:
+                        (current is SupportOpportunity ||
+                                next is SupportOpportunity) &&
+                            MediaQuery.textScalerOf(context).scale(16) > 22
+                        ? 256
+                        : 128,
+                    next: next == null ? null : cardBody(next, preview: true),
+                    child: cardBody(current, preview: false),
+                  ),
               ],
-              if (error != null) ...[
-                Notice(error!, isError: true),
-                TextButton(
-                  onPressed: () => load(reset: cards.isEmpty),
-                  child: const Text('Volver a intentar'),
-                ),
-              ],
-              if (loading && current == null)
-                const SizedBox(
-                  height: 420,
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (current == null)
-                cards.isEmpty
-                    ? DiscoveryEmpty(
-                        filtered: filters.keys.any((key) => key != 'species'),
-                        global: allSpeciesEmpty,
-                        species: filters['species'] as String,
-                        clear: () {
-                          filters.removeWhere((key, _) => key != 'species');
-                          load(reset: true);
-                        },
-                        switchSpecies: () {
-                          filters['species'] = filters['species'] == 'dog'
-                              ? 'cat'
-                              : 'dog';
-                          load(reset: true);
-                        },
-                      )
-                    : DiscoveryEnd(
-                        restart: () => load(reset: true),
-                        minimumHeight:
-                            MediaQuery.textScalerOf(context).scale(28) > 40
-                            ? 0
-                            : math.max(
-                                0.0,
-                                MediaQuery.sizeOf(context).height -
-                                    MediaQuery.paddingOf(context).vertical -
-                                    240,
-                              ),
-                        photos: cards
-                            .where((post) => post.photos.isNotEmpty)
-                            .take(4)
-                            .map((post) => post.photos.first)
-                            .toList(),
-                      )
-              else
-                DiscoveryStack(
-                  key: deckKey,
-                  currentIdentity: cardIdentity(current),
-                  nextIdentity: next == null ? null : cardIdentity(next),
-                  footerHeight:
-                      (current is SupportOpportunity ||
-                              next is SupportOpportunity) &&
-                          MediaQuery.textScalerOf(context).scale(16) > 22
-                      ? 256
-                      : 128,
-                  next: next == null ? null : cardBody(next, preview: true),
-                  child: cardBody(current, preview: false),
-                ),
-            ],
+            ),
           ),
         ),
       ),
@@ -689,13 +697,16 @@ class DiscoveryStack extends StatelessWidget {
             bottom: far ? 0 : 8,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(32),
-                boxShadow: const [
+                gradient: _discoveryStackGradient(far: far),
+                border: Border.all(color: const Color(0xc7ffffff)),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
                   BoxShadow(
-                    color: Color(0x2415110d),
-                    blurRadius: 28,
-                    offset: Offset(0, 10),
+                    color: const Color(0xff46281d)
+                        .withValues(alpha: far ? .05 : .06),
+                    blurRadius: far ? 6 : 8,
+                    spreadRadius: -3,
+                    offset: Offset(0, far ? 2 : 3),
                   ),
                 ],
               ),
@@ -731,6 +742,109 @@ class DiscoveryStack extends StatelessWidget {
           ),
         ),
       ],
+    ),
+  );
+}
+
+// CSS source-over: white .18 base + white .38/.72/.82 veil.
+const _discoveryVeil = LinearGradient(
+  begin: Alignment(-.259, -.966),
+  end: Alignment(.259, .966),
+  colors: [
+    Color.from(alpha: 0.4916, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.7704, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.8524, red: 1, green: 1, blue: 1),
+  ],
+  stops: [0, .52, 1],
+);
+RadialGradient _discoveryStackGradient({required bool far}) => RadialGradient(
+  center: far ? Alignment.bottomLeft : Alignment.bottomRight,
+  radius: 1,
+  transform: _DiscoveryStackEllipse(far),
+  colors: far
+      ? const [
+          Color(0xffcbe8fa),
+          Color(0xffb8885a),
+          Color(0xfffff8f3),
+          Colors.white,
+          Colors.white,
+        ]
+      : const [
+          Color(0xffeb6425),
+          Color(0xfffcecc0),
+          Color(0xfffffaf5),
+          Colors.white,
+          Colors.white,
+        ],
+  stops: const [0, .22, .38, .55, 1],
+);
+
+/// CSS radial-gradient(120% 95% at bottom left/right), not a circle.
+class _DiscoveryStackEllipse extends GradientTransform {
+  const _DiscoveryStackEllipse(this.far);
+  final bool far;
+  @override
+  Matrix4 transform(Rect bounds, {TextDirection? textDirection}) {
+    final shortest = math.min(bounds.width, bounds.height);
+    if (shortest <= 0) return Matrix4.identity();
+    final sx = bounds.width * 1.2 / shortest;
+    final sy = bounds.height * .95 / shortest;
+    final center = far ? bounds.bottomLeft : bounds.bottomRight;
+    return Matrix4.identity()
+      ..setEntry(0, 0, sx)
+      ..setEntry(1, 1, sy)
+      ..setEntry(0, 3, center.dx * (1 - sx))
+      ..setEntry(1, 3, center.dy * (1 - sy));
+  }
+}
+
+/// b9f6d5f warm-trust card layers; gesture ownership stays in the card.
+class _DiscoverySurface extends StatelessWidget {
+  const _DiscoverySurface({
+    required this.child,
+    required this.preview,
+    required this.support,
+  });
+  final Widget child;
+  final bool preview, support;
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      // Preview gradients are opaque; an extra paint color would multiply
+      // their alpha. Active support has only its CSS sky .75 solid fill.
+      color: support && !preview
+          ? const Color.from(
+              alpha: .75,
+              red: 203 / 255,
+              green: 232 / 255,
+              blue: 250 / 255,
+            )
+          : null,
+      gradient: preview
+          ? _discoveryStackGradient(far: false)
+          : support
+          ? null
+          : _discoveryVeil,
+      border: Border.all(color: const Color(0xc7ffffff)),
+      borderRadius: BorderRadius.circular(24),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xff46281d).withValues(alpha: preview ? .07 : .08),
+          offset: Offset(0, preview ? 4 : 5),
+          blurRadius: preview ? 10 : 12,
+          spreadRadius: -2,
+        ),
+      ],
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: preview || support ? 0 : 22,
+          sigmaY: preview || support ? 0 : 22,
+        ),
+        child: child,
+      ),
     ),
   );
 }
@@ -784,30 +898,21 @@ class _SupportCard extends StatelessWidget {
         customSemanticsActions: {
           const CustomSemanticsAction(label: 'Seguir descubriendo'): pass,
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: yellow,
-            borderRadius: BorderRadius.circular(32),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x2415110d),
-                blurRadius: 32,
-                offset: Offset(0, 16),
-              ),
-            ],
-          ),
+        child: _DiscoverySurface(
+          preview: preview,
+          support: true,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(24),
             child: Material(
-              color: yellow,
+              color: Colors.transparent,
               child: Column(
                 children: [
                   InkWell(
                     onTap: busy ? null : open,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(22),
+                        borderRadius: BorderRadius.circular(16),
                         child: SizedBox(
                           height: discoveryMediaHeight(context),
                           child: Stack(
@@ -864,7 +969,7 @@ class _SupportCard extends StatelessWidget {
                                             DopmiTokens.display28Variations,
                                         height: 1.1,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                        color: DopmiTokens.sky,
                                       ),
                                     ),
                                     const SizedBox(height: 6),
@@ -1035,40 +1140,21 @@ class _SwipeCard extends StatelessWidget {
           : Duration(milliseconds: exiting == 0 ? 250 : 280),
       translation: exiting == 0 ? dragX : exitTranslation,
       angleDegrees: exiting == 0 ? dragX / 28 : exiting * 18,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0f15110d),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-            BoxShadow(
-              color: Color(0x2415110d),
-              blurRadius: 32,
-              offset: Offset(0, 16),
-            ),
-            BoxShadow(
-              color: Color(0x1f15110d),
-              blurRadius: 56,
-              offset: Offset(0, 28),
-            ),
-          ],
-        ),
+      child: _DiscoverySurface(
+        preview: preview,
+        support: false,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(24),
           child: Material(
-            color: Colors.white,
+            color: Colors.transparent,
             child: Column(
               children: [
                 InkWell(
                   onTap: busy ? null : open,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(22),
+                      borderRadius: BorderRadius.circular(16),
                       child: SizedBox(
                         height: discoveryMediaHeight(context),
                         child: Stack(
@@ -1113,14 +1199,19 @@ class _SwipeCard extends StatelessWidget {
                                   Text(
                                     post.name,
                                     style: const TextStyle(
-                                      fontFamily: 'Fraunces',
+                                      fontFamily: 'Inter',
                                       fontSize: 28,
-                                      fontVariations:
-                                          DopmiTokens.display28Variations,
                                       height: 1.1,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                      letterSpacing: 0,
+                                      color: DopmiTokens.yellow,
+                                      letterSpacing: -.56,
+                                      shadows: [
+                                        Shadow(
+                                          color: Color(0x59000000),
+                                          blurRadius: 4,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 6),
@@ -1190,7 +1281,7 @@ class _SwipeCard extends StatelessWidget {
                                                     ),
                                                 decoration: BoxDecoration(
                                                   color: const Color(
-                                                    0x7315110d,
+                                                    0x33ffffff,
                                                   ),
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -1198,7 +1289,7 @@ class _SwipeCard extends StatelessWidget {
                                                       ),
                                                   border: Border.all(
                                                     color: const Color(
-                                                      0x2effffff,
+                                                      0x6bffffff,
                                                     ),
                                                   ),
                                                 ),
@@ -1280,16 +1371,12 @@ class DiscoveryControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduce = MediaQuery.disableAnimationsOf(context);
-    final fill = message
-        ? ink
-        : hot
-        ? (pass ? const Color(0xffd92d20) : yellow)
-        : Colors.white;
-    final foreground = message || (hot && pass)
+    final fill = message ? DopmiTokens.orange : Colors.white;
+    final foreground = message
         ? Colors.white
-        : pass
-        ? const Color(0xff8a837c)
-        : ink;
+        : hot
+        ? (pass ? ink : yellow)
+        : DopmiTokens.navigationInactive;
     return AnimatedScale(
       scale: hot ? 1.14 : 1,
       duration: reduce ? Duration.zero : const Duration(milliseconds: 180),
@@ -1303,41 +1390,34 @@ class DiscoveryControl extends StatelessWidget {
           color: fill,
           shape: BoxShape.circle,
           border: Border.all(
-            width: 1.5,
-            color: hot || message
+            width: hot && !message ? 2 : 1,
+            color: message
                 ? Colors.transparent
-                : const Color(0xffe4e0d9),
+                : hot
+                ? (pass ? ink : yellow)
+                : DopmiTokens.line,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: hot
-                  ? fill.withValues(alpha: .35)
-                  : ink.withValues(alpha: message ? .28 : .08),
-              blurRadius: hot
-                  ? 24
-                  : message
-                  ? 20
-                  : 12,
-              offset: Offset(
-                0,
-                hot
-                    ? 10
-                    : message
-                    ? 8
-                    : 4,
-              ),
-            ),
-          ],
+          boxShadow: message
+              ? const [
+                  BoxShadow(
+                    color: Color(0x47eb6425),
+                    offset: Offset(0, 8),
+                    blurRadius: 20,
+                  ),
+                ]
+              : null,
         ),
         child: IconButton(
           tooltip: label,
           onPressed: onPressed,
           icon: SvgPicture.asset(
-            'assets/profile/${message
-                ? 'discovery-message.svg'
-                : pass
-                ? 'icon-x-muted.svg'
-                : 'icon-heart.svg'}',
+            !message && !pass && hot
+                ? 'assets/navigation/nav-heart-solid.svg'
+                : 'assets/profile/${message
+                      ? 'discovery-message.svg'
+                      : pass
+                      ? 'icon-x-muted.svg'
+                      : 'icon-heart.svg'}',
             width: message ? 24 : 26,
             height: message ? 24 : 26,
             colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),

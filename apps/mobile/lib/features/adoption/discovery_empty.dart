@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,15 +30,8 @@ class DiscoveryEmpty extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: const Color(0xffe6e2dd)),
+            border: Border.all(color: DopmiTokens.line),
             borderRadius: BorderRadius.circular(24),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x2415110d),
-                offset: Offset(0, 12),
-                blurRadius: 32,
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,104 +188,107 @@ class DiscoveryEnd extends StatelessWidget {
                   ),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 302),
-                  child: Container(
-                    key: const ValueKey('discovery-end-card'),
-                    padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x1f15110d),
-                          offset: Offset(0, 8),
-                          blurRadius: 28,
-                        ),
-                        BoxShadow(
-                          color: Color(0x0f15110d),
-                          offset: Offset(0, 2),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'Nuestra manada llegó hasta aquí por ahora',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 22,
-                            height: 1.25,
-                            fontWeight: FontWeight.w700,
-                            color: ink,
+                  child: _EndFrost(
+                    child: Container(
+                      key: const ValueKey('discovery-end-card'),
+                      padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
+                      decoration: BoxDecoration(
+                        gradient: _endVeil,
+                        border: Border.all(color: const Color(0xc7ffffff)),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x1446281d),
+                            offset: Offset(0, 5),
+                            blurRadius: 12,
+                            spreadRadius: -2,
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Todos los días hay historias nuevas esperando a alguien como tú.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14,
-                            height: 1.45,
-                            color: muted,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        FilledButton(
-                          onPressed: () => context.go('/messages'),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: yellow,
-                            foregroundColor: ink,
-                            minimumSize: const Size(0, 50),
-                            textStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          child: const Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Ir a mis '),
-                                TextSpan(
-                                  text: 'favoritos',
-                                  style: TextStyle(fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'Nuestra manada llegó hasta aquí por ahora',
                             textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        OutlinedButton(
-                          onPressed: restart,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: ink,
-                            side: const BorderSide(color: yellow, width: 1.5),
-                            minimumSize: const Size(0, 50),
-                            textStyle: const TextStyle(
+                            style: TextStyle(
                               fontFamily: 'Inter',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 22,
+                              height: 1.25,
+                              fontWeight: FontWeight.w700,
+                              color: ink,
                             ),
                           ),
-                          child: const Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Volver a '),
-                                TextSpan(
-                                  text: 'descubrir',
-                                  style: TextStyle(fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Todos los días hay historias nuevas esperando a alguien como tú.',
                             textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              height: 1.45,
+                              color: muted,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 12),
+                          FilledButton(
+                            onPressed: () => context.go('/messages'),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: DopmiTokens.orangeButton,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size(0, 50),
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            child: const Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: 'Ir a mis '),
+                                  TextSpan(
+                                    text: 'favoritos',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          OutlinedButton(
+                            onPressed: restart,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: ink,
+                              side: const BorderSide(color: yellow, width: 1.5),
+                              minimumSize: const Size(0, 50),
+                              textStyle: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            child: const Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: 'Volver a '),
+                                  TextSpan(
+                                    text: 'descubrir',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -339,11 +337,10 @@ class _EmptyHeading extends StatelessWidget {
   const _EmptyHeading();
   static const title = 'No hay mascotas disponibles';
   static const style = TextStyle(
-    fontFamily: 'Fraunces',
-    fontSize: 26,
-    fontVariations: DopmiTokens.display26Variations,
-    height: 1.2,
-    letterSpacing: -.52,
+    fontFamily: 'Inter',
+    fontSize: 28,
+    height: 1.1,
+    letterSpacing: -.28,
     fontWeight: FontWeight.w600,
     color: ink,
   );
@@ -364,7 +361,7 @@ class _EmptyHeading extends StatelessWidget {
         textScaler: scaler,
       )..layout();
       final width = measure.width;
-      final height = scaler.scale(26) * 1.2;
+      final height = scaler.scale(28) * 1.1;
       measure.dispose();
       return LayoutBuilder(
         builder: (_, constraints) => SizedBox(
@@ -391,7 +388,7 @@ class _EmptyHeading extends StatelessWidget {
     return Center(
       child: SizedBox(
         key: const ValueKey('discovery-empty-heading'),
-        width: 244.244 * scaler.scale(26) / 26,
+        width: 258.59 * scaler.scale(28) / 28,
         child: Semantics(
           key: const ValueKey('discovery-empty-heading-semantics'),
           container: true,
@@ -408,4 +405,42 @@ class _EmptyHeading extends StatelessWidget {
       ),
     );
   }
+}
+
+// CSS source-over: white .22 base + white .38/.72/.82 veil.
+const _endVeil = LinearGradient(
+  begin: Alignment(-.259, -.966),
+  end: Alignment(.259, .966),
+  colors: [
+    Color.from(alpha: 0.5164, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.7816, red: 1, green: 1, blue: 1),
+    Color.from(alpha: 0.8596, red: 1, green: 1, blue: 1),
+  ],
+  stops: [0, .52, 1],
+);
+
+class _EndFrost extends StatelessWidget {
+  const _EndFrost({required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(24),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x1446281d),
+          offset: Offset(0, 5),
+          blurRadius: 12,
+          spreadRadius: -2,
+        ),
+      ],
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+        child: child,
+      ),
+    ),
+  );
 }

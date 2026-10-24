@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/design_tokens.dart';
 import '../adoption/publication_frame.dart';
 import 'rescue_fields.dart';
 
@@ -92,7 +93,7 @@ class CaseInformation extends StatelessWidget {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: Color(0xff7841f2)),
+                borderSide: const BorderSide(color: DopmiTokens.purple),
               ),
             ),
             onChanged: (_) => onChanged(),

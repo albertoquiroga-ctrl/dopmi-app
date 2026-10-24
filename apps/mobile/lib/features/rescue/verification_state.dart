@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/design_tokens.dart';
 import 'verification_form.dart';
 
 class VerificationStateScreen extends StatelessWidget {
@@ -114,7 +116,7 @@ class VerificationStateScreen extends StatelessWidget {
                           vertical: 12,
                         ),
                         splashFactory: NoSplash.splashFactory,
-                        backgroundColor: const Color(0xff7841f2),
+                        backgroundColor: DopmiTokens.purple,
                         foregroundColor: const Color(0xfffbfbff),
                         textStyle: const TextStyle(
                           fontFamily: 'Inter',

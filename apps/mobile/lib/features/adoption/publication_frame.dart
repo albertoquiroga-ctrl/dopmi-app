@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/design_tokens.dart';
 
 class PublicationFrame extends StatefulWidget {
   const PublicationFrame({
@@ -172,7 +175,7 @@ class PublicationStepper extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(99),
                   color: index <= step
-                      ? const Color(0xff7841f2)
+                      ? DopmiTokens.purple
                       : const Color(0xffe6e2dd),
                 ),
               ),
@@ -218,7 +221,7 @@ class PublicationFooter extends StatelessWidget {
           onPressed: busy ? null : onContinue,
           style:
               FilledButton.styleFrom(
-                backgroundColor: const Color(0xff7841f2),
+                backgroundColor: DopmiTokens.purple,
                 foregroundColor: const Color(0xfffbfbff),
                 disabledBackgroundColor: const Color(0xfff2f2f2),
                 disabledForegroundColor: const Color(0xffc5c5c5),
@@ -239,7 +242,7 @@ class PublicationFooter extends StatelessWidget {
                       ? const Color(0xfff2f2f2)
                       : states.contains(WidgetState.hovered)
                       ? const Color(0xff6d28d9)
-                      : const Color(0xff7841f2),
+                      : DopmiTokens.purple,
                 ),
               ),
           child: busy
@@ -722,10 +725,10 @@ class PublicationTraitCheck extends StatelessWidget {
                     onChanged: onChanged == null ? null : (_) => advance(),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
-                    activeColor: const Color(0xff7841f2),
+                    activeColor: DopmiTokens.purple,
                     checkColor: Colors.white,
                     fillColor: WidgetStatePropertyAll(
-                      value == false ? Colors.white : const Color(0xff7841f2),
+                      value == false ? Colors.white : DopmiTokens.purple,
                     ),
                     side: const BorderSide(color: Color(0xffe3e4ed)),
                     shape: RoundedRectangleBorder(
@@ -839,7 +842,7 @@ class PublicationMainPhoto extends StatelessWidget {
                   tooltip: 'Editar foto de la mascota',
                   onPressed: onPick,
                   style: IconButton.styleFrom(
-                    backgroundColor: const Color(0xff7841f2),
+                    backgroundColor: DopmiTokens.purple,
                     foregroundColor: Colors.white,
                     side: const BorderSide(color: Colors.white, width: 3),
                     shape: const CircleBorder(),

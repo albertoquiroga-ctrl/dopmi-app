@@ -7,6 +7,7 @@ import '../../core/media/remote_photo.dart';
 import '../../core/css_linear_gradient.dart';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,7 @@ import '../rescue/rescue_repository.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/design_tokens.dart';
 import '../community/content_actions.dart';
 import 'rescuer_profile_repository.dart';
 import 'social_verification_screen.dart';
@@ -335,7 +337,7 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0x477841f2)),
+                      border: Border.all(color: const Color(0x4746281d)),
                       gradient: const LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -348,7 +350,7 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: const Color(0x1f7841f2),
+                            color: const Color(0x1f46281d),
                             borderRadius: BorderRadius.circular(14),
                           ),
                           alignment: Alignment.center,
@@ -592,7 +594,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
             statesController: states,
             style: TextButton.styleFrom(
               backgroundColor: const Color(0xf2ffffff),
-              foregroundColor: const Color(0xff7841f2),
+              foregroundColor: DopmiTokens.purple,
               minimumSize: const Size(48, 44),
               tapTargetSize: MaterialTapTargetSize.padded,
               overlayColor: Colors.transparent,
@@ -616,7 +618,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
                     width: 16,
                     height: 16,
                     colorFilter: const ColorFilter.mode(
-                      Color(0xff7841f2),
+                      DopmiTokens.purple,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -635,7 +637,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
         fontFamily: 'Inter',
         fontSize: 28,
         fontWeight: FontWeight.w700,
-        color: Color(0xff7841f2),
+        color: DopmiTokens.purple,
         letterSpacing: 0,
       ),
     );
@@ -772,12 +774,12 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
         borderRadius: BorderRadius.circular(24),
         gradient: const CssLinearGradient(
           degrees: 155,
-          colors: [Color(0xff7841f2), Color(0xff9b6cff), Color(0xffc4a8ff)],
+          colors: [DopmiTokens.purple, Color(0xff9b6cff), Color(0xffc4a8ff)],
           stops: [0, .55, 1],
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x477841f2),
+            color: Color(0x4746281d),
             offset: Offset(0, 6),
             blurRadius: 18,
           ),
@@ -862,7 +864,7 @@ class RescuerOwnerContacts extends StatelessWidget {
                     width: 14,
                     height: 14,
                     colorFilter: const ColorFilter.mode(
-                      Color(0xff7841f2),
+                      DopmiTokens.purple,
                       BlendMode.srcIn,
                     ),
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:uuid/uuid.dart';
 
+import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import 'case_information.dart';
 import 'rescue_fields.dart';
@@ -114,7 +116,7 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xff7841f2)),
+              borderSide: const BorderSide(color: DopmiTokens.purple),
             ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
           ),
@@ -269,7 +271,7 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
                               child: Checkbox(
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
-                                activeColor: const Color(0xff7841f2),
+                                activeColor: DopmiTokens.purple,
                                 value: urgent,
                                 onChanged: (v) => setState(() => urgent = v!),
                               ),
@@ -362,7 +364,7 @@ class _CaseNeedDialogState extends State<CaseNeedDialog> {
               const SizedBox(height: 12),
               FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xff7841f2),
+                  backgroundColor: DopmiTokens.purple,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

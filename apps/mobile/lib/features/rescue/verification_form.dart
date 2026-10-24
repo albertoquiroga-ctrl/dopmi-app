@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../core/design_tokens.dart';
 
 class VerificationFormFrame extends StatelessWidget {
   const VerificationFormFrame({
@@ -186,7 +189,7 @@ class VerificationProgress extends StatelessWidget {
             value: captured / total,
             minHeight: 8,
             borderRadius: BorderRadius.circular(99),
-            color: const Color(0xff7841f2),
+            color: DopmiTokens.purple,
             backgroundColor: const Color(0xffefede8),
             semanticsLabel:
                 'Progreso del formulario: $captured de $total requisitos capturados',
@@ -382,7 +385,7 @@ class VerificationFormActions extends StatelessWidget {
             onPressed: busy ? null : onSubmit,
             style:
                 FilledButton.styleFrom(
-                  backgroundColor: const Color(0xff7841f2),
+                  backgroundColor: DopmiTokens.purple,
                   foregroundColor: const Color(0xfffbfbff),
                   minimumSize: const Size.fromHeight(48),
                   padding: const EdgeInsets.symmetric(

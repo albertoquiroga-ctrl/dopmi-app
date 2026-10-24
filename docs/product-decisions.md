@@ -1,3 +1,24 @@
+## 23/10/2026 — Referencia nueva y presentación warm-trust
+
+Titular confirmó que UX compara la versión más reciente del mock
+(call_7cbaac969e49452e8ea4de7d652e6638/item0) y eligió su presentación
+predeterminada warm-trust (call_65dbdd57ff084a519b22619745d15517/item0).
+Congelar `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`; posteriores cambios se
+inventarían aparte. Implementar exclusivamente en dopmi-app, mock como referencia.
+La elección no incorpora selector de paletas ni cambia dinero, privacidad,
+moderación, permisos comerciales o gates operativos ya acordados. Los estilos
+CSS finales/render del SHA prevalecen sobre propuestas de paleta históricas.
+
+Precisión posterior del titular, `call_7ddb7182efa94b78a02488747a7be2a9/item0`:
+«Dale identico a como esta el mock y al final dame un reporte de las cosas que
+no recomendabas mantener en el mock y/o los flujos que faltan». Perfil conserva
+«Mi historial de pagos» y su lista financiera; Impacto muestra el feed de casos,
+sin anteponer el resumen mensual. El tablero mensual dibujado en Apoyar se
+conserva para Guardián. No añadir el botón de resumen propuesto dentro de Perfil.
+Registrar en parity-current-review el acceso mensual no dibujado para aportantes
+individuales, las adaptaciones de negocio/privacidad y la evidencia pendiente;
+no inventar datos ni cambiar permisos para reproducir una simulación.
+
 ## 23/10/2026 — Evaluación humana de ficha330 y consumo de P2
 
 Titular respondió «Se entiende la prueba y el cierre» en call_54fb51545957496c866bf8e990582426/item0, tras captura real330. Aceptación puntual de claridad de esa ficha, sin nueva decisión de badge ni aceptación integral/videos/audio/iOS. No reabrir acuerdo resuelto.

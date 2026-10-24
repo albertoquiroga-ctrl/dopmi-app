@@ -12,6 +12,7 @@ import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
 import '../../core/reference_focus_outline.dart';
+import '../../core/design_tokens.dart';
 import 'match_favorites.dart';
 import 'match_thread_row.dart';
 import 'notification_tile.dart';
@@ -130,7 +131,7 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SvgPicture.asset(
-                    'assets/profile/logo-paw.svg',
+                    'assets/profile/logo-paw-naranja.svg',
                     width: 40,
                     height: 40,
                     semanticsLabel: 'Dopmi',
@@ -254,15 +255,20 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                                   color: muted,
                                 ),
                               ),
+                            if (result.items.isEmpty && query.isEmpty) ...[
+                              const SizedBox(height: 16),
+                              FilledButton(
+                                onPressed: () => context.go('/adoptions'),
+                                child: const Text('Descubrir'),
+                              ),
+                            ],
                             if (result.items.isNotEmpty)
                               Container(
                                 key: const ValueKey('match-thread-list'),
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  border: Border.all(
-                                    color: const Color(0xffe6e2dd),
-                                  ),
+                                  border: Border.all(color: DopmiTokens.line),
                                   borderRadius: BorderRadius.circular(22),
                                   boxShadow: const [
                                     BoxShadow(
@@ -658,7 +664,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
     builder: (context, _) {
       final rescuer =
           ref.read(experienceProvider).value == AccountExperience.rescuer;
-      final accent = rescuer ? const Color(0xff7841f2) : yellow;
+      final accent = rescuer ? ink : yellow;
       final foreground = rescuer ? Colors.white : ink;
       final textInk = rescuer ? const Color(0xff151423) : ink;
       final textMuted = rescuer ? const Color(0xff4f4e5c) : muted;

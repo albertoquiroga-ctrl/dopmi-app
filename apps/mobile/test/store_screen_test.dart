@@ -234,7 +234,7 @@ void main() {
       await open(tester, StoreFake());
       final title = tester.widget<Text>(find.text('Tienda Dopmi'));
       expect(title.style?.fontFamily, 'Inter');
-      expect(title.style?.fontSize, 28);
+      expect(title.style?.fontSize, 32);
       expect(find.byTooltip('Regresar'), findsNothing);
       expect(find.text('Perros'), findsOneWidget);
       expect(find.text('Gatos'), findsOneWidget);
@@ -245,7 +245,7 @@ void main() {
       expect(find.byType(BottomSheet), findsNothing);
       expect(
         tester.widget<Dialog>(find.byType(Dialog)).backgroundColor,
-        Colors.white,
+        Colors.transparent,
       );
       expect(find.text('Tamaño de Raza'), findsOneWidget);
       expect(find.text('Chico'), findsOneWidget);
@@ -358,7 +358,7 @@ void main() {
           return true;
         },
       );
-      await tester.tap(find.text('Ordenar: Menor a mayor kg'));
+      await tester.tap(find.byTooltip('Ordenar: Menor a mayor kg'));
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Filtros'));
       await tester.pumpAndSettle();
@@ -377,7 +377,7 @@ void main() {
       expect(opened.single, Uri.parse('https://shop.example/exact'));
       expect(repo.linked, ['a']);
       expect(find.byTooltip('Filtros activos'), findsOneWidget);
-      expect(find.text('Ordenar: Mayor a menor kg'), findsOneWidget);
+      expect(find.byTooltip('Ordenar: Mayor a menor kg'), findsOneWidget);
       expect(position.pixels, beforeOpening);
       expect(find.textContaining('Compra confirmada'), findsNothing);
       expect(find.textContaining('5%'), findsNothing);

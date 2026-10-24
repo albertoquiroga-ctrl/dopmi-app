@@ -1,3 +1,47 @@
+# Corte vigente — b9f6d5f warm-trust, 23/10/2026
+
+UX compara contra el mock nuevo; titular confirmó warm-trust. No afirmar paridad
+por localizar código o por pruebas unitarias. Candidato instalado330 es7f6d7e9;
+implementación local nueva aún sin publicación/aceptación.
+
+| Grupo / referencia | Brecha comprobada | Decisión / evidencia pendiente |
+|---|---|---|
+| Fundación/nav b9 CSS14000+ y App238–277 | Paleta/tipografía/CTA anteriores e iconos activos sin sólidos | Warm-trust aprobada; comparar render y texto escalado. Conservar contraste accesible. |
+| Adoptar App1764–1784,2194,2406–2418 | Personalidad pierde selección múltiple, corazón outline, carta/capas y composición anteriores | Corregir fuente y regresiones; imagen/gestos con evidencia equivalente. |
+| Impacto App4755–4804 y Perfil App6277 | Tablero mensual intercalado antes del feed y confusión con historial financiero | Feed directo en Impacto; Perfil → Mi historial de pagos → movimientos. Mensual en Apoyar Guardián; sin acceso extra en Perfil, decisión call_7ddb7182. |
+| Guardián/Perfil CSS14784–14804,15189–15204 | Tarjeta activa negra y collage taupe/jerarquía anterior | Blanco/café/acentos aprobados; mostrar variantes reales y texto ampliado. |
+| Perfiles/notificaciones/chat App5514–5521,CSS15249–15466 | Badge/tab/read tones anteriores y vacío sin Descubrir | Aplicar delta sin tocar autorización; comprobar vacío inicial y búsqueda sin resultados separados. |
+| Tienda App6059–6128,CSS2589–2715 | Toolbar separada y cards contain/atributos apilados | Catálogo privado TEST y salida externa bloqueada se conservan; imagen cuadrada y pie compacto, regreso/expiración sin regresión. |
+| Historias App2533,2775–2809 | IDs de video pierden propósito y orden; metadatos genéricos | Urgencia/agradecimiento/avances/despedida públicos, nunca comprobantes/evidencia privada; clips completos y gestos reales. |
+
+El resto del inventario integral20d21 y sus escenarios no dibujados sigue vigente;
+W4 debe conciliar cada grupo, sin generalizar capturas antiguas al nuevo candidato.
+Cola/propietarios en backlog. Este corte supersede pendientes históricos inferiores.
+
+### Informe solicitado: adaptaciones y flujos ausentes del mock
+
+No son aceptación ni permiso para nuevas operaciones. La decisión humana vigente
+está en product-decisions; root conserva los siguientes límites visibles:
+
+| Elemento del mock / ausencia | Tratamiento real o pendiente |
+|---|---|
+| Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No publicar cifras ficticias. |
+| Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
+| Resumen mensual para quien sólo aporta una vez | Datos/servicio se conservan; el mock no dibuja acceso equivalente sin Guardián. No se añadió el botón de Perfil propuesto, por decisión del titular. Fallback histórico de impacto anterior conservado. |
+| Método de pago en cada movimiento | No inventar Visa4242 ni usar tarjeta predeterminada actual como histórica. Falta snapshot privado brand/last4 en proyección existente; requiere cambio aditivo posterior y evidencia del cargo exacto. |
+| Estados de registro, cobro y devoluciones | Conservar pendientes, requiereacción, cancelado, omitido, conciliación y reintegro, aunque el mock no los dibuje. El modo elegido no concede permisos. |
+| Carga de cámara/galería inmediata | Revisión local y botón Subir explícitos ya elegidos por titular; no crear recurso remoto al seleccionar/descartar. |
+| Video listo versus aprobado | Procesamiento no publica. Conservar dueño/propósito/versión, moderación, comprobantes privados, retirada y eliminación/reintentos. Historias excluyen expense_evidence. |
+| Textos sin gastos y caso cerrado | Conservar historia/medios y aviso/CTA deshabilitado; ocultar encabezado de solicitud sin capacidad según decisión previa. Cierre no borra publicación ni reabre al añadir despedida. |
+| Contraste pequeño naranja/blanco y foco | Colores del mock para decoración; texto pequeño café y botón naranja oscurecido para AA. Grain feTurbulence, saturate e inset-shadow CSS no se reproducen literalmente. |
+| Errores, vacío, permisos, interrupciones y sesión | Conservar reintento, revisión legítima, bloqueo de duplicados, recuperación tras reinicio y retiro de datos al cambiar identidad. Nunca simular éxito. |
+| Aceptación pendiente | Comparación UX integral del candidato instalado, cámara/audio físico, historias/Impacto reales con actores legítimos, cuenta sin Tienda e iOS físico. Capturas Flutter y iOSsim no sustituyen esos recorridos. |
+
+Recomendación no incorporada: acceso adicional «Resumen del mes» en Perfil.
+El titular prefirió conservar la presentación del mock y recibir este informe.
+
+## Historial de revisiones
+
 ## 23/10/2026 — Correcciones de QA verificadas localmente
 
 Encabezado sin gastos elegibles oculto por decisión call_8c2…; historia/videos/aviso/CTA conservados.29 tests/analyze0/seis capturas y producto/código cerrados. Cola admin renueva fila antes del playback, fail-closed ante retiro/error/respuesta obsoleta;57 tests/build y tres revisiones cerradas. Pendientes CI del SHA conjunto y distribución/despliegue real; instalada329 permanece2582. No acredita despedida pública Samsung/audio/otraidentidad ni aceptación integral. Evidencia y siguientes gates en checkpoint/progress.

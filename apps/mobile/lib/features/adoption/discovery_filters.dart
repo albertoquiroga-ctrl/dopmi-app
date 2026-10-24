@@ -5,7 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/dialog_close.dart';
+import '../../core/warm_filter_dialog.dart';
 import 'community_repository.dart';
 import 'adoption_traits.dart';
 export 'adoption_traits.dart'
@@ -33,7 +35,6 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
   late Set<String> traits = (widget.current['personality'] as List? ?? const [])
       .whereType<String>()
       .where(personalityLabels.containsKey)
-      .take(1)
       .toSet();
   Widget heading(String text) => Text(
     text,
@@ -47,12 +48,7 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
   );
 
   @override
-  Widget build(BuildContext context) => Dialog(
-    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-    backgroundColor: Colors.white,
-    surfaceTintColor: Colors.transparent,
-    elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+  Widget build(BuildContext context) => WarmFilterDialog(
     child: ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: 361,
@@ -131,10 +127,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                               child: FilterOption(
                                 label: item.$2,
                                 selected: sex == item.$1,
-                                fill: sex == item.$1 ? ink : Colors.white,
-                                foreground: sex == item.$1
-                                    ? Colors.white
-                                    : muted,
+                                fill: sex == item.$1 ? yellow : Colors.white,
+                                foreground: sex == item.$1 ? ink : muted,
                                 fontSize: 14,
                                 onPressed: () => setState(
                                   () => sex = sex == item.$1 ? null : item.$1,
@@ -175,11 +169,9 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                                 ),
                                 style: TextButton.styleFrom(
                                   backgroundColor: size == item.$1
-                                      ? const Color(0x147c3aed)
+                                      ? DopmiTokens.saffronSoft
                                       : Colors.white,
-                                  foregroundColor: size == item.$1
-                                      ? const Color(0xff7c3aed)
-                                      : const Color(0xff151423),
+                                  foregroundColor: ink,
                                   padding: const EdgeInsets.fromLTRB(
                                     4,
                                     8,
@@ -195,8 +187,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                                   animationDuration: Duration.zero,
                                   side: BorderSide(
                                     color: size == item.$1
-                                        ? const Color(0xff7c3aed)
-                                        : const Color(0xffe3e4ed),
+                                        ? const Color(0xfff0d878)
+                                        : DopmiTokens.line,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
@@ -218,10 +210,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                                           'assets/profile/notif-pet.svg',
                                           width: item.$3,
                                           height: item.$3,
-                                          colorFilter: ColorFilter.mode(
-                                            size == item.$1
-                                                ? const Color(0xff7c3aed)
-                                                : const Color(0xff151423),
+                                          colorFilter: const ColorFilter.mode(
+                                            ink,
                                             BlendMode.srcIn,
                                           ),
                                         ),
@@ -276,19 +266,27 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                             child: FilterOption(
                               label: item.value,
                               selected: traits.contains(item.key),
-                              fill: personalityColors[item.key]!,
+                              fill: traits.contains(item.key)
+                                  ? personalityColors[item.key]!
+                                  : Colors.white,
                               foreground: traits.contains(item.key)
-                                  ? const Color(0xff4c1d95)
-                                  : personalityTextColors[item.key]!,
+                                  ? personalityTextColors[item.key]!
+                                  : ink,
                               border: traits.contains(item.key)
-                                  ? const Color(0xff7c3aed)
-                                  : personalityBorderColors[item.key]!,
+                                  ? personalityBorderColors[item.key]!
+                                  : DopmiTokens.line,
+                              glow: traits.contains(item.key)
+                                  ? personalityBorderColors[item.key]
+                                  : null,
                               fontSize: 12,
                               outlined: true,
                               onPressed: () => setState(() {
                                 final selected = traits.contains(item.key);
-                                traits.clear();
-                                if (!selected) traits.add(item.key);
+                                if (selected) {
+                                  traits.remove(item.key);
+                                } else {
+                                  traits.add(item.key);
+                                }
                               }),
                             ),
                           ),
@@ -309,8 +307,8 @@ class _DiscoveryFiltersState extends State<DiscoveryFilters> {
                     ),
                     visualDensity: VisualDensity.standard,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    backgroundColor: yellow,
-                    foregroundColor: ink,
+                    backgroundColor: DopmiTokens.orangeButton,
+                    foregroundColor: Colors.white,
                     textStyle: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 16,
@@ -387,49 +385,64 @@ class FilterOption extends StatelessWidget {
     required this.onPressed,
     this.outlined = false,
     this.border,
+    this.glow,
   });
   final String label;
   final bool selected, outlined;
   final Color fill, foreground;
-  final Color? border;
+  final Color? border, glow;
   final double fontSize;
   final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
-    child: TextButton(
-      style: TextButton.styleFrom(
-        splashFactory: NoSplash.splashFactory,
-        overlayColor: Colors.transparent,
-        animationDuration: Duration.zero,
-        minimumSize: Size(0, outlined ? 34 : 40),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        padding: EdgeInsets.symmetric(
-          horizontal: outlined ? 0 : 4,
-          vertical: 6,
-        ),
-        backgroundColor: fill,
-        foregroundColor: foreground,
-        side: BorderSide(
-          width: outlined && selected ? 2 : 1,
-          color: border ?? (outlined && selected ? ink : Colors.transparent),
-        ),
-        shape: const StadiumBorder(),
-        textStyle: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: fontSize,
-          height: 1.15,
-          fontWeight: outlined ? FontWeight.w500 : FontWeight.w600,
-          letterSpacing: 0,
-        ),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(99),
+        boxShadow: glow == null
+            ? null
+            : [
+                BoxShadow(color: glow!.withValues(alpha: .16), spreadRadius: 1),
+                BoxShadow(color: glow!.withValues(alpha: .26), blurRadius: 8),
+                BoxShadow(color: glow!.withValues(alpha: .12), blurRadius: 14),
+              ],
       ),
-      onPressed: onPressed,
-      child: Text(
-        label,
-        textAlign: TextAlign.center,
-        softWrap: MediaQuery.textScalerOf(context).scale(fontSize) > 15,
-        overflow: TextOverflow.visible,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+          overlayColor: Colors.transparent,
+          animationDuration: Duration.zero,
+          minimumSize: Size(0, outlined ? 34 : 40),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: EdgeInsets.symmetric(
+            horizontal: outlined ? 0 : 4,
+            vertical: 6,
+          ),
+          backgroundColor: fill,
+          foregroundColor: foreground,
+          side: BorderSide(
+            width: outlined ? (selected ? 2 : 1.5) : 1,
+            color: border ?? (outlined && selected ? ink : Colors.transparent),
+          ),
+          shape: const StadiumBorder(),
+          textStyle: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: fontSize,
+            height: 1.15,
+            fontWeight: outlined && !selected
+                ? FontWeight.w500
+                : FontWeight.w600,
+            letterSpacing: 0,
+          ),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          softWrap: MediaQuery.textScalerOf(context).scale(fontSize) > 15,
+          overflow: TextOverflow.visible,
+        ),
       ),
     ),
   );

@@ -312,13 +312,13 @@ void main() {
       );
       expect(
         tester.widget<Material>(paintedButton).color,
-        const Color(0xff6d28d9),
+        const Color(0xff362017),
       );
       await mouse.moveTo(Offset.zero);
       await tester.pump();
       expect(
         tester.widget<Material>(paintedButton).color,
-        const Color(0xff7841f2),
+        const Color(0xff46281d),
       );
       await mouse.removePointer();
 

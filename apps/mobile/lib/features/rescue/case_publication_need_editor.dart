@@ -1,8 +1,10 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import 'expense_evidence_card.dart';
@@ -418,7 +420,7 @@ class _CasePublicationNeedEditorState
                         if (context.mounted) Navigator.pop(context, draft);
                       }),
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xff7841f2),
+                  backgroundColor: DopmiTokens.purple,
                   minimumSize: const Size(0, 48),
                 ),
                 child: Text(

@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/reference_focus_outline.dart';
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 
 class PublicProfileContacts extends StatelessWidget {
   const PublicProfileContacts({
@@ -118,10 +120,7 @@ class PublicProfileContacts extends StatelessWidget {
                     item.$1,
                     width: 20,
                     height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xff5c574f),
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
                   ),
                 ),
               ),
@@ -155,14 +154,26 @@ class PublicProfileFrame extends StatelessWidget {
       scrolledUnderElevation: 0,
       flexibleSpace: ClipRect(
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: const ColoredBox(
-            color: Color(0xf5ffffff),
+          filter: ui.ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              color: Color(0x0affffff),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0x1fffffff),
+                  Color(0x38ffffff),
+                  Color(0x4dffffff),
+                ],
+                stops: [0, .52, 1],
+              ),
+            ),
             child: SizedBox.expand(),
           ),
         ),
       ),
-      shape: const Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
+      shape: const Border(bottom: BorderSide(color: Color(0x61ffffff))),
       leading: Padding(
         padding: const EdgeInsets.only(left: 12),
         child: _PublicHeaderButton(
@@ -183,16 +194,18 @@ class PublicProfileFrame extends StatelessWidget {
         ),
       ],
     ),
-    body: SafeArea(
-      top: false,
-      child: ListView(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          88 + MediaQuery.paddingOf(context).top,
-          16,
-          32,
+    body: DonorCanvas(
+      child: SafeArea(
+        top: false,
+        child: ListView(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            88 + MediaQuery.paddingOf(context).top,
+            16,
+            32,
+          ),
+          children: [child],
         ),
-        children: [child],
       ),
     ),
   );
@@ -303,7 +316,7 @@ class PublicProfileIdentity extends StatelessWidget {
               ),
               if (verified)
                 SvgPicture.asset(
-                  'assets/profile/icon-verified.svg',
+                  'assets/profile/icon-verified-celeste.svg',
                   width: 20,
                   height: 20,
                   semanticsLabel: 'Rescatista verificado',
@@ -479,7 +492,7 @@ class PublicProfileTabs extends StatelessWidget {
         border: Border(
           bottom: BorderSide(
             width: 2,
-            color: selected == index ? ink : Colors.transparent,
+            color: selected == index ? DopmiTokens.orange : Colors.transparent,
           ),
         ),
       ),
@@ -491,6 +504,7 @@ class PublicProfileTabs extends StatelessWidget {
           minimumSize: Size.zero,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          // Keep the orange selection marker; 13px orange text is only 3.29:1.
           foregroundColor: selected == index ? ink : muted,
           textStyle: TextStyle(
             fontFamily: 'Inter',
@@ -511,7 +525,7 @@ class PublicProfileTabs extends StatelessWidget {
       children: [
         DecoratedBox(
           decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: Color(0xffe6e2dd))),
+            border: Border(bottom: BorderSide(color: DopmiTokens.line)),
           ),
           child: LayoutBuilder(
             builder: (context, bounds) {
