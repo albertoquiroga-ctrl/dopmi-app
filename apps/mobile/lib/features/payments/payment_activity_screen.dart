@@ -155,6 +155,14 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
     super.dispose();
   }
 
+  Widget activityCard(Json item) => PaymentActivityCard(
+    key: ValueKey('${widget.owner}:${item['kind']}:${item['id']}'),
+    item: item,
+    received: widget.received,
+    owner: widget.owner,
+    readOnly: widget.readOnly,
+  );
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Colors.white,
@@ -174,30 +182,37 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: 'Consulta todos los '),
-                  const TextSpan(
-                    text: '+Apoyos',
-                    style: TextStyle(
-                      color: Color(0xff0b7a5d),
-                      fontWeight: FontWeight.w700,
+            if (widget.received) ...[
+              const Text(
+                'Consulta el historial de pagos que has recibido por tus casos de apoyo.',
+                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Sigue así, personas como tú son especiales para la manada.',
+                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
+              ),
+            ] else
+              const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: 'Consulta todos los '),
+                    TextSpan(
+                      text: '+Apoyos',
+                      style: TextStyle(
+                        color: Color(0xff0b7a5d),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  if (widget.received)
-                    const TextSpan(text: ' que ha recibido tu manada.')
-                  else ...[
-                    const TextSpan(text: ' que recibió la manada '),
-                    const TextSpan(
+                    TextSpan(text: ' que recibió la manada '),
+                    TextSpan(
                       text: 'gracias a ti.',
                       style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ],
-                ],
+                ),
+                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
               ),
-              style: const TextStyle(fontSize: 14, height: 1.45, color: ink),
-            ),
             const SizedBox(height: 20),
             if (error != null) Notice(error!, isError: true),
             if (busy && items.isEmpty)
@@ -212,20 +227,34 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
                   color: const Color(0xfff7f5f1),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                child: const Text(
-                  'Aún no hay movimientos en tu historial.',
+                child: Text(
+                  widget.received
+                      ? 'Aún no has recibido pagos por tus casos de apoyo.'
+                      : 'Aún no hay movimientos en tu historial.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: muted),
+                  style: const TextStyle(fontSize: 14, color: muted),
                 ),
               ),
-            for (final item in items)
-              PaymentActivityCard(
-                key: ValueKey('${widget.owner}:${item['kind']}:${item['id']}'),
-                item: item,
-                received: widget.received,
-                owner: widget.owner,
-                readOnly: widget.readOnly,
-              ),
+            if (widget.received && items.isNotEmpty)
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: const Color(0xffe8e8e8)),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  children: [
+                    for (var index = 0; index < items.length; index++) ...[
+                      if (index > 0)
+                        const Divider(height: 1, color: Color(0xffe8e8e8)),
+                      activityCard(items[index]),
+                    ],
+                  ],
+                ),
+              )
+            else
+              for (final item in items) activityCard(item),
             if (error != null)
               TextButton(
                 onPressed: busy ? null : () => load(more: retryMore),
@@ -408,23 +437,27 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
           ].whereType<String>().where((s) => s.isNotEmpty).join(' - ');
     final photo = d['photo'] as String?;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: widget.received ? 0 : 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x1415110d),
-              offset: Offset(0, 8),
-              blurRadius: 24,
-            ),
-          ],
+          borderRadius: BorderRadius.circular(widget.received ? 0 : 20),
+          boxShadow: widget.received
+              ? const []
+              : const [
+                  BoxShadow(
+                    color: Color(0x1415110d),
+                    offset: Offset(0, 8),
+                    blurRadius: 24,
+                  ),
+                ],
         ),
         child: Material(
           color: Colors.white,
           shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Color(0x0a15110d)),
-            borderRadius: BorderRadius.circular(20),
+            side: widget.received
+                ? BorderSide.none
+                : const BorderSide(color: Color(0x0a15110d)),
+            borderRadius: BorderRadius.circular(widget.received ? 0 : 20),
           ),
           clipBehavior: Clip.antiAlias,
           child: Column(
@@ -445,180 +478,192 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                       horizontal: 16,
                       vertical: 14,
                     ),
-                    child: LayoutBuilder(
-                      builder: (context, bounds) {
-                        final photoWidget = SizedBox(
-                          width: 52,
-                          height: 52,
-                          child: photo != null && photo.isNotEmpty
-                              ? RescuePublicPhoto(
-                                  photo,
-                                  height: 52,
-                                  radius: 16,
-                                  compact: true,
-                                )
-                              : DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xfff7f5f1),
-                                    borderRadius: BorderRadius.circular(12),
+                    child: widget.received
+                        ? _ReceivedPaymentHeader(
+                            item: d,
+                            title: title,
+                            date: date,
+                            status: status,
+                          )
+                        : LayoutBuilder(
+                            builder: (context, bounds) {
+                              final photoWidget = SizedBox(
+                                width: 52,
+                                height: 52,
+                                child: photo != null && photo.isNotEmpty
+                                    ? RescuePublicPhoto(
+                                        photo,
+                                        height: 52,
+                                        radius: 16,
+                                        compact: true,
+                                      )
+                                    : DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xfff7f5f1),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.pets,
+                                          color: ink,
+                                        ),
+                                      ),
+                              );
+                              final scaler = MediaQuery.textScalerOf(context);
+                              final enlargedTitle = scaler.scale(15) > 22.5;
+                              final textWidget = Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Tooltip(
+                                    message: title,
+                                    excludeFromSemantics: true,
+                                    child: Text(
+                                      title,
+                                      semanticsLabel: title,
+                                      maxLines: enlargedTitle ? null : 1,
+                                      overflow: enlargedTitle
+                                          ? TextOverflow.clip
+                                          : TextOverflow.ellipsis,
+                                      softWrap: enlargedTitle,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.3,
+                                        color: ink,
+                                      ),
+                                    ),
                                   ),
-                                  child: const Icon(Icons.pets, color: ink),
-                                ),
-                        );
-                        final scaler = MediaQuery.textScalerOf(context);
-                        final enlargedTitle = scaler.scale(15) > 22.5;
-                        final textWidget = Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Tooltip(
-                              message: title,
-                              excludeFromSemantics: true,
-                              child: Text(
-                                title,
-                                semanticsLabel: title,
-                                maxLines: enlargedTitle ? null : 1,
-                                overflow: enlargedTitle
-                                    ? TextOverflow.clip
-                                    : TextOverflow.ellipsis,
-                                softWrap: enlargedTitle,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.3,
-                                  color: ink,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              date == null
-                                  ? 'Fecha por confirmar'
-                                  : '${date.day}/${date.month}/${date.year}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                height: 1.5,
-                                color: muted,
-                              ),
-                            ),
-                            if (method != null)
-                              Tooltip(
-                                message: method,
-                                excludeFromSemantics: true,
-                                child: Text(
-                                  method,
-                                  semanticsLabel: method.replaceFirst(
-                                    '*',
-                                    ', tarjeta terminada en ',
+                                  Text(
+                                    date == null
+                                        ? 'Fecha por confirmar'
+                                        : '${date.day}/${date.month}/${date.year}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      height: 1.5,
+                                      color: muted,
+                                    ),
                                   ),
-                                  maxLines: enlargedTitle ? null : 1,
-                                  overflow: enlargedTitle
-                                      ? TextOverflow.clip
-                                      : TextOverflow.ellipsis,
-                                  softWrap: enlargedTitle,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    height: 1.35,
-                                    fontWeight: FontWeight.w500,
-                                    color: muted,
+                                  if (method != null)
+                                    Tooltip(
+                                      message: method,
+                                      excludeFromSemantics: true,
+                                      child: Text(
+                                        method,
+                                        semanticsLabel: method.replaceFirst(
+                                          '*',
+                                          ', tarjeta terminada en ',
+                                        ),
+                                        maxLines: enlargedTitle ? null : 1,
+                                        overflow: enlargedTitle
+                                            ? TextOverflow.clip
+                                            : TextOverflow.ellipsis,
+                                        softWrap: enlargedTitle,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          height: 1.35,
+                                          fontWeight: FontWeight.w500,
+                                          color: muted,
+                                        ),
+                                      ),
+                                    ),
+                                  if (!statusInDetails)
+                                    Text(
+                                      status,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        height: 1.5,
+                                        color: muted,
+                                      ),
+                                    ),
+                                ],
+                              );
+                              final moneyWidget = ActivityMoney(
+                                cents: (d['amount_cents'] as num? ?? 0).toInt(),
+                                negative: const [
+                                  'not_paid',
+                                  'reversed',
+                                  'review',
+                                  'refund_review',
+                                ].contains(d['status']),
+                              );
+                              double textWidth(String value, double size) {
+                                final painter = TextPainter(
+                                  text: TextSpan(
+                                    text: value,
+                                    style: TextStyle(
+                                      fontFamily: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.fontFamily,
+                                      fontSize: size,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            if (!statusInDetails)
-                              Text(
-                                status,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  height: 1.5,
-                                  color: muted,
-                                ),
-                              ),
-                          ],
-                        );
-                        final moneyWidget = ActivityMoney(
-                          cents: (d['amount_cents'] as num? ?? 0).toInt(),
-                          negative: const [
-                            'not_paid',
-                            'reversed',
-                            'review',
-                            'refund_review',
-                          ].contains(d['status']),
-                        );
-                        double textWidth(String value, double size) {
-                          final painter = TextPainter(
-                            text: TextSpan(
-                              text: value,
-                              style: TextStyle(
-                                fontFamily: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.fontFamily,
-                                fontSize: size,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            textDirection: Directionality.of(context),
-                            textScaler: scaler,
-                          )..layout();
-                          final width = painter.width;
-                          painter.dispose();
-                          return width;
-                        }
+                                  textDirection: Directionality.of(context),
+                                  textScaler: scaler,
+                                )..layout();
+                                final width = painter.width;
+                                painter.dispose();
+                                return width;
+                              }
 
-                        var minimumTextWidth = textWidth(
-                          date == null
-                              ? 'Fecha por confirmar'
-                              : '${date.day}/${date.month}/${date.year}',
-                          12,
-                        );
-                        for (final word in title.split(RegExp(r'\s+'))) {
-                          final width = textWidth(word, 15);
-                          if (width > minimumTextWidth) {
-                            minimumTextWidth = width;
-                          }
-                        }
-                        for (final word in status.split(RegExp(r'\s+'))) {
-                          final width = textWidth(word, 11);
-                          if (width > minimumTextWidth) {
-                            minimumTextWidth = width;
-                          }
-                        }
-                        if (method != null) {
-                          final width = textWidth(method, 12);
-                          if (width > minimumTextWidth) {
-                            minimumTextWidth = width;
-                          }
-                        }
-                        final amountWidth = textWidth(
-                          '+${contributionMoney((d['amount_cents'] as num? ?? 0).toInt()).replaceAll(' MXN', '')}',
-                          15,
-                        );
-                        // Keep whole words and the date readable beside the amount.
-                        final stack =
-                            bounds.maxWidth <
-                            74 + minimumTextWidth + amountWidth;
-                        if (stack) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              photoWidget,
-                              const SizedBox(height: 12),
-                              textWidget,
-                              const SizedBox(height: 12),
-                              moneyWidget,
-                            ],
-                          );
-                        }
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            photoWidget,
-                            const SizedBox(width: 14),
-                            Expanded(child: textWidget),
-                            const SizedBox(width: 8),
-                            moneyWidget,
-                          ],
-                        );
-                      },
-                    ),
+                              var minimumTextWidth = textWidth(
+                                date == null
+                                    ? 'Fecha por confirmar'
+                                    : '${date.day}/${date.month}/${date.year}',
+                                12,
+                              );
+                              for (final word in title.split(RegExp(r'\s+'))) {
+                                final width = textWidth(word, 15);
+                                if (width > minimumTextWidth) {
+                                  minimumTextWidth = width;
+                                }
+                              }
+                              for (final word in status.split(RegExp(r'\s+'))) {
+                                final width = textWidth(word, 11);
+                                if (width > minimumTextWidth) {
+                                  minimumTextWidth = width;
+                                }
+                              }
+                              if (method != null) {
+                                final width = textWidth(method, 12);
+                                if (width > minimumTextWidth) {
+                                  minimumTextWidth = width;
+                                }
+                              }
+                              final amountWidth = textWidth(
+                                '+${contributionMoney((d['amount_cents'] as num? ?? 0).toInt()).replaceAll(' MXN', '')}',
+                                15,
+                              );
+                              // Keep whole words and the date readable beside the amount.
+                              final stack =
+                                  bounds.maxWidth <
+                                  74 + minimumTextWidth + amountWidth;
+                              if (stack) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    photoWidget,
+                                    const SizedBox(height: 12),
+                                    textWidget,
+                                    const SizedBox(height: 12),
+                                    moneyWidget,
+                                  ],
+                                );
+                              }
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  photoWidget,
+                                  const SizedBox(width: 14),
+                                  Expanded(child: textWidget),
+                                  const SizedBox(width: 8),
+                                  moneyWidget,
+                                ],
+                              );
+                            },
+                          ),
                   ),
                 ),
               ),
@@ -780,6 +825,183 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Receiver rows intentionally use only the owner-scoped projection. Donor names
+// and card snapshots are neither requested nor inferred from unrelated records.
+class _ReceivedPaymentHeader extends StatelessWidget {
+  const _ReceivedPaymentHeader({
+    required this.item,
+    required this.title,
+    required this.date,
+    required this.status,
+  });
+  final Json item;
+  final String title;
+  final DateTime? date;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final guardian = item['kind'] == 'guardian';
+    final caseName = item['case_name'];
+    final primary = !guardian && caseName is String && caseName.isNotEmpty
+        ? caseName
+        : title;
+    final concept = item['title'];
+    final dateLabel = date == null
+        ? 'Fecha por confirmar'
+        : '${date!.day}/${date!.month}/${date!.year}';
+    final scaler = MediaQuery.textScalerOf(context);
+    final adverse = const [
+      'not_paid',
+      'reversed',
+      'review',
+      'refund_review',
+    ].contains(item['status']);
+    final complete = const [
+      'confirmed',
+      'assigned',
+      'transferred',
+    ].contains(item['status']);
+    final neutral = const ['refunded', 'skipped'].contains(item['status']);
+    final dateWidget = Text(
+      dateLabel,
+      style: const TextStyle(
+        fontSize: 12,
+        height: 1.5,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+        color: muted,
+      ),
+    );
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          primary,
+          maxLines: scaler.scale(14) > 21 ? null : 1,
+          overflow: scaler.scale(14) > 21
+              ? TextOverflow.clip
+              : TextOverflow.ellipsis,
+          semanticsLabel: primary,
+          style: const TextStyle(
+            fontSize: 14,
+            height: 1.3,
+            fontWeight: FontWeight.w600,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          guardian ? '+Apoyo Guardián' : '+Apoyo individual',
+          style: const TextStyle(fontSize: 13, height: 1.3, color: ink),
+        ),
+        if (primary == caseName && concept is String && concept.isNotEmpty) ...[
+          const SizedBox(height: 2),
+          Text(
+            concept,
+            style: const TextStyle(fontSize: 12, height: 1.4, color: muted),
+          ),
+        ],
+      ],
+    );
+    final money = Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        ActivityMoney(
+          cents: (item['amount_cents'] as num? ?? 0).toInt(),
+          negative: adverse,
+        ),
+        const SizedBox(height: 4),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+          decoration: BoxDecoration(
+            color: complete
+                ? const Color(0xff2dc08e)
+                : adverse
+                ? const Color(0xffffd4d8)
+                : neutral
+                ? const Color(0xffe8e4de)
+                : const Color(0xfffab919),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Text(
+            status,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 11,
+              height: 1.2,
+              fontWeight: FontWeight.w500,
+              color: adverse
+                  ? const Color(0xff8a1f2a)
+                  : const Color(0xff071a13),
+            ),
+          ),
+        ),
+      ],
+    );
+    return LayoutBuilder(
+      builder: (context, bounds) {
+        double width(String text, double size, FontWeight weight) {
+          final painter = TextPainter(
+            text: TextSpan(
+              text: text,
+              style: TextStyle(
+                fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
+                fontSize: size,
+                fontWeight: weight,
+              ),
+            ),
+            textDirection: Directionality.of(context),
+            textScaler: scaler,
+          )..layout();
+          final result = painter.width;
+          painter.dispose();
+          return result;
+        }
+
+        final dateWidth =
+            width(dateLabel, 12, FontWeight.w600).ceilToDouble() + 1;
+        final amountWidth = width(
+          '+${contributionMoney((item['amount_cents'] as num? ?? 0).toInt()).replaceAll(' MXN', '')}',
+          15,
+          FontWeight.w700,
+        );
+        final moneyWidth = amountWidth > 88 ? amountWidth : 88.0;
+        var bodyWidth = width('individual', 13, FontWeight.w400);
+        for (final word in primary.split(RegExp(r'\s+'))) {
+          final wordWidth = width(word, 14, FontWeight.w600);
+          if (wordWidth > bodyWidth) {
+            bodyWidth = wordWidth;
+          }
+        }
+        if (scaler.scale(14) > 21 ||
+            bounds.maxWidth < dateWidth + bodyWidth + moneyWidth + 20) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              dateWidget,
+              const SizedBox(height: 10),
+              body,
+              const SizedBox(height: 12),
+              money,
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: dateWidth, child: dateWidget),
+            const SizedBox(width: 10),
+            Expanded(child: body),
+            const SizedBox(width: 10),
+            SizedBox(width: moneyWidth, child: money),
+          ],
+        );
+      },
     );
   }
 }

@@ -42,12 +42,30 @@ void main() {
         ProviderScope(
           overrides: [communityRepositoryProvider.overrideWithValue(repo)],
           child: const MaterialApp(
-            home: Scaffold(body: Center(child: DonorNotificationButton())),
+            home: Scaffold(
+              body: Center(child: DonorNotificationButton(rescuer: true)),
+            ),
           ),
         ),
       );
       await tester.pumpAndSettle();
       expect(find.text('3'), findsOneWidget);
+      final bell = tester.widget<IconButton>(find.byType(IconButton));
+      expect(
+        bell.style!.side!.resolve({}),
+        const BorderSide(color: Color(0xc7ffffff)),
+      );
+      final badge = tester.widget<Text>(find.text('3'));
+      expect(badge.style!.color, const Color(0xff46281d));
+      final badgeContainer = tester.widget<Container>(
+        find
+            .ancestor(of: find.text('3'), matching: find.byType(Container))
+            .first,
+      );
+      expect(
+        (badgeContainer.decoration! as BoxDecoration).color,
+        const Color(0xfffab919),
+      );
       repo.count = 0;
       repo.update!();
       await tester.pumpAndSettle();

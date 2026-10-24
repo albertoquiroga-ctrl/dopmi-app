@@ -132,7 +132,12 @@ class ImpactScreen extends ConsumerWidget {
               height: 40,
               semanticsLabel: 'Dopmi',
             ),
-            actions: const [DonorNotificationButton()],
+            actions: const [
+              Padding(
+                padding: EdgeInsets.only(right: 18),
+                child: DonorNotificationButton(),
+              ),
+            ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(
                 MediaQuery.textScalerOf(context).scale(28) *

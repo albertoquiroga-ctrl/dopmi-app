@@ -271,7 +271,24 @@ void main() {
       final repo = RouteActivity([donation()]);
       await mount(tester, repo, received: true);
       expect(repo.receivedReads, [true]);
-      await tester.tap(find.text('Medicamentos - Choco'));
+      expect(
+        find.text(
+          'Consulta el historial de pagos que has recibido por tus casos de apoyo.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Sigue así, personas como tú son especiales para la manada.'),
+        findsOneWidget,
+      );
+      expect(find.text('+Apoyo individual'), findsOneWidget);
+      expect(find.text('Medicamentos'), findsOneWidget);
+      expect(find.byIcon(Icons.pets), findsNothing);
+      expect(
+        tester.getTopLeft(find.text('8/10/2026')).dx,
+        lessThan(tester.getTopLeft(find.text('Choco')).dx),
+      );
+      await tester.tap(find.text('Choco'));
       await tester.pump();
       expect(find.text('Neto asignado: \$70 MXN'), findsOneWidget);
       expect(find.text('Continuar aportación'), findsNothing);
@@ -316,10 +333,12 @@ void main() {
     (tester) async {
       final row = {
         ...donation(),
+        'donor_name': 'Name not authorized in receiver projection',
         'payment_method': {'type': 'card', 'brand': 'visa', 'last4': '1234'},
       };
       await mount(tester, RouteActivity([row]), received: true);
       expect(find.textContaining('1234'), findsNothing);
+      expect(find.textContaining('Name not authorized'), findsNothing);
       expect(find.text('Neto asignado'), findsOneWidget);
     },
   );

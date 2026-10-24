@@ -219,6 +219,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
             const SizedBox(height: 12),
             _CaseButton(
               label: 'Listo',
+              pill: true,
               onPressed: () => Navigator.pop(context, selected),
             ),
           ],
@@ -1552,24 +1553,25 @@ class _CaseButton extends StatelessWidget {
     this.onPressed,
     this.outlined = false,
     this.danger = false,
+    this.pill = false,
   });
   final String label;
   final VoidCallback? onPressed;
-  final bool outlined, danger;
+  final bool outlined, danger, pill;
   @override
   Widget build(BuildContext context) {
-    final shape = outlined || danger
+    final shape = outlined || danger || pill
         ? const StadiumBorder()
         : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
     final padding = EdgeInsets.symmetric(
       horizontal: 14,
-      vertical: outlined || danger ? 12 : 8,
+      vertical: outlined || danger || pill ? 12 : 8,
     );
     final text = Text(
       label,
       textAlign: TextAlign.center,
       style: TextStyle(
-        fontSize: outlined || danger ? 16 : 14,
+        fontSize: outlined || danger || pill ? 16 : 14,
         height: 1.2,
         fontWeight: FontWeight.w700,
       ),

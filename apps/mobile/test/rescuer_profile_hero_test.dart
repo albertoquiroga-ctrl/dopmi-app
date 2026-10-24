@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/core/css_linear_gradient.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -28,6 +29,25 @@ void main() {
           ),
         ),
       );
+      final hero = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(RescuerIdentityCard),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container &&
+                widget.decoration is BoxDecoration &&
+                (widget.decoration! as BoxDecoration).gradient
+                    is CssLinearGradient,
+          ),
+        ),
+      );
+      final decoration = hero.decoration! as BoxDecoration;
+      expect(decoration.gradient!.colors, const [
+        Color(0xff7841f2),
+        Color(0xff9b6cff),
+        Color(0xffc4a8ff),
+      ]);
+      expect(decoration.boxShadow!.single.color, const Color(0x477841f2));
       final button = find.byKey(const ValueKey('rescuer-profile-edit'));
       expect(tester.getSize(button).height, 48);
       final pill = find.descendant(of: button, matching: find.byType(Material));

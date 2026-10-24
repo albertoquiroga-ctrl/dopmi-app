@@ -540,13 +540,18 @@ void main() {
 
           await ready();
           await capture('top');
-          if ((route == '/payments' || route == '/rescuer/received-payments') &&
-              find.byType(Image).evaluate().isEmpty) {
+          if (route == '/payments' && find.byType(Image).evaluate().isEmpty) {
             await reveal(find.byType(Image), first: true);
             await capture('photo-visible');
           }
+          if (route == '/rescuer/received-payments') {
+            expect(
+              find.byType(Image),
+              findsNothing,
+              reason: '$captureId uses received rows without donor thumbnails',
+            );
+          }
           if (route == '/payments' ||
-              route == '/rescuer/received-payments' ||
               route == '/notifications' ||
               route.startsWith('/messages/')) {
             expect(

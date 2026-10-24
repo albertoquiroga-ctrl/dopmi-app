@@ -705,6 +705,9 @@ Future<DataPage<Json>> fixturePaymentHistory() async => const DataPage([
   },
 ], 3);
 
+const _rescuerReferenceBio =
+    'Refugio dedicado al rescate y rehabilitación de animales en situación de calle. Trabajamos con amor y compromiso para darles una segunda oportunidad.';
+
 class RescuerReferenceCaptureCommunity extends FakeCommunity {
   @override
   Future<Json?> publicProfile(String id) async => {
@@ -712,7 +715,7 @@ class RescuerReferenceCaptureCommunity extends FakeCommunity {
     'name': 'María Rescatista',
     'city': 'Ciudad de México',
     'region': 'CDMX',
-    'bio': 'Refugio dedicado al rescate y rehabilitación de animales en situación de calle. Trabajamos con amor y compromiso para darles una segunda oportunidad.',
+    'bio': _rescuerReferenceBio,
   };
 }
 
@@ -2105,6 +2108,16 @@ void main() {
             rescuerProfileRepositoryProvider.overrideWithValue(
               SettingsSocialCaptureProfile()
                 ..value['owner_id'] = 'one'
+                ..value.addAll({
+                  if (spec.$1.startsWith('rescuer-profile-reference')) ...{
+                    'display_name': 'María Rescatista',
+                    // Private draft matches the mock's unfilled owner profile;
+                    // its separately approved public biography may differ.
+                    'bio': '',
+                    'city': 'Ciudad de México',
+                    'region': 'CDMX',
+                  },
+                })
                 ..value['instagram_url'] =
                     (spec.$1 == 'rescuer-settings-social-dialog-valid' ||
                         spec.$1.startsWith('rescuer-settings-social-values'))
@@ -3843,10 +3856,13 @@ void main() {
           find.byKey(const ValueKey('rescuer-profile-about')),
         );
         expect(about.top - verification.bottom, closeTo(12, 1));
-        expect(about.height, closeTo(202.7, 1));
+        // b9 has five owner-contact rows (172px), plus its heading, placeholder,
+        // 10px gaps and 16px padding: actual reference DOM = 268.7px.
+        expect(about.height, closeTo(268.7, 1));
         expect(find.byType(RescuerProfileMetric), findsNothing);
         expect(find.text('Verificado'), findsNothing);
-        expect(find.byType(RescuerSocialSection), findsOneWidget);
+        expect(find.byType(RescuerSocialSection), findsNothing);
+        expect(find.byType(RescuerOwnerContacts), findsOneWidget);
         expect(
           tester.getSize(find.text('Ciudad de México, CDMX')).height,
           closeTo(32, 1),

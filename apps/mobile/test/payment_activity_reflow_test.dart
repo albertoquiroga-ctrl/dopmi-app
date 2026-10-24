@@ -67,12 +67,12 @@ void main() {
         expect(titleParagraph, findsOneWidget);
         final paragraph = tester.renderObject<RenderParagraph>(titleParagraph);
         final word = TextPainter(
-          text: const TextSpan(
+          text: TextSpan(
             text: 'veterinaria',
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
+              fontSize: received ? 14 : 15,
+              fontWeight: received ? FontWeight.w600 : FontWeight.w700,
               height: 1.3,
             ),
           ),
@@ -88,8 +88,19 @@ void main() {
         if (scale == 2) {
           expect(
             tester.getTopLeft(amount).dy,
-            greaterThan(tester.getBottomLeft(status).dy),
+            greaterThan(tester.getBottomLeft(titleFinder).dy),
           );
+          if (received) {
+            expect(
+              tester.getTopLeft(status).dy,
+              greaterThan(tester.getBottomLeft(amount).dy),
+            );
+          } else {
+            expect(
+              tester.getTopLeft(amount).dy,
+              greaterThan(tester.getBottomLeft(status).dy),
+            );
+          }
         } else {
           expect(
             tester.getTopLeft(amount).dx,

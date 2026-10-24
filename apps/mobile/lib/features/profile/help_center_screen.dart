@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'help_support_dialog.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../identity/experience_controller.dart';
 
 // Audience controls presentation only. Financial answers describe implemented rules.
@@ -307,257 +308,265 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
             child: Divider(height: 1, color: Color(0xffe6e2dd)),
           ),
         ),
-        body: SafeArea(
-          top: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
-            children: [
-              const Text(
-                '¿En qué te ayudamos?',
-                style: TextStyle(
-                  fontSize: 24,
-                  height: 1.2,
-                  letterSpacing: -0.48,
-                  fontWeight: FontWeight.w700,
-                  color: ink,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Encuentra respuestas rápidas o escríbenos.',
-                style: TextStyle(fontSize: 14, height: 1.45, color: muted),
-              ),
-              const SizedBox(height: 22),
-              group(rescuer ? 'Para rescatistas' : 'Para adoptantes', true),
-              const SizedBox(height: 16),
-              group(
-                rescuer
-                    ? 'También para adoptantes'
-                    : 'También para rescatistas',
-                false,
-              ),
-              const SizedBox(height: 22),
-              if (topic == null)
+        body: DonorCanvas(
+          enabled: !rescuer,
+          child: SafeArea(
+            top: false,
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 28),
+              children: [
                 const Text(
-                  'Elige un tema para ver las respuestas.',
-                  style: TextStyle(fontSize: 14, color: muted),
-                )
-              else ...[
-                Text(
-                  _topics[topic!].$1,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  '¿En qué te ayudamos?',
+                  style: TextStyle(
+                    fontSize: 24,
+                    height: 1.2,
+                    letterSpacing: -0.48,
                     fontWeight: FontWeight.w700,
                     color: ink,
                   ),
                 ),
-                const SizedBox(height: 12),
-                for (var i = 0; i < _topics[topic!].$3.length; i++) ...[
-                  if (topic == 0) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      _topics[topic!].$3[i].$1,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
-                      ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Encuentra respuestas rápidas o escríbenos.',
+                  style: TextStyle(fontSize: 14, height: 1.45, color: muted),
+                ),
+                const SizedBox(height: 22),
+                group(rescuer ? 'Para rescatistas' : 'Para adoptantes', true),
+                const SizedBox(height: 16),
+                group(
+                  rescuer
+                      ? 'También para adoptantes'
+                      : 'También para rescatistas',
+                  false,
+                ),
+                const SizedBox(height: 22),
+                if (topic == null)
+                  const Text(
+                    'Elige un tema para ver las respuestas.',
+                    style: TextStyle(fontSize: 14, color: muted),
+                  )
+                else ...[
+                  Text(
+                    _topics[topic!].$1,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: ink,
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _topics[topic!].$3[i].$2,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: muted,
+                  ),
+                  const SizedBox(height: 12),
+                  for (var i = 0; i < _topics[topic!].$3.length; i++) ...[
+                    if (topic == 0) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        _topics[topic!].$3[i].$1,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                        ),
                       ),
-                    ),
-                  ] else
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xffe6e2dd)),
-                        borderRadius: BorderRadius.circular(18),
+                      const SizedBox(height: 10),
+                      Text(
+                        _topics[topic!].$3[i].$2,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: muted,
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              splashFactory: NoSplash.splashFactory,
-                              overlayColor: Colors.transparent,
-                              animationDuration: Duration.zero,
-                              padding: const EdgeInsets.all(16),
-                              foregroundColor: openFaq == i
-                                  ? rescuer
-                                        ? const Color(0xff5b21b6)
-                                        : const Color(0xff6b5000)
-                                  : ink,
-                            ),
-                            onPressed: () => setState(
-                              () => openFaq = openFaq == i ? null : i,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    _topics[topic!].$3[i].$1,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      height: 1.25,
-                                      fontWeight: FontWeight.w700,
+                    ] else
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xffe6e2dd)),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                splashFactory: NoSplash.splashFactory,
+                                overlayColor: Colors.transparent,
+                                animationDuration: Duration.zero,
+                                padding: const EdgeInsets.all(16),
+                                foregroundColor: openFaq == i
+                                    ? rescuer
+                                          ? const Color(0xff5b21b6)
+                                          : const Color(0xff6b5000)
+                                    : ink,
+                              ),
+                              onPressed: () => setState(
+                                () => openFaq = openFaq == i ? null : i,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _topics[topic!].$3[i].$1,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        height: 1.25,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                SvgPicture.asset(
-                                  'assets/profile/icon-chevron-right.svg',
-                                  width: 20,
-                                  height: 20,
-                                  colorFilter: const ColorFilter.mode(
-                                    muted,
-                                    BlendMode.srcIn,
+                                  const SizedBox(width: 12),
+                                  SvgPicture.asset(
+                                    'assets/profile/icon-chevron-right.svg',
+                                    width: 20,
+                                    height: 20,
+                                    colorFilter: const ColorFilter.mode(
+                                      muted,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (openFaq == i)
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                              child: Text(
-                                _topics[topic!].$3[i].$2,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: muted,
-                                ),
+                                ],
                               ),
                             ),
-                        ],
+                            if (openFaq == i)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  0,
+                                  16,
+                                  16,
+                                ),
+                                child: Text(
+                                  _topics[topic!].$3[i].$2,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    height: 1.5,
+                                    color: muted,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
-                    ),
-                  const SizedBox(height: 10),
-                ],
-                if (topic == 7)
-                  OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      splashFactory: NoSplash.splashFactory,
-                      overlayColor: Colors.transparent,
-                      animationDuration: Duration.zero,
-                    ),
-                    onPressed: () => context.push('/account-privacy'),
-                    child: const Text('Eliminar mi cuenta'),
-                  ),
-              ],
-              const SizedBox(height: 22),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xffe6e2dd)),
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x0d15110d),
-                      offset: Offset(0, 8),
-                      blurRadius: 22,
-                    ),
+                    const SizedBox(height: 10),
                   ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      '¿No encontraste lo que buscabas?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        height: 1.3,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Escríbenos y te respondemos lo antes posible.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.45,
-                        color: muted,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      style: FilledButton.styleFrom(
+                  if (topic == 7)
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
                         overlayColor: Colors.transparent,
                         animationDuration: Duration.zero,
-                        backgroundColor: rescuer ? purple : yellow,
-                        minimumSize: const Size.fromHeight(44),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 11,
-                        ),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        foregroundColor: rescuer
-                            ? const Color(0xfffbfbff)
-                            : const Color(0xff0d0d0d),
-                        textStyle: const TextStyle(
-                          fontFamily: 'Inter',
+                      ),
+                      onPressed: () => context.push('/account-privacy'),
+                      child: const Text('Eliminar mi cuenta'),
+                    ),
+                ],
+                const SizedBox(height: 22),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: const Color(0xffe6e2dd)),
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x0d15110d),
+                        offset: Offset(0, 8),
+                        blurRadius: 22,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        '¿No encontraste lo que buscabas?',
+                        style: TextStyle(
                           fontSize: 16,
-                          height: 1.2,
-                          fontWeight: FontWeight.w600,
+                          height: 1.3,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
                         ),
                       ),
-                      onPressed: contact,
-                      child: const Text(
-                        'Contactar a soporte',
-                        textAlign: TextAlign.center,
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Escríbenos y te respondemos lo antes posible.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.45,
+                          color: muted,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          animationDuration: Duration.zero,
+                          backgroundColor: rescuer ? purple : ink,
+                          minimumSize: const Size.fromHeight(44),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 11,
+                          ),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          foregroundColor: rescuer
+                              ? const Color(0xfffbfbff)
+                              : Colors.white,
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            height: 1.2,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: contact,
+                        child: const Text(
+                          'Contactar a soporte',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 22),
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    TextButton(
-                      style: _footerStyle,
-                      onPressed: () => context.push('/about'),
-                      child: const Text('Sobre nosotros'),
-                    ),
-                    const ExcludeSemantics(
-                      child: Text(
-                        '·',
-                        style: TextStyle(fontSize: 12, color: muted),
+                const SizedBox(height: 22),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      TextButton(
+                        style: _footerStyle,
+                        onPressed: () => context.push('/about'),
+                        child: const Text('Sobre nosotros'),
                       ),
-                    ),
-                    TextButton(
-                      style: _footerStyle,
-                      onPressed: () => context.push('/terms'),
-                      child: const Text('Términos y Condiciones'),
-                    ),
-                    const ExcludeSemantics(
-                      child: Text(
-                        '·',
-                        style: TextStyle(fontSize: 12, color: muted),
+                      const ExcludeSemantics(
+                        child: Text(
+                          '·',
+                          style: TextStyle(fontSize: 12, color: muted),
+                        ),
                       ),
-                    ),
-                    TextButton(
-                      style: _footerStyle,
-                      onPressed: () => context.push('/privacy-notice'),
-                      child: const Text('Aviso de privacidad'),
-                    ),
-                  ],
+                      TextButton(
+                        style: _footerStyle,
+                        onPressed: () => context.push('/terms'),
+                        child: const Text('Términos y Condiciones'),
+                      ),
+                      const ExcludeSemantics(
+                        child: Text(
+                          '·',
+                          style: TextStyle(fontSize: 12, color: muted),
+                        ),
+                      ),
+                      TextButton(
+                        style: _footerStyle,
+                        onPressed: () => context.push('/privacy-notice'),
+                        child: const Text('Aviso de privacidad'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

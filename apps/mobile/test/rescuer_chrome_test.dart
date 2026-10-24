@@ -31,6 +31,14 @@ void main() {
         addTearDown(router.dispose);
         await tester.pumpWidget(MaterialApp.router(routerConfig: router));
         await tester.pumpAndSettle();
+        final overlay = tester
+            .widget<AppBar>(find.byType(AppBar))
+            .systemOverlayStyle!;
+        expect(overlay.statusBarIconBrightness, Brightness.dark);
+        expect(overlay.statusBarBrightness, Brightness.light);
+        expect(overlay.statusBarColor, Colors.transparent);
+        expect(overlay.systemNavigationBarColor, isNull);
+        expect(overlay.systemNavigationBarIconBrightness, isNull);
         if (systemBack) {
           await tester.binding.handlePopRoute();
         } else {

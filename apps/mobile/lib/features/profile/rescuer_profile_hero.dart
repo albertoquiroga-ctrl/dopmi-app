@@ -262,9 +262,7 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      about.isEmpty
-                          ? 'Cuenta quién eres y cómo ayudas a las mascotas.'
-                          : about,
+                      about.isEmpty ? 'Cuéntanos sobre ti.' : about,
                       maxLines: MediaQuery.textScalerOf(context).scale(14) > 20
                           ? null
                           : 3,
@@ -774,12 +772,12 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
         borderRadius: BorderRadius.circular(24),
         gradient: const CssLinearGradient(
           degrees: 155,
-          colors: [DopmiTokens.purple, Color(0xff9b6cff), Color(0xffc4a8ff)],
+          colors: [Color(0xff7841f2), Color(0xff9b6cff), Color(0xffc4a8ff)],
           stops: [0, .55, 1],
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x4746281d),
+            color: Color(0x477841f2),
             offset: Offset(0, 6),
             blurRadius: 18,
           ),

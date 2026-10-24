@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/donor_canvas.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/privacy_notice_screen.dart';
@@ -152,6 +153,13 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
+        final canvas = tester.widget<DonorCanvas>(
+          find.descendant(
+            of: find.byType(HelpCenterScreen),
+            matching: find.byType(DonorCanvas),
+          ),
+        );
+        expect(canvas.enabled, mode == 'donor');
         final topic = find.widgetWithText(
           OutlinedButton,
           'Cómo funcionan los apoyos',
@@ -166,6 +174,24 @@ void main() {
         expect(topic.hitTestable(), findsOneWidget);
         await tester.tap(topic);
         await tester.pumpAndSettle();
+        final support = find.widgetWithText(
+          FilledButton,
+          'Contactar a soporte',
+        );
+        await tester.scrollUntilVisible(
+          support,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        final supportStyle = tester.widget<FilledButton>(support).style!;
+        expect(
+          supportStyle.backgroundColor!.resolve({}),
+          const Color(0xff46281d),
+        );
+        expect(
+          supportStyle.foregroundColor!.resolve({}),
+          mode == 'rescuer' ? const Color(0xfffbfbff) : Colors.white,
+        );
         for (final link in {
           'Sobre nosotros': '/about',
           'Términos y Condiciones': '/terms',
