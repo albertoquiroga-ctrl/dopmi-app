@@ -1,3 +1,26 @@
+## 24/10/2026 — Cuenta aprobada: tercer turno sin confirmación del acceso
+
+Revalidado16:16:20UTC: handoff protegido sigue activo, sin aviso de cuenta correcta;
+no lectura de teléfono, reserva u operación P3 nueva. Turno previo sin progreso,
+ningún trabajo independiente o proceso vivo pendiente. Remoto5b160081 sin cambios.
+Tres turnos de esta reanudación satisfacen umbralblocked; no declararcomplete.
+Se conserva preparación332 revisada y siguienteacción de cuenta TESTaprobada;
+root comprobará identidad/readbacksfresh tras aviso humano, sin renovar8horas.
+Recibo privado resume332/owner-mismatch-audit-turn3.actual.private.json.
+
+## 24/10/2026 — Aviso humano atendido; cuenta rescatista distinta detectada
+
+Titular avisó16:08 «Listo, rescatista». Handoff cerrado y Samsung332/Vending verificado;
+UIenRescatista, Perfil→Editar→correo normal hasheado16:09 no coincide con dueño6e ni
+donante8b. Perfil muestra verificación en proceso. SQLread-only16:12 confirma hash
+actual del dueño igual al binding aprobado; no se trata de un cambio de correo.
+Se dio sólo pista de Gmail enmascarada, sin credenciales ni dirección completa;
+Inicio restaurado y handoff renovado16:11, esperando entrada humana en dueñoaprobado.
+No se creó caso/gasto/video/aporte, ON/reserva ni cambio de cuenta por agente.
+Evidencia privada resume332/owner-session-1609.actual.private.json y
+owner-identification-mismatch.actual.private.json. Este turno sí cambió evidencia/
+siguiente acción; auditoría de esta reanudación1, objetivo integral no completo.
+
 ## 24/10/2026 — Reanudación: tercera auditoría del traspaso humano pendiente
 
 Revalidación15:43:58UTC: handoff activo desde15:18, sin aviso «Listo, rescatista»

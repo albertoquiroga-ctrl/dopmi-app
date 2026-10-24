@@ -11,13 +11,16 @@ SUCCESS/1426 Flutter; CM6adc801cc2c4416cf7f39490 trece SUCCESS/un POST/artefacto
 concordante. Correctivo físico al115%:6P2+1P3 cerrados por revisión independiente.
 Reutilizar QA331, Tienda331, correo327 y video329/330 válidos; no repetir fixtures.
 
-Titular reanudó15:11UTC; trabajo independiente cerrado. Bloqueo externo revalidado
-en tres turnos al15:43UTC, sin aviso del dueño. Su límite original13:08:18UTC ya pasó,
+Reanudado16:08UTC tras aviso humano; la sesión comprobada fue de otra cuenta.
+El acceso al dueño aprobado sigue sin confirmar16:16UTC; bloqueo auditado en tres
+turnos de esta reanudación. Límite original13:08:18UTC ya transcurrido,
 sin inferir otras ocho horas. Donante elegido real verificado por hash UI15:12,
 sin credenciales; historial cargado/vacío y ausencia de TiendaOFF comprobados
 físicamente y revisados por producto. No prueba movimientos ni previewON ajeno.
-Confirmó poder cambiar dueño→donante; **handoff de credenciales activo desde15:18**,
-sin lecturas/capturas del teléfono hasta «Listo, rescatista». No cerrar/entrar por él.
+Confirmó poder cambiar dueño→donante. Avisó16:08; UI16:09 resultó OTRA cuenta
+rescatista (no dueño ni donante elegido), con verificación en proceso. Hash del dueño
+confirmado contra servidor16:12 sin cambio. **Handoff renovado16:11**, esperando
+cuenta TEST aprobada previa; lecturas/capturas suspendidas. No cerrar/entrar por él.
 
 P3 ligado a332: manifest **bc734641…f2798**, scopefac4c9a1…1d054,
 renderercb2421fd…2d9f1, permiso v20b041602…fe6d46 bajo objetivo/reanudación reales.
