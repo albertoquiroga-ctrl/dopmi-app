@@ -1619,3 +1619,17 @@ No hay nueva referencia de mockup ni paridad visual aprobada para Meta.
 Revisión UI/UX/código/seguridad, evidencia y pendientes se mantienen una sola vez
 en [meta-social-verification.md](meta-social-verification.md). La QA SMS pendiente
 del corte congelado dde1bb9 no queda satisfecha por estas pruebas.
+## 23/10/2026 — Reconciliación incremental de evidencia330 y P3
+
+Esta entrada supersede pendientes de CI/distribución/despedida móvil de los cortes inferiores, sin cambiar el mock20d21 ni cerrar B0–B7.
+
+| Grupo | Evidencia vigente | Pendiente real |
+|---|---|---|
+| Correcciones de QA | Fuente7f6d7e90, CI40042427861 cuatro SUCCESS/1416 Flutter, Play interno2.3.3(330)/release170/SamsungVending; detalle sin encabezado cuando no hay gastos y regresión admin57PASS/build | QA positiva del refresco administrativo con video disponible; iOS físico y aceptación integral |
+| B4 despedida pública | P2 retenida: grabación real Samsung0→1.933s del clip2s, silencio inicial y cambio de control de sonido; fullbaseline/34digests conservados y cierre OFF/pausado | Audio físico y pausa/posición en segundo plano no acreditados; intento Home inconcluso por clip corto/recarga |
+| B1 recuperación | Correo real, reenvío, código legítimo, reinicio real antes de nueva contraseña y sesión posterior; titular confirmó recorrido claro | No repetir prueba válida por un commit documental |
+| B5 Tienda interna | Catálogo/filtros/orden/regreso privado y caducidad pasiva reales; titular confirmó organización clara | Otra cuenta legítima sin acceso; salida comercial bloqueada sin destino/permiso, no aceptación comercial |
+| B4 cámara | Paquete16663341…342044 preparado, siete pruebas PASS, revisión independiente cerrada y recorrido local de audio precisado | Permiso operativo propio, nuevo borrador real y toma humana segura; disponibilidad sola no autoriza |
+| B2/B4 historias e Impacto | Dependencia de aporte individual confirmada en fuentes; titular eligió preparar nuevo TEST gasto100/aporte20, Stripe TEST y reloj revisados sólo lectura | Donante distinto elegido, contenido/conciliación/cierre y permiso propio; no capacidad ni aporte creados |
+
+Detalle/evidencia bruta en checkpoint/progress y paquetes privados existentes. CLOSED40 público/16assets/DRAFT4PDF y finanzas preservados. Servicios video/Tienda/cleanup OFF, trabajo6 pausado en el último cierre comprobado; no inferir una activación posterior por continuidad.
