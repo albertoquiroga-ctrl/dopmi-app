@@ -1,46 +1,31 @@
-# Checkpoint vigente — 24/10/2026, cierre integral autónomo
+# Checkpoint vigente — 24/10/2026, QA warm-trust y corrección agrupada
 
-Repositorio de producto dopmi-app/codex/finish-release-20261015; mock sólo
-referencia b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust. Conservar los
-tres SDK Stripe (aporte puntual, Guardián y Connect rescatista).
+Producto dopmi-app/codex/finish-release-20261015; mock sólo referencia
+b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust. Conservar los tres SDK
+Stripe. Objetivo autónomo vigente, límite ORIGINAL13:08:18UTC24oct; no reiniciar.
 
-El objetivo activo del titular autoriza continuar programación, operaciones DEV
-revisadas, Stream y distribución interna sin renovaciones rutinarias. Esta
-instrucción posterior supersede la espera de permiso331 indicada abajo; no
-supersede TEST, privacidad, identidad legítima ni restricciones de credenciales.
-Inicio registrado05:08:18UTC; límite original13:08:18UTC del24oct, sin reiniciarlo.
+**Instalada/publicada2.3.3(331)/f348383fdb539bcf16d3234c630a7824984ee766**,
+Codemagic6adc5fbea6dc204feacb178b/13accionesSUCCESS; artefacto/build-info/TEST/
+Play interno y Samsung/Vending verificados separadamente. CI40072205329:
+cuatroSUCCESS/1426Flutter. Actualización conservó sesión TEST legítima.
 
-**Candidato actual f348383fdb539bcf16d3234c630a7824984ee766**, CI40072205329
-cuatroSUCCESS/1426Flutter, analyze0/capturas/Androiddebug/iOSsim y gates backend.
-Ada0c4f6/CI40068127871 es base anterior, no entrega final.
-Auditoría independiente de20grupos encontró cuatro deltas visuales
-acotados: Perfil público, chrome rescatista, cabecera notificaciones y consumo
-del canvas donante. Se agrupan con método histórico real de tarjeta antes de
-la distribución final. Backend981PASS/8SKIP y
-delta22PASS; móvil55PASS+145PASS, capturas13y12estados y correctivo12PASS (no sumar
-suites). Formato420/0, analyze focal corregido sin issues. Producto/código/
-seguridad cerrados, también operación DEV c9daa01d…3057d7f/b7710d3f…3c16ad.
-DEV histórico aplicado:20261024071929/84, payloadc9daa01d…3057d7f exacto33422B,
-83previas intactas/11checks y4Edge79/97/97/90; otros28 y negocio protegidos
-intactos. Revisión independiente de ejecución cerrada. Sin backfill/pagos/ON.
-Dueño root/una colaFlutter. Detalle, mapeo y retro en fuentes existentes.
+QA física331/115%:14estados/recorridos representativos, filtros multiselección,
+video real de swipe corto/completo, detalle/scroll, mensajes, perfiles, Connect
+TEST ready, Guardián activo/Impacto vacío, historial/métodos, ayuda/documento.
+Revisor independiente encontró6P2+1P3 de presentación; correctivo agrupado en
+fuente f60195a1d30ee0a1077963d8ec705f7c40d12735, subida para CI final332.
+Capturas/revisiones correctivas cerradas; no publicar otro delta aislado.
+Tienda331: una grant600s08:35:05UTC, filtros/orden/vacío/Gatos/posición iguales,
+salidas bloqueadas; OFF/revocada08:40:46 y fullbaseline08:40:47 exacto salvo
+referencia/fechas propias. Evidencia/revisiones/retro e informe en tablero/progress.
 
-Instalada/publicada sigue2.3.3(330)/7f6d7e90/Play interno170. Última comprobación
-ADB330/Vending; baseline actual InicioRescatista/font1.15/1080x2340/density450/
-override420 capturado sin edición. Preservar caso
-TESTCLOSED40/dosclips aprobados y DRAFT4/PDF privados, finanzas/TiendaOFF.
-
-**Distribución331 enviada una vez:** handle6adc5fbea6dc204feacb178b, tag
-codex/warm-trust-b9-f348383f, pinoperativo5737be70…5ac33/authoritygoalactual
-e4b2a68c…a3f8a, sin QAON en ese intento. Check realPASS/payloade985a1e3…e0560;
-primera lectura07:36UTCbuilding/f348. Versión/build2.3.3(331) previstos, todavía
-no artefacto/Play/instalación. --prepare validó DEVb72ca8cd…5f026, SQL/CI/Edge
-07:27UTC y34digests exactos/OFF07:29:18UTC. No renovar esas horas.
-
-Siguiente: seguir MISMOhandle (nunca otroPOST) → artefacto/version/build/SHA/
-workflow/Play separados → SamsungdesdePlay y QA integrada/demo. P3 paquete331
-freeze3c9a227f…4783, sin caso/gasto/aporte/ON todavía. Cámara/audio humanos,
-actor donante legítimo, iOS físico y aceptación UX no se inventan por autonomía.
+DEV84/4lectores79/97/97/90 intactos;16assets/CLOSED40 con dosclips retenidos,
+DRAFT4/PDF privados/finanzas/seisjobs conservados. Video/Tienda/cleanupOFF,
+job6pausado. Teléfono restaurado Adoptar/owner actual. No P3caso/gasto/aporte/ON.
+P3freeze bb65a68b…5873 preparado; falta sesión legítima del donante elegido,
+solicitada sin cerrar owner. Cámara/audio humanos, iOS físico y aceptación UX
+no se inventan. Dueño root/una colaFlutter. Siguiente: cerrar capturas/revisiones
+correctivas cerradas → CI final f60195a1 → UN paquete332/Play/Samsung → comprobar sólo delta.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

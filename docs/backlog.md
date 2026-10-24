@@ -1,22 +1,21 @@
-# Cola vigente — cierre integral autónomo, 24/10/2026
+# Cola vigente — QA331 y correctivo final agrupado, 24/10/2026
 
-Se conserva W1–W3 verificado enada0c4f6. La auditoría integral20grupos completa
-W4 con los siguientes paquetes finitos, sin otra espera rutinaria de permiso:
+W1–W3 y W4H conservan evidencia válida; W4I entregó331/f348 desde Play.
+La revisión física final encontró diferencias concretas, reunidas en UN lote:
 
-| Batch | Dueño / dependencia | Escenarios y salida |
+| Batch | Dueño / dependencia | Escenarios y criterio de salida |
 |---|---|---|
-| W4R Residuales visuales | Worker móvil + root/cola única; auditoría b9 | Perfil público/filtros/métricas, logos/campana rescatista, cabecera notificaciones y canvas en superficies donantes equivalentes; normal/115/320200 y revisión independiente. SDK Stripe intactos. |
-| W4H Método histórico | Backend worker + root UI; W4R independiente | Snapshot privado exactCharge/brand/last4, legado nullable, receptor sin tarjeta, inmutable/atómico; pruebas y código/seguridad, historia SQL real antes de aplicar, migración antes de Edge. |
-| W4I Integración y distribución | Root + revisores; W4R/W4H | Candidato final único, cuatro gates CI, preflight real y una reserva/POST Codemagic→Play→Samsung; versión/build/SHA/canal comprobados por separado. |
-| W4Q QA y entrega | Root; W4I y sesiones legítimas | Comparación instalada/gestos y escenarios positivos pendientes con TEST autorizado, cierreOFF; demo proporcional, informe de adaptaciones y bloqueos externos concretos; aceptación humana separada. |
+| W4C Correctivo331 | Workers cedieron; root única colaFlutter | Chrome rescatista, hero literal, filas receptoras, margen campana Apoyar, barra Android, Ayuda canvas/CTA y Listo pill. Fuentes, capturas normal/115/320200 y revisión independiente; sin backend/SDK ni nuevas funciones. |
+| W4I Candidato332 | Root + código/seguridad; W4C | Congelar SHA y CI cuatrojobs; paquete exacto/revisado, preflight fresco, una reserva/POST; artefacto/Play/Samsung por separado. Autoridad del objetivo vigente, sin renovación rutinaria. |
+| W4Q Cierre | Root/producto; W4I | Verificar delta332, reutilizar QA331 válida, demo comparativa/informe. P3 positivo requiere sesión legítima donante; cámara/audio/iOS/aceptación humana se distinguen de checks técnicos. |
 
-W4R/W4H verificados en f348383f/CI40072205329 cuatroSUCCESS/1426Flutter;
-DEVhistórico84/4lectores aplicado y comprobado sin alterar negocio/flags.
-W4I: build única enviada, handle6adc5fbea6dc204feacb178b/sourcef348, prevista331
-todavía building; seguir ese handle sin otro POST. W4Q aún pendiente.
-Límite original del objetivo13:08:18UTC24oct. Instalada330, no dar331porinstalada.
-Autoridad vigente en product-decisions/checkpoint. Reusar QA válida, no repetir
-correo/contraseña/KYC/pagos/fixtures para fabricar evidencia.
+331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
+filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
+OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
+W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
+Fuente correctiva final f60195a1d30ee0a1077963d8ec705f7c40d12735 subida para CI.
+Límite original13:08:18UTC24oct; actualfuenteinstalada f348. No afirmar332
+publicada, instalada ni aceptada. Detalle y fuentes de continuidad en checkpoint.
 
 ## Cola anterior (supersedida por el corte vigente superior)
 
