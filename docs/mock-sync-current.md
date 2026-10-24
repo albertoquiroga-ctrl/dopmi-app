@@ -4,7 +4,8 @@ Producto **dopmi-app**, rama `codex/finish-release-20261015`, checkout vigente
 `C:/Users/betoq/Paperclip-Dopmi/development/dopa39/candidate-git-20261014`.
 Mock sólo referencia: `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust;
 remoto reconsultado sin cambios. Conservar los tres componentes Stripe.
-Objetivo autónomo activo; límite ORIGINAL **13:08:18 UTC del 24/oct**, sin reiniciar.
+Alcance integral sin completar; bloqueo externo auditado en tres turnos consecutivos.
+Límite ORIGINAL **13:08:18 UTC del 24/oct**, sin reiniciar.
 
 **2.3.3 (332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17**, publicada en
 Play interno e instalada desde Play en Samsung SM-S938B (`com.android.vending`).
@@ -36,6 +37,13 @@ la intervención humana; el trabajo técnico independiente de este correctivo es
 Revalidado10:33UTC: Samsung sigue en la cuenta propietaria (hash UI, sin credenciales),
 sin sesión del donante ni iPhone conectado. Auditoría de rutas descartó un acceso
 alternativo: el deep link del CLOSED40 abre detalle, no historias; no añadir ruta QA.
+Tercera revalidación10:42UTC: mismo dueño legítimo en332, Adoptar restaurado,
+sin sesión del donante ni iPhone. Revisor independiente de cola/matriz confirma
+W4C/W4I cerrados y ninguna otra tarea técnica lista. Snapshot histórico remoto
+se valida con el aporte P3 pendiente; contraste Tienda sin acceso necesita otra
+sesión y salida comercial conserva el bloqueo de destino/permisos. No otro ON,
+build, fixture o suite. Umbral de bloqueo satisfecho; siguiente acción requiere
+acceso legítimo seleccionado y participación humana, sin reducir el alcance.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 
