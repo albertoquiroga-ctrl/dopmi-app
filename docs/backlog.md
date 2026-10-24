@@ -19,6 +19,10 @@ W4: candidatoada0c4f6/CI40068127871 cuatroSUCCESS/1423Flutter y compilaciones
 Androiddebug/iOSsim. Paquete331 propuesto con permiso humano propio pendiente;
 instalada330 y aceptación UX no cambian. Checkpoint conserva siguiente acción.
 
+Demo W4: mostrar los accesos a los tres componentes Stripe conservados, conforme
+decisión24oct. Connect está en Perfil/Mi cuenta del modo Rescatista; distinguir
+marco capturado de onboarding nativo físico y respetar permisos de operación.
+
 ## Historial de cola (no ejecutar por antigüedad)
 
 ## 23/10/2026 — Correcciones tras P1+P2 preparadas

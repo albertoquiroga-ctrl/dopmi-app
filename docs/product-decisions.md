@@ -1,3 +1,26 @@
+## 24/10/2026 — Conservar los tres componentes seguros de Stripe
+
+Mensaje directo del titular en este chat: mantener los componentes embebidos de
+Stripe para aportaciones puntuales a casos, suscripción Guardián y alta de la
+cuenta financiera del rescatista. Es una excepción explícita a reproducir las
+simulaciones del mock: conservar PaymentSheet de aportación, PaymentSheet de
+método Guardián y onboarding de Stripe Connect. No sustituirlos por campos de
+tarjeta/banco propios ni modificar cuentas, responsabilidades o permisos.
+
+Los tres existen en el candidatoada0c4f6. Connect nativo está condicionado al
+SDK/build Android/iOS y configuración TEST válidos; se conserva el fallback
+alojado en Stripe para entornos sin SDK. Acceso actual: modo Rescatista → Perfil
+→ Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios.
+El alta financiera no es actualmente un paso automático del asistente de
+publicación. Verificación Dopmi y habilitación para recibir fondos son controles
+distintos; esta instrucción no cambia sus gates ni añade ese paso al asistente.
+Incluir accesos y componentes en la demo y esa diferencia en el informe vigente,
+sin atribuir onboarding nativo físico a capturas de marco/fixtures.
+
+Esta precisión conserva implementación y experiencia; no autoriza pagos, altas
+remotas, datos bancarios, dinero real ni distribución331. Permiso de esa build
+continúa pendiente, sin repetir su pregunta ni alterar candidato/CI por esta nota.
+
 ## 23/10/2026 — Referencia nueva y presentación warm-trust
 
 Titular confirmó que UX compara la versión más reciente del mock

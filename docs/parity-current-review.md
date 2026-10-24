@@ -27,6 +27,8 @@ está en product-decisions; root conserva los siguientes límites visibles:
 
 | Elemento del mock / ausencia | Tratamiento real o pendiente |
 |---|---|
+| Formularios simulados de tarjeta/alta financiera | Excepción explícita del titular24oct: conservar PaymentSheet de aportación puntual y Guardián, más onboarding Stripe Connect. Los tres existen enada; datos sensibles/autenticación permanecen en Stripe. No sustituirlos por formularios del mock. |
+| Acceso al alta financiera del rescatista | Hoy: modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. No es paso automático del asistente de publicar. Conservar condiciones nativas Android/iOS y fallback Stripe; localizarlo en demo sin afirmar onboarding físico no comprobado. No se decidió añadir un paso nuevo. |
 | Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No publicar cifras ficticias. |
 | Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
 | Resumen mensual para quien sólo aporta una vez | Datos/servicio se conservan; el mock no dibuja acceso equivalente sin Guardián. No se añadió el botón de Perfil propuesto, por decisión del titular. Fallback histórico de impacto anterior conservado. |

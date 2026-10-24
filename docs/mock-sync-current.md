@@ -12,6 +12,11 @@ feed; Perfil → Mi historial de pagos → movimientos; mensual en Apoyar Guardi
 sin botón adicional en Perfil, conforme call_7ddb7182. Informe solicitado en
 parity-current-review; no nueva decisión de producto pendiente.
 
+Precisión titular24oct registrada en product-decisions: conservar los tres
+componentes Stripe existentes (aporte puntual, Guardián y Connect rescatista),
+como excepción al mock. Acceso Connect e integración física pendiente en informe;
+esta precisión no autoriza distribución331 ni nuevas operaciones financieras.
+
 **CI40068127871 completed/SUCCESS, cuatro jobs,1423 pruebas Flutter**, analyze,
 capturas de gates, Androiddebug e iOSsim aprobados. Historial local14PASS y
 captura exclusiva Guardián1PASS/26s; causa/correcciones/retro en progress.

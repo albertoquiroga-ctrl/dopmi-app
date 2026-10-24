@@ -1,3 +1,24 @@
+## 24/10/2026 — Precisión Stripe conservada sin cambiar candidato
+
+Titular exige conservar componentes embebidos para aporte puntual, Guardián y
+alta financiera rescatista. Inspección de fuente: OneoffPaymentSheetSdk usa
+PaymentIntent/Stripe PaymentSheet; GuardianMethodSetupSdk usa SetupIntent/
+PaymentSheet; ConnectClient usa StripeConnect.presentAccountOnboarding en
+Android/iOS habilitados, con fallback Stripe alojado cuando no hay SDK.
+Los tres clientes no cambian entre330/7f6d7e90 y candidatoada0c4f6.
+
+Explorer independiente stripe_connect_scope contrastó cliente, rutas, backend y
+pruebas existentes: Perfil Rescatista/Mi cuenta y Ajustes/Datos bancarios abren
+/connect. No es paso automático del asistente de publicar; se documenta la
+diferencia sin cambiar verificación Dopmi, recepción de fondos ni permisos.
+Las pruebas existentes de Connect cubren SDK/identidad/caducidad/TEST/backend;
+capturas de marco no acreditan onboarding nativo físico. Se reutiliza CI exacta
+40068127871/1423PASS, sin nuevos tests/Flutter/proveedor/cuentas ni código.
+
+Decisión, informe, demo y checkpoint actualizados. Documentación solamente;
+candidatoada, instalada330 y paquete331 sin nueva autoridad permanecen intactos.
+La precisión humana no se interpreta como permiso de publicar ni de alta/pago.
+
 ## 24/10/2026 — Candidato warm-trust integrado, distribución propia pendiente
 
 Candidatoada0c4f649e357bae308633aecfb1d581a9edf7d, mockb9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef.
