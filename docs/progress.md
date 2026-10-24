@@ -1,3 +1,21 @@
+## 23/10/2026 — Historial final conforme al mock, sin acceso mensual adicional
+
+La decisión call_7ddb7182 se implementa sin reabrir alternativas: Perfil contiene
+Mi historial de pagos y no añade Resumen del mes. La captura positiva actual,
+con el repositorio real de actividad correctamente inyectado, permitió detectar
+tres diferencias visuales: título muted heredado, fondo y vacío sin tarjeta.
+Se corrigieron juntas en payment_activity_screen.dart; normal usa una línea y
+elipsis con título completo accesible,200% permite reflujo e importe íntegro.
+DonorCanvas sólo para donante, vacío22/18/r24/#f7f5f1. No cambian importes,
+cursores, estados, expansión, autorización ni método histórico.
+
+Reutilización de nueve regresiones financieras y captura actual normal/200%/
+vacío:10PASS/9s, history-final-fidelity.log. Producto y código independientes
+inspeccionaron fuente y PNG y cerraron los tres hallazgos. No ejecutar el
+capturador histórico completo. Candidato final por fijar con CI integral propia;
+instalada330 intacta, sin dispositivo/ON/mutación remota ni aceptación atribuida.
+Informe de adaptaciones y flujos ausentes conservado en parity-current-review.
+
 ## 23/10/2026 — Correcciones agrupadas de CI y fixtures actuales de historial
 
 CI40063764310 del candidato0bc201bb terminó con web/PostgreSQL, integración de

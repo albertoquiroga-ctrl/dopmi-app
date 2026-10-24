@@ -3,7 +3,8 @@
 Producto: **dopmi-app**. Mock sólo referencia, congelada en
 `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust elegida por titular.
 Cola única Flutter/root en checkout candidate-git-20261014,
-`codex/finish-release-20261015`, sobre base documental `5e1d8b9`; implementación0bc201bb más corrección agrupada.
+`codex/finish-release-20261015`, sobre base documental `5e1d8b9`; implementación0bc201bb,
+corrección f3dc0554 y cierre visual de historial agrupado en candidato final.
 Distribuido/instalado sigue **7f6d7e90 / Play interno 2.3.3(330), release170**.
 Este delta local todavía no está publicado, instalado ni aceptado por UX.
 
@@ -19,7 +20,9 @@ final-visual-and-impact86PASS; controles/expiry y detalle safearea verificados e
 suites dirigidas; capturas normal/115%/320px200%. Código/producto independientes
 cerraron hallazgos materiales del delta. CI0bc: tresSUCCESS, Flutter1413PASS/10FAIL
 por expectativas/gestos de prueba; corrección agrupada64PASS. Fixtures actuales
-de notificaciones e historial corregidos/captura1PASS. Nuevo SHA/CI por fijar.
+de notificaciones e historial corregidos/captura1PASS. Historial final: nueve
+regresiones financieras y captura normal/200%/vacío,10PASS; producto/código cierran
+título ink, Canvas donante y tarjeta vacía. Nuevo SHA/CI final por fijar.
 No sumar suites superpuestas ni confundir fixtures con teléfono.
 
 Root siguiente: fijar commit correctivo → push/CI4jobs exactos → cerrar paquete331

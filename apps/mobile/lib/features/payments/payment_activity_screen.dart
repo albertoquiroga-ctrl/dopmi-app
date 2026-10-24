@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/donor_canvas.dart';
 import '../adoption/community_repository.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_public_photo.dart';
@@ -139,60 +140,77 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
         icon: const Icon(Icons.arrow_back),
       ),
     ),
-    body: RefreshIndicator(
-      onRefresh: () => load(),
-      child: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(text: 'Consulta todos los '),
-                const TextSpan(
-                  text: '+Apoyos',
-                  style: TextStyle(
-                    color: Color(0xff0b7a5d),
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (widget.received)
-                  const TextSpan(text: ' que ha recibido tu manada.')
-                else ...[
-                  const TextSpan(text: ' que recibió la manada '),
+    body: DonorCanvas(
+      enabled: !widget.received,
+      child: RefreshIndicator(
+        onRefresh: () => load(),
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Consulta todos los '),
                   const TextSpan(
-                    text: 'gracias a ti.',
-                    style: TextStyle(fontWeight: FontWeight.w700),
+                    text: '+Apoyos',
+                    style: TextStyle(
+                      color: Color(0xff0b7a5d),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
+                  if (widget.received)
+                    const TextSpan(text: ' que ha recibido tu manada.')
+                  else ...[
+                    const TextSpan(text: ' que recibió la manada '),
+                    const TextSpan(
+                      text: 'gracias a ti.',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ],
                 ],
-              ],
+              ),
+              style: const TextStyle(fontSize: 14, height: 1.45, color: ink),
             ),
-            style: const TextStyle(fontSize: 14, height: 1.45, color: ink),
-          ),
-          const SizedBox(height: 20),
-          if (error != null) Notice(error!, isError: true),
-          if (busy && items.isEmpty)
-            const Center(child: CircularProgressIndicator()),
-          if (!busy && error == null && items.isEmpty)
-            const Text('Aún no hay movimientos en tu historial.'),
-          for (final item in items)
-            PaymentActivityCard(
-              key: ValueKey('${widget.owner}:${item['kind']}:${item['id']}'),
-              item: item,
-              received: widget.received,
-              owner: widget.owner,
-              readOnly: widget.readOnly,
-            ),
-          if (error != null)
-            TextButton(
-              onPressed: busy ? null : () => load(more: retryMore),
-              child: const Text('Reintentar historial'),
-            ),
-          if (cursor != null && error == null)
-            TextButton(
-              onPressed: busy ? null : () => load(more: true),
-              child: Text(busy ? 'Cargando…' : 'Ver movimientos anteriores'),
-            ),
-        ],
+            const SizedBox(height: 20),
+            if (error != null) Notice(error!, isError: true),
+            if (busy && items.isEmpty)
+              const Center(child: CircularProgressIndicator()),
+            if (!busy && error == null && items.isEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 22,
+                  horizontal: 18,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xfff7f5f1),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: const Text(
+                  'Aún no hay movimientos en tu historial.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: muted),
+                ),
+              ),
+            for (final item in items)
+              PaymentActivityCard(
+                key: ValueKey('${widget.owner}:${item['kind']}:${item['id']}'),
+                item: item,
+                received: widget.received,
+                owner: widget.owner,
+                readOnly: widget.readOnly,
+              ),
+            if (error != null)
+              TextButton(
+                onPressed: busy ? null : () => load(more: retryMore),
+                child: const Text('Reintentar historial'),
+              ),
+            if (cursor != null && error == null)
+              TextButton(
+                onPressed: busy ? null : () => load(more: true),
+                child: Text(busy ? 'Cargando…' : 'Ver movimientos anteriores'),
+              ),
+          ],
+        ),
       ),
     ),
   );
@@ -416,15 +434,28 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                                   child: const Icon(Icons.pets, color: ink),
                                 ),
                         );
+                        final scaler = MediaQuery.textScalerOf(context);
+                        final enlargedTitle = scaler.scale(15) > 22.5;
                         final textWidget = Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                                height: 1.3,
+                            Tooltip(
+                              message: title,
+                              excludeFromSemantics: true,
+                              child: Text(
+                                title,
+                                semanticsLabel: title,
+                                maxLines: enlargedTitle ? null : 1,
+                                overflow: enlargedTitle
+                                    ? TextOverflow.clip
+                                    : TextOverflow.ellipsis,
+                                softWrap: enlargedTitle,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.3,
+                                  color: ink,
+                                ),
                               ),
                             ),
                             Text(
@@ -456,7 +487,6 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
                             'refund_review',
                           ].contains(d['status']),
                         );
-                        final scaler = MediaQuery.textScalerOf(context);
                         double textWidth(String value, double size) {
                           final painter = TextPainter(
                             text: TextSpan(
