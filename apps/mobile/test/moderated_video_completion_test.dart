@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:dopmi_mobile/core/media/moderated_video.dart';
 import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'support/local_video_controller.dart';
@@ -22,6 +24,107 @@ VideoRepository playbackRepository() => VideoRepository(
 );
 
 void main() {
+  testWidgets('media overlay preserves visible and working playback controls', (
+    tester,
+  ) async {
+    final controller = LocalVideoTestController();
+    final repository = playbackRepository();
+    final showOverlay = ValueNotifier(false);
+    final boundaryKey = GlobalKey();
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      showOverlay.dispose();
+      repository.dispose();
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: RepaintBoundary(
+              key: boundaryKey,
+              child: SizedBox(
+                width: 320,
+                height: 560,
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: showOverlay,
+                  builder: (_, enabled, _) => ModeratedVideo(
+                    repository: repository,
+                    assetId: 'approved-clip',
+                    autoplay: false,
+                    controllerFactory: (_) => controller,
+                    mediaOverlay: enabled
+                        ? const ColoredBox(color: Colors.black)
+                        : null,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    Future<List<Color>> sampleColors() async =>
+        (await tester.runAsync(() async {
+          final boundary =
+              boundaryKey.currentContext!.findRenderObject()!
+                  as RenderRepaintBoundary;
+          final image = await boundary.toImage(pixelRatio: 1);
+          final bytes = await image.toByteData(
+            format: ui.ImageByteFormat.rawRgba,
+          );
+          final origin = tester.getTopLeft(find.byKey(boundaryKey));
+          final points = <Offset>[
+            // Sample the filled circle beside the icon, away from its edge.
+            for (final label in ['Reproducir video', 'Activar sonido'])
+              tester.getCenter(find.byTooltip(label)) -
+                  origin -
+                  const Offset(14, 0),
+            const Offset(160, 100),
+          ];
+          final colors = <Color>[];
+          for (final point in points) {
+            final offset =
+                (point.dy.floor() * image.width + point.dx.floor()) * 4;
+            colors.add(
+              Color.fromARGB(
+                bytes!.getUint8(offset + 3),
+                bytes.getUint8(offset),
+                bytes.getUint8(offset + 1),
+                bytes.getUint8(offset + 2),
+              ),
+            );
+          }
+          image.dispose();
+          return colors;
+        }))!;
+
+    final withoutOverlay = await sampleColors();
+    expect(
+      withoutOverlay.take(2).every((c) => c.computeLuminance() > .2),
+      isTrue,
+    );
+    showOverlay.value = true;
+    await tester.pumpAndSettle();
+    final withOverlay = await sampleColors();
+    expect(withOverlay.take(2), withoutOverlay.take(2));
+    expect(withOverlay.last, Colors.black);
+    expect(withOverlay.last, isNot(withoutOverlay.last));
+    expect(controller.value.volume, 0);
+    expect(controller.value.isPlaying, isFalse);
+    await tester.tap(find.byTooltip('Activar sonido'));
+    await tester.pumpAndSettle();
+    expect(controller.value.volume, 1);
+    await tester.tap(find.byTooltip('Reproducir video'));
+    await tester.pumpAndSettle();
+    expect(controller.value.isPlaying, isTrue);
+    expect(find.byTooltip('Pausar video'), findsOneWidget);
+    expect(find.byTooltip('Silenciar video'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   for (final failure in [
     'play',
     'pause',

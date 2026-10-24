@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:async';
 
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
@@ -9,6 +8,7 @@ import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
 import 'package:dopmi_mobile/features/rescue/support_stories.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
@@ -128,6 +128,84 @@ Future<void> tapStorySide(WidgetTester tester, {required bool next}) async {
 }
 
 void main() {
+  for (final systemBack in [false, true]) {
+    testWidgets(
+      'story status bar is light and restores on pop; Android=$systemBack',
+      (tester) async {
+        tester.view.physicalSize = const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        tester.view.padding = const FakeViewPadding(top: 24, bottom: 24);
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.view.resetPadding);
+        const destinationStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        );
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              rescueRepositoryProvider.overrideWithValue(StoryRepository()),
+              caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            ],
+            child: MaterialApp(
+              builder: (context, child) => MediaQuery(
+                data: MediaQuery.of(context).copyWith(disableAnimations: true),
+                child: child!,
+              ),
+              home: Builder(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Destino'),
+                    systemOverlayStyle: destinationStyle,
+                  ),
+                  body: TextButton(
+                    onPressed: () => Navigator.of(context).push<void>(
+                      MaterialPageRoute(
+                        builder: (_) => SupportStories(
+                          records: [
+                            story('Luna', ['public/one']),
+                          ],
+                        ),
+                      ),
+                    ),
+                    child: const Text('Abrir historias'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        // Query the same composited status-bar location used by RenderView.
+        SystemUiOverlayStyle statusStyle() => tester
+            .binding
+            .renderViews
+            .single
+            .debugLayer!
+            .find<SystemUiOverlayStyle>(const Offset(188, 12))!;
+        expect(statusStyle().statusBarIconBrightness, Brightness.dark);
+        await tester.tap(find.text('Abrir historias'));
+        await tester.pumpAndSettle();
+        expect(statusStyle().statusBarIconBrightness, Brightness.light);
+        expect(statusStyle().statusBarBrightness, Brightness.dark);
+        expect(statusStyle().statusBarColor, Colors.transparent);
+        if (systemBack) {
+          await tester.binding.handlePopRoute();
+        } else {
+          await tester.tap(find.byTooltip('Cerrar historias'));
+        }
+        await tester.pumpAndSettle();
+        expect(find.byType(SupportStories), findsNothing);
+        expect(statusStyle().statusBarIconBrightness, Brightness.dark);
+        expect(statusStyle().statusBarBrightness, Brightness.light);
+        expect(tester.takeException(), isNull);
+        await tester.pumpWidget(const SizedBox.shrink());
+      },
+    );
+  }
+
   testWidgets('story clock is linear and advances at 5200 ms', (tester) async {
     await mountTimedStories(tester);
     await tester.pump(const Duration(milliseconds: 1300));

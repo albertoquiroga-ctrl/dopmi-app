@@ -16,15 +16,16 @@ sin credenciales. El bloqueo anterior de identidad quedó resuelto; el estado de
 get_goal seguía blocked, sin inventar active ni renovar ocho horas. Límite original
 13:08:18UTC ya transcurrido. La instrucción humana directa permitió continuar el
 paquete revisado. Donante elegido8b3e verificado15:12, historial vacío y TiendaOFF;
-confirmó poder cambiar dueño→donante. **Handoff de credenciales activo21:27:30UTC**:
-Perfil abierto, esperando «Listo, donante»; no leer/controlar teléfono hasta aviso.
+confirmó poder cambiar dueño→donante. Aviso humano21:48 atendido y donante8b3e
+verificado por hashUI21:49, sin credenciales. Handoff cerrado; Samsung quedó en
+Adoptar con ese donante después de la QA. No cambio de cuenta pendiente para P3.
 
 P3 ligado a332: manifest **0fb6fb6f…73c82**, scopefac4c9a1…1d054,
 renderer3c026268…8e243, permiso v3/autoridad de la reanudación real. Código y
 seguridad cerraron rebase exacto Store332 y11pruebas puras; guardas intactas.
 Preparador root local UTF8/fechas reales revisado, sin otraCI/build ni backend.
 Máximos: un caso/thanks20s/gasto100/aporte20TEST, dos ventanas20min/stop15,
-retención y cierreOFF. **V1 consumida y cerrada; V2 y pago aún sin iniciar.**
+retención y cierreOFF. **V1 y V2 consumidas/cerradas; único pago TEST conciliado.**
 
 P3 real: caso970f8f92…639c «Prueba de historias» APPROVED9, portada sintética y
 texto TEST sin mascota/tratamiento reales. Único thanks47e3e1a8…5133,20s/1844011B,
@@ -37,7 +38,26 @@ independientemente, otros16assets/CLOSED40/DRAFT4-PDF/finanzas/Store íntegros.
 Con serviciosOFF, único gasto9adb9ce1…14e1 APPROVED11 por10000centavos ficticios.
 PDF2432B «SIN VALIDEZ/SIN PAGO REAL» y proofJPEG sintético separados/privados;
 sin foto pública de gasto. Preflight financiero real pasó antes de aprobación;
-C_EXPENSE/pin verifican campos/snapshots/actores exactos y cero aportaciones.
+C_EXPENSE/pin verificaron campos/snapshots/actores exactos antes de la aportación.
+
+Único pago960bde43…5033 confirmado/transferred:2000 bruto−40Dopmi−443Stripe=
+1517centavos asignados sólo al gasto9adb; UUIDdurable f14afcc8…a3dd. PrimariaStripe
+TEST succeeded/paid verifica443=382fee+61tax, sin guardar clientsecret. Snapshot
+histórico del MISMO pago ligado por SQL a dueño/Intent/Charge; historialSamsung
+Visa4242/$20 concordante. C_PAY/pin y revisión independiente PASS; no otro cobro.
+
+V2 lectura21:59:12→EdgeOFF22:12:44, SQLfinal22:13:28/34digestsbaseline/job6pausado/
+cola0/fullbaseline C_PAY exacto. Anillo→foto→thanks20s completo; silencio inicial,
+toggle de sonido, hold6s pausa1.133→continúa sinreset. BG: antesHome1.400, seis
+segundos fuera, trascarga primerframe reproducido1.867→19.933, sin consumir6s fuera;
+no precisiónmilisegundos/audio físico. Feed individual vía Perfil→tarjetaGuardián→
+promoción→Ver mi impacto muestra caso/asignación y abre detalle; sin contratar.
+No confundir ese acceso con el CTA de Apoyar que sí abre altaGuardián.
+
+QA positiva descubrió DOS P2 visuales de historias: degradado oscurecePlay/Sonido
+y statusbarnegra sobre fondooscuro. Worker agrupa arreglo de capas+AnnotatedRegion
+local en cuatro archivos Flutter; root única cola de pruebas/revisión y después
+candidato333 propuesto. Aún no CI/compilación/publicación/instalación333 ni aceptación.
 
 Preflight global encontró una factura0 TEST histórica de ensayo de método; padre
 cancelado/precio0 y nueve vínculosDB0 comprobados. Se conserva intacta. Guard fijo
@@ -48,17 +68,17 @@ SQL iniciales contrim quedan sólo históricos; nuevos wrappers conservan bytes 
 
 Cierre vigenteV1 y C_EXPENSE:84historia/17assets, con sólo el nuevo clip retenido;
 CLOSED40/dosclips/DRAFT4-PDF/finanzas previas/seisjobs/catálogo conservados.
-Video/Tienda/enlaces/cleanupOFF, job6pausado/cola0; no intento de pago P3.
+Video/Tienda/enlaces/cleanupOFF, job6pausado/cola0; único pagoP3 retenido según decisión.
 Evidencia única `.tools/integral20d21-20261018/public-video-qa-design/p3-preparation/`:
 `operation/` paquete revisado, `resume332/` autoridad/lecturas/capturas reales.
 
-Siguiente root: aviso «Listo, donante» → retirar handoff → verificar donante8b3e
-por UI ordinaria/332/Vending. Antes de checkout readbacks frescos≤120s/pin C_EXPENSE,
-un único intento20TEST con PaymentSheet y conciliación del mismo UUID. Leer snapshot
-histórico del MISMO pago, sin otro cargo. Luego V2 sólo videoON/cleanupOFF/jobpausado,
-anillo→historia20s/gestos/Impacto e historial; cierreOFF, retener caso/gasto/aporte,
-terminar Adoptar con donante. No repetir V1 ni crear otra fixture por rutina.
-P3, cámara/audio humanos, iOS físico y UX siguen pendientes. Alcance integral abierto.
+Siguiente root: terminar lote UI de los dosP2 (capas/contraste/statusbarrestaurada),
+focales/analyze/capturas, revisiones independientes, CI integral delSHAfinal y una
+distribución333 revisada bajo autonomía humana vigente. Reusar sólo caso/clip/pago
+retenidos para comprobación de lectura del candidato corregido; no otro pago ni
+fixture. V1/V2 no se renuevan: nueva QA tendría paquete propio, sin aprobación
+rutinaria según decisión24oct. Cámara/audio humanos, iOS físico y UX siguen
+pendientes; P3 financiero/histórico/gestos ya acreditado con sus límites anteriores.
 Tablero/informe en parity-current-review; evidencia y retro en progress.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)

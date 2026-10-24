@@ -18,6 +18,7 @@ class ModeratedVideo extends StatefulWidget {
     this.onProgress,
     this.onPlaybackReady,
     this.controllerFactory,
+    this.mediaOverlay,
     this.semanticLabel = 'Video del caso',
   });
   final VideoRepository repository;
@@ -26,6 +27,9 @@ class ModeratedVideo extends StatefulWidget {
   final VoidCallback? onComplete, onPlaybackReady;
   final ValueChanged<double>? onProgress;
   final VideoPlayerController Function(Uri hls)? controllerFactory;
+
+  /// Decorative media treatment, painted below controls without taking gestures.
+  final Widget? mediaOverlay;
   @override
   State<ModeratedVideo> createState() => _ModeratedVideoState();
 }
@@ -360,6 +364,8 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                 VideoPlayer(player)
               else
                 const Center(child: CircularProgressIndicator()),
+              if (widget.mediaOverlay != null)
+                IgnorePointer(child: widget.mediaOverlay!),
               if (player != null)
                 Align(
                   alignment: Alignment.bottomCenter,

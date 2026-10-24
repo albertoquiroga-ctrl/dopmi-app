@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,6 +24,17 @@ const _thankYouStyle = TextStyle(
     Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0xbf000000)),
     Shadow(offset: Offset(0, 2), blurRadius: 8, color: Color(0x73000000)),
   ],
+);
+
+const _storyGradient = DecoratedBox(
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [Colors.transparent, Color(0x730d0d0d), Color(0xf70d0d0d)],
+      stops: [0.38, 0.7, 1],
+    ),
+  ),
 );
 
 /// Only approved public snapshot photos; never private evidence or receipts.
@@ -537,7 +549,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     final segment = visibleSegments[photoIndex];
     final activeCaseId = record.id;
     final hero = segment.kind == SupportStoryKind.hero;
-    return Scaffold(
+    final storySurface = Scaffold(
       backgroundColor: const Color(0xff0d0d0d),
       body: SafeArea(
         child: Padding(
@@ -635,6 +647,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                             assetId: currentVideo!,
                                             autoplay: !manual,
                                             paused: paused,
+                                            mediaOverlay: _storyGradient,
                                             semanticLabel:
                                                 segment.video!.semanticLabel,
                                             onComplete: () {
@@ -694,22 +707,8 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                     ),
                             ),
                           ),
-                          const IgnorePointer(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Color(0x730d0d0d),
-                                    Color(0xf70d0d0d),
-                                  ],
-                                  stops: [0.38, 0.7, 1],
-                                ),
-                              ),
-                            ),
-                          ),
+                          if (currentVideo == null)
+                            const IgnorePointer(child: _storyGradient),
                           Positioned(
                             top: hero ? 6 : 12,
                             left: hero ? 6 : 12,
@@ -1020,6 +1019,14 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
           ),
         ),
       ),
+    );
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: storySurface,
     );
   }
 }

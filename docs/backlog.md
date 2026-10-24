@@ -7,7 +7,8 @@ La revisión física final encontró diferencias concretas, reunidas en UN lote:
 |---|---|---|
 | W4C Correctivo331 | Cerrado; root única colaFlutter | Siete grupos corregidos, capturas normal/115/320200 y código/seguridad/producto cerrados. QA física332/115% confirma cierre sin nuevos P1/P2. Sin backend/SDK ni funciones nuevas. |
 | W4I Candidato332 | Cerrado técnicamente; root | f7b77a0b/CI40082326137 cuatroSUCCESS; una reserva/POST CM6adc801cc2c4416cf7f39490. Artefacto2.3.3(332), Play interno y Samsung/Vending comprobados por separado. |
-| W4Q Cierre integral | Abierto; root / cambio humano al donante | Delta332 verificado y QA331 reutilizada. P3: caso APPROVED9/thanks20s aprobado y V1 cerradaOFF; gasto100TEST APPROVED11 con PDF/proof privados, C_EXPENSE PASS, cero pagos. Handoff activo21:27:30; falta donante legítimo→único20TEST→V2 historias/Impacto/historial. Cámara/audio humano, iOS físico y UX siguen pendientes. Paquete332/11purePASS; sin otra build/fixture por rutina. |
+| W4S Historias: correctivo agrupado | Workerstory_controls_fix + root / P3positivo332 | DosP2 reales: gradiente tapaPlay/Sonido y statusbar negra en fondo oscuro. Corregir composición/AnnotatedRegion local, focales/analyze/capturas y revisión independiente; luego unaCI/distribución333 y QA proporcional del candidato. Sin cambio negocio/SDK/servidor. |
+| W4Q Cierre integral | Abierto; root / W4S | P3real: único20TEST conciliado/neto15.17 transferido, snapshotVisa4242 ligado al mismoCharge e historialSamsung; anillo/clip20s/hold/BG e Impacto individual comprobados, V2OFF/cierreexacto. DonanteAdoptar restaurado. Cámara/audio humano, iOS físico y UX siguen pendientes. Reusar caso/clip/aporte retenidos, sin otro pago/fixture. |
 
 331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
@@ -16,7 +17,7 @@ W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
 Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
 delta posterior a f601: expectativa de placeholder actualizada y formateada.
 Distribución332 terminada, publicada e instalada; QA del delta cerrada.
-CierreV1 SQL21:17:00/34digests21:16:47 íntegros/OFF/job6pausado/cola0; caso/clip y gastoTEST nuevos conservados. Handoff de credenciales activo21:27:30 sin lecturas del teléfono.
+CierreV2 SQL22:13:28/34digests22:12:44 íntegros/OFF/job6pausado/cola0; caso/clip/gasto/aporteTEST conservados. Donante legítimo enAdoptar, sin handoff activo.
 Límite original13:08:18UTC24oct; no confundir instalación con aceptación UX ni
 cerrar P3 positivo pendiente de actor legítimo. Fuentes y siguiente en checkpoint.
 

@@ -1,3 +1,59 @@
+## 24/10/2026 — P3/332 positivo cerrado; dos P2 de historias corregidos en fuente
+
+Aviso humano21:48 «Listo ya inicié sesión» atendido. Donante elegido8b3e confirmado
+21:49 por hash del correo ordinario visible, sin credenciales. Handoff archivado.
+Preflight financiero fresco y C_EXPENSErebindPASS; la única diferencia de historial
+fue la lectura administrativa legítima posterior usada para evidenciaraprobado11.
+No se alteró baseline ni permiso para ocultarla. ResumenUI20MXN/TEST comprobado,
+reservaCreateNewúnica y UUIDdurable nativo; una aserción local por quoting se detuvo
+antes del tap, sin checkout. Se corrigió el literal, sin segundareserva/cargo.
+
+PaymentSheet nativoTEST: tarjeta sintética, Link/guardado desactivado. BindingStripe
+primarioTEST/2000/mxn/metadata960b comprobado sin guardarclientsecret. Confirmación
+SDK única21:54: resultado960bde43-6408-4375-9de9-09ff43d05033, idempotencyf14afcc8…a3dd,
+confirmed/processed/transferred,2000−40Dopmi−443Stripe=1517asignado a9adb, sinrefund
+ni reserva pendientes. Stripe primario confirma fee443=382fee+61tax/net1557antes
+delos40Dopmi. C_PAYbindPASS conserva caso9/gasto11/clip20s y todoantecedente.
+Snapshot privado del MISMO pago ligado medianteSQLexacto545B/SHA7fca3504…81f53 a
+donante/Intent/Charge; Visa4242 y20 aparecen en historiallegítimoSamsung. Sinotro
+cobro/backfill/tarjetaactualpresentadacomohistórica. Revisiónseguridadindependiente
+deRAW/pins/snapshotSQL/Stripe/UI concordante; UIéxito decíaTransferenciaenproceso,
+SQLposterior acreditótransferred: no confundir instanteUIconestadoconciliado.
+
+V2reservada21:59:12.837UTC, SQLON21:59:18 yEdgeON21:59:47: sólo video, cleanupOFF y
+job6pausado. Stopnuevo22:14:12/deadline22:19:12. AnilloApoyar→fotopública→thanks20s,
+silencioinicial/controlActivar→Silenciar. MP4completo muestra contador3.467/7.467/
+15.467/19.467→Apoyar, no recorte5s. Holdregistrado6.065s congela1.133 ycontinúa
+hasta19.533 sinreset. Primer ensayoBG sólomostraba carga; una observaciónacotada
+mejorada dentrodeV2 grabó sólotrasconfirmarfocoDopmi, nuncaHome: antes1.400;
+seissegundosfuera→carga/póster0transitorio→primerframe reproducido1.867→19.933,
+sin consumirlos6sfuera. No atribuir precisiónmilisegundos ni audiofísico alMP4silente.
+ProductoindependienteinspeccionóPNG/XML/MP4 yfuentes; resultados/límitesconcordantes.
+
+Impactoindividualpositivo comprobado: Perfil→tarjetaGuardiánexistente→promoción→
+Ver mi impacto→feedconcasoasignado/thanksyavisosinavances→detalle15.17/100TEST.
+No contratación/resumenmensual/anillosdentrodeese feed. Corregida descripciónvieja
+«Apoyar→promoción»: CTAdeApoyar abrealtaynoeseseaccesodelectura. Decisión humana
+de no agregarbotónnuevoconservada. Historial financiero sigue separadoenPerfil.
+
+CierreV2antesstop: EdgeOFF22:12:44.459/34digestsrestaurados; SQL22:13:28.117
+fullbaselineC_PAYexacto/mediaTiendaOFF/job6pausado/colas0. Caso/gasto/pago/clip y
+finanzasprevias/catálogo/seisjobs/esquema preservados. DonanteAdoptarrestaurado.
+V1/V2consumidas, no terceraventanaimplícita. Evidenciaúnica resume332/{payment.*,
+stage-C-PAY.pin,v2.*} yPNG/XMLdevice332/p3-*; revisar332, no atribuiral333propuesto.
+
+La QApositivadescubrió2P2reales: gradiente externo oscurecíaPlay/Sonido; statusbar
+negra sobreScaffoldoscuro. Workerexclusivo corrigió4archivos: overlaydecorativo
+opcional dentrodeModeratedVideo bajo controles/defaultnull; fotosconservangradiente;
+AnnotatedRegionlocalclearIcons/sinSystemChromeglobal/restauraciónXyBack. Nueva
+pruebadepíxeles+tapsy2recorridosdecapacompusieroncoberturadeldefectoobservable.
+35focalesPASS; analyzer detectó importinnecesario y, trasquitarlo,0incidencias.
+Códigoindependientefuente/PNG/pruebas sinmaterialesnuevos; sinampliaciónriesgoauth/
+permisos/SDK. No repetir35porimport: CIintegraldelSHAfinal comprobaráconjunto.
+W4Scontinúa conunaCI/candidato333/distribucióninterna yQAproporcional. No está
+publicado/instalado333 ni aceptadaintegralmente. Cámara/audiohumano/iOSfísico/UX
+siguen pendientes; conservar esoslímites, no fabricaraceptación porgreenchecks.
+
 ## 24/10/2026 — P3/332: caso, agradecimiento y gasto TEST reales; V1 cerrada
 
 Aviso humano «Listo, cuenta TEST aprobada» atendido; dueño legítimo6e confirmado
