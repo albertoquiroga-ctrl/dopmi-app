@@ -1,3 +1,51 @@
+## 24/10/2026 — 332 publicada, instalada y correctivo físico cerrado
+
+Entrega real2.3.3(332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17,
+android-guardian-internal/Google Play interno. CM6adc801cc2c4416cf7f39490 terminó
+13accionesSUCCESS con un POST; metadataAAB/build-info concordantes10:08:52UTC,
+SHAzip4587ecf1…d40b1/text08584c6c…65ac. No se descargó AAB ni inspeccionó certificado
+binario; se conservan firma/identidad/workflow existentes. Play mostró Actualizar
+y después Abrir; una pulsación de actualización, Samsung332/2.3.3/Vending reales.
+Sesión TEST owner conservada, hash del correo visible verificado sin credenciales.
+
+QA física332/Samsung115%: Ayuda canvas/CTA café/retorno, Notificaciones y transición
+a Mensajes con statusbar oscuro, logo naranja, badge amarillo completo, gradiente
+rescatista, dos filas receptoras con fecha/concepto/tipo/neto/estado, Casos→Filtrar→
+Listopill, Apoyar activo con margen de campana completo. Revisorproducto inspeccionó
+10PNG/XML y hashes; cerró6P2+1P3 sin nuevosP1/P2 demostrados. No es aceptaciónhumana.
+Se reutilizan14recorridos331, Tienda331 b9 y QA327/329/330 válida; no repetir fixtures.
+Un tap automatizado ambiguo «Mensajes» se bloqueó antes de input (métrica y nav con
+igual etiqueta); se desambiguó navegación inferior sobre jerarquía fresca. No bug UI.
+
+Cierre SQL10:20:31UTC fullprotectedbaseline exacto,34digests10:21:06 exactos:
+video/Tienda/enlaces/cleanupOFF, job6pausado;84historia/16assets/CLOSED40/dosclips/
+DRAFT4/PDF/finanzas/seisjobs/catálogo intactos. Adoptar restaurado. Recibos finales
+en final-warm-corrective-release/device332; capturas privadas no se publican.
+CI redundante40083699111 deltag: cancelled comprobado09:56:52; runverde40082326137
+se conserva. Fuente app y mock no tuvieron nuevos cambios durante esta entrega.
+
+Mini recorrido ejecutado332:
+
+| Pantalla → acción | Resultado observado | Señal de problema para revisión humana |
+|---|---|---|
+| Perfil → Centro de ayuda → regresar | Canvas suave, CTA café/legible, vuelve al perfil | Fondo plano anterior, CTA perdido o texto cortado |
+| Notificaciones → regresar → Mensajes rescatista | Hora/iconos Android oscuros legibles y logo naranja | Iconos blancos sobre blanco o logo anterior |
+| Perfil rescatista → Mi historial | Filas de fecha/concepto/tipo/neto/estado sin identidad/tarjeta ajena | Fecha partida, importe oculto o datos de otro actor |
+| Casos → Filtrar → Listo | Botón píldora, salida conservando contexto | Botón rectangular o filtro que no cierre |
+| Apoyar Guardián activo → Adoptar | Badge completo dentro del margen y navegación restaurada | Contador recortado, bloqueo o pérdida de sesión |
+
+Conservados tresSDKStripe por excepción humana: fuente/config/TEST activos; botón
+Completar datos en Stripe realmente visible331, sin iniciar onboarding nuevo.
+P3 financiero/historias positivo sigue sin actor legítimo donante; no nuevo caso,
+gasto, aporte niON. Cámara/audio humano, iOS físico y aceptación UX siguenexternos.
+No afirmar alcance integral terminado. Informe de adaptaciones en parity-current-review;
+checkpoint y cola vigentes indican dependencias, dueño y siguiente acción.
+Retro de cierre independiente confirmó CI/provider/artefacto/instalación y cierre
+SQL/digests reales. Conservar dos ajustes ya propuestos: integrador contrasta copy/
+variantes y formato antespush (formatoCIahora pasa), revisores usan lectorUTF8 y
+operador preparado antespreflight. No otra ventanaTienda para medir120s; no crearla
+para medir el método. No atribuir ahorro general ni convertir la retro en gate.
+
 ## 24/10/2026 — CI final verde y único envío332 reservado
 
 CI40082326137/f7b77a0bf57732be273da7bd813ce77fc9c1fb17 cuatroSUCCESS: analyze0/

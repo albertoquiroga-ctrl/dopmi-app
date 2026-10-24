@@ -1,38 +1,38 @@
-# Checkpoint vigente — 24/10/2026, QA warm-trust y corrección agrupada
+# Checkpoint vigente — 24/10/2026, entrega interna 332
 
-Producto dopmi-app/codex/finish-release-20261015; mock sólo referencia
-b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust. Conservar los tres SDK
-Stripe. Objetivo autónomo vigente, límite ORIGINAL13:08:18UTC24oct; no reiniciar.
+Producto **dopmi-app**, rama `codex/finish-release-20261015`, checkout vigente
+`C:/Users/betoq/Paperclip-Dopmi/development/dopa39/candidate-git-20261014`.
+Mock sólo referencia: `b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef`, warm-trust;
+remoto reconsultado sin cambios. Conservar los tres componentes Stripe.
+Objetivo autónomo activo; límite ORIGINAL **13:08:18 UTC del 24/oct**, sin reiniciar.
 
-**Instalada/publicada2.3.3(331)/f348383fdb539bcf16d3234c630a7824984ee766**,
-Codemagic6adc5fbea6dc204feacb178b/13accionesSUCCESS; artefacto/build-info/TEST/
-Play interno y Samsung/Vending verificados separadamente. CI40072205329:
-cuatroSUCCESS/1426Flutter. Actualización conservó sesión TEST legítima.
+**2.3.3 (332), fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17**, publicada en
+Play interno e instalada desde Play en Samsung SM-S938B (`com.android.vending`).
+CI40082326137: cuatro SUCCESS, 1426 pruebas Flutter, análisis y capturas obligatorias,
+Android debug e iOS simulador. Codemagic6adc801cc2c4416cf7f39490: un POST,
+13 acciones SUCCESS. Artefacto y build-info coinciden; metadata SHA4587ecf1…d40b1.
+Paquete e2bc84f8…eb0fe/pin36286aca…467c6. CI redundante del tag cancelada y comprobada.
 
-QA física331/115%:14estados/recorridos representativos, filtros multiselección,
-video real de swipe corto/completo, detalle/scroll, mensajes, perfiles, Connect
-TEST ready, Guardián activo/Impacto vacío, historial/métodos, ayuda/documento.
-Revisor independiente encontró6P2+1P3 de presentación; correctivo agrupado en
-fuente f7b77a0bf57732be273da7bd813ce77fc9c1fb17, CI40082326137 cuatroSUCCESS/
-1426Flutter/capturas/Androiddebug/iOSsim. Codemagic6adc801cc2c4416cf7f39490
-building/sourceexacto: una reserva/POST, prevista2.3.3(332) aún sin artefacto.
-Capturas/revisiones correctivas cerradas; no publicar otro delta aislado.
-Tienda331: una grant600s08:35:05UTC, filtros/orden/vacío/Gatos/posición iguales,
-salidas bloqueadas; OFF/revocada08:40:46 y fullbaseline08:40:47 exacto salvo
-referencia/fechas propias. Evidencia/revisiones/retro e informe en tablero/progress.
+QA focal física332 al115% y revisión independiente de10 PNG/XML cierran los seis P2
+y el P3: badge/logo, gradiente, filas receptoras, margen de campana, contraste Android,
+Ayuda y Listo. Sin nuevos P1/P2 demostrados. Sesión TEST legítima conservada y
+verificada por hash del correo visible, sin leer credenciales; Adoptar restaurado.
+Reutilizar QA331 de14 recorridos y Tienda b9 (catálogo8 TEST/filtros/orden/vacío/Gatos/
+posición; acceso revocado), correo real327 y QA de video válida; no repetir fixtures.
 
-DEV84/4lectores79/97/97/90 intactos;16assets/CLOSED40 con dosclips retenidos,
-DRAFT4/PDF privados/finanzas/seisjobs conservados. Video/Tienda/cleanupOFF,
-job6pausado. Teléfono restaurado Adoptar/owner actual. No P3caso/gasto/aporte/ON.
-P3freeze bb65a68b…5873 preparado; falta sesión legítima del donante elegido,
-solicitada sin cerrar owner. Cámara/audio humanos, iOS físico y aceptación UX
-no se inventan. Dueño root/una colaFlutter. Siguiente: cerrar capturas/revisiones
-correctivas/CI cerradas → artefacto/Play332/Samsung → comprobar sólo delta.
-Paquetefinal e2bc84f8…eb0fe/pin36286aca…467c6, revisiones código/seguridad
-cerradas; método11TRUE09:48:57/SQL6Edges09:49/34digests09:49:47 íntegros/OFF.
-Tagnievasin expandir mock: remoto continúa b9. CI redundante del tag cancelación
-solicitada una vez, no sustituye run40082326137 verde. Observador providerworker;
-root conserva publicación/dispositivo. Samsung331/Vending/despierto09:54.
+Cierre real: SQL10:20:31 y34 digests10:21:06 UTC íntegros. DEV84/lectores79/97/97/90,
+16 assets (dos clips aprobados retenidos), CLOSED40 público TEST, DRAFT4/PDF privados,
+finanzas/seis jobs/catálogo conservados. Video/Tienda/enlaces/limpieza OFF; job6 pausado.
+Evidencia privada: `.tools/integral20d21-20261018/final-warm-corrective-release/`.
+Tablero/informe solicitado en `parity-current-review.md`; ledger/retro en `progress.md`.
+
+**Alcance integral todavía abierto:** falta sesión legítima del donante elegido para
+P3 positivo de historias/Impacto, coordinación humana de cámara/audio, iOS físico y
+aceptación UX. No se creó caso/gasto/aporte ni ventana ON nuevos. P3 preparado
+bb65a68b…5873 no se ejecuta automáticamente sobre332: ligar candidato y actores reales
+antes de operar. Pregunta de coordinación pendiente, sin cerrar la sesión del dueño.
+Dueño root, única cola Flutter. Siguiente acción dependiente: coordinar ese acceso y
+la intervención humana; el trabajo técnico independiente de este correctivo está cerrado.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

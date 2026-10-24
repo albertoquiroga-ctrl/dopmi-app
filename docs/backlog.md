@@ -1,13 +1,13 @@
-# Cola vigente — QA331 y correctivo final agrupado, 24/10/2026
+# Cola vigente — 332 entregada, cierre integral pendiente, 24/10/2026
 
 W1–W3 y W4H conservan evidencia válida; W4I entregó331/f348 desde Play.
 La revisión física final encontró diferencias concretas, reunidas en UN lote:
 
 | Batch | Dueño / dependencia | Escenarios y criterio de salida |
 |---|---|---|
-| W4C Correctivo331 | Workers cedieron; root única colaFlutter | Chrome rescatista, hero literal, filas receptoras, margen campana Apoyar, barra Android, Ayuda canvas/CTA y Listo pill. Fuentes, capturas normal/115/320200 y revisión independiente; sin backend/SDK ni nuevas funciones. |
-| W4I Candidato332 | Root + código/seguridad; W4C | Congelar SHA y CI cuatrojobs; paquete exacto/revisado, preflight fresco, una reserva/POST; artefacto/Play/Samsung por separado. Autoridad del objetivo vigente, sin renovación rutinaria. |
-| W4Q Cierre | Root/producto; W4I | Verificar delta332, reutilizar QA331 válida, demo comparativa/informe. P3 positivo requiere sesión legítima donante; cámara/audio/iOS/aceptación humana se distinguen de checks técnicos. |
+| W4C Correctivo331 | Cerrado; root única colaFlutter | Siete grupos corregidos, capturas normal/115/320200 y código/seguridad/producto cerrados. QA física332/115% confirma cierre sin nuevos P1/P2. Sin backend/SDK ni funciones nuevas. |
+| W4I Candidato332 | Cerrado técnicamente; root | f7b77a0b/CI40082326137 cuatroSUCCESS; una reserva/POST CM6adc801cc2c4416cf7f39490. Artefacto2.3.3(332), Play interno y Samsung/Vending comprobados por separado. |
+| W4Q Cierre integral | Abierto por dependencias humanas; root | Delta332 verificado y demo/informe preparados; QA331 válida reutilizada. Falta sesión legítima del donante P3, cámara/audio humano, iOS físico y aceptación UX. No otra build/fixture por rutina. |
 
 331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
@@ -15,10 +15,10 @@ OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
 W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
 Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
 delta posterior a f601: expectativa de placeholder actualizada y formateada.
-Una distribución332 en curso CM6adc801cc2c4416cf7f39490; falta artefacto,
-publicación/instalación y comprobar sólo delta. No reenviar ni dar332porinstalada.
-Límite original13:08:18UTC24oct; actualfuenteinstalada f348. No afirmar332
-publicada, instalada ni aceptada. Detalle y fuentes de continuidad en checkpoint.
+Distribución332 terminada, publicada e instalada; QA del delta cerrada.
+Cierre SQL10:20:31/34digests10:21:06 íntegros/OFF/job6pausado/Adoptar restaurado.
+Límite original13:08:18UTC24oct; no confundir instalación con aceptación UX ni
+cerrar P3 positivo pendiente de actor legítimo. Fuentes y siguiente en checkpoint.
 
 ## Cola anterior (supersedida por el corte vigente superior)
 

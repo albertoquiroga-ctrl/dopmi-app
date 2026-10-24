@@ -1,39 +1,41 @@
-# Corte vigente — b9f6d5f warm-trust, QA33124/10/2026
+# Corte vigente — b9f6d5f warm-trust, QA332 del 24/10/2026
 
-Producto f348/Play2.3.3(331) instalado Samsung/Vending; QA física115% y revisión
-independiente de14estados/recorridos encontraron6P2+1P3 de presentación,
-agrupados en correctivo332/f7b77a0bf57732be273da7bd813ce77fc9c1fb17 (CI40082326137
-cuatroSUCCESS/1426Flutter). Distribución CM6adc801cc2c4416cf7f39490 building,
-artefacto/Play/instalación aún pendientes. Capturas16PNG y revisiones cerradas.
+Producto **f7b77a0bf57732be273da7bd813ce77fc9c1fb17 / 2.3.3 (332)** publicado
+en Play interno e instalado desde Play en Samsung/Vending. CI40082326137:
+cuatroSUCCESS/1426Flutter/capturas/Androiddebug/iOSsim. CM6adc801cc2c4416cf7f39490:
+13accionesSUCCESS; artefacto/build-info concuerdan. QA física332/115% y revisión
+independiente de10PNG/XML cierran los6P2+1P3 encontrados en331; sin nuevosP1/P2.
+Se reutiliza QA331 de14estados/recorridos y evidencia anterior válida.
 Tienda b9 verificada/cerrada; tres SDKStripe conservados. No es aceptación UX.
 Autoridad autónoma/límite originales en product-decisions y checkpoint.
 
 | Grupo integral | Resultado de contraste / evidencia reutilizable | Cierre pendiente |
 |---|---|---|
 | Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. No repetir credenciales. La sesión pendiente es la del donante P3, no recuperación ni owner331. |
-| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 331Play/Samsung115% conserva sesión y cambio de modo; correctivos332 pendientes de distribución. |
+| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST verificada; ambos modos y regreso a Adoptar comprobados. |
 | Adopción | Swipe/detalle/contacto/filtros OR equivalentes en SQL y local; PNG b9 | 331 swipe corto/completo en video, filtros2 persistidos y detalle/scroll/regreso verificados; no contacto nuevo. |
 | Favoritos | Guardar/quitar/paginación/retiradas/regreso; canvas W4R | 331 Mis match/favoritos e hilo propios legibles; guardar/quitar/paginación vigentes reutilizados. |
-| Mensajes | Vacío inicial/búsqueda vacía/hilos y medios privados; canvas adoptante W4R | 331 vacíoRescatista/hiloAdoptante; correctivo logo/statusbar en fuente, física332 pendiente. |
-| Notificaciones | Tipos/leído/regreso y tonos; cabecera frost W4R | 331 lista/cabecera; bugstatusbar real corregido en fuente y revisado, comprobar332. |
+| Mensajes | Vacío inicial/búsqueda vacía/hilos y medios privados; canvas adoptante W4R | 331 vacíoRescatista/hiloAdoptante reutilizados; logo naranja y statusbar legible comprobados en332 tras Notificaciones. |
+| Notificaciones | Tipos/leído/regreso y tonos; cabecera frost W4R | 332 lista/cabecera/statusbar oscuro legible; cambio de pantalla conserva contraste. |
 | Apoyo/detalle | Capacidad real/gastos/guardados/cerrado/CTA; QA329/330 reutilizable | QA329/330 válida; anillos positivos siguen sin actor/fixture P3, no confundir detalle con historias. |
-| Guardián | Estados/collage/anillos/mensual/mosaico; PNG b9 escalados | 331 cuenta activa/admin y panel mensual real legibles; margenbadge corregido, sin repetir cobros. |
-| Impacto/historial | Feed y movimientos separados; snapshot histórico W4H | 331 feed vacío legítimo/pagos; receptor recompuesto y revisado; P3 positivo exige donante legítimo. |
-| Perfil propio | Tarjeta/avatar/accesos/textos b9; QA326/327 de cuenta/regresos | 331 ambos modos; gradiente literalRescatista corregido en fuente y captura, comprobar332. |
+| Guardián | Estados/collage/anillos/mensual/mosaico; PNG b9 escalados | 331 cuenta activa/admin reutilizados;332 panel real y badge completo dentro del margen. Sin repetir cobros. |
+| Impacto/historial | Feed y movimientos separados; snapshot histórico W4H | 331 feed vacío legítimo reutilizado;332 filas receptoras legibles y estados reales. P3 positivo exige donante legítimo. |
+| Perfil propio | Tarjeta/avatar/accesos/textos b9; QA326/327 de cuenta/regresos | 332 ambos modos, gradiente literalRescatista y badge comprobados; no cambiar contenido personal para imitar fixture. |
 | Perfil público | Datos aprobados/galerías/filtros; métricas/barrier W4R | 331 previewprivado/resumen/Adopciónvacía; PNGpositivo/escalado vigente, no nueva publicación. |
-| Rescate/Casos | Inicio/métricas/filtros/archivo/detalle; chrome W4R | 331 listado/filtro/selector; Listopill/chrome correctivos en fuente. |
+| Rescate/Casos | Inicio/métricas/filtros/archivo/detalle; chrome W4R | 331 lifecycle reutilizado;332 Inicio/Casos/filtro y Listopill comprobados. |
 | Publicación | Adopción/apoyo/borrador/necesidades/revisión; QA329 publicó/cerró TEST | 331 selector; lifecycle QA329 y regresiones existentes, sin crear nuevos borradores por smoke. |
-| Evidencia | Comprobante/evidencia privada; QA329 carga/reproduce/cancela/borra en necesidad DRAFT | QA329 real vigente; CI integrado final pendiente, sin otro gasto/PDF ni publicación. |
+| Evidencia | Comprobante/evidencia privada; QA329 carga/reproduce/cancela/borra en necesidad DRAFT | QA329 real vigente y CI final40082326137 aprobado; sin otro gasto/PDF ni publicación. |
 | Verificación | Privacidad y estados conservados; cuenta aprobada real | 331 expediente aprobado visible; estados privados/pruebas vigentes, no repetir KYC. |
 | Configuración | Cuenta/privacidad/banco-Connect; QA326; canvas básico W4R | 331 BasicInfo/cuenta/métodos/ConnectTEST ready y regresos; sin onboarding/borrado/cambio tarjeta. |
-| Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ/retornos; canvas/CTAadoptante corregidos en fuente y test, comprobar332. |
+| Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Otra cuenta/comercio externo no probados. |
 | Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | Pruebas QA326/329/330 válidas; cámara/audio humanos, P3 actor distinto e iOS físico pendientes. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
-Correctivo332 conserva donante/método histórico y privacidad; código/seguridad
+Correctivo332/f7: CI40082326137 cuatroSUCCESS/1426Flutter, publicado e instalado;
+conserva donante/método histórico y privacidad. Código/seguridad/producto físico
 cerrados, capturas y regresiones en progress. No sumar suites superpuestas ni
 sustituir QA física/aceptación por compilación. Cierre financiero/histórico intacto.
 
@@ -67,7 +69,7 @@ está en product-decisions; root conserva los siguientes límites visibles:
 | Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No presentar cifras simuladas como actividad real. Se conserva la excepción explícita DEV TEST $100/$20 de P3; todavía no ejecutada. |
 | Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
 | Resumen mensual para quien sólo aporta una vez | Datos/servicio se conservan; el mock no dibuja acceso equivalente sin Guardián. No se añadió el botón de Perfil propuesto, por decisión del titular. Fallback histórico existente conservado: Impacto → promoción → Ver mi impacto → feed, sin mensual ni contratar; es adaptación declarada, distinta de Mi historial de pagos. |
-| Método de pago en cada movimiento | W4H implementa snapshot privado brand/last4 del Charge exacto conciliado y UI equivalente, nunca tarjeta actual como histórica. DEV aplicado/verificado20261024071929 y4lectores79/97/97/90, CI40072205329 verde. Legado sin prueba exacta sigue nullable y sin backfill; receptor sin método ni identidad del donante (RPC no los expone). No inventar Visa4242 ni donantes. 331 muestra legado nullable; filas receptoras b9 corregidas en f60195a1, física332 pendiente. Falta un nuevo aporte TEST legítimo para verificar captura remota del snapshot. |
+| Método de pago en cada movimiento | W4H implementa snapshot privado brand/last4 del Charge exacto conciliado y UI equivalente, nunca tarjeta actual como histórica. DEV aplicado/verificado20261024071929 y4lectores79/97/97/90; CI final40082326137 verde. Legado sin prueba exacta sigue nullable y sin backfill; receptor sin método ni identidad del donante (RPC no los expone). No inventar Visa4242 ni donantes. Filas receptoras b9 verificadas físicamente en332; falta un nuevo aporte TEST legítimo para verificar captura remota del snapshot. |
 | Estados de registro, cobro y devoluciones | Conservar pendientes, requiereacción, cancelado, omitido, conciliación y reintegro, aunque el mock no los dibuje. El modo elegido no concede permisos. |
 | Carga de cámara/galería inmediata | Revisión local y botón Subir explícitos ya elegidos por titular; no crear recurso remoto al seleccionar/descartar. |
 | Video listo versus aprobado | Procesamiento no publica. Conservar dueño/propósito/versión, moderación, comprobantes privados, retirada y eliminación/reintentos. Historias excluyen expense_evidence. |
