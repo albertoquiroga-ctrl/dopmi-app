@@ -635,3 +635,6 @@ Root: cerrar revisiones del paquete camera330-newdraft-qa y solicitar permiso co
 ## 23/10/2026 — P3 decisiones completadas por titular
 
 Donante TEST distinto elegido y comprobado activo/confirmado por SELECT; conservar caso abierto y aporte TEST para revisar Impacto elegido. Root completa paquete ejecutable y acceso legítimo antes de permiso propio. No volver a preguntar actor/retención; falta sesión donante, frescura financiera y revisión/autoridad de ejecución. Cámara330 consulta propia pendiente, sin renovación implícita. No pagos ni capacidad creada.
+## 23/10/2026 — P3 listo para permiso de ejecución
+
+Root: solicitar paquete fb6dfcac…c6eb ya preparado/revisado y SELECTrealshapePASS; máximo2ventanas20min, único caso/gasto100/aporte20TEST, retención elegida, login/pagoOFF y cierreAdoptardonante. Después permiso: refrescar actores/fuentes/finanzas/SQL/device, modoRescatista y única creaciónUI, pins reales y payloads exactos; no fabricar UUID ni renovar permisos. Cámara330 consulta aparte pendiente. No reabrir donante/cierre ni duplicar caso por prototipo cámara inexistente. Evidencia y límites checkpoint/progress.
