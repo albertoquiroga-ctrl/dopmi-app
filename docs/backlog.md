@@ -632,3 +632,6 @@ Conservar el pendiente SMS real de Play308; no repetir QA válida.
 ## 23/10/2026 — Cámara330 y preparación P3
 
 Root: cerrar revisiones del paquete camera330-newdraft-qa y solicitar permiso concreto para máximo un nuevo borrador/foto sintética con servicios OFF y una toma privada con revisión local, carga segura o descarte y cierre OFF/pausado. Disponibilidad humana confirmada; sin autoridad operativa todavía. P3 $100/$20 elegido sólo para preparación: identificar donante distinto y completar actores, conciliación, capacidad y cierre antes de pedir ejecución. Stripe TEST de lectura: reloj ready, invoices draft/open cero en el corte; refrescar antes de cualquier capacidad nueva. Conservar CLOSED40/DRAFT4/PDF/16assets y cinco trabajos ajenos.
+## 23/10/2026 — P3 decisiones completadas por titular
+
+Donante TEST distinto elegido y comprobado activo/confirmado por SELECT; conservar caso abierto y aporte TEST para revisar Impacto elegido. Root completa paquete ejecutable y acceso legítimo antes de permiso propio. No volver a preguntar actor/retención; falta sesión donante, frescura financiera y revisión/autoridad de ejecución. Cámara330 consulta propia pendiente, sin renovación implícita. No pagos ni capacidad creada.
