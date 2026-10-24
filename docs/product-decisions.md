@@ -1,3 +1,7 @@
+## 23/10/2026 — Distribución330 autorizada y reservada
+
+Titular autorizó call_3f9be76fed064a65bec830d3b2b17711/item0 una build android-guardian-internal del SHA7f6d7e902574788fa848dce0cd757a4f5ee1c379, Play interno y actualizaciónSamsungdesdePlay, prevista2.3.3(330). Scope exclusivo distribución, sinON/QA/cargas/deploymanual/esquema/dinero. Paquete5157a728…f2db4/pind0dcc42d…969d8 revisados; reservaúnica y POST24/10 00:15:38UTC devolvieron handle6adbf8a8a851bc4a3bcd781d. Permisodeintento consumido, conservar conciliación/publicación/actualización del mismohandle; no repetirPOST ni crearotra build. Artefacto, Play, instalación y aceptación separados. Retener CLOSED40 público yambosclipsaprobados, gasto/PDFprivados yserviciosOFF/job6pausado.
+
 ## 23/10/2026 — Encabezado del detalle sin gastos disponibles
 
 Titular eligió «Ocultar el encabezado sin gastos disponibles» en `call_8c2fcb8700814283af4c80222bda0da9/item0`. En el detalle público, ocultar sólo «Ayúdame a recuperar:» cuando no existan gastos elegibles para aportar; conservar historia, videos, aviso, gastos/historial y CTA deshabilitado. Con gastos disponibles, conservar el encabezado. No cambia autorización, pagos, disponibilidad del servidor ni activa video. El mock20d21 no era uniforme entre detalle y vista previa vacía; esta decisión resuelve la adaptación real. Implementación/pruebas/candidato nuevos se verifican por separado de la329 instalada.
