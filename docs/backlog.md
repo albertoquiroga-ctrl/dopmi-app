@@ -13,8 +13,10 @@ La revisión física final encontró diferencias concretas, reunidas en UN lote:
 filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
 OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
 W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
-Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 en curso;
+Fuente final f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
 delta posterior a f601: expectativa de placeholder actualizada y formateada.
+Una distribución332 en curso CM6adc801cc2c4416cf7f39490; falta artefacto,
+publicación/instalación y comprobar sólo delta. No reenviar ni dar332porinstalada.
 Límite original13:08:18UTC24oct; actualfuenteinstalada f348. No afirmar332
 publicada, instalada ni aceptada. Detalle y fuentes de continuidad en checkpoint.
 
