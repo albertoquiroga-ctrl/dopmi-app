@@ -252,10 +252,7 @@ void main() {
       expect(find.text('Nombre público aprobado'), findsNothing);
       expect(find.text('Descripción aprobada.'), findsNothing);
       expect(find.text('Sobre ti'), findsOneWidget);
-      expect(
-        find.text('Cuéntanos sobre ti.'),
-        findsOneWidget,
-      );
+      expect(find.text('Cuéntanos sobre ti.'), findsOneWidget);
       expect(find.text('Ana'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
