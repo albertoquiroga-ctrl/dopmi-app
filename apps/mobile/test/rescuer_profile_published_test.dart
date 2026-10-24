@@ -253,7 +253,7 @@ void main() {
       expect(find.text('Descripción aprobada.'), findsNothing);
       expect(find.text('Sobre ti'), findsOneWidget);
       expect(
-        find.text('Cuenta qui\u00e9n eres y c\u00f3mo ayudas a las mascotas.'),
+        find.text('Cuéntanos sobre ti.'),
         findsOneWidget,
       );
       expect(find.text('Ana'), findsOneWidget);
