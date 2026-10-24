@@ -11,22 +11,33 @@ SUCCESS/1426 Flutter; CM6adc801cc2c4416cf7f39490 trece SUCCESS/un POST/artefacto
 concordante. Correctivo físico al115%:6P2+1P3 cerrados por revisión independiente.
 Reutilizar QA331, Tienda331, correo327 y video329/330 válidos; no repetir fixtures.
 
-Reanudado16:08UTC tras aviso humano; la sesión comprobada fue de otra cuenta.
-El acceso al dueño aprobado sigue sin confirmar16:16UTC; bloqueo auditado en tres
-turnos de esta reanudación. Límite original13:08:18UTC ya transcurrido,
-sin inferir otras ocho horas. Donante elegido real verificado por hash UI15:12,
-sin credenciales; historial cargado/vacío y ausencia de TiendaOFF comprobados
-físicamente y revisados por producto. No prueba movimientos ni previewON ajeno.
-Confirmó poder cambiar dueño→donante. Avisó16:08; UI16:09 resultó OTRA cuenta
-rescatista (no dueño ni donante elegido), con verificación en proceso. Hash del dueño
-confirmado contra servidor16:12 sin cambio. **Handoff renovado16:11**, esperando
-cuenta TEST aprobada previa; lecturas/capturas suspendidas. No cerrar/entrar por él.
+Aviso humano de cuenta aprobada atendido: dueño TEST legítimo confirmado20:12UTC,
+sin credenciales. El bloqueo anterior de identidad quedó resuelto; el estado de
+get_goal seguía blocked, sin inventar active ni renovar ocho horas. Límite original
+13:08:18UTC ya transcurrido. La instrucción humana directa permitió continuar el
+paquete revisado. Donante elegido8b3e verificado15:12, historial vacío y TiendaOFF;
+confirmó poder cambiar dueño→donante. **Handoff de credenciales activo21:27:30UTC**:
+Perfil abierto, esperando «Listo, donante»; no leer/controlar teléfono hasta aviso.
 
-P3 ligado a332: manifest **bc734641…f2798**, scopefac4c9a1…1d054,
-renderercb2421fd…2d9f1, permiso v20b041602…fe6d46 bajo objetivo/reanudación reales.
-Código/seguridad revisaron fuentes, autoridad y10pruebas purasPASS, sin otraCI/build.
-Se conserva un caso/thanks20s/gasto100/aporte20TEST, dos ventanas20min/stop15,
-retención y cierreOFF. **Aún no hay caso/gasto/video/aporte P3 ni reservas ON.**
+P3 ligado a332: manifest **0fb6fb6f…73c82**, scopefac4c9a1…1d054,
+renderer3c026268…8e243, permiso v3/autoridad de la reanudación real. Código y
+seguridad cerraron rebase exacto Store332 y11pruebas puras; guardas intactas.
+Preparador root local UTF8/fechas reales revisado, sin otraCI/build ni backend.
+Máximos: un caso/thanks20s/gasto100/aporte20TEST, dos ventanas20min/stop15,
+retención y cierreOFF. **V1 consumida y cerrada; V2 y pago aún sin iniciar.**
+
+P3 real: caso970f8f92…639c «Prueba de historias» APPROVED9, portada sintética y
+texto TEST sin mascota/tratamiento reales. Único thanks47e3e1a8…5133,20s/1844011B,
+fingerprint61a1fca…4c2e3, ready+approved con snapshot exacto. Admin distinto40a
+reprodujo rango completo0→20.053332s antes de revisar versión8; caso aprobado9.
+Sin audio físico atribuido. Ventana inició21:09:05UTC; EdgeOFF21:16:47 y SQL
+postflight21:17:00: job6pausado/cola0/34digests restaurados. B1/pin/cierre verificados
+independientemente, otros16assets/CLOSED40/DRAFT4-PDF/finanzas/Store íntegros.
+
+Con serviciosOFF, único gasto9adb9ce1…14e1 APPROVED11 por10000centavos ficticios.
+PDF2432B «SIN VALIDEZ/SIN PAGO REAL» y proofJPEG sintético separados/privados;
+sin foto pública de gasto. Preflight financiero real pasó antes de aprobación;
+C_EXPENSE/pin verifican campos/snapshots/actores exactos y cero aportaciones.
 
 Preflight global encontró una factura0 TEST histórica de ensayo de método; padre
 cancelado/precio0 y nueve vínculosDB0 comprobados. Se conserva intacta. Guard fijo
@@ -35,16 +46,18 @@ cuenta/filtros/facts exactos, no-linksraw y freshness; cualquier deriva bloquea.
 Nunca filtrar a una sub para fingircount0, borrar/void factura ni cambiar finanzas.
 SQL iniciales contrim quedan sólo históricos; nuevos wrappers conservan bytes exactos.
 
-Cierre real15:37:35UTC:84historia/16assets/CLOSED40/dosclips/DRAFT4-PDF/finanzas/
-seisjobs/catálogo intactos y sin delta salvohora frente15:16. Video/Tienda/enlaces
-OFF, job6pausado/cola0.34digests15:39:24 exactamente iguales, video/cleanupOFF.
+Cierre vigenteV1 y C_EXPENSE:84historia/17assets, con sólo el nuevo clip retenido;
+CLOSED40/dosclips/DRAFT4-PDF/finanzas previas/seisjobs/catálogo conservados.
+Video/Tienda/enlaces/cleanupOFF, job6pausado/cola0; no intento de pago P3.
 Evidencia única `.tools/integral20d21-20261018/public-video-qa-design/p3-preparation/`:
 `operation/` paquete revisado, `resume332/` autoridad/lecturas/capturas reales.
 
-Siguiente root: aviso humano → retirar handoff → verificar dueño UI/Rescatista,
-admin40a por users.list+auditoría y ConnectTEST. Crear sólo porUI; antesON/checkout
-readbacks frescos≤120s y pins reales. Después gasto, cambio humano a donante y mismo
-intento20TEST conciliado. Leer snapshot histórico del MISMO pago, sin otro cargo.
+Siguiente root: aviso «Listo, donante» → retirar handoff → verificar donante8b3e
+por UI ordinaria/332/Vending. Antes de checkout readbacks frescos≤120s/pin C_EXPENSE,
+un único intento20TEST con PaymentSheet y conciliación del mismo UUID. Leer snapshot
+histórico del MISMO pago, sin otro cargo. Luego V2 sólo videoON/cleanupOFF/jobpausado,
+anillo→historia20s/gestos/Impacto e historial; cierreOFF, retener caso/gasto/aporte,
+terminar Adoptar con donante. No repetir V1 ni crear otra fixture por rutina.
 P3, cámara/audio humanos, iOS físico y UX siguen pendientes. Alcance integral abierto.
 Tablero/informe en parity-current-review; evidencia y retro en progress.
 
