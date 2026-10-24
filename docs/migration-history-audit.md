@@ -1,5 +1,32 @@
 # Auditoría del historial de migraciones
 
+## 24/10/2026 — Historial privado de método de pago aplicado en DEV
+
+Autoridad: objetivo vigente del titular para cierre integral autónomo; paquete
+concreto revisado por código/seguridad, una reserva y un apply exitoso.
+Proyecto ohqxranynackjignryep, fuente f348383fdb539bcf16d3234c630a7824984ee766 /
+CI40072205329 cuatroSUCCESS. Nombre codex_historical_payment_method_snapshots_v1;
+plataforma **20261024071929** corresponde al archivo local
+20261024063200_historical_payment_method_snapshots.sql (SHA2568a804729…28b71e).
+Payload guardado y transportado idénticos: **33422bytes/c9daa01d…3057d7f**.
+Historia83→84/digest4317577e75af67521be77d9c53f78991; las83 entradas anteriores,
+incluidos nombres y statements, intactas. No replay/repair/rename ni ajuste manual.
+
+Preflight07:17:41UTCreadytrue; aplicación única reservada, success y postflight
+07:20:01UTC con11true: funciones/ACL/tabla privada/trigger/0snapshots antes de
+Edge/flags/jobs/legado/historia exactos. Después se desplegaron sólo payments79,
+payment-worker97,stripe-webhook97,guardian-client90: GET de6/31/30/28archivos
+idénticos a bundles revisados, mismos IDs/auth/verify_jwt=false. Las otras28
+funciones y todos los campos de negocio protegido siguen iguales (07:22:58UTC).
+34digests iguales/OFF reobservados07:29:18UTC; limpieza/job6 pausados.
+
+Sólo snapshot opcional del Charge TEST conciliado para su donante; receptor
+siempre sin tarjeta, historial antiguo nullable. Sin backfill, proveedor,
+cobros, edición financiera, flags o crons. Aplicación no acredita Play/dispositivo.
+Revisión independiente posterior de RAW/SQL/GET/baseline cerrada sin hallazgos.
+Evidencia única: historical-payment-method/dev-operation/execution dentro de
+.tools/integral20d21-20261018; binding operativo b7710d3f…3c16ad conservado.
+
 ## 22/10/2026 — Tienda privada TEST inerte aplicada en DEV
 
 Permiso específico call_67887b8d301242bcb9fad43aed9e4cab; unapply_migration codex_store_private_test_preview_inert_v1 success, plataforma20261023030801→fuente local20261023013846_store_private_test_preview.sql (GitSHA256d2172d1a080d2a5e0c4d1a26b1e82fd28c3d81744687be25822eb7a57bff7bf7). Paquete fuente932f5fa40a8c000c469eef5de519040fc0cb34a4302980216a729e91fa7f63bd/13730B; transporte añadió exactamenteCRLFEOF, query/statementremoto48fd1bc1325e03d2b18449f2c4d44d007f147bf761dd87ade7a921b0a65090e0/13732B. Cuerpo/tokenssin cambios y recibos UTF8exactos conservados; no igualar ambos hashes ni reaplicar. Historia82→83,82anteriores íntegros, digestactual71cb57b4fba470db5eddc632c8d52a0a. Preflight03:07:38UTC readytrue/postflight03:08:26UTC14true/historyreadback03:11:15UTC. CuatrotablasprivadasRLS/tresfuncionesexactas, preview/enlacesOFF/grants-productos-destinos0; comercial/video/job6OFF intactos. Código/seguridad independientes cerrados. No reparación/replay/rename, Edge, grant, seed, ON, build, dinero ni aceptación. Recibos store-private-preview-design/dev-operation/execution.

@@ -10,7 +10,11 @@ W4 con los siguientes paquetes finitos, sin otra espera rutinaria de permiso:
 | W4I Integración y distribución | Root + revisores; W4R/W4H | Candidato final único, cuatro gates CI, preflight real y una reserva/POST Codemagic→Play→Samsung; versión/build/SHA/canal comprobados por separado. |
 | W4Q QA y entrega | Root; W4I y sesiones legítimas | Comparación instalada/gestos y escenarios positivos pendientes con TEST autorizado, cierreOFF; demo proporcional, informe de adaptaciones y bloqueos externos concretos; aceptación humana separada. |
 
-Límite original del objetivo13:08:18UTC24oct. Instalada330; ninguna331 enviada.
+W4R/W4H verificados en f348383f/CI40072205329 cuatroSUCCESS/1426Flutter;
+DEVhistórico84/4lectores aplicado y comprobado sin alterar negocio/flags.
+W4I: build única enviada, handle6adc5fbea6dc204feacb178b/sourcef348, prevista331
+todavía building; seguir ese handle sin otro POST. W4Q aún pendiente.
+Límite original del objetivo13:08:18UTC24oct. Instalada330, no dar331porinstalada.
 Autoridad vigente en product-decisions/checkpoint. Reusar QA válida, no repetir
 correo/contraseña/KYC/pagos/fixtures para fabricar evidencia.
 
