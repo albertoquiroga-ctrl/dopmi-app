@@ -40,8 +40,14 @@ feed→detalle. CTA de Apoyar abre altaGuardián; historial financiero está sep
 Sin resumen mensual individual extra, por decisión humana. No audio físico acreditado.
 
 Donante legítimo verificado21:49 tras aviso humano21:48, sin credenciales; terminó
-Adoptar. **ADB vacío tras publicación**, petición humana de reconexión pendiente; no cambiar cuenta.
-Objetivo histórico/get_goal sigue blocked; no falsificar active ni renovar ocho horas.
+Adoptar. **ADB vacío y Windows sin nodo USB del Samsung**, petición de reconexión pendiente;
+no cambiar cuenta. La unidad NVMe Samsung interna no es el teléfono.
+Objetivo pendiente, sin renovar ocho horas. Tras reactivación se verificó el
+mismo bloqueo físico en TRES turnos consecutivos: ADB vacío y cero nodos USB del
+Samsung en Windows; última lectura23:29:15UTC. No hay job de compilación pendiente
+ni otro defecto identificado en la cola que permita avanzar sin dispositivo.
+Auditoría de bloqueo satisfecha; el estado automático vigente se consulta con
+get_goal. Reanudar sólo desde conexión real→Play333→sesión→QA W4S propia→cierreOFF.
 La instrucción humana directa/autonomía y su reanudación real sustentan esta operación.
 
 Siguiente root: cuando vuelva el Samsung, actualizar333 DESDE Play y verificar
