@@ -50,8 +50,9 @@ al iniciar carga; no se puede culpar a Stream/red. Mejora única root: identific
 y preparar selectores desde XML real antes de otra QA necesaria, sin otra toma por rutina.
 CámaraLOCAL333 previa2.9s/Despedida fue descartada0uploads y full17 cerrado; no reutilizar.
 
-Objetivo integral abierto: instalación/QA335, nativo→Streamready/play, iOS físico y
-aceptaciónUX integral pendientes. Informe de adaptaciones/flujos ausentes en
+Objetivo integral abierto: instalación/QA335, nativo→Streamready/play y aceptaciónUX
+integral pendientes. iOS es un límite declarado de esta entrega interna: compilación
+en CI, sin dispositivo físico ni TestFlight335; no es un gate adicional Android. Informe de adaptaciones/flujos ausentes en
 parity-current-review; decisiones en product-decisions, cola finita en backlog, ledger
 progress. Root única cola Flutter/ADB/operaciones; cambios ajenos preservados. No nueva
 aprobación rutinaria ni renovación8horas. La conexión USB es el bloqueo actual concreto.

@@ -1,3 +1,20 @@
+## 25/10/2026 — Alcance iOS aclarado; USB aún ausente
+
+El turno anterior produjo entrega real335/Playinternal-completed, por lo que fue
+progreso. Revalidación19:39UTC: ADBdevices vacío, sin proceso de build/ventanaON vivo.
+No se repite publicación, CI ni fixtures. La pregunta USB ya está pendiente; conserva
+335 para instalar y validar cuando vuelva el Samsung.
+
+Revisor de producto independiente contrastó plan humano aprobado y fuentes vigentes:
+AGENTS ruta Codemagic→Play interno/TestFlight alternativa, guardian-acceptance61–69 y
+mock-sync-workflow104–108. iOS físico es límite declarado de la entrega interna, no
+nuevo gate obligatorio; el plan pide expresamente registrar sus límites. La compilación
+CI del mismo8a5 no acredita prueba física ni TestFlight335. Se aclaran checkpoint/cola/
+informe sin reinterpretar aceptación humana ni borrar metas del lanzamiento público.
+La instalación y QA335 en Samsung, nativo→Streamready/play y demo/aceptaciónUX permanecen
+pendientes. Corregida instrucción vieja de seguir handle334: ambosCM334/335 ya terminales.
+Sin cambios de producto, servidores, permisos, dinero ni pruebas nuevas.
+
 ## 25/10/2026 — 2.3.3(335) publicada en Play interno; Samsung sin USB
 
 Fuente8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f, mockb9f6d5f/warm-trust sinampliar.

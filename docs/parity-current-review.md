@@ -8,6 +8,11 @@ corroboró publicación/backend. BinarioAAB/certificado independiente no inspecc
 **Instalación/QA335 pendientes por USB:** ADB no detecta Samsung. Última instalada y
 comprobada es334/174f, Vending, misma cuenta TEST. No aceptaciónUX integral atribuida.
 
+Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
+físico ni TestFlight335 verificados. El plan aprobado pide declarar estos límites y
+verificar el candidato Play en Samsung; no establece otro gate físico iOS. Esto no
+atribuye aceptación de iOS ni cambia las etapas futuras del lanzamiento público.
+
 334 cerró W4T2 con controles/cover/statusbar/X/Back legibles y backend17 exacto. Movimiento
 no probado allí: driver usó bounds tras spinner; segundo anillo19.4s despuésstop7 fue
 una desviación, OFFsí cumpliómax10. Nuevo P2 del spinner1.3566:1 corregido en8a5/335;
@@ -56,7 +61,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 publicada corrige spinner; falta instalación/QA335, nativo→Streamready/play e iOS físico. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 publicada corrige spinner; falta instalación/QA335 y nativo→Streamready/play. iOS: sólo compilación CI, sin físico/TestFlight335. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
