@@ -1,3 +1,54 @@
+## 25/10/2026 — Correctivo174f integrado; W4S y backend de cámara cerrados
+
+Samsung333/Vending/2.3.3 y donante legítimo se comprobaron tras reconexión humana.
+W4S10min/stop7 consumida: reserva93a00840…d8df14:06:51UTC; EdgeOFF14:15:00 y SQL
+OFF/job6pausado14:15:08 antesdeadline14:16:51. Cierre completo14:17:22 conserva
+fullP3/17assets/snapshot/34digests/cola0 y mismoDonanteAdoptar. Sin carga/pago nuevo.
+
+QA encontró dosP2: controles heredaban yellowSoft18%/ink del tema real (contraste
+aprox1.2–1.35:1) y Adoptar sinAppBar conservaba iconos superiores blancos al salir.
+Primeras pruebas usaban tema/padre artificiales; no acreditaban esa composición.
+Corrección agrupada174f98d9598f7c2ef4e99e425c4ea1a9634b433d cambia sólo app.dart,
+moderated_video.dart y sus2tests. Tema producción y ruta real detectan rojo333;
+versión final30focalPASS/analyze0. Revisión independiente código/producto sinmateriales.
+CI40204057476 comprobada25oct15:16:38UTC: cuatrojobsSUCCESS. Sin nueva CI ni334 enviada.
+Frame0 y grabaciones W4S no prueban clip avanzado/audio/X; evidencia332 válida se conserva.
+
+Titular confirmó disponibilidad y acceso al dueño legítimo. Cámara LOCAL333 usa
+public_update del mismo casoAPPROVED9, sin crear borrador/caso/foto. Scopea1944b1f…
+7272, helper1f3bf487…8602 y autoridad propia6ae5332d…70f fueron revisados por código/
+seguridad; cero uploads/versiones/recursos/pagos, una toma2s humana y revisión local.
+Pin07f246fc…c1ed/reserva15:07:51UTC, stop15:22:51/deadline15:27:51. Último input
+Grabar15:12:55; después human-handoff.active y cero observación/input del teléfono.
+Sin respuesta posterior de toma/audio/pantalla; no inferir éxito por haber abierto.
+
+Backend cerrado ANTES del límite: Edge15:23:58, SQL15:24:05UTC; postflight15:37 y
+34digests15:43 exactos, video/cleanupOFF/job6pausado/cola0/seisEdges íntegros y P3,
+finanzas,historia84,snapshot,17assets sin recursos nuevos. Seguridad independiente
+inspeccionó raws y corroboró. Recibo camera-local333/backend-closed.verified.partial.actual.private.json
+explicita que dispositivo/restauración/preview/audio siguen sin verificar. Ventana
+consumida; no reabrir. Pregunta de recuperación humana ya pendiente; no leer ni
+controlar Samsung hasta confirmar pantalla legítima/neutral. Después cerrar selección,
+restaurarInicioRescatista y obtener postflight real. Revisión histórica selectiva:
+325 acredita nativo→processing→cancelado/borrado, no ready/play;327no selección.
+Cámara local0upload no cierra ese pendiente de integración; conservarlo visible.
+
+Retro independiente w4s_process_retro inspeccionó fuentes/evidencia. Hasta3mejoras:
+(1) implementadores/root usan dopmiTheme y padre real en focales existentes; efecto
+red333/green174f comprobado, retirar sólo si dejan de representar producción;
+(2) root conserva captura fresca→rebindsólofiles→render→CreateNew→SQL en unaexec,
+sin roundtripmodelo/reviewer entre captura/uso. Tandas previas138/126s caducaron sinON;
+una tanda válida usó45s, sin bajar120s ni atribuir ahorro general;
+(3) root propone driverbreve con bounds obtenidos pausado y observación sin dumpidle
+en movimiento. Es hipótesis aún sin ejecutar: éxitoframeavanzado/controles/X+Back
+bajo1min; si falla, volver observaciónmanual acotada, sin gate/framework nuevo.
+
+Propuesta334 preparada en story-theme-release: mismo método333/fuente174f/CI40204057476,
+max1POST/tagcodex/story-controls-174f98d9/versionprevista334, sin reserva/tag/build.
+Depende del fin real del handoff/cámara333; no actualización que lo interrumpa.
+Estados separado implementado/verificadoCI/publicado333/instalado333/aceptaciónpendiente.
+Ownerroot; checkpoint y cola actualizados, cambios ajenos preservados. Objetivo abierto.
+
 ## 24/10/2026 — 333 publicada, cierre OFF; instalación bloqueada por USB
 
 Fuente de producto **3408abc0411ae7707f98e62add31290416aa1c23**, mock congelado

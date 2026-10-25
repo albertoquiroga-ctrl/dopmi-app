@@ -1,68 +1,56 @@
-# Checkpoint vigente — 24/10/2026, 333 publicada / USB pendiente
+# Checkpoint vigente — 25/10/2026, CI174f aprobada; cámara con handoff pendiente
 
-Producto **dopmi-app**, rama `codex/finish-release-20261015`, checkout
-`C:/Users/betoq/Paperclip-Dopmi/development/dopa39/candidate-git-20261014`.
-Mock sólo referencia congelada **b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef**,
-warm-trust, `.tools/reference-d304535`. Preservar tres componentes Stripe,
-privacidad, TEST, identidad/firma y cambios ajenos. Root: única cola móvil/operaciones.
+Producto dopmi-app; checkout candidate-git-20261014, rama codex/finish-release-20261015.
+Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust; sólo referencia.
+Fuente **174f98d9598f7c2ef4e99e425c4ea1a9634b433d**, CI **40204057476**, cuatro
+jobs completed/SUCCESS comprobados25oct15:16:38UTC. No repetir CI. Propuesta334
+preparada, sin reserva/tag/POST ni publicación; depende de resolver cámara333.
 
-**Instalada:2.3.3(332)/f7b77a0bf57732be273da7bd813ce77fc9c1fb17** desde Play,
-Samsung/Vending. QA332 cierra seis P2 y un P3 de331; reutilizar331/Tienda/correo327/
-video329/330 válidos. No repetir fixtures ni cobros.
+Publicada e instalada desde Play **2.3.3(333)/3408abc0**; Samsung R5CY51260VK
+online25oct, font_scale1.15. Artifact/Play/Vending ligan fuente y333; no inferir SHA
+desde dumpsys. Reconexión humana resuelve bloqueoUSB anterior. No otra build333.
 
-**Candidato333:3408abc0411ae7707f98e62add31290416aa1c23**. CI40139787853:
-cuatro jobs completed/SUCCESS. Tres P2 de historias corregidos/revisados: controles
-sobre degradado, statusbar local y cover intrínseco sin estirar sólo el video.
-Embebidos conservan fitnull; X/Back restauran barra.35focales previas PASS y4
-geometrías corregidas PASS/analyze0; la CI final integral está aprobada.
-Corte e3/CI401384 es histórico sin envío. Fuente y runtime/firma no cambiaron.
+**Bloqueo actual de dispositivo: human-handoff.active. NO observar ni controlar
+el teléfono hasta respuesta humana de pantalla legítima/neutral.** El titular
+entró con dueño TEST aprobado; identidad autenticada ligada a Auth por huella,
+sin credenciales. Rescatista/caso propio comprobados ANTES de cámara. Último input:
+Grabar de public_update del caso existente25oct15:12:55UTC. Desde allí no hubo
+capturas/lecturas/inputs del Samsung. Se pidió una toma humana y revisión local;
+no hay respuesta de grabación, duración, imagen/audio neutros ni pantalla final.
+La última pregunta de recuperación ya está pendiente: no repetirla ni asumir silencio.
 
-Distribución333 **terminada y publicada**, una única reserva/POST en Codemagic:
-**6add39b3a1e66d7a9bdc8ecb**, `android-guardian-internal`, tag inmutable
-`codex/story-controls-3408abc0`. Trece accionesSUCCESS; metadataAAB/build-info
-verifican2.3.3(333)/3408/TEST/internal. Log2498B y GET posterior del canal confirman
-Google Play internal/completed/333. Instalación y aceptación aún no comprobadas. Paquete `story-controls-release`:
-reviewed pin **78eecc21540dc4b2e1f3fb49542c089ba50e164b3bd1237c1248d95fc635ff37**,
-DEV fresh1f621402…3de73 validado, código/seguridad cierran recibos. Manifest actualizado
-tras completar hashes. La CI duplicada del tag40141266522 quedó cancelled;
-conservar la CI success40139787853. No segundo POST ni nueva reserva ante incertidumbre.
+Cámara LOCAL333 CONSUMIDA: pin07f246fc…c1ed, reserva15:07:51UTC, stop15:22:51 /
+deadline15:27:51. EdgeOFF15:23:58 y SQL OFF/job6pausado15:24:05, anteslímite;
+no reabrir por continuidad. Postflight backend15:37 y34digests15:43 confirman
+fullP3/snapshot/17assets/cola0/seisEdges exactos, CERO recursos nuevos. Seguridad
+independiente corroboró cierre. Recibo backend-closed.verified.partial.actual.private.json
+en camera-local333: sólo backend cerrado, NO dispositivo restaurado ni cámara aprobada.
+Scope local permite0uploads; no pulsar Subir. Tras confirmación humana, resolver
+selección/descartar conforme scope, conservar archivo local y restaurar Inicio
+Rescatista; capturar postflight real sin fingir after.device. Falta además evidencia
+nativa Samsung→Stream ready→reproducción:325 sólo processing/cancelación,327 sinselección.
+No sustituir ese pendiente por galería sintética o revisión local.
 
-P3 real en332 cerrado: caso970f…639c APPROVED9, thanks47e…5133 aprobado20s,
-gasto9adb…14e1 APPROVED11 ficticio100MXN con PDF/proof privados. Único aporte
-960b…5033 del donante8b3e:20−0.40Dopmi−4.43Stripe=15.17asignado/transferred.
-Snapshot del MISMO Charge/Intent/owner y Visa4242/20 en historialSamsung; StripeTEST
-primario concordante. V1/V2 consumidas, cierre SQL22:13:28 y Edge22:12:44 exactos.
-Readbacks23:03 mantienen todoOFF/34digests/job6pausado/cola0/17assets y estado P3.
-CLOSED40/dosclips/DRAFT4-PDF/expediente21/finanzas/catálogo/seisjobs preservados.
-AnilloApoyar→foto→clip20s completo, mute/toggle, hold6s y BG6s conservando posición
-comprobados en MP4. Perfil→tarjetaGuardián→promoción→Ver mi impacto abre feed;
-feed→detalle. CTA de Apoyar abre altaGuardián; historial financiero está separado.
-Sin resumen mensual individual extra, por decisión humana. No audio físico acreditado.
+QA W4S CONSUMIDA25oct: reserva93a00840…d8df, EdgeOFF14:15:00/SQL OFF14:15:08
+antesdeadline14:16:51. Cierre completo14:17:22 fullP3/17assets/34digests/sameDonorAdoptar.
+Descubrió dosP2 reales333: controles casi ilegibles con tema producción y barra
+superior blanca sobre blanco al regresar a Adoptar. Capturas0s NO prueban movimiento,
+sonido físico ni X. Fuente174f corrige4files; tests existentes con dopmiTheme y
+DopmiApp/DiscoveryScreen reales: rojo contra333,30focalPASS/analyze0, código/producto
+sinmateriales y CI final cuatroSUCCESS. Falta distribución/QA instalada334.
 
-Donante legítimo verificado21:49 tras aviso humano21:48, sin credenciales; terminó
-Adoptar. **ADB vacío y Windows sin nodo USB del Samsung**, petición de reconexión pendiente;
-no cambiar cuenta. La unidad NVMe Samsung interna no es el teléfono.
-Objetivo pendiente, sin renovar ocho horas. Tras reactivación se verificó el
-mismo bloqueo físico en TRES turnos consecutivos: ADB vacío y cero nodos USB del
-Samsung en Windows; última lectura23:29:15UTC. No hay job de compilación pendiente
-ni otro defecto identificado en la cola que permita avanzar sin dispositivo.
-Auditoría de bloqueo satisfecha; el estado automático vigente se consulta con
-get_goal. Reanudar sólo desde conexión real→Play333→sesión→QA W4S propia→cierreOFF.
-La instrucción humana directa/autonomía y su reanudación real sustentan esta operación.
+P3retenido: caso970f…639c APPROVED9, thanks47e…5133 readyapproved20s, gasto9adb…14e1
+APPROVED11 ficticio100MXN, único20TEST confirmado/transferido/net15.17/snapshotVisa4242.
+CLOSED40/dosclips/DRAFT4PDF/expediente21/finanzas/catálogo/seisjobs conservados.
+No otros pagos/cargas/fixtures/reviews por rutina; dinero sóloTEST, Tienda/enlacesOFF.
 
-Siguiente root: cuando vuelva el Samsung, actualizar333 DESDE Play y verificar
-Vending/versión/SHA ligado al artefacto, sesión legítima del mismo donante/Adoptar.
-Artefacto ee86101f…ad57e; texto c823a097…10bb9; publicación 7a7258ea…da2c1.
-Paquete y recibos finales:story-controls-release. Cierre posterior a publicación
-closure.verified.actual.private.json confirma fullP3/snapshot/34digestsOFF/job6pausado.
-No nuevos backend/SDK/esquema/cargas/pagos. W4S propia propuesta story-controls-device-qa
-(scope1ffcd3d8…69860/operator37111589…b5eab), código/seguridad cerrados: tras333
-instalada/cuenta verificada, autoridad/pin propios y seis capturas frescas≤120s;
-UNA ventana10min/stop7 sólo videoON, cleanupOFF/job6pausado, MISMO clip20s para
-contraste/cover/statusbarX/Back; cero fixtures/pagos/cargas. CierreOFF yAdoptar aunfallo.
-QA aún sin pin/reserva/ON; no renovar P3V2. Cámara/audio humano, iOS físico y aceptación
-UX integral siguen sin acreditar. Matriz/informe:parity-current-review; cola:backlog;
-ledger/retro:progress. RAW/pinsP3:public-video-qa-design/p3-preparation/resume332.
+Root única colaFlutter/ADB/operaciones; cambios ajenos preservados. Objetivo abierto;
+no renovar8horas ni inventar aprobación específica. Siguiente: respuesta humana al
+handoff→cierre real teléfono; revisiones334/propuesta y recibos estables en paralelo.
+Después una distribución334/Play y demo del mismo clip, con su operación propia.
+Retro independiente: causa de tests irreales comprobada; usar tema/padre producción,
+conservar captura→reserva fresca sin roundtrips y ensayar driverbreve (hipótesis).
+No nuevo tablero, gate ni suite. iOS físico y aceptaciónUX siguen separados.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

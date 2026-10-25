@@ -1,31 +1,16 @@
-# Cola vigente — 333 publicada; QA instalada bloqueada por USB, 24/10/2026
-
-W1–W3 y W4H conservan evidencia válida; W4I entregó331/f348 desde Play.
-La revisión física final encontró diferencias concretas, reunidas en UN lote:
+# Cola vigente — correctivo174f verificado; cámara333 pendiente de respuesta,25/10/2026
 
 | Batch | Dueño / dependencia | Escenarios y criterio de salida |
 |---|---|---|
-| W4C Correctivo331 | Cerrado; root única colaFlutter | Siete grupos corregidos, capturas normal/115/320200 y código/seguridad/producto cerrados. QA física332/115% confirma cierre sin nuevos P1/P2. Sin backend/SDK ni funciones nuevas. |
-| W4I Candidato332 | Cerrado técnicamente; root | f7b77a0b/CI40082326137 cuatroSUCCESS; una reserva/POST CM6adc801cc2c4416cf7f39490. Artefacto2.3.3(332), Play interno y Samsung/Vending comprobados por separado. |
-| W4S Historias: correctivo agrupado | Workerstory_controls_fix + root / P3positivo332 | TresP2 reales: gradiente tapaPlay/Sonido, statusbar negra y video horizontal estirado. Mockb9 exigecover: conservar proporción/recorte sólohistorias. Overlay/AnnotatedRegion/fit corregidos y revisados; CI40139787853/3408 cuatroSUCCESS, CM6add39b3a1e66d7a9bdc8ecb treceSUCCESS, Play2.3.3(333) internal/completed. Falta instalación/QA proporcional: USB ausente. e3/CI401384 es corteintermedio, no candidato final ni build enviada. Sin cambio negocio/SDK/servidor. |
-| W4Q Cierre integral | Abierto; root / W4S | P3real: único20TEST conciliado/neto15.17 transferido, snapshotVisa4242 ligado al mismoCharge e historialSamsung; anillo/clip20s/hold/BG e Impacto individual comprobados, V2OFF/cierreexacto. DonanteAdoptar restaurado. Cámara/audio humano, iOS físico y UX siguen pendientes. Reusar caso/clip/aporte retenidos, sin otro pago/fixture. |
+| W1–W3/W4H/W4C | Cerrados técnicamente; evidencia vigente | Preservar adopción, Guardián, Perfil/historial, Tienda privada,tresSDKs existentes y resultados331/332; no repetir migraciones/pagos/fixtures. |
+| W4S QA333 | Consumida; root |333 instalada desdePlay; cierreOFF real anteslímite/fullbaseline exacto. DosP2 adicionales de contraste/statusbar identificados; no afirmar clip en movimiento ni audio por frame0. |
+| W4T Correctivo agrupado | Implementado/verificado; root |174f98d9,4files,30focalPASS/analyze0, revisionescódigo/producto sinmateriales y CI40204057476 cuatroSUCCESS. Propuesta2.3.3(334) sin reserva/POST; publicar sólo tras fin de cámara/handoff333. Salida: artifact/Play/Vending y delta físico comprobados por separado. |
+| Cámara local333 | Backend cerrado; root/humano | Única ventana consumida15:07→15:24UTC, backendOFF/job6pausado/0recursos. human-handoff activo: esperar pantalla/neutralidad, no leer teléfono; cerrar selección y restaurarInicio reales. Esta scope permite0uploads y no acredita nativo→Streamready. |
+| W4Q Cierre integral | Abierto; root / W4T y cámara | Conservar P3 real20TEST/20s/hold/BG/Impacto y ausencia de dinero real; completar pendientes exactos de cámara/audio,nativo→Streamready,iOSfísico y aceptaciónUX sin confundirlos con CI. Informe de adaptaciones vigente en parity-current-review. |
 
-331/Samsung115% ya comprobó14estados/recorridos. Tienda331 b9 pasó catálogo,
-filtros, orden por kg, vacío, Gatos y posición (bounds idénticos al regresar);
-OFF/revocada/fullbaseline exacto08:40:47UTC, sin comercios/dinero/video.
-W4H DEV aplicado/verificado84/4lectores; no repetir migración ni fixtures.
-Fuente instalada332 f7b77a0bf57732be273da7bd813ce77fc9c1fb17/CI40082326137 cuatroSUCCESS;
-delta posterior a f601: expectativa de placeholder actualizada y formateada.
-Distribución332 terminada, publicada e instalada; QA del delta cerrada.
-CierreV2 SQL22:13:28/34digests22:12:44 íntegros/OFF/job6pausado/cola0; caso/clip/gasto/aporteTEST conservados. Donante legítimo enAdoptar, sin handoff activo.
-Límite original13:08:18UTC24oct; no confundir instalación con aceptación UX ni
-reabrir P3 positivo: ya se ejecutó con actor legítimo distinto. Fuentes y siguiente en checkpoint.
-
-
-333 tiene artefacto y publicación comprobados; instalación, QA física y aceptación
-siguen separados. Cierre posterior a publicación conserva fullP3/34digests OFF/
-job6pausado/cola0. W4S QA propia10min/stop7 preparada, sin autoridad/pin/reserva/ON;
-esperar Samsung y333 desdePlay. No repetir pago/carga/review ni renovar P3V2.
+Checkpoint conserva pin/horas/recibos y preguntas pendientes. No renovación8horas,
+no aprobación rutinaria nueva. Una colaFlutter; servicios y Tienda/enlacesOFF,
+job6pausado/cola0. El humano ya tiene una pregunta de recuperación del teléfono.
 
 ## Cola anterior (supersedida por el corte vigente superior)
 
