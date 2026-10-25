@@ -1,56 +1,60 @@
-# Checkpoint vigente — 25/10/2026, 334 instalada; correctivo de carga en CI
+# Checkpoint — 25/10/2026: 335 publicada; instalación y QA pendientes por USB
 
-Producto dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
+Producto dopmi-app; checkout candidate-git-20261014, rama codex/finish-release-20261015.
 Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust; sólo referencia.
-Publicado/instalado: 2.3.3(334), fuente174f98d9598f7c2ef4e99e425c4ea1a9634b433d,
-Play internal / Vending / Samsung SM-S938B; mismo dueño TEST6e. CI40204057476,
-cuatroSUCCESS. CM6ade2ee29667901985848481 finished/13SUCCESS; log de publicación
-incluye GET internal/completed/334. Instalada desde Play16:52–53UTC; no inspección
-binaria AAB/certificado independiente. Recibos story-theme-release y story-theme-device-qa.
+Fuente335: **8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f**. Documentación posterior separada.
 
-Producto nuevo 8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f: indicador blanco al cargar
-video sobre historias oscuras; otros consumidores conservan tema. RED real1.3566<3,
-32focalPASS/analyze0, revisión independiente código/producto cerrada. CI40221330073
-completed/SUCCESS cuatrojobs comprobados18:55UTC; no335 enviada/publicada/instalada.
+**2.3.3(335) publicada en Google Play internal/completed**, comprobado19:31UTC.
+CI40221330073 cuatroSUCCESS;32focalPASS/analyze0/código-producto cerrados para spinner
+blanco en historias oscuras, sin cambios a Stripe/servidor. Una reserva/POST19:10:19,
+pin0b1b0ebe…f1a6, tagcodex/story-controls-8a5d9cbc, CM6ade541a28f9790900c58fe3.
+13accionesSUCCESS. Metadata ZIPf0e54e85…fc6e/text65353a36…d0d1 liga335/source8a5/
+GuardianTEST/internal; logaa42a9de…0799 contiene GETposteriorinternal/completed335.
+AAB no descargado ni certificado binario inspeccionado. Seguridad verificó actuals.
+CIduplicada deltag40224720001 cancelada; verde original conservada, sin otro build.
 
-W4T2/334 CERRADA con QA parcial: controles blancos/café, cover y statusbar/X/Back
-visibles. No acredita movimiento ni sonido: driver reutilizó coordenadas tras aparecer
-spinner y regresó a foto. Segundo anillo19.4s después de stop7 fue desviación operativa;
-OFF17:35:28UTC antes deadline17:36:26. Fullpostflight17:37:53 conserva17assets,
-finanzas/snapshot/historia84/34digests/cola0/job6pausado y dueño Inicio/Rescatista.
-No defecto hit-test demostrado; renovación de lease es hipótesis. Retro independiente:
-comprobar estado fresco y clock inmediatamente antes de cada input, abortar si carga.
+**Instalada/QA335: NO.** Última comprobación positiva de instalación es334/174f,
+Play/Vending/Samsung SM-S938B/dueño6e legítimo. ADB vacío19:23,19:31 y19:36; pregunta de
+reconexión USB pendiente. No forzar interacción ni cambiar cuenta. No proceso remoto
+vivo de build ni ventanaON. Root siguiente: conectar/desbloquear/Inicio → actualizar
+DESDE Play con loading-contrast-release/play-update.py → comprobar335/Vending/identidad.
 
-CámaraLOCAL333 cerrada con0uploads: revisión2.9s bajo Despedida (se planeó Avances),
-imagen neutra/audio oído confirmados por humano; descarte16:22:31/Inicio16:22:55.
-Fullpostflight16:24:18 exacto. No ubicación local/retención durable comprobadas.
-Nativo→Streamready→reproducción sigue pendiente; no reutilizar toma descartada.
+QA335 readonly preparada y revisada, aún sin autoridad/pinQA/reserva/ON: scope0ed4a1f8,
+adapterc987dad7, manifesteea34add, handlerroot0b4a5fe2/device33534aac412/framecd92d89.
+MismoP3/thanks47e20s, sólo videoON10min/stop7; cero cargas/cámara/pagos/reviews, cleanup
+OFF/job6pausado. Callback exige observación actual≤2s y clock inmediatamente antes de
+cada input; único next de foto aclip. Screenshots-only para movimiento2s; X/Back/statusbar
+334 y full20s/hold/BG332 se reutilizan. NO editar selector/duración duranteON. Faltan
+instalación/identidad335 y seis actuals≤120s antes de crear su pin propio. Fuentes privadas:
+.tools/integral20d21-20261018/loading-contrast-device-qa y loading-contrast-release.
 
-Cámara→Stream334 CONSUMIDA y CERRADA: pin8e23ea6b/reserva18:36:08UTC,
-stop18:51:08/deadline18:56:08. Driverf8fb098e abrió primer Grabar público18:39:54
-con XML fresco y clock. Humano201db841 respondió «todo ok» a revisión neutra/audio oído;
-PNG/XML local confirma Avances y4.8s, frente objetivo2–3. Adaptación técnica acotada
-4.7–4.9s fue revisada por código/seguridad, sin otra toma/ventana ni cambio de producto60s.
-Subir único18:50:21 con selector8b076227; nuevoasset0f77fe09…41e1/providerc90bffd2…eb6d,
-14,445,502bytes. ÚltimoSQLuploading, UIProcesando: NO ready ni reproducciónStream probados.
-Stop15 alcanzado: no nueva sesión retenida ni otro input nuevo. Cancel18:51:28 permitido
-como cierre; deleted/cola0 SQL18:52:00. SQLmediaOFF/job6pausado18:52:28 y Edge34exactosOFF
-18:53:22, antesdeadline. Fullcierre18:54:20 PASS/18ledger, sólo nuevo terminal; los17viejos,
-finanzas/snapshot/historia84/casos/catálogo/seisjobs intactos. SHAclosure779c2c9f…eef62.
-CatálogoStream refrescado: páginaúnica3UID retenidos, UIDnuevo ausente. InicioRescatista
-restaurado; handoff inactivo, sin archivo local borrado ni ubicación observada.
+Backend postrelease19:30:48 exact18,17históricos intactos/finanzas/snapshot/historia84,
+seis fuentes canónicas,34digests exactos; video/Tienda/enlaces/limpiezaOFF, job6pausado,
+cola/http/runs0. Las34claves NO están todasfalse: flags financierosTEST previos conservados.
+P3APPROVED9/gastoAPPROVED11/único20TEST-net15.17-Visa4242; CLOSED40/dosclips/DRAFT4PDF,
+expediente21/catálogo/seisjobs íntegros. No repetir pagos ni fixtures consumidas.
 
-Video/Tienda/enlaces/limpiezaOFF, job6pausado/cola0. P3APPROVED9/gastoAPPROVED11 y
-único20TEST/net15.17/snapshotVisa4242 conservados. CLOSED40/dosclips/DRAFT4PDF,
-expediente21/catálogo/seisjobs intactos. Pendiente si humano puede localizar LA MISMA
-toma4.8 en Galería para evitar otra captura; no segunda carga/ventana abierta implícita.
-335 se prepara con source8a5/CIverde y delta18 explícitamente ligado al cierre anterior,
-sin aprender otrobaseline. Root siguiente: paquete335 revisado→únicoCM→Play→instalación
-con imagen/audio nativos y reproducciónStream aún separados, sin repetir pagos/gates.
+Cámara334 CONSUMIDA/CERRADA: ventana18:36:08→stop18:51:08/max18:56:08. Toma nueva
+4.8s bajo Avances, neutra/audio local oído confirmados por humano201db841 («todo ok»).
+Objetivo2–3 no cumplido; tolerancia sólo esta toma≤5 revisada por código/seguridad.
+ÚnicoSubir18:50:21,14,445,502bytes, asset0f77…41e1/public_update9/pending. ÚltimoSQL
+uploading/UIProcesando: **NO ready/playStream acreditados**. Stop15: sin otro input nuevo;
+cancel18:51:28→deleted/cola0 SQL18:52, EdgeOFF34exactos18:53:22, fullcierre18:54:20/
+779c2c9f…eef62. Stream páginaúnica3UIDretenidos/nuevoUIDc90b…eb6d ausente; InicioRescatista
+restaurado y handoff inactivo. Ubicación local no observada ni archivo borrado porroot.
+Humano confirma que NO está en Galería; sondas de caché fallaron por ADB sin dispositivo:
+archivo/permisos desconocidos, no eludir caché interna protegida ni inventar su ausencia.
 
-Root única cola Flutter/ADB/operaciones. Cambios ajenos preservados. Objetivo abierto;
-sin renovar8horas, sin aceptaciónUX integral ni iOS físico acreditados. Matriz e informe
-vigentes en parity-current-review; decisiones en product-decisions; ledger en progress.
+Retro independiente: preparación de selectores/duración durante ON dejó46s hasta stop
+al iniciar carga; no se puede culpar a Stream/red. Mejora única root: identificar archivo
+y preparar selectores desde XML real antes de otra QA necesaria, sin otra toma por rutina.
+CámaraLOCAL333 previa2.9s/Despedida fue descartada0uploads y full17 cerrado; no reutilizar.
+
+Objetivo integral abierto: instalación/QA335, nativo→Streamready/play, iOS físico y
+aceptaciónUX integral pendientes. Informe de adaptaciones/flujos ausentes en
+parity-current-review; decisiones en product-decisions, cola finita en backlog, ledger
+progress. Root única cola Flutter/ADB/operaciones; cambios ajenos preservados. No nueva
+aprobación rutinaria ni renovación8horas. La conexión USB es el bloqueo actual concreto.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 

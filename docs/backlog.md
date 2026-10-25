@@ -1,10 +1,10 @@
-# Cola vigente —334 instalada; cámara privada cerrada incompleta y contraste de carga corregido,25/10/2026
+# Cola vigente —335 publicada; instalación/QA bloqueadas por USB,25/10/2026
 
 | Batch | Dueño / dependencia | Escenarios y criterio de salida |
 |---|---|---|
 | W1–W3/W4H/W4C | Cerrados técnicamente; evidencia vigente | Preservar adopción, Guardián, Perfil/historial, Tienda privada,tresSDKs existentes y resultados331/332; no repetir migraciones/pagos/fixtures. |
 | W4S QA333 | Consumida; root |333 instalada desdePlay; cierreOFF real anteslímite/fullbaseline exacto. DosP2 adicionales de contraste/statusbar identificados; no afirmar clip en movimiento ni audio por frame0. |
-| W4T Correctivo agrupado |334 instalada; root |174f/CI40204057476: distribución/instalación Play comprobadas. W4T2 cerrada/full17 exacto; controles/cover/statusbar visibles, movimiento incompleto y desviación stop7 registrada. Nuevo spinner8a5,32focalPASS/analyze0/reviewcerrada/CI40221330073 cuatroSUCCESS; distribución335 pendiente. |
+| W4T Correctivo agrupado |334 instalada; root |174f/CI40204057476: distribución/instalación Play comprobadas. W4T2 cerrada/full17 exacto; controles/cover/statusbar visibles, movimiento incompleto y desviación stop7 registrada. Nuevo spinner8a5,32focalPASS/analyze0/reviewcerrada/CI40221330073 cuatroSUCCESS; 335publicada/Playinternal-completed/8a5; instalación/QA335 pendientes por USB. |
 | Cámara local333 | Cerrado local; root/humano | Única ventana consumida15:07→15:24UTC, backendOFF/job6pausado/0recursos. Humano confirma previewneutra/audio oído;2.9s BAJO DESPEDIDA, noAvances. Descarte/InicioRescatista reales yfullpostflight16:24PASS/0recursos. No acredita nativo→Streamready. |
 | W4Q Cierre integral | Abierto; root / W4T y cámara | Conservar P3/20TEST/20s/hold/BG/Impacto. Native334 cerrada18:54:20/exact18/OFF/Inicio; toma4.8 localneutra+audiooído y únicoUpload/delete probados, ready/playStream no. Completar candidato335 y cámara→Streamready/play, candidato final e iOS físico/aceptación con límites explícitos. |
 

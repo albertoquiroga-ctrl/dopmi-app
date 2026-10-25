@@ -1,17 +1,17 @@
-# Corte vigente — b9f6d5f warm-trust;334 instalada, correctivo de carga8a5 en CI
+# Corte vigente — warm-trust b9f6d5f;335 publicada y aún sin instalar
 
-**Publicada e instalada desde Play interno:2.3.3(334), fuente174f98d9598f7c2ef4e99e425c4ea1a9634b433d**,
-Samsung/Vending25oct; CI40204057476 cuatroSUCCESS, CM6ade2ee29667901985848481
-13SUCCESS/GETinternal-completed334; misma sesión dueño6e conservada.333 es anterior.
-W4T2 cerró backend17:37:53/full17exacto/34digestsOFF/job6pausado/cola0 e InicioRescatista.
-Controles blancos/café, cover y statusbar/X/Back legibles; movimiento/sonido de esa
-QA incompletos. Driver usó coordenadas tras spinner y segundo anillo19.4s después
-stop7; OFF17:35:28 sí cumplió máximo17:36:26. No bug hit-test demostrado.
+**Publicada2.3.3(335) en Google Play internal/completed**, fuente
+`8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f`, comprobado25oct19:31UTC. CI40221330073
+cuatroSUCCESS y CM6ade541a28f9790900c58fe3/13SUCCESS; metadata y GET de trackposterior
+concuerdan.32focalPASS/analyze0 y revisión código/producto del indicador blanco; seguridad
+corroboró publicación/backend. BinarioAAB/certificado independiente no inspeccionados.
+**Instalación/QA335 pendientes por USB:** ADB no detecta Samsung. Última instalada y
+comprobada es334/174f, Vending, misma cuenta TEST. No aceptaciónUX integral atribuida.
 
-**Nuevo P2 de carga corregido en8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f**:
-spinner blanco sólo en historias; tema nullable preserva otros consumidores. RED1.3566<3,
-32focalPASS/analyze0, código/producto cerrados. CI40221330073 cuatroSUCCESS; aún sin335.
-No atribuir al binario334 el ajuste local todavía no publicado.
+334 cerró W4T2 con controles/cover/statusbar/X/Back legibles y backend17 exacto. Movimiento
+no probado allí: driver usó bounds tras spinner; segundo anillo19.4s despuésstop7 fue
+una desviación, OFFsí cumpliómax10. Nuevo P2 del spinner1.3566:1 corregido en8a5/335;
+no atribuir ese ajuste al binario334 ni darlo por comprobado en teléfono335.
 
 CámaraLOCAL333:2.9s/neutra/audio oído por humano, bajo Despedida aunque se planeó
 Avances; selección descartada/0uploads/fullbaseline cerrado16:24:18. Ubicación local
@@ -56,7 +56,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. 333/3408 instalada25oct; QA detecta dosP2 adicionales de controles/statusbar, corregidos174f y pendientes334. Cámara/audio físico, nativo→Streamready e iOS siguen pendientes;0s no prueba playback. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 publicada corrige spinner; falta instalación/QA335, nativo→Streamready/play e iOS físico. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
@@ -98,10 +98,10 @@ superior distingue la evidencia vigente de lo que falta comprobar.
 | Resumen mensual del donante individual | El servicio se conserva, pero el mock no dibuja su acceso sin Guardián. Recomendé un acceso adicional «Resumen del mes» en Perfil; el titular prefirió la presentación del mock. No se añadió. El acceso comprobado en332 es Perfil → tarjeta de Guardián → promoción → Ver mi impacto → feed, sin contratar. Ese feed es distinto de Mi historial de pagos. |
 | Método de pago histórico | Cada movimiento nuevo conserva brand/last4 del Charge exacto conciliado; no toma la tarjeta actual como si fuera la histórica. El aporte P3 de $20 TEST quedó ligado al mismo pago/donante/Intent/Charge, con Visa 4242 en Samsung. Los movimientos antiguos sin evidencia pueden quedar sin ese dato; no se inventó ni rellenó por deducción. El receptor no obtiene método ni identidad del donante. |
 | Estados financieros que el mock omite | Se conservan registro sin cargo cuando falta capacidad, pendiente, requiere acción, cancelado, omitido, devolución y conciliación. Mínimo $20 y opciones $50/$200/$500 conforme a las reglas vigentes. Elegir un modo en la app no concede permisos. |
-| Cámara o galería que carga inmediatamente | Por decisión del titular, seleccionar abre revisión local con duración/reproducción y las acciones Subir video o Descartar selección. Seleccionar o descartar no debe crear un recurso remoto. La cámara333 llegó a revisión local de2.9s bajo Despedida; el humano escuchó el audio y el descarte creó0recursos. Se conserva la discrepancia frente a Avances planeado. |
+| Cámara o galería que carga inmediatamente | Por decisión del titular, hay revisión local con duración/reproducción antes de Subir o Descartar.333 verificó2.9s bajo Despedida/0uploads.334 verificó Avances4.8s neutro/audio oído, único upload y borrado; no ready/play de Stream. El archivo no aparece en Galería según el titular y su ubicación de caché no se comprobó por falta de USB. |
 | Video procesado frente a video público | Estar listo no equivale a estar aprobado. Se conservan dueño, propósito, versión y moderación; comprobantes y evidencia de gastos siguen privados. Retirada, eliminación y reintentos permanecen vigentes. Las historias excluyen expense_evidence. |
 | Caso sin gastos disponibles y caso cerrado | Se conservan historia, medios, aviso y botón deshabilitado; se oculta el encabezado de solicitud de dinero cuando no hay capacidad. Cerrar no borra la publicación. Añadir despedida no reabre el caso ni altera aportaciones. El titular aceptó la claridad de esa ficha TEST. |
-| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto pequeño y controles se adaptan cuando requieren contraste accesible. Grain feTurbulence, saturate e inset-shadow CSS no se reproducen literalmente.333 reveló controles de video y retorno con poco contraste: 174f los corrige; falta comprobar 334 instalada. No se declara identidad pixel por pixel. |
+| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto y controles se adaptan para contraste accesible. Grain feTurbulence/saturate/inset-shadow CSS no se reproducen literalmente.334 verificó controles/statusbar;335 publicada corrige también el spinner oscuro, con prueba pintada de contraste. Falta QA335 instalada; no se declara identidad pixel por pixel. |
 | Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados del mock. |
 | Pruebas y aceptación aún pendientes | Falta distribuir y comprobar el delta 334, la comparación UX integral del candidato final, cámara nativa → Stream listo → reproducción, e iOS físico. Cover 333 no se acepta a partir de un frame 0. Tienda ordinaria sin entrada está comprobada con OFF; el contraste simultáneo entre cuentas durante previewON y la salida comercial siguen pendientes. Capturas y simulador no sustituyen esas comprobaciones. |
 
