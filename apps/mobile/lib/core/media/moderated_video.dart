@@ -336,6 +336,11 @@ class _ModeratedVideoState extends State<ModeratedVideo>
       );
     }
     final player = controller;
+    final colors = Theme.of(context).colorScheme;
+    final controlStyle = IconButton.styleFrom(
+      backgroundColor: colors.primary,
+      foregroundColor: colors.onPrimary,
+    );
     return Semantics(
       label: widget.semanticLabel,
       child: GestureDetector(
@@ -388,6 +393,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                     child: Row(
                       children: [
                         IconButton.filledTonal(
+                          style: controlStyle,
                           tooltip: wantsPlaying
                               ? 'Pausar video'
                               : 'Reproducir video',
@@ -400,6 +406,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                           ),
                         ),
                         IconButton.filledTonal(
+                          style: controlStyle,
                           tooltip: muted ? 'Activar sonido' : 'Silenciar video',
                           onPressed: () => toggleSound(player),
                           icon: Icon(

@@ -7,6 +7,7 @@ import 'features/payments/payment_activity_screen.dart';
 import 'features/communication/notification_activity_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -675,6 +676,15 @@ class DopmiApp extends ConsumerWidget {
         supportedLocales: const [Locale('es', 'MX')],
         localizationsDelegates: GlobalMaterialLocalizations.delegates,
         routerConfig: router,
+        // Screens without an AppBar also need a status-bar style to restore.
+        builder: (_, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }

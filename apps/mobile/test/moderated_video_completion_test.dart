@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:dopmi_mobile/core/media/moderated_video.dart';
 import 'package:dopmi_mobile/core/media/video_repository.dart';
+import 'package:dopmi_mobile/core/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +24,12 @@ VideoRepository playbackRepository() => VideoRepository(
         1000,
   },
 );
+
+double contrastRatio(Color first, Color second) {
+  final a = first.computeLuminance();
+  final b = second.computeLuminance();
+  return a > b ? (a + .05) / (b + .05) : (b + .05) / (a + .05);
+}
 
 void main() {
   for (final size in [const Size(640, 360), const Size(360, 640)]) {
@@ -139,6 +146,7 @@ void main() {
     });
     await tester.pumpWidget(
       MaterialApp(
+        theme: dopmiTheme(),
         home: Scaffold(
           body: Center(
             child: RepaintBoundary(
@@ -146,16 +154,19 @@ void main() {
               child: SizedBox(
                 width: 320,
                 height: 560,
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: showOverlay,
-                  builder: (_, enabled, _) => ModeratedVideo(
-                    repository: repository,
-                    assetId: 'approved-clip',
-                    autoplay: false,
-                    controllerFactory: (_) => controller,
-                    mediaOverlay: enabled
-                        ? const ColoredBox(color: Colors.black)
-                        : null,
+                child: ColoredBox(
+                  color: Colors.white,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: showOverlay,
+                    builder: (_, enabled, _) => ModeratedVideo(
+                      repository: repository,
+                      assetId: 'approved-clip',
+                      autoplay: false,
+                      controllerFactory: (_) => controller,
+                      mediaOverlay: enabled
+                          ? const ColoredBox(color: Colors.black)
+                          : null,
+                    ),
                   ),
                 ),
               ),
@@ -176,42 +187,72 @@ void main() {
             format: ui.ImageByteFormat.rawRgba,
           );
           final origin = tester.getTopLeft(find.byKey(boundaryKey));
-          final points = <Offset>[
-            // Sample the filled circle beside the icon, away from its edge.
-            for (final label in ['Reproducir video', 'Activar sonido'])
-              tester.getCenter(find.byTooltip(label)) -
-                  origin -
-                  const Offset(14, 0),
-            const Offset(160, 100),
-          ];
-          final colors = <Color>[];
-          for (final point in points) {
+          Color pixelAt(Offset point) {
             final offset =
                 (point.dy.floor() * image.width + point.dx.floor()) * 4;
-            colors.add(
-              Color.fromARGB(
-                bytes!.getUint8(offset + 3),
-                bytes.getUint8(offset),
-                bytes.getUint8(offset + 1),
-                bytes.getUint8(offset + 2),
-              ),
+            return Color.fromARGB(
+              bytes!.getUint8(offset + 3),
+              bytes.getUint8(offset),
+              bytes.getUint8(offset + 1),
+              bytes.getUint8(offset + 2),
             );
           }
+
+          final labels = ['Reproducir video', 'Activar sonido'];
+          final fills = <Color>[
+            // Sample the filled circle beside the icon, away from its edge.
+            for (final label in labels)
+              pixelAt(
+                tester.getCenter(find.byTooltip(label)) -
+                    origin -
+                    const Offset(14, 0),
+              ),
+          ];
+          final glyphs = <Color>[];
+          for (var i = 0; i < labels.length; i++) {
+            final icon = find.descendant(
+              of: find.byTooltip(labels[i]),
+              matching: find.byType(Icon),
+            );
+            final bounds = tester.getRect(icon).shift(-origin);
+            var glyph = fills[i];
+            // The icon bounds stay inside the filled circle. Select an actual
+            // painted glyph pixel rather than guessing a font-specific point.
+            for (var y = bounds.top.ceil(); y < bounds.bottom.floor(); y++) {
+              for (var x = bounds.left.ceil(); x < bounds.right.floor(); x++) {
+                final pixel = pixelAt(Offset(x.toDouble(), y.toDouble()));
+                if (contrastRatio(pixel, fills[i]) >
+                    contrastRatio(glyph, fills[i])) {
+                  glyph = pixel;
+                }
+              }
+            }
+            glyphs.add(glyph);
+          }
+          final colors = [...fills, ...glyphs, pixelAt(const Offset(160, 100))];
           image.dispose();
           return colors;
         }))!;
 
     final withoutOverlay = await sampleColors();
-    expect(
-      withoutOverlay.take(2).every((c) => c.computeLuminance() > .2),
-      isTrue,
-    );
+    expect(withoutOverlay.last.computeLuminance(), greaterThan(.8));
     showOverlay.value = true;
     await tester.pumpAndSettle();
     final withOverlay = await sampleColors();
-    expect(withOverlay.take(2), withoutOverlay.take(2));
+    expect(withOverlay.take(4), withoutOverlay.take(4));
     expect(withOverlay.last, Colors.black);
     expect(withOverlay.last, isNot(withoutOverlay.last));
+    // Circle brightness did not catch the production theme's translucent fill.
+    // Measure the rendered icon against its fill on both light and dark media.
+    for (final colors in [withoutOverlay, withOverlay]) {
+      for (var i = 0; i < 2; i++) {
+        expect(
+          contrastRatio(colors[i], colors[i + 2]),
+          greaterThanOrEqualTo(3),
+          reason: 'Playback and sound icons must contrast with their fill',
+        );
+      }
+    }
     expect(controller.value.volume, 0);
     expect(controller.value.isPlaying, isFalse);
     await tester.tap(find.byTooltip('Activar sonido'));

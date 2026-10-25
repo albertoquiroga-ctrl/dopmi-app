@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
 import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/remote_photo.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/discovery_screen.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
@@ -13,6 +18,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 
+import 'community_test.dart' show FakeCommunity;
+import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 
 class StoryRepository extends FakeRescue {
@@ -138,46 +145,59 @@ void main() {
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
         addTearDown(tester.view.resetPadding);
-        const destinationStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+        tester.platformDispatcher.accessibilityFeaturesTestValue =
+            const FakeAccessibilityFeatures(disableAnimations: true);
+        addTearDown(
+          tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
         );
+        final identity = FakeIdentityRepository()
+          ..user = const Identity('one', 'ana@example.test', verified: true);
+        final repo = StoryRepository();
+        final runtime = PhotoRuntime(
+          store: MemoryPhotoStore(),
+          download: (_, _) async => Uint8List.fromList(
+            img.encodeJpg(img.Image(width: 20, height: 24)),
+          ),
+        );
+        addTearDown(runtime.dispose);
+        await tester.runAsync(() async {
+          await runtime.load(rescuePhotoSource(repo, 'public/one'), width: 384);
+        });
+        final container = ProviderContainer(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            rescueRepositoryProvider.overrideWithValue(repo),
+            caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            photoRuntimeProvider.overrideWithValue(runtime),
+            routerInitialLocationProvider.overrideWithValue('/adoptions'),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await identity.changes.close();
+        });
         await tester.pumpWidget(
-          ProviderScope(
-            overrides: [
-              rescueRepositoryProvider.overrideWithValue(StoryRepository()),
-              caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
-            ],
-            child: MaterialApp(
-              builder: (context, child) => MediaQuery(
-                data: MediaQuery.of(context).copyWith(disableAnimations: true),
-                child: child!,
-              ),
-              home: Builder(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Destino'),
-                    systemOverlayStyle: destinationStyle,
-                  ),
-                  body: TextButton(
-                    onPressed: () => Navigator.of(context).push<void>(
-                      MaterialPageRoute(
-                        builder: (_) => SupportStories(
-                          records: [
-                            story('Luna', ['public/one']),
-                          ],
-                        ),
-                      ),
-                    ),
-                    child: const Text('Abrir historias'),
-                  ),
-                ),
-              ),
-            ),
+          UncontrolledProviderScope(
+            container: container,
+            child: const DopmiApp(),
           ),
         );
         await tester.pumpAndSettle();
+        expect(container.read(routerProvider).state.uri.path, '/adoptions');
+        final destination = find.byType(DiscoveryScreen);
+        expect(destination, findsOneWidget);
+        expect(
+          tester
+              .widget<Scaffold>(
+                find.descendant(
+                  of: destination,
+                  matching: find.byType(Scaffold),
+                ),
+              )
+              .appBar,
+          isNull,
+        );
         // Query the same composited status-bar location used by RenderView.
         SystemUiOverlayStyle statusStyle() => tester
             .binding
@@ -186,7 +206,20 @@ void main() {
             .debugLayer!
             .find<SystemUiOverlayStyle>(const Offset(188, 12))!;
         expect(statusStyle().statusBarIconBrightness, Brightness.dark);
-        await tester.tap(find.text('Abrir historias'));
+        unawaited(
+          Navigator.of(
+            tester.element(destination),
+            rootNavigator: true,
+          ).push<void>(
+            MaterialPageRoute(
+              builder: (_) => SupportStories(
+                records: [
+                  story('Luna', ['public/one']),
+                ],
+              ),
+            ),
+          ),
+        );
         await tester.pumpAndSettle();
         expect(statusStyle().statusBarIconBrightness, Brightness.light);
         expect(statusStyle().statusBarBrightness, Brightness.dark);
@@ -198,6 +231,8 @@ void main() {
         }
         await tester.pumpAndSettle();
         expect(find.byType(SupportStories), findsNothing);
+        expect(container.read(routerProvider).state.uri.path, '/adoptions');
+        expect(destination, findsOneWidget);
         expect(statusStyle().statusBarIconBrightness, Brightness.dark);
         expect(statusStyle().statusBarBrightness, Brightness.light);
         expect(tester.takeException(), isNull);
