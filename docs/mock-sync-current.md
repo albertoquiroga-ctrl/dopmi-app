@@ -46,8 +46,12 @@ No otros pagos/cargas/fixtures/reviews por rutina; dinero sóloTEST, Tienda/enla
 
 Root única colaFlutter/ADB/operaciones; cambios ajenos preservados. Objetivo abierto;
 no renovar8horas ni inventar aprobación específica. Siguiente: respuesta humana al
-handoff→cierre real teléfono; revisiones334/propuesta y recibos estables en paralelo.
-Después una distribución334/Play y demo del mismo clip, con su operación propia.
+handoff→cierre real teléfono. Propuesta334 cerrada por código/seguridad sinmateriales;
+autoridad4d8ab98a…9809 ligada al objetivo original, readbackgoal realactive15:48UTC
+y17hashes exactos. Faltan recibosCI/DEV/método frescos y pin operativo; sin reserva.
+Informe de adaptaciones actualizado25oct en parity-current-review, con tresStripe
+contrastados contra174f (Guardian guarda método/SetupIntent; Connect fallback sólo
+por disponibilidad). Después una distribución334/Play y demo del mismo clip.
 Retro independiente: causa de tests irreales comprobada; usar tema/padre producción,
 conservar captura→reserva fresca sin roundtrips y ensayar driverbreve (hipótesis).
 No nuevo tablero, gate ni suite. iOS físico y aceptaciónUX siguen separados.

@@ -1,15 +1,23 @@
-# Corte vigente — b9f6d5f warm-trust, 333 publicada / instalación pendiente
+# Corte vigente — b9f6d5f warm-trust;333 instalada, correctivo174f verificado
 
+**Publicada e instalada desde Play interno:2.3.3(333), fuente
+3408abc0411ae7707f98e62add31290416aa1c23**, Samsung/Vending25oct. Publicación
+CI40139787853/CM6add39b3a1e66d7a9bdc8ecb/internal-completed333 se conserva.
+QA333 W4S quedó parcial y cerradaOFF anteslímite: descubrió otros dosP2 reales,
+contraste de Play/Sonido con tema producción y statusbar blanca al volver a Adoptar.
+Los frames0s no acreditan movimiento, sonido físico ni cierreX. Ver progress25oct.
 
-**Disponible en Play interno: 2.3.3 (333), fuente
-3408abc0411ae7707f98e62add31290416aa1c23**. CI40139787853: cuatro SUCCESS;
-CM6add39b3a1e66d7a9bdc8ecb: trece SUCCESS, un POST, metadata concordante y
-lectura posterior de Google Play track internal/completed/333. Corrige los tres
-P2 de historias: controles, barra de estado y cover sin deformación.
-**Instalación y QA333 no realizadas: ADB no detecta el Samsung.** La instalada
-sigue siendo332; no transferir automáticamente su QA a los cambios333.
-Cierre posterior a publicación: SQL/34digests exactos, video/Tienda/limpieza OFF,
-job6 pausado, P3 y todos los datos retenidos. No nueva ventana ON ni otro pago.
+**Correctivo de fuente174f98d9598f7c2ef4e99e425c4ea1a9634b433d**: estilo local
+primary opaco/onPrimary y respaldo superior sólo3campos en DopmiApp. Tests existentes
+con tema/padre reales: rojo333→30PASS/analyze0. CI40204057476 cuatroSUCCESS;
+código/producto independientes sinmateriales. **334 es propuesta: no enviada,
+publicada ni instalada.** Sus verificaciones no se transfieren desde332/333.
+
+Cámara LOCAL333 consumida25oct: backendOFF/job6pausado antesdeadline; postflight
+fullP3/17assets/34digests/cola0 exactos, sin nuevos recursos. Sigue handoff humano
+activo y resultado del teléfono desconocido; no observarlo hasta respuesta.
+La revisión local0upload no acredita cámara nativa→Streamready→reproducción.
+Ese pendiente y el audio físico permanecen explícitos; no otra toma por rutina.
 
 Producto **f7b77a0bf57732be273da7bd813ce77fc9c1fb17 / 2.3.3 (332)** publicado
 en Play interno e instalado desde Play en Samsung/Vending. CI40082326137:
@@ -24,7 +32,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Grupo integral | Resultado de contraste / evidencia reutilizable | Cierre pendiente |
 |---|---|---|
 | Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. Dueño TEST332 y donante legítimo distinto verificados; P3 y regreso a Adoptar completados. No repetir recuperación. |
-| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST verificada; ambos modos y regreso a Adoptar comprobados. |
+| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST y ambos modos;333 sesión propia/donante verificados. Regreso desde historias333 reveló statusbar sin contraste;174f corregido/CI, pendiente334físico. |
 | Adopción | Swipe/detalle/contacto/filtros OR equivalentes en SQL y local; PNG b9 | 331 swipe corto/completo en video, filtros2 persistidos y detalle/scroll/regreso verificados; no contacto nuevo. |
 | Favoritos | Guardar/quitar/paginación/retiradas/regreso; canvas W4R | 331 Mis match/favoritos e hilo propios legibles; guardar/quitar/paginación vigentes reutilizados. |
 | Mensajes | Vacío inicial/búsqueda vacía/hilos y medios privados; canvas adoptante W4R | 331 vacíoRescatista/hiloAdoptante reutilizados; logo naranja y statusbar legible comprobados en332 tras Notificaciones. |
@@ -42,7 +50,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. 333/3408 publicada; su QA instalada está bloqueada por USB. Cámara/audio físico e iOS siguen pendientes. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | P3/332: thanks20s completo enSamsung, silencio inicial/toggle, hold6s pausa1.133→continúa, BG6s conserva posición observada1.400→1.867 tras carga. V2OFF/34digests/jobpausado yretenciónexacta. TresP2visuales agrupados: controles bajo degradado/statusbar negra/video estirado vscoverb9. 333/3408 instalada25oct; QA detecta dosP2 adicionales de controles/statusbar, corregidos174f y pendientes334. Cámara/audio físico, nativo→Streamready e iOS siguen pendientes;0s no prueba playback. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
@@ -71,28 +79,36 @@ Cola/propietarios en backlog. Este corte supersede pendientes históricos inferi
 
 ### Informe solicitado: adaptaciones y flujos ausentes del mock
 
-No son aceptación ni permiso para nuevas operaciones. La decisión humana vigente
-está en product-decisions; root conserva los siguientes límites visibles:
+Este es el estado del informe, no una declaración de paridad terminada ni una
+solicitud de otra aprobación. Las decisiones están en product-decisions; la matriz
+superior distingue la evidencia vigente de lo que falta comprobar.
 
-| Elemento del mock / ausencia | Tratamiento real o pendiente |
+| Diferencia respecto al mock | Resultado y motivo |
 |---|---|
-| Formularios simulados de tarjeta/alta financiera | Excepción explícita del titular24oct: conservar PaymentSheet de aportación puntual y Guardián, más onboarding Stripe Connect. Fuentes/rutas y runtime TEST conservados en f7/3408; el correctivo333 no cambia adaptadores/configuración. Datos sensibles/autenticación permanecen en Stripe. No sustituirlos por formularios del mock. |
-| Acceso al alta financiera del rescatista | Hoy: modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. No es paso automático del asistente de publicar. Conservar condiciones nativas Android/iOS y fallback Stripe; localizarlo en demo sin afirmar onboarding físico no comprobado. No se decidió añadir un paso nuevo. |
-| Fondo comunitario, bonos y resultados simulados | Mantener asignación íntegra a gastos elegibles, comisión2%, costos reales, omisiones sin deuda y conciliación. No presentar cifras simuladas como actividad real. Excepción DEV TEST P3 ejecutada y retenida: gasto ficticio100 y únicoaporte20TEST;20−0.40Dopmi−4.43Stripe=15.17asignado, conciliado contraStripeTEST. |
-| Tienda y promesas5%/cashback/aporte por compra | Diseño incluido; servicio público y enlaces OFF hasta catálogo/derechos/permisos. Comisiones para Dopmi; sin esas promesas. Catálogo QA sintético separado. |
-| Resumen mensual para quien sólo aporta una vez | Datos/servicio se conservan; el mock no dibuja acceso equivalente sin Guardián. No se añadió el botón de Perfil propuesto, por decisión del titular. Acceso real comprobado332: Perfil→tarjetaGuardián→promoción→Ver mi impacto→feed, sin mensual ni contratar; es adaptación declarada, distinta de Mi historial de pagos. El CTA de Apoyar abre altaGuardián; no atribuirle esa ruta de lectura. |
-| Método de pago en cada movimiento | W4H implementa snapshot privado brand/last4 del Charge exacto conciliado y UI equivalente, nunca tarjeta actual como histórica. DEV20261024071929/4lectores79/97/97/90 conservados. NuevoaporteP3realTEST liga snapshot al mismo pago/donante/Intent/Charge ySamsung muestraVisa4242/20; primariaStripe concordante. Legado sin prueba sigue nullable/sinbackfill; receptor sin método ni identidad del donante. No hubo un pagoextra para probar historial. |
-| Estados de registro, cobro y devoluciones | Conservar pendientes, requiereacción, cancelado, omitido, conciliación y reintegro, aunque el mock no los dibuje. El modo elegido no concede permisos. |
-| Carga de cámara/galería inmediata | Revisión local y botón Subir explícitos ya elegidos por titular; no crear recurso remoto al seleccionar/descartar. |
-| Video listo versus aprobado | Procesamiento no publica. Conservar dueño/propósito/versión, moderación, comprobantes privados, retirada y eliminación/reintentos. Historias excluyen expense_evidence. |
-| Textos sin gastos y caso cerrado | Conservar historia/medios y aviso/CTA deshabilitado; ocultar encabezado de solicitud sin capacidad según decisión previa. Cierre no borra publicación ni reabre al añadir despedida. |
-| Contraste pequeño naranja/blanco y foco | Colores del mock para decoración; texto pequeño café y botón naranja oscurecido para AA. Grain feTurbulence, saturate e inset-shadow CSS no se reproducen literalmente. |
-| Errores, vacío, permisos, interrupciones y sesión | Conservar reintento, revisión legítima, bloqueo de duplicados, recuperación tras reinicio y retiro de datos al cambiar identidad. Nunca simular éxito. |
-| Aceptación pendiente | Comparación UX integral del candidato corregido, cámara/audio físico e iOS físico. Historias/Impacto positivos y método histórico ya tienen evidenciaP3; quedan los tres P2 visuales (controles, barra de estado y encuadre cover), corregidos en fuente333 y pendientes de comprobación física. Cuentaordinaria sinTienda332 comprobadaOFF; no equivale a contraste simultáneo durantepreviewON. Capturas/iOSsim no sustituyen dispositivo/aceptación. |
+| Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet para guardar el método de Guardián mediante SetupIntent y onboarding de Stripe Connect para el rescatista. Los correctivos 333/334 no modifican sus adaptadores ni la configuración TEST. Los datos sensibles permanecen en Stripe. |
+| Dónde dar de alta la cuenta del rescatista | Modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. El alta financiera no aparece como paso automático al publicar un caso. Se usa el componente nativo cuando está disponible; el fallback alojado en Stripe se usa sólo cuando no está disponible, no después de un error nativo. No se decidió añadir un paso al asistente; falta demostrar el onboarding nativo en dispositivo. |
+| Fondo comunitario, bonos y resultados ficticios | Se conserva la asignación del neto completo a gastos elegibles, comisión Dopmi del 2%, costos reales de Stripe y conciliación. Si falta capacidad no se cobra ni se crea deuda por un mes omitido. No se muestran bonos o fondos simulados como actividad real. La excepción P3 sólo existe en DEV: gasto ficticio de $100 y único aporte de $20 TEST; $20−$0.40−$4.43=$15.17 netos, conciliados contra Stripe TEST. |
+| Tienda: cashback,5% y aportación por compra | El diseño y la vista privada TEST están implementados. Tienda pública y salida a comercios siguen apagadas hasta disponer de catálogo, derechos, enlaces y permisos válidos. Las comisiones corresponden a Dopmi; se retiraron esas promesas. Aceptar el diseño interno no activa el comercio. |
+| Resumen mensual del donante individual | El servicio se conserva, pero el mock no dibuja su acceso sin Guardián. Recomendé un acceso adicional «Resumen del mes» en Perfil; el titular prefirió la presentación del mock. No se añadió. El acceso comprobado en332 es Perfil → tarjeta de Guardián → promoción → Ver mi impacto → feed, sin contratar. Ese feed es distinto de Mi historial de pagos. |
+| Método de pago histórico | Cada movimiento nuevo conserva brand/last4 del Charge exacto conciliado; no toma la tarjeta actual como si fuera la histórica. El aporte P3 de $20 TEST quedó ligado al mismo pago/donante/Intent/Charge, con Visa 4242 en Samsung. Los movimientos antiguos sin evidencia pueden quedar sin ese dato; no se inventó ni rellenó por deducción. El receptor no obtiene método ni identidad del donante. |
+| Estados financieros que el mock omite | Se conservan registro sin cargo cuando falta capacidad, pendiente, requiere acción, cancelado, omitido, devolución y conciliación. Mínimo $20 y opciones $50/$200/$500 conforme a las reglas vigentes. Elegir un modo en la app no concede permisos. |
+| Cámara o galería que carga inmediatamente | Por decisión del titular, seleccionar abre revisión local con duración/reproducción y las acciones Subir video o Descartar selección. Seleccionar o descartar no debe crear un recurso remoto. La prueba local de cámara 333 quedó pendiente de respuesta humana y creó 0 recursos. |
+| Video procesado frente a video público | Estar listo no equivale a estar aprobado. Se conservan dueño, propósito, versión y moderación; comprobantes y evidencia de gastos siguen privados. Retirada, eliminación y reintentos permanecen vigentes. Las historias excluyen expense_evidence. |
+| Caso sin gastos disponibles y caso cerrado | Se conservan historia, medios, aviso y botón deshabilitado; se oculta el encabezado de solicitud de dinero cuando no hay capacidad. Cerrar no borra la publicación. Añadir despedida no reabre el caso ni altera aportaciones. El titular aceptó la claridad de esa ficha TEST. |
+| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto pequeño y controles se adaptan cuando requieren contraste accesible. Grain feTurbulence, saturate e inset-shadow CSS no se reproducen literalmente.333 reveló controles de video y retorno con poco contraste: 174f los corrige; falta comprobar 334 instalada. No se declara identidad pixel por pixel. |
+| Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados del mock. |
+| Pruebas y aceptación aún pendientes | Falta distribuir y comprobar el delta 334, la comparación UX integral del candidato final, cámara/audio físico, cámara nativa → Stream listo → reproducción, e iOS físico. Cover 333 no se acepta a partir de un frame 0. Tienda ordinaria sin entrada está comprobada con OFF; el contraste simultáneo entre cuentas durante previewON y la salida comercial siguen pendientes. Capturas y simulador no sustituyen esas comprobaciones. |
 
-Recomendación no incorporada: acceso adicional «Resumen del mes» en Perfil.
-El titular prefirió conservar la presentación del mock y recibir este informe.
+Fuentes Stripe inspeccionadas en174f: app.dart y payment_screens.dart para rutas,
+oneoff_payment_sheet.dart para PaymentIntent, guardian_method_setup.dart para
+SetupIntent y connect_client.dart para onboarding. La revisión independiente
+contrastó el diff desde3408 en adaptadores/backend/configuración sin regresión.
+Esto acredita fuentes y accesos; no un nuevo onboarding físico ni vigencia remota.
 
+Las pruebas positivas previas de historias/Impacto, el único aporte TEST y su
+método histórico se conservan. No se crearán pagos, casos o fixtures nuevos sólo
+para repetir la misma evidencia. El siguiente paso técnico depende del cierre
+real del handoff de cámara; no basta con que el backend esté apagado.
 
 ## Historial de revisiones
 

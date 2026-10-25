@@ -1,3 +1,26 @@
+## 25/10/2026 — Informe de diferencias conciliado con fuente174f
+
+Actualizado el informe existente en parity-current-review, sin otro tablero:333
+está instalada,174f tiene CI40204057476 cuatroSUCCESS y334 sigue propuesta. Se
+corrigen afirmaciones antiguas de USB/instalación y se distinguen dosP2 encontrados
+por W4S, resultado de cámara desconocido, nativo→Streamready sin evidencia completa,
+iOS físico y aceptaciónUX. No otro gate, pago, fixture o prueba por documentar.
+
+Explorador independiente inspeccionó fuentes/rutas y diff3408→174f: aportePaymentSheet
+PaymentIntent, GuardiánPaymentSheetSetupIntent para guardar método y Connect nativo
+conservados, sin cambios de adaptadores/backend/configuración. Connect usa fallback
+externo sólo si nativo no está disponible; error nativo no lo convierte en fallback.
+Rutas de Perfil/MiCuenta y Ajustes/DatosBancarios registradas, onboarding no automático
+al publicar. Informe conserva decisiones explícitas y legados sin método nullable,
+Tienda comercialOFF, finanzasTEST y flujos sin dibujo, sin atribuir prueba física.
+
+Propuesta334 revisada por código y seguridad sinmateriales. Autoridad4d8ab98a…9809
+liga autonomía original/reconexión real, no permiso333 ni otra ventana8h; readbackget_goal
+25oct15:48:14UTC acreditaactive, distinguido del sourcehistóricoblocked. Manifest31ea37a6…f12d
+17hashes/tamaños exactos; reviewedpin/reserva/tag/POST todavía ausentes. Handoffcámara
+sigue activo y bloquea distribución para no interrumpircallback/revisiónlocal. Backend
+ya cerrado y confirmado íntegro; no nueva observación del Samsung ni serviciosON.
+
 ## 25/10/2026 — Correctivo174f integrado; W4S y backend de cámara cerrados
 
 Samsung333/Vending/2.3.3 y donante legítimo se comprobaron tras reconexión humana.
