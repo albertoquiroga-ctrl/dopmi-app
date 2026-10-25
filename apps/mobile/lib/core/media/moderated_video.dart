@@ -21,6 +21,8 @@ class ModeratedVideo extends StatefulWidget {
     this.mediaOverlay,
     this.fit,
     this.loadingColor,
+    this.errorBuilder,
+    this.onErrorChanged,
     this.semanticLabel = 'Video del caso',
   });
   final VideoRepository repository;
@@ -38,6 +40,12 @@ class ModeratedVideo extends StatefulWidget {
 
   /// Use a contrasting loading arc on a known surface; defaults to the theme.
   final Color? loadingColor;
+
+  /// Adapt failed-playback presentation without changing retry authorization.
+  final Widget Function(BuildContext context, Widget error)? errorBuilder;
+
+  /// Presentation-only error transitions; retry and identity guards stay here.
+  final ValueChanged<bool>? onErrorChanged;
   @override
   State<ModeratedVideo> createState() => _ModeratedVideoState();
 }
@@ -59,6 +67,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
 
   String? scope;
   String? error;
+  bool _errorNotificationPending = false, _lastNotifiedError = false;
   int generation = 0;
   bool foreground = true,
       visible = true,
@@ -83,6 +92,29 @@ class _ModeratedVideoState extends State<ModeratedVideo>
 
   bool current(int run) =>
       mounted && run == generation && scope == widget.repository.identity();
+
+  void updateError(String? message) {
+    if (!mounted) return;
+    setState(() => error = message);
+    if (_errorNotificationPending ||
+        widget.onErrorChanged == null ||
+        (error != null) == _lastNotifiedError) {
+      return;
+    }
+    _errorNotificationPending = true;
+    // Coalesce changes until paint and deliver the current state, including
+    // repeated identity errors that replaced an earlier pending generation.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _errorNotificationPending = false;
+      if (!mounted) return;
+      final notify = widget.onErrorChanged;
+      final failed = error != null;
+      if (notify == null || failed == _lastNotifiedError) return;
+      _lastNotifiedError = failed;
+      notify(failed);
+    });
+  }
+
   void evictPoster() {
     final poster = lease?.poster;
     if (poster != null) {
@@ -98,9 +130,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     controller = null;
     lease = null;
     unawaited(previous?.dispose());
-    if (mounted) {
-      setState(() => error = 'Tu sesión cambió. Vuelve a abrir el video.');
-    }
+    updateError('Tu sesión cambió. Vuelve a abrir el video.');
   }
 
   Future<void> load({bool preserve = true}) async {
@@ -113,7 +143,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     evictPoster();
     controller = null;
     lease = null;
-    if (mounted) setState(() => error = null);
+    updateError(null);
     await previous?.dispose();
     VideoPlayerController? created;
     try {
@@ -171,8 +201,8 @@ class _ModeratedVideoState extends State<ModeratedVideo>
         controller = null;
         lease = null;
         unawaited(failed?.dispose());
-        setState(
-          () => error = 'No pudimos reproducir este video. Comprueba tu conexión e inténtalo de nuevo.',
+        updateError(
+          'No pudimos reproducir este video. Comprueba tu conexión e inténtalo de nuevo.',
         );
       }
     }
@@ -201,8 +231,8 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     controller = null;
     lease = null;
     unawaited(release(player));
-    setState(
-      () => error = 'No pudimos reproducir este video. Comprueba tu conexión e inténtalo de nuevo.',
+    updateError(
+      'No pudimos reproducir este video. Comprueba tu conexión e inténtalo de nuevo.',
     );
   }
 
@@ -246,15 +276,16 @@ class _ModeratedVideoState extends State<ModeratedVideo>
     final player = controller;
     if (player == null || !mounted) return;
     if (player.value.hasError) {
+      player.removeListener(changed);
       expiry?.cancel();
       generation++;
       evictPoster();
       controller = null;
       lease = null;
-      unawaited(player.dispose());
-      setState(
-        () => error = 'La reproducción se interrumpió. Intenta de nuevo.',
-      );
+      // Decoder errors arrive inside notifyListeners; release after that stack
+      // unwinds, with the failed player already detached from this state.
+      unawaited(Future<void>.microtask(player.dispose));
+      updateError('La reproducción se interrumpió. Intenta de nuevo.');
       return;
     }
     final total = player.value.duration.inMilliseconds;
@@ -326,7 +357,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
   @override
   Widget build(BuildContext context) {
     if (error != null) {
-      return Column(
+      final content = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(error!),
@@ -338,6 +369,7 @@ class _ModeratedVideoState extends State<ModeratedVideo>
           ),
         ],
       );
+      return widget.errorBuilder?.call(context, content) ?? content;
     }
     final player = controller;
     final colors = Theme.of(context).colorScheme;

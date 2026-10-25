@@ -37,6 +37,52 @@ double contrastRatio(Color first, Color second) {
   return a > b ? (a + .05) / (b + .05) : (b + .05) / (a + .05);
 }
 
+Future<List<double>> paintedTextContrasts(
+  WidgetTester tester,
+  GlobalKey boundaryKey,
+  List<Finder> labels,
+) async => (await tester.runAsync(() async {
+  final boundary =
+      boundaryKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+  final image = await boundary.toImage(pixelRatio: 1);
+  try {
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    Color pixelAt(Offset point) {
+      final offset = (point.dy.floor() * image.width + point.dx.floor()) * 4;
+      return Color.fromARGB(
+        bytes!.getUint8(offset + 3),
+        bytes.getUint8(offset),
+        bytes.getUint8(offset + 1),
+        bytes.getUint8(offset + 2),
+      );
+    }
+
+    final origin = tester.getTopLeft(find.byKey(boundaryKey));
+    return [
+      for (final label in labels)
+        (() {
+          final bounds = tester.getRect(label).shift(-origin);
+          final background = pixelAt(
+            Offset((image.width - 1).toDouble(), (image.height - 1).toDouble()),
+          );
+          var contrast = 1.0;
+          // Measure painted glyphs, including disabled-button opacity, rather
+          // than a theme or constructor color that may be overridden.
+          for (var y = bounds.top.ceil(); y < bounds.bottom.floor(); y++) {
+            for (var x = bounds.left.ceil(); x < bounds.right.floor(); x++) {
+              final painted = pixelAt(Offset(x.toDouble(), y.toDouble()));
+              final ratio = contrastRatio(painted, background);
+              if (ratio > contrast) contrast = ratio;
+            }
+          }
+          return contrast;
+        })(),
+    ];
+  } finally {
+    image.dispose();
+  }
+}))!;
+
 void main() {
   for (final story in [false, true]) {
     testWidgets(
@@ -180,6 +226,190 @@ void main() {
         expect(tester.takeException(), isNull);
       },
     );
+  }
+
+  for (final story in [false, true]) {
+    for (final identityChanged in [false, true]) {
+      for (final largeText in [false, true]) {
+        testWidgets(
+          'video errors preserve contrast and retry guards; story=$story identityChanged=$identityChanged largeText=$largeText',
+          (tester) async {
+            tester.view.physicalSize = Size(largeText ? 320 : 377, 852);
+            tester.view.devicePixelRatio = 1;
+            addTearDown(tester.view.resetPhysicalSize);
+            addTearDown(tester.view.resetDevicePixelRatio);
+            var identity = 'owner:session';
+            var requests = 0;
+            final errorStates = <bool>[];
+            final changes = StreamController<void>.broadcast();
+            final pending = Completer<Map<String, dynamic>>();
+            final repository = VideoRepository(
+              identity: () => identity,
+              identityChanges: changes.stream,
+              invoke: (request) async {
+                if (request['action'] == 'public_list') {
+                  return {
+                    'items': [
+                      {
+                        'id': 'approved-clip',
+                        'parent_id': 'public-case',
+                        'purpose': 'thanks',
+                      },
+                    ],
+                  };
+                }
+                expect(request, {'action': 'playback', 'id': 'approved-clip'});
+                requests++;
+                if (!identityChanged && requests == 1) {
+                  throw const VideoFailure('denied');
+                }
+                return pending.future;
+              },
+            );
+            final boundaryKey = GlobalKey();
+            addTearDown(() async {
+              await tester.pumpWidget(const SizedBox());
+              await tester.pump();
+              repository.dispose();
+              await changes.close();
+            });
+            await tester.pumpWidget(
+              ProviderScope(
+                overrides: [
+                  rescueVideosRepositoryProvider.overrideWithValue(repository),
+                  rescueRepositoryProvider.overrideWithValue(
+                    EmptySupportRescue(),
+                  ),
+                  caseUpdateRepositoryProvider.overrideWithValue(
+                    FakeCaseUpdates(),
+                  ),
+                ],
+                child: MaterialApp(
+                  theme: dopmiTheme(),
+                  builder: (context, child) => MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      textScaler: TextScaler.linear(largeText ? 2 : 1.15),
+                    ),
+                    child: child!,
+                  ),
+                  home: RepaintBoundary(
+                    key: boundaryKey,
+                    child: story
+                        ? SupportStories(
+                            records: [
+                              RescueRecord({
+                                'id': 'public-case',
+                                'kind': 'case',
+                                'status': 'approved',
+                                'public_data': {'pet_name': 'Luna'},
+                              }),
+                            ],
+                          )
+                        : Scaffold(
+                            body: ModeratedVideo(
+                              repository: repository,
+                              assetId: 'approved-clip',
+                              onErrorChanged: errorStates.add,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+            );
+            await tester.pump();
+            await tester.pump();
+            // Apply the error presentation notification after its paint frame.
+            await tester.pump();
+            if (identityChanged) {
+              identity = 'another:session';
+              changes.add(null);
+              // Two generations before one frame must retain the final error
+              // notification rather than canceling the only pending callback.
+              identity = 'latest:session';
+              changes.add(null);
+              await tester.pump();
+              await tester.pump();
+            }
+            final message = find.textContaining(
+              identityChanged
+                  ? 'Tu sesión cambió.'
+                  : 'No pudimos reproducir este video.',
+            );
+            final retryLabel = find.text('Reintentar video');
+            expect(message, findsOneWidget);
+            expect(retryLabel, findsOneWidget);
+            expect(find.byType(VideoPlayer), findsNothing);
+            final retry = tester.widget<TextButton>(
+              find.widgetWithText(TextButton, 'Reintentar video'),
+            );
+            expect(retry.onPressed == null, identityChanged);
+            if (!story) expect(errorStates, [true]);
+            if (story) {
+              final topChrome = tester.getRect(
+                find.byTooltip('Cerrar historias'),
+              );
+              expect(
+                tester.getRect(message).top,
+                greaterThanOrEqualTo(topChrome.bottom + 12),
+                reason: 'Keep a visible gap below the complete close target',
+              );
+              for (final bar
+                  in find.byType(LinearProgressIndicator).evaluate()) {
+                expect(
+                  tester
+                      .getRect(message)
+                      .overlaps(tester.getRect(find.byWidget(bar.widget))),
+                  isFalse,
+                );
+              }
+              // Editorial media copy yields to the failure state, while the
+              // existing bottom action still opens the same case.
+              expect(find.text('Da un pequeño gesto,'), findsNothing);
+              final caseAction = find.text('Conoce su historia');
+              expect(caseAction, findsOneWidget);
+              expect(caseAction.hitTestable(), findsOneWidget);
+              final actionBounds = tester.getRect(caseAction);
+              expect(
+                tester.getRect(message).bottom,
+                lessThan(actionBounds.top),
+              );
+              expect(
+                tester.getRect(retryLabel).bottom,
+                lessThanOrEqualTo(actionBounds.top - 12),
+              );
+            }
+            if (!identityChanged) {
+              expect(retryLabel.hitTestable(), findsOneWidget);
+            }
+            final contrasts = await paintedTextContrasts(tester, boundaryKey, [
+              message,
+              if (story || !identityChanged) retryLabel,
+            ]);
+            for (final contrast in contrasts) {
+              expect(contrast, greaterThanOrEqualTo(4.5));
+            }
+            // The default light consumer retains Material's disabled-button
+            // treatment. Story errors explicitly keep that label readable.
+            if (identityChanged) {
+              expect(requests, 1);
+            } else {
+              await tester.tap(retryLabel);
+              await tester.pump();
+              await tester.pump();
+              expect(requests, 2);
+              expect(find.text('Reintentar video'), findsNothing);
+              expect(find.byType(CircularProgressIndicator), findsOneWidget);
+              if (!story) expect(errorStates, [true, false]);
+              if (story) {
+                expect(find.text('Da un pequeño gesto,'), findsOneWidget);
+                expect(find.text('Desliza hacia arriba'), findsOneWidget);
+              }
+            }
+            expect(tester.takeException(), isNull);
+          },
+        );
+      }
+    }
   }
 
   for (final size in [const Size(640, 360), const Size(360, 640)]) {
@@ -431,6 +661,7 @@ void main() {
       final controllers = [first, retried];
       var factoryCalls = 0;
       var readyCalls = 0;
+      final errorStates = <bool>[];
       final visible = ValueNotifier(true);
       final repository = playbackRepository();
       addTearDown(() async {
@@ -455,6 +686,7 @@ void main() {
                   autoplay: failure != 'play',
                   controllerFactory: (_) => controllers[factoryCalls++],
                   onPlaybackReady: () => readyCalls++,
+                  onErrorChanged: errorStates.add,
                 ),
               ),
             ),
@@ -463,6 +695,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(readyCalls, 1);
+      expect(errorStates, isEmpty);
       if (failure == 'play') {
         first.failPlay = true;
         await tester.tap(find.byTooltip('Reproducir video'));
@@ -509,6 +742,7 @@ void main() {
       expect(find.byTooltip('Reproducir video'), findsNothing);
       expect(first.disposed, isTrue);
       expect(readyCalls, 1);
+      expect(errorStates, [true]);
 
       await tester.tap(find.text('Reintentar video'));
       await tester.pumpAndSettle();
@@ -522,8 +756,54 @@ void main() {
         failure == 'play' || failure == 'hold-pause',
       );
       expect(readyCalls, 2);
+      expect(errorStates, [true, false]);
     });
   }
+
+  testWidgets('decoder interruption reports error and clears it on retry', (
+    tester,
+  ) async {
+    final first = LocalVideoTestController();
+    final retried = LocalVideoTestController();
+    var factoryCalls = 0;
+    final errorStates = <bool>[];
+    final repository = playbackRepository();
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump();
+      repository.dispose();
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: dopmiTheme(),
+        home: Scaffold(
+          body: ModeratedVideo(
+            repository: repository,
+            assetId: 'approved-clip',
+            controllerFactory: (_) => factoryCalls++ == 0 ? first : retried,
+            onErrorChanged: errorStates.add,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(errorStates, isEmpty);
+    first.value = first.value.copyWith(errorDescription: 'decoder_interrupted');
+    await tester.pump();
+    await tester.pump();
+    expect(
+      find.text('La reproducción se interrumpió. Intenta de nuevo.'),
+      findsOneWidget,
+    );
+    expect(first.disposed, isTrue);
+    expect(errorStates, [true]);
+    await tester.tap(find.text('Reintentar video'));
+    await tester.pumpAndSettle();
+    expect(errorStates, [true, false]);
+    expect(find.text('Reintentar video'), findsNothing);
+    expect(retried.value.isPlaying, isTrue);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'late pause failure from a replaced asset preserves new playback',

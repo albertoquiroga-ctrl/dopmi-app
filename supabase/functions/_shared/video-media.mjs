@@ -3,6 +3,13 @@ export const VIDEO_LIMITS = Object.freeze({ seconds: 60, bytes: 200 * 1024 * 102
 const uid = /^[a-f0-9]{32}$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export class VideoError extends Error { constructor(code, status=400) { super(code); this.status=status; } }
+const providerOperations=new Set(['create','inspect','playback','remove']);
+class VideoProviderError extends VideoError {
+  constructor(operation,status) {
+    super('video_provider_unavailable',502);
+    if(providerOperations.has(operation)&&Number.isInteger(status)&&status>=100&&status<=599) { this.providerOperation=operation; this.providerStatus=status; }
+  }
+}
 const diagnosticActions=new Set(['begin','status','playback','cancel','review','list','public_list','webhook']);
 const diagnosticCodes=new Set(['invalid_upload','invalid_provider_response','video_not_configured',
   'video_provider_unavailable','unsafe_provider_asset','invalid_webhook','expired_webhook',
@@ -13,7 +20,8 @@ function logVideoFailure(action,error) {
   // Stable operational signal only. Never pass an Error, request or provider data to logs.
   const code=error instanceof VideoError&&diagnosticCodes.has(error.message)?error.message:'video_request_failed';
   const status=error instanceof VideoError&&[400,401,403,405,409,413,500,502,503].includes(error.status)?error.status:500;
-  try { console.warn({event:'video_request_failed',action:diagnosticActions.has(action)?action:'unknown',code,status}); } catch { /* Logging never changes the HTTP contract. */ }
+  const provider=error instanceof VideoProviderError&&providerOperations.has(error.providerOperation)&&Number.isInteger(error.providerStatus)&&error.providerStatus>=100&&error.providerStatus<=599?{provider_operation:error.providerOperation,provider_status:error.providerStatus}:{};
+  try { console.warn({event:'video_request_failed',action:diagnosticActions.has(action)?action:'unknown',code,status,...provider}); } catch { /* Logging never changes the HTTP contract. */ }
 }
 export function validateUpload(input) {
   if (!uuid.test(input.parent_id ?? '') || !uuid.test(input.request_key ?? '') || !Number.isSafeInteger(input.parent_version) || input.parent_version < 1 || !['thanks','urgency','expense_evidence','public_update','farewell'].includes(input.purpose) || !Number.isSafeInteger(input.bytes) || input.bytes<1 || input.bytes>VIDEO_LIMITS.bytes) throw new VideoError('invalid_upload');
@@ -24,18 +32,18 @@ export function streamProvider({accountId,apiToken,fetcher=fetch}) {
   if(!/^[a-f0-9]{32}$/.test(accountId??'') || !apiToken) throw new VideoError('video_not_configured',503);
   const base=`https://api.cloudflare.com/client/v4/accounts/${accountId}/stream`;
   const headers={Authorization:`Bearer ${apiToken}`};
-  const request=async(path,init={})=>{ const response=await fetcher(base+path,{...init,headers:{...headers,...init.headers},redirect:'error'}); if(!response.ok)throw new VideoError('video_provider_unavailable',502); return response; };
+  const request=async(operation,path,init={})=>{ const response=await fetcher(base+path,{...init,headers:{...headers,...init.headers},redirect:'error'}); if(!response.ok)throw new VideoProviderError(operation,response.status); return response; };
   const result=async(response)=>{const json=await response.json();if(json.success!==true||!json.result)throw new VideoError('invalid_provider_response',502);return json.result;};
   return {
     async create(asset) {
       validateUpload(asset);
       const metadata=`maxDurationSeconds ${btoa('60')},requiresignedurls,asset_id ${btoa(asset.id)}`;
-      const response=await request('?direct_user=true',{method:'POST',headers:{'Tus-Resumable':'1.0.0','Upload-Length':String(asset.bytes),'Upload-Metadata':metadata}});
+      const response=await request('create','?direct_user=true',{method:'POST',headers:{'Tus-Resumable':'1.0.0','Upload-Length':String(asset.bytes),'Upload-Metadata':metadata}});
       return {provider_id:providerId(response.headers.get('stream-media-id')),upload_url:uploadLocation(response.headers.get('Location'))};
     },
-    async inspect(id) { const item=await result(await request('/'+providerId(id))); if(item.uid!==id || item.requireSignedURLs!==true)throw new VideoError('unsafe_provider_asset',502); return {state:item.status?.state==='pendingupload'?'uploading':item.status?.state==='error'?'failed':item.status?.state==='ready'&&item.readyToStream===true&&Number.isFinite(item.duration)&&item.duration>0&&item.duration<=60?'ready':item.readyToStream===true?'failed':'processing',duration:Number.isFinite(item.duration)&&item.duration>=0?item.duration:null}; },
-    async playback(id, now=Math.floor(Date.now()/1000)) { const item=await result(await request('/'+providerId(id)+'/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({exp:now+120})})); if(typeof item.token!=='string'||!item.token||item.token.length>8192)throw new VideoError('invalid_provider_response',502); return {hls:`https://videodelivery.net/${encodeURIComponent(item.token)}/manifest/video.m3u8`,poster:`https://videodelivery.net/${encodeURIComponent(item.token)}/thumbnails/thumbnail.jpg`,expires_at:now+120}; },
-    async remove(id) { const response=await fetcher(base+'/'+providerId(id),{method:'DELETE',headers,redirect:'error'});if(!response.ok&&response.status!==404)throw new VideoError('video_provider_unavailable',502); }
+    async inspect(id) { const item=await result(await request('inspect','/'+providerId(id))); if(item.uid!==id || item.requireSignedURLs!==true)throw new VideoError('unsafe_provider_asset',502); return {state:item.status?.state==='pendingupload'?'uploading':item.status?.state==='error'?'failed':item.status?.state==='ready'&&item.readyToStream===true&&Number.isFinite(item.duration)&&item.duration>0&&item.duration<=60?'ready':item.readyToStream===true?'failed':'processing',duration:Number.isFinite(item.duration)&&item.duration>=0?item.duration:null}; },
+    async playback(id, now=Math.floor(Date.now()/1000)) { const item=await result(await request('playback','/'+providerId(id)+'/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({exp:now+120})})); if(typeof item.token!=='string'||!item.token||item.token.length>8192)throw new VideoError('invalid_provider_response',502); return {hls:`https://videodelivery.net/${encodeURIComponent(item.token)}/manifest/video.m3u8`,poster:`https://videodelivery.net/${encodeURIComponent(item.token)}/thumbnails/thumbnail.jpg`,expires_at:now+120}; },
+    async remove(id) { const response=await fetcher(base+'/'+providerId(id),{method:'DELETE',headers,redirect:'error'});if(!response.ok&&response.status!==404)throw new VideoProviderError('remove',response.status); }
   };
 }
 export async function verifyStreamWebhook(body, signature, secret, now=Math.floor(Date.now()/1000)) {

@@ -1,12 +1,13 @@
-# Corte vigente — warm-trust b9f6d5f;335 publicada y aún sin instalar
+# Corte vigente — warm-trust b9f6d5f;335 instalada y QA parcial
 
-**Publicada2.3.3(335) en Google Play internal/completed**, fuente
-`8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f`, comprobado25oct19:31UTC. CI40221330073
-cuatroSUCCESS y CM6ade541a28f9790900c58fe3/13SUCCESS; metadata y GET de trackposterior
-concuerdan.32focalPASS/analyze0 y revisión código/producto del indicador blanco; seguridad
-corroboró publicación/backend. BinarioAAB/certificado independiente no inspeccionados.
-**Instalación/QA335 pendientes por USB:** ADB no detecta Samsung. Última instalada y
-comprobada es334/174f, Vending, misma cuenta TEST. No aceptaciónUX integral atribuida.
+Play interno2.3.3(335)/8a5d9cbc publicada e instalada/Vending/sesión TEST comprobados.
+CI40221330073 cuatroSUCCESS; publicación y metadatos coinciden. Instalada ya al reconectar
+23:03UTC, sin atribuir hora de actualización desconocida. No aceptación UX integral.
+QA335: loader blanco físico PASS, playback ERROR upstream502; no retry ni controles de
+reproducción probados. Full18/OFF/pausado23:20. Delta error UI/decoder/identidad WIP:
+50PASS/analyze0 y dos PNG locales con fuentes reales; aún no publicado/instalado.
+Diagnóstico servidor33PASS revisado y desplegado sólo media79/cleanup74 retenida;
+full18/finanzas/34digests exactos/OFF23:52. Causa upstream aún desconocida.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight335 verificados. El plan aprobado pide declarar estos límites y
@@ -43,7 +44,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Grupo integral | Resultado de contraste / evidencia reutilizable | Cierre pendiente |
 |---|---|---|
 | Acceso/recuperación | Modos/código/reenvío/contexto; QA327 con correo y reinicios reales, aceptada clara por titular | QA327 real/claridad aceptada; marco b9 por capturas CI. Dueño TEST332 y donante legítimo distinto verificados; P3 y regreso a Adoptar completados. No repetir recuperación. |
-| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST y ambos modos;333 sesión propia/donante verificados. Regreso desde historias333 reveló statusbar sin contraste;174f corregido/CI, pendiente334físico. |
+| Navegación | Rutas/nav sólida y gates de Tienda implementados; PNG b9 normal/ampliado | 332Play/Samsung115% conserva sesión TEST y ambos modos;333 sesión propia/donante verificados. Regreso desde historias333 reveló statusbar sin contraste;174f corregido/CI, 334 físico conserva regreso/statusbar;335 conserva navegación. |
 | Adopción | Swipe/detalle/contacto/filtros OR equivalentes en SQL y local; PNG b9 | 331 swipe corto/completo en video, filtros2 persistidos y detalle/scroll/regreso verificados; no contacto nuevo. |
 | Favoritos | Guardar/quitar/paginación/retiradas/regreso; canvas W4R | 331 Mis match/favoritos e hilo propios legibles; guardar/quitar/paginación vigentes reutilizados. |
 | Mensajes | Vacío inicial/búsqueda vacía/hilos y medios privados; canvas adoptante W4R | 331 vacíoRescatista/hiloAdoptante reutilizados; logo naranja y statusbar legible comprobados en332 tras Notificaciones. |
@@ -61,7 +62,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 publicada corrige spinner; falta instalación/QA335 y nativo→Streamready/play. iOS: sólo compilación CI, sin físico/TestFlight335. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 instalada: spinner físico PASS, playback ERROR502; delta de error UI local50PASS/analyze0 pendiente candidato/QA. Nativo→Streamready/play sigue sin acreditar. iOS: sólo compilación CI, sin físico/TestFlight335. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.

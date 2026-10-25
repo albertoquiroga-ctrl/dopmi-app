@@ -74,6 +74,45 @@ test('diagnostic sink failure cannot replace existing HTTP error response',async
  const result=await createVideoHandler(runtime({user:async()=>{throw new VideoError('video_conflict',409);}}))(request({action:'status'}));
  assert.equal(result.status,409);assert.deepEqual(await result.json(),{error:'video_conflict'});
 });
+
+test('upstream failure diagnostics distinguish inspect from signing without copying provider data',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ const sentinel='PRIVATE_PROVIDER_BODY_TOKEN_URL';
+ for(const [operation,status] of [['inspect',403],['playback',429]]) {
+  const calls=[];
+  const provider=streamProvider({accountId:account,apiToken:sentinel,fetcher:async(url)=>{
+   calls.push(url.endsWith('/token')?'playback':'inspect');
+   if(operation==='playback'&&!url.endsWith('/token'))return response({uid:id,requireSignedURLs:true,readyToStream:true,status:{state:'ready'},duration:20});
+   return new Response(sentinel,{status});
+  }});
+  const handler=createVideoHandler(runtime({user:async()=>({id:'asset',provider_id:id,technical_state:'ready'}),provider:()=>provider}));
+  const result=await handler(request({action:'playback',id:randomUUID()}));
+  assert.equal(result.status,502);assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});
+  assert.deepEqual(logs.at(-1),{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502,provider_operation:operation,provider_status:status});
+  assert.deepEqual(calls,operation==='inspect'?['inspect']:['inspect','playback']);
+ }
+ for(const forbidden of [sentinel,account,id,'https://','Authorization','stack'])assert.ok(!JSON.stringify(logs).includes(forbidden));
+});
+
+test('upstream create diagnostic retains one attempt and no retry',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));let calls=0;
+ const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>{calls++;return new Response(null,{status:503});}});
+ const handler=createVideoHandler(runtime({user:async()=>({id:'asset',technical_state:'reserved'}),service:async()=>({claimed:true}),provider:()=>provider}));
+ const result=await handler(request({action:'begin',...input()}));
+ assert.equal(result.status,502);assert.equal(calls,1);
+ assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});
+ assert.deepEqual(logs,[{event:'video_request_failed',action:'begin',code:'video_provider_unavailable',status:502,provider_operation:'create',provider_status:503}]);
+});
+
+test('invalid upstream status cannot become diagnostic material',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ for(const status of ['403',NaN,99,600]) {
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>({ok:false,status})});
+  const handler=createVideoHandler(runtime({user:async()=>({provider_id:id,technical_state:'ready'}),provider:()=>provider}));
+  assert.equal((await handler(request({action:'playback',id:randomUUID()}))).status,502);
+  assert.deepEqual(logs.at(-1),{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502});
+ }
+});
 test('a committed bind with a lost response is read back, never deleted',async()=>{let deletes=0;const handler=createVideoHandler(runtime({user:async()=>({id:'asset',technical_state:'reserved'}),provider:()=>({create:async()=>({provider_id:id,upload_url:'https://upload.videodelivery.net/cap'}),remove:async()=>{deletes++;}}),service:async data=>{if(data.action==='claim')return {claimed:true};if(data.action==='created')return {technical_state:'provisioning_unknown'};if(data.action==='bind')throw new Error('lost_reply');if(data.action==='binding')return {bound:true,id:'asset',technical_state:'uploading',upload_url:'https://upload.videodelivery.net/cap'};throw new Error('unexpected');}}));const result=await handler(request({action:'begin',...input()}));assert.equal(result.status,200);assert.equal((await result.json()).technical_state,'uploading');assert.equal(deletes,0);});
 test('uncommitted bind queues known upstream orphan durably rather than deleting blindly',async()=>{const operations=[];const handler=createVideoHandler(runtime({user:async()=>({id:'asset'}),provider:()=>({create:async()=>({provider_id:id,upload_url:'https://upload.videodelivery.net/cap'})}),service:async data=>{operations.push(data.action);if(data.action==='claim')return {claimed:true};if(data.action==='created')return {technical_state:'provisioning_unknown'};if(data.action==='bind')throw new Error('write_failed');if(data.action==='binding')return {bound:false};return {queued:true};}}));assert.equal((await handler(request({action:'begin',...input()}))).status,500);assert.deepEqual(operations,['claim','created','bind','binding','orphan_enqueue']);});
 test('withdrawal during token mint never returns a signed lease',async()=>{let calls=0;const handler=createVideoHandler(runtime({user:async()=>{if(++calls===3)throw new Error('withdrawn');return {id:'asset',provider_id:id,technical_state:'ready'};},provider:()=>({inspect:async()=>({state:'ready'}),playback:async()=>({hls:'private-signed-lease'})})}));const result=await handler(request({action:'playback',id:randomUUID()}));assert.equal(result.status,500);assert.ok(!(await result.text()).includes('private-signed-lease'));});

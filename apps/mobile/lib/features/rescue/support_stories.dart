@@ -37,6 +37,26 @@ const _storyGradient = DecoratedBox(
   ),
 );
 
+Widget _storyVideoError(BuildContext context, Widget content) => Padding(
+  // Leave a visible gap below the close action's complete interactive bounds.
+  padding: const EdgeInsets.fromLTRB(12, 72, 12, 0),
+  child: Align(
+    alignment: Alignment.topCenter,
+    child: DefaultTextStyle.merge(
+      style: const TextStyle(color: Colors.white),
+      child: TextButtonTheme(
+        data: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white,
+            disabledForegroundColor: Colors.white70,
+          ),
+        ),
+        child: content,
+      ),
+    ),
+  ),
+);
+
 /// Only approved public snapshot photos; never private evidence or receipts.
 List<String> supportStoryPhotos(RescueRecord record) =>
     record.kind == 'case' &&
@@ -192,6 +212,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
   final publicVideos = <String, List<PublicRescueVideo>>{};
   final lateSegments = <String, Map<String, List<String>>>{};
   final videoPaused = ValueNotifier<bool>(false);
+  final videoError = ValueNotifier<(String, String)?>(null);
   final loadingUpdates = <String>{};
   final failedUpdates = <String>{};
   (String, String)? waitingForUpdates;
@@ -462,6 +483,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
       return;
     }
     waitingForUpdates = null;
+    videoError.value = null;
     if (photoIndex + 1 < segments.length) {
       setState(() => photoIndex++);
     } else if (caseIndex + 1 < queue.length) {
@@ -488,6 +510,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
       resume();
       return;
     }
+    videoError.value = null;
     if (photoIndex > 0) {
       setState(() => photoIndex--);
     } else if (caseIndex > 0) {
@@ -507,6 +530,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
     WidgetsBinding.instance.removeObserver(this);
     progress.dispose();
     videoPaused.dispose();
+    videoError.dispose();
     super.dispose();
   }
 
@@ -650,6 +674,17 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                             mediaOverlay: _storyGradient,
                                             fit: BoxFit.cover,
                                             loadingColor: Colors.white,
+                                            errorBuilder: _storyVideoError,
+                                            onErrorChanged: (failed) {
+                                              if (isCurrent(
+                                                activeCaseId,
+                                                segment.id,
+                                              )) {
+                                                videoError.value = failed
+                                                    ? (activeCaseId, segment.id)
+                                                    : null;
+                                              }
+                                            },
                                             semanticLabel:
                                                 segment.video!.semanticLabel,
                                             onComplete: () {
@@ -766,219 +801,232 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: currentVideo == null ? 0 : 64,
-                            left: 0,
-                            right: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                18,
-                                20,
-                                18,
-                                22,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (segment.kind == SupportStoryKind.thanks)
-                                    Semantics(
-                                      label: 'Agradecimiento',
-                                      child: const Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            'Da un pequeño gesto,',
-                                            style: _thankYouStyle,
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text.rich(
-                                            TextSpan(
-                                              children: [
-                                                TextSpan(text: 'haz una '),
-                                                TextSpan(
-                                                  text: 'GRAN',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    letterSpacing: .52,
-                                                  ),
-                                                ),
-                                                TextSpan(text: ' diferencia.'),
-                                              ],
-                                            ),
-                                            style: _thankYouStyle,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  else ...[
-                                    Text(
-                                      record.title,
-                                      style: const TextStyle(
-                                        fontSize: 34,
-                                        height: 1.05,
-                                        letterSpacing: -.68,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        shadows: [
-                                          Shadow(
-                                            offset: Offset(0, 1),
-                                            blurRadius: 2,
-                                            color: Color(0xa6000000),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (segment.kind ==
-                                        SupportStoryKind.urgency) ...[
-                                      const SizedBox(height: 8),
+                          ValueListenableBuilder<(String, String)?>(
+                            valueListenable: videoError,
+                            builder: (_, failed, child) =>
+                                failed == (activeCaseId, segment.id)
+                                ? const SizedBox.shrink()
+                                : child!,
+                            child: Positioned(
+                              bottom: currentVideo == null ? 0 : 64,
+                              left: 0,
+                              right: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  18,
+                                  20,
+                                  18,
+                                  22,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (segment.kind == SupportStoryKind.thanks)
                                       Semantics(
-                                        label: 'Urgencia',
-                                        child: Row(
+                                        label: 'Agradecimiento',
+                                        child: const Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            SvgPicture.asset(
-                                              'assets/profile/icon-alert-circle.svg',
-                                              width: 20,
-                                              height: 20,
-                                              excludeFromSemantics: true,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                    Color(0xffffb020),
-                                                    BlendMode.srcIn,
-                                                  ),
+                                            Text(
+                                              'Da un pequeño gesto,',
+                                              style: _thankYouStyle,
                                             ),
-                                            const SizedBox(width: 8),
-                                            const Flexible(
-                                              child: Text(
-                                                'Apoyo urgente',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  height: 1.3,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white,
-                                                  shadows: [
-                                                    Shadow(
-                                                      offset: Offset(0, 1),
-                                                      blurRadius: 2,
-                                                      color: Color(0xbf000000),
+                                            SizedBox(height: 4),
+                                            Text.rich(
+                                              TextSpan(
+                                                children: [
+                                                  TextSpan(text: 'haz una '),
+                                                  TextSpan(
+                                                    text: 'GRAN',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      letterSpacing: .52,
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: ' diferencia.',
+                                                  ),
+                                                ],
                                               ),
+                                              style: _thankYouStyle,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    else ...[
+                                      Text(
+                                        record.title,
+                                        style: const TextStyle(
+                                          fontSize: 34,
+                                          height: 1.05,
+                                          letterSpacing: -.68,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(
+                                              offset: Offset(0, 1),
+                                              blurRadius: 2,
+                                              color: Color(0xa6000000),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ] else if (!hero)
+                                      if (segment.kind ==
+                                          SupportStoryKind.urgency) ...[
+                                        const SizedBox(height: 8),
+                                        Semantics(
+                                          label: 'Urgencia',
+                                          child: Row(
+                                            children: [
+                                              SvgPicture.asset(
+                                                'assets/profile/icon-alert-circle.svg',
+                                                width: 20,
+                                                height: 20,
+                                                excludeFromSemantics: true,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                      Color(0xffffb020),
+                                                      BlendMode.srcIn,
+                                                    ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              const Flexible(
+                                                child: Text(
+                                                  'Apoyo urgente',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    height: 1.3,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                    shadows: [
+                                                      Shadow(
+                                                        offset: Offset(0, 1),
+                                                        blurRadius: 2,
+                                                        color: Color(
+                                                          0xbf000000,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ] else if (!hero)
+                                        Text(
+                                          segment.label,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                    ],
+                                    if (currentUpdate != null)
                                       Text(
-                                        segment.label,
+                                        currentUpdate!.body,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          height: 1.4,
                                         ),
                                       ),
-                                  ],
-                                  if (currentUpdate != null)
-                                    Text(
-                                      currentUpdate!.body,
-                                      maxLines: 3,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        height: 1.4,
+                                    if (loadingUpdates.contains(record.id))
+                                      const Text(
+                                        'Cargando avances…',
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                    ),
-                                  if (loadingUpdates.contains(record.id))
-                                    const Text(
-                                      'Cargando avances…',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  if (failedUpdates.contains(record.id))
+                                    if (failedUpdates.contains(record.id))
+                                      TextButton(
+                                        onPressed: () {
+                                          setState(() {});
+                                          loadUpdates();
+                                        },
+                                        child: const Text('Reintentar avances'),
+                                      ),
+                                    if (failedVideos.contains(record.id))
+                                      TextButton(
+                                        onPressed: retryVideos,
+                                        child: const Text('Reintentar videos'),
+                                      ),
                                     TextButton(
-                                      onPressed: () {
-                                        setState(() {});
-                                        loadUpdates();
-                                      },
-                                      child: const Text('Reintentar avances'),
-                                    ),
-                                  if (failedVideos.contains(record.id))
-                                    TextButton(
-                                      onPressed: retryVideos,
-                                      child: const Text('Reintentar videos'),
-                                    ),
-                                  TextButton(
-                                    onPressed: () => close(record.id),
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        for (final type
-                                            in (needTypes[record.id] ??
-                                                const <String>{}))
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              right: 6,
+                                      onPressed: () => close(record.id),
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          for (final type
+                                              in (needTypes[record.id] ??
+                                                  const <String>{}))
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                right: 6,
+                                              ),
+                                              child: Semantics(
+                                                label: switch (type) {
+                                                  'food' => 'Alimento',
+                                                  'medicine' => 'Medicamentos',
+                                                  'veterinary' => 'Veterinario',
+                                                  _ => 'Otra necesidad',
+                                                },
+                                                child:
+                                                    [
+                                                      'food',
+                                                      'medicine',
+                                                      'veterinary',
+                                                    ].contains(type)
+                                                    ? SvgPicture.asset(
+                                                        'assets/profile/need-$type.svg',
+                                                        width: 22,
+                                                        height: 22,
+                                                        excludeFromSemantics:
+                                                            true,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.pets_outlined,
+                                                        size: 22,
+                                                        color: Colors.white,
+                                                      ),
+                                              ),
                                             ),
-                                            child: Semantics(
-                                              label: switch (type) {
-                                                'food' => 'Alimento',
-                                                'medicine' => 'Medicamentos',
-                                                'veterinary' => 'Veterinario',
-                                                _ => 'Otra necesidad',
-                                              },
-                                              child:
-                                                  [
-                                                    'food',
-                                                    'medicine',
-                                                    'veterinary',
-                                                  ].contains(type)
-                                                  ? SvgPicture.asset(
-                                                      'assets/profile/need-$type.svg',
-                                                      width: 22,
-                                                      height: 22,
-                                                      excludeFromSemantics:
-                                                          true,
-                                                    )
-                                                  : const Icon(
-                                                      Icons.pets_outlined,
-                                                      size: 22,
-                                                      color: Colors.white,
-                                                    ),
-                                            ),
+                                          const Flexible(
+                                            child: Text('Conoce su historia'),
                                           ),
-                                        const Flexible(
-                                          child: Text('Conoce su historia'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (segment.kind != SupportStoryKind.thanks &&
-                                      segment.kind !=
-                                          SupportStoryKind.urgency) ...[
-                                    LinearProgressIndicator(
-                                      value: record.targetCents <= 0
-                                          ? 0
-                                          : (record.fundedCents /
-                                                    record.targetCents)
-                                                .clamp(0.0, 1.0),
-                                      color: yellow,
-                                      backgroundColor: Colors.white24,
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                      '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
+                                        ],
                                       ),
                                     ),
+                                    if (segment.kind !=
+                                            SupportStoryKind.thanks &&
+                                        segment.kind !=
+                                            SupportStoryKind.urgency) ...[
+                                      LinearProgressIndicator(
+                                        value: record.targetCents <= 0
+                                            ? 0
+                                            : (record.fundedCents /
+                                                      record.targetCents)
+                                                  .clamp(0.0, 1.0),
+                                        color: yellow,
+                                        backgroundColor: Colors.white24,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        '${pesos(record.fundedCents)} de ${pesos(record.targetCents)}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
                                   ],
-                                ],
+                                ),
                               ),
                             ),
                           ),
@@ -1012,7 +1060,16 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Flexible(child: Text('Desliza hacia arriba')),
+                      Flexible(
+                        child: ValueListenableBuilder<(String, String)?>(
+                          valueListenable: videoError,
+                          builder: (_, failed, _) => Text(
+                            failed == (activeCaseId, segment.id)
+                                ? 'Conoce su historia'
+                                : 'Desliza hacia arriba',
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

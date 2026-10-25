@@ -1,3 +1,42 @@
+## 25/10/2026 — Samsung335 verificado; loader físico cerrado, reproducción y error UI diagnosticados
+
+Reanudación humana57db: Samsung ya335/Vending23:03, Play Abrir/sin Actualizar, sesión TEST
+legítima; hora real de actualización desconocida. Fuente8a5/CI40221330073/CM6ade541a28f9790900c58fe3,
+Play interno2.3.3(335) comprobados por separado. QA335readonly scope0ed4a1f8/pin0273b146:
+ON23:14:31, anilloP3→next, PNG23:15:49 muestra spinner blanco. PNG denominada paused-ready
+23:16:02 muestra ERROR, no playback. Cero retry/cargas/pagos/reviews. EdgeOFF23:18:03,
+InicioRescatista y full18 cerrado23:20:07 antes límite23:24:26; seis fuentes/34digests,
+snapshot histórico/finanzas/historia84 exactos, cleanupOFF/job6pausado/cola0.
+
+Producto independiente confirmó P2 nuevo: mensaje bajo X/progreso y retry café1.46:1.
+Corrección agrupada en tres archivos móviles: blanco/inset/error editorial cede sin
+perder CTA ni gestos; pruebas normal115/320px200 pintadas4.5+ y gap12. Suite encontró
+dispose durante notifyListeners ya presente en335: separar listener/invalidez y microtarea
+cierra esa reproducción. Código encontró carrera postframe por cambio de generación;
+coalescer entrega estado final, dos eventos de identidad antesframe cubiertos.
+Último50PASS/analyze0, dos capturas locales con Inter/Fraunces/MaterialIcons2PASS;
+no acredita build instalada. Prueba invocada inicialmente con archivo timing inexistente
+fue error del integrador; no se cuenta como producto. Captura local Ahem sólo era geometría;
+la evidencia fonted posterior es la visual válida. No aflojar aserciones ni sumar duplicados.
+
+Log real función72c/playback/video_provider_unavailable502 demuestra rechazo HTTP upstream,
+no su operación/estado exactos ni causa. Cloudflare UI Ready/signed y tokenQA vigente
+hasta27oct05:59:59/StreamEdit, sin leer su valor. Diagnóstico mínimo nuevo enum+HTTP entero,
+sin cuerpo/token/URL/id,33PASS backend y revisión código/seguridad cerrados. Reserva única
+23:51:12/request6dd38996…96ff8→MCPdeploymedia79/ezbr6887c769…0de90, cleanup74 intacta;
+readback23:52:09 de ambos+financieros/full18/34digests/OFF exacto. No SQL, secretos,
+permisos ni ON en esa operación. Próximo diagnóstico de sólo lectura aún preparado,
+sin atribuir leases/playback exitosos. No repetir el POST de despliegue.
+
+ADB find sólo caché EXTERNA propia/exactos14445502bytes retornó éxito sin coincidencia;
+no acredita ausencia en almacenamiento interno ni ruta del clip. No bypass/archivo borrado.
+Retro independiente: causa upstream desconocida, olddecoder no es regresión nueva;
+dos mejoras root/mobile: cerrar error/decoder juntos con suites existentes, y distinguir
+inspect/token con whitelist en el próximo recorrido necesario. Efecto verificado para
+UI local y privacidad33PASS; diagnóstico efectivo remoto pendiente. Sin auditoría global.
+Full335 y operación79 en .tools/integral20d21-20261018/loading-contrast-device-qa.
+Objetivo integral abierto; iOS límite declarado, aceptación UX y nativo→Stream pendientes.
+
 ## 25/10/2026 — Alcance iOS aclarado; USB aún ausente
 
 El turno anterior produjo entrega real335/Playinternal-completed, por lo que fue
