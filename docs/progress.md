@@ -1,3 +1,75 @@
+## 25/10/2026 — Retro independiente de ventana nativa334
+
+Revisor de proceso inspeccionó XML/PNG y recibos: cero headings separados, un nodo
+AX combinado, y3min47 entre respuesta humana y Subir. La carga empezó con46.36s
+hasta stop15. Causa demostrada del recorrido incompleto: preparación/corrección del
+operador durante ON; no hay prueba para culpar a Stream o red. Los2inputs nuevos sí
+pasaron clock antes de stop, cancelación/cierre mantuvieron límite20. Seguridad cerró
+postflight bruto/exact18 sinmateriales; esto no acredita ready/play de cámara.
+
+Una mejora útil, dueño root: resolver archivo recuperable y selectores desde XML real
+conservado antes de consumir otra QA necesaria; sin más ediciones de selector/duración
+con ON. Éxito observable: cero ajustes de operador durante la próxima ventana, mismo
+clip inequívoco y sin otra toma. Si no hay archivo/ruta, registrar bloqueo y conservarOFF.
+El titular tiene una pregunta pendiente sobre Galería. No prometer selección local en
+Dopmi con policyOFF: la UI existente oculta esa sección. No otra suite/gate para medirlo.
+
+## 25/10/2026 — Cámara334 cerrada exact18;8a5 CI completa
+
+Native334 reserva8e23ea6b18:36:08UTC, stop18:51:08/deadline18:56:08. Dos supuestos
+del operador requirieron adaptación: headings de Avances/Despedida fusionados enAX
+real y toma humana4.8s frente objetivo2–3. Driverselectores se corrigió desde PNG/XML
+reales y código/seguridad revisaron el delta acotado de duración≤5, sin cambiar producto
+60s ni repetir toma/ventana. Archivos congelados/pin/reloj permanecen intactos.
+
+Grabar público18:39:54 con XML≤2s/clock inmediato; humano201db841 «todo ok» a neutro,
+audio oído/revisión local. Captura confirma Avances4.8s. Subir único18:50:21 creóasset
+0f77fe09…41e1/public_update9/pending/14,445,502bytes. ÚltimoSQLuploading yUIProcesando;
+no ready/reproducción deStream acreditados. Llegó stop15: no otro trabajo nuevo ni
+sesión retenida; cancel18:51:28 como cierre y deleted/cola0 SQL18:52:00. FlagsEdgeOFF34
+exactos18:53:22, SQL/job6cerrados antes. Cierre completo18:54:20/779c2c9f…eef62 pasa:
+18ledger con sólo nuevo terminal,17anteriores exactos/finanzas/historia/snapshot/catálogo/
+seisEdges/jobs intactos. Proveedor refrescado páginaúnica3retenidos y nuevoUIDausente.
+Mismo dueño/InicioRescatista restaurado, sin handoff activo. No archivo local borrado;
+ubicación no observada. La revisión local no rellena ready/play/postencodingaudio.
+
+CI40221330073/8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f terminó cuatroSUCCESS:
+flutter121253338922,web/database121253339101,identity/adoption121253339107,
+ios121253339111. Conserva32focal/analyze0 y revisiónlocal del spinner; aún sin335.
+No otro CI, pago o fixture para documentarlo. Distribución se prepara aparte con
+baseline18 ligado exactamente al cierre nativo; servicios siguenOFF.
+
+## 25/10/2026 — 334 en Play y Samsung; contraste de carga corregido
+
+Distribución única fuente174f98d9/CI40204057476: CM6ade2ee29667901985848481 terminó
+13accionesSUCCESS, metadata2.3.3(334)/GuardianTEST/internal; publicación separada
+comprobada por GET track internal/completed/334. Actualización desde Play16:52–53UTC,
+334/Vending y misma sesión dueño6e verificadas. AAB no descargado/certificado binario
+no inspeccionado. Sin otra compilación para documentar.
+
+CámaraLOCAL333 cerró0uploads/full17exacto y descarte real; humano confirmó imagen
+neutra y audio oído. La selección quedó bajo Despedida aunque se planeó Avances;
+causa exacta desconocida y ubicación local no observada. QA334 W4T2 cerró backend
+17:37:53UTC/fullbaseline/snapshot/34digestsOFF/job6pausado/cola0/InicioRescatista.
+UI confirma controles legibles, cover y retorno statusbar. Movimiento no probado:
+frame previo ya cargaba y driver usó bounds anteriores. Segundo anillo19.4s después
+stop7 fue desviación; OFF17:35:28 sí cumplió máximo17:36:26. Revisor de proceso
+independiente verificó raws; mejora única root: clock y estado fresco justo antes
+input, abandonar secuencia durante carga. No atribuir bug hit-test ni causa lease.
+
+Nuevo P2 demostrado: spinner café sobre historias negras, contraste pintado1.3566.
+Corrección local8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f usa blanco sólo en historias,
+con opción nullable sin alterar demás consumidores. RED específico anterior falla;
+32pruebas focales y analyze0 posteriores pasan. Código/producto independientes
+inspeccionaron diff y evidencia sin materiales. CI40221330073 en curso; aún no335.
+No afecta Stripe/carga/autorización/moderación ni finanzas. Evidencia privada en
+loading-contrast-335; gates intactos anteriores se conservan.
+
+Cloudflare reautenticado por humano b81 y catálogo real muestra3videos retenidos.
+Paquete nativo334 final ed3273b8/1075378c revisado; b028 confirma nueva toma futura,
+no neutralidad ni audio futuros. Preparación propia aún sin reserva/ON; mantener
+servicios OFF hasta preflight y operador listos. Informe de diferencias sigue abierto.
+
 ## 25/10/2026 — Informe de diferencias conciliado con fuente174f
 
 Actualizado el informe existente en parity-current-review, sin otro tablero:333

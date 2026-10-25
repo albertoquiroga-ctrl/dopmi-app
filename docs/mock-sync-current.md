@@ -1,60 +1,56 @@
-# Checkpoint vigente — 25/10/2026, CI174f aprobada; cámara con handoff pendiente
+# Checkpoint vigente — 25/10/2026, 334 instalada; correctivo de carga en CI
 
-Producto dopmi-app; checkout candidate-git-20261014, rama codex/finish-release-20261015.
-Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust; sólo referencia.
-Fuente **174f98d9598f7c2ef4e99e425c4ea1a9634b433d**, CI **40204057476**, cuatro
-jobs completed/SUCCESS comprobados25oct15:16:38UTC. No repetir CI. Propuesta334
-preparada, sin reserva/tag/POST ni publicación; depende de resolver cámara333.
+Producto dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
+Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust; sólo referencia.
+Publicado/instalado: 2.3.3(334), fuente174f98d9598f7c2ef4e99e425c4ea1a9634b433d,
+Play internal / Vending / Samsung SM-S938B; mismo dueño TEST6e. CI40204057476,
+cuatroSUCCESS. CM6ade2ee29667901985848481 finished/13SUCCESS; log de publicación
+incluye GET internal/completed/334. Instalada desde Play16:52–53UTC; no inspección
+binaria AAB/certificado independiente. Recibos story-theme-release y story-theme-device-qa.
 
-Publicada e instalada desde Play **2.3.3(333)/3408abc0**; Samsung R5CY51260VK
-online25oct, font_scale1.15. Artifact/Play/Vending ligan fuente y333; no inferir SHA
-desde dumpsys. Reconexión humana resuelve bloqueoUSB anterior. No otra build333.
+Producto nuevo 8a5d9cbcb8776d4c7ff3865aecbc63a00b47150f: indicador blanco al cargar
+video sobre historias oscuras; otros consumidores conservan tema. RED real1.3566<3,
+32focalPASS/analyze0, revisión independiente código/producto cerrada. CI40221330073
+completed/SUCCESS cuatrojobs comprobados18:55UTC; no335 enviada/publicada/instalada.
 
-**Bloqueo actual de dispositivo: human-handoff.active. NO observar ni controlar
-el teléfono hasta respuesta humana de pantalla legítima/neutral.** El titular
-entró con dueño TEST aprobado; identidad autenticada ligada a Auth por huella,
-sin credenciales. Rescatista/caso propio comprobados ANTES de cámara. Último input:
-Grabar de public_update del caso existente25oct15:12:55UTC. Desde allí no hubo
-capturas/lecturas/inputs del Samsung. Se pidió una toma humana y revisión local;
-no hay respuesta de grabación, duración, imagen/audio neutros ni pantalla final.
-La última pregunta de recuperación ya está pendiente: no repetirla ni asumir silencio.
+W4T2/334 CERRADA con QA parcial: controles blancos/café, cover y statusbar/X/Back
+visibles. No acredita movimiento ni sonido: driver reutilizó coordenadas tras aparecer
+spinner y regresó a foto. Segundo anillo19.4s después de stop7 fue desviación operativa;
+OFF17:35:28UTC antes deadline17:36:26. Fullpostflight17:37:53 conserva17assets,
+finanzas/snapshot/historia84/34digests/cola0/job6pausado y dueño Inicio/Rescatista.
+No defecto hit-test demostrado; renovación de lease es hipótesis. Retro independiente:
+comprobar estado fresco y clock inmediatamente antes de cada input, abortar si carga.
 
-Cámara LOCAL333 CONSUMIDA: pin07f246fc…c1ed, reserva15:07:51UTC, stop15:22:51 /
-deadline15:27:51. EdgeOFF15:23:58 y SQL OFF/job6pausado15:24:05, anteslímite;
-no reabrir por continuidad. Postflight backend15:37 y34digests15:43 confirman
-fullP3/snapshot/17assets/cola0/seisEdges exactos, CERO recursos nuevos. Seguridad
-independiente corroboró cierre. Recibo backend-closed.verified.partial.actual.private.json
-en camera-local333: sólo backend cerrado, NO dispositivo restaurado ni cámara aprobada.
-Scope local permite0uploads; no pulsar Subir. Tras confirmación humana, resolver
-selección/descartar conforme scope, conservar archivo local y restaurar Inicio
-Rescatista; capturar postflight real sin fingir after.device. Falta además evidencia
-nativa Samsung→Stream ready→reproducción:325 sólo processing/cancelación,327 sinselección.
-No sustituir ese pendiente por galería sintética o revisión local.
+CámaraLOCAL333 cerrada con0uploads: revisión2.9s bajo Despedida (se planeó Avances),
+imagen neutra/audio oído confirmados por humano; descarte16:22:31/Inicio16:22:55.
+Fullpostflight16:24:18 exacto. No ubicación local/retención durable comprobadas.
+Nativo→Streamready→reproducción sigue pendiente; no reutilizar toma descartada.
 
-QA W4S CONSUMIDA25oct: reserva93a00840…d8df, EdgeOFF14:15:00/SQL OFF14:15:08
-antesdeadline14:16:51. Cierre completo14:17:22 fullP3/17assets/34digests/sameDonorAdoptar.
-Descubrió dosP2 reales333: controles casi ilegibles con tema producción y barra
-superior blanca sobre blanco al regresar a Adoptar. Capturas0s NO prueban movimiento,
-sonido físico ni X. Fuente174f corrige4files; tests existentes con dopmiTheme y
-DopmiApp/DiscoveryScreen reales: rojo contra333,30focalPASS/analyze0, código/producto
-sinmateriales y CI final cuatroSUCCESS. Falta distribución/QA instalada334.
+Cámara→Stream334 CONSUMIDA y CERRADA: pin8e23ea6b/reserva18:36:08UTC,
+stop18:51:08/deadline18:56:08. Driverf8fb098e abrió primer Grabar público18:39:54
+con XML fresco y clock. Humano201db841 respondió «todo ok» a revisión neutra/audio oído;
+PNG/XML local confirma Avances y4.8s, frente objetivo2–3. Adaptación técnica acotada
+4.7–4.9s fue revisada por código/seguridad, sin otra toma/ventana ni cambio de producto60s.
+Subir único18:50:21 con selector8b076227; nuevoasset0f77fe09…41e1/providerc90bffd2…eb6d,
+14,445,502bytes. ÚltimoSQLuploading, UIProcesando: NO ready ni reproducciónStream probados.
+Stop15 alcanzado: no nueva sesión retenida ni otro input nuevo. Cancel18:51:28 permitido
+como cierre; deleted/cola0 SQL18:52:00. SQLmediaOFF/job6pausado18:52:28 y Edge34exactosOFF
+18:53:22, antesdeadline. Fullcierre18:54:20 PASS/18ledger, sólo nuevo terminal; los17viejos,
+finanzas/snapshot/historia84/casos/catálogo/seisjobs intactos. SHAclosure779c2c9f…eef62.
+CatálogoStream refrescado: páginaúnica3UID retenidos, UIDnuevo ausente. InicioRescatista
+restaurado; handoff inactivo, sin archivo local borrado ni ubicación observada.
 
-P3retenido: caso970f…639c APPROVED9, thanks47e…5133 readyapproved20s, gasto9adb…14e1
-APPROVED11 ficticio100MXN, único20TEST confirmado/transferido/net15.17/snapshotVisa4242.
-CLOSED40/dosclips/DRAFT4PDF/expediente21/finanzas/catálogo/seisjobs conservados.
-No otros pagos/cargas/fixtures/reviews por rutina; dinero sóloTEST, Tienda/enlacesOFF.
+Video/Tienda/enlaces/limpiezaOFF, job6pausado/cola0. P3APPROVED9/gastoAPPROVED11 y
+único20TEST/net15.17/snapshotVisa4242 conservados. CLOSED40/dosclips/DRAFT4PDF,
+expediente21/catálogo/seisjobs intactos. Pendiente si humano puede localizar LA MISMA
+toma4.8 en Galería para evitar otra captura; no segunda carga/ventana abierta implícita.
+335 se prepara con source8a5/CIverde y delta18 explícitamente ligado al cierre anterior,
+sin aprender otrobaseline. Root siguiente: paquete335 revisado→únicoCM→Play→instalación
+con imagen/audio nativos y reproducciónStream aún separados, sin repetir pagos/gates.
 
-Root única colaFlutter/ADB/operaciones; cambios ajenos preservados. Objetivo abierto;
-no renovar8horas ni inventar aprobación específica. Siguiente: respuesta humana al
-handoff→cierre real teléfono. Propuesta334 cerrada por código/seguridad sinmateriales;
-autoridad4d8ab98a…9809 ligada al objetivo original, readbackgoal realactive15:48UTC
-y17hashes exactos. Faltan recibosCI/DEV/método frescos y pin operativo; sin reserva.
-Informe de adaptaciones actualizado25oct en parity-current-review, con tresStripe
-contrastados contra174f (Guardian guarda método/SetupIntent; Connect fallback sólo
-por disponibilidad). Después una distribución334/Play y demo del mismo clip.
-Retro independiente: causa de tests irreales comprobada; usar tema/padre producción,
-conservar captura→reserva fresca sin roundtrips y ensayar driverbreve (hipótesis).
-No nuevo tablero, gate ni suite. iOS físico y aceptaciónUX siguen separados.
+Root única cola Flutter/ADB/operaciones. Cambios ajenos preservados. Objetivo abierto;
+sin renovar8horas, sin aceptaciónUX integral ni iOS físico acreditados. Matriz e informe
+vigentes en parity-current-review; decisiones en product-decisions; ledger en progress.
 
 ## Checkpoint anterior (supersedido por el corte vigente superior)
 
