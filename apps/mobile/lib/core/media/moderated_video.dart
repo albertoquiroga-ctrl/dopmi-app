@@ -20,6 +20,7 @@ class ModeratedVideo extends StatefulWidget {
     this.controllerFactory,
     this.mediaOverlay,
     this.fit,
+    this.loadingColor,
     this.semanticLabel = 'Video del caso',
   });
   final VideoRepository repository;
@@ -34,6 +35,9 @@ class ModeratedVideo extends StatefulWidget {
 
   /// Optional intrinsic-size media fitting; controls keep their frame size.
   final BoxFit? fit;
+
+  /// Use a contrasting loading arc on a known surface; defaults to the theme.
+  final Color? loadingColor;
   @override
   State<ModeratedVideo> createState() => _ModeratedVideoState();
 }
@@ -382,7 +386,9 @@ class _ModeratedVideoState extends State<ModeratedVideo>
                         ),
                       )
               else
-                const Center(child: CircularProgressIndicator()),
+                Center(
+                  child: CircularProgressIndicator(color: widget.loadingColor),
+                ),
               if (widget.mediaOverlay != null)
                 IgnorePointer(child: widget.mediaOverlay!),
               if (player != null)

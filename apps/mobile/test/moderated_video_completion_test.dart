@@ -4,11 +4,17 @@ import 'dart:ui' as ui;
 import 'package:dopmi_mobile/core/media/moderated_video.dart';
 import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/core/ui.dart';
+import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
+import 'package:dopmi_mobile/features/rescue/support_stories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:video_player/video_player.dart';
 
+import 'rescue_test.dart' show EmptySupportRescue, FakeCaseUpdates;
 import 'support/local_video_controller.dart';
 
 VideoRepository playbackRepository() => VideoRepository(
@@ -32,6 +38,150 @@ double contrastRatio(Color first, Color second) {
 }
 
 void main() {
+  for (final story in [false, true]) {
+    testWidgets(
+      'pending video indicator contrasts with ${story ? 'dark stories' : 'default light surface'}',
+      (tester) async {
+        tester.view.physicalSize = const Size(377, 852);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        final pending = Completer<Map<String, dynamic>>();
+        final repository = VideoRepository(
+          identity: () => 'owner:session',
+          invoke: (request) async {
+            if (request['action'] == 'public_list') {
+              return {
+                'items': [
+                  {
+                    'id': 'approved-clip',
+                    'parent_id': 'public-case',
+                    'purpose': 'thanks',
+                  },
+                ],
+              };
+            }
+            expect(request, {'action': 'playback', 'id': 'approved-clip'});
+            return pending.future;
+          },
+        );
+        final boundaryKey = GlobalKey();
+        addTearDown(() async {
+          await tester.pumpWidget(const SizedBox());
+          await tester.pump();
+          repository.dispose();
+        });
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              rescueVideosRepositoryProvider.overrideWithValue(repository),
+              rescueRepositoryProvider.overrideWithValue(EmptySupportRescue()),
+              caseUpdateRepositoryProvider.overrideWithValue(FakeCaseUpdates()),
+            ],
+            child: MaterialApp(
+              theme: dopmiTheme(),
+              home: RepaintBoundary(
+                key: boundaryKey,
+                child: story
+                    ? SupportStories(
+                        records: [
+                          RescueRecord({
+                            'id': 'public-case',
+                            'kind': 'case',
+                            'status': 'approved',
+                            'public_data': {'pet_name': 'Luna'},
+                          }),
+                        ],
+                      )
+                    : Scaffold(
+                        body: ModeratedVideo(
+                          repository: repository,
+                          assetId: 'approved-clip',
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        final indicator = find.descendant(
+          of: find.byType(ModeratedVideo),
+          matching: find.byType(CircularProgressIndicator),
+        );
+        expect(indicator, findsOneWidget);
+        expect(find.byType(VideoPlayer), findsNothing);
+        expect(pending.isCompleted, isFalse);
+        final colors = (await tester.runAsync(() async {
+          final boundary =
+              boundaryKey.currentContext!.findRenderObject()!
+                  as RenderRepaintBoundary;
+          final image = await boundary.toImage(pixelRatio: 1);
+          try {
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.rawRgba,
+            );
+            Color pixelAt(Offset point) {
+              final offset =
+                  (point.dy.floor() * image.width + point.dx.floor()) * 4;
+              return Color.fromARGB(
+                bytes!.getUint8(offset + 3),
+                bytes.getUint8(offset),
+                bytes.getUint8(offset + 1),
+                bytes.getUint8(offset + 2),
+              );
+            }
+
+            final origin = tester.getTopLeft(find.byKey(boundaryKey));
+            final bounds = tester.getRect(indicator).shift(-origin);
+            final background = pixelAt(
+              Offset(bounds.left - 8, bounds.center.dy),
+            );
+            var painted = background;
+            // Find a fully painted arc pixel instead of assuming its angle or
+            // reading a constructor/theme color that might not reach the paint.
+            for (var y = bounds.top.ceil(); y < bounds.bottom.floor(); y++) {
+              for (var x = bounds.left.ceil(); x < bounds.right.floor(); x++) {
+                final pixel = pixelAt(Offset(x.toDouble(), y.toDouble()));
+                if (contrastRatio(pixel, background) >
+                    contrastRatio(painted, background)) {
+                  painted = pixel;
+                }
+              }
+            }
+            return [background, painted];
+          } finally {
+            image.dispose();
+          }
+        }))!;
+        if (story) {
+          const storySurface = Color(0xff0d0d0d);
+          final scaffold = tester.widget<Scaffold>(
+            find.descendant(
+              of: find.byType(SupportStories),
+              matching: find.byType(Scaffold),
+            ),
+          );
+          expect(scaffold.backgroundColor, storySurface);
+          // The real story gradient can darken the scaffold behind the arc.
+          expect(colors.first.a, 1);
+          expect(
+            colors.first.computeLuminance(),
+            lessThanOrEqualTo(storySurface.computeLuminance()),
+          );
+        } else {
+          expect(colors.first, dopmiTheme().colorScheme.surface);
+        }
+        expect(
+          contrastRatio(colors.first, colors.last),
+          greaterThanOrEqualTo(3),
+          reason: 'The painted loading arc must remain visible on its surface',
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   for (final size in [const Size(640, 360), const Size(360, 640)]) {
     for (final fit in [null, BoxFit.cover]) {
       testWidgets(

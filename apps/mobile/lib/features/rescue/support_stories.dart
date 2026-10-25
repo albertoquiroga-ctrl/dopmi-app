@@ -649,6 +649,7 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                             paused: paused,
                                             mediaOverlay: _storyGradient,
                                             fit: BoxFit.cover,
+                                            loadingColor: Colors.white,
                                             semanticLabel:
                                                 segment.video!.semanticLabel,
                                             onComplete: () {
