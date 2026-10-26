@@ -1,39 +1,38 @@
-# Checkpoint — 25/10/2026 CDMX: 336 instalada; diagnóstico API200 cerrado
+# Checkpoint — 25/10/2026 CDMX: reproducción336 comprobada; cámara en preparación
 
 Producto dopmi-app/codex/finish-release-20261015/candidate-git-20261014.
 Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust.
-Cliente instalado Play interno2.3.3(336), fuente28dac8116c211f1606648dea62643f991f2bb280;
-CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, Playinternal/completed/Samsung336Vending/sesión TEST
-comprobados. CI40247040345 cuatroSUCCESS conservada. Sin nueva build móvil ni cola viva.
-Backend diagnósticoe05ec4166f190888ea335fbbf58d79160e769cac:39focal/991backendPASS,
-8SKIP conocidos, código/seguridad cerrados; CI40254930887 TERMINAL/cuatroSUCCESS.
-Deploy únicoOFF: media84/módulo90dbac75…62d13, cleanup7eb0ee09 previo conservado.
+Cliente Play interno2.3.3(336), fuente28dac8116c211f1606648dea62643f991f2bb280;
+CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, internal/completed/SamsungVending/sesión TEST
+comprobados. CI40247040345 cuatroSUCCESS. Backend diagnósticoe05ec4166f190888ea335fbbf58d79160e769cac:
+39focal/991backendPASS8SKIP, código/seguridad y CI40254930887 TERMINAL/cuatroSUCCESS.
+Media90dbac75…62d13 desplegadaOFF una vez, cleanup7eb0ee09 previa; sin nueva build.
 
-QA336 física conserva loader/error blancos legibles y X/CTA separados; playback falló
-inspect429→502. No causa/bucket/actor de cuota establecidos; auditoría01:05–01:12UTC
-incluyendo view vacía, cobertura incompleta. Error no tiene autoRetry ordinario; no
-demuestra ausencia global de loops/lifecycle. Nueva metadata segura permite números
-de límite/CF-Ray/enum MIME sin rawheaders, cuerpos, credenciales ni enlaces.
+P3Play336 scope01753b8c/manifest4ad05 CONSUMIDO/CERRADO. Secuencia preparada completó
+open→next→sound→Play02:42:57–02:43:11UTC26oct (14.26s). FrameA0.267s02:43:12.478,
+frameB4.000s02:43:16.204: movimiento/patrón/barra reales; último02:43:35 muestraApoyar,
+sininput posteriorPlay. Producto independiente conforme para avance/cierre automático;
+no audio físico/fluidezcontinua/aceptación humana atribuidos. No repetir P3/pagos/cargas.
+Full18/finanzas/snapshot/historia84/34digests/seisfuentes exactos02:47:14, antesstop
+02:48:41/max02:51:41. Video/Tienda/enlaces/cleanupOFF/job6pausado/cola0; InicioRescatista
+comprobado02:46:37. Contadores92/86 sóloobservados; mapas90db/7eb0 exactos.
 
-Diagnóstico4c/e805 CONSUMIDO: ON rechazó comparador de método heredadoOFF; no hubo POST
-Cloudflare ni cámara. Cierre full18/OFF/pausado01:47:38UTC. Reparación independiente
-por fase: queryON7365458b/19562B cambia sólo expectativa video,11TRUE obligatorios;
-OFF original intacto; validate/confirm_on y transiciónOFF→ON→OFF comprobados localmente.
-Nuevo diagnósticoe150/d6d59 CONSUMIDO/CERRADO: únicoPOST01:57:46–50 HTTP200/lease≤120s,
-sin fetchmedios ni reproducción física. No demuestra causa corregida ni cuota previa.
-Full18/finanzas/snapshot/historia84/34digests/seis fuentes exactos01:58:34UTC, antesstop
-01:59:26/max02:01:26. Video/Tienda/enlaces/cleanupOFF/job6pausado/cola0. Contadores88/82
-porflagwrites; source90db/7eb0 exacta. Estado teléfonoInicioRescatista/sesión propia336.
+Errores previos/diagnósticos se conservan en progress: inspect429→502 ocurrió antes;
+auditoría vacía/cobertura incompleta y API200 posteriores no establecen cuota/causa.
+Metadata segura disponible, sin rawheaders/cuerpos/URLs/credenciales ni autoRetry.
+5af readonly anterior obtuvoprimerframepausado, rootdemoró porhelper/args ycaducóON120
+antesSound; cerradofull18/OFF02:25:23. No defectoapp demostrado. Secuencia4ad05 resuelve
+esa preparación; retro independiente indica no reparar dentroON ni Back ciego trasfin.
 
-Siguiente dueño root: una QA física readonly del mismo P3/336 con metadata nueva, para
-acreditar playback o capturar el429 del camino Samsung, sin repetir API anónima/build.
-story-rate-device-qa en preparación; no ON/handoff/cámara activos. SamsungUSBdevice.
-Cámara336 sigue propuesta: disponibilidad humana9fd, no toma ni neutralidad nuevas;
-su operador final debe adaptar fuentes y fases video+cleanup/job6/19, no reutilizar
-contratos readonly18/5min. Nativo→Streamready/play y aceptación UX integral pendientes.
-Reutilizar QA válida/Stripe/único20TEST; iOS sólo CI simulador, sin físico/TestFlight.
-Conservar WIP ajeno y una colaFlutter; autonomía técnica vigente, ocho horas no renovadas.
-Detalle de incidentes, revisión y adaptaciones en progress/parity; no duplicar historial.
+Root siguiente: terminar operador cámara336-current y cerrar revisión de sus dosP2
+privados (matriz fase/estado y duración segúnREADY real), callbacks actuales/metadata/
+renovaciónappend-only y prueba de ausenciaStream separada. No usar af2 como operador
+listo ni readonly5/18 para cámara20/15/19. Cámara sin ON/toma/binding nuevos. Disponibilidad
+9fd no acredita contenido nuevo; coordinación humana actual pendiente, no grabar aún.
+Nativo→Streamready/play y aceptación UX integral quedan pendientes; iOS sóloCI simulador,
+sin físico/TestFlight. Datos/Stripe/único20TEST/WIPajeno intactos, una colaFlutter.
+UIOFFactual en Avances del casoP3 por navegación de preparación02:51, sin Crearavance,
+guardado ni caso nuevo; XML privado disponible. No ventana/build vivos ni ocho horas nuevas.
 
 # Checkpoint vigente — paridad d304535, 17/10/2026 México
 

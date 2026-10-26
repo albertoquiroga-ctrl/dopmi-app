@@ -1,3 +1,49 @@
+## 25/10/2026 — P3 reproducción física336 cerrada; cámara todavía sin toma
+
+Scope01753b8c/manifest4ad05, cliente28dac/Play336 y servidor diagnósticoe05/90db+cleanup7eb0.
+Code/security revisaron delta/reserva10/7/secuencia/helpersbyteidénticos; no build/deploy
+nuevos. Autoridad técnica continua, sin permiso rutinario nuevo. Identidad/installación
+legítimas reutilizadas sin retimar; package336/Vending y contexto actual comprobados.
+Preflight real full18/método11/34digests/seisfuentes/finanzas PASS. Pinadaaa7b6…987ba,
+reserva02:41:41.975UTC/stop02:48:41/max02:51:41. SQL+EdgeONsólo video, cleanupOFF/job6pausado.
+
+Secuencia única con helpers presentes/hashbound y argumentos frame correctos: storyopen
+02:42:57.469→next02:43:00.514→sound02:43:09.206→Play02:43:11.743. Cuatroinputs14.26s,
+sin intervención modelo entre ellos. FrameA02:43:12.478contador0.267; B02:43:16.204contador
+4.000, cambia posición/color/barra. Final02:43:35.195 muestraApoyar sin visor; sóloesperas/
+capturas despuésPlay. Producto independiente inspeccionó PNG/hash/XML/fuentes y confirma
+avance renderizado entre muestras (+3.733s en3.726s) y salida automática observada.
+Estado UIsonido habilitado, no audiofísico escuchado, fluidez continua ni aceptación humana.
+NoRetry/cámara/cargas/reviews/pagos. QA332hold/BG/Impacto/finanzas válidas se reutilizan.
+
+Cierre EdgeOFF/SQLclose antesrestauración. Root dioBack innecesario trasfin(yaApoyar) ysalió
+Launcher; guards detuvieroninputs posteriores. Intentgenérico noresolvióActivity; componente
+real observado com.mycompany.dopmi/.MainActivity sí restauróDopmi/sesiónsincredenciales.
+Modo Rescatista/Inicio comprobados02:46:37; full18/finanzas/snapshot/caso9/gasto11/neto1517/
+historia84/34digests/seisfuentes exactos02:47:14.012UTC, antesstop/max; cola0/video/Tienda/
+enlaces/cleanupOFF/job6pausado. Contadores92/86 porflagwrites, mapas90db/7eb0 exactos.
+Actuals story-play-device-qa/closed.verified.actual.private.json y tresPNG/frameproofs.
+
+Retrabajo previo5af/0b19: se corrigieron tresliteralesUnicodepreON/revisados, pero root
+no preparó framehelper y usó argumento incorrecto. Primerframe ready/paused00:00 llegó
+02:21:10.977,121.10s despuésONreceipt; Sound rechazado por120s antesinput, Play no ejecutado.
+Eso es fallo del procedimiento/root, no defectoapp. Rootcerró sineludirguarda: full18/OFF/
+InicioRescatista02:25:23 antesmax02:28:13. Nueva4ad05 prestageó6f8+8e06 y secuencia completa;
+ninguna reparación duranteON. No volver a repetir esta fixture P3.
+
+Retro independiente camera333_process_retro contrastó recibos/PNG/fuentes: conservar
+secuencia preparada(files/hash/argsantesON), efecto4inputs14.26s y movimiento dentrofresh;
+y restaurar segúnpantallaactual, noBackciego. Ambosdueño root; verificar siguiente cierre
+sin salirLauncher y no nuevas reparacionesduranteON. No recomienda otraQA P3 para medirlo.
+El429previo no se reprodujo y su causa sigue desconocida; no atribuir reparación de cuota.
+
+Cámara preparada por separado406ac aún con dosP2 de biblioteca privada comprobadosRAM:
+aliascanceling admitía terminalesON y duraciónnull fallaba porconjuntoallowed conready.
+Worker corrige agrupado y completa callbacks/phaseproofs actuales, bajo revisión. NoON,
+grabación, neutralidad, audio ni19 nuevos. Coordinación humana actual preguntada sin
+renovar permisos; respuesta pendiente. UIOFF navegada aAvancesP3 a02:51 sólopreparación,
+sinCrearavance/guardado. Nativo→Streamready/play y aceptación integral siguen pendientes.
+
 ## 25/10/2026 — Diagnósticoe05 desplegado, incidente de fase cerrado y API200 sin medios
 
 Fuente e05ec4166f190888ea335fbbf58d79160e769cac, cliente336/28dac conservado sin nueva

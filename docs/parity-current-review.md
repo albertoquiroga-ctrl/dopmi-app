@@ -1,15 +1,14 @@
-# Corte vigente — warm-trust b9;336 instalada y backend diagnósticoe05 cerrado
+# Corte vigente — warm-trust b9; P3 reproducción336 comprobada
 
-Cliente28dac/Playinternal2.3.3(336)/SamsungVending/sesiónTEST comprobados; CI40247040345
-cuatroSUCCESS. Backend diagnósticoe05/39focal/991backend8SKIP/CI40254930887 cuatroSUCCESS,
-módulo90db desplegadoOFF una vez; cleanup7eb0 conservada. No buildmóvil adicional.
-QA336 conserva loader/errorblancos legibles/X/CTA; playback fallóinspect429→502.
-AuditoríaCFsinregistros/coberturalimitada, cuota/actor desconocidos. Diagnóstico4c
-rechazóprocedimientoOFFenON antesPOST, full18/OFF01:47:38; corregidoporcasequeryON
-exacta/11TRUE y transiciónlocal. Diagnósticoe150 únicoHTTP200/lease≤120sinfetchmedios,
-full18/finanzas/historia84/34digests/fuentes/OFF/jobpausado01:58:34. No causaCFcorregida
-ni playbackfísico atribuidos. Root prepara unensayoSamsungreadonlyconmetadata nueva.
-Cámara336 aún propuesta; no nueva toma/ON. Nativo→Streamready/play y aceptaciónUX pendientes.
+Cliente28dac/Playinternal2.3.3(336)/SamsungVending/sesiónTEST reales; CI40247040345
+cuatroSUCCESS. Backend e05/90db+cleanup7eb0/991backend8SKIP/CI40254930887 cuatroSUCCESS.
+0175/4ad05 físico: cuatroinputs14.26s, contador0.267→4.000 en3.726s reales y cambio
+patrón/barra; fin automáticoApoyar observado, sin otroinputdespuésPlay. Producto conforme
+sólo para avance temporal/salida/estadoUIsonido, no audiofísico o aceptación humana.
+Full18/finanzas/historia84/34digests/seisfuentes/OFF/jobpausado02:47:14; no repetir P3.
+Errores429previos no reproducidos, causa/cuotadesconocidas; metadata segura conservada.
+Cámara336 aún propuesta, callbacks/revisión de sus P2privados en preparación; sin nueva
+toma/ON. Nativo→Streamready/play y aceptaciónUX pendientes. UIOFFactualAvancesP3, noescrituras.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y
@@ -64,7 +63,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.336/28dac instalada: loader/error blancos físicos PASS y revisión independiente conforme; playback ERROR502 por inspect429, cuota desconocida. Full18/OFF cerrado; no Retry/sonido/Play probados. Nativo→Streamready/play sigue sin acreditar. iOS: sólo compilación CI, sin físico/TestFlight336. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.336/28dac instalada: loader/error blancos físicos PASS; P3Play0175 confirma movimiento0.267→4s/barra/salida automáticaApoyar y controlUIsonido. Full18/OFF02:47:14. Audiofísico noatribuido; 429previo no reproducido/cuotadesconocida. Nativo→Streamready/play sigue sin acreditar. iOS: sólo compilación CI, sin físico/TestFlight336. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.

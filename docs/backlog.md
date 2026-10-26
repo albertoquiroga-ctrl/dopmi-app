@@ -1,16 +1,16 @@
-# Cola vigente — 336 instalada, backend e05 verificado; siguiente playback físico
+# Cola vigente — P3 reproducción336 cerrada; cámara y aceptación restantes
 
 | Batch | Dueño / dependencia | Escenarios y salida |
 |---|---|---|
-| W1–W3/W4H/W4C | Cerrados técnicamente | Conservar b9/Stripe/QA331–332; no repetir pagos, recuperación ni fixtures. |
-| W4T Distribución336 | Cerrado; root/revisores | Cliente28dac/CI40247040345/CM6ade9e4e13SUCCESS/Playinternalcompleted336/SamsungVending/misma sesión comprobados. |
-| W4T Backend diagnóstico | Cerrado técnicamente; root | e05/39focal+991backendPASS8SKIP/CI40254930887 cuatroSUCCESS; único deployOFF módulo90db, cleanup7eb0 conservada. No nueva build. |
-| W4T Diagnósticos | CONSUMIDOS/CERRADOS | 4c sinPOST por comparador métodoOFF enON, cierre01:47:38; e150 con helper porfase, únicoHTTP200/lease≤120sinmedios, cierre01:58:34. Full18/OFF/pausado; causa429 Samsung no establecida. |
-| W4T Físico readonly actual | Root/revisores; fuente y operador listos | Preparar story-rate-device-qa para un anillo/clip existente336; nueva metadata permitirá atribuir un fallo o acreditar movimiento. SinRetry/build/carga/cámara. |
-| W4Q Cámara/cierre integral | Root + humano / playback/operador | Adaptar cámara20/15/19 a fases reales cleanup/job6/fuentes actuales antesON; disponibilidad humana no es toma. Completar nativo→Streamready/play, demo/aceptación UX. iOS físico/TestFlight no verificados. |
+| W1–W3/W4H/W4C | Cerrados técnicamente | Conservar b9/Stripe y QA331–332; no repetir pagos, recuperación ni fixtures. |
+| W4T Distribución/backend | Cerrado; root/revisores | Cliente28dac/Play336 instalado; backende05, ambasCIcuatroSUCCESS, diagnóstico90db/cleanup7eb0. Sin build adicional. |
+| W4T Diagnósticos previos | CONSUMIDOS/CERRADOS | 4c métodoOFF/ON antesPOST, e150API200 sinmedios, 5afprimerframe/timeout120. Full18/OFF/pausado conservados; causa429 previa desconocida. |
+| W4T P3Play336 | CERRADO técnico; root/producto | 0175/4ad05: movimiento0.267→4s/barra, sonido habilitado enUI, fin automáticoApoyar; full18/OFF/pausado02:47:14. Audiofísico noatribuido. No másP3. |
+| W4Q Cámara | Worker/root/revisores + humano | Corregir P2privados y completar callbacks actuales del operador20/15/19, ensayo completo antesON. Toma nueva sólo con coordinación/revisiónneutra; nativo→Streamready/play→delete/ausencia separados. |
+| W4Q Aceptación integral | Root + titular/UX | Demo comparativa y reporte vigente de adaptaciones/flujos no dibujados. Reutilizar evidencia válida; aceptación humana sigue separada. iOS físico/TestFlight noverificados. |
 
-Sin ventanaON/cámara/build activos;18assets/finanzas/historia84/34digests exactos.
-Una colaFlutter. Referencia y límites en checkpoint/tablero; no renovar ocho horas.
+ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Teléfono enAvancesP3
+por navegaciónOFFpreparatoria; sinCrearavance/guardados. Una colaFlutter. No renovar8h.
 
 Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
 
