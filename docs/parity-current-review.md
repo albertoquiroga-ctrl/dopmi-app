@@ -1,17 +1,15 @@
-# Corte vigente — warm-trust b9f6d5f;336 instalada, error legible y fallo inspect429
+# Corte vigente — warm-trust b9;336 instalada y backend diagnósticoe05 cerrado
 
-Fuente28dac8116c211f1606648dea62643f991f2bb280, CI40247040345 cuatroSUCCESS.
-CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, artefacto2.3.3(336), Playinternal/completed
-y Samsung336/Vending/sesión TEST legítima comprobados. Sin aceptación UX integral.
-QA336 física: loader blanco y error blanco separado de X/CTA conforme en captura;
-producto independiente confirma sólo jerarquía/legibilidad. No se pulsó Retry/Play/
-sonido ni se probó reproducción. Log upstream inspect429→playback502; tipo de cuota
-y tráfico causante no establecidos. Auditoría CF01:05–01:12UTC con view:0registros,
-cobertura no exhaustiva. Ruta ordinaria sin autoRetry no demuestra ausencia global
-de loops. Próximo: metadata de límite acotada antes de repetir un diagnóstico.
-Full18/finanzas/snapshot/historia84/34digests exactos y seis fuentes conservados;
-cierre01:17:13UTC video/Tienda/enlaces/cleanupOFF/job6pausado/cola0/InicioRescatista.
-Cámara336 sigue preparada, sin toma/ON; nativo→Streamready/play permanece pendiente.
+Cliente28dac/Playinternal2.3.3(336)/SamsungVending/sesiónTEST comprobados; CI40247040345
+cuatroSUCCESS. Backend diagnósticoe05/39focal/991backend8SKIP/CI40254930887 cuatroSUCCESS,
+módulo90db desplegadoOFF una vez; cleanup7eb0 conservada. No buildmóvil adicional.
+QA336 conserva loader/errorblancos legibles/X/CTA; playback fallóinspect429→502.
+AuditoríaCFsinregistros/coberturalimitada, cuota/actor desconocidos. Diagnóstico4c
+rechazóprocedimientoOFFenON antesPOST, full18/OFF01:47:38; corregidoporcasequeryON
+exacta/11TRUE y transiciónlocal. Diagnósticoe150 únicoHTTP200/lease≤120sinfetchmedios,
+full18/finanzas/historia84/34digests/fuentes/OFF/jobpausado01:58:34. No causaCFcorregida
+ni playbackfísico atribuidos. Root prepara unensayoSamsungreadonlyconmetadata nueva.
+Cámara336 aún propuesta; no nueva toma/ON. Nativo→Streamready/play y aceptaciónUX pendientes.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y

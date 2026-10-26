@@ -1,16 +1,16 @@
-# Cola vigente — 336 instalada; diagnóstico concreto de proveedor,25/10/2026
+# Cola vigente — 336 instalada, backend e05 verificado; siguiente playback físico
 
 | Batch | Dueño / dependencia | Escenarios y salida |
 |---|---|---|
-| W1–W3/W4H/W4C | Cerrados técnicamente | Conservar b9/Stripe y QA331/332; no repetir pagos, recuperación ni fixtures. |
-| W4T Corrección y distribución336 | Cerrado técnicamente; root/revisores | Fuente28dac, CI40247040345 cuatroSUCCESS, CM6ade9e4e13SUCCESS, Playinternal/completed2.3.3(336), Samsung/Vending/misma sesión comprobados. |
-| W4T QA336 readonly | CONSUMIDA/CERRADA; root | Loader/error blancos legibles, X/CTA separados. Reproducción falla: inspect429→playback502. Sin Retry/carga/dinero; full18/OFF/pausado01:17:13UTC. |
-| W4T Diagnóstico429 | Root/backend; dato nuevo | Auditoría de sólo lectura01:05–01:12UTC con view:0registros/cobertura incompleta. Preparar metadata de límite acotada y revisión antes de un diagnóstico; cuota/actor aún desconocidos. No inferir loop ni repetir QA ciega. |
-| W4Q Cámara y cierre integral | Root + humano / proveedor y operador listos | Cámara336/bridge19 preparada, futura disponibilidad humana confirmada; clock/input/metadata propios pendientes. Completar nativo→Streamready/play y reproducción final, demo y aceptación UX. iOS físico/TestFlight declarados no verificados. |
+| W1–W3/W4H/W4C | Cerrados técnicamente | Conservar b9/Stripe/QA331–332; no repetir pagos, recuperación ni fixtures. |
+| W4T Distribución336 | Cerrado; root/revisores | Cliente28dac/CI40247040345/CM6ade9e4e13SUCCESS/Playinternalcompleted336/SamsungVending/misma sesión comprobados. |
+| W4T Backend diagnóstico | Cerrado técnicamente; root | e05/39focal+991backendPASS8SKIP/CI40254930887 cuatroSUCCESS; único deployOFF módulo90db, cleanup7eb0 conservada. No nueva build. |
+| W4T Diagnósticos | CONSUMIDOS/CERRADOS | 4c sinPOST por comparador métodoOFF enON, cierre01:47:38; e150 con helper porfase, únicoHTTP200/lease≤120sinmedios, cierre01:58:34. Full18/OFF/pausado; causa429 Samsung no establecida. |
+| W4T Físico readonly actual | Root/revisores; fuente y operador listos | Preparar story-rate-device-qa para un anillo/clip existente336; nueva metadata permitirá atribuir un fallo o acreditar movimiento. SinRetry/build/carga/cámara. |
+| W4Q Cámara/cierre integral | Root + humano / playback/operador | Adaptar cámara20/15/19 a fases reales cleanup/job6/fuentes actuales antesON; disponibilidad humana no es toma. Completar nativo→Streamready/play, demo/aceptación UX. iOS físico/TestFlight no verificados. |
 
-Sin build/ventanaON/cámara activos; video/Tienda/enlaces/cleanupOFF/job6pausado/cola0.
-Conservar18assets/finanzas/historia84/34digests exactos, P3 y único aporte20TEST.
-Una cola Flutter. Detalle/limitaciones en checkpoint y tablero; no renovar ocho horas.
+Sin ventanaON/cámara/build activos;18assets/finanzas/historia84/34digests exactos.
+Una colaFlutter. Referencia y límites en checkpoint/tablero; no renovar ocho horas.
 
 Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
 

@@ -1,37 +1,39 @@
-# Checkpoint — 25/10/2026 CDMX: 336 instalada; reproducción bloqueada por inspect429
+# Checkpoint — 25/10/2026 CDMX: 336 instalada; diagnóstico API200 cerrado
 
-Producto dopmi-app, codex/finish-release-20261015, checkout candidate-git-20261014.
+Producto dopmi-app/codex/finish-release-20261015/candidate-git-20261014.
 Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust.
-Fuente instalada28dac8116c211f1606648dea62643f991f2bb280. CI40247040345 cuatroSUCCESS;
-CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, metadata2.3.3(336), Playinternal/completed
-y Samsung336/Vending comprobados. Actualizar00:43:18→336comprobada00:44:17UTC26oct;
-Abrir00:44:52, misma sesión TEST legítima. No hay build vivo ni otro POST pendiente.
+Cliente instalado Play interno2.3.3(336), fuente28dac8116c211f1606648dea62643f991f2bb280;
+CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, Playinternal/completed/Samsung336Vending/sesión TEST
+comprobados. CI40247040345 cuatroSUCCESS conservada. Sin nueva build móvil ni cola viva.
+Backend diagnósticoe05ec4166f190888ea335fbbf58d79160e769cac:39focal/991backendPASS,
+8SKIP conocidos, código/seguridad cerrados; CI40254930887 TERMINAL/cuatroSUCCESS.
+Deploy únicoOFF: media84/módulo90dbac75…62d13, cleanup7eb0ee09 previo conservado.
 
-QA336 readonly CONSUMIDA/CERRADA: anilloP3→siguiente; carga blanca y error blanco
-legible/separado de X/CTA comprobados físicamente. Producto independiente conforme
-sólo para esa presentación; NO reproducción, sonido, Retry exitoso ni aceptación UX.
-Log exacto playback→video_provider_unavailable502→provider inspect429. No hay prueba
-de cuota concreta ni del actor causante. Ruta ordinaria de fuente sin autoRetry del
-error; no equivale a descartar duplicación por lifecycle ni loops de otros actores.
-Auditoría Cloudflare01:05–01:12UTC, exclusión de view retirada:0registros. Cobertura
-no exhaustiva; no usar ausencia como prueba de tráfico cero. Siguiente root/backend:
-metadata de límite permitida y acotada, revisión y un diagnóstico pertinente; no otra
-cámara/build/reproducción ciega para inferir causa.
+QA336 física conserva loader/error blancos legibles y X/CTA separados; playback falló
+inspect429→502. No causa/bucket/actor de cuota establecidos; auditoría01:05–01:12UTC
+incluyendo view vacía, cobertura incompleta. Error no tiene autoRetry ordinario; no
+demuestra ausencia global de loops/lifecycle. Nueva metadata segura permite números
+de límite/CF-Ray/enum MIME sin rawheaders, cuerpos, credenciales ni enlaces.
 
-Cierre completo01:17:13UTC, antesmax01:18:23:18assets exactos/finanzas/snapshot/
-historia84/34digests iguales/seis fuentes canónicas; video/Tienda/enlaces/cleanupOFF,
-job6pausado/cola0, InicioRescatista mismo dueño. Contadores media83/cleanup78 por
-flagwrites; archivos media5a5d21a5 y cleanup7eb0ee09 exactos, no deriva de código.
-Evidencia .tools/integral20d21-20261018/story-error-release y story-error-device-qa.
+Diagnóstico4c/e805 CONSUMIDO: ON rechazó comparador de método heredadoOFF; no hubo POST
+Cloudflare ni cámara. Cierre full18/OFF/pausado01:47:38UTC. Reparación independiente
+por fase: queryON7365458b/19562B cambia sólo expectativa video,11TRUE obligatorios;
+OFF original intacto; validate/confirm_on y transiciónOFF→ON→OFF comprobados localmente.
+Nuevo diagnósticoe150/d6d59 CONSUMIDO/CERRADO: únicoPOST01:57:46–50 HTTP200/lease≤120s,
+sin fetchmedios ni reproducción física. No demuestra causa corregida ni cuota previa.
+Full18/finanzas/snapshot/historia84/34digests/seis fuentes exactos01:58:34UTC, antesstop
+01:59:26/max02:01:26. Video/Tienda/enlaces/cleanupOFF/job6pausado/cola0. Contadores88/82
+porflagwrites; source90db/7eb0 exacta. Estado teléfonoInicioRescatista/sesión propia336.
 
-Cámara336 preparada por separado/bridge19, scope1f7fa081/bridgeaf2bc67f/manifestb38fba00;
-humano9fd confirma disponibilidad futura, NO una toma ni neutralidad de un clip nuevo.
-Faltan clock/input/metadata finales del operador y resolver reproducción proveedor.
-No ventanaON/handoff de cámara activo. Toma anterior no recuperada; no bypass caché.
-Nativo→Streamready/play y aceptación UX integral pendientes. iOS físico/TestFlight
-no verificados; CI sólo simulador. Reutilizar QA válida/Stripe/único20TEST y conservar
-WIP ajeno. Una cola Flutter; autorización técnica continua, sin renovar ocho horas.
-Historial y adaptaciones están en progress/parity; este checkpoint no los duplica.
+Siguiente dueño root: una QA física readonly del mismo P3/336 con metadata nueva, para
+acreditar playback o capturar el429 del camino Samsung, sin repetir API anónima/build.
+story-rate-device-qa en preparación; no ON/handoff/cámara activos. SamsungUSBdevice.
+Cámara336 sigue propuesta: disponibilidad humana9fd, no toma ni neutralidad nuevas;
+su operador final debe adaptar fuentes y fases video+cleanup/job6/19, no reutilizar
+contratos readonly18/5min. Nativo→Streamready/play y aceptación UX integral pendientes.
+Reutilizar QA válida/Stripe/único20TEST; iOS sólo CI simulador, sin físico/TestFlight.
+Conservar WIP ajeno y una colaFlutter; autonomía técnica vigente, ocho horas no renovadas.
+Detalle de incidentes, revisión y adaptaciones en progress/parity; no duplicar historial.
 
 # Checkpoint vigente — paridad d304535, 17/10/2026 México
 

@@ -1,3 +1,54 @@
+## 25/10/2026 — Diagnósticoe05 desplegado, incidente de fase cerrado y API200 sin medios
+
+Fuente e05ec4166f190888ea335fbbf58d79160e769cac, cliente336/28dac conservado sin nueva
+build. Metadata de fallo sóloallowlist: RetryAfter numérico0–86400, máx3políticas con
+números acotados/labelsnoemitidos, CF-Ray válido y MIME enum json/html/other. Sin cuerpo,
+headers crudos, credenciales/URLs/IDs de usuario; respuesta502/TTL120/autorización/retiro
+e idempotencia intactos, sin retry. Código/seguridad independientes cerrados;39focal,
+991backendPASS/8SKIP; CI40254930887 TERMINAL/cuatroSUCCESS IDs121354636104/314/366/369.
+
+Paquete privado rate429-diagnostic: P2preON de metadatos de cuatro fuentes financieras
+corregido, contadores/archivo duplicado rechazados; manifestfinale805. Preflight real
+full18/34digests/fuentes/finanzas/método11OFF PASS. Reserva deploy única01:44UTC;
+payload e19bc237…0f81d desplegó sólo3files media84: módulo90dbac75…62d13, entry/runtime
+idénticos28dac, cleanup7eb0 previa. Readback exacto antesON; no secreto/SQL/permisos.
+
+Incidente comprobado: ventana4c01:45:48/stop01:48:48/max01:50:48, SQL+EdgevideoON;
+operator on rechazó all_exact_eleven_method_postflight_checks_required antesNode/API.
+Raw01:46:42 sóloflags_unchangedFALSE/otros10TRUE; querymétodo17–20 espera video:false.
+validate y confirm_on reaplicaban comparadorOFF. Los checks locales cubrían fuentes,
+no la transición positiva completa. Root cerró sin eludir guarda: EdgeOFF01:47:11,
+SQLclose y full18/finanzas/historia84/34digests/6fuentes/OFF/job6pausado/cola0 exactos
+01:47:38. No on.verified ni playbackattempt/carga/cámara. No es un nuevo429 probado.
+
+Retro independiente camera333_process_retro confirmó esa causa/recibos/fuentes.
+Dos mejoras, dueño root/implementador: comparación explícita porfase conservando11
+checks (verificar rechazo de otrosflags); y replay local completoOFF→ON→OFF porvalidate
+yconfirm_on antesotraoperación, as-ofcapturas sinretimar ni nueva suiteglobal.
+Code/security reconocieron omisión de semánticaON en revisión inicial; cierre acotado
+anterior no acreditaba esa transición. No atribuir el incidente a Cloudflare.
+
+Reparación sóloprivada rate429-diagnostic-on/scopee150/manifestd6d59: queryON7365458b
+19562B sustituye únicoobjetovideo:false→true, OFForiginalee781819563B intacta. Ambas
+rutas usan helperfase-aware con11TRUE/provenance/fresh120, no reescribirraw ni aceptar
+booleanofalse.10checksdelta/replayindependientePASS. DryREADreal contodoOFF01:53:51
+devuelveexactamenteflagsfalse+10TRUE; helperONlo rechaza correctamente. Sinotrodeploy.
+
+Única ventanae15001:56:26/stop01:59:26/max02:01:26: SQL+EdgeONsólovideo, cleanupOFF/job6
+pausado. MétodoON11TRUE y seisfuentes frescas verificados. ÚnicoPOSTanónimo01:57:46–50
+HTTP200/lease≤120, sinfetchHLS/póster/medios niURLs persistidas. Esto NO prueba playback
+físico ni reparación de cuota429 previa. CierreEdgeOFF ySQL, full18/finanzas/snapshot/
+historia84/34digests/seisfuentes exactos01:58:34. Contadores88/82 porflagwrites, fuente
+90db/7eb0 exacta; cuatrofuentesfinancieras sin cambios, cola0. Actuals en ambascarpetas;
+no reaplicar reservas ni repetir el POST. AdvertenciasSupabase leídas sin remediación;
+no evidencia que vincule avisosDB existentes al429 de Stream.
+
+Root siguiente: QA física readonly misma336/P3 con metadata nueva; paquete enpreparación,
+sinON/handoff activo. ADBdevice e InicioRescatista336 reales02:00–02:02UTC. Cámara futura
+requiere operador propio20/15/19, flags/jobs/source actuales; no tomar contratosreadonly5/18
+como equivalentes. Humano9fd disponible, ninguna toma/neutralidad nueva aún. Aceptación
+UX integral y nativo→Streamready/play siguen pendientes; sin renovar ocho horas.
+
 ## 25/10/2026 — 336 publicada/instalada; QA física cerrada y inspect429 demostrado
 
 Fuente28dac8116c211f1606648dea62643f991f2bb280, mockb9f6d5f/warm-trust.
