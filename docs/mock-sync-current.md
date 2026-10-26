@@ -1,3 +1,63 @@
+# Checkpoint — 25/10/2026: build336 en curso, mismo handle
+
+Fuente28dac8116c211f1606648dea62643f991f2bb280, mockb9f6d5f/warm-trust sin expansión.
+CI40247040345 TERMINAL/cuatroSUCCESS. 50focal/analyze0/fonted2/revisiones cerrados;
+CIduplicada del tag40249147557 cancelada/comprobada; original verde conservada.
+Preflight real full18/protected17/snapshot/finanzas/historia84/34digestsOFF/seisfuentes
+mixtasPASS. DEVe90e03f1…40bbd, pin6bbf082b4006482a8fe4f53cec1e0a85a5921d57509fb8054d45c066491c2b19.
+Tagcodex/story-controls-28dac811 remoto exact28; reserva/únicoPOST26oct00:26:57UTC→
+Codemagic6ade9e4ecd4de1bad4e96a85, android-guardian-internal. Status00:30:33 BUILDING.
+Root siguiente: mismo status/handle→13acciones/metadata/version+build+SHA/canal→Play
+publicación→actualización desdePlay/Samsung. Prevista2.3.3(336), aún NO comprobada.
+No otroPOST/rebuild por espera. Actuals en .tools/integral20d21-20261018/story-error-release.
+
+Samsung sigue335/8a5/Vending/ADBdevice; serviciosOFF/job6pausado, sin ventanaON activa.
+DiagnósticoAPI CONSUMIDO/CERRADO: HTTP200/lease≤120s, no fetchmedios ni prueba física;
+full18 cerrado00:12:40UTC. Causa502 anterior no establecida. Media81/cleanup76 mismos
+archivos canónicos5a/7eb0; contadores no equivalen a código. No repetir ese diagnóstico.
+QA física336readonly preparada antes de cámara para conservarbaseline18; paquete propio
+story-error-device-qa en preparación. Cámara336/bridge19 en preparación separada, con
+owner TEST/P3/public_update PRIVADO/una toma y una carga; noON ni datos fabricados.
+Pregunta de disponibilidad humana para Grabar/Detener/escuchar pendiente; no otra toma
+hasta preparación e intervención listas. Clip anterior no recuperado; no bypass caché.
+Nativo→Streamready/play y aceptación UX permanecen pendientes. iOS físico/TestFlight
+son límites declarados de esta entrega interna, no gate adicional. Preservar Stripe,
+TEST, privacidad, WIP ajeno y una colaFlutter; no renovar ocho horas ni permisos rutinarios.
+
+## Corte anterior del diagnóstico (supersedido en CI/distribución por arriba)
+
+# Checkpoint — 25/10/2026 18:12CDMX: candidato28dac/CI activa; diagnóstico cerrado
+
+Producto dopmi-app, continuación codex/finish-release-20261015/candidate-git-20261014.
+Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust.
+Nuevo candidato fuente28dac8116c211f1606648dea62643f991f2bb280 comprometido/remoto:
+error UI+decoder+coalescer y diagnóstico upstream;50PASS/analyze0/fonted2PASS/revisiones
+código-producto-seguridad cerradas. CI40247040345 sigue activa, tresjobsSUCCESS; Flutter
+en Android development build. No reiniciar ni confundir iOSsim con dispositivo.
+
+Play instalado sigue2.3.3(335)/8a5/Vending; errorUIcorrectivo todavía no distribuido.
+336 preparada en story-error-release, manifest673497b0…fbcf8f, ocho checks/3ASTPASS/
+reviewcode-security cerrados. Aún sin autoridad/bindings/pin operativo/tag/reserva/POST.
+Root próximo: CI cuatroSUCCESS→actuals frescos/pin propio→una distribución335NOrepetir/
+336prevista; comprobar artefacto/Play/install/QA por separado, sin permiso rutinario nuevo.
+
+Provider-readonly335 CONSUMIDO/CERRADO: únicoPOST00:11:48–51UTC HTTP200/lease≤120s,
+sin tokenURLpersistido ni fetchmedios. No prueba playback físico ni causa del502 previo.
+EdgeOFF00:12:11/SQLclose00:12:24/fullclose00:12:40 antesstop3/max5: full18/finanzas/
+historia84/34digests exactos/OFF/job6pausado/cola0. Media81/cleanup76 por dos flagwrites;
+bytes exactos media módulo5a…80767e y cleanup previo7eb0…501c. Baseline financiero no
+reaprendido. Causa upstream no reproducida/no establecida; no repetir este diagnóstico.
+Actuals privados provider-readonly335/closed.verified.actual.private.json. No ventanaON
+ni build remoto vivo. Tienda/enlaces/cleanup siguenOFF; dineroTEST/tresSDKStripe intactos.
+
+Nativo→Streamready/play y aceptación UX integral pendientes. Caché externa sin coincidencia
+del clip4.8; interna protegida no inspeccionada, Galería ausente según humano. Coordinar
+nueva toma sólo cuando candidato/recorrido estén listos. iOS físico/TestFlight limitados,
+no gate adicional. Estado335/base y retro anteriores se conservan abajo; este corte los
+supersede en candidato/diagnóstico/cola. WIP ajeno preservado; no renovar ocho horas.
+
+## Estado335/base y retro anteriores
+
 # Checkpoint — 25/10/2026: 335 instalada; QA parcial y diagnóstico remoto
 
 Producto dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.

@@ -1,3 +1,50 @@
+## 25/10/2026 — Distribución336 reservada/enviada una vez, conservar handle
+
+CI40247040345 completed/SUCCESS con cuatro jobs exactos para28dac8116c211f1606648dea62643f991f2bb280.
+Binding propio del objetivo técnico continuo y reconexión57db, sin renovación humana/8h;
+preflight real method→SQL full18/protected17/finanzas/snapshot/historia84/34digestsOFF/
+seis fuentes mixtas exactasPASS. DEVe90e03f1…40bbd, pinrevisado6bbf082b…c2b19,
+reviewcode/security de paquete y últimosbindings cerrados independientemente.
+Tagcodex/story-controls-28dac811 remoto exacto sinforce. Checkreal de refs/runtime/firma/
+colaPASS, reservaCreateNew26oct00:26:57.260UTC y únicoPOST→CM6ade9e4ecd4de1bad4e96a85.
+Último status00:30:33UTC building/source28dac; prevista2.3.3(336) aún sin artefacto ni
+publicación/instalación/aceptación comprobados. Conservar mismohandle/status/reconcile,
+NO otroPOST ni nuevo build por demora. Módulos desplegados81/76 mismasfuentes ya revisadas.
+
+Tag disparó CI duplicada40249147557; cancelada por UI propia y completed/cancelled
+comprobado00:30:33. Original40247040345 verde conservada. Screenshot privado y pestaña
+temporal cerrada; no repetir la CI fuente ni atribuir cancelación a fallo de producto.
+SamsungADBdevice/Play335-Vending vuelve a comprobarse; no otraactualización aún.
+Servicios video/Tienda/enlaces/cleanupOFF/job6pausado/cola0, full18 del cierreAPI conservado.
+Una nueva pregunta de coordinación de cámara pendiente; no es permisoON ni inicio de
+toma. Después de336 verificada, root prepara QA física readonly primero sobre18 y luego
+una toma humana neutra/preview/upload/ready/privateplay/delete si está disponible.
+No iniciar esa ventana sin métodos/selectores/bindings listos ni inventar neutralidad.
+
+## 25/10/2026 — Diagnóstico público único HTTP200; full18 cerrado y candidato28dac en CI
+
+Provider-readonly335 CONSUMIDO/CERRADO, sin reproducción física: reserva26oct00:10:51UTC,
+stop00:13:51/max00:15:51, SQLONguardado una vez y EdgeON una vez. ÚnicoPOST anónimo
+playback47e a00:11:48→00:11:51 obtuvo HTTP200/lease≤120s; URL/token sólo RAM, sin fetch
+HLS/póster/medios. Esto acredita consulta e emisión en ese intento, no explica el502
+anterior ni demuestra que una corrección haya reparado su causa. Ningún otro POST/retry.
+EdgeOFF00:12:11, SQLclose00:12:24; full18/OFF/pausado verificado00:12:40, antesstop/max.
+Historia84/snapshot financiero/casos/gasto/aporte/18recursos/34digests exactos y cola0.
+Los dos cambios de flag redeplegaron contadores81/76 sin cambiar archivos; mapas media
+diagnóstico5a y cleanup previo7eb0 siguen exactos. Revisión seguridad de actuals cerrada.
+Se corrigió antes de ON la suposición de contadores fijos79/74; no ocurrió fallo remoto
+ni deriva de fuente. Evidencia en provider-readonly335/closed.verified.actual.private.json.
+
+Fuente conjunta propia comprometida y remota28dac8116c211f1606648dea62643f991f2bb280.
+CI40247040345 en progreso: iOS/web/database/identity-adoption SUCCESS, Flutter continúa
+Android development build en última lectura. No repetir CI ni atribuir terminal aún.
+Paquete story-error-release para una336 previsto, manifest673497b0…fbcf8f, ocho grupos
+locales y tres ASTPASS; código y seguridad independientes cerrados. Autoridad/bindings,
+preflight fresco, pin operativo/tag/reserva/POST/build/publicación/instalación pendientes.
+335/8a5 sigue instalada. Candidato nuevo conserva firma/TEST/Stripe y no incluye ON.
+Root única cola: CI final exacta→preflight/pin→una distribución; luego QA física propia.
+Nativo→Streamready/play y aceptación UX permanecen pendientes; no nueva toma rutinaria.
+
 ## 25/10/2026 — Samsung335 verificado; loader físico cerrado, reproducción y error UI diagnosticados
 
 Reanudación humana57db: Samsung ya335/Vending23:03, Play Abrir/sin Actualizar, sesión TEST

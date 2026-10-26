@@ -4,8 +4,8 @@
 |---|---|---|
 | W1–W3/W4H/W4C | Cerrados técnicamente | Conservar superficies b9, Stripe y QA331/332; no repetir pagos, recuperación ni fixtures. |
 | W4T QA335 | Consumida/cerrada; root | 335/Vending/sesión verificados. Loader blanco físico PASS; reproducción ERROR502, sin retry. Full18/OFF/pausado23:20. |
-| W4T Corrección agrupada | Root + revisores / defecto335 | Error UI normal/200%, decoder y callback identidad corregidos:50PASS/analyze0; diagnóstico33PASS desplegado sólo media79, cleanup74 anterior. Falta candidato/CI/distribución/QA física del delta. |
-| W4T Diagnóstico proveedor | Root / media79 | Una lectura pública acotada, sin cargas ni dinero, diferenciar inspect/token por HTTP; cerrarOFF. No suponer causa ni repetir ventanas consumidas. |
+| W4T Corrección agrupada | Root + revisores / defecto335 | Error UI normal/200%, decoder y callback identidad corregidos:50PASS/analyze0; diagnóstico33PASS desplegado sólo media79, cleanup74 anterior. Candidato28dac/CI40247040345 cuatroSUCCESS/pin6bbf/únicoPOST CM6ade9e4ecd4de1bad4e96a85 building; faltan artefacto/Play/update/QA física. |
+| W4T Diagnóstico proveedor | CONSUMIDO/CERRADO; root | ÚnicoHTTP200/lease≤120s sin fetchmedios; full18/34digests/OFF00:12:40. Causa502 anterior no reproducida/no establecida; no repetir. Media81/cleanup76 mismos bytes por flagwrites. |
 | W4Q Cierre integral | Root / W4T | Conservar P3/único20TEST/20s/hold/BG/Impacto; completar reproducción física del candidato y nativo→Streamready/play, demo y aceptación UX. iOS físico/TestFlight se declaran no verificados. |
 
 Cache externa consultable sin coincidencia del clip4.8s; no bypass de caché interna ni otra

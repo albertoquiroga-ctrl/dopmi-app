@@ -5,9 +5,9 @@ CI40221330073 cuatroSUCCESS; publicación y metadatos coinciden. Instalada ya al
 23:03UTC, sin atribuir hora de actualización desconocida. No aceptación UX integral.
 QA335: loader blanco físico PASS, playback ERROR upstream502; no retry ni controles de
 reproducción probados. Full18/OFF/pausado23:20. Delta error UI/decoder/identidad WIP:
-50PASS/analyze0 y dos PNG locales con fuentes reales; aún no publicado/instalado.
+50PASS/analyze0 y dos PNG locales con fuentes reales; candidato28dac/CI40247040345 activa, aún no publicado/instalado.
 Diagnóstico servidor33PASS revisado y desplegado sólo media79/cleanup74 retenida;
-full18/finanzas/34digests exactos/OFF23:52. Causa upstream aún desconocida.
+full18/finanzas/34digests exactos/OFF23:52. Diagnóstico único posterior HTTP200/lease≤120s, sin fetchmedios; full18/OFF00:12:40 y contadores81/76, bytes exactos. Causa502 anterior no reproducida/no establecida.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight335 verificados. El plan aprobado pide declarar estos límites y
