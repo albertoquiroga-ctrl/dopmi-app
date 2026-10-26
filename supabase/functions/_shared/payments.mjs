@@ -80,7 +80,10 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
           throw new PaymentError('access_denied', 403);
       };
       await validateOwner();
-      if (current.id !== account.account_id || current.livemode !== false ||
+      // Account has no livemode field. stripeApi requires a test key, and the
+      // AccountSession below must explicitly confirm test mode.
+      if (current.object !== 'account' || current.id !== account.account_id ||
+          ('livemode' in current && current.livemode !== false) ||
           current.type !== 'express' || current.country !== 'MX')
         throw new PaymentError('connect_account_mismatch');
       const session = await stripe('account_sessions', {
