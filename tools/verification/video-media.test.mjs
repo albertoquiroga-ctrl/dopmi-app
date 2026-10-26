@@ -5,6 +5,81 @@ import {VIDEO_LIMITS,VideoError,validateUpload,streamProvider,verifyStreamWebhoo
 const input=()=>({id:randomUUID(),parent_id:randomUUID(),parent_version:1,purpose:'thanks',request_key:randomUUID(),bytes:1024});
 const account='a'.repeat(32),id='b'.repeat(32);
 const response=(value)=>new Response(JSON.stringify({success:true,result:value}),{status:200});
+
+test('inspect 429 logs bounded rate metadata with private policy names removed and never signs or retries',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ const sentinel='PRIVATE_POLICY_TOKEN_BODY',ray='9e0e8b241f36d83a-DFW',calls=[];let authorization=0;
+ const provider=streamProvider({accountId:account,apiToken:sentinel,fetcher:async(url)=>{
+  calls.push(url.endsWith('/token')?'playback':'inspect');
+  return new Response(sentinel,{status:429,headers:{'Retry-After':'30','Ratelimit':`"${sentinel}";r=0;t=30, "burst";t=1;r=5`,'Ratelimit-Policy':`"burst";q=100;w=60, "${sentinel}";w=300;q=1200`,'CF-Ray':ray,'Authorization':sentinel,'Location':`https://private.test/${sentinel}`}});
+ }});
+ const handler=createVideoHandler(runtime({user:async()=>{authorization++;return {id:'asset',provider_id:id,technical_state:'ready'};},provider:()=>provider}));
+ const result=await handler(request({action:'playback',id:randomUUID(),private_text:sentinel}));
+ assert.equal(result.status,502);assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});
+ assert.equal(result.headers.get('cache-control'),'no-store');assert.deepEqual(calls,['inspect']);assert.equal(authorization,1);
+ assert.deepEqual(logs,[{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502,provider_operation:'inspect',provider_status:429,
+  provider_retry_after_seconds:30,provider_rate_limits:[{remaining:0,reset_seconds:30,quota:1200,window_seconds:300},{remaining:5,reset_seconds:1,quota:100,window_seconds:60}],provider_cf_ray:ray,provider_content_type:'other'}]);
+ for(const forbidden of [sentinel,'burst',account,id,'https://','Authorization','Location','stack'])assert.ok(!JSON.stringify(logs).includes(forbidden));
+});
+
+test('untrusted upstream headers are omitted without changing the 429 error contract',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ const three='"a";r=0;t=1, "b";r=0;t=1, "c";r=0;t=1';
+ const hostile=[undefined,{get(){throw new Error('PRIVATE_HEADER_GETTER');}},{get:()=>({toString(){throw new Error('PRIVATE_COERCION');}})},
+  ...[
+   {'Retry-After':'Sun, 25 Oct 2026 01:00:00 GMT'}, {'Retry-After':'-1'}, {'Retry-After':'1.5'}, {'Retry-After':'86401'}, {'Retry-After':'30\n'}, {'Retry-After':'9'.repeat(2048)},
+   {'Ratelimit':'"https://private.test/token";r=0;t=30'}, {'Ratelimit':'"a";r=0;r=30'}, {'Ratelimit':'"a";r=1000000001;t=1'}, {'Ratelimit':'"a";r=0;t=86401'}, {'Ratelimit':'"a";r=0;t=1;token=PRIVATE'},
+   {'Ratelimit':'"a";r=0;t=1, "a";r=1;t=1'}, {'Ratelimit':three+', "d";r=0;t=1'}, {'Ratelimit':'"a";r=0;t=1\nPRIVATE'}, {'Ratelimit':'"a";r=0;t=1\n'}, {'Ratelimit':'x'.repeat(1025)},
+   {'Ratelimit-Policy':'"a";q=0;w=1'}, {'Ratelimit-Policy':'"a";q=1200;w=86401'}, {'Ratelimit-Policy':'"a";q=1200;w=1, "a";q=1;w=1'},
+   {'Ratelimit':three,'Ratelimit-Policy':'"d";q=1;w=1'},
+   {'CF-Ray':'9e0e8b241f36d83a-DFW, PRIVATE'}, {'CF-Ray':'9e0e8b241f36d83a-DFW\nPRIVATE'}, {'CF-Ray':'https://private.test/token'}, {'CF-Ray':'9e0e8b241f36d83a-dfw'},
+  ].map(values=>({get:name=>values[Object.keys(values).find(key=>key.toLowerCase()===name.toLowerCase())]??null})),
+ ];
+ for(const headers of hostile) {
+  let calls=0;
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>{calls++;return {ok:false,status:429,headers};}});
+  const handler=createVideoHandler(runtime({user:async()=>({provider_id:id,technical_state:'ready'}),provider:()=>provider}));
+  const result=await handler(request({action:'playback',id:randomUUID()}));
+  assert.equal(result.status,502);assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});assert.equal(calls,1);
+  assert.deepEqual(logs.at(-1),{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502,provider_operation:'inspect',provider_status:429});
+ }
+});
+
+test('rate diagnostics allow at most three policies and bounded numeric fields without labels',async()=>{
+ const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>new Response(null,{status:429,headers:{'Retry-After':'86400','Ratelimit':'"a";r=1000000000;t=86400, "b";r=0;t=0','Ratelimit-Policy':'"a";q=1000000000;w=86400, "c";q=1;w=1'}})});
+ await assert.rejects(provider.inspect(id),error=>{
+  assert.deepEqual(error.providerDiagnostics,{provider_retry_after_seconds:86400,provider_rate_limits:[{remaining:1000000000,reset_seconds:86400,quota:1000000000,window_seconds:86400},{remaining:0,reset_seconds:0},{quota:1,window_seconds:1}]});
+  assert.equal(error.message,'video_provider_unavailable');assert.equal(error.status,502);return true;
+ });
+});
+
+test('safe upstream metadata is collected for create signing and removal errors only',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));
+ for(const operation of ['create','playback','remove']) {
+  let calls=0;const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>{calls++;return new Response(null,{status:429,headers:{'Retry-After':'0','CF-Ray':'9e0e8b241f36d83a-DFW'}});}});
+  await assert.rejects(operation==='create'?provider.create(input()):provider[operation](id),error=>{
+   assert.deepEqual(error.providerDiagnostics,{provider_retry_after_seconds:0,provider_cf_ray:'9e0e8b241f36d83a-DFW'});assert.equal(error.providerOperation,operation);return true;
+  });assert.equal(calls,1);
+ }
+ assert.deepEqual(logs,[]);
+});
+
+test('successful upstream requests skip diagnostic headers and keep the 120 second playback lease',async(t)=>{
+ const logs=[];t.mock.method(console,'warn',value=>logs.push(value));let tokenRequest;
+ const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async(url,init)=>{
+  const signing=url.endsWith('/token');if(signing)tokenRequest=JSON.parse(init.body);
+  return {ok:true,get headers(){throw new Error('diagnostic headers must not be read on success');},json:async()=>({success:true,result:signing?{token:'synthetic-signed-token'}:{uid:id,requireSignedURLs:true,status:{state:'ready'},readyToStream:true,duration:20}})};
+ }});
+ assert.deepEqual(await provider.inspect(id),{state:'ready',duration:20});
+ const lease=await provider.playback(id,1000);assert.equal(lease.expires_at,1120);assert.deepEqual(tokenRequest,{exp:1120});assert.deepEqual(logs,[]);
+});
+
+test('error content type is a small enum and malformed or overlong values are absent',async()=>{
+ for(const [value,expected] of [['application/json; charset=utf-8','json'],['application/problem+json; trace=PRIVATE_PARAMETER','json'],['Text/HTML; charset="UTF-8"','html'],['text/plain','other'],['application/json PRIVATE',null],['application/json; PRIVATE',null],['text/html\n',null],['a'.repeat(129),null]]) {
+  const provider=streamProvider({accountId:account,apiToken:'synthetic',fetcher:async()=>({ok:false,status:429,headers:{get:name=>name==='Content-Type'?value:null}})});
+  await assert.rejects(provider.inspect(id),error=>{assert.deepEqual(error.providerDiagnostics,expected===null?{}:{provider_content_type:expected});assert.ok(!JSON.stringify(error).includes('PRIVATE'));return true;});
+ }
+});
 test('server upload size and purposes fail closed',()=>{validateUpload(input());for(const extra of [{bytes:0},{bytes:VIDEO_LIMITS.bytes+1},{parent_version:0},{purpose:'receipt_public'},{parent_id:'unknown'}])assert.throws(()=>validateUpload({...input(),...extra}));});
 test('real TUS adapter sends duration/signed policy and never forwards user metadata',async()=>{let observed;const provider=streamProvider({accountId:account,apiToken:'server-only',fetcher:async(url,init)=>{observed={url,init};return new Response(null,{status:201,headers:{Location:'https://upload.videodelivery.net/secret-capability','stream-media-id':id}});}});assert.equal((await provider.create(input())).provider_id,id);assert.equal(observed.init.headers['Upload-Length'],'1024');assert.match(observed.init.headers['Upload-Metadata'],/maxDurationSeconds NjA=/);assert.match(observed.init.headers['Upload-Metadata'],/requiresignedurls/);assert.equal(observed.init.redirect,'error');});
 test('provider never accepts unsafe playback or overlong processed video',async()=>{for(const item of [{uid:id,requireSignedURLs:false},{uid:id,requireSignedURLs:true,readyToStream:true,status:{state:'ready'},duration:61}]){const p=streamProvider({accountId:account,apiToken:'x',fetcher:async()=>response(item)});if(!item.requireSignedURLs)await assert.rejects(p.inspect(id));else assert.equal((await p.inspect(id)).state,'failed');}});
@@ -88,7 +163,7 @@ test('upstream failure diagnostics distinguish inspect from signing without copy
   const handler=createVideoHandler(runtime({user:async()=>({id:'asset',provider_id:id,technical_state:'ready'}),provider:()=>provider}));
   const result=await handler(request({action:'playback',id:randomUUID()}));
   assert.equal(result.status,502);assert.deepEqual(await result.json(),{error:'video_provider_unavailable'});
-  assert.deepEqual(logs.at(-1),{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502,provider_operation:operation,provider_status:status});
+  assert.deepEqual(logs.at(-1),{event:'video_request_failed',action:'playback',code:'video_provider_unavailable',status:502,provider_operation:operation,provider_status:status,provider_content_type:'other'});
   assert.deepEqual(calls,operation==='inspect'?['inspect']:['inspect','playback']);
  }
  for(const forbidden of [sentinel,account,id,'https://','Authorization','stack'])assert.ok(!JSON.stringify(logs).includes(forbidden));
