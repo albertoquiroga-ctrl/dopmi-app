@@ -1,3 +1,34 @@
+## 25/10/2026 — Cámara336 preparada/revisada; regreso aDopmi pendiente, sin ON
+
+camera-stream336-current manifestb845f0bc1f08dabfdbf3d2628348569961fa1a6aa6d872c5ef8511b8e4c55fdd,
+scope098009344f175eaf337555d7f691dbaa9174aff1ad4a186cfcca191ebb56761b. RootOpsCLI/IPC
+48167d846323ed2bae83c9a1318253cfdfce165c1518e8030ac0aaa37ae4a0e7 revisado por código/seguridad.
+13 gruposfase+8workflowRAM y4IPC sintéticosPASS, sinatribuir ejecución real. P2privados
+corregidos: fase/estado/READYduration, refreshconparentescrolleado(sin título visible),
+y evidenciaStreamdosrutasresueltas/bytesdistintos. ConfirmREADY entregaasset_idreal al
+consumidor; no fixture que lo inserte a mano. CallbackrootfileMCP real ligado al pin,
+25s/deadline/obs>=upload/fresh/transporte, sinAPIembebida ni otrobegin. Handoff bloquea
+lectura durante toma; preview requiere imagenneutra/audiohumano antesúnicoSubir.
+
+Refresh fue comprobadoOFF con snapshot realparent03:11:27→Administraravances03:11:32;
+archivo camera-off-parent-detail ynavchain enstory-play-device-qa/device336. Rootno
+pulsóCrearavance ni guardóexpediente. Quedan source28/Play336 y backende05/90db+7eb0;
+ambasCI completas verdes, cero builds/despliegues nuevos. No repetir P3 ya acreditado.
+
+Retraso de coordinación comprobado: rootenvió dosfixes con send_message a implementador
+COMPLETED; no disparó turno. Se reactivó con followup_task y entregó el delta. No fue
+trabajo activo del implementador durante esa espera; root informó el fallo al titular.
+Conservar este aprendizaje para no confundir cola de mensaje con ejecución.
+
+Humano call_29b513185f6d49f58b0fd5c6c0d2527d/item0 confirmóSamsungamano, no toma ni
+neutralidad futura. Root creó sólo reviews y QApin ef13773dca2ab12668e9a7fa2989c80d7b4d9fcc7acb2de5da855406fac48551.
+Intento BEFOREdevice03:41 rechazado por foco fueraDopmi ANTESárbol/imagen/input; sólo
+metadato de foco observado, sin capturar/controlar otraapp. Se consultó regreso humano
+aDopmi; no abrircámara aún. Sinreserva/SQLON/EdgeON/19/toma/uploads; servicios conservan
+OFF/job6pausado del full18cerrado02:47:14. Root espera respuesta→capturas frescas/case
+context actual→única ventana20/15 y cierreOFF incluso antefallo. No renovar8h ni pedir
+permiso rutinario; esta espera es coordinación física. Aceptación UX y cámaraE2E pendientes.
+
 ## 25/10/2026 — P3 reproducción física336 cerrada; cámara todavía sin toma
 
 Scope01753b8c/manifest4ad05, cliente28dac/Play336 y servidor diagnósticoe05/90db+cleanup7eb0.

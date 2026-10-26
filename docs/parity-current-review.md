@@ -7,8 +7,9 @@ patrón/barra; fin automáticoApoyar observado, sin otroinputdespuésPlay. Produ
 sólo para avance temporal/salida/estadoUIsonido, no audiofísico o aceptación humana.
 Full18/finanzas/historia84/34digests/seisfuentes/OFF/jobpausado02:47:14; no repetir P3.
 Errores429previos no reproducidos, causa/cuotadesconocidas; metadata segura conservada.
-Cámara336 aún propuesta, callbacks/revisión de sus P2privados en preparación; sin nueva
-toma/ON. Nativo→Streamready/play y aceptaciónUX pendientes. UIOFFactualAvancesP3, noescrituras.
+Cámara336 preparada/revisada b845/RootOps4816, sinreserva/toma/ON. Guard de foco03:41
+detuvo lectura antesárbol/imagen/input: teléfono fueraDopmi, regreso humano consultado.
+Nativo→Streamready/play y aceptaciónUX pendientes; no másP3, noescrituras ni otraapp.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y

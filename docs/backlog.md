@@ -6,11 +6,11 @@
 | W4T Distribución/backend | Cerrado; root/revisores | Cliente28dac/Play336 instalado; backende05, ambasCIcuatroSUCCESS, diagnóstico90db/cleanup7eb0. Sin build adicional. |
 | W4T Diagnósticos previos | CONSUMIDOS/CERRADOS | 4c métodoOFF/ON antesPOST, e150API200 sinmedios, 5afprimerframe/timeout120. Full18/OFF/pausado conservados; causa429 previa desconocida. |
 | W4T P3Play336 | CERRADO técnico; root/producto | 0175/4ad05: movimiento0.267→4s/barra, sonido habilitado enUI, fin automáticoApoyar; full18/OFF/pausado02:47:14. Audiofísico noatribuido. No másP3. |
-| W4Q Cámara | Worker/root/revisores + humano | Corregir P2privados y completar callbacks actuales del operador20/15/19, ensayo completo antesON. Toma nueva sólo con coordinación/revisiónneutra; nativo→Streamready/play→delete/ausencia separados. |
+| W4Q Cámara | Root + humano / preparación revisada | b845/scope098/RootOps4816 y21+4checksRAM; código/seguridad cerrados, pin propioef137 sinreserva/ON/toma. Esperar regreso humano aDopmi (guardfoco03:41, sin imagen/input)→actuals frescos→única toma20/15/19/revisiónneutra→Streamready/play/delete/ausencia separados. |
 | W4Q Aceptación integral | Root + titular/UX | Demo comparativa y reporte vigente de adaptaciones/flujos no dibujados. Reutilizar evidencia válida; aceptación humana sigue separada. iOS físico/TestFlight noverificados. |
 
-ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Teléfono enAvancesP3
-por navegaciónOFFpreparatoria; sinCrearavance/guardados. Una colaFlutter. No renovar8h.
+ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Teléfono fueraDopmi;
+no controlar otraapp. Última rutaAvancesP3OFF sinCrearavance/guardados. No renovar8h.
 
 Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
 

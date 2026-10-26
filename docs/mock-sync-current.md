@@ -24,15 +24,20 @@ Metadata segura disponible, sin rawheaders/cuerpos/URLs/credenciales ni autoRetr
 antesSound; cerradofull18/OFF02:25:23. No defectoapp demostrado. Secuencia4ad05 resuelve
 esa preparación; retro independiente indica no reparar dentroON ni Back ciego trasfin.
 
-Root siguiente: terminar operador cámara336-current y cerrar revisión de sus dosP2
-privados (matriz fase/estado y duración segúnREADY real), callbacks actuales/metadata/
-renovaciónappend-only y prueba de ausenciaStream separada. No usar af2 como operador
-listo ni readonly5/18 para cámara20/15/19. Cámara sin ON/toma/binding nuevos. Disponibilidad
-9fd no acredita contenido nuevo; coordinación humana actual pendiente, no grabar aún.
+Operador cámara336-current revisado: manifestb845f0bc…55fdd/scope09800934…761b,
+RootOps48167d84…4a0e7/4IPC sintéticosPASS. Código/seguridad cerraron matriz/fases,
+duraciónREADYreal, refresh probado con XMLreal scrolleado, dosvistasStream distintas,
+metadataMCPporarchivo con espera25s/deadline, renovacionesappend-only y callbacks.
+QApin propioef13773d…48551 creado; SINreserva/SQLON/flagsON/toma/binding19 nuevos.
+Humano29b513/item0 confirmóSamsungamano;03:41 el teléfono estaba fuera deDopmi y
+el guard de foco detuvo captura ANTESárbol/imagen/input. Sin inspección de otraapp.
+Root siguiente: esperar regreso humano aDopmi ya consultado→actuals frescos/coordinar
+→única cámara20/15/19. Neutralidad/audio futuros no confirmados. No repetir P3/af2/5min.
 Nativo→Streamready/play y aceptación UX integral quedan pendientes; iOS sóloCI simulador,
 sin físico/TestFlight. Datos/Stripe/único20TEST/WIPajeno intactos, una colaFlutter.
-UIOFFactual en Avances del casoP3 por navegación de preparación02:51, sin Crearavance,
-guardado ni caso nuevo; XML privado disponible. No ventana/build vivos ni ocho horas nuevas.
+Última rutaDopmiOFF AvancesP3, snapshotpadre03:11 sin título visible/fix probado; sin
+Crearavance/guardado/caso nuevo. Teléfono ahora fueraDopmi, no controlar otraapp.
+No ventana/build vivos ni ocho horas nuevas. Detalle y límites en progress/parity.
 
 # Checkpoint vigente — paridad d304535, 17/10/2026 México
 
