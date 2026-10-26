@@ -3,13 +3,13 @@
 | Batch | Dueño / dependencia | Escenarios y salida |
 |---|---|---|
 | Base cerrada | Root conserva evidencia | W1–W3/W4H/W4C, QA331–332, Play336/28dac instalada, backend e05 y ambasCI verdes; P3 movimiento/salida comprobados. No repetir pagos, recuperación, fixtures, P3, build o suites intactas. |
-| 1. Cámara E2E | Root + humano; SQL de preparación bloqueada | b845 consumida sin cámara/toma/upload: únicoenable dio57014/timeout8s antesON. CierreAFTERfull18/OFF/pausado exacto. Próximo: diagnosticar sóloconsultaOFF; sin repetir hasta nueva evidencia. Después una toma/revisión→Streamready/play→borrado/ausencia→OFF, ventana20/stop15. Sin reparaciones dentroON. |
-| 2. Aislamiento Tienda | Root; después de1 cerrada y actores legítimos disponibles | Comprobar cuenta ordinaria sin entrada mientras vistaTEST estáON; comercio/enlaces bloqueados, luego previewOFF/acceso revocado. Reutilizar catálogo/QA existente. Sin cuenta legítima apta, registrar dependencia en vez de repetirOFF. |
-| 3. Demo Stripe y comparación final | Root + titular/UX; después de1–2 o con bloqueo externo explícito | Mostrar los tres accesos/componentes conservados y contraste b9 usando evidencia vigente. Connectnativo físico no se acredita por cuentaReady; sin alta remota por inferencia. Agrupar sólo defectos demostrados. |
+| 1. Cámara E2E | Root + humano; disponibilidad consultada | Timeout8s diagnosticado; budget15 replayOFF real PASS5.7s. camera-final336/f827648a revisada código/seguridad/5focalesPASS tras cierresStore/Connect; sin pin/reserva/ON/toma. Respuesta física→actuals frescos→única toma/revisión→Streamready/play→borrado/ausencia→OFF,20/stop15. Sin reparaciones dentroON. |
+| 2. Aislamiento Tienda | CERRADO técnico | MismaAuth6e catálogo congrant→revocada04:51:41→mensaje no disponible04:51:52 conpreviewON→OFF04:52:33/revocada. Catálogo/protegido/full18 exactos salvo metadata autorizada. No dos identidades; foto de entrada ausente tiene límite de reloj/cierre, ver parity. No repetir QA. |
+| 3. Demo Stripe y comparación final | Root + titular/UX; permiso TEST pendiente | Fix354bbe6e desplegadoPayments108,994PASS/8SKIP/CI40269488735 cuatroSUCCESS. Account sinlivemode aceptado; nuevo503 esStripe403AccountSessionsWrite faltante. Cambio único en claveDopmiSupabaseTest preparado sin aplicar, pregunta puntual pendiente. Después comprobar componente nativo; no pagos/altas por inferencia. |
 | 4. Aceptación | Titular/UX; demo e informe conciliados | Registrar conformidad o lista concreta de diferencias; implementación, QA, publicación, instalación y aceptación separados. iOS físico/TestFlight y comercio público son límites declarados, no pruebas ejecutadas. |
 
-ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Durante auditoría
-no se controla teléfono. Estimación2–4h técnicas efectivas, excluye esperas humanas
+ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. SamsungInicioRescatista,
+sin credenciales visibles; no leer durante futura toma. Estimación2–4h técnicas efectivas, excluye esperas humanas
 y defectos nuevos. Mismo fallo sin información nueva→parar estrategia, cerrarOFF,
 diagnosticar antes de otro intento. Documentar al cerrar tarea/bloqueo, no cada lectura.
 

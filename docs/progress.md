@@ -1,3 +1,58 @@
+## 25/10/2026 — Tienda revocada con ON verificada; Connect corregido, permiso TEST pendiente
+
+Investigación acotada del timeout: EXPLAIN SELECT original JIToff/sinparalelismo,
+140nodos; ejecución5803.571ms. Segunda instrumentada4035.414ms, scancron.job_run_details
+3880.243ms/102751filas descartadas. Eso identifica costo en esa muestra, no causa
+única del57014 previo. Sucesor budget15 revisado código/seguridad, cambia sólo
+timeout8→15; replayrealOFF04:32:49.967UTC/5723ms devuelve media_off/cron6_pausedTRUE.
+Sin reservaON/toma/carga. Después de las entregas siguientes se prepara camera-final336
+con baseline de sus dos cambios conocidos; no permitir deriva genérica ni editar raws.
+
+Tienda scope70c7/manifestcffd: una sola Auth6e, cliente336/28dac/Vending. Preflight
+catalog8/grantrevocada/noadmin/0destinos y34digests/seisfuentes exactos. Única activación
+04:50:43.496630UTC, grant300s/exp04:55:43.496630. Entrada/catalogo TEST reales; revocar
+sólogrant04:51:41.784615 preservópreviewON. PNG04:51:52 muestra mensaje no disponible
+sin catálogo/filtros; SQL04:52:23 mantieneON/revocada. OFFconfirmado04:52:33.738687,
+finalcatálogo/protegido iguales,34digests/seisfuentes conservados. Full18posterior
+frente baseline sólo preview_state/observed_at; finanzas/historia/recursos intactos.
+Producto independiente contrastó fuentes/PNG/recibos: denegacióncontenidoON cerrada.
+Límite: foto de entrada ausente tiene reciboPC04:52:35 posterior alSQLcierre; secuencia
+tool fue UI→close, pero no se guardaron cotas entre relojes. No afirmar fotoON por
+nombre ni dos identidades simultáneas/HTTPbody no observado. Sin otra QA para ese límite.
+Actuals store-isolation336-qa/closed.verified.actual.private.json y PNG device336/store336-*.
+
+DemoConnect336: Perfil→Micuenta→CompletarStripe abrió SDK y errorauth; payments409.
+Defecto confirmado en servicio real: Account no trae livemode, fixture lo inventaba.
+354bbe6ef6672e8235579ba443b3fe950942d185 acepta contratoAccount/object/id/Express/MX,
+mantiene indicioLIVE rechazado y AccountSession estrictamenteTEST, revalidaciónowner,
+sóloonboarding/disable_stripe_user_authentication=false y ningún fallbacktraserror. RED409/GREEN7focal;
+994backendPASS/8SKIP/0fallos,87.5s. Código/seguridad independientes y CI40269488735
+cuatroSUCCESS (121398991317/1491/1535/1591). Un deployDEVpayments108 payloadfa0ae70f,
+readback6files exacto: sólo payments.mjs→37e6a38f…99290,5files/runtime/Auth idénticos,
+verify_jwtfalse existente conservado. No mobilebuild/esquema/flags/dinero nuevos.
+
+Un open posterior produjo503, no repetirbotón: Stripe403req_KSszHGhHCmuvYz confirma
+more_permissions_required/account_session_write en sandbox1U2Dyq, clave restringida
+Dopmi Supabase Test. Sólo AccountSessionsEscritura preparado en formulario, SINguardar,
+sin leer/reemplazar secreto ni tocar otros permisos/LIVE. Pregunta puntual pendiente
+por política de navegador sobre ampliaciónpersistente; autoridad técnica continúa.
+SDKConnect aún NO verificado funcional. Samsung quedóInicioRescatista05:09; full18
+05:15:33 frente cierreStore sólo observed_at distinto, cola0/mediaOFF/cleanupOFF/job6pausado.
+Recibos connect-fix-* y stripe-account-session-permission.proposed en device336.
+
+Retro independiente efficiency_audit_16h: causa409 es fixture/guard fuera del contrato;
+503 es permiso diferente, no mismo fallo repetido. Conservar shapes reales y separar
+bug corregido de habilitación pendiente; verificar próximos focales sin otro harness.
+Para próximos logs, event_message es columna superior de function_logs; no atributo.
+Camera-final336 cerró revisión código/seguridad: manifestf827648a…0b292/scope7e819676…6f844,
+operatorbb3d89f0…745b4 y5focalesRAM PASS. Exige previewFINAL completo y Payments37e
+antes de copias comparadoras heredadas; SQLliteral verifica snapshotFINAL completo,
+18/finanzas/historia/19/34digests/fuentes/fresh/15s/20-stop15 conservados. UI/RootOps4816
+byteidénticos y raws sin retimar. Sólo reviewsactuals creados; sin pin/reserva/ON/toma.
+Root siguiente: permiso puntualTEST y disponibilidad física
+ya consultados, luego demo/aceptación. Todos los servicios de producto siguenOFF;
+comercio bloqueado por decisión. Actualización documental agrupada por estos cierres.
+
 ## 25/10/2026 — Aplicación de parada: timeout de preflight antes de cámara, cerradoOFF
 
 Después de auditoría2196abd6, humano3dfe confirmó regresoDopmi; contexto336/Avances

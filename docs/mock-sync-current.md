@@ -1,41 +1,53 @@
-# Checkpoint — 25/oct/2026 CDMX: auditoría de eficiencia y cierre finito
+# Checkpoint — 25/oct/2026 CDMX: Tienda cerrada; Connect corregido, permiso pendiente
 
 Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
 Referencia única: b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust.
 Cliente publicado e instalado desde Play interno: 2.3.3(336), SHA
 28dac8116c211f1606648dea62643f991f2bb280, CM6ade9e4ecd4de1bad4e96a85/13SUCCESS,
-CI40247040345/cuatroSUCCESS. Backend desplegado: e05ec4166f190888ea335fbbf58d79160e769cac,
-CI40254930887/cuatroSUCCESS, 991backendPASS/8SKIP. Sin build nueva necesaria demostrada.
+CI40247040345/cuatroSUCCESS. Media sigue e05ec4166f190888ea335fbbf58d79160e769cac.
+Payments108 desplegada desde354bbe6ef6672e8235579ba443b3fe950942d185: contratoAccount
+corregido,994backendPASS/8SKIP, CI40269488735 cuatroSUCCESS y readback6files exacto.
+Sólo payments.mjs cambió; runtime/Auth/TEST/firma conservados. Sin nueva build móvil.
 
 Verificado: QA vigente de la matriz, recuperación real aceptada clara, StripeTEST
 conservado, único aporte20 conciliado y P3 físico336 movimiento/salida automática.
 No repetir esos recorridos ni sus fixtures. Audio físicoP3 no atribuido; causa429
 previa desconocida. Aceptación UX integral sigue pendiente, no equivale a CI o QA.
-Último cierre real26oct02:47:14UTC: video/Tienda/enlaces/cleanupOFF, job6pausado,
-cola0, recursos/finanzas/historial conservados. No cambios de servicios en la auditoría.
+Último full18 real26oct05:15:33UTC: video/Tienda/enlaces/cleanupOFF, job6pausado,
+cola0, recursos/finanzas/historial conservados. Sólo metadataTEST de Tienda cambió
+frente al baseline anterior, comprobada en su cierre. No nuevas cargas ni dinero.
 
 Cola finita y dueños: [backlog](backlog.md), primeras cuatro filas de cierre.
 1 Root+humano: cámara nativa→revisión→Streamready→play→borrado/ausencia→OFF.
-2 Root: cuenta ordinaria sin acceso durante previewTEST ON→OFF/revocada.
-3 Root+humano: demo de los tres accesos Stripe y comparación final contra b9.
+2 CERRADA: mismaAuth con grant→revocada con previewON→denegación real→OFF/revocada.
+3 Root+humano: resolver permiso StripeTEST pendiente→demoConnect y comparación b9.
 4 Titular/UX: evaluación y aceptación, o diferencias concretas para corregir.
-Connectnativo físico no demostrado; no ejecutar altas por inferencia. iOS sóloCI,
-sin físico/TestFlight; comercio público bloqueado por decisión. Ver informe en parity.
+Connect nativo abrió, pero no completó:409 de contrato corregido; siguiente503 es
+Stripe403 more_permissions_required/account_session_write, confirmado en req_KSsz….
+Clave existente Dopmi Supabase Test: sólo AccountSessionsWrite preparado SINguardar;
+confirmación puntual del navegador pendiente por ampliar acceso persistente.
+No claves nuevas/rotación/lectura de secreto ni cambiosLIVE. iOS sóloCI/sin físico;
+comercio público bloqueado por decisión. Ver informe en parity.
 
 Cámara b845/scope098/RootOps4816, pin ef13773d…48551: intento consumido04:03:09UTC.
 Humano volvióDopmi; únicoSQLenable falló57014/statement_timeout8s en SELECT de
 preflight, antesUPDATEvideo/cron. Sin Edgewrites/cámara/toma/upload ni recurso nuevo.
 CierreSQL canónico y AFTERfull18 exacto04:06:25UTC; Inicio restaurado04:07:55,
 34digests/seisfuentes intactos, OFF/job6pausado/cola0. Sin ventana viva.
-Siguiente acción root: diagnosticar esa consulta enOFF con evidencia nueva antes
-de repetir. No más toma/preparación global; causa de lentitud aún no demostrada.
+DiagnósticoOFF: SELECT5.8s, otro4.0s con3.88s en scancron; JIToff/sinparalelismo.
+Budget15/replayOFF revisado y ejecutado04:32:49UTC/5.7s, sin reserva/ON/toma.
+Tras Tienda y Connect, camera-final336 quedó revisada por código/seguridad:
+manifestf827648a…0b292/scope7e819676…6f844/operatorbb3d89f0…745b4,5focalesPASS.
+Sólo dos adaptaciones exactas de baseline conocidas; raws/UI/RootOps4816 intactos.
+Sin pin/reserva/ON ni cámara nuevos. Siguiente root: respuesta física→actuals frescos
+y única toma coordinada; permisoTEST de Stripe y aceptaciónUX siguen pendientes.
 
 Auditoría independiente: hubo retrabajo de operador y estados documentales obsoletos;
 causas y tres ajustes en progress. Preparación existente antesON, ninguna reparación
 dentroON; misma firma sin información nueva→parar estrategia/cerrarOFF/diagnosticar.
 No suites globales, builds, nuevas herramientas o repetición para demostrar eficiencia.
 Registrar cierre/bloqueo de tarea, no cada lectura. Base estimada2–4h técnicas
-efectivas, más coordinación/aceptación; condicionada ahora al diagnósticoSQL8s.
+efectivas, más coordinación/aceptación; ahora depende de permisoTEST y toma humana.
 El titular permite más tiempo: ocho horas dejan de ser límite vigente (decisión25oct).
 Una colaFlutter; WIPajeno conservado. No cámara, ventana o build activos.
 
