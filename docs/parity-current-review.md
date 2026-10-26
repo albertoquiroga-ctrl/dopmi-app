@@ -7,13 +7,16 @@ patrón/barra; fin automáticoApoyar observado, sin otroinputdespuésPlay. Produ
 sólo para avance temporal/salida/estadoUIsonido, no audiofísico o aceptación humana.
 Full18/finanzas/historia84/34digests/seisfuentes/OFF/jobpausado02:47:14; no repetir P3.
 Errores429previos no reproducidos, causa/cuotadesconocidas; metadata segura conservada.
-Cámara336: timeout8s consumido antesON y cerrado íntegro; budget15 replayOFF real
-04:32:49/5.7s PASS sin nueva toma. Camera-final336/f827648a revisada código/seguridad,
-5focalesPASS tras datos conocidosStore/Connect; sin pin/reserva/ON, respuesta física pendiente.
+Cámara336: última ventanaf827 cerradaOFF14:25:57UTC antesmax14:27:15; nuevosassets0,
+18históricos/finanzas exactos. Cámara abierta una sola vez, estado local humano
+pendiente: no leer/controlar teléfono ni actualizar hasta confirmar toma o descarte.
 Tienda revocación contenido conON cerrada, OFF04:52:33; full18/finanzas/historia exactos.
 Connect354bbe6e/Payments108,994PASS8SKIP/CI40269488735cuatroSUCCESS/readback exacto;
-SDK físico todavía bloqueado por permiso AccountSessionsWrite de claveTEST, sin guardar.
-Nativo→Streamready/play, permisoTEST, demo y aceptaciónUX pendientes; sin másP3/pagos.
+AccountSessionsWrite TEST guardado tras SMS humano; readback176filas, sólo ese cambio.
+Demo nativaConnect tras permiso, cámara→Streamready/play y aceptaciónUX pendientes.
+Publicación4/selector/ayuda/CTA48 implementados en fb0a3495; CI40358538461 cuatroSUCCESS,
+97focalesPASS/analyze0/11renders y revisiones independientes. ÚnicoCM6adf83cc93adc6d8e55fa26d
+en cola; build337 sólo esperada. No másP3/pagos ni suites intactas repetidas.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y
@@ -61,7 +64,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Perfil propio | Tarjeta/avatar/accesos/textos b9; QA326/327 de cuenta/regresos | 332 ambos modos, gradiente literalRescatista y badge comprobados; no cambiar contenido personal para imitar fixture. |
 | Perfil público | Datos aprobados/galerías/filtros; métricas/barrier W4R | 331 previewprivado/resumen/Adopciónvacía; PNGpositivo/escalado vigente, no nueva publicación. |
 | Rescate/Casos | Inicio/métricas/filtros/archivo/detalle; chrome W4R | 331 lifecycle reutilizado;332 Inicio/Casos/filtro y Listopill comprobados. |
-| Publicación | Apoyo4pasos b9: perfil/necesidades/medios/preview; selector y ayuda fieles, CTA48px.97focalesPASS/analyze0/11renders; fuentes y UI revisadas independientemente | Implementado/verificado localmente; falta CI y distribución del mismo SHA, recorrido afectado del teléfono y aceptación. Se conservan política real/ready/snapshot, reintentos y datos históricos. QA financiera329/P3 sigue vigente; no repetir fixtures/cobros. |
+| Publicación | Apoyo4pasos b9: perfil/necesidades/medios/preview; selector y ayuda fieles, CTA48px.97focalesPASS/analyze0/11renders; fuentes y UI revisadas independientemente. CI40358538461 cuatroSUCCESS exactfb0a3495 | Distribución únicaCM6adf83cc93adc6d8e55fa26d en cola; recorrido afectado del teléfono y aceptación pendientes. Se conservan política real/ready/snapshot, reintentos y datos históricos. QA financiera329/P3 sigue vigente; no repetir fixtures/cobros. |
 | Evidencia | Comprobante/evidencia privada; QA329 carga/reproduce/cancela/borra en necesidad DRAFT | QA329 real vigente. P3/332 único gasto sintético: PDF2432B y proofJPEG separados/privados, revisados en admin, APPROVED11 con snapshot público sin archivos privados. Excepción QA100 autorizada; no gasto/pago real. |
 | Verificación | Privacidad y estados conservados; cuenta aprobada real | 331 expediente aprobado visible; estados privados/pruebas vigentes, no repetir KYC. |
 | Configuración | Cuenta/privacidad/banco-Connect; QA326; canvas básico W4R | 336 abre SDKConnect:409 por campoAccount.livemode inventado corregido en354/Payments108; siguiente503/Stripe403 requiereAccountSessionsWrite. PermisoTEST propuesto sin guardar. No alta financiera, cambio tarjeta ni onboarding completo acreditados. |
@@ -104,7 +107,7 @@ superior distingue la evidencia vigente de lo que falta comprobar.
 | Diferencia respecto al mock | Resultado y motivo |
 |---|---|
 | Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet para guardar el método de Guardián mediante SetupIntent y onboarding de Stripe Connect para el rescatista. Los correctivos 333/334 no modifican sus adaptadores ni la configuración TEST. Los datos sensibles permanecen en Stripe. |
-| Dónde dar de alta la cuenta del rescatista | Modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. El alta financiera no es un paso automático del asistente.336 abrió SDK nativo; el primer409 de contrato se corrigió en backend354, y el siguienteStripe403 requiere AccountSessionsWrite en la claveTEST existente. Propuesta sin guardar y confirmación pendiente; onboarding funcional/completo aún no acreditado. Fallback sólo sinSDK, nunca después de un error nativo. |
+| Dónde dar de alta la cuenta del rescatista | Modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. El alta financiera no es un paso automático del asistente.336 abrió SDK nativo; el primer409 de contrato se corrigió en backend354. AccountSessionsWrite en la claveTEST existente ya fue guardado tras SMS humano:176filas releídas, sólo ese permiso cambió. Falta comprobar apertura/cierre nativos después del ajuste; no se atribuye alta completada. Fallback sólo sinSDK, nunca después de un error nativo. |
 | Fondo comunitario, bonos y resultados ficticios | Se conserva la asignación del neto completo a gastos elegibles, comisión Dopmi del 2%, costos reales de Stripe y conciliación. Si falta capacidad no se cobra ni se crea deuda por un mes omitido. No se muestran bonos o fondos simulados como actividad real. La excepción P3 sólo existe en DEV: gasto ficticio de $100 y único aporte de $20 TEST; $20−$0.40−$4.43=$15.17 netos, conciliados contra Stripe TEST. |
 | Tienda: cashback,5% y aportación por compra | El diseño y la vista privada TEST están implementados. Tienda pública y salida a comercios siguen apagadas hasta disponer de catálogo, derechos, enlaces y permisos válidos. Las comisiones corresponden a Dopmi; se retiraron esas promesas. Aceptar el diseño interno no activa el comercio. |
 | Resumen mensual del donante individual | El servicio se conserva, pero el mock no dibuja su acceso sin Guardián. Recomendé un acceso adicional «Resumen del mes» en Perfil; el titular prefirió la presentación del mock. No se añadió. El acceso comprobado en332 es Perfil → tarjeta de Guardián → promoción → Ver mi impacto → feed, sin contratar. Ese feed es distinto de Mi historial de pagos. |
@@ -116,7 +119,7 @@ superior distingue la evidencia vigente de lo que falta comprobar.
 | Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto y controles se adaptan para contraste accesible. Grain feTurbulence/saturate/inset-shadow CSS no se reproducen literalmente.334 verificó controles/statusbar;335 instalada verificó spinner blanco;336 instalada verificó carga/error legibles y P3 movimiento/salida. No se declara identidad pixel por pixel ni aceptación UX integral. |
 | Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados del mock. |
 | Edad y fotos de registros históricos | El mock sólo dibuja categorías de edad y sus medios principales. Se conservan valores libres anteriores sin deducir una categoría y las fotos adicionales existentes, plegadas en medios. No se eliminan datos para imitar el fixture. |
-| Pruebas y aceptación aún pendientes | Cámara nativa→Stream listo→reproducción; permisoTEST/recorrido nativoConnect; comparación/aceptación UX integral. Tienda congrant/revocada y denegación de contenido mientrasON cerrada; no dos identidades simultáneas ni foto de entradaON atribuidas. Distribución334–336, carga/error336 y P3 físico cerrados. iOS físico/TestFlight no verificados, fuera del gate interno; comercio público/salida externa apagados por decisión. |
+| Pruebas y aceptación aún pendientes | Cámara nativa→Stream listo→reproducción; recorrido nativoConnect tras permiso ya guardado; distribución/QA afectada de publicación4 y comparación/aceptación UX integral. Tienda congrant/revocada y denegación de contenido mientrasON cerrada; no dos identidades simultáneas ni foto de entradaON atribuidas. Distribución334–336, carga/error336 y P3 físico cerrados. iOS físico/TestFlight no verificados, fuera del gate interno; comercio público/salida externa apagados por decisión. |
 
 Fuentes Stripe inspeccionadas en174f: app.dart y payment_screens.dart para rutas,
 oneoff_payment_sheet.dart para PaymentIntent, guardian_method_setup.dart para

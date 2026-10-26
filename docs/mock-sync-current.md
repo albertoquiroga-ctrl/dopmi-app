@@ -19,10 +19,13 @@ Inter explícita, siete reutilizados byteexactos. Análisis final0incidencias.
 Producto/UI/código/seguridad independientes cerrados en sus alcances; no aceptación
 humana ni dispositivo de este delta. Bucket local corrige colisión bool/scroll:
 misma prueba aislada RED→GREEN1PASS3s, sin debilitar aserciones.
-Fuente candidata: commit de este lote, SHA/CI se vinculan después de publicarlo.
-Paquete interno preparado sin operaciones: support-four-steps/release, contrato
-c1c15d7a…29d5fa; versión fijada2.3.3, build siguiente sólo propuesto337.
-Root: commit/push/CI integrada→preflight/pin/distribución. Teléfono/Connect/cámara
+Fuente candidata publicada en GitHub: fb0a3495dfa7ad85a2249d33a9929fdd2590b34f.
+CI40358538461 cuatroSUCCESS del mismo SHA, sin redispatch. Preflight realOFF y
+binding revisados por código/seguridad; pin2e8d3e2c…ee3d53. ÚnicoPOST aceptado:
+CM6adf83cc93adc6d8e55fa26d, tagcodex/support-four-steps-fb0a3495, en cola.
+Paquete support-four-steps/release, contratoc1c15d7a…29d5fa; versión2.3.3,
+build337 sólo esperado hasta artefacto. Sin publicación/instalación nuevas aún.
+Root: seguir mismoCM→artefacto/Play; no repetirPOST. Teléfono/Connect/cámara
 siguen pendientes del handoff; no instalar ni leer hasta respuesta humana.
 Esta actualización supersede estados de permiso, pin y cola inferiores.
 

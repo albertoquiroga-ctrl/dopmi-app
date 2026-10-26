@@ -9,7 +9,9 @@
 | 3. Demo Stripe y comparación final | Root + titular/UX; teléfono tras handoff | Fix354bbe6e/Payments108/994PASS8SKIP/CI40269488735. AccountSessionsWrite ya guardado tras SMS humano: readback176filas, sólo ese cambioTEST, seguridad cerrada. Comprobar componente nativo; no pagos/altas por inferencia. |
 | 4. Aceptación | Titular/UX; demo e informe conciliados | Registrar conformidad o lista concreta de diferencias; implementación, QA, publicación, instalación y aceptación separados. iOS físico/TestFlight y comercio público son límites declarados, no pruebas ejecutadas. |
 
-ServidorOFF/job6pausado/cola0, sin build/ventanaON activos. Estado local de cámara
+ServidorOFF/job6pausado/cola0, sin ventanaON. CI40358538461 cuatroSUCCESS del
+candidatofb0a3495; único buildCM6adf83cc93adc6d8e55fa26d en cola, sin repetirPOST.
+Build337 aún esperada, no artefacto/Play/instalación verificados. Estado local de cámara
 pendiente de respuesta humana; no leer ni controlar teléfono. Estimación previa2–4h excluía defectos nuevos; se añadió corrección concreta de publicación, excluye esperas humanas
 y defectos nuevos. Mismo fallo sin información nueva→parar estrategia, cerrarOFF,
 diagnosticar antes de otro intento. Documentar al cerrar tarea/bloqueo, no cada lectura.

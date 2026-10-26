@@ -1,3 +1,19 @@
+## 26/10/2026 — CI integrada verde y único envío interno de publicación4
+
+Fuentefb0a3495dfa7ad85a2249d33a9929fdd2590b34f, CI40358538461 cuatroSUCCESS.
+Binding86d8/devdbe3 y pin2e8d revisados independientemente por código/seguridad;
+preflight real con seis fuentes exactas,34digests, método11 antesSQL,18históricos,
+finanzas/historia conservados, serviciosOFF/job6pausado/cola0. Tag remoto
+codex/support-four-steps-fb0a3495 exacto; un únicoPOST aceptado a10:46:04CDMX:
+CM6adf83cc93adc6d8e55fa26d. Siguequeued, sin máquina iniciada ni mensaje de error;
+sin otro build activo en la cuenta al consultar. Versión2.3.3/build337 esperadas,
+artefacto/Play/instalación nuevos no verificados. No repetirPOST ni suites intactas.
+Autoridad continua y supersesión8h conciliadas, sin renovar permisos consumidos.
+Handoff local de cámara sigue activo; no lecturas/inputs/actualización del Samsung.
+QA afectada preparada: único borrador privado nuevo sin gastos/envío/medios y
+apertura/cierre Connect; no reutilizar los dos casos consumidos ni completaralta.
+Recibos en support-four-steps/release. Informe de diferencias conciliado en parity.
+
 ## 26/10/2026 — Publicación4 cerrada localmente; Stripe TEST y cámara conciliados
 
 Referencia b9/warm-trust confirmada local y remota sin cambios. La comparación
