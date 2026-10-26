@@ -1,3 +1,23 @@
+## 25/10/2026 — Aplicación de parada: timeout de preflight antes de cámara, cerradoOFF
+
+Después de auditoría2196abd6, humano3dfe confirmó regresoDopmi; contexto336/Avances
+actual y beforefull18/método11/34digests/seisfuentes exactos. Reserva098/b845 única
+04:03:09UTC/stop04:18:09/max04:23:09. Carga local del payload93620B truncó salidaJSON;
+no envióSQL. Transporte completo posterior recuperó85543chars y ejecutóUNSQL48c4c8…
+que devolvió57014/cancelingstatement/statement_timeout8s en SELECTjsonb_build_object,
+antes de UPDATEenabled/alter_job. No repetir: cierreSQL8c0e canónico inmediatamente;
+sin Edgewrites, cámara abierta, toma, upload ni nuevo19. Causa de lentitud no inferida
+del timeout; bannerCPUalto observado en panel tampoco demuestra causalidad.
+AFTERvalidate real: full18/finanzas/historia/cola0/SQLOFF/job6pausado/34digests/seisfuentes
+intactos, SQL04:06:25.728507UTC e InicioRescatista04:07:55.061786; closed.verified en
+camera-stream336-current. Un tapInicio rechazó etiqueta ausente sininput; Back desde
+Avances→detalle y tapInicio únicos restauraron. No handoff/window activos.
+Siguiente tarea limitada: diagnóstico consultaOFF, no otra ventana ni toma por rutina.
+Estimación2–4h base queda condicionada a resolver este bloqueo del procedimiento.
+Revisor efficiency_audit_16h contrastó raw/payload/cierre: orden y llamadaúnica
+comprobados; bloqueo/carga/plan/E/S/agregaciones siguen hipótesis. No subir timeout
+por intuición ni reenviar mismoSQL; aislar SELECT y exigir evidencia nueva.
+
 ## 25/10/2026 — Checkpoint y auditoría independiente de eficiencia, sin QA nueva
 
 Titular pide revisar tiempo/tokens/loops y tareas puntuales; permite más tiempo,

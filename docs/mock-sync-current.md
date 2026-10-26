@@ -22,17 +22,20 @@ Cola finita y dueños: [backlog](backlog.md), primeras cuatro filas de cierre.
 Connectnativo físico no demostrado; no ejecutar altas por inferencia. iOS sóloCI,
 sin físico/TestFlight; comercio público bloqueado por decisión. Ver informe en parity.
 
-Cámara preparada/revisada b845/scope098/RootOps4816, pin ef13773d…48551;
-sin reserva, toma ni recurso nuevo. Última observación de foco: fueraDopmi;
-regreso humano ya consultado, no controlar otraapp. Siguiente acción root: sólo
-retomar tarea1 con contexto fresco/humano listo; una toma, ventana20min/stop15.
+Cámara b845/scope098/RootOps4816, pin ef13773d…48551: intento consumido04:03:09UTC.
+Humano volvióDopmi; únicoSQLenable falló57014/statement_timeout8s en SELECT de
+preflight, antesUPDATEvideo/cron. Sin Edgewrites/cámara/toma/upload ni recurso nuevo.
+CierreSQL canónico y AFTERfull18 exacto04:06:25UTC; Inicio restaurado04:07:55,
+34digests/seisfuentes intactos, OFF/job6pausado/cola0. Sin ventana viva.
+Siguiente acción root: diagnosticar esa consulta enOFF con evidencia nueva antes
+de repetir. No más toma/preparación global; causa de lentitud aún no demostrada.
 
 Auditoría independiente: hubo retrabajo de operador y estados documentales obsoletos;
 causas y tres ajustes en progress. Preparación existente antesON, ninguna reparación
 dentroON; misma firma sin información nueva→parar estrategia/cerrarOFF/diagnosticar.
 No suites globales, builds, nuevas herramientas o repetición para demostrar eficiencia.
-Registrar cierre/bloqueo de tarea, no cada lectura. Estimación2–4h técnicas efectivas,
-más coordinación/aceptación; no garantiza tiempo si surge un defecto nuevo.
+Registrar cierre/bloqueo de tarea, no cada lectura. Base estimada2–4h técnicas
+efectivas, más coordinación/aceptación; condicionada ahora al diagnósticoSQL8s.
 El titular permite más tiempo: ocho horas dejan de ser límite vigente (decisión25oct).
 Una colaFlutter; WIPajeno conservado. No cámara, ventana o build activos.
 
