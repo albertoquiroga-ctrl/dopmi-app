@@ -19,6 +19,11 @@ Retraso de coordinación comprobado: rootenvió dosfixes con send_message a impl
 COMPLETED; no disparó turno. Se reactivó con followup_task y entregó el delta. No fue
 trabajo activo del implementador durante esa espera; root informó el fallo al titular.
 Conservar este aprendizaje para no confundir cola de mensaje con ejecución.
+Retro independiente camera_coordination_retro contrastó commitd59f2d95, ledger y
+recibos: causa comprobada es falta de activación, duración25min sólo estimaciónroot.
+Único ajuste/dueño integrador: followup_task para trabajo de agente terminado;
+send_message para comunicación con trabajo activo. Éxito: próxima corrección
+necesaria registra activación explícita; sin otra prueba, gate o herramienta nuevos.
 
 Humano call_29b513185f6d49f58b0fd5c6c0d2527d/item0 confirmóSamsungamano, no toma ni
 neutralidad futura. Root creó sólo reviews y QApin ef13773dca2ab12668e9a7fa2989c80d7b4d9fcc7acb2de5da855406fac48551.
