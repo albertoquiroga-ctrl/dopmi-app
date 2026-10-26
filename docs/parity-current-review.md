@@ -16,7 +16,8 @@ AccountSessionsWrite TEST guardado tras SMS humano; readback176filas, sólo ese 
 Demo nativaConnect tras permiso, cámara→Streamready/play y aceptaciónUX pendientes.
 Publicación4/selector/ayuda/CTA48 implementados en fb0a3495; CI40358538461 cuatroSUCCESS,
 97focalesPASS/analyze0/11renders y revisiones independientes. ÚnicoCM6adf83cc93adc6d8e55fa26d
-en cola; build337 sólo esperada. No másP3/pagos ni suites intactas repetidas.
+13SUCCESS/1485PASS; artefacto2.3.3(337)/fb0 y Playinternal/completed comprobados.
+Instalación/QA física afectada y aceptación pendientes. No másP3/pagos ni suites repetidas.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
 físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y
@@ -64,7 +65,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Perfil propio | Tarjeta/avatar/accesos/textos b9; QA326/327 de cuenta/regresos | 332 ambos modos, gradiente literalRescatista y badge comprobados; no cambiar contenido personal para imitar fixture. |
 | Perfil público | Datos aprobados/galerías/filtros; métricas/barrier W4R | 331 previewprivado/resumen/Adopciónvacía; PNGpositivo/escalado vigente, no nueva publicación. |
 | Rescate/Casos | Inicio/métricas/filtros/archivo/detalle; chrome W4R | 331 lifecycle reutilizado;332 Inicio/Casos/filtro y Listopill comprobados. |
-| Publicación | Apoyo4pasos b9: perfil/necesidades/medios/preview; selector y ayuda fieles, CTA48px.97focalesPASS/analyze0/11renders; fuentes y UI revisadas independientemente. CI40358538461 cuatroSUCCESS exactfb0a3495 | Distribución únicaCM6adf83cc93adc6d8e55fa26d en cola; recorrido afectado del teléfono y aceptación pendientes. Se conservan política real/ready/snapshot, reintentos y datos históricos. QA financiera329/P3 sigue vigente; no repetir fixtures/cobros. |
+| Publicación | Apoyo4pasos b9: perfil/necesidades/medios/preview; selector y ayuda fieles, CTA48px.97focalesPASS/analyze0/11renders; fuentes y UI revisadas independientemente. CI40358538461 cuatroSUCCESS exactfb0a3495; CM13SUCCESS/1485PASS, artefacto2.3.3(337) y Playinternal/completed reales | Instalación/recorrido afectado del teléfono y aceptación pendientes. Se conservan política real/ready/snapshot, reintentos y datos históricos. QA financiera329/P3 sigue vigente; no repetir fixtures/cobros. |
 | Evidencia | Comprobante/evidencia privada; QA329 carga/reproduce/cancela/borra en necesidad DRAFT | QA329 real vigente. P3/332 único gasto sintético: PDF2432B y proofJPEG separados/privados, revisados en admin, APPROVED11 con snapshot público sin archivos privados. Excepción QA100 autorizada; no gasto/pago real. |
 | Verificación | Privacidad y estados conservados; cuenta aprobada real | 331 expediente aprobado visible; estados privados/pruebas vigentes, no repetir KYC. |
 | Configuración | Cuenta/privacidad/banco-Connect; QA326; canvas básico W4R | 336 abre SDKConnect:409 por campoAccount.livemode inventado corregido en354/Payments108; siguiente503/Stripe403 requiereAccountSessionsWrite. PermisoTEST propuesto sin guardar. No alta financiera, cambio tarjeta ni onboarding completo acreditados. |

@@ -1,4 +1,4 @@
-# Checkpoint — 26/oct/2026 CDMX: publicación4 verificada localmente; candidato pendiente
+# Checkpoint — 26/oct/2026 CDMX: publicación4 en Play337; teléfono pendiente
 
 Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
 y guardado tras SMS humano; readback del editor desde servidor176filas muestra
@@ -22,16 +22,19 @@ misma prueba aislada RED→GREEN1PASS3s, sin debilitar aserciones.
 Fuente candidata publicada en GitHub: fb0a3495dfa7ad85a2249d33a9929fdd2590b34f.
 CI40358538461 cuatroSUCCESS del mismo SHA, sin redispatch. Preflight realOFF y
 binding revisados por código/seguridad; pin2e8d3e2c…ee3d53. ÚnicoPOST aceptado:
-CM6adf83cc93adc6d8e55fa26d, tagcodex/support-four-steps-fb0a3495, en cola.
-Paquete support-four-steps/release, contratoc1c15d7a…29d5fa; versión2.3.3,
-build337 sólo esperado hasta artefacto. Sin publicación/instalación nuevas aún.
-Root: seguir mismoCM→artefacto/Play; no repetirPOST. Teléfono/Connect/cámara
+CM6adf83cc93adc6d8e55fa26d, tagcodex/support-four-steps-fb0a3495,13SUCCESS.
+Artefacto real2.3.3(337)/SHAfb0 comprobado17:24:24UTC; Playinternal/completed
+releasename+versionCode337 ligados al mismo bloque17:24:32UTC.1485FlutterPASS
+en el mismoCM, sin otro envío. Paquete support-four-steps/release, contratoc1c15d7a.
+No instalación/QA física/aceptación nuevas. No reabrirCI/POST/fixtures ya cerradas.
+Root: respuesta sobre toma local→conservarla o cerrar handoff→actualización/QA.
+Si hay toma retenida, resolver cámara antes de actualizar para no perderla. Connect/cámara
 siguen pendientes del handoff; no instalar ni leer hasta respuesta humana.
 Esta actualización supersede estados de permiso, pin y cola inferiores.
 
 Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
 Referencia única: b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust.
-Cliente publicado e instalado desde Play interno: 2.3.3(336), SHA
+Último cliente comprobado en Samsung desde Play interno: 2.3.3(336), SHA
 28dac8116c211f1606648dea62643f991f2bb280, CM6ade9e4ecd4de1bad4e96a85/13SUCCESS,
 CI40247040345/cuatroSUCCESS. Media sigue e05ec4166f190888ea335fbbf58d79160e769cac.
 Payments108 desplegada desde354bbe6ef6672e8235579ba443b3fe950942d185: contratoAccount
