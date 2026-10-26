@@ -1,3 +1,42 @@
+## 25/10/2026 — 336 publicada/instalada; QA física cerrada y inspect429 demostrado
+
+Fuente28dac8116c211f1606648dea62643f991f2bb280, mockb9f6d5f/warm-trust.
+CI40247040345 cuatroSUCCESS conservada; CM6ade9e4ecd4de1bad4e96a85 terminó13accionesSUCCESS.
+Metadata real2.3.3(336), ZIPce9f7ed8/buildinfo8d9e2e81. Playinternal/completed336
+readback00:42:37UTC; publicaciónlog58b50188. AAB/certificado binarios no descargados.
+Samsung: Actualizar desdePlay00:43:18→336/Vending00:44:17→Abrir00:44:52, misma sesión
+TEST legítima comprobada sin valores de credenciales. No otra build/POST por espera.
+
+QA336readonly scopee3a3976c/pinb2613d3e: reserva01:08:23, SQL01:08:26; anillo01:10:13
+y siguiente01:10:50, PNG01:10:51loader/01:10:54error blancos. Producto independiente
+inspeccionó fuentes/mock/capturas y confirma legibilidad/separación X/CTA, sin hallar
+otro defecto material de presentación. No Retry/Play/sonido/upload, ni movimiento,
+TalkBack/200% físico o aceptación humana atribuidos. Los recibos de input UNKNOWN
+prueban envío registrado, no éxito funcional. Diagnóstico real identifica playback
+video_provider_unavailable502, provider_operation inspect, provider_status429.
+Una ruta estable genera un GETinspect y no autoRetry tras ese fallo; concurrencia
+de lifecycle sigue siendo posibilidad no demostrada, no causa probada del429.
+
+Back01:12:42, EdgeOFF y SQLclose, modo restauradoInicioRescatista. Cierre íntegro
+01:17:13.888UTC antesmax01:18:23:18assets exactos, snapshot/finanzas/caso9/gasto11/
+neto1517/historia84/34digests exactos/seis fuentes canónicas, cola0, video/Tienda/
+enlaces/cleanupOFF y job6pausado. Contadores83/78 por flagwrites, mapas5a/7eb0 exactos.
+Actuals privados story-error-device-qa/closed.verified.actual.private.json y PNG.
+
+Diagnóstico posterior sólo lectura: Cloudflare Audit Logs01:05–01:12UTC, retirando
+exclusión view, devuelve0registros. No prueba tráfico cero ni cuota/actor concreto;
+no exportar identidades/IP ni inferir causa. Preparación backend de metadata permitida
+Retry-After/rate limits/CF-Ray antes de cualquier nuevo intento, sin credenciales,
+enlaces, bodies ni autoRetry. No ON/deploy nuevo todavía. Cámara336 preparada aparte
+scope1f7fa081/bridgeaf2bc67f/manifestb38fba00; humano9fd disponible para futura toma,
+no neutralidad de un clip nuevo. Operador final y proveedor pendientes, no cámara activa.
+
+Retro independiente camera333_process_retro inspeccionó PNG/recibos/logs/fuente:
+causa comprobada sólo inspect429; hipótesis de cuota/actor siguen abiertas. Una mejora,
+dueño root/backend: atribuir límite con auditoría/metadata antes de repetir QA; éxito
+medido por causa sustentada o desconocimiento registrado, sin más cámaras/builds ciegos.
+Nativo→Streamready/play y aceptación integral siguen pendientes; no renovar ocho horas.
+
 ## 25/10/2026 — Distribución336 reservada/enviada una vez, conservar handle
 
 CI40247040345 completed/SUCCESS con cuatro jobs exactos para28dac8116c211f1606648dea62643f991f2bb280.

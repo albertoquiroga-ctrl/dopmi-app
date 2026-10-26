@@ -1,16 +1,20 @@
-# Corte vigente — warm-trust b9f6d5f;335 instalada y QA parcial
+# Corte vigente — warm-trust b9f6d5f;336 instalada, error legible y fallo inspect429
 
-Play interno2.3.3(335)/8a5d9cbc publicada e instalada/Vending/sesión TEST comprobados.
-CI40221330073 cuatroSUCCESS; publicación y metadatos coinciden. Instalada ya al reconectar
-23:03UTC, sin atribuir hora de actualización desconocida. No aceptación UX integral.
-QA335: loader blanco físico PASS, playback ERROR upstream502; no retry ni controles de
-reproducción probados. Full18/OFF/pausado23:20. Delta error UI/decoder/identidad WIP:
-50PASS/analyze0 y dos PNG locales con fuentes reales; candidato28dac/CI40247040345 activa, aún no publicado/instalado.
-Diagnóstico servidor33PASS revisado y desplegado sólo media79/cleanup74 retenida;
-full18/finanzas/34digests exactos/OFF23:52. Diagnóstico único posterior HTTP200/lease≤120s, sin fetchmedios; full18/OFF00:12:40 y contadores81/76, bytes exactos. Causa502 anterior no reproducida/no establecida.
+Fuente28dac8116c211f1606648dea62643f991f2bb280, CI40247040345 cuatroSUCCESS.
+CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, artefacto2.3.3(336), Playinternal/completed
+y Samsung336/Vending/sesión TEST legítima comprobados. Sin aceptación UX integral.
+QA336 física: loader blanco y error blanco separado de X/CTA conforme en captura;
+producto independiente confirma sólo jerarquía/legibilidad. No se pulsó Retry/Play/
+sonido ni se probó reproducción. Log upstream inspect429→playback502; tipo de cuota
+y tráfico causante no establecidos. Auditoría CF01:05–01:12UTC con view:0registros,
+cobertura no exhaustiva. Ruta ordinaria sin autoRetry no demuestra ausencia global
+de loops. Próximo: metadata de límite acotada antes de repetir un diagnóstico.
+Full18/finanzas/snapshot/historia84/34digests exactos y seis fuentes conservados;
+cierre01:17:13UTC video/Tienda/enlaces/cleanupOFF/job6pausado/cola0/InicioRescatista.
+Cámara336 sigue preparada, sin toma/ON; nativo→Streamready/play permanece pendiente.
 
 Alcance de iOS en esta entrega interna: compilación en CI del mismo SHA, sin dispositivo
-físico ni TestFlight335 verificados. El plan aprobado pide declarar estos límites y
+físico ni TestFlight336 verificados. El plan aprobado pide declarar estos límites y
 verificar el candidato Play en Samsung; no establece otro gate físico iOS. Esto no
 atribuye aceptación de iOS ni cambia las etapas futuras del lanzamiento público.
 
@@ -62,7 +66,7 @@ Autoridad autónoma/límite originales en product-decisions y checkpoint.
 | Ayuda | FAQ/soporte/datos; QA326/327 reutilizable | 331 FAQ reutilizada;332 canvas/CTA café y regreso comprobados. Referencia b9 renderizada/capturada para comparación. |
 | Documentos | Marco/textos legales propios/desplazamiento; QA326 | 331 privacidad/version/scroll/regreso legibles; conservar contenido legal real. |
 | Tienda | Catálogo/filtros/orden/posición/expiry; QA327/329 y aceptación de organización | 331 b9 real catálogo/filtros/kg/posición/vacío/Gatos; OFF/revocada. Cuenta ordinaria332 sin entrada con servicios OFF comprobada; contraste simultáneo durante previewON y salida comercial pendientes. |
-| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.335/8a5 instalada: spinner físico PASS, playback ERROR502; delta de error UI local50PASS/analyze0 pendiente candidato/QA. Nativo→Streamready/play sigue sin acreditar. iOS: sólo compilación CI, sin físico/TestFlight335. |
+| Videos/historias | Revisión local y propósito/parent/versión; QA326/329/330 cargas/revisión/retención | QA332 clip20s/hold/BG/Impacto se conserva.334 confirma controles/cover/statusbar/X/Back; cámara3344.8s local neutra+audio oído y único upload/delete, sin ready/playStream.336/28dac instalada: loader/error blancos físicos PASS y revisión independiente conforme; playback ERROR502 por inspect429, cuota desconocida. Full18/OFF cerrado; no Retry/sonido/Play probados. Nativo→Streamready/play sigue sin acreditar. iOS: sólo compilación CI, sin físico/TestFlight336. |
 
 Basef348: CI40072205329 cuatroSUCCESS/1426Flutter, backend982PASS/8SKIP;
 DEV84/4lectores79/97/97/90 aplicados/verificados, sin backfill/pagos/flags.
