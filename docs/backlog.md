@@ -1,16 +1,19 @@
-# Cola vigente — P3 reproducción336 cerrada; cámara y aceptación restantes
+# Cola vigente — 25/oct: cierre secuencial, sin repetir QA resuelta
 
 | Batch | Dueño / dependencia | Escenarios y salida |
 |---|---|---|
-| W1–W3/W4H/W4C | Cerrados técnicamente | Conservar b9/Stripe y QA331–332; no repetir pagos, recuperación ni fixtures. |
-| W4T Distribución/backend | Cerrado; root/revisores | Cliente28dac/Play336 instalado; backende05, ambasCIcuatroSUCCESS, diagnóstico90db/cleanup7eb0. Sin build adicional. |
-| W4T Diagnósticos previos | CONSUMIDOS/CERRADOS | 4c métodoOFF/ON antesPOST, e150API200 sinmedios, 5afprimerframe/timeout120. Full18/OFF/pausado conservados; causa429 previa desconocida. |
-| W4T P3Play336 | CERRADO técnico; root/producto | 0175/4ad05: movimiento0.267→4s/barra, sonido habilitado enUI, fin automáticoApoyar; full18/OFF/pausado02:47:14. Audiofísico noatribuido. No másP3. |
-| W4Q Cámara | Root + humano / preparación revisada | b845/scope098/RootOps4816 y21+4checksRAM; código/seguridad cerrados, pin propioef137 sinreserva/ON/toma. Esperar regreso humano aDopmi (guardfoco03:41, sin imagen/input)→actuals frescos→única toma20/15/19/revisiónneutra→Streamready/play/delete/ausencia separados. |
-| W4Q Aceptación integral | Root + titular/UX | Demo comparativa y reporte vigente de adaptaciones/flujos no dibujados. Reutilizar evidencia válida; aceptación humana sigue separada. iOS físico/TestFlight noverificados. |
+| Base cerrada | Root conserva evidencia | W1–W3/W4H/W4C, QA331–332, Play336/28dac instalada, backend e05 y ambasCI verdes; P3 movimiento/salida comprobados. No repetir pagos, recuperación, fixtures, P3, build o suites intactas. |
+| 1. Cámara E2E | Root + humano; preparación b845/RootOps4816 revisada | Regreso aDopmi→una toma neutra/revisión local→únicoSubir→Streamready→reproducción→cancelar/borrar/ausencia→OFF/pausado. Ventana20min/stop15; sin reparaciones de operador duranteON. Salida: evidencia real o bloqueo concreto, sin nueva toma rutinaria. |
+| 2. Aislamiento Tienda | Root; después de1 cerrada y actores legítimos disponibles | Comprobar cuenta ordinaria sin entrada mientras vistaTEST estáON; comercio/enlaces bloqueados, luego previewOFF/acceso revocado. Reutilizar catálogo/QA existente. Sin cuenta legítima apta, registrar dependencia en vez de repetirOFF. |
+| 3. Demo Stripe y comparación final | Root + titular/UX; después de1–2 o con bloqueo externo explícito | Mostrar los tres accesos/componentes conservados y contraste b9 usando evidencia vigente. Connectnativo físico no se acredita por cuentaReady; sin alta remota por inferencia. Agrupar sólo defectos demostrados. |
+| 4. Aceptación | Titular/UX; demo e informe conciliados | Registrar conformidad o lista concreta de diferencias; implementación, QA, publicación, instalación y aceptación separados. iOS físico/TestFlight y comercio público son límites declarados, no pruebas ejecutadas. |
 
-ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Teléfono fueraDopmi;
-no controlar otraapp. Última rutaAvancesP3OFF sinCrearavance/guardados. No renovar8h.
+ServidorOFF/job6pausado/cola0, sin build/ventanaON/cámara activos. Durante auditoría
+no se controla teléfono. Estimación2–4h técnicas efectivas, excluye esperas humanas
+y defectos nuevos. Mismo fallo sin información nueva→parar estrategia, cerrarOFF,
+diagnosticar antes de otro intento. Documentar al cerrar tarea/bloqueo, no cada lectura.
+
+Los apartados inferiores se conservan como historial; la cola superior los supersede.
 
 Actualización vigente17oct: titular950d1 autoriza preparar versiones y aceptación; B5-L1/L2 implementados localmente, B5-L3 gates/revisión en curso en matriz existente. Los pendientes de decisión de versionado inferiores quedan resueltos por product-decisions.md. Sin publicación/despliegue/build adicional autorizados; instalado318sin cambios. Retención/respaldos y legado conservan límites.
 

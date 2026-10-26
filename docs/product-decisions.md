@@ -1,3 +1,12 @@
+## 25/10/2026 — Más tiempo permitido; checkpoint y eficiencia verificables
+
+El titular aclara que las ocho horas eran arbitrarias y permite más tiempo.
+Pide revisar el trabajo propio, evitar loops y consumo inútil de tiempo/tokens,
+y ejecutar tareas puntuales secuenciales hasta completar la entrega grande.
+Supersede el límite temporal del24oct, sin renovar operaciones consumidas ni
+cambiar TEST, privacidad, cierreOFF, identidad, gates o aceptación humana.
+Checkpoint y cola existentes registran lo que falta; sin otro tablero o harness.
+
 ## 24/10/2026 — Cierre integral autónomo, sin renovaciones rutinarias
 
 Objetivo directo del titular: terminar dopmi-app funcional y visualmente como el

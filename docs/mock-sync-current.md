@@ -1,43 +1,42 @@
-# Checkpoint — 25/10/2026 CDMX: reproducción336 comprobada; cámara en preparación
+# Checkpoint — 25/oct/2026 CDMX: auditoría de eficiencia y cierre finito
 
-Producto dopmi-app/codex/finish-release-20261015/candidate-git-20261014.
-Mock congelado b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef/warm-trust.
-Cliente Play interno2.3.3(336), fuente28dac8116c211f1606648dea62643f991f2bb280;
-CM6ade9e4ecd4de1bad4e96a85/13SUCCESS, internal/completed/SamsungVending/sesión TEST
-comprobados. CI40247040345 cuatroSUCCESS. Backend diagnósticoe05ec4166f190888ea335fbbf58d79160e769cac:
-39focal/991backendPASS8SKIP, código/seguridad y CI40254930887 TERMINAL/cuatroSUCCESS.
-Media90dbac75…62d13 desplegadaOFF una vez, cleanup7eb0ee09 previa; sin nueva build.
+Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
+Referencia única: b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust.
+Cliente publicado e instalado desde Play interno: 2.3.3(336), SHA
+28dac8116c211f1606648dea62643f991f2bb280, CM6ade9e4ecd4de1bad4e96a85/13SUCCESS,
+CI40247040345/cuatroSUCCESS. Backend desplegado: e05ec4166f190888ea335fbbf58d79160e769cac,
+CI40254930887/cuatroSUCCESS, 991backendPASS/8SKIP. Sin build nueva necesaria demostrada.
 
-P3Play336 scope01753b8c/manifest4ad05 CONSUMIDO/CERRADO. Secuencia preparada completó
-open→next→sound→Play02:42:57–02:43:11UTC26oct (14.26s). FrameA0.267s02:43:12.478,
-frameB4.000s02:43:16.204: movimiento/patrón/barra reales; último02:43:35 muestraApoyar,
-sininput posteriorPlay. Producto independiente conforme para avance/cierre automático;
-no audio físico/fluidezcontinua/aceptación humana atribuidos. No repetir P3/pagos/cargas.
-Full18/finanzas/snapshot/historia84/34digests/seisfuentes exactos02:47:14, antesstop
-02:48:41/max02:51:41. Video/Tienda/enlaces/cleanupOFF/job6pausado/cola0; InicioRescatista
-comprobado02:46:37. Contadores92/86 sóloobservados; mapas90db/7eb0 exactos.
+Verificado: QA vigente de la matriz, recuperación real aceptada clara, StripeTEST
+conservado, único aporte20 conciliado y P3 físico336 movimiento/salida automática.
+No repetir esos recorridos ni sus fixtures. Audio físicoP3 no atribuido; causa429
+previa desconocida. Aceptación UX integral sigue pendiente, no equivale a CI o QA.
+Último cierre real26oct02:47:14UTC: video/Tienda/enlaces/cleanupOFF, job6pausado,
+cola0, recursos/finanzas/historial conservados. No cambios de servicios en la auditoría.
 
-Errores previos/diagnósticos se conservan en progress: inspect429→502 ocurrió antes;
-auditoría vacía/cobertura incompleta y API200 posteriores no establecen cuota/causa.
-Metadata segura disponible, sin rawheaders/cuerpos/URLs/credenciales ni autoRetry.
-5af readonly anterior obtuvoprimerframepausado, rootdemoró porhelper/args ycaducóON120
-antesSound; cerradofull18/OFF02:25:23. No defectoapp demostrado. Secuencia4ad05 resuelve
-esa preparación; retro independiente indica no reparar dentroON ni Back ciego trasfin.
+Cola finita y dueños: [backlog](backlog.md), primeras cuatro filas de cierre.
+1 Root+humano: cámara nativa→revisión→Streamready→play→borrado/ausencia→OFF.
+2 Root: cuenta ordinaria sin acceso durante previewTEST ON→OFF/revocada.
+3 Root+humano: demo de los tres accesos Stripe y comparación final contra b9.
+4 Titular/UX: evaluación y aceptación, o diferencias concretas para corregir.
+Connectnativo físico no demostrado; no ejecutar altas por inferencia. iOS sóloCI,
+sin físico/TestFlight; comercio público bloqueado por decisión. Ver informe en parity.
 
-Operador cámara336-current revisado: manifestb845f0bc…55fdd/scope09800934…761b,
-RootOps48167d84…4a0e7/4IPC sintéticosPASS. Código/seguridad cerraron matriz/fases,
-duraciónREADYreal, refresh probado con XMLreal scrolleado, dosvistasStream distintas,
-metadataMCPporarchivo con espera25s/deadline, renovacionesappend-only y callbacks.
-QApin propioef13773d…48551 creado; SINreserva/SQLON/flagsON/toma/binding19 nuevos.
-Humano29b513/item0 confirmóSamsungamano;03:41 el teléfono estaba fuera deDopmi y
-el guard de foco detuvo captura ANTESárbol/imagen/input. Sin inspección de otraapp.
-Root siguiente: esperar regreso humano aDopmi ya consultado→actuals frescos/coordinar
-→única cámara20/15/19. Neutralidad/audio futuros no confirmados. No repetir P3/af2/5min.
-Nativo→Streamready/play y aceptación UX integral quedan pendientes; iOS sóloCI simulador,
-sin físico/TestFlight. Datos/Stripe/único20TEST/WIPajeno intactos, una colaFlutter.
-Última rutaDopmiOFF AvancesP3, snapshotpadre03:11 sin título visible/fix probado; sin
-Crearavance/guardado/caso nuevo. Teléfono ahora fueraDopmi, no controlar otraapp.
-No ventana/build vivos ni ocho horas nuevas. Detalle y límites en progress/parity.
+Cámara preparada/revisada b845/scope098/RootOps4816, pin ef13773d…48551;
+sin reserva, toma ni recurso nuevo. Última observación de foco: fueraDopmi;
+regreso humano ya consultado, no controlar otraapp. Siguiente acción root: sólo
+retomar tarea1 con contexto fresco/humano listo; una toma, ventana20min/stop15.
+
+Auditoría independiente: hubo retrabajo de operador y estados documentales obsoletos;
+causas y tres ajustes en progress. Preparación existente antesON, ninguna reparación
+dentroON; misma firma sin información nueva→parar estrategia/cerrarOFF/diagnosticar.
+No suites globales, builds, nuevas herramientas o repetición para demostrar eficiencia.
+Registrar cierre/bloqueo de tarea, no cada lectura. Estimación2–4h técnicas efectivas,
+más coordinación/aceptación; no garantiza tiempo si surge un defecto nuevo.
+El titular permite más tiempo: ocho horas dejan de ser límite vigente (decisión25oct).
+Una colaFlutter; WIPajeno conservado. No cámara, ventana o build activos.
+
+Los apartados inferiores se conservan como historial; la cola superior los supersede.
 
 # Checkpoint vigente — paridad d304535, 17/10/2026 México
 

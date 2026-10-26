@@ -1,3 +1,29 @@
+## 25/10/2026 — Checkpoint y auditoría independiente de eficiencia, sin QA nueva
+
+Titular pide revisar tiempo/tokens/loops y tareas puntuales; permite más tiempo,
+ocho horas arbitrarias ya no son límite. Decisión en product-decisions; una cola
+finita en backlog. Revisión efficiency_audit_16h y remaining_scope_audit sólolectura
+de Git/fuentes/evidencia, sin teléfono, servicios, suites o auditoría global nueva.
+Git11:52:43UTC25oct–03:52UTC26oct:15commits,11documentales/4producto+pruebas.
+Ese conteo no acredita porcentaje de tiempo, tokens desperdiciados o ahorro.
+
+Retrabajo comprobado: pruebas focales sin composición real ocultaron contraste;
+operador reutilizóOFFduranteON y no tenía helper/argumentos listos; send_message
+a agenteCOMPLETED no inició trabajo. Corregir app/cerrarOFF/revisar binario fue
+necesario; arreglar instrumentos duranteON y repetir estados documentales fue evitable.
+Tres ajustes/dueño root: contexto de producción en focales existentes y fixes agrupados;
+preparación completa/replay existente antesON, cero arreglos duranteON; followup_task
+para reactivar agente terminado. Verificar en próximo trabajo necesario, sin QA extra.
+
+Producto independiente no encontró otro defecto actual que justifique código/build;
+no es auditoría global ni aceptación. Restantes: cámaraE2E, aislamientoTiendaON,
+demoStripe/comparaciónUX y aceptación. Se conciliaron pendientes334/335/recuperación
+ya superados en informe/checkpoint/cola, sin reabrirlos ni borrar resultados históricos.
+Estimación2–4h técnicas efectivas excluye esperas humanas y fallos nuevos; misma firma
+sin información nueva detiene esa estrategia, cierreOFF y diagnóstico antes de repetir.
+Actualización documental agrupada por esta revisión solicitada; no nuevos archivos,
+harness, suite, pago, build ni ON. Servicios conservan últimoOFF/job6pausado/cola0.
+
 ## 25/10/2026 — Cámara336 preparada/revisada; regreso aDopmi pendiente, sin ON
 
 camera-stream336-current manifestb845f0bc1f08dabfdbf3d2628348569961fa1a6aa6d872c5ef8511b8e4c55fdd,

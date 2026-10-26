@@ -109,9 +109,9 @@ superior distingue la evidencia vigente de lo que falta comprobar.
 | Cámara o galería que carga inmediatamente | Por decisión del titular, hay revisión local con duración/reproducción antes de Subir o Descartar.333 verificó2.9s bajo Despedida/0uploads.334 verificó Avances4.8s neutro/audio oído, único upload y borrado; no ready/play de Stream. El archivo no aparece en Galería según el titular y su ubicación de caché no se comprobó por falta de USB. |
 | Video procesado frente a video público | Estar listo no equivale a estar aprobado. Se conservan dueño, propósito, versión y moderación; comprobantes y evidencia de gastos siguen privados. Retirada, eliminación y reintentos permanecen vigentes. Las historias excluyen expense_evidence. |
 | Caso sin gastos disponibles y caso cerrado | Se conservan historia, medios, aviso y botón deshabilitado; se oculta el encabezado de solicitud de dinero cuando no hay capacidad. Cerrar no borra la publicación. Añadir despedida no reabre el caso ni altera aportaciones. El titular aceptó la claridad de esa ficha TEST. |
-| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto y controles se adaptan para contraste accesible. Grain feTurbulence/saturate/inset-shadow CSS no se reproducen literalmente.334 verificó controles/statusbar;335 publicada corrige también el spinner oscuro, con prueba pintada de contraste. Falta QA335 instalada; no se declara identidad pixel por pixel. |
+| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto y controles se adaptan para contraste accesible. Grain feTurbulence/saturate/inset-shadow CSS no se reproducen literalmente.334 verificó controles/statusbar;335 instalada verificó spinner blanco;336 instalada verificó carga/error legibles y P3 movimiento/salida. No se declara identidad pixel por pixel ni aceptación UX integral. |
 | Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados del mock. |
-| Pruebas y aceptación aún pendientes | Falta distribuir y comprobar el delta 334, la comparación UX integral del candidato final, cámara nativa → Stream listo → reproducción, e iOS físico. Cover 333 no se acepta a partir de un frame 0. Tienda ordinaria sin entrada está comprobada con OFF; el contraste simultáneo entre cuentas durante previewON y la salida comercial siguen pendientes. Capturas y simulador no sustituyen esas comprobaciones. |
+| Pruebas y aceptación aún pendientes | Cámara nativa→Stream listo→reproducción; aislamiento de cuenta ordinaria durante previewTEST ON; demo de componentes Stripe con límite de onboardingConnectnativo físico; comparación/aceptación UX integral. Distribución334–336, carga/error336 y P3 físico están cerrados; no repetirlos. iOS físico/TestFlight no verificados, fuera del gate interno descrito arriba. Comercio público/salida externa permanecen apagados por decisión, sin convertirlos en QA necesaria para activar. |
 
 Fuentes Stripe inspeccionadas en174f: app.dart y payment_screens.dart para rutas,
 oneoff_payment_sheet.dart para PaymentIntent, guardian_method_setup.dart para
@@ -121,8 +121,9 @@ Esto acredita fuentes y accesos; no un nuevo onboarding físico ni vigencia remo
 
 Las pruebas positivas previas de historias/Impacto, el único aporte TEST y su
 método histórico se conservan. No se crearán pagos, casos o fixtures nuevos sólo
-para repetir la misma evidencia. El handoff de cámara ya quedó cerrado con pruebas de dispositivo y backend;
-el siguiente paso es completar la distribución334 y su QA proporcional.
+para repetir la misma evidencia. El handoff de cámara334 está cerrado, pero no
+acreditó ready/playStream. La distribución336 sí está cerrada. La única cola
+vigente es la tabla superior de backlog; los cortes inferiores son históricos.
 
 ## Historial de revisiones
 
