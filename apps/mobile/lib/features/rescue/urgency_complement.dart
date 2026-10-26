@@ -93,11 +93,14 @@ class UrgencyComplement extends ConsumerStatefulWidget {
     required this.onSave,
     this.needsSave = false,
     this.enabled = true,
+    this.photoMutationsEnabled = true,
+    this.onActivityChanged,
   });
   final RescueRecord? record;
-  final bool eligible, needsSave, enabled;
+  final bool eligible, needsSave, enabled, photoMutationsEnabled;
   final String? photoPath;
   final Future<void> Function() onPhoto, onRemovePhoto, onSave;
+  final ValueChanged<bool>? onActivityChanged;
   @override
   ConsumerState<UrgencyComplement> createState() => _UrgencyComplementState();
 }
@@ -106,6 +109,35 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
   Future<VideoPolicy>? request;
   String? scope, error;
   bool videoSelected = false, busy = false;
+  bool videoActive = false;
+  bool cancellationUncertain = false;
+  List<Map<String, dynamic>> pendingCancellations = [];
+  bool? reportedActivity;
+  bool activityNotificationScheduled = false;
+  void reportActivity(bool active) {
+    if (widget.onActivityChanged == null ||
+        reportedActivity == active ||
+        activityNotificationScheduled) {
+      return;
+    }
+    activityNotificationScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      activityNotificationScheduled = false;
+      if (!mounted) return;
+      final active =
+          widget.eligible && (busy || videoActive || cancellationUncertain);
+      if (reportedActivity == active) return;
+      reportedActivity = active;
+      widget.onActivityChanged?.call(active);
+    });
+  }
+
+  void videoActivityChanged(bool active) {
+    if (mounted && videoActive != active) {
+      setState(() => videoActive = active);
+    }
+  }
+
   void refresh() {
     if (mounted) setState(() => request = null);
   }
@@ -134,13 +166,22 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
     }
   }
 
+  Future<void> mutatePhoto(Future<void> Function() action) async {
+    if (!widget.enabled || !widget.photoMutationsEnabled || busy) return;
+    await act(action);
+  }
+
   Future<void> cancelVideo(
     VideoRepository repository,
     List<Map<String, dynamic>> assets,
   ) async {
     final identity = repository.identity();
     if (identity == null) throw const VideoFailure('identity_changed');
-    for (final item in assets) {
+    if (!cancellationUncertain) {
+      pendingCancellations = assets.map(Map<String, dynamic>.from).toList();
+    }
+    if (mounted) setState(() => cancellationUncertain = true);
+    for (final item in pendingCancellations) {
       final task = VideoUploadTask(
         parentId: widget.record!.id,
         parentVersion: item['parent_version'] as int,
@@ -150,11 +191,21 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
       )..assetId = item['id'] as String;
       await repository.cancel(task);
     }
-    if (mounted) setState(() => videoSelected = false);
+    if (mounted) {
+      setState(() {
+        videoSelected = false;
+        videoActive = false;
+        cancellationUncertain = false;
+        pendingCancellations = [];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    reportActivity(
+      widget.eligible && (busy || videoActive || cancellationUncertain),
+    );
     if (!widget.eligible ||
         (widget.record != null && widget.record!.kind != 'case')) {
       return const SizedBox.shrink();
@@ -170,6 +221,7 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
         needsSave: true,
         onSave: widget.onSave,
         enabled: widget.enabled,
+        onActivityChanged: videoActivityChanged,
       );
     }
     final current =
@@ -224,26 +276,31 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
                 spacing: 8,
                 children: [
                   TextButton(
-                    onPressed: busy || !widget.enabled
+                    onPressed:
+                        busy || !widget.enabled || !widget.photoMutationsEnabled
                         ? null
-                        : () => act(widget.onPhoto),
+                        : () => mutatePhoto(widget.onPhoto),
                     child: const Text('Reemplazar foto de urgencia'),
                   ),
                   TextButton(
-                    onPressed: busy || !widget.enabled
+                    onPressed:
+                        busy || !widget.enabled || !widget.photoMutationsEnabled
                         ? null
-                        : () => act(widget.onRemovePhoto),
+                        : () => mutatePhoto(widget.onRemovePhoto),
                     child: const Text('Quitar complemento de foto'),
                   ),
                 ],
               ),
-            ] else if (videoSelected || active.isNotEmpty) ...[
+            ] else if (videoSelected ||
+                active.isNotEmpty ||
+                cancellationUncertain) ...[
               RescueVideoSection(
                 record: record,
                 purposes: const ['urgency'],
                 showHeading: false,
-                enabled: widget.enabled && !busy,
+                enabled: widget.enabled && !busy && !cancellationUncertain,
                 onChanged: refresh,
+                onActivityChanged: videoActivityChanged,
               ),
               TextButton(
                 onPressed: busy || !widget.enabled
@@ -256,9 +313,10 @@ class _UrgencyComplementState extends ConsumerState<UrgencyComplement> {
                 spacing: 8,
                 children: [
                   OutlinedButton.icon(
-                    onPressed: busy || !widget.enabled
+                    onPressed:
+                        busy || !widget.enabled || !widget.photoMutationsEnabled
                         ? null
-                        : () => act(widget.onPhoto),
+                        : () => mutatePhoto(widget.onPhoto),
                     icon: const Icon(Icons.add_photo_alternate_outlined),
                     label: const Text('Añadir foto de urgencia'),
                   ),

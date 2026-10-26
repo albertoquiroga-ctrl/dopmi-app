@@ -1,9 +1,11 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:dopmi_mobile/features/adoption/adoption_detail_layout.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,7 @@ Future<void> startPublication(
   FakeCommunity repo,
   String path, {
   RescueRepository? rescue,
+  VideoRepository? videos,
 }) async {
   SharedPreferences.setMockInitialValues({});
   final identity = FakeIdentityRepository()
@@ -41,10 +44,13 @@ Future<void> startPublication(
       identityRepositoryProvider.overrideWithValue(identity),
       communityRepositoryProvider.overrideWithValue(repo),
       if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
+      if (videos != null)
+        rescueVideosRepositoryProvider.overrideWithValue(videos),
       routerInitialLocationProvider.overrideWithValue(path),
     ],
   );
   addTearDown(container.dispose);
+  if (videos != null) addTearDown(videos.dispose);
   await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const DopmiApp()),
   );
@@ -60,6 +66,101 @@ Future<void> tapPublication(WidgetTester tester, Finder target) async {
 }
 
 void main() {
+  for (final enabled in [false, true]) {
+    testWidgets(
+      'publication video selector preserves stacked actions enabled=$enabled',
+      (tester) async {
+        final actions = <String>[];
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: PublicationVideoPicker(
+                onCamera: enabled ? () => actions.add('camera') : null,
+                onGallery: enabled ? () => actions.add('gallery') : null,
+              ),
+            ),
+          ),
+        );
+        final gallery = find.widgetWithText(OutlinedButton, 'Subir video');
+        final camera = find.widgetWithText(OutlinedButton, 'Grabar video');
+        expect(
+          tester.getRect(gallery).bottom,
+          lessThan(tester.getRect(camera).top),
+        );
+        expect(
+          tester.widget<OutlinedButton>(gallery).onPressed != null,
+          enabled,
+        );
+        expect(
+          tester.widget<OutlinedButton>(camera).onPressed != null,
+          enabled,
+        );
+        if (enabled) {
+          await tester.tap(gallery);
+          await tester.tap(camera);
+        }
+        expect(actions, enabled ? ['gallery', 'camera'] : isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('publication footer has a real 48px minimum at scale $scale', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Align(
+              alignment: Alignment.bottomCenter,
+              child: PublicationFooter(
+                label: 'Enviar a revisión',
+                onContinue: () {},
+                onSave: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      final action = find.widgetWithText(FilledButton, 'Enviar a revisión');
+      expect(tester.getRect(action).height, greaterThanOrEqualTo(48));
+      final border =
+          tester.widget<FilledButton>(action).style!.shape!.resolve({})!
+              as RoundedRectangleBorder;
+      expect(border.borderRadius, BorderRadius.circular(12));
+      expect(find.text('Guardar borrador').hitTestable(), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
+  testWidgets(
+    'saving can be disabled without hiding the publication draft action',
+    (tester) async {
+      var saves = 0;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: PublicationFooter(
+              label: 'Continuar',
+              onContinue: () {},
+              onSave: () => saves++,
+              saveEnabled: false,
+            ),
+          ),
+        ),
+      );
+      final save = find.widgetWithText(TextButton, 'Guardar borrador');
+      expect(save, findsOneWidget);
+      expect(tester.widget<TextButton>(save).onPressed, isNull);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(saves, 0);
+    },
+  );
   for (final scale in [1.0, 2.0]) {
     testWidgets(
       'three step preview keeps the footer reachable at scale $scale',

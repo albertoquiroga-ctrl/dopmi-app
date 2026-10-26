@@ -1,3 +1,36 @@
+## 26/10/2026 — Publicación4 cerrada localmente; Stripe TEST y cámara conciliados
+
+Referencia b9/warm-trust confirmada local y remota sin cambios. La comparación
+descubrió3vs4pasos, selector distinto y CTA36vs48; corregidos en apps/mobile.
+Perfil→necesidades→medios→preview conserva guardados/versiones y datos históricos.
+Thanks requerido espera ready/snapshot vigente/pending|approved; no obliga a
+históricos exentos/OFF conocido. Actividad y cancelación incierta conservan
+recovery; fotos no cambian padre activo.97pruebas focalesPASS,11renders normal/
+320px200%, análisisfinal0. Cohortes anteriores90/49 no se suman. Producto/UI,
+código y seguridad independientes cerrados por alcance. No CI/distribución/
+dispositivo ni aceptación de este delta todavía. Evidencia support-four-steps/:
+visual-focused.log, analyze-final-font.log, source-final.actual.private.json.
+
+Primera excepción local fue bool→double en scroll de TextField bajo ExpansionTile;
+PictureLayer fue cascada. Detenida la ejecución, misma prueba aislada RED→GREEN
+1PASS3s al separar PageStorage, sin cambiar aserciones. Logs dirty-case-isolated-*
+y revisión independiente conservados. No se atribuye fallo al engine ni ahorro
+facturable. Método aplicado: fail-fast/reporterexpanded a archivo/primeraexcepción.
+
+Stripe176permisos leído tras SMS: sólo AccountSessionsWrite, seguridad cerrada.
+Cámara f827: reserva14:07:15UTC→aperturaúnica14:14:55; sin confirmación de toma en
+ventana. CierreOFF14:25:57 antesmax14:27:15,18assets exactos/nuevos0/cola0/finanzas
+e historia idénticas. Handoff privado pendiente, sin lecturas posteriores del
+teléfono ni restauración atribuida. Cámara→Stream y Connect siguen pendientes.
+
+Retro independiente: causa de caducidad on0 confirmada por tiempos; on2 agrupado
+tenía38.9s en evidencia más antigua y3s de dispositivo al input. No culpa humana.
+Dos mejoras del integrador: preparar invocaciones/refresh antes de captura final
+agrupada (medir≤120s y reserva→open<7:40 sin alterar guardas); conservar logs
+acotados/primera excepción para diagnosticar, sin suites extra para medir método.
+Paquete interno local preparado/revisado, sin actuals/pin/reserva/POST: contrato
+c1c15d7a…29d5fa; mismo release/name/code/status y versión2.3.3 exigidos antesPOST.
+
 ## 25/10/2026 — Tienda revocada con ON verificada; Connect corregido, permiso TEST pendiente
 
 Investigación acotada del timeout: EXPLAIN SELECT original JIToff/sinparalelismo,

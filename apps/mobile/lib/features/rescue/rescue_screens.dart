@@ -518,8 +518,35 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   bool expenseSubmitted = false;
+  bool caseThanksReady = false,
+      caseThanksActive = false,
+      caseUrgencyActive = false;
+  bool get caseMediaActive =>
+      kind == 'case' &&
+      editable &&
+      step == 2 &&
+      (caseThanksActive || caseUrgencyActive);
+  void caseThanksReadinessChanged(bool ready) {
+    if (mounted && caseThanksReady != ready) {
+      setState(() => caseThanksReady = ready);
+    }
+  }
+
+  void caseThanksActivityChanged(bool active) {
+    if (mounted && caseThanksActive != active) {
+      setState(() => caseThanksActive = active);
+    }
+  }
+
+  void caseUrgencyActivityChanged(bool active) {
+    if (mounted && caseUrgencyActive != active) {
+      setState(() => caseUrgencyActive = active);
+    }
+  }
+
   final caseInformationKey = GlobalKey(debugLabel: 'case-information');
   final caseNeedsKey = GlobalKey(debugLabel: 'case-needs');
+  final caseNeedsScrollStorage = PageStorageBucket();
   List<Json> needItems = [];
   List<RescueRecord> expenseDrafts = [];
   String? previewRescuerName;
@@ -675,6 +702,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     if (!mounted) return;
     setState(() {
       record = saved;
+      caseThanksReady = false;
       dirty = false;
       message = 'Borrador guardado.';
     });
@@ -875,6 +903,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Future<void> chooseUrgencyPhoto() async {
+    if (caseMediaActive) return;
     final selected = await showModalBottomSheet<String>(
       context: context,
       useSafeArea: true,
@@ -901,6 +930,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Future<void> removeUrgencyPhoto() async {
+    if (caseMediaActive) return;
     setState(() {
       urgencyPhotoPath = null;
       dirty = true;
@@ -927,12 +957,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         onCamera:
             editable &&
                 !busy &&
+                !caseMediaActive &&
                 files.where((f) => f['role'] == 'public').length < 6
             ? () => run(() => pickCasePhoto(ImageSource.camera))
             : null,
         onGallery:
             editable &&
                 !busy &&
+                !caseMediaActive &&
                 files.where((f) => f['role'] == 'public').length < 6
             ? () => run(() => pickCasePhoto(ImageSource.gallery))
             : null,
@@ -965,7 +997,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 ),
                 principal:
                     i == files.indexWhere((file) => file['role'] == 'public'),
-                onRemove: editable && !busy
+                onRemove: editable && !busy && !caseMediaActive
                     ? () => setState(() {
                         files.removeAt(i);
                         urgencyPhotoPath = validUrgencyPhoto(
@@ -1317,35 +1349,48 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   Widget editorFrame({required List<Widget> children}) {
     if (kind == 'case' && editable) {
       return PublicationFrame(
-        title: step == 0
-            ? '¿A quién estás apoyando?'
-            : step == 1
-            ? 'Cuéntanos'
-            : 'Valida tu caso',
+        title: switch (step) {
+          0 => '¿A quién estás apoyando?',
+          1 => 'Cuéntanos',
+          2 => 'Un poco más...',
+          _ => 'Valida tu caso',
+        },
         step: step,
-        totalSteps: 3,
-        onBack: busy
+        totalSteps: 4,
+        onBack: busy || caseMediaActive
             ? null
             : () {
                 if (step > 0) {
-                  setState(() => step--);
+                  setState(() {
+                    if (step == 3) caseThanksReady = false;
+                    step--;
+                  });
                 } else {
                   closeExpenseEditor();
                 }
               },
         footer: PublicationFooter(
-          label: step == 2 ? 'Enviar a revisión' : 'Continuar',
+          label: step == 3 ? 'Enviar a revisión' : 'Continuar',
           busy: busy || loading,
+          saveEnabled: !caseMediaActive,
           compact: MediaQuery.viewInsetsOf(context).bottom > 0,
           onSave: loadFailed ? null : () => run(save),
-          onContinue: loadFailed || (step == 0 && !caseProfileComplete)
+          onContinue:
+              loadFailed ||
+                  (step == 0 && !caseProfileComplete) ||
+                  (step == 2 && (dirty || !caseThanksReady || caseMediaActive))
               ? null
               : () => run(() async {
-                  if (step < 2) {
-                    await save();
+                  if (step == 2 &&
+                      (dirty || !caseThanksReady || caseMediaActive)) {
+                    return;
+                  }
+                  if (step < 3) {
+                    if (step < 2 || record == null || dirty) await save();
                     if (mounted) {
                       setState(() {
                         step++;
+                        if (step == 2) caseThanksReady = false;
                         message = null;
                       });
                     }
@@ -1632,12 +1677,16 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     return PopScope(
       canPop:
           !busy &&
+          !caseMediaActive &&
           (!(kind == 'case' && editable && step > 0)) &&
           (!dirty || !editable),
       onPopInvokedWithResult: (didPop, result) async {
-        if (didPop || busy) return;
+        if (didPop || busy || caseMediaActive) return;
         if (kind == 'case' && editable && step > 0) {
-          setState(() => step--);
+          setState(() {
+            if (step == 3) caseThanksReady = false;
+            step--;
+          });
           return;
         }
         if (await confirmLeave() && context.mounted) {
@@ -1965,23 +2014,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           : null,
                     ),
                   if (step == 1 && kind == 'case' && editable) ...[
-                    UrgencyComplement(
-                      record: record,
-                      eligible: urgencyComplementEligible,
-                      photoPath: validUrgencyPhoto(urgencyPhotoPath, files),
-                      needsSave: dirty,
-                      onSave: () => run(save),
-                      onPhoto: () => run(chooseUrgencyPhoto),
-                      onRemovePhoto: () => run(removeUrgencyPhoto),
-                      enabled: !busy,
-                    ),
-                    RescueVideoSection(
-                      record: record,
-                      purposes: const ['thanks'],
-                      needsSave: dirty,
-                      onSave: () => run(save),
-                      enabled: !busy,
-                    ),
                     CaseDraftNeeds(
                       expenses: expenseDrafts,
                       enabled: !busy,
@@ -1996,6 +2028,53 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       onRemove: (expense) =>
                           run(() => removeCaseExpense(expense)),
                     ),
+                    const SizedBox(height: 12),
+                    ExpansionTile(
+                      key: const PageStorageKey(
+                        'case-publication-planned-needs',
+                      ),
+                      title: const Text('Cuidados y necesidades previstas'),
+                      children: [
+                        PageStorage(
+                          bucket: caseNeedsScrollStorage,
+                          child: CaseNeeds(
+                            key: caseNeedsKey,
+                            items: needItems,
+                            onItemsChanged: (items) => setState(() {
+                              needItems = items;
+                              dirty = true;
+                            }),
+                            controller: controllers['need']!,
+                            enabled: !busy,
+                            onChanged: () => setState(() => dirty = true),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (step == 2 && kind == 'case' && editable) ...[
+                    RescueVideoSection(
+                      record: record,
+                      purposes: const ['thanks'],
+                      publicationThanks: true,
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      enabled: !busy,
+                      onContinueChanged: caseThanksReadinessChanged,
+                      onActivityChanged: caseThanksActivityChanged,
+                    ),
+                    UrgencyComplement(
+                      record: record,
+                      eligible: urgencyComplementEligible,
+                      photoPath: validUrgencyPhoto(urgencyPhotoPath, files),
+                      needsSave: dirty,
+                      onSave: () => run(save),
+                      onPhoto: () => run(chooseUrgencyPhoto),
+                      onRemovePhoto: () => run(removeUrgencyPhoto),
+                      enabled: !busy,
+                      photoMutationsEnabled: !caseMediaActive,
+                      onActivityChanged: caseUrgencyActivityChanged,
+                    ),
                     const SizedBox(height: 24),
                     ExpansionTile(
                       key: const PageStorageKey(
@@ -2008,28 +2087,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       ),
                       children: [casePhotos()],
                     ),
-                    const SizedBox(height: 12),
-                    ExpansionTile(
-                      key: const PageStorageKey(
-                        'case-publication-planned-needs',
-                      ),
-                      title: const Text('Cuidados y necesidades previstas'),
-                      children: [
-                        CaseNeeds(
-                          key: caseNeedsKey,
-                          items: needItems,
-                          onItemsChanged: (items) => setState(() {
-                            needItems = items;
-                            dirty = true;
-                          }),
-                          controller: controllers['need']!,
-                          enabled: !busy,
-                          onChanged: () => setState(() => dirty = true),
-                        ),
-                      ],
-                    ),
                   ],
-                  if (step == 2 && kind == 'case' && editable)
+                  if (step == 3 && kind == 'case' && editable) ...[
                     CaseReview(
                       preview: true,
                       ownerId: ref.read(communityRepositoryProvider).userId,
@@ -2046,20 +2105,29 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           context.push('/rescue-file', extra: path),
                       onEditPhotos: busy
                           ? null
-                          : () => setState(() => step = 0),
+                          : () => setState(() {
+                              caseThanksReady = false;
+                              step = 2;
+                            }),
                       onEditInformation: busy
                           ? null
                           : () => setState(() => step = 0),
                       onEditNeeds: busy ? null : () => setState(() => step = 1),
                     ),
-                  if (step == 2 && kind == 'case' && editable)
-                    RescueVideoSection(
-                      record: record,
-                      purposes: const ['thanks'],
-                      needsSave: dirty,
-                      onSave: () => run(save),
-                      enabled: !busy,
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        key: const ValueKey('case-review-edit-media'),
+                        onPressed: busy
+                            ? null
+                            : () => setState(() {
+                                caseThanksReady = false;
+                                step = 2;
+                              }),
+                        child: const Text('Editar medios'),
+                      ),
                     ),
+                  ],
                   if (step == 2 &&
                       kind != 'expense' &&
                       !(kind == 'case' && editable)) ...[

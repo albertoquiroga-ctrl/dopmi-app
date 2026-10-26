@@ -1,4 +1,30 @@
-# Checkpoint — 25/oct/2026 CDMX: Tienda cerrada; Connect corregido, permiso pendiente
+# Checkpoint — 26/oct/2026 CDMX: publicación4 verificada localmente; candidato pendiente
+
+Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
+y guardado tras SMS humano; readback del editor desde servidor176filas muestra
+únicamente Ninguno→Escritura, otras175idénticas. Seguridad independiente cerrada.
+No leer/reemplazar claves ni tocarLIVE. DemoConnect aún pendiente del teléfono.
+Cámara f827/pin0957: reserva14:07:15UTC, ON SQL14:08:03, aperturaúnica14:14:55.
+Dos captures caducadas no ejecutaron inputs; on2 agrupado pasó antes de cámara.
+Sin respuesta humana a toma durante ventana: stopnuevo14:22, cierre verificado
+14:25:57 antesmax14:27:15, ambosOFF/job6pausado/cola0/18históricos y finanzas exactos.
+Nuevosassets0; cámara→Stream NO probada. Handoff privado sigue activo; no leer
+teléfono hasta confirmar toma neutra/audio o cámara cerrada/selección descartada.
+Recibos: camera-final336/closed-server.actual.private.json y device336/stripe-permissions-after.actual.private.json.
+Brecha b9 corregida: perfil1→necesidades2→medios3→preview4, incluido selector/ayuda
+del mock y CTA48px. Se conservan normalización antes de medios, ready/snapshot,
+cancelación incierta y recuperación de ambos videos; fotos no alteran padre activo.
+97focalesPASS,11renders normal/320px200%; cuatro renders de ayuda actualizados por
+Inter explícita, siete reutilizados byteexactos. Análisis final0incidencias.
+Producto/UI/código/seguridad independientes cerrados en sus alcances; no aceptación
+humana ni dispositivo de este delta. Bucket local corrige colisión bool/scroll:
+misma prueba aislada RED→GREEN1PASS3s, sin debilitar aserciones.
+Fuente candidata: commit de este lote, SHA/CI se vinculan después de publicarlo.
+Paquete interno preparado sin operaciones: support-four-steps/release, contrato
+c1c15d7a…29d5fa; versión fijada2.3.3, build siguiente sólo propuesto337.
+Root: commit/push/CI integrada→preflight/pin/distribución. Teléfono/Connect/cámara
+siguen pendientes del handoff; no instalar ni leer hasta respuesta humana.
+Esta actualización supersede estados de permiso, pin y cola inferiores.
 
 Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
 Referencia única: b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef / warm-trust.

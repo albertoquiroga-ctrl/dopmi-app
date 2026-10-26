@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/core/media/video_upload.dart';
 import 'package:dopmi_mobile/core/media/moderated_video.dart';
+import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 
 import 'support/local_video_controller.dart';
 
@@ -77,6 +78,12 @@ void main() {
               picker: (_) async => XFile.fromData(bytes),
               previewControllerFactory: (_) => LocalVideoTestController(),
               onReady: ready.add,
+              selectionBuilder: (context, camera, gallery, label) =>
+                  PublicationVideoPicker(
+                    onCamera: camera,
+                    onGallery: gallery,
+                    galleryLabel: label,
+                  ),
             ),
           ),
         ),
@@ -161,54 +168,135 @@ void main() {
     );
   }
 
-  for (final source in ImageSource.values) {
-    testWidgets('$source requires explicit upload after local review', (
-      tester,
-    ) async {
-      final operations = <String>[];
-      final pending = Completer<Map<String, dynamic>>();
+  for (final spec in [
+    for (final source in ImageSource.values)
+      for (final custom in [false, true]) (source, custom),
+  ]) {
+    final source = spec.$1;
+    final custom = spec.$2;
+    testWidgets(
+      '$source custom=$custom requires explicit upload after local review',
+      (tester) async {
+        final operations = <String>[];
+        final activity = <bool>[];
+        final pending = Completer<Map<String, dynamic>>();
+        final repo = VideoRepository(
+          identity: () => 'owner:session',
+          invoke: (body) {
+            operations.add(body['action'] as String);
+            return pending.future;
+          },
+        );
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: VideoUpload(
+                repository: repo,
+                parentId: 'case',
+                parentVersion: 2,
+                purpose: 'thanks',
+                picker: (selected) async {
+                  expect(selected, source);
+                  return XFile.fromData(Uint8List(5));
+                },
+                previewControllerFactory: (_) => LocalVideoTestController(),
+                onReady: (_) {},
+                onActivityChanged: activity.add,
+                selectionBuilder: custom
+                    ? (context, camera, gallery, label) =>
+                          PublicationVideoPicker(
+                            onCamera: camera,
+                            onGallery: gallery,
+                          )
+                    : null,
+              ),
+            ),
+          ),
+        );
+        await tester.tap(
+          find.text(
+            source == ImageSource.camera
+                ? 'Grabar video'
+                : custom
+                ? 'Subir video'
+                : 'Elegir video',
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(operations, isEmpty);
+        expect(find.byType(PublicationVideoPicker), findsNothing);
+        expect(activity.last, isFalse);
+        await tester.tap(find.text('Subir video'));
+        await tester.pump();
+        expect(operations, ['begin']);
+        expect(activity.last, isTrue);
+        expect(find.text('Subir video'), findsNothing);
+        await tester.pumpWidget(const SizedBox());
+        pending.completeError(const VideoFailure('request_denied'));
+        await tester.pump();
+        repo.dispose();
+      },
+    );
+  }
+
+  testWidgets(
+    'upload activity settles after processing failure and reports without build loops',
+    (tester) async {
+      final activity = <bool>[];
       final repo = VideoRepository(
         identity: () => 'owner:session',
-        invoke: (body) {
-          operations.add(body['action'] as String);
-          return pending.future;
+        invoke: (body) async {
+          expect(body, {'action': 'status', 'id': 'processing-video'});
+          return {
+            'id': 'processing-video',
+            'technical_state': 'failed',
+            'moderation_state': 'pending',
+          };
         },
       );
+      addTearDown(repo.dispose);
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: VideoUpload(
-              repository: repo,
-              parentId: 'case',
-              parentVersion: 2,
-              purpose: 'thanks',
-              picker: (selected) async {
-                expect(selected, source);
-                return XFile.fromData(Uint8List(5));
-              },
-              previewControllerFactory: (_) => LocalVideoTestController(),
-              onReady: (_) {},
+            body: StatefulBuilder(
+              builder: (context, update) => VideoUpload(
+                repository: repo,
+                parentId: 'case',
+                parentVersion: 2,
+                purpose: 'thanks',
+                initialAssets: const [
+                  {
+                    'id': 'processing-video',
+                    'parent_id': 'case',
+                    'parent_version': 2,
+                    'purpose': 'thanks',
+                    'technical_state': 'processing',
+                    'moderation_state': 'pending',
+                    'request_key': 'request',
+                    'bytes': 3,
+                  },
+                ],
+                onReady: (_) {},
+                onActivityChanged: (active) {
+                  activity.add(active);
+                  update(() {});
+                },
+              ),
             ),
           ),
         ),
       );
-      await tester.tap(
-        find.text(
-          source == ImageSource.camera ? 'Grabar video' : 'Elegir video',
-        ),
-      );
       await tester.pumpAndSettle();
-      expect(operations, isEmpty);
-      await tester.tap(find.text('Subir video'));
+      expect(activity, [true]);
+      await tester.tap(find.text('Comprobar video'));
+      await tester.pumpAndSettle();
+      expect(activity, [true, false]);
       await tester.pump();
-      expect(operations, ['begin']);
-      expect(find.text('Subir video'), findsNothing);
-      await tester.pumpWidget(const SizedBox());
-      pending.completeError(const VideoFailure('request_denied'));
-      await tester.pump();
-      repo.dispose();
-    });
-  }
+      expect(activity, [true, false]);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 
   testWidgets('identity change discards local review without server calls', (
     tester,

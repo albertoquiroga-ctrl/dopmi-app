@@ -19,11 +19,13 @@ class VideoUpload extends StatefulWidget {
     required this.onReady,
     this.onChanged,
     this.onCancellationPendingChanged,
+    this.onActivityChanged,
     this.label = 'Video',
     this.showHeading = true,
     this.picker,
     this.previewControllerFactory,
     this.initialAssets = const [],
+    this.selectionBuilder,
   });
   final List<Map<String, dynamic>> initialAssets;
   final VideoRepository repository;
@@ -36,8 +38,21 @@ class VideoUpload extends StatefulWidget {
   /// Hides a parent's cached preview while remote cancellation is unconfirmed.
   /// Emitted only by asynchronous user actions, never during hydration/build.
   final ValueChanged<String?>? onCancellationPendingChanged;
+
+  /// Prevents a parent from disposing an in-flight or unresolved upload.
+  /// Hydration notifications are deduplicated and delivered after the frame.
+  final ValueChanged<bool>? onActivityChanged;
   final Future<XFile?> Function(ImageSource source)? picker;
   final LocalVideoControllerFactory? previewControllerFactory;
+
+  /// Presentation only: callbacks keep the native picker and upload guards.
+  final Widget Function(
+    BuildContext context,
+    VoidCallback? onCamera,
+    VoidCallback? onGallery,
+    String galleryLabel,
+  )?
+  selectionBuilder;
   @override
   State<VideoUpload> createState() => _VideoUploadState();
 }
@@ -57,6 +72,8 @@ class _VideoUploadState extends State<VideoUpload> {
   bool picking = false;
   bool cancellationPending = false;
   bool canRetryCancellation = false;
+  bool? reportedActivity;
+  bool activityNotificationScheduled = false;
   static const cancellationMessage =
       'No pudimos confirmar la cancelación. Comprueba su estado antes de elegir otro video.';
   int generation = 0;
@@ -390,19 +407,58 @@ class _VideoUploadState extends State<VideoUpload> {
       (task?.uploaded ?? 0) > 0 &&
       progress == 1;
 
+  bool get active =>
+      busy ||
+      picking ||
+      cancellationPending ||
+      (task != null &&
+          !const [
+            'ready',
+            'failed',
+            'canceled',
+            'deleted',
+          ].contains(asset?.state));
+
+  void reportActivity() {
+    if (widget.onActivityChanged == null ||
+        reportedActivity == active ||
+        activityNotificationScheduled) {
+      return;
+    }
+    activityNotificationScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      activityNotificationScheduled = false;
+      if (!mounted || reportedActivity == active) return;
+      reportedActivity = active;
+      widget.onActivityChanged?.call(active);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    reportActivity();
     final state = asset?.state;
+    final VoidCallback? onCamera =
+        busy || scope == null || task?.assetId != null
+        ? null
+        : () => pick(ImageSource.camera);
+    final VoidCallback? onGallery = busy || scope == null
+        ? null
+        : () => pick(ImageSource.gallery);
+    final galleryLabel = task?.assetId == null
+        ? 'Elegir video'
+        : 'Elegir mismo video para reanudar';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.showHeading)
           Text(widget.label, style: Theme.of(context).textTheme.titleMedium),
-        Text(
-          widget.purpose == 'expense_evidence'
-              ? 'Hasta 60 segundos. Este video es privado y se revisará como evidencia del gasto.'
-              : 'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
-        ),
+        if (widget.selectionBuilder == null)
+          Text(
+            widget.purpose == 'expense_evidence'
+                ? 'Hasta 60 segundos. Este video es privado y se revisará como evidencia del gasto.'
+                : 'Hasta 60 segundos. El video pasa por revisión antes de publicarse.',
+          ),
         if (reviewingSelection && file != null && !cancellationPending)
           LocalVideoPreview(
             file: file!,
@@ -413,29 +469,27 @@ class _VideoUploadState extends State<VideoUpload> {
         if (!cancellationPending &&
             file == null &&
             !['ready', 'processing', 'failed'].contains(state))
-          Wrap(
-            spacing: 8,
-            children: [
-              OutlinedButton.icon(
-                onPressed: busy || scope == null || task?.assetId != null
-                    ? null
-                    : () => pick(ImageSource.camera),
-                icon: const Icon(Icons.videocam_outlined),
-                label: const Text('Grabar video'),
+          widget.selectionBuilder?.call(
+                context,
+                onCamera,
+                onGallery,
+                galleryLabel,
+              ) ??
+              Wrap(
+                spacing: 8,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: onCamera,
+                    icon: const Icon(Icons.videocam_outlined),
+                    label: const Text('Grabar video'),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: onGallery,
+                    icon: const Icon(Icons.video_library_outlined),
+                    label: Text(galleryLabel),
+                  ),
+                ],
               ),
-              OutlinedButton.icon(
-                onPressed: busy || scope == null
-                    ? null
-                    : () => pick(ImageSource.gallery),
-                icon: const Icon(Icons.video_library_outlined),
-                label: Text(
-                  task?.assetId == null
-                      ? 'Elegir video'
-                      : 'Elegir mismo video para reanudar',
-                ),
-              ),
-            ],
-          ),
         if (busy) ...[
           LinearProgressIndicator(
             value: progress > 0 && progress < 1 ? progress : null,

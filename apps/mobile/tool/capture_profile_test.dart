@@ -7,6 +7,7 @@ import '../test/guardian_registration_screen_test.dart'
 import 'package:dopmi_mobile/features/adoption/community_ui.dart'
     show adoptionPhotoSource, LiveSection;
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
 import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
 
@@ -73,7 +74,7 @@ import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
 import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
 import '../test/case_publication_test.dart'
-    show DraftCaseRescue, expenseFixture;
+    show DraftCaseRescue, expenseFixture, WizardVideos;
 import '../test/expense_field_test.dart'
     show DraftExpenseRescue, SubmittedExpenseRescue;
 import '../test/payments_test.dart' show FakePayments;
@@ -1567,6 +1568,8 @@ void main() {
       ('case-publication-information-large', '/rescue/case-one'),
       ('case-publication-grid', '/rescue/case-one'),
       ('case-publication-grid-large', '/rescue/case-one'),
+      ('case-publication-grid-help', '/rescue/case-one'),
+      ('case-publication-grid-help-large', '/rescue/case-one'),
       ('case-publication-preview-gallery', '/rescue/case-one'),
       ('expense-record', '/rescue/expense-one'),
       ('expense-record-large', '/rescue/expense-one'),
@@ -2135,6 +2138,14 @@ void main() {
                     spec.$1.contains('-grid') || spec.$1.contains('-gallery'),
               ),
             ),
+          if (spec.$1.startsWith('case-publication'))
+            rescueVideosRepositoryProvider.overrideWith((ref) {
+              final videos = WizardVideos(
+                ref.watch(rescueRepositoryProvider) as DraftCaseRescue,
+              )..enabled = spec.$1.startsWith('case-publication-grid');
+              ref.onDispose(videos.dispose);
+              return videos;
+            }),
           if (spec.$1.startsWith('expense-'))
             rescueRepositoryProvider.overrideWithValue(
               spec.$1.startsWith('expense-record')
@@ -4029,8 +4040,11 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('case-publication-needs') ||
-          spec.$1.startsWith('case-publication-grid')) {
+      if (spec.$1.startsWith('case-publication-needs')) {
+        await publicationNext();
+      }
+      if (spec.$1.startsWith('case-publication-grid')) {
+        await publicationNext();
         await publicationNext();
       }
       for (final entry in {
@@ -4048,7 +4062,7 @@ void main() {
       }
       if (spec.$1.startsWith('case-publication-review') ||
           spec.$1.startsWith('case-publication-preview-gallery')) {
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 3; i++) {
           await publicationNext();
         }
       }
@@ -4062,8 +4076,19 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(extraPhotos);
         await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text('Complementa sus fotos'));
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('publication-thanks-video-title')),
+        );
         await tester.pumpAndSettle();
+        if (spec.$1.startsWith('case-publication-grid-help')) {
+          final help = find.byKey(
+            const ValueKey('publication-thanks-video-help'),
+          );
+          await tester.ensureVisible(help);
+          await tester.pumpAndSettle();
+          await tester.tap(help);
+          await tester.pumpAndSettle();
+        }
       }
       if (large &&
           (spec.$1.startsWith('publish-review') ||

@@ -1,3 +1,11 @@
+## 26/10/2026 — Permiso específico de Account Sessions en TEST
+
+Titular autorizó únicamente AccountSessions→Escritura para la clave existente
+DopmiSupabaseTest (call_2a7acca1/item0) y completó personalmente el SMS
+(call_da9f6ab5/item0). Readback desde servidor:176filas, sólo ese cambio; no claves
+nuevas/rotación/lectura de valor ni LIVE. Mantener autenticación Stripe, dueño y
+onboarding limitado. No equivale a completar alta bancaria, pagos ni demo nativa.
+
 ## 25/10/2026 — Más tiempo permitido; checkpoint y eficiencia verificables
 
 El titular aclara que las ocho horas eran arbitrarias y permite más tiempo.

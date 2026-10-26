@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../../core/media/video_repository.dart';
 import '../../core/media/moderated_video.dart';
 import '../../core/media/video_upload.dart';
+import '../../core/design_tokens.dart';
+import '../adoption/publication_frame.dart';
 import 'rescue_repository.dart';
 
 /// Configured with the authenticated production client by the app bootstrap.
@@ -190,13 +192,17 @@ class RescueVideoSection extends ConsumerStatefulWidget {
     this.onSave,
     this.enabled = true,
     this.onChanged,
+    this.onContinueChanged,
+    this.onActivityChanged,
     this.showHeading = true,
+    this.publicationThanks = false,
   });
   final RescueRecord? record;
   final List<String> purposes;
-  final bool needsSave, enabled, showHeading;
+  final bool needsSave, enabled, showHeading, publicationThanks;
   final Future<void> Function()? onSave;
   final VoidCallback? onChanged;
+  final ValueChanged<bool>? onContinueChanged, onActivityChanged;
   @override
   ConsumerState<RescueVideoSection> createState() => _RescueVideoSectionState();
 }
@@ -205,10 +211,32 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
   Future<VideoPolicy>? request;
   String? requestScope;
   String? previewScope;
+  VideoPolicy? lastPolicy;
+  final uploadActivity = <String, bool>{};
+  (bool, bool)? reportedStatus, pendingStatus;
+  bool statusNotificationScheduled = false;
   final suspendedPreviewPurposes = <String>{};
   final canceledPreviewIds = <String>{};
   bool saving = false;
   String? saveError;
+  void reportStatus(bool canContinue, bool active) {
+    pendingStatus = (canContinue, active);
+    if (reportedStatus == pendingStatus || statusNotificationScheduled) return;
+    statusNotificationScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      statusNotificationScheduled = false;
+      if (!mounted || pendingStatus == reportedStatus) return;
+      final status = pendingStatus!;
+      reportedStatus = status;
+      widget.onContinueChanged?.call(status.$1);
+      widget.onActivityChanged?.call(status.$2);
+    });
+  }
+
+  void refreshPolicy() {
+    if (mounted) setState(() => request = null);
+  }
+
   Future<void> saveDraft() async {
     setState(() {
       saving = true;
@@ -227,13 +255,127 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
     }
   }
 
+  Future<void> showThanksHelp() => showDialog<void>(
+    context: context,
+    builder: (dialogContext) => Dialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 340),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Expanded(
+                    child: Text(
+                      '¿Por qué subir este video?',
+                      style: TextStyle(
+                        fontSize: 22,
+                        height: 28 / 22,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff151423),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Cerrar',
+                    onPressed: () => Navigator.pop(dialogContext),
+                    icon: const Icon(Icons.close, size: 20),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              for (final item in const [
+                (
+                  'Confianza:',
+                  ' quienes apoyan quieren ver que su ayuda llega a la mascota.',
+                ),
+                (
+                  'Gratitud:',
+                  ' un mensaje breve refuerza la comunidad y motiva a seguir donando.',
+                ),
+                (
+                  'Qué mostrar:',
+                  ' debe salir la mascota; es opcional que aparezcas tú en el video.',
+                ),
+              ])
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('•  '),
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: item.$1,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              TextSpan(text: item.$2),
+                            ],
+                          ),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            height: 1.45,
+                            color: DopmiTokens.ink,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const Text(
+                'Hasta 60 segundos. Primero eliges o grabas el video y lo revisas en tu teléfono. La carga comienza al confirmar Subir video en la revisión. Debe terminar de procesarse antes de enviar el caso; el equipo lo revisará antes de publicarlo.',
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 1.55,
+                  color: Color(0xff616174),
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                style: FilledButton.styleFrom(
+                  backgroundColor: DopmiTokens.purple,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(0, 36),
+                  tapTargetSize: MaterialTapTargetSize.padded,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text('Entendido'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rescueVideoIdentityProvider);
     final repository = ref.watch(rescueVideosRepositoryProvider);
-    if (repository == null) return const SizedBox.shrink();
+    if (repository == null) {
+      reportStatus(false, false);
+      return widget.onContinueChanged == null
+          ? const SizedBox.shrink()
+          : const Text('No pudimos consultar la disponibilidad de videos.');
+    }
     final record = widget.record;
     if (record == null || widget.needsSave) {
+      reportStatus(false, uploadActivity.values.any((active) => active));
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -258,6 +400,8 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
     final current = '$actor:${record.id}:${record.version}';
     if (previewScope != current) {
       previewScope = current;
+      lastPolicy = null;
+      uploadActivity.clear();
       suspendedPreviewPurposes.clear();
       canceledPreviewIds.clear();
     }
@@ -269,28 +413,112 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
       key: ValueKey(current),
       future: request,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('No pudimos consultar la disponibilidad de videos.'),
-              TextButton(
-                onPressed: () => setState(() => request = null),
-                child: const Text('Reintentar disponibilidad de videos'),
-              ),
-            ],
-          );
+        final policyResolved =
+            snapshot.connectionState == ConnectionState.done &&
+            !snapshot.hasError &&
+            snapshot.hasData;
+        if (policyResolved &&
+            !(uploadActivity.values.any((active) => active) &&
+                snapshot.data?.enabled == false &&
+                lastPolicy?.enabled == true)) {
+          lastPolicy = snapshot.data;
         }
-        final policy = snapshot.data;
+        final policy = lastPolicy;
+        final active = widget.purposes.any(
+          (purpose) => uploadActivity[purpose] ?? (policy?.enabled == true),
+        );
+        final thanksReady =
+            policy?.assets.any(
+              (asset) =>
+                  asset['parent_id'] == record.id &&
+                  asset['purpose'] == 'thanks' &&
+                  asset['id'] is String &&
+                  (asset['id'] as String).isNotEmpty &&
+                  asset['technical_state'] == 'ready' &&
+                  asset['matches_current_content'] == true &&
+                  const [
+                    'pending',
+                    'approved',
+                  ].contains(asset['moderation_state']) &&
+                  !canceledPreviewIds.contains(asset['id']) &&
+                  !suspendedPreviewPurposes.contains('thanks'),
+            ) ??
+            false;
+        reportStatus(
+          policyResolved &&
+              !active &&
+              policy != null &&
+              (!policy.enabled ||
+                  !widget.purposes.contains('thanks') ||
+                  !policy.thanksRequired ||
+                  thanksReady),
+          active,
+        );
+        final policyError = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('No pudimos consultar la disponibilidad de videos.'),
+            TextButton(
+              onPressed: refreshPolicy,
+              child: const Text('Reintentar disponibilidad de videos'),
+            ),
+          ],
+        );
+        if (snapshot.hasError && policy == null) {
+          return policyError;
+        }
         if (policy == null || policy.enabled != true) {
           return const SizedBox.shrink();
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 16),
+            if (!widget.publicationThanks) const SizedBox(height: 16),
+            if (snapshot.hasError) policyError,
             for (final purpose in widget.purposes) ...[
-              if (purpose == 'thanks' && policy.thanksRequired == true)
+              if (widget.publicationThanks && purpose == 'thanks') ...[
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: 'Video de agradecimiento'),
+                      if (policy.thanksRequired)
+                        const TextSpan(text: ' *')
+                      else
+                        const TextSpan(text: ' (opcional)'),
+                    ],
+                  ),
+                  key: const ValueKey('publication-thanks-video-title'),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    height: 28 / 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff151423),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Dile gracias a las personas que apoyan a la causa.',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      TextSpan(
+                        text: ' En el video deberá salir la mascota. Es opcional que aparezca el/la rescatista.',
+                      ),
+                    ],
+                  ),
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.55,
+                    color: Color(0xff616174),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+              if (purpose == 'thanks' &&
+                  policy.thanksRequired == true &&
+                  !widget.publicationThanks)
                 const Text(
                   'Para enviar este nuevo caso, carga un video de agradecimiento y espera a que termine de procesarse. El equipo lo revisará antes de publicarlo.',
                 ),
@@ -350,7 +578,20 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                       )
                       .toList(),
                   label: videoPurposeLabel(purpose),
-                  showHeading: widget.showHeading,
+                  showHeading:
+                      widget.showHeading &&
+                      !(widget.publicationThanks && purpose == 'thanks'),
+                  selectionBuilder:
+                      widget.publicationThanks && purpose == 'thanks'
+                      ? (context, camera, gallery, label) =>
+                            PublicationVideoPicker(
+                              onCamera: widget.enabled ? camera : null,
+                              onGallery: widget.enabled ? gallery : null,
+                              galleryLabel: label == 'Elegir video'
+                                  ? 'Subir video'
+                                  : label,
+                            )
+                      : null,
                   onCancellationPendingChanged: (assetId) {
                     if (assetId == null ||
                         !mounted ||
@@ -359,9 +600,19 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                       return;
                     }
                     setState(() {
+                      uploadActivity[purpose] = true;
                       suspendedPreviewPurposes.add(purpose);
                       canceledPreviewIds.add(assetId);
                     });
+                  },
+                  onActivityChanged: (active) {
+                    if (!mounted ||
+                        requestScope != current ||
+                        repository.identity() != actor ||
+                        uploadActivity[purpose] == active) {
+                      return;
+                    }
+                    setState(() => uploadActivity[purpose] = active);
                   },
                   onChanged: (value) {
                     if (!mounted ||
@@ -375,9 +626,47 @@ class _RescueVideoSectionState extends ConsumerState<RescueVideoSection> {
                     widget.onChanged?.call();
                     if (mounted) setState(() => request = null);
                   },
-                  onReady: (_) {},
+                  onReady: (_) => refreshPolicy(),
                 ),
               ),
+              if (widget.publicationThanks && purpose == 'thanks') ...[
+                const SizedBox(height: 2),
+                Center(
+                  child: TextButton(
+                    key: const ValueKey('publication-thanks-video-help'),
+                    onPressed: showThanksHelp,
+                    style: TextButton.styleFrom(
+                      foregroundColor: DopmiTokens.purple,
+                      minimumSize: const Size(0, 40),
+                      padding: EdgeInsets.zero,
+                      textStyle: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        height: 1.35,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    child: const Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      children: [
+                        Text('¿Por qué debo subir este video?'),
+                        Icon(Icons.info_outline, size: 14),
+                      ],
+                    ),
+                  ),
+                ),
+                const Text(
+                  'Hasta 60 segundos. Revisa el video antes de subirlo.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.55,
+                    color: Color(0xff616174),
+                  ),
+                ),
+              ],
               const SizedBox(height: 20),
             ],
           ],

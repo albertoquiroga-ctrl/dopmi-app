@@ -195,10 +195,11 @@ class PublicationFooter extends StatelessWidget {
     this.onSave,
     this.busy = false,
     this.compact = false,
+    this.saveEnabled = true,
   });
   final String label;
   final VoidCallback? onContinue, onSave;
-  final bool busy, compact;
+  final bool busy, compact, saveEnabled;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(16),
@@ -223,23 +224,24 @@ class PublicationFooter extends StatelessWidget {
               FilledButton.styleFrom(
                 backgroundColor: DopmiTokens.purple,
                 foregroundColor: const Color(0xfffbfbff),
-                disabledBackgroundColor: const Color(0xfff2f2f2),
+                // Final warm-trust CSS keeps café and composites opacity .5 on white.
+                disabledBackgroundColor: const Color(0xffa3948e),
                 disabledForegroundColor: const Color(0xffc5c5c5),
-                minimumSize: const Size(0, 36),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: const Size(0, 48),
+                tapTargetSize: MaterialTapTargetSize.padded,
                 splashFactory: NoSplash.splashFactory,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ).copyWith(
                 overlayColor: const WidgetStatePropertyAll(Colors.transparent),
                 backgroundColor: WidgetStateProperty.resolveWith(
                   (states) => states.contains(WidgetState.disabled)
-                      ? const Color(0xfff2f2f2)
+                      ? const Color(0xffa3948e)
                       : states.contains(WidgetState.hovered)
                       ? const Color(0xff6d28d9)
                       : DopmiTokens.purple,
@@ -267,7 +269,7 @@ class PublicationFooter extends StatelessWidget {
         if (onSave != null && !compact) ...[
           const SizedBox(height: 8),
           TextButton(
-            onPressed: busy ? null : onSave,
+            onPressed: busy || !saveEnabled ? null : onSave,
             style:
                 TextButton.styleFrom(
                   foregroundColor: const Color(0xff151423),
@@ -294,6 +296,54 @@ class PublicationFooter extends StatelessWidget {
           ),
         ],
       ],
+    ),
+  );
+}
+
+class PublicationVideoPicker extends StatelessWidget {
+  const PublicationVideoPicker({
+    super.key,
+    required this.onCamera,
+    required this.onGallery,
+    this.galleryLabel = 'Subir video',
+  });
+  final VoidCallback? onCamera, onGallery;
+  final String galleryLabel;
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: double.infinity,
+    child: CustomPaint(
+      painter: const _PhotoBorder(),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(17, 33, 17, 33),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: SvgPicture.asset(
+                'assets/profile/publish-cam-lg.svg',
+                width: 48,
+                height: 48,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _PhotoAction(
+              galleryLabel,
+              'publish-upload.svg',
+              onGallery,
+              alignLeft: true,
+            ),
+            const SizedBox(height: 8),
+            _PhotoAction(
+              'Grabar video',
+              'publish-cam-sm.svg',
+              onCamera,
+              alignLeft: true,
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }
@@ -363,16 +413,22 @@ class PublicationPhotoPicker extends StatelessWidget {
 }
 
 class _PhotoAction extends StatelessWidget {
-  const _PhotoAction(this.label, this.asset, this.onPressed);
+  const _PhotoAction(
+    this.label,
+    this.asset,
+    this.onPressed, {
+    this.alignLeft = false,
+  });
   final String label, asset;
   final VoidCallback? onPressed;
+  final bool alignLeft;
   @override
   Widget build(BuildContext context) => OutlinedButton.icon(
     onPressed: onPressed,
     icon: SvgPicture.asset('assets/profile/$asset', width: 16, height: 16),
     label: Text(
       label,
-      textAlign: TextAlign.center,
+      textAlign: alignLeft ? TextAlign.left : TextAlign.center,
       style: const TextStyle(
         fontSize: 14,
         height: 1.2,
@@ -380,6 +436,7 @@ class _PhotoAction extends StatelessWidget {
       ),
     ),
     style: OutlinedButton.styleFrom(
+      alignment: alignLeft ? Alignment.centerLeft : Alignment.center,
       backgroundColor: const Color(0xfffafafd),
       foregroundColor: const Color(0xff151423),
       minimumSize: const Size(0, 36),
