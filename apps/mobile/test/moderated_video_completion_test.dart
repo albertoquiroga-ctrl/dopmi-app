@@ -362,9 +362,9 @@ void main() {
                   isFalse,
                 );
               }
-              // Editorial media copy yields to the failure state, while the
+              // The navigation hint yields to the failure state, while the
               // existing bottom action still opens the same case.
-              expect(find.text('Da un pequeño gesto,'), findsNothing);
+              expect(find.text('Desliza hacia arriba'), findsNothing);
               final caseAction = find.text('Conoce su historia');
               expect(caseAction, findsOneWidget);
               expect(caseAction.hitTestable(), findsOneWidget);
@@ -401,7 +401,11 @@ void main() {
               expect(find.byType(CircularProgressIndicator), findsOneWidget);
               if (!story) expect(errorStates, [true, false]);
               if (story) {
-                expect(find.text('Da un pequeño gesto,'), findsOneWidget);
+                final player = tester.widget<ModeratedVideo>(
+                  find.byKey(const ValueKey('public-case:video:approved-clip')),
+                );
+                expect(player.assetId, 'approved-clip');
+                expect(player.semanticLabel, 'Video de agradecimiento');
                 expect(find.text('Desliza hacia arriba'), findsOneWidget);
               }
             }

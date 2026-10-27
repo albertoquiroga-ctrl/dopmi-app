@@ -222,10 +222,7 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
         final supportStyle = tester.widget<FilledButton>(support).style!;
-        expect(
-          supportStyle.backgroundColor!.resolve({}),
-          DopmiTokens.orangeButton,
-        );
+        expect(supportStyle.backgroundColor!.resolve({}), DopmiTokens.ink);
         expect(supportStyle.foregroundColor!.resolve({}), Colors.white);
         for (final link in {
           'Sobre nosotros': '/about',

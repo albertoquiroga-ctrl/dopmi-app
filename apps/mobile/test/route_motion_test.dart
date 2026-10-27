@@ -49,7 +49,12 @@ void main() {
         final second = intent == 'adopt'
             ? 'Conoce a quien cuida cada historia.'
             : 'Tú lo cuidas. Te ayudamos a cubrir lo que necesita.';
-        await tester.tap(find.widgetWithText(FilledButton, 'Continuar'));
+        expect(find.text(first), findsOneWidget);
+        final next = find.widgetWithText(FilledButton, 'Continuar');
+        await tester.ensureVisible(next);
+        await tester.pumpAndSettle();
+        expect(next.hitTestable(), findsOneWidget);
+        await tester.tap(next);
         await tester.pump();
         expect(find.text(second), findsOneWidget);
         final dots = find.byType(AnimatedContainer);

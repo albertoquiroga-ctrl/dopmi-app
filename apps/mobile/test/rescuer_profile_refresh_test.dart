@@ -1,6 +1,7 @@
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
+import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
@@ -67,7 +68,15 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
-      expect(find.text('En revisión'), findsOneWidget);
+      expect(find.text('Verificación en proceso'), findsOneWidget);
+      expect(
+        tester
+            .widget<RescuerVerificationCard>(
+              find.byType(RescuerVerificationCard),
+            )
+            .status,
+        'submitted',
+      );
       expect(find.text('Cuenta verificada'), findsNothing);
       expect(find.text('Editar'), findsOneWidget);
       repo.fail = true;
@@ -78,13 +87,25 @@ void main() {
       expect(find.text('Cuenta verificada'), findsNothing);
       expect(find.text('Editar'), findsOneWidget);
       expect(find.text(r'$50'), findsNothing);
-      expect(find.text('Verificación no disponible'), findsOneWidget);
+      expect(find.text('Sin conexión'), findsOneWidget);
+      expect(find.byType(RescuerVerificationCard), findsNothing);
+      expect(find.text('Verificación en proceso'), findsNothing);
+      expect(find.text('Pagos y transacciones'), findsNothing);
       expect(find.text('Volver a intentar'), findsOneWidget);
       repo.fail = false;
       repo.status = 'not_started';
       await tester.tap(find.text('Volver a intentar'));
       await tester.pumpAndSettle();
-      expect(find.text('Sin verificar'), findsOneWidget);
+      expect(find.text('Verifica tu cuenta'), findsOneWidget);
+      expect(
+        tester
+            .widget<RescuerVerificationCard>(
+              find.byType(RescuerVerificationCard),
+            )
+            .status,
+        'not_started',
+      );
+      expect(find.text('Sin conexión'), findsNothing);
       expect(find.text('Editar'), findsOneWidget);
       expect(repo.reads, 4);
       expect(tester.takeException(), isNull);

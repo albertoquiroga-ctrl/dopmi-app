@@ -11,8 +11,8 @@ import 'fake_identity_repository.dart';
 
 void main() {
   for (final route in [
-    ('/welcome', 'Continuar', '/onboarding'),
-    ('/start?intent=adopt', 'Crea una cuenta', '/signup'),
+    ('/welcome', 'Continuar', '/onboarding', [193, 81, 28, 255]),
+    ('/start?intent=adopt', 'Crea una cuenta', '/signup', [70, 40, 29, 255]),
   ]) {
     testWidgets(
       'access route ${route.$1} keeps color while held and navigates on release',
@@ -70,11 +70,11 @@ void main() {
           image.dispose();
           return color;
         });
-        expect(await sample(), [70, 40, 29, 255]);
+        expect(await sample(), route.$4);
         final gesture = await tester.startGesture(rect.center);
         await tester.pump(const Duration(milliseconds: 200));
         expect(tester.getRect(button), rect);
-        expect(await sample(), [70, 40, 29, 255]);
+        expect(await sample(), route.$4);
         expect(
           container.read(routerProvider).state.uri.path,
           route.$1.split('?').first,

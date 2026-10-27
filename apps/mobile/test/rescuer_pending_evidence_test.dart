@@ -1,4 +1,5 @@
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/navigation.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -151,24 +152,14 @@ void main() {
         expect(support.hitTestable(), findsOneWidget);
         await tester.tap(support);
         await tester.pumpAndSettle();
-        expect(find.text('Resumen de apoyo'), findsOneWidget);
-        expect(container.read(routerProvider).state.uri.path, '/rescuer');
-        expect(rescue.savedFiles, isNull);
-        expect(rescue.publicSaved, isNull);
-        expect(rescue.transitions, isEmpty);
-        final active = find.byKey(
-          const ValueKey('home-summary-support-active'),
-        );
-        await tester.scrollUntilVisible(active, 240, scrollable: homeScroll);
-        await tester.ensureVisible(active);
-        await tester.pumpAndSettle();
-        await tester.tap(active);
-        await tester.pumpAndSettle();
+        expect(find.text('Mis Casos'), findsOneWidget);
         expect(container.read(routerProvider).state.uri.path, '/my-cases');
         expect(container.read(routerProvider).state.uri.queryParameters, {
           'program': 'support',
-          'status': 'active',
         });
+        expect(rescue.savedFiles, isNull);
+        expect(rescue.publicSaved, isNull);
+        expect(rescue.transitions, isEmpty);
         final caseScroll = find.descendant(
           of: find.byKey(const ValueKey('owned-cases-scroll')),
           matching: find.byType(Scrollable),
@@ -221,7 +212,15 @@ void main() {
         await tester.tap(back);
         await tester.pumpAndSettle();
         expect(container.read(routerProvider).state.uri.path, '/my-cases');
-        container.read(routerProvider).pop();
+        expect(container.read(routerProvider).state.uri.queryParameters, {
+          'program': 'support',
+        });
+        await tester.tap(
+          find.descendant(
+            of: find.byType(DopmiBottomBar),
+            matching: find.text('Inicio'),
+          ),
+        );
         await tester.pumpAndSettle();
         expect(container.read(routerProvider).state.uri.path, '/rescuer');
         expect(rescue.savedFiles, isNull);

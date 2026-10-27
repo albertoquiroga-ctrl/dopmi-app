@@ -2,6 +2,7 @@ import 'package:dopmi_mobile/features/communication/notification_frame.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/help_center_screen.dart';
+import 'package:dopmi_mobile/core/design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -91,7 +92,7 @@ void main() {
   for (final scale in [1.0, 2.0]) {
     for (final systemBack in [false, true]) {
       testWidgets(
-        'rescuer help uses purple selection and actual settings fallback; scale=$scale Android=$systemBack',
+        'rescuer help uses warm-trust selection and actual settings fallback; scale=$scale Android=$systemBack',
         (tester) async {
           tester.view.physicalSize = const Size(320, 640);
           tester.view.devicePixelRatio = 1;
@@ -148,7 +149,7 @@ void main() {
           final selected = tester.widget<OutlinedButton>(topic);
           expect(
             selected.style!.backgroundColor!.resolve({}),
-            const Color(0xfff3eefe),
+            DopmiTokens.saffronSoft,
           );
           expect(
             selected.style!.foregroundColor!.resolve({}),

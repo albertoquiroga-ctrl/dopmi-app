@@ -258,11 +258,7 @@ void main() {
       await tester.pump();
       expect(currentPlayer(tester).assetId, 'thanks');
       expect(currentPlayer(tester).semanticLabel, 'Video de agradecimiento');
-      expect(find.text('Da un pequeño gesto,'), findsOneWidget);
-      expect(
-        find.text('haz una GRAN diferencia.', findRichText: true),
-        findsOneWidget,
-      );
+      expect(currentPlayer(tester).key, const ValueKey('case:video:thanks'));
       expect(find.text('Apoyo urgente'), findsNothing);
       expect(find.text('Conoce su historia'), findsWidgets);
       currentPlayer(tester).onComplete!();

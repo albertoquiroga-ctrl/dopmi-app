@@ -200,7 +200,7 @@ void main() {
     expect(image.image, isNotNull);
     expect(image.image!.width, greaterThan(0));
     expect(image.image!.height, greaterThan(0));
-    expect(image.size, const Size(72, 72));
+    expect(image.size, const Size(56, 56));
     expect(image.fit, BoxFit.cover);
     expect(find.byTooltip('Reintentar foto de perfil'), findsNothing);
     expect(store.entries, hasLength(1));
