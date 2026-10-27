@@ -1,3 +1,42 @@
+## 27/10/2026 08:54 CDMX — Cierre local de UI y congelación del candidato
+
+Seis capturas afectadas PASS(6s), tres owned previas reutilizadas. Producto cerró
+modalStripe/CTA/X con fuente y PNG reales. CTA377 vuelve a fila horizontal: Inter
+medido319.9565px requiere320px útiles; se conservan font17/padding24/borde2/altura52.
+X se desplaza con el encabezado, sin cubrir texto200%. Código/seguridad cerrados
+por alcance. Modal2PASS y normal3771PASS;115%/200% previos conservados. Oráculo377
+alineado con referencia bottom760/safe0 y mínimo11px para hueco nominal12 fraccional;
+tolerancias de coordenadas/glyphs/controles restantes intactas. No SDK físico atribuido.
+
+PaqueteDEV inerte pending-stripe-dev/ revisado por código/seguridad: manifestee6458d7,
+payloadtemplate321a930a, GitLF8049d285 exacto (rawCRLF5b5b por separado). SinSQL,
+binding ni reserva. Adaptador mínimoV3 en preparación. Próximo root: commit único
+con UI/contratos/tests y CIintegrada (incluyePGreal), sin otra build intermedia.
+
+## 27/10/2026 08:38 CDMX — 339 comprobada y correctivo agrupado
+
+CM6ae0997ff94c6e56883fd1d3 terminó13SUCCESS; artefacto2.3.3(339)/b50ed676 y
+Playinternal/completed comprobados13:01UTC. ÚnicoPOST; CI40492133689 intacta.
+Cola9m11+ejecución19m32 de esta build, sin extrapolar horas/tokens previos.
+PreviewadminREADY4bad conservaárboladminb50 y sesiónlegítima. Instalación339 no probada.
+
+Nueva decisión humana pendingStripe implementada sólo local: SQL5b5b4517…2a07d1a,
+600contratosPASS+16fallocontroladoPASS, revisionescódigo/seguridad cerradas;3carreras
+PG reales nuevas revisadas, pendienteCI. Móvil51PASSy4fallos dehelpers resueltos en
+rechecks3+1PASS; sin repetirlos51. Revisión visual detectó CTA377 apilado/solape y
+modalStripe sin3filas/X/secundario delmock: worker corrige agrupado antesdecandidato.
+Mockbound5187f693 confirmafont17/padding24 yfila horizontal (viewportpedido377,
+CSSreal378 porredondeo);dato guardado, noatribuirigualdadpixelperfecta.
+
+TokenStreamvencido reemplazadouna vez traspermisoexpreso27oct;34secretos,otros33
+metadatosintactos,digestnuevo coincide yvalorliberado de memoria. Seguridadcerrada.
+DEV V3historia85/Guardian131 yOFF/job6pausado conservados; noPendingStripe remoto,
+ON,provider,cámara,pago ni correo nuevos. SamsungMTPpresente sinADB, pregunta puntual
+pendiente; no repetirconexión. Próximaacciónroot: renders/revisión→SHA/CIúnica→DEV y
+releaseagrupada→QA/demo/aceptación. Recibosprivados f693/; heartbeat4h únicoACTIVE.
+
+Retro independiente acotada: prueba393 no cubría render377; la lista diferida requería construir controles y restaurar desplazamiento antes de buscaravisos. Medida única root/worker: test y captura existentes al mismo377/safe0, exigirfila y separaciónhero antesCI. Verificación en corrección en curso; no atribuye toda demora ni ahorro general.
+
 ## 27/10/2026 06:32 CDMX — Envío único f693 aceptado y fuente confirmada
 
 Adaptador de distribución cerrado por código/seguridad: package3596db8b…293ac9,

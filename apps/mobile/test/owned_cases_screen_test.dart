@@ -89,6 +89,7 @@ class OwnedCasesRepository extends FakeRescue {
       final phase = switch (item['status']) {
         'published' || 'approved' => 'active',
         'submitted' => 'review',
+        'pending_stripe' => 'pending_stripe',
         'changes_requested' || 'rejected' => 'corrections',
         _ => 'draft',
       };
@@ -261,6 +262,55 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
 }
 
 void main() {
+  testWidgets(
+    'Stripe waiting is separate from review and only filters support cases',
+    (tester) async {
+      final rescue = OwnedCasesRepository([
+        ownedItem('Pendiente', program: 'support', status: 'pending_stripe'),
+        {
+          ...ownedItem('Enviado', program: 'support', status: 'submitted'),
+          'connect_ready': false,
+        },
+        ownedItem('Adopción'),
+      ]);
+      await mount(tester, rescue, program: 'support');
+      expect(rescue.queries.last['statuses'], contains('pending_stripe'));
+      expect(find.text('Pendiente Stripe'), findsOneWidget);
+      expect(
+        find.text('Completa tu registro Stripe desde tu perfil'),
+        findsOneWidget,
+      );
+      expect(find.text('En revisión'), findsOneWidget);
+      final blockedEdit = find.byWidgetPredicate(
+        (widget) =>
+            widget is IconButton &&
+            widget.tooltip == 'Edición pendiente de Stripe',
+      );
+      expect(tester.widget<IconButton>(blockedEdit).onPressed, isNull);
+      expect(find.byTooltip('Archivar borrador'), findsNothing);
+      await tapVisible(tester, find.text('Filtrar'));
+      for (final key in ['corrections', 'draft', 'review', 'active']) {
+        await tapVisible(tester, find.byKey(ValueKey('owned-filter-$key')));
+      }
+      await tapVisible(tester, find.text('Listo'));
+      expect(rescue.queries.last['statuses'], ['pending_stripe']);
+      expect(find.text('Enviado'), findsNothing);
+      expect(find.text('Pendiente'), findsOneWidget);
+      await tapVisible(tester, find.text('Adopción'));
+      expect(rescue.queries.last['program'], 'adoption');
+      expect(
+        rescue.queries.last['statuses'],
+        isNot(contains('pending_stripe')),
+      );
+      await tapVisible(tester, find.text('Filtrar'));
+      expect(
+        find.byKey(const ValueKey('owned-filter-pending_stripe')),
+        findsNothing,
+      );
+      await tapVisible(tester, find.text('Listo'));
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets(
     'realtime uses real tables and refreshes before the polling interval',
     (tester) async {

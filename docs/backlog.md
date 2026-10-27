@@ -1,23 +1,20 @@
 # Cola vigente — 27/oct/2026: cierre finito del delta f693
 
-Integrador/root; una cola Flutter. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6.
-Candidato b50ed67696dae532bccde80aa4736283a3059508 en GitHub; CI40492133689 cuatroSUCCESS.
+Integrador/root; una cola Flutter. Mock f693c0367643605fa8495c1ae3c171df4ccf85b6.
+Publicado comprobado Play2.3.3(339)/b50ed676/CM6ae0997ff94c6e56883fd1d3;
+CI40492133689 cuatroSUCCESS. Instalación/aceptación339 pendientes.
 
-| Batch | Estado real y dueño | Salida pendiente |
+| Batch | Dueño y estado real | Salida pendiente |
 |---|---|---|
-| F0 · Inventario | CERRADO, producto/UI | No reabrir ni absorber pushes posteriores. |
-| F1 · Base y acceso | CERRADO local, móvil/revisores | Incluido en48; validación final del candidato/dispositivo no atribuida. |
-| F2 · Rescatista y cuenta | CERRADO local, móvil/producto | Canvas de ProfileFrame cerrado con dos capturas nuevas; QA integrada pendiente. |
-| F3 · Recorridos principales | CERRADO local en c193; gestos50PASS y revisión visual independiente cerrada | QA integrada/dispositivo pendiente. |
-| F4 · Finanzas | CERRADO local y contratosDEV: V3 remota20261027115406/history85, Guardian131/28fuentesexactas; revisiones cerradas | QA nativa del candidato pendiente. pending_stripe espera decisión humana. |
-| F5 · Candidato integrado | Root/revisores; CI40492133689/b50 cuatroSUCCESS y DEV cerrado | CM6ae0997ff94c6e56883fd1d3 QUEUED/fuente b50 real. Seguir mismohandle→artefacto/Play→instalación/QA afectada/aceptación UX;339 prevista. |
+| F0–F3 base y recorridos | Evidencia local previa conservada | No reabrir inventario ni pruebas intactas. |
+| F4 finanzas | V3DEVhistoria85/Guardian131 comprobados; tokenStream reemplazado | SDKreal del candidato pendiente. |
+| F4P esperaStripe + CTA | Backend/móvil y UI cerrados localmente por revisores; seis capturas afectadas PASS | CongelarSHA/CIrealPG. |
+| F5 candidato integrado | Root tras F4P | PaqueteDEVaditivo y release agrupados; Play/instalación/QA/demo/aceptación. |
 
-No repetir recuperación/Tienda/P3/aporteTEST/Connect ni cámaras para producir evidencia.
-338/a4 ya publicada, instalación pendiente; no nueva build aislada para ajustes menores.
-Samsung, credencial Stream y decisión pending_stripe pendientes; trabajo local independiente
-continúa. Checkpoint y cuatro cierres restantes en mock-sync-current.md. Último estado
-remoto operacional leído OFF/job6pausado; V3+Guardian131 aplicados y verificados,
-sin ON/proveedor/dinero. ADB12:00:41UTC disponible, cero dispositivos.
+Decisiones27oct en product-decisions.md. No nuevo pago, correo, toma ni replay339.
+TeléfonoMTPsinADB; pregunta de depuración pendiente. ServidoresOFF/job6pausado;
+ninguna migraciónPendingStripe aplicada. Próximaacción root: fijar el candidato con las correcciones
+visuales cerradas y ejecutar unaCI integrada. Ver checkpoint para límites exactos.
 
 ## Cola histórica inmediatamente anterior
 

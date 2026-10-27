@@ -98,6 +98,7 @@ class _OwnedCasesTitle extends StatelessWidget {
 const _caseFilters = {
   'corrections': 'Rechazado',
   'draft': 'Borrador',
+  'pending_stripe': 'Pendiente Stripe',
   'review': 'En revisión',
   'active': 'Activo',
 };
@@ -131,10 +132,15 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
   int page = 1, revision = 0;
   String? error;
 
-  Set<String> initialStatuses() =>
-      _caseFilters.containsKey(widget.initialStatus)
+  Map<String, String> get caseFilters => {
+    for (final entry in _caseFilters.entries)
+      if (program == 'support' || entry.key != 'pending_stripe')
+        entry.key: entry.value,
+  };
+
+  Set<String> initialStatuses() => caseFilters.containsKey(widget.initialStatus)
       ? {widget.initialStatus!}
-      : _caseFilters.keys.toSet();
+      : caseFilters.keys.toSet();
 
   @override
   void initState() {
@@ -171,6 +177,18 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
     resetScroll();
   }
 
+  void changeProgram(String next) {
+    final all = statuses.containsAll(caseFilters.keys);
+    scope(() {
+      program = next;
+      statuses = all
+          ? caseFilters.keys.toSet()
+          : statuses.where(caseFilters.containsKey).toSet();
+      if (statuses.isEmpty) statuses = caseFilters.keys.toSet();
+      archived = false;
+    });
+  }
+
   @override
   void dispose() {
     scroll.dispose();
@@ -196,7 +214,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
               ),
             ),
             const SizedBox(height: 4),
-            for (final filter in _caseFilters.entries)
+            for (final filter in caseFilters.entries)
               _CaseCheckRow(
                 key: ValueKey('owned-filter-${filter.key}'),
                 label: filter.value,
@@ -207,7 +225,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                     selected.add(filter.key);
                   } else {
                     selected.remove(filter.key);
-                    if (selected.isEmpty) selected = _caseFilters.keys.toSet();
+                    if (selected.isEmpty) selected = caseFilters.keys.toSet();
                   }
                 }),
               ),
@@ -216,7 +234,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
               label: 'Mostrar todos',
               outlined: true,
               onPressed: () =>
-                  change(() => selected = _caseFilters.keys.toSet()),
+                  change(() => selected = caseFilters.keys.toSet()),
             ),
             const SizedBox(height: 12),
             _CaseButton(
@@ -287,7 +305,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
   Widget build(BuildContext context) {
     final repository = ref.watch(rescueRepositoryProvider);
     final actor = ref.watch(communityRepositoryProvider).userId;
-    final selected = _caseFilters.keys.where(statuses.contains).toList();
+    final selected = caseFilters.keys.where(statuses.contains).toList();
     final large = MediaQuery.textScalerOf(context).scale(17) > 24;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -342,10 +360,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                                     selected: program == entry.key,
                                     onPressed: busy
                                         ? null
-                                        : () => scope(() {
-                                            program = entry.key;
-                                            archived = false;
-                                          }),
+                                        : () => changeProgram(entry.key),
                                   ),
                                 ),
                             ],
@@ -362,10 +377,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                                     selected: program == entry.key,
                                     onPressed: busy
                                         ? null
-                                        : () => scope(() {
-                                            program = entry.key;
-                                            archived = false;
-                                          }),
+                                        : () => changeProgram(entry.key),
                                   ),
                                 ),
                             ],
@@ -382,8 +394,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                           style: TextStyle(fontSize: 15),
                         ),
                         style: TextButton.styleFrom(
-                          foregroundColor:
-                              statuses.length == _caseFilters.length
+                          foregroundColor: statuses.length == caseFilters.length
                               ? const Color(0xff999188)
                               : ink,
                           padding: EdgeInsets.zero,
@@ -733,6 +744,7 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
         : _caseFilters[phase] ?? 'Borrador';
     final tagColor = switch (phase) {
       'corrections' => const Color(0xffc41c2e),
+      'pending_stripe' => const Color(0xffb45309),
       'review' => const Color(0xff5c2fd4),
       'active' => ink,
       _ => const Color(0xff5c574f),
@@ -798,6 +810,8 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
                               ? const Color(0xfffdecec)
                               : phase == 'review'
                               ? const Color(0xffede8fc)
+                              : phase == 'pending_stripe'
+                              ? const Color(0xfffff7ed)
                               : adopted || neutral
                               ? Colors.transparent
                               : const Color(0xfff0eeea),
@@ -844,6 +858,8 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
                       Text(
                         phase == 'review'
                             ? 'Pendiente de aprobación'
+                            : phase == 'pending_stripe'
+                            ? 'Completa tu registro Stripe desde tu perfil'
                             : phase == 'corrections'
                             ? 'Requiere corrección'
                             : active || widget.archived
@@ -932,7 +948,8 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
                         : _CaseOperation.closeAdoption,
                   ),
           )
-        else if (!widget.archived && phase != 'review')
+        else if (!widget.archived &&
+            !['review', 'pending_stripe'].contains(phase))
           _CaseIcon(
             label: 'Archivar borrador',
             icon: Icons.close,
@@ -941,7 +958,8 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
                 ? null
                 : () => widget.onOperation(_CaseOperation.archive),
           ),
-        if (!widget.archived && phase == 'review') const SizedBox(height: 36),
+        if (!widget.archived && ['review', 'pending_stripe'].contains(phase))
+          const SizedBox(height: 36),
         if (rich)
           Semantics(
             expanded: open,
@@ -958,10 +976,15 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
           _CaseIcon(
             label: phase == 'review'
                 ? 'Edición pendiente de revisión'
+                : phase == 'pending_stripe'
+                ? 'Edición pendiente de Stripe'
                 : 'Editar caso',
             asset: 'icon-edit',
             color: const Color(0xff5c574f),
-            onPressed: widget.busy || phase == 'review' ? null : widget.onOpen,
+            onPressed:
+                widget.busy || ['review', 'pending_stripe'].contains(phase)
+                ? null
+                : widget.onOpen,
           ),
       ],
     );

@@ -11,6 +11,7 @@ import 'rescuer_funnel.dart';
 const rescueBucket = 'dopmi-rescue-evidence';
 const rescueStatuses = {
   'draft': 'Borrador',
+  'pending_stripe': 'Pendiente Stripe',
   'submitted': 'En revisión',
   'changes_requested': 'Necesita correcciones',
   'approved': 'Aprobado',
@@ -56,6 +57,7 @@ class RescueRecord {
 
   bool get editable =>
       ['draft', 'changes_requested', 'rejected'].contains(status);
+  bool get pendingStripe => kind == 'case' && status == 'pending_stripe';
 }
 
 final rescueRepositoryProvider = Provider<RescueRepository>(

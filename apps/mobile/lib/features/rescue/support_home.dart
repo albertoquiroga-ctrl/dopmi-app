@@ -50,6 +50,10 @@ class SupportHomePage extends StatelessWidget {
         .toList();
     final scaler = MediaQuery.textScalerOf(context);
     final large = scaler.scale(14) > 20;
+    final dockFlows = _guardianDockStacks(
+      context,
+      MediaQuery.sizeOf(context).width - 57,
+    );
     // The donor navigation surface is 48px icons plus 20px vertical padding.
     // Its SafeArea uses at least 14px. The outer extended Scaffold also exposes
     // the real occupied height through MediaQuery.padding; honor the larger one.
@@ -133,7 +137,11 @@ class SupportHomePage extends StatelessWidget {
                         final heroWidth = constraints.crossAxisExtent - 20;
                         final dockHeight = _guardianDockHeight(
                           context,
-                          constraints.crossAxisExtent - 36,
+                          // At normal text size the reference row starts at
+                          // x=36 and its 17px CTA ends near the right edge.
+                          // Reserve the height using the same width as the
+                          // positioned dock, including its asymmetric inset.
+                          constraints.crossAxisExtent - (dockFlows ? 36 : 21),
                         );
                         final bottom = dockBottom;
                         // The reference crops only the poster's outer artwork.
@@ -148,7 +156,7 @@ class SupportHomePage extends StatelessWidget {
                               );
                         // Rotated cards and the active card's shadow extend
                         // below the deck. Keep the flowing price outside them.
-                        final deckFootprint = large ? 44.0 : 12.0;
+                        final deckFootprint = dockFlows ? 44.0 : 12.0;
                         final height = math.max(
                           minimumPosterHeight,
                           math.min(
@@ -173,7 +181,7 @@ class SupportHomePage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: deckFootprint),
-                              if (large)
+                              if (dockFlows)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 18,
@@ -194,10 +202,10 @@ class SupportHomePage extends StatelessWidget {
                   ),
                 ],
               ),
-              if (!large)
+              if (!dockFlows)
                 Positioned(
                   left: 36,
-                  right: 36,
+                  right: 21,
                   bottom: dockBottom,
                   child: GuardianSupportDock(
                     onOpenEnrollment: () => openGuardian(context),
@@ -679,40 +687,71 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
   }
 }
 
-bool _guardianDockStacks(BuildContext context, double width) {
-  final scaler = MediaQuery.textScalerOf(context);
-  double measure(String text, FontWeight weight) {
-    final painter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 14,
-          fontWeight: weight,
-          letterSpacing: 0,
-        ),
+Size _guardianDockTextSize(
+  BuildContext context,
+  String text,
+  double fontSize,
+  FontWeight weight, {
+  double maxWidth = double.infinity,
+}) {
+  final painter = TextPainter(
+    text: TextSpan(
+      text: text,
+      style: TextStyle(
+        fontFamily: 'Inter',
+        fontSize: fontSize,
+        fontWeight: weight,
+        height: 1.2,
+        letterSpacing: 0,
       ),
-      textScaler: scaler,
-      textDirection: Directionality.of(context),
-    )..layout();
-    final result = painter.width;
-    painter.dispose();
-    return result;
-  }
+    ),
+    textScaler: MediaQuery.textScalerOf(context),
+    textDirection: Directionality.of(context),
+  )..layout(maxWidth: maxWidth);
+  final result = painter.size;
+  painter.dispose();
+  return result;
+}
 
-  return scaler.scale(14) > 20 ||
-      measure('Desde \$20 / mes', FontWeight.w600) +
-              measure('Suscríbete ahora', FontWeight.w700) +
-              48 >
+bool _guardianDockStacks(BuildContext context, double width) {
+  return MediaQuery.textScalerOf(context).scale(14) > 20 ||
+      _guardianDockTextSize(
+                context,
+                'Desde \$20 / mes',
+                14,
+                FontWeight.w600,
+              ).width +
+              _guardianDockTextSize(
+                context,
+                'Suscríbete ahora',
+                17,
+                FontWeight.w700,
+              ).width +
+              12 +
+              52 >
           width;
 }
 
 double _guardianDockHeight(BuildContext context, double width) {
-  final lineHeight = MediaQuery.textScalerOf(context).scale(16.8);
-  final buttonHeight = math.max(52.0, lineHeight + 24);
-  return _guardianDockStacks(context, width)
-      ? lineHeight + 8 + buttonHeight
-      : buttonHeight;
+  final stacked = _guardianDockStacks(context, width);
+  // Price/CTA lines are 16.8/20.4px before scaling. Reserve wrapped CTA lines
+  // within the actual 24px inner padding plus the 2px outer border per side.
+  final priceHeight = _guardianDockTextSize(
+    context,
+    'Desde \$20 / mes',
+    14,
+    FontWeight.w600,
+    maxWidth: stacked ? math.max(0.0, width) : double.infinity,
+  ).height;
+  final buttonTextHeight = _guardianDockTextSize(
+    context,
+    'Suscríbete ahora',
+    17,
+    FontWeight.w700,
+    maxWidth: stacked ? math.max(0.0, width - 52) : double.infinity,
+  ).height;
+  final buttonHeight = math.max(52.0, buttonTextHeight + 24);
+  return stacked ? priceHeight + 8 + buttonHeight : buttonHeight;
 }
 
 class GuardianSupportDock extends StatelessWidget {
@@ -772,7 +811,7 @@ class GuardianSupportDock extends StatelessWidget {
                 alignment: Alignment.center,
                 constraints: const BoxConstraints(minHeight: 48),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: 24,
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
@@ -784,7 +823,7 @@ class GuardianSupportDock extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Inter',
-                    fontSize: 14,
+                    fontSize: 17,
                     fontWeight: FontWeight.w700,
                     height: 1.2,
                     letterSpacing: 0,

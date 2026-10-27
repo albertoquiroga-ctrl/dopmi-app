@@ -69,4 +69,100 @@ void main() {
       },
     );
   }
+  test('pending Stripe preserves the server case and withdraws its current version', () async {
+    final requests = <http.Request>[];
+    final draft = RescueRecord({
+      'id': 'fixture-private-case',
+      'kind': 'case',
+      'status': 'draft',
+      'version': 4,
+      'public_data': {
+        'pet_name': 'Mora',
+        'photos': ['owner/private-case/photo.jpg'],
+      },
+      'files': [
+        {'role': 'public', 'path': 'owner/private-case/photo.jpg'},
+      ],
+    });
+    final client = SupabaseClient(
+      'http://127.0.0.1:54321',
+      'synthetic-key',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+      httpClient: MockClient((request) async {
+        requests.add(request);
+        final body = request.body.isEmpty
+            ? <String, dynamic>{}
+            : (jsonDecode(request.body) as Map?) ?? <String, dynamic>{};
+        final result = switch (request.url.path) {
+          '/rest/v1/rpc/dopmi_transition_rescue' => {
+            ...draft.data,
+            'status': body['action'] == 'submit' ? 'pending_stripe' : 'draft',
+            'version': body['action'] == 'submit' ? 5 : 6,
+            'submitted_at': null,
+          },
+          '/rest/v1/rpc/dopmi_owned_cases' => {
+            'total': 1,
+            'items': [
+              {
+                'id': draft.id,
+                'status': 'pending_stripe',
+                'phase': 'pending_stripe',
+              },
+            ],
+          },
+          '/rest/v1/rpc/dopmi_rescuer_dashboard_v2' => {
+            'support_counts': {'review': 0, 'pendingStripe': 1},
+            'case_counts': {'review': 0, 'pendingStripe': 1},
+            'adoption_counts': {'review': 2},
+          },
+          _ => throw StateError('Unexpected RPC ${request.url.path}'),
+        };
+        return http.Response(
+          jsonEncode(result),
+          200,
+          headers: {'content-type': 'application/json'},
+          request: request,
+        );
+      }),
+    );
+    addTearDown(client.dispose);
+    final repository = RescueRepository(client);
+    final waiting = await repository.transition(draft, 'submit');
+    expect(waiting.pendingStripe, isTrue);
+    expect(waiting.editable, isFalse);
+    expect(waiting.id, draft.id);
+    expect(waiting.version, 5);
+    expect(waiting.data['submitted_at'], isNull);
+    expect(waiting.files, draft.files);
+    expect(waiting.publicData, draft.publicData);
+    final owned = await repository.ownedCases(
+      1,
+      program: 'support',
+      statuses: ['pending_stripe'],
+    );
+    expect((owned['items'] as List).single['phase'], 'pending_stripe');
+    final counts = await repository.dashboardV2();
+    expect(counts['support_counts'], {'review': 0, 'pendingStripe': 1});
+    expect(counts['case_counts'], counts['support_counts']);
+    expect(counts['adoption_counts'], {'review': 2});
+    final withdrawn = await repository.transition(waiting, 'withdraw');
+    expect(withdrawn.id, draft.id);
+    expect(withdrawn.editable, isTrue);
+    expect(withdrawn.version, 6);
+    expect(withdrawn.files, draft.files);
+    final transitions = requests
+        .where(
+          (request) => request.url.path.endsWith('/dopmi_transition_rescue'),
+        )
+        .map((request) => jsonDecode(request.body))
+        .toList();
+    expect(transitions, [
+      {'record_id': draft.id, 'expected_version': 4, 'action': 'submit'},
+      {'record_id': draft.id, 'expected_version': 5, 'action': 'withdraw'},
+    ]);
+    final listRequest = requests.singleWhere(
+      (request) => request.url.path.endsWith('/dopmi_owned_cases'),
+    );
+    expect(jsonDecode(listRequest.body)['statuses'], ['pending_stripe']);
+  });
 }

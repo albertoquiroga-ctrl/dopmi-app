@@ -1,28 +1,24 @@
-# Corte vigente — f693 implementado parcialmente; evidencia previa preservada
+# Corte vigente — f693: 339 publicada; correctivo agrupado en curso
 
-27oct06:32CDMX: candidato b50ed67696dae532bccde80aa4736283a3059508 en GitHub;
-CI40492133689 cuatroSUCCESS; CM6ae0997ff94c6e56883fd1d3 encola, todavía no release
-del delta verificada. Referencia congelada
-f693c0367643605fa8495c1ae3c171df4ccf85b6. Futuras revisiones se inventarían aparte.
+27oct08:38CDMX. Mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust.
+Play2.3.3(339)/b50ed67696dae532bccde80aa4736283a3059508 internal/completed;
+CI40492133689 cuatroSUCCESS. Último teléfono comprobado337, sin aceptación339.
 
-| Grupo | Implementación / evidencia vigente | Límite o salida pendiente |
+| Grupo | Evidencia preservada / delta | Salida pendiente |
 |---|---|---|
-| F1 base/acceso/onboarding | En48;53focalesPASS/analyze0 en ese corte;17renders y revisión producto cerrada | Nativo compilado/dispositivo/aceptación no atribuidos; gate integrado final. |
-| F2 Home/perfiles/ayuda/documentos/Tienda | En48;16renders y dos ProfileFrame canvas; producto cerró único P2 pendiente | Tienda sigue privada/OFF; QA integrada posterior. |
-| F3 descubrir/apoyo/Guardián/detalle/publicación | A/B/C en48; pruebas afectadas corregidas; capturador F3/F4 PASS13s | F3-D50PASS; revisión producto de renders finales cerrada, canvas/arco y reflujo corregidos. Mensual sin delta no se reconstruye. |
-| F4 métodos nativos/recibos/soporte | Backend105/9/19 focalesPASS y revisiones; móvil84PASS+1PASS. DEV V3 historia85 y Guardian131 exactos,9postchecks/28fuentes/otras31/34metadatos preservados; código/seguridad cerraron | QA de SDK real del candidato y decisión humana pending_stripe pendientes. |
-| F5 candidato | CI40492133689/b50 cuatroSUCCESS y DEV cerrado; envío único CM6ae0997ff94c6e56883fd1d3 QUEUED/b50 confirmado | Compilación/artefacto/Play/instalación/QA afectada/aceptación pendientes; no otroPOST ni CI verde repetida. |
+| F1 acceso/base | 53focales/17renders/revisiónprevios | QA final afectada, sin repetir recuperación real aceptada. |
+| F2 perfiles/ayuda/Tienda | 16renders/canvas/revisiónprevios; TiendaOFF intencional | Integración/dispositivo/aceptación. |
+| F3 apoyo/Guardián/publicación | F3D50PASS y revisiónprevios; CTAfont17 ajustado | CTA377 horizontal corregido/115% y200% legibles; seis renders PASS, revisiónproducto cerrada. |
+| F4 finanzas | V3historia85+Guardian131 verificadas;3SDKStripe intactos | QA nativa final. |
+| F4P esperaStripe | Decisión27oct, lógica móvil/SQL revisada;600focales+16P1;51móvil y4fallos resueltos por separado | Modal3filas/X/secundario y seis renders cerrados; CIrealPG/carreras yDEV pendientes. |
+| F5 candidato | 339artefacto/Play comprobados, CM13SUCCESS | AgruparF4P antes de otrarelease; instalación/QA/aceptación final. |
 
-Los conteos son tandas acotadas distintas, no un total integrado. Último Samsung
-comprobado337. La matriz b9 y el informe inferior conservan evidencia previa válida;
-no acreditan por sí solos f693 ni autorizan repetición de correo/pagos/cámara/fixtures.
-Estado, dueños y cuatro cierres finitos en checkpoint y backlog existentes.
-
-
-Adaptación adicional del historial de Guardián: se muestran tarjetas de ciclos y su
-recibo real. El mock atribuye cada tarjeta a una mascota; un ciclo real puede repartir
-el neto entre varias. No se inventan foto, destinatario ni tarjeta histórica cuando
-el contrato no los aporta. El importe autorizado no se etiqueta como pagado.
+ColorCTA conserva naranja#c1511c con contrasteblanco4.7072 frente3.2905 delmock;
+font17/padding24/altura52 y composiciónnormal deben ser fieles. Datos/fotosfixture y
+TiendaOFF son diferencias intencionales. Renders sólo acreditan su estado real.
+HistorialGuardián conserva ciclos/recibos reales; un ciclo puede distribuir entrevarias
+mascotas y no se inventan destinatarios, fotos ni importes cobrados. Reporte final de
+adaptaciones/flujos ausentes sigue requerido. No sumar tandas solapadas como suite.
 
 ## Evidencia acumulada b9 y límites históricos
 

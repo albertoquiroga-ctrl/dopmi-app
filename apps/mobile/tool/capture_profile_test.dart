@@ -78,7 +78,13 @@ import '../test/fake_account_photo_repository.dart';
 
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
-import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
+import '../test/rescue_test.dart'
+    show
+        FakeRescue,
+        FakeCaseUpdates,
+        StripePendingCaseRescue,
+        StripeCasePayments,
+        StripeCaseVideos;
 import '../test/case_publication_test.dart'
     show DraftCaseRescue, expenseFixture, WizardVideos;
 import '../test/expense_field_test.dart'
@@ -1198,6 +1204,12 @@ void main() {
       ('owned-cases-empty-large', '/my-cases'),
       ('owned-cases-correction', '/my-cases'),
       ('owned-cases-correction-large', '/my-cases'),
+      ('pending-stripe-owned', '/my-cases?program=support'),
+      ('pending-stripe-owned-samsung', '/my-cases?program=support'),
+      ('pending-stripe-owned-large', '/my-cases?program=support'),
+      ('pending-stripe-dialog', '/rescue/case-one'),
+      ('pending-stripe-dialog-samsung', '/rescue/case-one'),
+      ('pending-stripe-dialog-large', '/rescue/case-one'),
       ('rescuer-home', '/rescuer'),
       ('rescuer-home-large', '/rescuer'),
       ('support-home', '/rescue-cases'),
@@ -1700,6 +1712,16 @@ void main() {
         pdf: spec.$1.contains('-pdf'),
         readFails: spec.$1.startsWith('private-file-error'),
       );
+      final pendingStripeCase = spec.$1.startsWith('pending-stripe')
+          ? StripePendingCaseRescue(
+              status: spec.$1.startsWith('pending-stripe-dialog')
+                  ? 'draft'
+                  : 'pending_stripe',
+            )
+          : null;
+      final pendingStripePayments = pendingStripeCase == null
+          ? null
+          : StripeCasePayments(pendingStripeCase);
       // Synthetic preferences belong only to this flutter_test capturer.
       // ignore: invalid_use_of_visible_for_testing_member
       SharedPreferences.setMockInitialValues({});
@@ -2067,6 +2089,7 @@ void main() {
           spec.$1.startsWith('account-access-options') ||
           spec.$1.startsWith('managed-updates') ||
           spec.$1.startsWith('owned-cases') ||
+          spec.$1.startsWith('pending-stripe') ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-profile') ||
           spec.$1.startsWith('public-profile-editor') ||
@@ -2154,6 +2177,15 @@ void main() {
             emptyAccountPhotoRepository(repo),
           ),
           communityRepositoryProvider.overrideWithValue(community),
+          if (pendingStripeCase != null) ...[
+            rescueRepositoryProvider.overrideWithValue(pendingStripeCase),
+            paymentRepositoryProvider.overrideWithValue(pendingStripePayments!),
+            rescueVideosRepositoryProvider.overrideWith((ref) {
+              final videos = StripeCaseVideos();
+              ref.onDispose(videos.dispose);
+              return videos;
+            }),
+          ],
           if (spec.$2 == '/notifications')
             notificationActivityRepositoryProvider.overrideWithValue(
               CaptureNotificationActivity(community),
@@ -4083,6 +4115,121 @@ void main() {
         await tester.pumpAndSettle();
       }
 
+      if (pendingStripeCase != null) {
+        final semantics = tester.ensureSemantics();
+        final metrics = <String, Object?>{
+          'viewport': {
+            'width': tester.view.physicalSize.width,
+            'height': tester.view.physicalSize.height,
+            'textScale': large
+                ? 2
+                : spec.$1.endsWith('-samsung')
+                ? 1.15
+                : 1,
+          },
+        };
+        Future<void> recordTarget(String name, Finder target) async {
+          expect(target, findsOneWidget);
+          await tester.ensureVisible(target);
+          await tester.pumpAndSettle();
+          expect(target.hitTestable(), findsOneWidget);
+          final rect = tester.getRect(target);
+          metrics[name] = {
+            'x': rect.left,
+            'y': rect.top,
+            'width': rect.width,
+            'height': rect.height,
+            'semanticLabel': tester
+                .getSemantics(target)
+                .getSemanticsData()
+                .label,
+          };
+        }
+
+        try {
+          if (spec.$1.startsWith('pending-stripe-dialog')) {
+            final originalFiles = pendingStripeCase.current.files;
+            for (var step = 0; step < 3; step++) {
+              await publicationNext();
+            }
+            final send = find.text('Enviar a revisión');
+            await tester.ensureVisible(send);
+            await tester.pumpAndSettle();
+            await tester.tap(send);
+            await tester.pumpAndSettle();
+            expect(
+              find.byKey(const ValueKey('pending-stripe-dialog')),
+              findsOneWidget,
+            );
+            expect(find.text('Sólo un paso más…'), findsOneWidget);
+            expect(find.text('Enviado a revisión'), findsNothing);
+            expect(pendingStripeCase.current.pendingStripe, isTrue);
+            expect(pendingStripeCase.current.id, 'case-one');
+            expect(
+              pendingStripeCase.current.version,
+              pendingStripeCase.submittedVersion! + 1,
+            );
+            expect(pendingStripeCase.current.files, originalFiles);
+            expect(pendingStripePayments!.actions, isEmpty);
+            final close = find.byKey(
+              const ValueKey('pending-stripe-dialog-close'),
+            );
+            await recordTarget('close', close);
+            expect(
+              tester.getSize(close).shortestSide,
+              greaterThanOrEqualTo(48),
+            );
+            if (large) {
+              await tester.runAsync(
+                () => saveCapture(key, '${out.path}/${spec.$1}-top.png'),
+              );
+            }
+            for (final title in [
+              'Pagos seguros',
+              'Procesa las aportaciones',
+              'Regístrate para recibir',
+            ]) {
+              await recordTarget(title, find.text(title));
+            }
+            for (final entry in {
+              'continue': 'pending-stripe-continue',
+              'return': 'pending-stripe-return',
+            }.entries) {
+              final action = find.byKey(ValueKey(entry.value));
+              await recordTarget(entry.key, action);
+              expect(tester.getSize(action).height, greaterThanOrEqualTo(48));
+            }
+          } else {
+            expect(container.read(routerProvider).state.uri.path, '/my-cases');
+            expect(find.text('Pendiente Stripe'), findsOneWidget);
+            expect(find.text('En revisión'), findsNothing);
+            await recordTarget(
+              'pending-case',
+              find.byKey(const ValueKey('owned-case-open-case-one')),
+            );
+            await recordTarget('pending-status', find.text('Pendiente Stripe'));
+            await recordTarget(
+              'pending-copy',
+              find.text('Completa tu registro Stripe desde tu perfil'),
+            );
+            expect(pendingStripeCase.current.editable, isFalse);
+            expect(pendingStripeCase.actions, isEmpty);
+          }
+          metrics['record'] = {
+            'id': pendingStripeCase.current.id,
+            'version': pendingStripeCase.current.version,
+            'status': pendingStripeCase.current.status,
+            'submittedAt': pendingStripeCase.current.data['submitted_at'],
+          };
+          await tester.runAsync(() async {
+            await File('${out.path}/${spec.$1}-metrics.json')
+                .writeAsString(jsonEncode(metrics));
+          });
+        } finally {
+          semantics.dispose();
+        }
+      }
+
       if (spec.$1.startsWith('publish-choice-adoption') ||
           spec.$1.startsWith('publish-choice-donation')) {
         final orb = find.text(
@@ -5354,6 +5501,23 @@ void main() {
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),
         );
+        if (spec.$1 == 'pending-stripe-dialog') {
+          final close = find.byKey(
+            const ValueKey('pending-stripe-dialog-close'),
+          );
+          await tester.ensureVisible(close);
+          await tester.pumpAndSettle();
+          await tester.tap(close);
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/my-cases');
+          expect(
+            container.read(routerProvider).state.uri.queryParameters['program'],
+            'support',
+          );
+          expect(pendingStripeCase!.current.pendingStripe, isTrue);
+          expect(pendingStripeCase.actions, ['submit']);
+          expect(pendingStripePayments!.actions, isEmpty);
+        }
         if (spec.$1.contains('rescuer-profile-reference-metric-focus')) {
           await tester.tap(find.byType(RescuerVerificationCard));
           await tester.pumpAndSettle();

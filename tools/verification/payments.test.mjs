@@ -3513,6 +3513,187 @@ test('owned cases reject inactive or anonymous identities and invalid pages with
 });
 
 
+async function pendingStripeCase({ ready=false }={}) {
+  await db.exec('reset role');
+  await db.query('update private.dopmi_connect_accounts set transfers_enabled=$1,payouts_enabled=$1,details_submitted=true where owner_id=$2',[ready,rescuer]);
+  const data={pet_name:'Caso sintético Stripe',species:'dog',sex:'unknown',age:'3 años',story:'Historia de prueba sin datos reales',city:'Monterrey',state:'Nuevo León',need_items:[]};
+  await role(rescuer);
+  let r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]') v",[JSON.stringify(data)])).rows[0].v;
+  const path=`${rescuer}/${r.id}/85000000-0000-4000-8000-000000000001.jpg`;
+  await db.exec('reset role');
+  await db.query("insert into storage.objects(bucket_id,name,owner_id) values('dopmi-rescue-evidence',$1,$2)",[path,rescuer]);
+  await role(rescuer);
+  r=(await db.query("select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) v",[JSON.stringify(data),JSON.stringify([{role:'public',path}]),r.id,r.version])).rows[0].v;
+  return {r,path,data};
+}
+async function pendingStripeSave({transfers=true,payouts=true,details=true}={}) {
+  await role('','service_role');
+  return rpc('connect_save',{actor:rescuer,account_id:'acct_test',transfers_enabled:transfers,payouts_enabled:payouts,details_submitted:details});
+}
+async function pendingStripeRead(id) {
+  await db.exec('reset role');
+  return (await db.query('select to_jsonb(r) v from dopmi_rescue_records r where id=$1',[id])).rows[0].v;
+}
+test('pending Stripe case is private to owner across detail, actual storage RLS, list and dashboard',async()=>{
+  const {r,path,data}=await pendingStripeCase();
+  const pending=(await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[r.id,r.version])).rows[0].v;
+  assert.equal(pending.status,'pending_stripe');assert.equal(pending.submitted_at,null);assert.equal(pending.version,r.version+1);
+  assert.equal(pending.approved_snapshot,null);assert.equal(pending.reimbursable_cents,0);
+  assert.equal((await db.query('select dopmi_rescue_detail($1) v',[r.id])).rows[0].v.record.status,'pending_stripe');
+  assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,1);
+  const owned=(await db.query("select dopmi_owned_cases('support',array['pending_stripe']) v")).rows[0].v;
+  assert.equal(owned.items.length,1);assert.equal(owned.items[0].phase,'pending_stripe');
+  assert.equal((await db.query("select dopmi_owned_cases('support',array['corrections','review']) v")).rows[0].v.items.length,0);
+  const dashboard=(await db.query('select dopmi_rescuer_dashboard_v2() v')).rows[0].v;
+  assert.equal(dashboard.support_counts.pendingStripe,1);assert.equal(dashboard.case_counts.pendingStripe,1);
+  assert.equal(dashboard.support_counts.review,0);assert.equal(dashboard.support_counts.corrections,0);
+  await rejected(()=>db.query("select dopmi_save_rescue('case',$1::jsonb,'{}','[]',$2,$3)",[JSON.stringify(data),r.id,pending.version]),/estado actual/);
+  assert.equal((await db.query('delete from storage.objects where name=$1 returning name',[path])).rows.length,0);
+  for(const actor of [staff,other]) {
+    await role(actor);await rejected(()=>db.query('select dopmi_rescue_detail($1)',[r.id]),/no disponible/);
+    assert.equal((await db.query('select name from storage.objects where name=$1',[path])).rows.length,0);
+    assert.equal((await db.query('select dopmi_rescue_file_access($1) v',[path])).rows[0].v,false);
+  }
+  await role(staff);
+  assert.equal((await db.query("select dopmi_admin_rescue('case') v")).rows[0].v.items.some(x=>x.id===r.id),false);
+  await rejected(()=>db.query("select dopmi_review_rescue($1,$2,'approved','Prueba de revisión',0,false,'',true)",[r.id,pending.version]),/Revisa el estado/);
+  await role('','anon');
+  assert.equal((await db.query('select dopmi_rescue_public($1) v',[r.id])).rows[0].v.items.length,0);
+});
+test('pending Stripe becomes submitted exactly once on service readiness with truthful system audit and immutable content',async()=>{
+  const {r}=await pendingStripeCase();
+  const pending=(await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[r.id,r.version])).rows[0].v;
+  for(const state of [{transfers:false,payouts:true},{transfers:true,payouts:false}]) {
+    await pendingStripeSave(state);assert.equal((await pendingStripeRead(r.id)).status,'pending_stripe');
+  }
+  await pendingStripeSave({details:false});
+  const submitted=await pendingStripeRead(r.id);
+  assert.equal(submitted.status,'submitted');assert.equal(submitted.version,pending.version+1);assert.ok(submitted.submitted_at);
+  for(const field of ['public_data','private_data','files','approved_snapshot','reimbursable_cents','approved_at']) assert.deepEqual(submitted[field],pending[field]);
+  await pendingStripeSave();await pendingStripeSave({transfers:false});await pendingStripeSave();
+  assert.equal((await pendingStripeRead(r.id)).version,submitted.version);
+  const audit=(await db.query("select * from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows;
+  assert.equal(audit.length,1);assert.equal(audit[0].actor_id,null);assert.equal(audit[0].actor_type,'system');
+  assert.equal(audit[0].source,'stripe_connect_ready');assert.equal(audit[0].previous_status,'pending_stripe');
+  assert.equal(audit[0].snapshot.status,'submitted');
+  const human=(await db.query("select * from private.dopmi_rescue_history where record_id=$1 and action='submit'",[r.id])).rows[0];
+  assert.equal(human.actor_id,rescuer);assert.equal(human.actor_type,'user');
+  await role(rescuer);await rejected(()=>rpc('connect_save',{actor:rescuer}),/permission denied/);
+  await rejected(()=>db.query('select * from private.dopmi_rescue_history'),/permission denied/);
+});
+test('pending Stripe expected per-case validation failure preserves saved readiness and another eligible case',async()=>{
+  let first=await pendingStripeCase();
+  await db.query("select dopmi_transition_rescue($1,$2,'submit')",[first.r.id,first.r.version]);
+  let second=await pendingStripeCase();
+  await db.query("select dopmi_transition_rescue($1,$2,'submit')",[second.r.id,second.r.version]);
+  if(first.r.id>second.r.id) [first,second]=[second,first]; // Fail first in the deterministic SQL queue.
+  await db.exec('reset role');await db.query('delete from storage.objects where name=$1',[first.path]);
+  const result=await pendingStripeSave();
+  assert.equal(result.transfers_enabled,true);assert.equal(result.payouts_enabled,true);
+  assert.deepEqual(result.pending_stripe_sync,{source:'stripe_connect_ready',promoted_count:1,deferred_count:1,deferred:[{record_id:first.r.id,phase:'validation',sqlstate:'22023',reason:'case_validation_failed'}]});
+  const failed=await pendingStripeRead(first.r.id);assert.equal(failed.status,'pending_stripe');assert.equal(failed.version,first.r.version+1);
+  assert.equal(failed.submitted_at,null);assert.equal(failed.approved_snapshot,null);
+  const valid=await pendingStripeRead(second.r.id);assert.equal(valid.status,'submitted');assert.equal(valid.version,second.r.version+2);
+  await db.exec('reset role');
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[first.r.id])).rows[0].n,0);
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[second.r.id])).rows[0].n,1);
+  const repeated=await pendingStripeSave();assert.equal(repeated.pending_stripe_sync.promoted_count,0);assert.equal(repeated.pending_stripe_sync.deferred_count,1);
+  assert.equal((await pendingStripeRead(second.r.id)).version,valid.version);
+  await role(rescuer);
+  assert.equal((await db.query("select dopmi_transition_rescue($1,$2,'withdraw') v",[first.r.id,failed.version])).rows[0].v.status,'draft');
+});
+test('pending Stripe unexpected update constraint is rethrown and never mislabeled as a recoverable case failure',async()=>{
+  const {r}=await pendingStripeCase();await db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,r.version]);
+  await db.exec('reset role');
+  await db.exec(`create function private.dopmi_test_unexpected_pending_guard() returns trigger language plpgsql as $$begin
+    if old.status='pending_stripe' and new.status='submitted' then raise exception 'synthetic unexpected constraint' using errcode='23514',constraint='synthetic_unexpected_constraint';end if;return new;end;$$;
+    create trigger aaa_test_unexpected_pending_guard before update on dopmi_rescue_records for each row execute function private.dopmi_test_unexpected_pending_guard();`);
+  await role('','service_role');
+  await rejected(()=>rpc('connect_save',{actor:rescuer,account_id:'acct_test',transfers_enabled:true,payouts_enabled:true,details_submitted:true}),/synthetic unexpected constraint/);
+  assert.equal((await pendingStripeRead(r.id)).status,'pending_stripe');
+  assert.equal((await db.query('select transfers_enabled ready from private.dopmi_connect_accounts where owner_id=$1',[rescuer])).rows[0].ready,false);
+});
+
+test('pending Stripe delayed account events reread current provider readiness and do not create payments or duplicate transitions',async()=>{
+  const {r}=await pendingStripeCase();
+  await db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,r.version]);
+  await role('','service_role');
+  let ready=true;const calls=[];
+  const stripe=async(path,fields)=>{
+    calls.push({path,fields});assert.equal(fields,undefined,'Connect reconciliation performs no provider write');
+    if(path.startsWith('events/')) return {livemode:false,type:'account.updated',data:{object:{id:'acct_test',payouts_enabled:!ready,capabilities:{transfers:ready?'inactive':'active'}}}};
+    assert.equal(path,'accounts/acct_test');return {id:'acct_test',payouts_enabled:ready,capabilities:{transfers:ready?'active':'inactive'},details_submitted:false};
+  };
+  const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
+  await service.processEvent({event_id:'evt_pending_old'});
+  assert.equal((await pendingStripeRead(r.id)).status,'submitted');
+  await role('','service_role');await service.processEvent({event_id:'evt_pending_new'});
+  ready=false;await service.processEvent({event_id:'evt_pending_old'});
+  const after=await pendingStripeRead(r.id);assert.equal(after.status,'submitted');assert.equal(after.version,r.version+2);
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows[0].n,1);
+  assert.equal((await db.query('select count(*)::int n from public.dopmi_donations')).rows[0].n,0);
+  assert.equal((await db.query('select count(*)::int n from private.dopmi_payment_method_snapshots')).rows[0].n,0);
+  assert.equal(calls.filter(x=>x.path==='accounts/acct_test').length,3);
+});
+for(const identityLoss of ['suspended','unconfirmed'])test(`pending Stripe ${identityLoss} owner cannot be promoted by future readiness`,async()=>{
+  const {r}=await pendingStripeCase();await db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,r.version]);
+  await db.exec('reset role');
+  if(identityLoss==='suspended') await db.query("update profiles set account_status='suspended' where id=$1",[rescuer]);
+  else await db.query('update auth.users set email_confirmed_at=null where id=$1',[rescuer]);
+  await pendingStripeSave();assert.equal((await pendingStripeRead(r.id)).status,'pending_stripe');
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows[0].n,0);
+});
+
+test('pending Stripe initial ready goes directly to submitted and historical submitted or approved records are not rewritten',async()=>{
+  const {r}=await pendingStripeCase({ready:true});
+  const submitted=(await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[r.id,r.version])).rows[0].v;
+  assert.equal(submitted.status,'submitted');assert.ok(submitted.submitted_at);
+  const historical=await pendingStripeRead('71000000-0000-4000-8000-000000000002');
+  await pendingStripeSave({transfers:false});await pendingStripeSave();
+  assert.deepEqual(await pendingStripeRead(r.id),submitted);
+  assert.deepEqual(await pendingStripeRead(historical.id),historical);
+});
+test('pending Stripe rescuer identity is checked at submit and rechecked at future readiness',async()=>{
+  const {r}=await pendingStripeCase();
+  await db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,r.version]);
+  await db.exec('reset role');
+  await db.query("update dopmi_rescue_records set status='changes_requested' where owner_id=$1 and kind='verification'",[rescuer]);
+  await pendingStripeSave();assert.equal((await pendingStripeRead(r.id)).status,'pending_stripe');
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows[0].n,0);
+  await role(rescuer);
+  const draft=(await db.query("select dopmi_transition_rescue($1,$2,'withdraw') v",[r.id,r.version+1])).rows[0].v;
+  await rejected(()=>db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,draft.version]),/verificación/);
+});
+test('pending Stripe withdrawal and ready preserve optimistic versions in either serialization order',async()=>{
+  for(const readyFirst of [false,true]) {
+    const {r}=await pendingStripeCase();
+    const pending=(await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[r.id,r.version])).rows[0].v;
+    if(readyFirst) await pendingStripeSave();
+    await role(rescuer);
+    if(readyFirst) await rejected(()=>db.query("select dopmi_transition_rescue($1,$2,'withdraw')",[r.id,pending.version]),/cambió/);
+    const current=await pendingStripeRead(r.id);await role(rescuer);
+    const draft=(await db.query("select dopmi_transition_rescue($1,$2,'withdraw') v",[r.id,current.version])).rows[0].v;
+    await pendingStripeSave();assert.equal((await pendingStripeRead(r.id)).status,'draft');
+    assert.equal((await pendingStripeRead(r.id)).version,draft.version);
+  }
+});
+test('pending Stripe does not extend to expenses or verification and system audit rejects missing actors or fake source',async()=>{
+  const {r}=await pendingStripeCase();await db.exec('reset role');
+  await rejected(()=>db.query("update dopmi_rescue_records set status='pending_stripe' where id=$1",[expense]),/dopmi_rescue_pending_stripe_case/);
+  await rejected(()=>db.query("update dopmi_rescue_records set status='pending_stripe' where owner_id=$1 and kind='verification'",[rescuer]),/dopmi_rescue_pending_stripe_case/);
+  await rejected(()=>db.query("insert into private.dopmi_rescue_history(record_id,actor_id,action,version,snapshot) values($1,null,'submit',1,'{}')",[r.id]),/dopmi_rescue_history_actor_source/);
+  await rejected(()=>db.query("insert into private.dopmi_rescue_history(record_id,actor_type,source,previous_status,action,version,snapshot) values($1,'system','stripe_connect_ready','pending_stripe','stripe_ready',1,'{}')",[r.id]),/dopmi_rescue_history_actor_source/);
+  const expenseData={title:'Medicina de prueba',description:'Evidencia sintética',category:'medicine'};
+  const privateData={paid_on:'2026-10-01',vendor:'Proveedor sintético',amount_cents:'10000',receipt_reference:'synthetic-pending-stripe'};
+  await role(rescuer);
+  let e=(await db.query("select dopmi_save_rescue('expense',$1::jsonb,$2::jsonb,'[]',null,null,$3) v",[JSON.stringify(expenseData),JSON.stringify(privateData),'71000000-0000-4000-8000-000000000002'])).rows[0].v;
+  const paths=['85000000-0000-4000-8000-000000000002.pdf','85000000-0000-4000-8000-000000000003.jpg'].map(x=>`${rescuer}/${e.id}/${x}`);
+  await db.exec('reset role');for(const path of paths) await db.query("insert into storage.objects(bucket_id,name) values('dopmi-rescue-evidence',$1)",[path]);
+  await role(rescuer);
+  e=(await db.query("select dopmi_save_rescue('expense',$1::jsonb,$2::jsonb,$3::jsonb,$4,$5,$6) v",[JSON.stringify(expenseData),JSON.stringify(privateData),JSON.stringify([{path:paths[0],role:'receipt'},{path:paths[1],role:'proof'}]),e.id,e.version,e.parent_id])).rows[0].v;
+  assert.equal((await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[e.id,e.version])).rows[0].v.status,'submitted');
+});
+
 test('planned case needs persist privately and do not create expenses or funding', async () => {
   await db.query("select set_config('request.jwt.claim.sub',$1,true)",[rescuer]);
   await db.exec('set local role authenticated');

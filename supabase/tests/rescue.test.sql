@@ -11,6 +11,10 @@ insert into auth.users(id,email,raw_user_meta_data,email_confirmed_at)
 select ('60000000-0000-4000-8000-00000000000'||n)::uuid,'rescue-'||n||'@example.test',
   '{"display_name":"Privado","terms_version":"development-2026-09-13","terms_accepted":true}',now() from generate_series(1,4)n;
 insert into private.admin_memberships(user_id) values('60000000-0000-4000-8000-000000000004');
+-- This suite exercises the existing submitted/review happy path. Stripe readiness
+-- is an explicit prerequisite for newly submitted support cases.
+insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled)
+values('60000000-0000-4000-8000-000000000001','acct_rescue_pgtap_synthetic',true,true);
 insert into dopmi_rescue_records(id,owner_id,kind,public_data,private_data) values
  ('61000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001','verification',
  '{"public_name":"Refugio Uno","bio":"Ayudamos animales","city":"Monterrey","state":"Nuevo León"}',

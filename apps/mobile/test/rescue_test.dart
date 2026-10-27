@@ -7,16 +7,20 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/navigation.dart';
+import 'package:dopmi_mobile/core/ui.dart';
+import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,6 +30,7 @@ import 'guardian_test.dart' show FakeGuardian;
 
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/guardian_screen.dart';
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
@@ -144,6 +149,7 @@ class FakeRescue extends RescueRepository {
       final category = switch (record.status) {
         'approved' => 'active',
         'submitted' => 'review',
+        'pending_stripe' => 'pending_stripe',
         'draft' => 'draft',
         _ => 'corrections',
       };
@@ -427,7 +433,394 @@ class PlannedPublicCaseRescue extends FakeRescue {
   }
 }
 
+class StripePendingCaseRescue extends FakeRescue {
+  StripePendingCaseRescue({String status = 'draft'}) {
+    current = RescueRecord({
+      ...caseRecord.data,
+      'owner_id': 'one',
+      'status': status,
+      'version': 4,
+      'submitted_at': null,
+      'target_cents': 0,
+      'funded_cents': 0,
+      'public_data': {
+        'pet_name': 'Mora',
+        'species': 'dog',
+        'sex': 'unknown',
+        'size': 'medium',
+        'age': 'Adulto',
+        'story': 'Rescatada bajo la lluvia, ahora necesita recuperarse.',
+        'city': 'Monterrey',
+        'state': 'Nuevo León',
+        'need': 'Cuidados y seguimiento',
+      },
+      'files': <Json>[
+        {'role': 'public', 'path': 'one/case-one/photo.jpg'},
+      ],
+    });
+  }
+  late RescueRecord current;
+  final actions = <String>[];
+  int detailReads = 0;
+  int? submittedVersion;
+  @override
+  Future<Json> detail(String id) async {
+    detailReads++;
+    expect(id, current.id);
+    return {'record': current.data, 'history': <Json>[]};
+  }
+
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => kind == 'case' ? DataPage([current], 1) : const DataPage([], 0);
+
+  @override
+  Future<RescueRecord> save(
+    String kind,
+    Json publicData,
+    Json privateData,
+    List<Json> files, {
+    RescueRecord? record,
+    String? parent,
+  }) async {
+    expect(current.editable, isTrue);
+    expect(record?.id, current.id);
+    expect(record?.version, current.version);
+    saveCalls++;
+    current = RescueRecord({
+      ...current.data,
+      'version': current.version + 1,
+      'public_data': publicData,
+      'private_data': privateData,
+      'files': files,
+    });
+    return current;
+  }
+
+  @override
+  Future<RescueRecord> transition(RescueRecord record, String action) async {
+    expect(record.id, current.id);
+    expect(record.version, current.version);
+    actions.add(action);
+    if (action == 'submit') submittedVersion = record.version;
+    current = RescueRecord({
+      ...current.data,
+      'version': current.version + 1,
+      'status': action == 'submit' ? 'pending_stripe' : 'draft',
+      'submitted_at': null,
+    });
+    return current;
+  }
+}
+
+class StripeCasePayments extends PaymentRepository {
+  StripeCasePayments(this.rescue, {this.promoteOnRefresh = false})
+    : super(rescue.client);
+  final StripePendingCaseRescue rescue;
+  final bool promoteOnRefresh;
+  final actions = <String>[];
+  @override
+  Future<Json> action(String action, [Json fields = const {}]) async {
+    expect(action, 'connect_status');
+    expect(fields, isEmpty);
+    actions.add(action);
+    if (promoteOnRefresh) {
+      rescue.current = RescueRecord({
+        ...rescue.current.data,
+        'status': 'submitted',
+        'version': rescue.current.version + 1,
+        'submitted_at': '2026-10-27T12:00:00Z',
+      });
+    }
+    // A ready endpoint response alone must never promote the local case.
+    return {'ready': true};
+  }
+}
+
+class StripeCaseVideos extends VideoRepository {
+  StripeCaseVideos()
+    : super(
+        identity: () => 'one:fixture',
+        invoke: (_) async => throw const VideoFailure('unexpected_upload'),
+      );
+  @override
+  Future<VideoPolicy> policy(String parentId) async => VideoPolicy(
+    enabled: false,
+    thanksRequired: false,
+    urgencyAllowed: false,
+    assets: [],
+  );
+}
+
+Future<GoRouter> mountStripeCase(
+  WidgetTester tester,
+  StripePendingCaseRescue rescue,
+  StripeCasePayments payments, {
+  bool large = false,
+}) async {
+  tester.view.physicalSize = large
+      ? const Size(320, 640)
+      : const Size(377, 852);
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  SharedPreferences.setMockInitialValues({});
+  final identity = FakeIdentityRepository()
+    ..user = const Identity('one', 'fixture@example.test', verified: true);
+  final videos = StripeCaseVideos();
+  final router = GoRouter(
+    initialLocation: '/rescue/case-one',
+    routes: [
+      GoRoute(
+        path: '/rescue/:id',
+        builder: (_, state) => RescueEditorScreen(state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/my-cases',
+        builder: (_, _) =>
+            const Scaffold(body: Text('Mis casos después del envío')),
+      ),
+      GoRoute(
+        path: '/connect',
+        builder: (context, _) => Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () => context.pop(),
+              child: const Text('Volver de Stripe'),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+  addTearDown(router.dispose);
+  addTearDown(videos.dispose);
+  addTearDown(() => identity.changes.close());
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(rescue),
+        paymentRepositoryProvider.overrideWithValue(payments),
+        rescueVideosRepositoryProvider.overrideWithValue(videos),
+      ],
+      child: MaterialApp.router(
+        theme: dopmiTheme(rescuer: true),
+        routerConfig: router,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return router;
+}
+
+Future<void> tapStripeCase(WidgetTester tester, Finder target) async {
+  if (target.evaluate().isEmpty) {
+    // Read-only cases use PageFrame's lazy outer ListView. Build controls below
+    // the initial viewport by scrolling that list before ensureVisible.
+    final scrollable = find
+        .descendant(
+          of: find.byType(PageFrame),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      target,
+      200,
+      scrollable: scrollable,
+      maxScrolls: 20,
+    );
+    await tester.pumpAndSettle();
+  }
+  await tester.ensureVisible(target);
+  await tester.pumpAndSettle();
+  expect(target.hitTestable(), findsOneWidget);
+  await tester.tap(target);
+  await tester.pumpAndSettle();
+}
+
 void main() {
+  for (final large in [false, true]) {
+    testWidgets(
+      'new support submission waits privately for Stripe without a review success; large=$large',
+      (tester) async {
+        final rescue = StripePendingCaseRescue();
+        final payments = StripeCasePayments(rescue);
+        final router = await mountStripeCase(
+          tester,
+          rescue,
+          payments,
+          large: large,
+        );
+        final originalFiles = rescue.current.files;
+        for (var step = 0; step < 3; step++) {
+          await tapStripeCase(tester, find.text('Continuar'));
+        }
+        await tapStripeCase(tester, find.text('Enviar a revisión'));
+        expect(find.text('Sólo un paso más…'), findsOneWidget);
+        expect(find.text('Enviado a revisión'), findsNothing);
+        expect(
+          find.textContaining('guardado de forma privada'),
+          findsOneWidget,
+        );
+        expect(rescue.current.pendingStripe, isTrue);
+        expect(rescue.current.version, rescue.submittedVersion! + 1);
+        expect(rescue.current.id, 'case-one');
+        expect(rescue.current.files, originalFiles);
+        expect(payments.actions, isEmpty);
+        final dialog = find.byKey(const ValueKey('pending-stripe-dialog'));
+        final card = tester.getRect(
+          find.byKey(const ValueKey('pending-stripe-dialog-card')),
+        );
+        expect(card.left, greaterThanOrEqualTo(19.9));
+        expect(card.right, lessThanOrEqualTo((large ? 320 : 377) - 19.9));
+        expect(
+          find.descendant(of: dialog, matching: find.byType(SvgPicture)),
+          findsNWidgets(3),
+        );
+        final close = find.byKey(const ValueKey('pending-stripe-dialog-close'));
+        expect(close.hitTestable(), findsOneWidget);
+        expect(tester.getSize(close).shortestSide, greaterThanOrEqualTo(48));
+        for (final title in [
+          'Pagos seguros',
+          'Procesa las aportaciones',
+          'Regístrate para recibir',
+        ]) {
+          await tester.ensureVisible(find.text(title));
+          await tester.pumpAndSettle();
+          expect(find.text(title).hitTestable(), findsOneWidget);
+          expect(
+            tester.getRect(find.text(title)).overlaps(tester.getRect(close)),
+            isFalse,
+            reason: 'The close target must scroll with the header rather than intercept Stripe guidance.',
+          );
+          expect(
+            tester.getRect(find.text(title)).right,
+            lessThanOrEqualTo(card.right - 23.9),
+          );
+        }
+        final warning = find.textContaining(
+          'Cuando Stripe confirme que tu cuenta está lista',
+        );
+        await tester.ensureVisible(warning);
+        await tester.pumpAndSettle();
+        expect(warning.hitTestable(), findsOneWidget);
+        expect(
+          tester.getRect(warning).overlaps(tester.getRect(close)),
+          isFalse,
+        );
+        final primary = find.byKey(const ValueKey('pending-stripe-continue'));
+        final secondary = find.byKey(const ValueKey('pending-stripe-return'));
+        await tester.ensureVisible(secondary);
+        await tester.pumpAndSettle();
+        final primaryRect = tester.getRect(primary);
+        final secondaryRect = tester.getRect(secondary);
+        expect(primaryRect.width, closeTo(card.width - 48, .1));
+        expect(secondaryRect.width, closeTo(primaryRect.width, .1));
+        expect(primaryRect.overlaps(secondaryRect), isFalse);
+        expect(primaryRect.height, greaterThanOrEqualTo(48));
+        expect(secondaryRect.height, greaterThanOrEqualTo(48));
+        if (large) {
+          expect(close.hitTestable(), findsNothing);
+          await tapStripeCase(tester, primary);
+          expect(router.state.uri.path, '/connect');
+          expect(payments.actions, isEmpty);
+          await tapStripeCase(tester, find.text('Volver de Stripe'));
+          expect(router.state.uri.path, '/rescue/case-one');
+          expect(payments.actions, ['connect_status']);
+          expect(rescue.current.pendingStripe, isTrue);
+          expect(find.text('Enviado a revisión'), findsNothing);
+        } else {
+          await tapStripeCase(tester, secondary);
+          expect(router.state.uri.path, '/my-cases');
+          expect(router.state.uri.queryParameters['program'], 'support');
+        }
+        expect(rescue.actions, ['submit']);
+        expect(rescue.current.files, originalFiles);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  for (final promoted in [false, true]) {
+    testWidgets(
+      'returning from Connect rereads the authoritative case; promoted=$promoted',
+      (tester) async {
+        final rescue = StripePendingCaseRescue(status: 'pending_stripe');
+        final payments = StripeCasePayments(rescue, promoteOnRefresh: promoted);
+        final router = await mountStripeCase(
+          tester,
+          rescue,
+          payments,
+          large: !promoted,
+        );
+        expect(router.state.uri.path, '/rescue/case-one');
+        expect(rescue.detailReads, greaterThan(0));
+        expect(find.text('Enviar a revisión'), findsNothing);
+        expect(rescue.current.editable, isFalse);
+        final reads = rescue.detailReads;
+        await tapStripeCase(tester, find.text('Continuar a Stripe'));
+        expect(router.state.uri.path, '/connect');
+        await tapStripeCase(tester, find.text('Volver de Stripe'));
+        expect(payments.actions, ['connect_status']);
+        expect(rescue.detailReads, greaterThan(reads));
+        expect(rescue.actions, isEmpty);
+        expect(rescue.current.id, 'case-one');
+        expect(
+          rescue.current.status,
+          promoted ? 'submitted' : 'pending_stripe',
+        );
+        expect(rescue.current.version, promoted ? 5 : 4);
+        if (!promoted) {
+          // Returning preserves the read-only list's scroll position. Bring the
+          // private-state notice above the CTA back into the lazy viewport.
+          await tester.scrollUntilVisible(
+            find.textContaining('Tu caso sigue privado'),
+            -200,
+            scrollable: find
+                .descendant(
+                  of: find.byType(PageFrame),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+            maxScrolls: 20,
+          );
+          await tester.pumpAndSettle();
+        }
+        expect(
+          find.textContaining('Tu caso ya se envió a revisión Dopmi'),
+          promoted ? findsOneWidget : findsNothing,
+        );
+        expect(
+          find.textContaining('Tu caso sigue privado'),
+          promoted ? findsNothing : findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets(
+    'a private Stripe-waiting case withdraws to the same editable draft',
+    (tester) async {
+      final rescue = StripePendingCaseRescue(status: 'pending_stripe');
+      await mountStripeCase(tester, rescue, StripeCasePayments(rescue));
+      final files = rescue.current.files;
+      await tapStripeCase(tester, find.text('Retirar a borrador'));
+      expect(rescue.actions, ['withdraw']);
+      expect(rescue.current.editable, isTrue);
+      expect(rescue.current.id, 'case-one');
+      expect(rescue.current.version, 5);
+      expect(rescue.current.files, files);
+      expect(find.text('Guardar borrador'), findsOneWidget);
+      expect(rescue.saveCalls, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
   testWidgets('case photo renews signing on resume and stops after disposal', (
     tester,
   ) async {

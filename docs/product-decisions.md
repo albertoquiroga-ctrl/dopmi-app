@@ -1,3 +1,20 @@
+## 27/10/2026 — Espera de Stripe para nuevos casos de apoyo
+
+Respuesta humana call_2f3765f8/item0: añadir esperaStripe sólo a nuevos envíos.
+IdentidadDopmiaprobada→enviarcaso→siStripefalta, pending_stripe privado; alconfirmar
+READYservidor entra automáticamente a revisiónDopmi, nunca publicación automática.
+Casos ya enrevisión/publicados conservanestado; gastos/adopción conservansusreglas.
+Los tres componentes nativosStripe siguen excepción almock. Implementación local;
+no atribuir migraciónDEV/CI/dispositivo hasta comprobarlos.
+
+## 27/10/2026 — Reemplazo acotado de credencial Stream DEV
+
+Autorización call_b3bb29816f274033b347cbf61ef9ac27/item0: crear
+«Dopmi DEV Stream QA final 27oct», sóloStreamEdit en la cuentaDEV existente,
+hasta3nov2026 23:59CDMX, guardar únicamente CLOUDFLARE_STREAM_API_TOKEN en
+SupabaseDEVohqxranynackjignryep. Ejecutado una vez;digest coincide,otros33secretos
+intactos. No valor archivado/mostrado. No autoriza por sísolo ON,cargas ni borrados.
+
 ## 26/10/2026 — Checkpoint de avance y eficiencia cada cuatro horas
 
 El titular pide checkpoint de este estilo cada4h, con revisión de errores del

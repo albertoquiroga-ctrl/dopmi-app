@@ -1,49 +1,41 @@
-# Checkpoint — 27/oct/2026, 06:32 CDMX
+# Checkpoint — 27/oct/2026, 08:38 CDMX
 
-Dueño integrador/root; una cola Flutter. Producto dopmi-app, rama
-codex/finish-release-20261015, checkout candidate-git-20261014. Cambios ajenos preservados.
-Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust congelada; futuros pushes aparte.
+Dueño root/integrador; una cola Flutter. Producto dopmi-app en
+codex/finish-release-20261015, checkout candidate-git-20261014. Referencia congelada
+f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust. Cambios ajenos preservados.
 
-- **Implementado/GitHub:** b50ed67696dae532bccde80aa4736283a3059508; código de app
-  c19357e9 intacto, sucesor sólo corrige9pruebas y capturador antiguo. Árbol de producto limpio.
-- **Local verificado:** F1/F2/F3/F4nativo cerrados por alcance y revisores. F3D50PASS;
-  correcciones39PASS; últimas9suites61PASS43s. Los cinco capturadores que ejecuta CI
-  pasaron: design5s/perfil63s/integral6s/recuperación6s/Tienda4s. Analyze0/18.5s,
-  configuración17PASS. No sumar tandas solapadas como una suite integral.
-- **CI actual:**40492133689/b50 TERMINADA, cuatro jobs SUCCESS: Flutter,
-  web/PostgreSQL, identidad/adopción e iOS simulador. Recibo real11:27UTC.
-  CI40488879166/c193 terminal: web/PostgreSQL,Auth/backend,iOS SUCCESS; Flutter
-  analyze0 pero15expectativas obsoletas fallaron. Corrección local pasó, no redispatch idéntico.
-- **DEV aplicado/verificado:** migración agrupada20261027115406, historia84→85;
-  payload2519c0fd…916bce/MD52fdee303…938cb; nueve postchecks verdaderos11:54:22UTC.
-  guardian-client130→131 ACTIVE,28fuentesLFexactas y otras31funciones intactas.
-  Código/seguridad independientes cerraron readbacks. SQL/Edge video/Tienda/cleanupOFF,
-  job6pausado;34metadatos exactos11:59:23UTC. No smokeStripe/SDK nativo atribuido.
-- **Publicado:** Play2.3.3(338)/a4b46284/CM6ae03ffdc76bf166cac18c43; **instalado comprobado337**.
-  Único envío f693 aceptado: CM6ae0997ff94c6e56883fd1d3, estado QUEUED y fuente
-  b50 confirmados por GET. Tag codex/support-four-steps-b50ed676 exacto; versión339
-  sólo prevista. Compilación/artefacto/Play/instalación/QA/aceptación aún pendientes.
-  iOS sólo CI.
-- **Bloqueos externos:** Samsung no detectado; autorización puntual de nuevo token Stream
-  vencido pendiente (no creado); decisión nueva pending_stripe pendiente. Sin ON/escrituras
-  operacionales ni otra toma/pago/correo propios. Reutilizar recuperación/Tienda/P3/Connect válidos.
-- **Siguiente acción única:** seguir el MISMO CM6ae0997ff94c6e56883fd1d3 hasta
-  compilación y publicación; no otroPOST. Pin revisado c229d745…bb29fa, paquete
-  3596db8b…293ac9; actuals/revisiones y reserva únicos en f693/internal-release/.
-  Después Play/instalación/QA afectada/demo/aceptación; no repetir CI ni fixtures cerradas.
+- **Publicado comprobado:** 2.3.3(339), SHA b50ed67696dae532bccde80aa4736283a3059508,
+  Play internal/completed, CM6ae0997ff94c6e56883fd1d3/13SUCCESS. CI40492133689 cuatroSUCCESS.
+  Artefacto/Play leídos13:01UTC. AAB binario/certificado no inspeccionados aparte.
+  Último instalado comprobado337; 339 aún sin instalación/aceptación. No repetirPOST339.
+- **DEV comprobado:** V3 historia85/20261027115406 y Guardian131; nueve postchecks,
+  28fuentesLF/otras31funciones exactas. Video/Tienda/enlaces/cleanupOFF/job6pausado.
+  Token Stream vencido reemplazado una vez con autorización27oct: sóloStreamEdit,
+  expira3nov23:59CDMX. Guardado enDEV;34secretos,otros33metadatos intactos. SinON/proveedor.
+- **Nuevo lote autorizado, implementado local:** pending_stripe sólo nuevos casos;
+  privado hastaConnectREADY→revisiónDopmi automática, jamás publicación. Históricos,
+  gastos/adopción/3SDKStripe preservados. SQL5b5b4517…2a07d1a:600focalesPASS;
+  falloP1 aislado/cancelación16PASS; código/seguridad cerrados. Tres carrerasPG nuevas
+  revisadas estáticamente, ejecución PostgreSQL real pendienteCI. NO aplicado enDEV.
+- **Móvil local:** analyze0;51PASS iniciales y4fallos de helpers resueltos en3+1PASS,
+  sin sumar tandas solapadas. Código/seguridad lógica cerrados. CTA377 y modalStripe corregidos; seis capturas afectadas PASS y tres previas
+  owned reutilizadas. Producto independiente cerró CTA/X/modal; código y seguridad
+  cerraron sus alcances. Normal377 dirigido1PASS; modal2PASS;115%/200% previos válidos.
+  Prueba normal usa bottom760 de referencia y1px de redondeo del hueco12px.
+  Medición Inter319.9565 determinó ancho320, sin modificar fuente/padding/borde.
+- **Bloqueo externo:** teléfono presenteMTP, sin interfazADB; reinicioADBúnico sin cambio.
+  Pregunta puntual sobre depuraciónUSB ya pendiente. No repetir petición de conexión.
+- **Siguientes cierres finitos:** (1) UI/test/capturas/revisión CERRADOS localmente;
+  (2) congelarSHA y unaCI integral con PostgreSQLreal; (3) paqueteDEVaditivo+distribución
+  agrupados, fuentes/firmas/TEST exactos; (4) Play→instalación→QAafectada/demo/aceptación.
+  Reutilizar recuperación/Tienda/P3/aporteTEST/Connect válidos. Cámara337 llegóready/borrado,
+  reproduccióncompleta aún no probada; no otra toma por rutina. iOS sóloCI.
 
-Retro independiente: cambios visuales dejaron9tests y un capturador ligados a referencias
-anteriores. Se contrastaron con fuente y se preservaron foco/navegación/48px/escalado/privacidad;
-Gallery no acredita paridad. Root ejecutó los capturadores afectados antes de la nueva CI,
-sin nuevo harness. CI por push sólo ramas conserva4gates y evita disparo por tags;
-ahorro real de ese cambio aún no medido. No estimación nueva sin evidencia.
-Retro independiente adicional: preparación/revisión antes del baseline funcionó en este
-intento:11:52:50→reserva11:54:05→postflight11:54:22, dentro5min. No demuestra ahorro
-general ni reparto de horas/tokens/coste. BufferUnicode detectado antesdeploy fue
-reemplazado por JSONASCII;28hashes/readback exactos. No ampliarvigencia/excluirfinanzas.
-Próximo checkpoint compara cierres comprobados,
-no cantidad de pruebas/documentos. Dueño root; no nuevas tomas/pagos/CI por el reloj.
-Heartbeat de4h existente ACTIVE verificado, sin duplicarlo. Evidencia privada: f693/.
+Eficiencia: CM339 midió9m11cola+19m32ejecución; no explica todo el tiempo anterior.
+Los checks dirigidos evitan repetir51PASS por helpers; el render377 expuso un caso
+no cubierto por393 y se corrige antes de otra build. Retro independiente acotada encurso.
+Heartbeat4h existenteACTIVE, sin duplicarlo. Evidencia privada f693/internal-release/,
+f693/stream-replacement.actual.private.json y f693/cta-geometry/. No estimación nueva sinbase.
 
 ## Historial operativo anterior
 

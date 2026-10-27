@@ -62,6 +62,220 @@ import 'owned_cases_screen.dart' show OwnedCasesHeading;
 export 'rescuer_home_screen.dart';
 export 'owned_cases_screen.dart';
 
+class _PendingStripeOnboardingDialog extends StatelessWidget {
+  const _PendingStripeOnboardingDialog();
+
+  @override
+  Widget build(BuildContext context) => Dialog(
+    key: const ValueKey('pending-stripe-dialog'),
+    insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    clipBehavior: Clip.antiAlias,
+    child: ConstrainedBox(
+      key: const ValueKey('pending-stripe-dialog-card'),
+      constraints: BoxConstraints(
+        maxWidth: 340,
+        maxHeight: MediaQuery.sizeOf(context).height * .88,
+      ),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            key: const ValueKey('pending-stripe-dialog-scroll'),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Semantics(
+                        namesRoute: true,
+                        header: true,
+                        child: const Text(
+                          'Sólo un paso más…',
+                          style: TextStyle(
+                            fontSize: 22,
+                            height: 1.25,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -.22,
+                            color: DopmiTokens.ink,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // The whole 48px target scrolls with the title, leaving
+                    // later copy unobstructed and fully reachable at 200%.
+                    IconButton(
+                      key: const ValueKey('pending-stripe-dialog-close'),
+                      tooltip: 'Cerrar',
+                      constraints: const BoxConstraints(
+                        minWidth: 48,
+                        minHeight: 48,
+                      ),
+                      onPressed: () => Navigator.pop(context, false),
+                      icon: const Icon(
+                        Icons.close,
+                        size: 22,
+                        color: DopmiTokens.muted,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Tu caso quedó guardado de forma privada. Para recibir el apoyo en tu cuenta, al continuar te llevaremos a Stripe, la plataforma que procesa las transacciones de forma segura.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.45,
+                    color: DopmiTokens.muted,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                for (final point in const [
+                  (
+                    'icon-shield.svg',
+                    'Pagos seguros',
+                    'Stripe cumple estándares internacionales y cifra la información sensible de cada transacción.',
+                  ),
+                  (
+                    'icon-card.svg',
+                    'Procesa las aportaciones',
+                    'Es la plataforma que usamos en Dopmi para cobrar las aportaciones y transferirte el apoyo de cada caso.',
+                  ),
+                  (
+                    'icon-verified.svg',
+                    'Regístrate para recibir',
+                    'Al crear tu cuenta en Stripe vinculas tu perfil de rescatista para recibir depósitos de forma automática.',
+                  ),
+                ]) ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: DopmiTokens.orangeSoft,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          'assets/profile/${point.$1}',
+                          width: 20,
+                          height: 20,
+                          excludeFromSemantics: true,
+                          colorFilter: const ColorFilter.mode(
+                            DopmiTokens.orangeButton,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                point.$2,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  height: 1.3,
+                                  fontWeight: FontWeight.w700,
+                                  color: DopmiTokens.ink,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                point.$3,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  height: 1.4,
+                                  color: DopmiTokens.muted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: DopmiTokens.orangeSoft,
+                    border: Border.all(color: const Color(0x38ea580c)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Cuando Stripe confirme que tu cuenta está lista, tu caso se enviará a revisión del equipo Dopmi. Todavía no estará publicado.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.45,
+                      color: DopmiTokens.ink,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  key: const ValueKey('pending-stripe-continue'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: DopmiTokens.ink,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(48),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text(
+                    'Continuar a Stripe',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton(
+                  key: const ValueKey('pending-stripe-return'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: DopmiTokens.ink,
+                    minimumSize: const Size.fromHeight(48),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    side: const BorderSide(color: DopmiTokens.line),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Regresar', textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 class RescueList extends ConsumerStatefulWidget {
   const RescueList({
     super.key,
@@ -268,6 +482,12 @@ class _OwnedRescueCard extends ConsumerWidget {
                                   ),
                                 ),
                               ],
+                              if (record.pendingStripe) ...[
+                                const SizedBox(height: 6),
+                                const Notice(
+                                  'Completa tu registro Stripe desde tu perfil. Tu caso sigue privado y todavía no está en revisión Dopmi.',
+                                ),
+                              ],
                               if (record.kind == 'case' &&
                                   record.status == 'approved' &&
                                   record.targetCents > 0) ...[
@@ -436,6 +656,7 @@ class _OwnedCaseHeading extends StatelessWidget {
         color: switch (record.status) {
           'approved' => const Color(0xffdcf7ed),
           'submitted' => const Color(0xffdbeafe),
+          'pending_stripe' => const Color(0xfffff7ed),
           'changes_requested' || 'rejected' => const Color(0xffffe2e2),
           'draft' || 'closed' => const Color(0xffece9e5),
           _ => const Color(0xffefedf4),
@@ -465,6 +686,7 @@ class _OwnedCaseHeading extends StatelessWidget {
                 color: switch (record.status) {
                   'approved' => const Color(0xff08795b),
                   'submitted' => const Color(0xff193cb8),
+                  'pending_stripe' => const Color(0xffb45309),
                   'changes_requested' || 'rejected' => const Color(0xffb51224),
                   'draft' => const Color(0xff6a615b),
                   'closed' => const Color(0xff4f4e5c),
@@ -1072,42 +1294,78 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           result.kind == 'expense' &&
           result.status == 'submitted';
       message = action == 'submit'
-          ? 'Solicitud enviada. Te avisaremos cuando el equipo responda.'
+          ? result.pendingStripe
+                ? 'Tu caso está privado y pendiente de completar Stripe.'
+                : 'Solicitud enviada. Te avisaremos cuando el equipo responda.'
           : action == 'close'
           ? 'Caso cerrado.'
           : 'Retiramos la solicitud a borrador.';
     });
     if (action == 'submit' &&
         result.kind == 'case' &&
-        result.status == 'submitted') {
+        (result.status == 'submitted' || result.pendingStripe)) {
       dirty = false;
       setState(() => busy = false);
-      await showDialog<void>(
+      final continueStripe = await showDialog<bool>(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          icon: const Icon(
-            Icons.check_circle_outline,
-            color: DopmiTokens.purple,
-            size: 48,
-          ),
-          title: const Text('Enviado a revisión'),
-          content: const Text(
-            'El equipo revisará tu caso antes de publicarlo. Tus gastos siguen como borradores privados y podrás enviarlos a revisión cuando el caso esté aprobado.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Entendido'),
-            ),
-          ],
-        ),
+        builder: (context) => result.pendingStripe
+            ? const _PendingStripeOnboardingDialog()
+            : AlertDialog(
+                scrollable: true,
+                icon: const Icon(
+                  Icons.check_circle_outline,
+                  color: DopmiTokens.purple,
+                  size: 48,
+                ),
+                title: const Text('Enviado a revisión'),
+                content: const Text(
+                  'El equipo revisará tu caso antes de publicarlo. Tus gastos siguen como borradores privados y podrás enviarlos a revisión cuando el caso esté aprobado.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text('Entendido'),
+                  ),
+                ],
+              ),
       );
       if (!mounted) return;
+      if (result.pendingStripe && continueStripe == true) {
+        await run(openStripe);
+        return;
+      }
+      if (result.pendingStripe) {
+        context.go('/my-cases?program=support');
+        return;
+      }
       context.go('/my-cases');
       return;
     }
     await load();
+  }
+
+  Future<void> refreshStripeCase() async {
+    final id = record?.id;
+    final actor = ref.read(identityControllerProvider).identity?.id;
+    await ref.read(paymentRepositoryProvider).action('connect_status');
+    if (!mounted ||
+        record?.id != id ||
+        ref.read(identityControllerProvider).identity?.id != actor) {
+      return;
+    }
+    await load();
+    if (mounted && record?.status == 'submitted') {
+      setState(() {
+        message =
+            'Tu caso ya se envió a revisión Dopmi. Todavía no está publicado.';
+      });
+    }
+  }
+
+  Future<void> openStripe() async {
+    await context.push('/connect');
+    if (mounted) await refreshStripeCase();
   }
 
   Future<bool> confirmLeave() async {
@@ -2144,8 +2402,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           '',
                     ),
                     _RescueReviewRow('Archivos', '${files.length} adjuntos'),
-                    const Notice(
-                      'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
+                    Notice(
+                      record?.pendingStripe == true
+                          ? 'Tu caso sigue privado. Completa tu registro Stripe para enviarlo a revisión del equipo Dopmi.'
+                          : 'El equipo revisará por separado la información pública, los documentos privados y la evidencia antes de aprobar.',
                     ),
                   ],
                   if (record?.kind == 'expense' && record!.status == 'approved')
@@ -2237,7 +2497,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   ],
                   if (!editable && error != null) Notice(error!, isError: true),
                   if (!editable && message != null) Notice(message!),
-                  if (record?.status == 'submitted')
+                  if (record?.pendingStripe == true)
+                    ActionButton(
+                      'Continuar a Stripe',
+                      busy: busy,
+                      onPressed: () => run(openStripe),
+                    ),
+                  if (record?.status == 'submitted' ||
+                      record?.pendingStripe == true)
                     OutlinedButton(
                       onPressed: busy
                           ? null
@@ -2250,7 +2517,11 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                           ? null
                           : () async {
                               if (await confirmLeave()) {
-                                await load();
+                                if (record?.pendingStripe == true) {
+                                  await run(refreshStripeCase);
+                                } else {
+                                  await load();
+                                }
                               }
                             },
                       child: const Text('Recargar estado'),

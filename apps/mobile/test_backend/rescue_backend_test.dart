@@ -225,6 +225,42 @@ void main() {
     identity = await repo.transition(identity, 'submit');
     identity = RescueRecord(await review(identity));
 
+    // This existing happy-review fixture has completed Connect locally. New
+    // cases without this server state now wait privately in pending_stripe.
+    final ownerId = owner.auth.currentUser!.id;
+    expect(RegExp(r'^[0-9a-f-]{36}$').hasMatch(ownerId), true);
+    final fixtureAccount = 'acct_rescueBackend${ownerId.replaceAll('-', '')}';
+    final connectReady = await Process.run('docker', [
+      'exec',
+      databaseContainer,
+      'psql',
+      '-U',
+      'postgres',
+      '-d',
+      'postgres',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-c',
+      "insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled) values('$ownerId','$fixtureAccount',true,true);",
+    ]);
+    expect(connectReady.exitCode, 0);
+    addTearDown(() async {
+      final removeConnectFixture = await Process.run('docker', [
+        'exec',
+        databaseContainer,
+        'psql',
+        '-U',
+        'postgres',
+        '-d',
+        'postgres',
+        '-v',
+        'ON_ERROR_STOP=1',
+        '-c',
+        "delete from private.dopmi_connect_accounts where owner_id='$ownerId' and account_id='$fixtureAccount';",
+      ]);
+      expect(removeConnectFixture.exitCode, 0);
+    });
+
     var rescue = await repo.save(
       'case',
       {

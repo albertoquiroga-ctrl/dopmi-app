@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile,readdir } from 'node:fs/promises';
 import { randomUUID,createHash } from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
+import { paymentService } from '../../supabase/functions/_shared/payments.mjs';
 let db; const sources=[];
 before(async()=>{db=new PGlite();
   await db.exec(`do $$begin
@@ -38,6 +39,7 @@ async function fixture(kind='case') {
  for(const id of [owner,other,staff])await db.query("insert into auth.users(id,email_confirmed_at,raw_user_meta_data) values($1,now(),$2::jsonb)",[id,JSON.stringify({display_name:'Synthetic video test',terms_accepted:true,terms_version:'development-2026-09-13'})]);
  await db.query('insert into private.admin_memberships(user_id) values($1)',[staff]);
  await db.query("insert into public.dopmi_rescue_records(owner_id,kind,status) values($1,'verification','approved')",[owner]);
+ await db.query("insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled) values($1,$2,true,true)",[owner,`acct_synthetic_${owner.replaceAll('-','')}`]);
  await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,status) values($1,$2,$3,'draft')",[parent,owner,kind]);
  return {owner,other,staff,parent};
 }
@@ -88,7 +90,7 @@ for(const presentationState of ['ready','processing'])test('real account deletio
  await db.query("update public.dopmi_rescue_records set video_thanks_required=false,status='approved',approved_snapshot='{\"pet_name\":\"Synthetic\"}' where id=$1",[f.parent]);
  const details={public_data:{title:'Synthetic medicines'},private_data:{invoice:'synthetic-private-only'},files:[{path:'synthetic/financial-proof.pdf'}]};
  await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,status,approved_snapshot,reimbursable_cents,public_data,private_data,files) values($1,$2,'expense',$3,'approved','{\"title\":\"Synthetic medicines\"}',12000,$4,$5,$6)",[expense,f.owner,f.parent,JSON.stringify(details.public_data),JSON.stringify(details.private_data),JSON.stringify(details.files)]);
- await db.query('insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled) values($1,$2,true,true)',[f.owner,'acct_'+suffix]);
+ await db.query('update private.dopmi_connect_accounts set account_id=$2 where owner_id=$1',[f.owner,'acct_'+suffix]);
  await db.query("update public.dopmi_rescue_records set public_data=$2 where id=$1",[f.parent,JSON.stringify({need_items:[{id:randomUUID(),type:'medicine',title:'Synthetic urgent medicine',amount_cents:1000,detail:'Synthetic fixture',urgent:true}]})]);
  const presentation=await action(f,begin(f,{purpose:'public_update'})),presentationProvider=await ready(presentation);
  if(presentationState==='processing')await service({action:'refresh',provider_id:presentationProvider.provider_id,state:'processing',duration:null});
@@ -192,6 +194,101 @@ test('policy marks old processed video irrelevant after a saved content change',
  const stale=(await db.query('select public.dopmi_video_policy($1) v',[f.parent])).rows[0].v.assets[0];assert.equal(stale.technical_state,'ready');assert.equal(stale.matches_current_content,false);assert.equal(stale.moderation_state,'stale');
 });
 
+test('pending Stripe keeps ready thanks private from reviewers and only current content follows automatic submission',async()=>{
+ const f=await fixture(),photo=await uploadSyntheticPhoto(f);
+ await db.query('update private.dopmi_connect_accounts set transfers_enabled=false,payouts_enabled=false,details_submitted=true where owner_id=$1',[f.owner]);
+ const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
+ await actor(f.owner);
+ await assert.rejects(db.query("select public.dopmi_transition_rescue($1,$2,'submit')",[f.parent,saved.version]),/Agradecimiento requerido/);
+ const thanks=await action(f,begin(f,{parent_version:saved.version}));await ready(thanks);
+ await actor(f.owner);
+ const pending=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,saved.version])).rows[0].v;
+ assert.equal(pending.status,'pending_stripe');assert.equal(pending.video_thanks_required,true);
+ for(const op of ['status','playback','review']) await assert.rejects(action(f,{action:op,id:thanks.id,parent_version:pending.version,decision:'approved'},f.staff));
+ assert.ok(!(await action(f,{action:'list'},f.staff)).items.some(x=>x.id===thanks.id));
+ assert.equal((await action(f,{action:'status',id:thanks.id})).technical_state,'ready');
+ assert.equal((await action(f,{action:'playback',id:thanks.id})).technical_state,'ready');
+ assert.equal((await action(f,{action:'public_list',parent_id:f.parent},f.other)).items.length,0);
+ await assert.rejects(action(f,begin(f,{parent_version:pending.version,request_key:randomUUID()})),/Parent not editable/);
+ const before=(await db.query('select content_snapshot,parent_version,moderation_state,approved_parent_snapshot from private.dopmi_video_assets where id=$1',[thanks.id])).rows[0];
+ await actor('','service_role');
+ const data={actor:f.owner,account_id:`acct_synthetic_${f.owner.replaceAll('-','')}`,transfers_enabled:true,payouts_enabled:true,details_submitted:false};
+ await db.query("select public.dopmi_payment_server('connect_save',$1::jsonb)",[JSON.stringify(data)]);
+ const submitted=(await db.query('select * from public.dopmi_rescue_records where id=$1',[f.parent])).rows[0];
+ assert.equal(submitted.status,'submitted');assert.equal(submitted.version,pending.version+1);assert.equal(submitted.approved_snapshot,null);
+ assert.deepEqual((await db.query('select content_snapshot,parent_version,moderation_state,approved_parent_snapshot from private.dopmi_video_assets where id=$1',[thanks.id])).rows[0],before);
+ await assert.rejects(action(f,{action:'review',id:thanks.id,parent_version:pending.version,decision:'approved'},f.staff),/Stale parent/);
+ await action(f,{action:'review',id:thanks.id,parent_version:submitted.version,decision:'approved'},f.staff);
+ await assert.rejects(action(f,{action:'playback',id:thanks.id},f.other));
+ await actor(f.staff);
+ const approved=(await db.query("select public.dopmi_review_rescue($1,$2,'approved','Revision sintetica completa',0,false,'',true) v",[f.parent,submitted.version])).rows[0].v;
+ assert.equal(approved.status,'approved');assert.equal((await action(f,{action:'playback',id:thanks.id},f.other)).technical_state,'ready');
+});
+
+test('pending Stripe cancellation cannot publish a missing thanks or erase the saved Stripe readiness',async()=>{
+ const f=await fixture(),photo=await uploadSyntheticPhoto(f);
+ await db.query('update private.dopmi_connect_accounts set transfers_enabled=false,payouts_enabled=false where owner_id=$1',[f.owner]);
+ const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1),thanks=await action(f,begin(f,{parent_version:2}));await ready(thanks);await actor(f.owner);
+ const pending=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,saved.version])).rows[0].v;
+ await action(f,{action:'cancel',id:thanks.id});await actor('','service_role');
+ await db.query("select public.dopmi_payment_server('connect_save',$1::jsonb)",[JSON.stringify({actor:f.owner,account_id:`acct_synthetic_${f.owner.replaceAll('-','')}`,transfers_enabled:true,payouts_enabled:true,details_submitted:true})]);
+ const actual=(await db.query('select status,version,approved_snapshot from public.dopmi_rescue_records where id=$1',[f.parent])).rows[0];
+ assert.deepEqual(actual,{status:'pending_stripe',version:pending.version,approved_snapshot:null});
+ assert.equal((await db.query('select transfers_enabled and payouts_enabled ready from private.dopmi_connect_accounts where owner_id=$1',[f.owner])).rows[0].ready,true);
+ await actor(f.owner);
+ const draft=(await db.query("select public.dopmi_transition_rescue($1,$2,'withdraw') v",[f.parent,pending.version])).rows[0].v;
+ assert.equal(draft.status,'draft');
+});
+
+test('pending Stripe cancellation during the UPDATE guard isolates one case, saves readiness and retries without duplicate audit',async()=>{
+ const first=await fixture(),second={...first,parent:randomUUID()};
+ await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,status) values($1,$2,'case','draft')",[second.parent,first.owner]);
+ await db.query('update private.dopmi_connect_accounts set transfers_enabled=false,payouts_enabled=false where owner_id=$1',[first.owner]);
+ const [invalid,valid]=[first,second].sort((a,b)=>a.parent.localeCompare(b.parent));
+ for(const f of [invalid,valid]) {
+  const photo=await uploadSyntheticPhoto(f),saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
+  const thanks=await action(f,begin(f,{parent_version:saved.version}));await ready(thanks);await actor(f.owner);
+  f.pending=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,saved.version])).rows[0].v;
+ }
+ const money=async()=>({donations:(await db.query('select to_jsonb(d) v from public.dopmi_donations d order by id')).rows,
+  snapshots:(await db.query('select to_jsonb(s) v from private.dopmi_payment_method_snapshots s order by kind,payment_id')).rows,
+  customers:(await db.query('select to_jsonb(c) v from private.dopmi_saved_card_customers c order by owner_id')).rows});
+ const beforeMoney=await money();
+ // Local-only injection occurs after rescue validation, immediately before the
+ // actual video guard. It models readiness becoming invalid at the UPDATE, which
+ // the former precheck could not protect. The trigger is always removed below.
+ await db.exec(`create function private.dopmi_test_pending_cancel_during_update() returns trigger language plpgsql as $$begin
+  if new.id='${invalid.parent}'::uuid and old.status='pending_stripe' and new.status='submitted' then
+   update private.dopmi_video_assets set technical_state='canceled' where parent_id=new.id and purpose='thanks';
+  end if;return new;end;$$;
+  create trigger aaa_test_pending_cancel_during_update before update on public.dopmi_rescue_records for each row execute function private.dopmi_test_pending_cancel_during_update();`);
+ try {
+  await actor('','service_role');
+  const data={actor:first.owner,account_id:`acct_synthetic_${first.owner.replaceAll('-','')}`,transfers_enabled:true,payouts_enabled:true,details_submitted:true};
+  const rpc=async(op,payload)=>(await db.query('select public.dopmi_payment_server($1,$2::jsonb) v',[op,JSON.stringify(payload)])).rows[0].v;
+  const result=await rpc('connect_save',data);
+  assert.equal(result.transfers_enabled,true);assert.equal(result.payouts_enabled,true);
+  assert.deepEqual(result.pending_stripe_sync,{source:'stripe_connect_ready',promoted_count:1,deferred_count:1,deferred:[{record_id:invalid.parent,phase:'transition',sqlstate:'23514',reason:'thanks_not_ready'}]});
+  const read=async(id)=>(await db.query('select to_jsonb(r) v from public.dopmi_rescue_records r where id=$1',[id])).rows[0].v;
+  assert.deepEqual(await read(invalid.parent),invalid.pending,'failed case UPDATE, version and timestamps all roll back');
+  const good=await read(valid.parent);assert.equal(good.status,'submitted');assert.equal(good.version,valid.pending.version+1);assert.equal(good.approved_snapshot,null);
+  const audits=async(id)=>(await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[id])).rows[0].n;
+  assert.equal(await audits(invalid.parent),0);assert.equal(await audits(valid.parent),1);
+  const repeat=await rpc('connect_save',data);assert.equal(repeat.pending_stripe_sync.promoted_count,0);assert.equal(repeat.pending_stripe_sync.deferred_count,1);
+  const stripe=async(path,fields)=>{
+   assert.equal(fields,undefined);if(path==='events/evt_pending_guard_replay')return {livemode:false,type:'account.updated',data:{object:{id:data.account_id}}};
+   assert.equal(path,`accounts/${data.account_id}`);return {id:data.account_id,payouts_enabled:true,capabilities:{transfers:'active'},details_submitted:true};
+  };
+  await paymentService({rpc,stripe,returnUrl:'https://example.test/return'}).processEvent({event_id:'evt_pending_guard_replay'});
+  assert.deepEqual(await read(invalid.parent),invalid.pending);assert.deepEqual(await read(valid.parent),good);
+  assert.equal(await audits(invalid.parent),0);assert.equal(await audits(valid.parent),1);assert.deepEqual(await money(),beforeMoney);
+  await actor(first.owner);
+  assert.equal((await db.query("select public.dopmi_transition_rescue($1,$2,'withdraw') v",[invalid.parent,invalid.pending.version])).rows[0].v.status,'draft');
+ } finally {
+  await db.exec('drop trigger aaa_test_pending_cancel_during_update on public.dopmi_rescue_records;drop function private.dopmi_test_pending_cancel_during_update();');
+ }
+});
+
 test('farewell after the real case close preserves its closed snapshot and existing contributions',async()=>{
  const f=await fixture(),photo=await uploadSyntheticPhoto(f);
  const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
@@ -208,7 +305,7 @@ test('farewell after the real case close preserves its closed snapshot and exist
  // No payment provider is called, and the child expense is already approved.
  const expense=randomUUID(),key=randomUUID(),suffix=randomUUID().replaceAll('-','');
  await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,status,approved_snapshot,reimbursable_cents) values($1,$2,'expense',$3,'approved','{\"title\":\"Synthetic paid expense\"}',12000)",[expense,f.owner,f.parent]);
- await db.query('insert into private.dopmi_connect_accounts(owner_id,account_id,transfers_enabled,payouts_enabled) values($1,$2,true,true)',[f.owner,'acct_'+suffix]);
+ await db.query('update private.dopmi_connect_accounts set account_id=$2 where owner_id=$1',[f.owner,'acct_'+suffix]);
  await actor('','service_role');
  const donation=(await db.query("select public.dopmi_oneoff_case_server('prepare',$1::jsonb) v",[JSON.stringify({actor:f.other,key,case_id:f.parent,gross_cents:10000,consent:true,consent_version:'oneoff-test-2026-10-15'})])).rows[0].v;
  await db.query("select public.dopmi_oneoff_case_server('bind',$1::jsonb)",[JSON.stringify({actor:f.other,key,payment_intent_id:'pi_'+suffix})]);
