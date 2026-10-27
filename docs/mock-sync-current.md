@@ -1,4 +1,44 @@
-# Checkpoint — 26/oct/2026 CDMX: publicación4 en Play337; teléfono pendiente
+# Checkpoint — 26/oct/2026, 23:14 CDMX: revisión de eficiencia solicitada
+
+Este corte supersede los pendientes históricos inferiores. Dueño: integrador/root;
+una sola cola Flutter. Durante esta revisión no iniciar pruebas ni publicaciones.
+
+- **Referencia:** mock b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef, warm-trust.
+  Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
+- **Publicado e instalado:** Play interno 2.3.3 (337), fuente
+  fb0a3495dfa7ad85a2249d33a9929fdd2590b34f. CI40358538461 y CM6adf83cc93adc6d8e55fa26d
+  aprobados; no volver a construir ese candidato. HEAD documental:63b9684.
+- **Nuevo QA cerrado:** Connect TEST abrió su introducción nativa y volvió a Dopmi
+  sin datos, autenticación, términos ni alta completa. Publicación recorrió
+  1→2→3→4→3→2→1 conservando datos/portada sintética. Único caso nuevo: draft5,
+  público=false, una foto, cero gastos/videos. No se envió a revisión.
+- **Cámara parcial:** toma humana real de5.5s llegó a Stream y quedó ready;
+  cancelada/deleted, cola0. Reproducción completa no acreditada: selector QA falló
+  antes del input y después hubo provider.inspect429/HTTP502. Causa del límite
+  desconocida. No atribuir códec/red/expiración ni pedir otra toma por rutina.
+- **Cierre operativo conservado:** último tuple comprobado27oct03:40UTC,
+  video/Tienda/limpieza OFF y job6 pausado; sin activaciones posteriores propias.
+  Dieciocho assets originales y finanzas intactos; fila19 deleted. Lectura15s
+  acreditó invariantes; la canónica8s falló57014 y conserva su gate fallido.
+  Stream excluye UID19 en lista completa; error de ruta no demuestra HTTP404.
+- **Único delta de producto pendiente:** case_needs.dart cambia tres SVG heredados
+  por los tres Unicode del mock. Sin commit/publicación/validación nueva: la prueba
+  focal terminó por agotamiento de memoria del entorno; no afirmar PASS ni reintentar
+  igual. Al observar procesos no quedaba Dart/Flutter ejecutándose.
+- **Preparado, no ejecutado:** lectura privada de despedida retenida en
+  public-video-qa-design/p2-retained-playback-qa/continuation337; sin reserva/ON.
+  Revisiones finales deben conciliarse antes de operar. No es prueba de cámara nueva.
+
+Cola finita: (1) validar/cerrar delta de iconos; (2) resolver reproductor con fixture
+retenido antes de cualquier nueva cámara; (3) agrupar candidato final, gates y QA
+afectada, demo/informe y aceptación del titular/UX. Sin repetir pagos, recuperación,
+Tienda ni fixtures ya resueltas. iOS físico y comercio público siguen con sus límites.
+Última pantalla observada: Rescatista→Avances del caso cerrado; sin handoff humano.
+
+Evidencia privada: camera-upload337/{stripe337-open-once,connect-closed337,
+publication-draft-postflight,after-budget15-invariants,playback-failure-safe-log}.
+Este checkpoint no atribuye aceptación integral. La demora incluye retrabajo de QA
+y sobrecarga del método; no existe desglose fiable de todas las horas.
 
 Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
 y guardado tras SMS humano; readback del editor desde servidor176filas muestra

@@ -1,4 +1,20 @@
-# Cola vigente — 26/oct: corrección acotada y cierre, sin repetir QA resuelta
+# Cola vigente — 26/oct, 23:14 CDMX: checkpoint de eficiencia
+
+Este corte supersede las filas antiguas inferiores. Root conserva una cola Flutter.
+
+| Pendiente finito | Salida |
+|---|---|
+| 1. Iconos de necesidades | Validar el único delta local de3Unicode del mock. Prueba focal abortada por memoria, no repetir igual ni declarar verde. |
+| 2. Reproductor | Lectura de un clip retenido con selector preparado antes de ON; no otra cámara/carga/build para diagnosticar ese fallo. Paquete preparado, no ejecutado. |
+| 3. Entrega final | Agrupar correcciones, CI/release/QA afectada, demo e informe de adaptaciones; aceptación titular/UX separada. |
+
+Cerrados en337: instalación Play, apertura/salida Connect TEST y navegación1→2→3→4
+con regreso/datos conservados; único borrador privado, sin gastos/videos/envío.
+Cámara: carga/ready/borrado sí; reproducción completa no. Último cierre OFF/job6pausado,
+sin activaciones propias posteriores. No repetir pagos, recuperación, Tienda ni fixtures
+resueltas. Detalle/evidencia/causas: [checkpoint](mock-sync-current.md).
+
+## Cola histórica inmediatamente anterior
 
 | Batch | Dueño / dependencia | Escenarios y salida |
 |---|---|---|
