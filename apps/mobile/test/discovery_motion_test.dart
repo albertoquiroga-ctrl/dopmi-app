@@ -56,6 +56,72 @@ class FailedPhotoCommunity extends FakeCommunity {
   }
 }
 
+Widget teachingDeck({
+  Object resetKey = 'first',
+  bool enabled = true,
+  bool reducedMotion = false,
+  VoidCallback? onTap,
+  ValueChanged<DiscoveryHintFrame>? onFrame,
+}) => MaterialApp(
+  home: MediaQuery(
+    data: MediaQueryData(disableAnimations: reducedMotion),
+    child: Center(
+      child: DiscoverySwipeHint(
+        resetKey: resetKey,
+        enabled: enabled,
+        builder: (context, frame) {
+          onFrame?.call(frame);
+          return KeyedSubtree(
+            key: const ValueKey('teaching-stage'),
+            child: frame.wrapStage(
+              SizedBox(
+                width: 240,
+                height: 320,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: KeyedSubtree(
+                        key: const ValueKey('teaching-next'),
+                        child: frame.wrapNext(
+                          const ColoredBox(color: Colors.blue),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: KeyedSubtree(
+                        key: const ValueKey('teaching-current'),
+                        child: frame.wrapCurrent(
+                          StatefulBuilder(
+                            key: const ValueKey('teaching-probe'),
+                            builder: (_, _) => GestureDetector(
+                              onTap: onTap,
+                              child: const ColoredBox(color: Colors.orange),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  ),
+);
+
+Transform teachingTransform(WidgetTester tester, String layer) =>
+    tester.widget<Transform>(
+      find
+          .descendant(
+            of: find.byKey(ValueKey('teaching-$layer')),
+            matching: find.byType(Transform),
+          )
+          .first,
+    );
+
 void main() {
   Future<FakeCommunity> open(
     WidgetTester tester, {
@@ -598,6 +664,109 @@ void main() {
       }
       await tester.pumpAndSettle();
       expect(find.text('Milo').hitTestable(), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'deck teaching follows f693 entry and swipe keyframes then expires',
+    (tester) async {
+      late DiscoveryHintFrame frame;
+      await tester.pumpWidget(teachingDeck(onFrame: (value) => frame = value));
+      final opacity = find
+          .descendant(
+            of: find.byKey(const ValueKey('teaching-stage')),
+            matching: find.byType(Opacity),
+          )
+          .first;
+      expect(tester.widget<Opacity>(opacity).opacity, 0);
+      await tester.pump(const Duration(milliseconds: 275));
+      final entry = const Cubic(.22, 1, .36, 1).transform(.5);
+      expect(tester.widget<Opacity>(opacity).opacity, closeTo(entry, .00001));
+      await tester.pump(const Duration(milliseconds: 582)); // 450 + 1850 * .22.
+      final current = teachingTransform(tester, 'current').transform;
+      expect(current.storage[12], closeTo(-26, .0001));
+      expect(
+        math.atan2(current.storage[1], current.storage[0]) * 180 / math.pi,
+        closeTo(-5, .0001),
+      );
+      await tester.pump(const Duration(milliseconds: 481)); // 450 + 1850 * .48.
+      final next = teachingTransform(tester, 'next').transform;
+      expect(
+        math.atan2(next.storage[1], next.storage[0]) * 180 / math.pi,
+        closeTo(2, .0001),
+      );
+      expect(next.determinant(), closeTo(.99 * .99, .0001));
+      await tester.pump(const Duration(milliseconds: 1862));
+      expect(frame.active, isFalse);
+      expect(
+        teachingTransform(tester, 'current').transform.isIdentity(),
+        isTrue,
+      );
+      expect(teachingTransform(tester, 'next').transform.isIdentity(), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'first pointer cancels teaching without remounting the card or consuming its tap',
+    (tester) async {
+      var taps = 0;
+      late DiscoveryHintFrame frame;
+      await tester.pumpWidget(
+        teachingDeck(onTap: () => taps++, onFrame: (value) => frame = value),
+      );
+      final probe = find.byKey(const ValueKey('teaching-probe'));
+      final state = tester.state(probe);
+      await tester.pump(const Duration(milliseconds: 857));
+      final gesture = await tester.startGesture(tester.getCenter(probe));
+      await tester.pump();
+      expect(frame.active, isFalse);
+      expect(
+        teachingTransform(tester, 'current').transform.isIdentity(),
+        isTrue,
+      );
+      expect(tester.state(probe), same(state));
+      expect(taps, 0);
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(taps, 1);
+      expect(tester.state(probe), same(state));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'teaching resets only for a new deck key and respects reduced motion',
+    (tester) async {
+      late DiscoveryHintFrame frame;
+      Future<void> show({
+        Object reset = 'first',
+        bool enabled = true,
+        bool reduce = false,
+      }) => tester.pumpWidget(
+        teachingDeck(
+          resetKey: reset,
+          enabled: enabled,
+          reducedMotion: reduce,
+          onFrame: (value) => frame = value,
+        ),
+      );
+      await show();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(frame.active, isTrue);
+      await show(enabled: false);
+      await show();
+      expect(frame.active, isFalse);
+      await show(reset: 'filtered');
+      expect(frame.active, isTrue);
+      await show(reset: 'reduced', reduce: true);
+      expect(frame.active, isFalse);
+      expect(
+        teachingTransform(tester, 'current').transform.isIdentity(),
+        isTrue,
+      );
+      expect(tester.binding.transientCallbackCount, 0);
+      expect(tester.takeException(), isNull);
     },
   );
 }

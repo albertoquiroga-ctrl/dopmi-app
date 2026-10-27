@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
@@ -362,7 +363,9 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
         if (!didPop) leave();
       },
       child: ContributionFrame(
-        title: state == null ? 'Guardián' : 'Suscripción y pagos',
+        title: form ? 'Suscripción Guardián' : 'Suscripción y pagos',
+        headerColor: form ? const Color(0xffe6e6e6) : null,
+        showHeaderDivider: !form,
         back: leave,
         bottomNavigationBar: form
             ? SafeArea(
@@ -375,6 +378,7 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                         ? 'Continuar registro'
                         : 'Registrar y preparar método',
                     dark: true,
+                    cafe: !editing,
                     busy: busy || methodAwaiting,
                     onPressed: valid ? submit : null,
                   ),
@@ -474,9 +478,15 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                   key: const ValueKey('guardian-registration-membership-card'),
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xffe6e2dd)),
+                    color: DopmiTokens.saffronSoft,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x33fab919),
+                        offset: Offset(0, 12),
+                        blurRadius: 32,
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -492,7 +502,7 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xffefede8),
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(999),
                                 ),
                                 child: Text(
@@ -503,17 +513,25 @@ class _RegistrationScreenState extends ConsumerState<GuardianRegistrationScreen>
                                     fontSize: 12,
                                     height: 1.3,
                                     fontWeight: FontWeight.w600,
-                                    color: muted,
+                                    color: ink,
                                   ),
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 12),
-                          const CircleAvatar(
-                            backgroundColor: Color(0xfffff2b8),
-                            foregroundColor: ink,
-                            child: Icon(Icons.star_border),
+                          Container(
+                            width: 52,
+                            height: 52,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: DopmiTokens.orange,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Icon(
+                              Icons.star_border,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),

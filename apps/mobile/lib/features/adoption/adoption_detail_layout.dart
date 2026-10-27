@@ -95,12 +95,11 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   Widget build(BuildContext context) {
     final post = widget.post;
     final heartColor = widget.saved ? '#eb6425' : '#8a837c';
-    final heroHeight = widget.preview
-        ? (MediaQuery.sizeOf(context).height * .32).clamp(180.0, 240.0)
-        : math.max(
-            260.0,
-            math.min(MediaQuery.sizeOf(context).height * .42, 340.0),
-          );
+    // f693 gives the private preview the same crop/height as the public detail.
+    final heroHeight = math.max(
+      260.0,
+      math.min(MediaQuery.sizeOf(context).height * .42, 340.0),
+    );
     return Column(
       children: [
         Expanded(

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'help_support_dialog.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../identity/experience_controller.dart';
 
@@ -166,6 +167,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   );
   int? topic, openFaq;
+  bool? selectedRescuer;
   late final ExperienceController experience;
 
   @override
@@ -188,79 +190,151 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
   Future<void> contact() => showHelpSupportDialog(
     context,
     topics: _topics.map((item) => item.$1).toList(),
-    initialTopic: topic ?? 0,
+    initialTopic: topic ?? 7,
   );
 
   @override
   Widget build(BuildContext context) {
     final rescuer = experience.value == AccountExperience.rescuer;
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
-    bool primary(int i) =>
-        _topics[i].$2 == 'both' ||
-        _topics[i].$2 == (rescuer ? 'rescuer' : 'donor');
-    Widget group(String title, bool main) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 12,
-            height: 1.55,
-            fontWeight: FontWeight.w600,
-            color: muted,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (var i = 0; i < _topics.length; i++)
-              if (primary(i) == main)
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    splashFactory: NoSplash.splashFactory,
-                    overlayColor: Colors.transparent,
-                    animationDuration: Duration.zero,
-                    backgroundColor: topic == i
-                        ? rescuer
-                              ? const Color(0xfff3eefe)
-                              : const Color(0xfffff8e0)
-                        : Colors.white,
-                    foregroundColor: topic == i
-                        ? rescuer
-                              ? purple
-                              : const Color(0xff6b5000)
-                        : ink,
-                    side: BorderSide(
-                      color: topic == i
-                          ? rescuer
-                                ? purple
-                                : yellow
-                          : rescuer
-                          ? const Color(0xffe3e4ed)
-                          : const Color(0xffe6e2dd),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(0, 36),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+    final audienceRescuer = selectedRescuer ?? rescuer;
+    final visibleTopics = audienceRescuer
+        ? const [7, 4, 5, 6, 0, 8]
+        : const [7, 3, 2, 1, 0, 8];
+    final audienceTabs = DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xffefede8),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            const audiences = [(false, 'Adoptante'), (true, 'Rescatista')];
+            var requiredWidth = 4.0;
+            for (final audience in audiences) {
+              final painter = TextPainter(
+                text: TextSpan(
+                  text: audience.$2,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                textScaler: MediaQuery.textScalerOf(context),
+                textDirection: Directionality.of(context),
+              )..layout();
+              requiredWidth += painter.width + 16;
+              painter.dispose();
+            }
+            final sideBySide = requiredWidth <= constraints.maxWidth;
+            final buttonWidth = sideBySide
+                ? (constraints.maxWidth - 4) / 2
+                : constraints.maxWidth;
+            return Wrap(
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                for (final audience in audiences)
+                  SizedBox(
+                    width: buttonWidth,
+                    child: Semantics(
+                      selected: audienceRescuer == audience.$1,
+                      button: true,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                          overlayColor: Colors.transparent,
+                          animationDuration: Duration.zero,
+                          backgroundColor: audienceRescuer == audience.$1
+                              ? DopmiTokens.orangeButton
+                              : Colors.transparent,
+                          foregroundColor: audienceRescuer == audience.$1
+                              ? Colors.white
+                              : muted,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 10,
+                          ),
+                          minimumSize: const Size(0, 44),
+                          textStyle: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13,
+                            height: 1.2,
+                            fontWeight: audienceRescuer == audience.$1
+                                ? FontWeight.w700
+                                : FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () {
+                          if (audienceRescuer == audience.$1) return;
+                          setState(() {
+                            selectedRescuer = audience.$1;
+                            topic = null;
+                            openFaq = null;
+                          });
+                        },
+                        child: Text(audience.$2, textAlign: TextAlign.center),
+                      ),
                     ),
                   ),
-                  onPressed: () => setState(() {
-                    topic = topic == i ? null : i;
-                    openFaq = null;
-                  }),
-                  child: Text(_topics[i].$1),
-                ),
-          ],
+              ],
+            );
+          },
         ),
+      ),
+    );
+    final topicChips = Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final i in visibleTopics)
+          Semantics(
+            selected: topic == i,
+            button: true,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                splashFactory: NoSplash.splashFactory,
+                overlayColor: Colors.transparent,
+                animationDuration: Duration.zero,
+                backgroundColor: topic == i
+                    ? rescuer
+                          ? DopmiTokens.saffronSoft
+                          : const Color(0xfffff8e0)
+                    : Colors.white,
+                foregroundColor: ink,
+                side: BorderSide(
+                  color: topic == i
+                      ? rescuer
+                            ? const Color(0x66fab919)
+                            : yellow
+                      : DopmiTokens.line,
+                ),
+                shape: const StadiumBorder(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                minimumSize: const Size(0, 36),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textStyle: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onPressed: () => setState(() {
+                topic = topic == i ? null : i;
+                openFaq = null;
+              }),
+              child: Text(_topics[i].$1),
+            ),
+          ),
       ],
     );
     return PopScope(
@@ -309,7 +383,6 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
           ),
         ),
         body: DonorCanvas(
-          enabled: !rescuer,
           child: SafeArea(
             top: false,
             child: ListView(
@@ -331,14 +404,9 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                   style: TextStyle(fontSize: 14, height: 1.45, color: muted),
                 ),
                 const SizedBox(height: 22),
-                group(rescuer ? 'Para rescatistas' : 'Para adoptantes', true),
-                const SizedBox(height: 16),
-                group(
-                  rescuer
-                      ? 'También para adoptantes'
-                      : 'También para rescatistas',
-                  false,
-                ),
+                audienceTabs,
+                const SizedBox(height: 18),
+                topicChips,
                 const SizedBox(height: 22),
                 if (topic == null)
                   const Text(
@@ -348,10 +416,10 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                 else ...[
                   Text(
                     _topics[topic!].$1,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: ink,
+                      color: rescuer ? DopmiTokens.orange : ink,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -378,8 +446,14 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                     ] else
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: const Color(0xffe6e2dd)),
+                          color: openFaq == i
+                              ? const Color(0xfffffdf8)
+                              : Colors.white,
+                          border: Border.all(
+                            color: openFaq == i
+                                ? const Color(0x66f7cb2d)
+                                : DopmiTokens.line,
+                          ),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: Column(
@@ -391,11 +465,7 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                                 overlayColor: Colors.transparent,
                                 animationDuration: Duration.zero,
                                 padding: const EdgeInsets.all(16),
-                                foregroundColor: openFaq == i
-                                    ? rescuer
-                                          ? const Color(0xff5b21b6)
-                                          : const Color(0xff6b5000)
-                                    : ink,
+                                foregroundColor: ink,
                               ),
                               onPressed: () => setState(
                                 () => openFaq = openFaq == i ? null : i,
@@ -413,13 +483,18 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 12),
-                                  SvgPicture.asset(
-                                    'assets/profile/icon-chevron-right.svg',
-                                    width: 20,
-                                    height: 20,
-                                    colorFilter: const ColorFilter.mode(
-                                      muted,
-                                      BlendMode.srcIn,
+                                  ExcludeSemantics(
+                                    child: RotatedBox(
+                                      quarterTurns: openFaq == i ? 1 : 0,
+                                      child: SvgPicture.asset(
+                                        'assets/profile/icon-chevron-right.svg',
+                                        width: 20,
+                                        height: 20,
+                                        colorFilter: const ColorFilter.mode(
+                                          muted,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -500,16 +575,14 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
                           splashFactory: NoSplash.splashFactory,
                           overlayColor: Colors.transparent,
                           animationDuration: Duration.zero,
-                          backgroundColor: rescuer ? purple : ink,
+                          backgroundColor: ink,
                           minimumSize: const Size.fromHeight(44),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 18,
                             vertical: 11,
                           ),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          foregroundColor: rescuer
-                              ? const Color(0xfffbfbff)
-                              : Colors.white,
+                          foregroundColor: Colors.white,
                           textStyle: const TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 16,

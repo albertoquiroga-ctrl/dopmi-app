@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/ui.dart';
+import 'core/splash.dart';
 import 'core/navigation.dart';
 import 'core/measurement.dart';
 import 'features/identity/experience_controller.dart';
@@ -512,19 +513,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               key: ValueKey(identity.identity?.id),
             ),
           ),
-          GoRoute(
-            path: '/loading',
-            builder: (_, _) => const PageFrame(
-              back: false,
-              children: [
-                Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: 'Restaurando sesión',
-                  ),
-                ),
-              ],
-            ),
-          ),
+          GoRoute(path: '/loading', builder: (_, _) => const DopmiSplash()),
           GoRoute(path: '/welcome', builder: (_, _) => const WelcomeScreen()),
           GoRoute(
             path: '/onboarding',
@@ -719,16 +708,7 @@ class _LegalAccessGate extends ConsumerWidget {
             (identityController.loading ||
                 (experience.loading && profile == null));
         if (checkingConsent && !exempt) {
-          return const PageFrame(
-            back: false,
-            children: [
-              Center(
-                child: CircularProgressIndicator(
-                  semanticsLabel: 'Restaurando sesión',
-                ),
-              ),
-            ],
-          );
+          return const DopmiSplash();
         }
         // Fail closed in the widget tree as well as in GoRouter. This keeps
         // an authenticated profile from entering the product if its profile

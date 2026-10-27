@@ -22,6 +22,13 @@ class PaymentActivityRepository {
       },
     ),
   );
+  Future<void> acknowledgePresented(String presentedCursor) async {
+    await client.rpc(
+      'dopmi_acknowledge_rescuer_payments',
+      params: {'presented_cursor': presentedCursor},
+    );
+  }
+
   Future<Json> allocations(
     String cycle, {
     required bool received,

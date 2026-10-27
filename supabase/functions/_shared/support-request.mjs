@@ -2,7 +2,7 @@
 // means the request was stored, never that an email provider delivered it.
 export const supportTopics = Object.freeze([
   'support_rules', 'contribute', 'guardian', 'adopt', 'verification',
-  'publish_cases', 'funds_evidence', 'account', 'trust_safety',
+  'publish_cases', 'funds_evidence', 'account', 'trust_safety', 'other',
 ]);
 export class SupportRequestError extends Error {
   constructor(code, status = 400) { super(code); this.code = code; this.status = status; }

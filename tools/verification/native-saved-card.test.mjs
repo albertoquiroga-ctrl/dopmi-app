@@ -18,7 +18,8 @@ function fixture() {
     customer: { id: 'cus_owner', livemode: false } };
   f.rpc = async (op, data) => {
     f.operations.push({ op, data: structuredClone(data) });
-    if (op === 'prepare_registration' || op === 'registration_job') return f.exists ? structuredClone(job) : null;
+    if (['prepare_registration', 'registration_job', 'prepare_add', 'add_job'].includes(op))
+      return f.exists ? structuredClone(job) : null;
     if (op === 'candidates') return f.queue ?? [];
     if (op === 'lookup_setup') return data.setup_intent_id === setup.id ? structuredClone(job) : null;
     if (op === 'get' && data.id === 'failed') throw Error('fixture unavailable');
@@ -67,6 +68,91 @@ function fixture() {
   return f;
 }
 const consent = { key, consent: true, consent_version: savedCardConsentVersion };
+
+function independentFixture() {
+  const f = fixture();
+  f.job.purpose = 'add_card';
+  Object.assign(f.setup.metadata, { dopmi_purpose: 'add_card', request_key: key });
+  return f;
+}
+
+test('independent native add saves only its owner-bound setup without changing any defaults or Guardian', async () => {
+  const f = independentFixture();
+  f.customer.invoice_settings = { default_payment_method: 'pm_original' };
+  const customerBefore = structuredClone(f.customer);
+  const opened = await f.service.addSubmit('owner', consent);
+  assert.equal(opened.presentation, 'native_card');
+  assert.equal(opened.setup_client_secret, f.setup.client_secret);
+  assert.equal(opened.add_only, true); assert.equal(opened.default_unchanged, true);
+  assert.deepEqual(f.calls[0].data.metadata, { dopmi_saved_card_job: 'job', wallet_type: 'card',
+    consent_version: savedCardConsentVersion, dopmi_purpose: 'add_card', request_key: key });
+  assert.equal(f.operations[0].op, 'prepare_add');
+  f.setup.status = 'succeeded';
+  const saved = await f.service.addStatus('owner', { key });
+  assert.equal(saved.status, 'saved'); assert.equal(saved.card_id, 'pm_card');
+  assert.equal(saved.setup_client_secret, null);
+  assert.deepEqual(f.calls.map(c => c.op), ['setup']);
+  assert.deepEqual(f.customer, customerBefore);
+  assert.equal(f.operations.some(c => c.op.includes('registration')), false);
+  assert.equal(JSON.stringify(f.operations).includes('_secret_'), false);
+});
+
+test('independent native status resumes the same resource after response loss, restart and SDK cancellation', async () => {
+  const f = independentFixture(); f.lost = true;
+  await assert.rejects(f.service.addSubmit('owner', consent), /lost setup response/);
+  const resumed = await f.service.addStatus('owner', { key });
+  assert.equal(resumed.setup_client_secret, f.setup.client_secret);
+  assert.deepEqual(f.calls[0], f.calls[1]);
+  // Closing the SDK is not provider cancellation or success: query the same job.
+  const again = await f.service.addStatus('owner', { key });
+  assert.equal(again.key, key); assert.equal(again.status, 'pending');
+  assert.equal(f.calls.length, 2);
+  f.setup.status = 'canceled';
+  const canceled = await f.service.addStatus('owner', { key });
+  assert.equal(canceled.status, 'expired'); assert.equal(canceled.setup_client_secret, null);
+  assert.equal(f.operations.filter(c => c.op === 'prepare_add').length, 1);
+});
+
+test('independent native add refuses foreign owner, purpose, request and provider metadata before secret disclosure', async () => {
+  for (const patch of [{ owner_id: 'other' }, { request_key: 'other' }, { purpose: null }, { wallet_type: 'google_pay' }]) {
+    const f = independentFixture(); Object.assign(f.job, patch);
+    await assert.rejects(f.service.addSubmit('owner', consent), /job_invalid/);
+    assert.equal(f.calls.length, 0);
+  }
+  for (const patch of [{ dopmi_purpose: 'registration' }, { request_key: 'other' }]) {
+    const f = independentFixture(); f.job.setup_intent_id = f.setup.id; Object.assign(f.setup.metadata, patch);
+    await assert.rejects(f.service.addStatus('owner', { key }), /setup_mismatch/);
+    assert.equal(f.job.status, 'pending');
+  }
+  const f = independentFixture();
+  await assert.rejects(f.service.submit('owner', consent), /job_invalid/);
+  f.exists = false;
+  assert.equal(await f.service.addStatus('owner', { key }), null);
+  assert.equal(f.calls.length, 0);
+});
+
+test('independent native entry resumes a historical hosted request without converting its channel', async () => {
+  for (const session_id of [null, 'cs_test_original']) {
+    const f = fixture(); Object.assign(f.job, { wallet_type: null, session_id });
+    const resumed = await f.service.addSubmit('owner', consent);
+    assert.equal(resumed.presentation, 'hosted_checkout'); assert.equal(resumed.setup_client_secret, null);
+    assert.equal(resumed.checkout_url, 'https://checkout.stripe.com/c/fixture');
+    assert.deepEqual(f.calls, [{ op: 'hosted', actor: 'owner', input: consent }]);
+    assert.equal(f.operations.some(c => c.op === 'claim'), false);
+  }
+});
+
+test('independent native webhook confirms only the stored request and re-reads attachment ownership', async () => {
+  const f = independentFixture(); await f.service.addSubmit('owner', consent);
+  f.setup.status = 'succeeded';
+  f.event = { livemode: false, type: 'setup_intent.succeeded', data: { object: { id: f.setup.id } } };
+  f.method.customer = 'cus_other';
+  await assert.rejects(f.service.handleWebhook('evt_fixture'), /method_mismatch/);
+  assert.equal(f.job.status, 'pending');
+  f.method.customer = 'cus_owner';
+  assert.deepEqual(await f.service.handleWebhook('evt_fixture'), { received: true, saved_native_card: true });
+  assert.equal(f.job.status, 'saved');
+});
 
 test('native card reserves before creating a no-charge off-session setup with stable resource key', async () => {
   const f = fixture();

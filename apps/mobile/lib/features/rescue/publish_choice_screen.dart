@@ -27,31 +27,15 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
       error = null;
     });
     try {
-      final repository = ref.read(rescueRepositoryProvider);
-      final state = await repository.dashboard();
+      // The server requires an active, confirmed account. Rescuer approval is
+      // required to submit a case, while preparing a private draft is allowed.
+      await ref.read(rescueRepositoryProvider).dashboard();
       if (!mounted ||
           GoRouter.of(context).routeInformationProvider.value.uri.path !=
               '/publish') {
         return;
       }
-      if (state['verification_status'] == 'approved') {
-        await context.push('/rescue/new?kind=case');
-      } else {
-        final requests = await repository.mine('verification', 1);
-        if (!mounted ||
-            GoRouter.of(context).routeInformationProvider.value.uri.path !=
-                '/publish') {
-          return;
-        }
-        final current = requests.items
-            .where((item) => item.kind == 'verification')
-            .firstOrNull;
-        await context.push(
-          current == null
-              ? '/rescue/new?kind=verification'
-              : '/rescue/${current.id}',
-        );
-      }
+      await context.push('/rescue/new?kind=case');
     } catch (cause) {
       if (mounted) setState(() => error = rescueError(cause));
     } finally {
@@ -325,7 +309,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
                                           semanticsLabel:
-                                              'Consultando tu verificación',
+                                              'Consultando tu cuenta',
                                         ),
                                       )
                                     : const Text('Continuar'),

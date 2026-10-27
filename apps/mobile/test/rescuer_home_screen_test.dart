@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -138,6 +137,41 @@ class HomeRescue extends FakeRescue {
   }
 }
 
+class HomeCommunity extends FakeCommunity {
+  @override
+  Future<DataPage<Adoption>> mine(int page) async => const DataPage([], 0);
+}
+
+class SummaryHomeCommunity extends HomeCommunity {
+  final rows = <Adoption>[];
+  final loadedPages = <int>[];
+  Completer<DataPage<Adoption>>? firstResponse;
+
+  @override
+  Future<DataPage<Adoption>> mine(int page) async {
+    loadedPages.add(page);
+    if (loadedPages.length == 1 && firstResponse != null) {
+      return firstResponse!.future;
+    }
+    return DataPage(List.of(rows), rows.length);
+  }
+}
+
+Adoption summaryAdoption(
+  String id,
+  String name, {
+  String owner = 'one',
+  String status = 'draft',
+  String species = 'cat',
+}) => Adoption({
+  'id': id,
+  'owner_id': owner,
+  'pet_name': name,
+  'status': status,
+  'species': species,
+  'photos': <String>[],
+});
+
 Future<(GoRouter, FakeIdentityRepository)> pumpHome(
   WidgetTester tester,
   HomeRescue rescue, {
@@ -146,6 +180,9 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
   String initial = '/rescuer',
   bool settle = true,
   CommunityRepository? community,
+  // The retained ledger widget is tested in isolation; Home navigation only
+  // asserts the canonical destination, whose production widget is different.
+  bool receivedLedgerFixture = false,
 }) async {
   tester.view.physicalSize = large
       ? const Size(320, 640)
@@ -165,7 +202,9 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
       GoRoute(path: '/rescuer', builder: (_, _) => const RescueHomeScreen()),
       GoRoute(
         path: '/rescuer/received-payments',
-        builder: (_, _) => const RescuerReceivedPaymentsScreen(),
+        builder: (_, state) => receivedLedgerFixture
+            ? const RescuerReceivedPaymentsScreen()
+            : Scaffold(body: Text(state.uri.toString())),
       ),
       GoRoute(
         path: '/rescuer/photo-tips',
@@ -197,7 +236,7 @@ Future<(GoRouter, FakeIdentityRepository)> pumpHome(
       overrides: [
         identityRepositoryProvider.overrideWithValue(identity),
         communityRepositoryProvider.overrideWithValue(
-          community ?? FakeCommunity(),
+          community ?? HomeCommunity(),
         ),
         rescueRepositoryProvider.overrideWithValue(rescue),
       ],
@@ -236,6 +275,93 @@ Future<void> show(WidgetTester tester, Finder target) async {
 
 void main() {
   testWidgets(
+    'adoption summary includes own cats and drafts, excludes other owners',
+    (tester) async {
+      final community = SummaryHomeCommunity()
+        ..rows.addAll([
+          summaryAdoption(
+            'other',
+            'Ajena',
+            owner: 'other',
+            status: 'published',
+          ),
+          summaryAdoption('cat', 'Gata propia', status: 'published'),
+          summaryAdoption('draft', 'Perro borrador', species: 'dog'),
+          summaryAdoption('review', 'Gata en revisión', status: 'submitted'),
+          summaryAdoption(
+            'correction',
+            'Gata por corregir',
+            status: 'changes_requested',
+          ),
+          summaryAdoption('archive', 'Archivada', status: 'archived'),
+        ]);
+      final (router, _) = await pumpHome(
+        tester,
+        HomeRescue(),
+        community: community,
+      );
+      final target = find.byKey(const ValueKey('home-adoption-cases'));
+      await show(tester, target);
+      Finder avatar(String label) => find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.label == label,
+      );
+      for (final label in [
+        'Gata propia',
+        'Perro borrador',
+        'Gata en revisión',
+        'Gata por corregir',
+      ]) {
+        expect(avatar(label), findsOneWidget);
+      }
+      expect(avatar('Ajena'), findsNothing);
+      expect(avatar('Archivada'), findsNothing);
+      expect(community.loadedPages, [1]);
+      expect(find.text('2 activos | 3 pendientes de publicar'), findsOneWidget);
+      await tester.tap(target);
+      await tester.pumpAndSettle();
+      expect(router.state.uri.toString(), '/my-cases?program=adoption');
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'late adoption summary cannot paint the previous owner after account change',
+    (tester) async {
+      final first = Completer<DataPage<Adoption>>();
+      final community = SummaryHomeCommunity()
+        ..firstResponse = first
+        ..rows.add(
+          summaryAdoption('new', 'Gata de cuenta nueva', owner: 'two'),
+        );
+      final (_, identity) = await pumpHome(
+        tester,
+        HomeRescue(),
+        community: community,
+        settle: false,
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(community.loadedPages, [1]);
+      identity.emit(
+        const IdentityEvent(
+          Identity('two', 'other@example.test', verified: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+      first.complete(
+        DataPage([summaryAdoption('old', 'Gata de cuenta anterior')], 1),
+      );
+      await tester.pumpAndSettle();
+      Finder avatar(String label) => find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.label == label,
+      );
+      expect(avatar('Gata de cuenta anterior'), findsNothing);
+      expect(avatar('Gata de cuenta nueva'), findsOneWidget);
+      expect(community.loadedPages, [1, 1]);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
     'payment transfer states are visible and do not claim a bank deposit',
     (tester) async {
       final rescue = HomeRescue();
@@ -257,6 +383,7 @@ void main() {
         rescue,
         large: true,
         initial: '/rescuer/received-payments',
+        receivedLedgerFixture: true,
       );
       for (final label in [
         'Asignado al gasto',
@@ -306,40 +433,40 @@ void main() {
         await show(tester, find.text('Apoyo'));
         await tester.tap(find.text('Apoyo'));
         await tester.pumpAndSettle();
-        expect(find.text('Resumen de apoyo'), findsOneWidget);
-        final selectedIcon = find.descendant(
-          of: find.byKey(const ValueKey('home-quick-support')),
-          matching: find.byType(SvgPicture),
-        );
-        expect(
-          tester.widget<SvgPicture>(selectedIcon).colorFilter,
-          const ColorFilter.mode(purple, BlendMode.srcIn),
-        );
-        final review = find.byKey(
-          const ValueKey('home-summary-support-review'),
-        );
-        await show(tester, review);
-        await tester.tap(review);
-        await tester.pumpAndSettle();
-        expect(
-          router.state.uri.toString(),
-          '/my-cases?program=support&status=review',
-        );
+        expect(router.state.uri.toString(), '/my-cases?program=support');
+        expect(find.text('Resumen de apoyo'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
   }
 
   testWidgets(
-    'payment acknowledgement follows presentation and keeps badge on failure',
+    'payments quick access opens canonical history without acknowledging unseen rows',
     (tester) async {
-      final rescue = HomeRescue()..failAck = true;
+      final rescue = HomeRescue();
       final (router, _) = await pumpHome(tester, rescue);
       expect(rescue.acknowledgements, isEmpty);
       await tester.tap(find.text('Pagos'));
       await tester.pumpAndSettle();
-      expect(rescue.acknowledgements, ['home-presented-cursor']);
-      expect(find.text('4'), findsOneWidget);
+      expect(router.state.uri.path, '/rescuer/received-payments');
+      expect(find.text('/rescuer/received-payments'), findsOneWidget);
+      expect(rescue.loadedPages, isEmpty);
+      expect(rescue.acknowledgements, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'received ledger retries only its presented page cursor after failure',
+    (tester) async {
+      final rescue = HomeRescue()..failAck = true;
+      await pumpHome(
+        tester,
+        rescue,
+        initial: '/rescuer/received-payments',
+        receivedLedgerFixture: true,
+      );
+      expect(rescue.acknowledgements, ['page-one-presented']);
       expect(find.text('+\$15'), findsOneWidget);
       final retry = find.text('Reintentar contador');
       await show(tester, retry);
@@ -347,15 +474,11 @@ void main() {
       await tester.tap(retry);
       await tester.pumpAndSettle();
       expect(rescue.acknowledgements, [
-        'home-presented-cursor',
-        'home-presented-cursor',
+        'page-one-presented',
+        'page-one-presented',
       ]);
-      expect(find.text('4'), findsNothing);
-      await show(tester, find.text('Ver todo'));
-      await tester.tap(find.text('Ver todo'));
-      await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/profile');
-      expect(rescue.acknowledgements.last, 'home-presented-cursor');
+      expect(find.text('Reintentar contador'), findsNothing);
+      expect(rescue.acknowledgements, isNot(contains('home-presented-cursor')));
       expect(tester.takeException(), isNull);
     },
   );
@@ -369,6 +492,7 @@ void main() {
         rescue,
         large: true,
         initial: '/rescuer/received-payments',
+        receivedLedgerFixture: true,
       );
       expect(rescue.loadedPages, [1]);
       expect(rescue.acknowledgements, ['page-one-presented']);
@@ -415,14 +539,7 @@ void main() {
       await show(tester, find.text('Adopción'));
       await tester.tap(find.text('Adopción'));
       await tester.pumpAndSettle();
-      final drafts = find.byKey(const ValueKey('home-summary-adoption-draft'));
-      await show(tester, drafts);
-      await tester.tap(drafts);
-      await tester.pumpAndSettle();
-      expect(
-        router.state.uri.toString(),
-        '/my-cases?program=adoption&status=draft',
-      );
+      expect(router.state.uri.toString(), '/my-cases?program=adoption');
     },
   );
 
@@ -472,6 +589,7 @@ void main() {
       tester,
       rescue,
       initial: '/rescuer/received-payments',
+      receivedLedgerFixture: true,
     );
     expect(find.text('+\$15'), findsOneWidget);
     identity.emit(
@@ -554,6 +672,7 @@ void main() {
     final scroller = find
         .ancestor(of: support, matching: find.byType(SingleChildScrollView))
         .first;
+    await show(tester, scroller);
     await tester.drag(scroller, const Offset(-400, 0));
     await tester.pumpAndSettle();
     final labelRect = tester.getRect(support);

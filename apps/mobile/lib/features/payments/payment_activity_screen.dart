@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -98,8 +100,16 @@ class _ActivityList extends ConsumerStatefulWidget {
   ConsumerState<_ActivityList> createState() => _ActivityListState();
 }
 
-class _ActivityListState extends ConsumerState<_ActivityList> {
+class _ActivityListState extends ConsumerState<_ActivityList>
+    with WidgetsBindingObserver {
   final items = <Json>[];
+  final _scroll = ScrollController();
+  final _viewportKey = GlobalKey();
+  final _presentationKeys = <String, GlobalKey>{};
+  final _attemptedReceipts = <String>{};
+  final _failedReceipts = <String>{};
+  bool _visibilityCheckPending = false;
+  bool _acknowledging = false;
   Json? cursor;
   String? error;
   bool busy = false;
@@ -111,7 +121,131 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _scroll.addListener(_schedulePresentationCheck);
     load();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _schedulePresentationCheck();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _schedulePresentationCheck();
+  }
+
+  bool get _canAcknowledge {
+    if (!current || !widget.received || widget.readOnly || busy) return false;
+    if (ModalRoute.of(context)?.isCurrent != true) return false;
+    final router = GoRouter.maybeOf(context);
+    if (router != null &&
+        router.state.uri.path != '/rescuer/received-payments') {
+      return false;
+    }
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    return lifecycle == null || lifecycle == AppLifecycleState.resumed;
+  }
+
+  String _rowId(Json item) => '${item['kind']}:${item['id']}';
+
+  String? _receipt(Json item) {
+    final value = item['presented_cursor'];
+    return value is String &&
+            RegExp(
+              r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+            ).hasMatch(value)
+        ? value.toLowerCase()
+        : null;
+  }
+
+  bool _isPresented(Json item) {
+    final viewport = _viewportKey.currentContext?.findRenderObject();
+    final row = _presentationKeys[_rowId(item)]?.currentContext
+        ?.findRenderObject();
+    if (viewport is! RenderBox ||
+        row is! RenderBox ||
+        !viewport.attached ||
+        !row.attached ||
+        !viewport.hasSize ||
+        !row.hasSize) {
+      return false;
+    }
+    final bounds = row.localToGlobal(Offset.zero) & row.size;
+    final visible = bounds
+        .intersect(viewport.localToGlobal(Offset.zero) & viewport.size)
+        .intersect(Offset.zero & MediaQuery.sizeOf(context));
+    // A one-pixel sliver is not a presented payment. Measure the header only,
+    // so expanding a long allocation list does not change its read threshold.
+    return !visible.isEmpty &&
+        bounds.width > 0 &&
+        bounds.height > 0 &&
+        visible.height >= (bounds.height < 48 ? bounds.height : 48) &&
+        visible.width * visible.height >= bounds.width * bounds.height * .5;
+  }
+
+  void _schedulePresentationCheck() {
+    if (!mounted || _visibilityCheckPending) return;
+    _visibilityCheckPending = true;
+    final request = generation;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _visibilityCheckPending = false;
+      if (!mounted) return;
+      if (request != generation) {
+        _schedulePresentationCheck();
+        return;
+      }
+      if (!_canAcknowledge || _acknowledging) return;
+      for (final item in items) {
+        final receipt = _receipt(item);
+        if (receipt == null ||
+            _attemptedReceipts.contains(receipt) ||
+            !_isPresented(item)) {
+          continue;
+        }
+        _attemptedReceipts.add(receipt);
+        _acknowledging = true;
+        unawaited(_acknowledge(receipt));
+        break;
+      }
+    });
+    WidgetsBinding.instance.ensureVisualUpdate();
+  }
+
+  bool _retainsReceipt(String receipt) =>
+      current && items.any((item) => _receipt(item) == receipt);
+
+  Future<void> _acknowledge(String receipt) async {
+    try {
+      await ref
+          .read(paymentActivityRepositoryProvider)
+          .acknowledgePresented(receipt);
+      // Refresh may retain the same exact server snapshot under a new page
+      // generation. Reconcile it by owner + receipt, without sending it again.
+      if (_retainsReceipt(receipt)) {
+        if (_failedReceipts.remove(receipt)) setState(() {});
+      }
+    } catch (_) {
+      if (_retainsReceipt(receipt)) {
+        setState(() => _failedReceipts.add(receipt));
+      }
+    } finally {
+      if (mounted) {
+        _acknowledging = false;
+        if (current) _schedulePresentationCheck();
+      }
+    }
+  }
+
+  void _retryPresentedReceipts() {
+    if (!_canAcknowledge || _acknowledging) return;
+    // Retry is explicit, and still requires a fresh frame/visibility check.
+    for (final receipt in _failedReceipts) {
+      _attemptedReceipts.remove(receipt);
+    }
+    _schedulePresentationCheck();
   }
 
   Future<void> load({bool more = false}) async {
@@ -134,6 +268,8 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
         if (!more) items.clear();
         final ids = items.map((v) => '${v['kind']}:${v['id']}').toSet();
         items.addAll(page.where((v) => ids.add('${v['kind']}:${v['id']}')));
+        final liveReceipts = items.map(_receipt).whereType<String>().toSet();
+        _failedReceipts.removeWhere((value) => !liveReceipts.contains(value));
         cursor = data['next_cursor'] == null
             ? null
             : Json.from(data['next_cursor'] as Map);
@@ -152,6 +288,9 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
   @override
   void dispose() {
     generation++;
+    WidgetsBinding.instance.removeObserver(this);
+    _scroll.removeListener(_schedulePresentationCheck);
+    _scroll.dispose();
     super.dispose();
   }
 
@@ -161,115 +300,139 @@ class _ActivityListState extends ConsumerState<_ActivityList> {
     received: widget.received,
     owner: widget.owner,
     readOnly: widget.readOnly,
+    presentationKey: widget.received && !widget.readOnly
+        ? _presentationKeys.putIfAbsent(_rowId(item), GlobalKey.new)
+        : null,
   );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Colors.white,
-    appBar: AppBar(
-      title: const Text('Mi historial'),
-      leading: IconButton(
-        tooltip: 'Volver',
-        onPressed: () =>
-            context.canPop() ? context.pop() : context.go('/profile'),
-        icon: const Icon(Icons.arrow_back),
-      ),
-    ),
-    body: DonorCanvas(
-      enabled: !widget.received,
-      child: RefreshIndicator(
-        onRefresh: () => load(),
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            if (widget.received) ...[
-              const Text(
-                'Consulta el historial de pagos que has recibido por tus casos de apoyo.',
-                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Sigue así, personas como tú son especiales para la manada.',
-                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
-              ),
-            ] else
-              const Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(text: 'Consulta todos los '),
-                    TextSpan(
-                      text: '+Apoyos',
-                      style: TextStyle(
-                        color: Color(0xff0b7a5d),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    TextSpan(text: ' que recibió la manada '),
-                    TextSpan(
-                      text: 'gracias a ti.',
-                      style: TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-                style: TextStyle(fontSize: 14, height: 1.45, color: ink),
-              ),
-            const SizedBox(height: 20),
-            if (error != null) Notice(error!, isError: true),
-            if (busy && items.isEmpty)
-              const Center(child: CircularProgressIndicator()),
-            if (!busy && error == null && items.isEmpty)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 22,
-                  horizontal: 18,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xfff7f5f1),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Text(
-                  widget.received
-                      ? 'Aún no has recibido pagos por tus casos de apoyo.'
-                      : 'Aún no hay movimientos en tu historial.',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14, color: muted),
-                ),
-              ),
-            if (widget.received && items.isNotEmpty)
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xffe8e8e8)),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    for (var index = 0; index < items.length; index++) ...[
-                      if (index > 0)
-                        const Divider(height: 1, color: Color(0xffe8e8e8)),
-                      activityCard(items[index]),
-                    ],
-                  ],
-                ),
-              )
-            else
-              for (final item in items) activityCard(item),
-            if (error != null)
-              TextButton(
-                onPressed: busy ? null : () => load(more: retryMore),
-                child: const Text('Reintentar historial'),
-              ),
-            if (cursor != null && error == null)
-              TextButton(
-                onPressed: busy ? null : () => load(more: true),
-                child: Text(busy ? 'Cargando…' : 'Ver movimientos anteriores'),
-              ),
-          ],
+  Widget build(BuildContext context) {
+    // Subscribe to route visibility, including returning from a covering page.
+    ModalRoute.of(context);
+    _schedulePresentationCheck();
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Mi historial'),
+        leading: IconButton(
+          tooltip: 'Volver',
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go('/profile'),
+          icon: const Icon(Icons.arrow_back),
         ),
       ),
-    ),
-  );
+      body: DonorCanvas(
+        enabled: !widget.received,
+        child: RefreshIndicator(
+          onRefresh: () => load(),
+          child: ListView(
+            key: _viewportKey,
+            controller: _scroll,
+            padding: const EdgeInsets.all(20),
+            children: [
+              if (widget.received) ...[
+                const Text(
+                  'Consulta el historial de pagos que has recibido por tus casos de apoyo.',
+                  style: TextStyle(fontSize: 14, height: 1.45, color: ink),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Sigue así, personas como tú son especiales para la manada.',
+                  style: TextStyle(fontSize: 14, height: 1.45, color: ink),
+                ),
+              ] else
+                const Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: 'Consulta todos los '),
+                      TextSpan(
+                        text: '+Apoyos',
+                        style: TextStyle(
+                          color: Color(0xff0b7a5d),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      TextSpan(text: ' que recibió la manada '),
+                      TextSpan(
+                        text: 'gracias a ti.',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ),
+                  style: TextStyle(fontSize: 14, height: 1.45, color: ink),
+                ),
+              const SizedBox(height: 20),
+              if (widget.received &&
+                  !widget.readOnly &&
+                  _failedReceipts.isNotEmpty) ...[
+                const Notice(
+                  'No pudimos actualizar tus avisos de pagos. Tu historial sigue disponible.',
+                  isError: true,
+                ),
+                TextButton(
+                  onPressed: _retryPresentedReceipts,
+                  child: const Text('Reintentar avisos de pagos'),
+                ),
+              ],
+              if (error != null) Notice(error!, isError: true),
+              if (busy && items.isEmpty)
+                const Center(child: CircularProgressIndicator()),
+              if (!busy && error == null && items.isEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 22,
+                    horizontal: 18,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfff7f5f1),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    widget.received
+                        ? 'Aún no has recibido pagos por tus casos de apoyo.'
+                        : 'Aún no hay movimientos en tu historial.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 14, color: muted),
+                  ),
+                ),
+              if (widget.received && items.isNotEmpty)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: const Color(0xffe8e8e8)),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      for (var index = 0; index < items.length; index++) ...[
+                        if (index > 0)
+                          const Divider(height: 1, color: Color(0xffe8e8e8)),
+                        activityCard(items[index]),
+                      ],
+                    ],
+                  ),
+                )
+              else
+                for (final item in items) activityCard(item),
+              if (error != null)
+                TextButton(
+                  onPressed: busy ? null : () => load(more: retryMore),
+                  child: const Text('Reintentar historial'),
+                ),
+              if (cursor != null && error == null)
+                TextButton(
+                  onPressed: busy ? null : () => load(more: true),
+                  child: Text(
+                    busy ? 'Cargando…' : 'Ver movimientos anteriores',
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class PaymentActivityCard extends ConsumerStatefulWidget {
@@ -279,11 +442,13 @@ class PaymentActivityCard extends ConsumerStatefulWidget {
     required this.received,
     required this.owner,
     this.readOnly = false,
+    this.presentationKey,
   });
   final Json item;
   final bool received;
   final bool readOnly;
   final String owner;
+  final GlobalKey? presentationKey;
   @override
   ConsumerState<PaymentActivityCard> createState() =>
       _PaymentActivityCardState();
@@ -464,6 +629,7 @@ class _PaymentActivityCardState extends ConsumerState<PaymentActivityCard> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Semantics(
+                key: widget.presentationKey,
                 button: true,
                 expanded: expanded,
                 child: InkWell(

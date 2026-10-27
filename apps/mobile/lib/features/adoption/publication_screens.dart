@@ -445,18 +445,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text.rich(
-          TextSpan(
-            text: label,
-            children: required
-                ? [
-                    const TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Color(0xffe62c2c)),
-                    ),
-                  ]
-                : const [],
-          ),
+        PublicationFieldLabel(
+          label,
+          required: required,
           style: const TextStyle(
             fontSize: 14,
             height: 17 / 14,
@@ -512,7 +503,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xff7c3aed)),
+                  borderSide: const BorderSide(color: DopmiTokens.ink),
                 ),
               ),
               onChanged: (_) => setState(() {}),
@@ -597,6 +588,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     }
     return PublicationFooter(
       label: step < 2 ? 'Continuar' : 'Enviar a revisión',
+      review: step == 2,
       busy: busy,
       compact: compact,
       onSave: () => perform(save),
@@ -749,10 +741,10 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                           : null,
                       style: OutlinedButton.styleFrom(
                         backgroundColor: coexistence.contains(item.key)
-                            ? const Color(0xfff3eeff)
+                            ? DopmiTokens.saffronSoft
                             : const Color(0xfffafafd),
                         foregroundColor: coexistence.contains(item.key)
-                            ? const Color(0xff5b21b6)
+                            ? DopmiTokens.ink
                             : const Color(0xff151423),
                         minimumSize: const Size(0, 72),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -762,7 +754,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                         ),
                         side: BorderSide(
                           color: coexistence.contains(item.key)
-                              ? DopmiTokens.purple
+                              ? DopmiTokens.yellow
                               : const Color(0xffe3e4ed),
                         ),
                         shape: RoundedRectangleBorder(
@@ -845,7 +837,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                     backgroundColor:
                         personalityColors[item.key] ?? const Color(0xfff3f2f8),
                     foregroundColor: traits.contains(item.key)
-                        ? const Color(0xff4c1d95)
+                        ? DopmiTokens.ink
                         : personalityTextColors[item.key] ??
                               const Color(0xff151423),
                     disabledForegroundColor:
@@ -853,7 +845,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                         const Color(0xff151423),
                     side: BorderSide(
                       color: traits.contains(item.key)
-                          ? const Color(0xff7c3aed)
+                          ? DopmiTokens.ink
                           : personalityBorderColors[item.key] ??
                                 const Color(0xffe3e4ed),
                       width: traits.contains(item.key) ? 2 : 1,
@@ -863,11 +855,13 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   child: Text(
                     item.value,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 12,
                       height: 1.2,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: traits.contains(item.key)
+                          ? FontWeight.w600
+                          : FontWeight.w500,
                     ),
                   ),
                 ),

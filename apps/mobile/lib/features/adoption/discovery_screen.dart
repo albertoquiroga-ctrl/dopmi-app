@@ -74,6 +74,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   int exiting = 0;
   final deckKey = GlobalKey();
   int transitionSerial = 0;
+  int hintRevision = 0;
   Object? outgoingSnapshot, nextSnapshot;
   double exitTranslation = 0;
   bool loading = true, acting = false, exhausted = false;
@@ -172,6 +173,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       loading = true;
       error = null;
       if (reset) {
+        hintRevision++;
         allSpeciesEmpty = false;
         cards.clear();
         support.clear();
@@ -647,6 +649,8 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 else
                   DiscoveryStack(
                     key: deckKey,
+                    hintRevision: hintRevision,
+                    hintEnabled: !acting && !dragging && exiting == 0,
                     currentIdentity: cardIdentity(current),
                     nextIdentity: next == null ? null : cardIdentity(next),
                     footerHeight:
@@ -675,73 +679,92 @@ class DiscoveryStack extends StatelessWidget {
     required this.currentIdentity,
     this.nextIdentity,
     this.footerHeight = 128,
+    this.hintRevision = 0,
+    this.hintEnabled = true,
   });
   final Widget child;
   final Widget? next;
   final String currentIdentity;
   final String? nextIdentity;
   final double footerHeight;
+  final Object hintRevision;
+  final bool hintEnabled;
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height:
-        discoveryMediaHeight(context) +
-        math.max(footerHeight, MediaQuery.textScalerOf(context).scale(64) + 64),
-    child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        for (final far in [true, false])
-          Positioned(
-            top: far ? 14 : 7,
-            left: far ? 22 : 11,
-            right: far ? 22 : 11,
-            bottom: far ? 0 : 8,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: _discoveryStackGradient(far: far),
-                border: Border.all(color: const Color(0xc7ffffff)),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xff46281d)
-                        .withValues(alpha: far ? .05 : .06),
-                    blurRadius: far ? 6 : 8,
-                    spreadRadius: -3,
-                    offset: Offset(0, far ? 2 : 3),
+  Widget build(BuildContext context) => DiscoverySwipeHint(
+    resetKey: hintRevision,
+    enabled: hintEnabled,
+    builder: (context, hint) => hint.wrapStage(
+      SizedBox(
+        height:
+            discoveryMediaHeight(context) +
+            math.max(
+              footerHeight,
+              MediaQuery.textScalerOf(context).scale(64) + 64,
+            ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            for (final far in [true, false])
+              Positioned(
+                top: far ? 14 : 7,
+                left: far ? 22 : 11,
+                right: far ? 22 : 11,
+                bottom: far ? 0 : 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: _discoveryStackGradient(far: far),
+                    border: Border.all(color: const Color(0xc7ffffff)),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xff46281d)
+                            .withValues(alpha: far ? .05 : .06),
+                        blurRadius: far ? 6 : 8,
+                        spreadRadius: -3,
+                        offset: Offset(0, far ? 2 : 3),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ),
+            if (next != null)
+              Positioned(
+                key: ValueKey('discovery-layer-$nextIdentity'),
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 16,
+                child: ExcludeFocus(
+                  excluding: true,
+                  child: ExcludeSemantics(
+                    excluding: true,
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: hint.wrapNext(next!),
+                    ),
+                  ),
+                ),
+              ),
+            Positioned(
+              key: ValueKey('discovery-layer-$currentIdentity'),
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 16,
+              child: ExcludeFocus(
+                excluding: false,
+                child: ExcludeSemantics(
+                  excluding: false,
+                  child: IgnorePointer(
+                    ignoring: false,
+                    child: hint.wrapCurrent(child),
+                  ),
+                ),
               ),
             ),
-          ),
-        if (next != null)
-          Positioned(
-            key: ValueKey('discovery-layer-$nextIdentity'),
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 16,
-            child: ExcludeFocus(
-              excluding: true,
-              child: ExcludeSemantics(
-                excluding: true,
-                child: IgnorePointer(ignoring: true, child: next!),
-              ),
-            ),
-          ),
-        Positioned(
-          key: ValueKey('discovery-layer-$currentIdentity'),
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 16,
-          child: ExcludeFocus(
-            excluding: false,
-            child: ExcludeSemantics(
-              excluding: false,
-              child: IgnorePointer(ignoring: false, child: child),
-            ),
-          ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 }
@@ -811,10 +834,10 @@ class _DiscoverySurface extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       // Preview gradients are opaque; an extra paint color would multiply
-      // their alpha. Active support has only its CSS sky .75 solid fill.
+      // their alpha. Active support has only its f693 sky .9 solid fill.
       color: support && !preview
           ? const Color.from(
-              alpha: .75,
+              alpha: .9,
               red: 203 / 255,
               green: 232 / 255,
               blue: 250 / 255,

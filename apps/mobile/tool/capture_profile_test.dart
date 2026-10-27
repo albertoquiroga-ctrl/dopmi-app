@@ -12,6 +12,9 @@ import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
 
 import 'bccd_home_fixtures.dart';
+
+import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
+
 import 'bccd_cases_fixtures.dart';
 import 'bccd_messages_fixtures.dart';
 
@@ -710,6 +713,32 @@ const _rescuerReferenceBio =
     'Refugio dedicado al rescate y rehabilitación de animales en situación de calle. Trabajamos con amor y compromiso para darles una segunda oportunidad.';
 
 class RescuerReferenceCaptureCommunity extends FakeCommunity {
+  RescuerReferenceCaptureCommunity({this.emptyAdoptions = false});
+  final bool emptyAdoptions;
+  @override
+  Future<DataPage<Adoption>> mine(int page) async => emptyAdoptions
+      ? const DataPage([], 0)
+      : DataPage([
+          for (final sample in const [
+            ('luna', 'Luna', 'dog', 'published', 'luna-card.png'),
+            ('rocky', 'Rocky', 'dog', 'published', 'rocky.png'),
+            ('milo', 'Milo', 'cat', 'draft', 'milo-card.png'),
+            ('toby', 'Toby', 'dog', 'submitted', 'toby.png'),
+          ])
+            Adoption({
+              'id': 'capture-${sample.$1}',
+              'owner_id': 'one',
+              'pet_name': sample.$2,
+              'species': sample.$3,
+              'status': sample.$4,
+              'version': 1,
+              'photos': ['capture-owner/${sample.$5}'],
+            }),
+        ], 4);
+
+  @override
+  Future<String> photoUrl(String path) async => 'https://fixture.invalid/$path';
+
   @override
   Future<Json?> publicProfile(String id) async => {
     'id': id,
@@ -718,6 +747,25 @@ class RescuerReferenceCaptureCommunity extends FakeCommunity {
     'region': 'CDMX',
     'bio': _rescuerReferenceBio,
   };
+}
+
+/// Current Home shares the established data fixture, with genuinely empty
+/// aggregates for empty/unverified captures. No legacy inline view is restored.
+class CurrentHomeCaptureRescue extends BccdHomeCaptureRescue {
+  CurrentHomeCaptureRescue({required super.state});
+  @override
+  Future<RescuerFunnelMetrics> funnel(String period) async {
+    if (state != 'empty' && state != 'unverified') return super.funnel(period);
+    return RescuerFunnelMetrics.fromJson({
+      'period': period,
+      'period_start': '2026-10-01T06:00:00Z',
+      'period_end': '2026-11-01T06:00:00Z',
+      'as_of': '2026-10-27T07:00:00Z',
+      'view_tracking_started_at': '2026-10-05T00:00:00Z',
+      'adoption': {'views': 0, 'favorites': 0, 'messages': 0, 'adoptions': 0},
+      'support': {'donors': 0, 'active': 0, 'completed': 0, 'raised_cents': 0},
+    });
+  }
 }
 
 class RescuerReferenceCaptureRescue extends FakeRescue {
@@ -933,7 +981,11 @@ void main() {
         await tester.runAsync(loader.load);
       }
     }
-    final out = Directory('../../.tools/design-review');
+    const captureOut = String.fromEnvironment(
+      'CAPTURE_OUT',
+      defaultValue: '../../.tools/design-review',
+    );
+    final out = Directory(captureOut);
     const integralFilter = String.fromEnvironment('CAPTURE_FILTER');
     final requestedCaptures = integralFilter
         .split(',')
@@ -1326,6 +1378,8 @@ void main() {
       ('legal-privacy-large', '/privacy-notice'),
       ('help-center', '/help'),
       ('help-center-large', '/help'),
+      ('help-center-rescuer', '/help'),
+      ('help-center-rescuer-large', '/help'),
       ('help-center-topic-held', '/help'),
       ('help-center-topic-held-large', '/help'),
       ('help-center-footer', '/help'),
@@ -1712,6 +1766,7 @@ void main() {
           : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       if (sourceAdoptionReference ||
+          spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-messages') ||
           spec.$1.startsWith('bccd-')) {
         debugNetworkImageHttpClientProvider = () =>
@@ -1858,8 +1913,13 @@ void main() {
           ? NotificationCountCaptureCommunity()
           : spec.$1.startsWith('notifications-reference')
           ? (NotificationCommunity()..read = spec.$1.endsWith('-read'))
-          : spec.$1.startsWith('rescuer-profile-reference')
-          ? RescuerReferenceCaptureCommunity()
+          : spec.$1.startsWith('rescuer-profile-reference') ||
+                spec.$1.startsWith('rescuer-home')
+          ? RescuerReferenceCaptureCommunity(
+              emptyAdoptions:
+                  spec.$1.startsWith('rescuer-home') &&
+                  (spec.$1.contains('empty') || spec.$1.contains('unverified')),
+            )
           : (spec.$1.startsWith('chat-detail-focus') ||
                 spec.$1.startsWith('chat-keyboard'))
           ? ChatHeaderCaptureCommunity()
@@ -2065,7 +2125,7 @@ void main() {
               spec.$1.startsWith('contribution'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           identityRepositoryProvider.overrideWithValue(repo),
-          if (spec.$1.startsWith('bccd-'))
+          if (spec.$1.startsWith('bccd-') || spec.$1.startsWith('rescuer-home'))
             photoRuntimeProvider.overrideWith((ref) {
               final runtime = PhotoRuntime(
                 store: MemoryPhotoStore(),
@@ -2177,15 +2237,7 @@ void main() {
             ),
           if (spec.$1.startsWith('rescuer-home'))
             rescueRepositoryProvider.overrideWithValue(
-              spec.$1.contains('evidence')
-                  ? PendingEvidenceRescue()
-                  : spec.$1.contains('empty')
-                  ? EmptyDashboardCaptureRescue()
-                  : spec.$1.contains('unverified')
-                  ? VerificationCaptureRescue('not_started')
-                  : spec.$1.contains('review')
-                  ? VerificationCaptureRescue('submitted')
-                  : FakeRescue(),
+              CurrentHomeCaptureRescue(state: bccdHome.state),
             ),
           if (spec.$1.startsWith('payment-history'))
             paymentRepositoryProvider.overrideWithValue(
@@ -2290,6 +2342,24 @@ void main() {
           final path = row['photo'] as String;
           await tester.runAsync(
             () => runtime.load(rescuePhotoSource(bccdHome, path), width: 384),
+          );
+        }
+      }
+      if (spec.$1.startsWith('rescuer-home') &&
+          !spec.$1.contains('empty') &&
+          !spec.$1.contains('unverified')) {
+        final runtime = container.read(photoRuntimeProvider);
+        final posts = await community.mine(1);
+        expect(posts.items, hasLength(4));
+        expect(posts.items.every((post) => post.owner == 'one'), true);
+        expect(posts.items.any((post) => post.text('species') == 'cat'), true);
+        expect(posts.items.any((post) => post.status == 'draft'), true);
+        for (final post in posts.items) {
+          await tester.runAsync(
+            () => runtime.load(
+              adoptionPhotoSource(community, post.photos.first),
+              width: 88,
+            ),
           );
         }
       }
@@ -2407,6 +2477,16 @@ void main() {
         await tester.pumpAndSettle();
       }
       expect(tester.takeException(), isNull);
+      if (spec.$1 == 'help-center-rescuer' ||
+          spec.$1 == 'help-center-rescuer-large') {
+        final initialMode = repo.profile.mode;
+        final audience = find.widgetWithText(TextButton, 'Rescatista');
+        expect(audience, findsOneWidget);
+        await tester.ensureVisible(audience);
+        await tester.tap(audience);
+        await tester.pumpAndSettle();
+        expect(repo.profile.mode, initialMode);
+      }
       if (spec.$1.startsWith('private-file')) {
         final openFile = find.text('Ver archivo 1');
         await tester.scrollUntilVisible(
@@ -3708,8 +3788,7 @@ void main() {
         );
       }
       if (spec.$1.startsWith('rescuer-home-actions') ||
-          spec.$1.startsWith('rescuer-home-evidence') ||
-          spec.$1.startsWith('rescuer-home-empty')) {
+          spec.$1.startsWith('rescuer-home-evidence')) {
         await Scrollable.ensureVisible(
           tester.element(find.text('Mis pendientes')),
           alignment: 0,
@@ -3858,16 +3937,19 @@ void main() {
           spec.$1 == 'rescuer-profile-reference-wide') {
         final hero = tester.getRect(find.byType(RescuerIdentityCard));
         expect(hero.top, closeTo(136, 1));
-        expect(hero.height, closeTo(120, 1));
+        // f693: 56px avatar + 14px top/bottom padding.
+        expect(hero.height, closeTo(84, 1));
         final verification = tester.getRect(
           find.byType(RescuerVerificationCard),
         );
-        expect(verification.top - hero.bottom, closeTo(12, 1));
-        expect(verification.height, closeTo(80.4, 1));
         final about = tester.getRect(
           find.byKey(const ValueKey('rescuer-profile-about')),
         );
-        expect(about.top - verification.bottom, closeTo(12, 1));
+        // f693 places About between the identity hero and verification.
+        expect(about.top - hero.bottom, closeTo(12, 1));
+        expect(verification.top - about.bottom, closeTo(12, 1));
+        // f693: 52px chip + 16px top/bottom padding.
+        expect(verification.height, closeTo(84, 1));
         // b9 has five owner-contact rows (172px), plus its heading, placeholder,
         // 10px gaps and 16px padding: actual reference DOM = 268.7px.
         expect(about.height, closeTo(268.7, 1));
@@ -5241,6 +5323,23 @@ void main() {
             () => Future<void>.delayed(const Duration(milliseconds: 150)),
           );
           await tester.pump();
+        }
+        if (spec.$1.startsWith('rescuer-home')) {
+          expect(container.read(routerProvider).state.uri.path, '/rescuer');
+          expect(find.textContaining('Hola,'), findsOneWidget);
+          expect(find.text('Volver a intentar'), findsNothing);
+          if (spec.$1.contains('empty') || spec.$1.contains('unverified')) {
+            expect(find.text('¿Empezamos?'), findsOneWidget);
+            expect(
+              find.byKey(const ValueKey('home-adoption-cases')),
+              findsNothing,
+            );
+          } else {
+            expect(
+              find.byKey(const ValueKey('home-adoption-cases')),
+              findsOneWidget,
+            );
+          }
         }
         await tester.runAsync(
           () => saveCapture(key, '${out.path}/${spec.$1}.png'),

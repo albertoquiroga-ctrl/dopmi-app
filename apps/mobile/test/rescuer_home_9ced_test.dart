@@ -5,9 +5,8 @@ import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'community_test.dart' show FakeCommunity;
 import 'rescuer_home_screen_test.dart'
-    show HomeRescue, homeFixture, pumpHome, show;
+    show HomeCommunity, HomeRescue, homeFixture, pumpHome, show;
 
 RescuerFunnelMetrics metricFixture(
   String period, {
@@ -59,7 +58,7 @@ class PeriodHomeRescue extends HomeRescue {
   }
 }
 
-class RecentHomeCommunity extends FakeCommunity {
+class RecentHomeCommunity extends HomeCommunity {
   int inboxLoads = 0, reads = 0, sends = 0;
   bool fail = false;
   final threadRows = <Json>[
@@ -226,6 +225,7 @@ void main() {
     expect(find.byKey(const ValueKey('home-metric-donors')), findsNothing);
     expect(find.text('Volver a intentar'), findsOneWidget);
     rescue.failFunnel = false;
+    await show(tester, find.text('Volver a intentar'));
     await tester.tap(find.text('Volver a intentar'));
     await tester.pumpAndSettle();
     expect(find.text('73'), findsOneWidget);
@@ -256,7 +256,7 @@ void main() {
   });
 
   testWidgets(
-    'recent messages open the UUID without response or payment writes',
+    'messages quick access opens the canonical inbox without conversation writes',
     (tester) async {
       final rescue = PeriodHomeRescue();
       final community = RecentHomeCommunity();
@@ -265,19 +265,11 @@ void main() {
       await show(tester, messages);
       await tester.tap(messages);
       await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/rescuer');
-      expect(find.text('Mensajes recientes'), findsOneWidget);
-      expect(find.text('Luna · Ana'), findsOneWidget);
-      expect(community.inboxLoads, 1);
-      expect(community.reads, 0);
-      expect(community.sends, 0);
-      expect(rescue.acknowledgements, isEmpty);
-      const id = '8833a306-b3eb-4b1b-92d4-34fda0e1bc9a';
-      final row = find.byKey(const ValueKey('home-message-$id'));
-      await show(tester, row);
-      await tester.tap(row);
-      await tester.pumpAndSettle();
-      expect(router.state.uri.path, '/messages/$id');
+      expect(router.state.uri.path, '/messages');
+      expect(find.text('/messages'), findsOneWidget);
+      expect(find.text('Mensajes recientes'), findsNothing);
+      expect(find.text('Luna · Ana'), findsNothing);
+      expect(community.inboxLoads, 0);
       expect(community.reads, 0);
       expect(community.sends, 0);
       expect(rescue.acknowledgements, isEmpty);
@@ -285,22 +277,22 @@ void main() {
   );
 
   testWidgets(
-    'recent-message failures retry without fabricating conversations',
+    'home delegates inbox failures without fabricating previews or reading messages',
     (tester) async {
       final community = RecentHomeCommunity()..fail = true;
-      await pumpHome(tester, PeriodHomeRescue(), community: community);
+      final rescue = PeriodHomeRescue();
+      final (router, _) = await pumpHome(tester, rescue, community: community);
       final messages = find.byKey(const ValueKey('home-quick-messages'));
       await show(tester, messages);
       await tester.tap(messages);
       await tester.pumpAndSettle();
+      expect(router.state.uri.path, '/messages');
       expect(find.text('Luna · Ana'), findsNothing);
-      final retry = find.text('Volver a intentar');
-      await show(tester, retry);
-      community.fail = false;
-      await tester.tap(retry);
-      await tester.pumpAndSettle();
-      expect(find.text('Luna · Ana'), findsOneWidget);
+      expect(find.text('Volver a intentar'), findsNothing);
+      expect(community.inboxLoads, 0);
       expect(community.reads, 0);
+      expect(community.sends, 0);
+      expect(rescue.acknowledgements, isEmpty);
     },
   );
 }

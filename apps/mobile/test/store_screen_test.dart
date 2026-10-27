@@ -239,6 +239,17 @@ void main() {
       expect(find.text('Perros'), findsOneWidget);
       expect(find.text('Gatos'), findsOneWidget);
       expect(find.byType(ChoiceChip), findsNothing);
+      final titlePosition = tester.getTopLeft(find.text('Tienda Dopmi'));
+      final catalogScroll = tester
+          .state<ScrollableState>(find.byType(Scrollable).first)
+          .position;
+      expect(catalogScroll.maxScrollExtent, greaterThan(0));
+      catalogScroll.jumpTo(catalogScroll.maxScrollExtent);
+      await tester.pump();
+      expect(tester.getTopLeft(find.text('Tienda Dopmi')), titlePosition);
+      expect(find.text('Tienda Dopmi').hitTestable(), findsOneWidget);
+      catalogScroll.jumpTo(0);
+      await tester.pump();
       await tester.tap(find.byTooltip('Filtros'));
       await tester.pumpAndSettle();
       expect(find.byType(Dialog), findsOneWidget);

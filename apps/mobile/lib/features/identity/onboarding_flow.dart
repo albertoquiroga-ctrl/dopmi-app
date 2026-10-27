@@ -7,10 +7,50 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 import 'auth_ui.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
 import 'onboarding_art.dart';
+
+/// Enlarged headings keep whole words while body copy retains system scaling.
+TextStyle wordSafeOnboardingStyle(
+  BuildContext context,
+  String text,
+  TextStyle style,
+  double maxWidth,
+) {
+  final scaler = MediaQuery.textScalerOf(context);
+  final fontSize = style.fontSize!;
+  if (!maxWidth.isFinite ||
+      maxWidth <= 0 ||
+      scaler.scale(fontSize) <= fontSize) {
+    return style;
+  }
+  var widest = 0.0;
+  for (final word in text.split(RegExp(r'\s+'))) {
+    final painter = TextPainter(
+      text: TextSpan(text: word, style: style),
+      textScaler: scaler,
+      textDirection: Directionality.of(context),
+    )..layout();
+    widest = math.max(widest, painter.width);
+    painter.dispose();
+  }
+  if (widest <= maxWidth) return style;
+  final target = scaler.scale(fontSize) * maxWidth / widest * .99;
+  var low = 0.0;
+  var high = fontSize;
+  for (var i = 0; i < 16; i++) {
+    final middle = (low + high) / 2;
+    if (scaler.scale(middle) <= target) {
+      low = middle;
+    } else {
+      high = middle;
+    }
+  }
+  return style.copyWith(fontSize: low);
+}
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key, required this.intent});
@@ -256,22 +296,13 @@ class AccountStartScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: intent == 'rescue'
-                        ? const [
-                            Color(0xd1281248),
-                            Color(0x7315110d),
-                            Color(0x9415110d),
-                            Color(0xe615110d),
-                          ]
-                        : const [
-                            Color(0xc715110d),
-                            Color(0x6b15110d),
-                            Color(0x8c15110d),
-                            Color(0xe015110d),
-                          ],
-                    stops: intent == 'rescue'
-                        ? const [0, .36, .60, 1]
-                        : const [0, .34, .58, 1],
+                    colors: const [
+                      Color.fromRGBO(70, 40, 29, .72),
+                      Color.fromRGBO(21, 17, 13, .38),
+                      Color.fromRGBO(21, 17, 13, .5),
+                      Color.fromRGBO(21, 17, 13, .86),
+                    ],
+                    stops: const [0, .34, .58, 1],
                   ),
                 ),
               ),
@@ -407,65 +438,55 @@ class AccountStartScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Container(
+                              AuthFrostPanel(
                                 key: const ValueKey('account-actions'),
-                                padding: const EdgeInsets.fromLTRB(
-                                  20,
-                                  22,
-                                  20,
-                                  20,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(28),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Color(0x4715110d),
-                                      offset: Offset(0, 12),
-                                      blurRadius: 32,
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    FilledButton(
-                                      style:
-                                          FilledButton.styleFrom(
-                                            backgroundColor: ink,
-                                            splashFactory:
-                                                NoSplash.splashFactory,
-                                            foregroundColor: Colors.white,
-                                            minimumSize: const Size.fromHeight(
-                                              52,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    22,
+                                    20,
+                                    20,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      FilledButton(
+                                        style:
+                                            FilledButton.styleFrom(
+                                              backgroundColor: ink,
+                                              splashFactory:
+                                                  NoSplash.splashFactory,
+                                              foregroundColor: Colors.white,
+                                              minimumSize:
+                                                  const Size.fromHeight(52),
+                                              shape: const StadiumBorder(),
+                                              textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: 'Inter',
+                                              ),
+                                            ).copyWith(
+                                              overlayColor:
+                                                  WidgetStateProperty.resolveWith<
+                                                    Color?
+                                                  >(
+                                                    (states) =>
+                                                        states.contains(
+                                                          WidgetState.pressed,
+                                                        )
+                                                        ? Colors.transparent
+                                                        : null,
+                                                  ),
                                             ),
-                                            shape: const StadiumBorder(),
-                                            textStyle: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily: 'Inter',
-                                            ),
-                                          ).copyWith(
-                                            overlayColor:
-                                                WidgetStateProperty.resolveWith<
-                                                  Color?
-                                                >(
-                                                  (states) =>
-                                                      states.contains(
-                                                        WidgetState.pressed,
-                                                      )
-                                                      ? Colors.transparent
-                                                      : null,
-                                                ),
-                                          ),
-                                      onPressed: () => context.push(
-                                        '/signup?intent=$intent',
+                                        onPressed: () => context.push(
+                                          '/signup?intent=$intent',
+                                        ),
+                                        child: const Text('Crea una cuenta'),
                                       ),
-                                      child: const Text('Crea una cuenta'),
-                                    ),
-                                    AccountSocialActions(intent: intent),
-                                  ],
+                                      AccountSocialActions(intent: intent),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -511,6 +532,7 @@ class OnboardingEntrance extends StatelessWidget {
 class AdoptionIntroduction extends StatelessWidget {
   const AdoptionIntroduction({
     super.key,
+    this.intent = 'adopt',
     required this.step,
     required this.title,
     required this.description,
@@ -518,219 +540,222 @@ class AdoptionIntroduction extends StatelessWidget {
     required this.onBack,
     required this.onNext,
   });
+  final String intent;
   final int step;
   final String title, description, cta;
   final VoidCallback onBack, onNext;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(
-      child: LayoutBuilder(
-        builder: (context, box) {
-          final scaler = MediaQuery.textScalerOf(context);
-          final width = math.min(393.0, box.maxWidth) - 40;
-          final copyWidth = math.min(width, scaler.scale(321.74));
-          const titleStyle = TextStyle(
-            fontFamily: 'Fraunces',
-            fontSize: 28,
-            fontVariations: DopmiTokens.display28Variations,
-            height: 1.12,
-            letterSpacing: -.56,
-            fontWeight: FontWeight.w600,
-            color: ink,
-          );
-          const bodyStyle = TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 15,
-            height: 1.45,
-            letterSpacing: 0,
-            color: muted,
-          );
-          const noteStyle = TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 12,
-            height: 1.4,
-            letterSpacing: 0,
-            color: muted,
-          );
-          const note =
-              'Con tu cuenta guardas favoritos y escribes a rescatistas.';
-          double height(String text, TextStyle style, double maxWidth) {
-            final painter = TextPainter(
-              text: TextSpan(text: text, style: style),
-              textDirection: Directionality.of(context),
-              textScaler: scaler,
-            )..layout(maxWidth: math.max(1, maxWidth));
-            final result = painter.height;
-            painter.dispose();
-            return result;
-          }
+    body: DonorCanvas(
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final scaler = MediaQuery.textScalerOf(context);
+            final width = math.min(393.0, box.maxWidth) - 40;
+            final copyWidth = math.min(width, scaler.scale(321.74));
+            final titleStyle = wordSafeOnboardingStyle(
+              context,
+              title,
+              const TextStyle(
+                fontFamily: DopmiTokens.bodyFont,
+                fontSize: 28,
+                height: 1.1,
+                letterSpacing: -.56,
+                fontWeight: FontWeight.w600,
+                color: ink,
+              ),
+              width,
+            );
+            const bodyStyle = TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 15,
+              height: 1.45,
+              letterSpacing: 0,
+              color: muted,
+            );
+            double height(String text, TextStyle style, double maxWidth) {
+              final painter = TextPainter(
+                text: TextSpan(text: text, style: style),
+                textDirection: Directionality.of(context),
+                textScaler: scaler,
+              )..layout(maxWidth: math.max(1, maxWidth));
+              final result = painter.height;
+              painter.dispose();
+              return result;
+            }
 
-          final copyHeight =
+            final copyHeight =
+                height(title, titleStyle, width) +
+                8 +
+                height(description, bodyStyle, copyWidth);
+            final buttonHeight = math.max(
+              52.0,
               height(
-                title,
-                titleStyle,
-                math.min(copyWidth, scaler.scale(300.38)),
-              ) +
-              8 +
-              height(description, bodyStyle, copyWidth) +
-              (step == 1
-                  ? 8 +
-                        height(
-                          note,
-                          noteStyle,
-                          math.min(width, scaler.scale(257.39)),
+                    cta,
+                    const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      height: 1.2,
+                    ),
+                    width - 32,
+                  ) +
+                  22,
+            );
+            // Extra header row at large text is measured by the wrapping layout;
+            // scrolling permits it without clipping the art, copy or controls.
+            final artMinimum = intent == 'adopt'
+                ? (step == 0
+                      ? math.max(
+                          320.0,
+                          math.min(
+                            380.0,
+                            MediaQuery.sizeOf(context).height * .5,
+                          ),
                         )
-                  : 0);
-          final buttonHeight = math.max(
-            52.0,
-            height(
-                  cta,
-                  const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 16,
-                    height: 1.2,
-                  ),
-                  width - 32,
-                ) +
-                22,
-          );
-          // Extra header row at large text is measured by the wrapping layout;
-          // scrolling permits it without clipping the art, copy or controls.
-          final bodyHeight = math.max(
-            248 + copyHeight + 40,
-            box.maxHeight - 24 - 44 - 4 - 16 - buttonHeight - 20,
-          );
-          final artHeight = bodyHeight - 8 - copyHeight - 24 - 16;
-          return Align(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              width: math.min(393.0, box.maxWidth),
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _IntroductionHeader(onBack: onBack),
-                      const SizedBox(height: 4),
-                      OnboardingEntrance(
-                        key: ValueKey('adopt:$step'),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 8),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(minHeight: artHeight),
-                              child: Center(
-                                heightFactor: 1,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: SizedBox(
-                                    width: step == 0 ? copyWidth : width,
-                                    child: OnboardingArt(
-                                      intent: 'adopt',
-                                      step: step,
+                      : 442.0)
+                : (step == 0
+                      ? math.max(
+                          340.0,
+                          math.min(
+                            400.0,
+                            MediaQuery.sizeOf(context).height * .52,
+                          ),
+                        )
+                      : 300.0);
+            final bodyHeight = math.max(
+              artMinimum + copyHeight + 40,
+              box.maxHeight - 24 - 44 - 4 - 16 - buttonHeight - 20,
+            );
+            final artHeight = math.max(
+              artMinimum,
+              bodyHeight - 8 - copyHeight - 24 - 16,
+            );
+            return Align(
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                width: math.min(393.0, box.maxWidth),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _IntroductionHeader(onBack: onBack, intent: intent),
+                        const SizedBox(height: 4),
+                        OnboardingEntrance(
+                          key: ValueKey('$intent:$step'),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minHeight: artHeight,
+                                ),
+                                child: Center(
+                                  heightFactor: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: SizedBox(
+                                      width: width,
+                                      child: OnboardingArt(
+                                        intent: intent,
+                                        step: step,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            Semantics(
-                              header: true,
-                              child: SizedBox(
-                                width: math.min(
-                                  copyWidth,
-                                  scaler.scale(300.38),
+                              const SizedBox(height: 12),
+                              Semantics(
+                                header: true,
+                                child: SizedBox(
+                                  width: width,
+                                  child: Text(title, style: titleStyle),
                                 ),
-                                child: Text(title, style: titleStyle),
                               ),
-                            ),
-                            const SizedBox(height: 8),
-                            SizedBox(
-                              width: copyWidth,
-                              child: Text(description, style: bodyStyle),
-                            ),
-                            if (step == 1) ...[
                               const SizedBox(height: 8),
                               SizedBox(
-                                width: math.min(width, scaler.scale(257.39)),
-                                child: Text(note, style: noteStyle),
+                                width: copyWidth,
+                                child: Text(description, style: bodyStyle),
                               ),
-                            ],
-                            const SizedBox(height: 12),
-                            Semantics(
-                              label: 'Paso ${step + 1} de 2',
-                              child: SizedBox(
-                                width: step == 0 ? copyWidth : width,
-                                height: 16,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (var index = 0; index < 2; index++)
-                                      AnimatedContainer(
-                                        duration:
-                                            MediaQuery.disableAnimationsOf(
-                                              context,
-                                            )
-                                            ? Duration.zero
-                                            : const Duration(milliseconds: 350),
-                                        curve: Curves.ease,
-                                        margin: const EdgeInsets.symmetric(
-                                          horizontal: 4,
-                                        ),
-                                        width: index == step ? 24 : 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          color: index == step
-                                              ? yellow
-                                              : const Color(0xffe5e0d8),
-                                          borderRadius: BorderRadius.circular(
-                                            99,
+                              const SizedBox(height: 12),
+                              Semantics(
+                                label: 'Paso ${step + 1} de 2',
+                                child: SizedBox(
+                                  width: width,
+                                  height: 16,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (var index = 0; index < 2; index++)
+                                        AnimatedContainer(
+                                          duration:
+                                              MediaQuery.disableAnimationsOf(
+                                                context,
+                                              )
+                                              ? Duration.zero
+                                              : const Duration(
+                                                  milliseconds: 350,
+                                                ),
+                                          curve: Curves.ease,
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                          ),
+                                          width: index == step ? 24 : 8,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                            color: index == step
+                                                ? yellow
+                                                : const Color(0xffe5e0d8),
+                                            borderRadius: BorderRadius.circular(
+                                              99,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      FilledButton(
-                        onPressed: onNext,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: ink,
-                          foregroundColor: Colors.white,
-                          minimumSize: Size.fromHeight(buttonHeight),
-                          shape: const StadiumBorder(),
-                          splashFactory: NoSplash.splashFactory,
-                          textStyle: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                            ],
                           ),
                         ),
-                        child: Text(cta),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        FilledButton(
+                          onPressed: onNext,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: DopmiTokens.orangeButton,
+                            foregroundColor: Colors.white,
+                            minimumSize: Size.fromHeight(buttonHeight),
+                            shape: const StadiumBorder(),
+                            splashFactory: NoSplash.splashFactory,
+                            textStyle: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          child: Text(cta),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     ),
   );
 }
 
 class _IntroductionHeader extends StatelessWidget {
-  const _IntroductionHeader({required this.onBack, this.headerHeight = 44});
+  const _IntroductionHeader({required this.onBack, required this.intent});
+  final String intent;
   final VoidCallback onBack;
-  final double headerHeight;
+  static const double headerHeight = 44;
   @override
   Widget build(BuildContext context) => Wrap(
     crossAxisAlignment: WrapCrossAlignment.center,
@@ -767,7 +792,7 @@ class _IntroductionHeader extends StatelessWidget {
         ),
       ),
       TextButton(
-        onPressed: () => context.push('/login'),
+        onPressed: () => context.push('/login?intent=$intent'),
         style: TextButton.styleFrom(
           foregroundColor: ink,
           minimumSize: Size(0, headerHeight),
@@ -806,146 +831,16 @@ class RescuerIntroduction extends StatelessWidget {
   final int step;
   final String title, description, cta;
   final VoidCallback onBack, onNext;
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    body: SafeArea(
-      child: LayoutBuilder(
-        builder: (context, box) => Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 393),
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: box.maxHeight),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _IntroductionHeader(onBack: onBack, headerHeight: 40),
-                          const SizedBox(height: 8),
-                          OnboardingEntrance(
-                            key: ValueKey('rescue:$step'),
-                            child: Column(
-                              children: [
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.textScalerOf(context)
-                                        .scale(314.03),
-                                  ),
-                                  child: Semantics(
-                                    header: true,
-                                    child: Text(
-                                      title,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontFamily: 'Fraunces',
-                                        fontSize: 26,
-                                        fontVariations:
-                                            DopmiTokens.display26Variations,
-                                        height: 1.15,
-                                        letterSpacing: -.52,
-                                        fontWeight: FontWeight.w600,
-                                        color: ink,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.textScalerOf(context)
-                                        .scale(262.44),
-                                  ),
-                                  child: Text(
-                                    description,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 13,
-                                      height: 1.5,
-                                      letterSpacing: 0,
-                                      color: muted,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 18),
-                                OnboardingArt(intent: 'rescue', step: step),
-                                const SizedBox(height: 18),
-                                Semantics(
-                                  label: 'Paso ${step + 1} de 2',
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      for (var i = 0; i < 2; i++)
-                                        AnimatedContainer(
-                                          duration:
-                                              MediaQuery.disableAnimationsOf(
-                                                context,
-                                              )
-                                              ? Duration.zero
-                                              : const Duration(
-                                                  milliseconds: 350,
-                                                ),
-                                          curve: Curves.ease,
-                                          margin: const EdgeInsets.symmetric(
-                                            horizontal: 4,
-                                          ),
-                                          width: i == step ? 24 : 8,
-                                          height: 8,
-                                          decoration: BoxDecoration(
-                                            color: i == step
-                                                ? yellow
-                                                : const Color(0xffe5e0d8),
-                                            borderRadius: BorderRadius.circular(
-                                              99,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: FilledButton(
-                          onPressed: onNext,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: ink,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(52),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 11,
-                            ),
-                            shape: const StadiumBorder(),
-                            splashFactory: NoSplash.splashFactory,
-                            textStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          child: Text(cta),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
+  Widget build(BuildContext context) => AdoptionIntroduction(
+    intent: 'rescue',
+    step: step,
+    title: title,
+    description: description,
+    cta: cta,
+    onBack: onBack,
+    onNext: onNext,
   );
 }
 

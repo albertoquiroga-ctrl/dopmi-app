@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {errorMessage,type AdminApi} from './api';
 import type {SupportPage} from './supportApi';
-const topics:Record<string,string>={support_rules:'Cómo funcionan los apoyos',contribute:'Apoyar',guardian:'Guardián',adopt:'Adoptar',verification:'Verificación',publish_cases:'Publicar casos',funds_evidence:'Fondos y evidencia',account:'Mi cuenta',trust_safety:'Confianza y seguridad'};
+const topics:Record<string,string>={support_rules:'Cómo funcionan los apoyos',contribute:'Apoyar',guardian:'Guardián',adopt:'Adoptar',verification:'Verificación',publish_cases:'Publicar casos',funds_evidence:'Fondos y evidencia',account:'Mi cuenta',trust_safety:'Confianza y seguridad',other:'Otro…'};
 function SupportAttachment({api,path}:{api:AdminApi;path:string}) {
   const [url,setUrl]=useState(''),[error,setError]=useState(''),[revision,setRevision]=useState(0);
   useEffect(()=>{

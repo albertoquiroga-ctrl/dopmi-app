@@ -166,49 +166,62 @@ void main() {
       },
     );
   }
-  testWidgets(
-    'Welcome offers the current two choices with fixed orbs and animated fill',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(377, 852));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await tester.pumpWidget(const MaterialApp(home: WelcomeScreen()));
-      await tester.pumpAndSettle();
-      final adopt = find.byKey(const ValueKey('welcome-orb-adopt'));
-      final donate = find.byKey(const ValueKey('welcome-orb-rescue'));
-      expect(tester.getSize(adopt), const Size(92, 92));
-      expect(find.text('Donar'), findsNothing);
-      expect(find.text('Dar en adopción'), findsOneWidget);
-      final tap = find.ancestor(of: adopt, matching: find.byType(InkWell));
-      expect(tester.widget<InkWell>(tap).splashFactory, NoSplash.splashFactory);
-      await tester.tap(adopt);
-      await tester.pump();
-      expect(tester.getSize(adopt), const Size(92, 92));
-      expect(tester.getSize(donate), const Size(92, 92));
-      Color fill() =>
-          (tester
-                      .widget<DecoratedBox>(
-                        find.descendant(
-                          of: adopt,
-                          matching: find.byType(DecoratedBox),
-                        ),
-                      )
-                      .decoration
-                  as BoxDecoration)
-              .color!;
-      expect(fill(), Colors.white);
-      await tester.pump(const Duration(milliseconds: 100));
-      expect(fill(), isNot(Colors.white));
-      expect(fill(), isNot(const Color(0xfffff6cf)));
-      await tester.pumpAndSettle();
-      expect(fill(), const Color(0xfffff6cf));
-      await tester.tap(donate);
-      await tester.pump();
-      expect(tester.getSize(donate), const Size(92, 92));
-      expect(tester.getSize(adopt), const Size(92, 92));
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('Welcome keeps fixed orbs and animates f693 selection outlines', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(377, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(const MaterialApp(home: WelcomeScreen()));
+    await tester.pumpAndSettle();
+    final adopt = find.byKey(const ValueKey('welcome-orb-adopt'));
+    final rescue = find.byKey(const ValueKey('welcome-orb-rescue'));
+    expect(tester.getSize(adopt), const Size(92, 92));
+    expect(find.text('Donar'), findsNothing);
+    expect(find.text('Dar en adopción'), findsOneWidget);
+    final tap = find.ancestor(of: adopt, matching: find.byType(InkWell));
+    expect(tester.widget<InkWell>(tap).splashFactory, NoSplash.splashFactory);
+    BoxDecoration outline(Finder orb) =>
+        tester
+                .widget<DecoratedBox>(
+                  find
+                      .descendant(of: orb, matching: find.byType(DecoratedBox))
+                      .first,
+                )
+                .decoration
+            as BoxDecoration;
+    const ringColors = [
+      Color(0xffeb6425),
+      Color(0xffcbe8fa),
+      Color(0xfffef3d4),
+    ];
+    expect((outline(adopt).gradient! as LinearGradient).colors, ringColors);
+    expect((outline(rescue).gradient! as LinearGradient).colors, ringColors);
+    await tester.tap(adopt);
+    await tester.pump();
+    expect(tester.getSize(adopt), const Size(92, 92));
+    expect(tester.getSize(rescue), const Size(92, 92));
+    expect((outline(rescue).gradient! as LinearGradient).colors, ringColors);
+    await tester.pump(const Duration(milliseconds: 100));
+    final fadingRing = outline(rescue).gradient! as LinearGradient;
+    expect(fadingRing.colors.first.a, greaterThan(0));
+    expect(fadingRing.colors.first.a, lessThan(1));
+    await tester.pumpAndSettle();
+    expect(outline(adopt).color, Colors.white);
+    expect((outline(adopt).gradient! as LinearGradient).colors, ringColors);
+    expect(outline(rescue).gradient, isNull);
+    expect(
+      outline(rescue).border,
+      Border.all(color: const Color(0xffe8e8e8), width: 1.5),
+    );
+    await tester.tap(rescue);
+    await tester.pump();
+    expect(tester.getSize(rescue), const Size(92, 92));
+    expect(tester.getSize(adopt), const Size(92, 92));
+    await tester.pumpAndSettle();
+    expect(outline(adopt).gradient, isNull);
+    expect((outline(rescue).gradient! as LinearGradient).colors, ringColors);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('Reduced motion shows onboarding immediately', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(

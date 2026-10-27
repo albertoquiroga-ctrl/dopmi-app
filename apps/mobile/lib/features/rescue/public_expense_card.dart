@@ -84,13 +84,12 @@ class _PublicExpenseCardState extends State<PublicExpenseCard> {
           color: tone.$1,
           borderRadius: BorderRadius.circular(14),
         ),
-        child: tone.$3.isEmpty
-            ? Icon(Icons.auto_awesome, size: 22, color: tone.$2)
-            : SvgPicture.asset(
-                'assets/profile/need-${tone.$3}.svg',
-                width: 22,
-                height: 22,
-              ),
+        child: Text(switch (tone.$3) {
+          'veterinary' => '🩺',
+          'medicine' => '💊',
+          'food' => '🥣',
+          _ => '✨',
+        }, style: const TextStyle(fontSize: 22, height: 1)),
       ),
     );
     final chevron = ExcludeSemantics(

@@ -1371,6 +1371,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
               },
         footer: PublicationFooter(
           label: step == 3 ? 'Enviar a revisión' : 'Continuar',
+          review: step == 3,
           busy: busy || loading,
           saveEnabled: !caseMediaActive,
           compact: MediaQuery.viewInsetsOf(context).bottom > 0,
@@ -2771,6 +2772,7 @@ class _PublicCaseDetail extends StatelessWidget {
             PublicExpenseCard(
               expenses[i],
               key: ValueKey(expenses[i].id),
+              showContributeAction: false,
               canContribute:
                   record.status == 'approved' &&
                   expenses[i].status == 'approved',

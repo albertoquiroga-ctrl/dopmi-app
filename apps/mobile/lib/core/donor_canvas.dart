@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Frozen b9f6d5f warm-trust donor canvas (styles.css:14102–14114).
-/// CSS feTurbulence grain is intentionally omitted: Flutter's SVG renderer
-/// cannot render that filter. No unrelated bitmap or random noise substitutes it.
+/// Frozen f693c03 warm-trust canvas (styles.css:16568–16582).
+/// The 200px transparent tile is the original SVG feTurbulence rendered by
+/// Chromium at the reference's background-size, including its .12 opacity.
 class DonorCanvas extends StatelessWidget {
   const DonorCanvas({super.key, required this.child, this.enabled = true});
   final Widget child;
@@ -17,6 +17,20 @@ class DonorCanvas extends StatelessWidget {
             const Positioned.fill(
               child: IgnorePointer(
                 child: CustomPaint(painter: _DonorCanvasPainter()),
+              ),
+            ),
+            const Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/canvas-grain-f693.png'),
+                      repeat: ImageRepeat.repeat,
+                      alignment: Alignment.topLeft,
+                      filterQuality: FilterQuality.none,
+                    ),
+                  ),
+                ),
               ),
             ),
             child,

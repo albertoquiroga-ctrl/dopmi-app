@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
 import 'guardian_support_bubbles.dart';
@@ -62,12 +63,16 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
       selected: !custom && cents == value,
       child: Material(
         color: !custom && cents == value
-            ? (widget.decorate ? yellow : const Color(0xfffff8d7))
+            ? (widget.decorate
+                  ? DopmiTokens.orangeButton
+                  : const Color(0xfffff8d7))
             : Colors.white,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: widget.decorate || (!custom && cents == value)
+            color: widget.decorate
+                ? DopmiTokens.orange
+                : (!custom && cents == value)
                 ? yellow
                 : const Color(0xffe6e2dd),
           ),
@@ -98,11 +103,13 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
               children: [
                 Text(
                   contributionMoney(value).replaceAll(' MXN', ''),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     height: 1.2,
                     fontWeight: FontWeight.w700,
-                    color: ink,
+                    color: widget.decorate && !custom && cents == value
+                        ? Colors.white
+                        : ink,
                   ),
                 ),
                 SizedBox(
@@ -115,7 +122,9 @@ class _GuardianEnrollmentAmountState extends State<GuardianEnrollmentAmount> {
                     fontSize: widget.decorate ? 14 : 11,
                     height: 1.2,
                     fontWeight: FontWeight.w500,
-                    color: muted,
+                    color: widget.decorate && !custom && cents == value
+                        ? Colors.white
+                        : muted,
                   ),
                 ),
               ],

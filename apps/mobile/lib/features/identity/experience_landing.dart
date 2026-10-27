@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/ui.dart';
+import '../../core/splash.dart';
 import 'experience_controller.dart';
 import 'identity_controller.dart';
 
@@ -37,16 +37,7 @@ class _ExperienceLandingState extends ConsumerState<ExperienceLandingScreen> {
             }
           });
         }
-        return const PageFrame(
-          back: false,
-          children: [
-            Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: 'Preparando tu inicio',
-              ),
-            ),
-          ],
-        );
+        return const DopmiSplash(label: 'Preparando tu inicio');
       },
     );
   }

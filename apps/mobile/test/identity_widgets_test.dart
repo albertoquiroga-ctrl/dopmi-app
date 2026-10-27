@@ -282,6 +282,21 @@ void main() {
       expect(find.text('Revisa tu correo.'), findsOneWidget);
     },
   );
+  for (final intent in ['adopt', 'rescue']) {
+    testWidgets('onboarding login header preserves $intent intent', (
+      tester,
+    ) async {
+      final repo = FakeIdentityRepository();
+      await start(tester, repo, initialLocation: '/onboarding?intent=$intent');
+      await tap(tester, 'Ya tengo cuenta');
+      final form = tester.widget<AuthFormScreen>(find.byType(AuthFormScreen));
+      expect(form.mode, AuthFormMode.login);
+      expect(form.intent, intent);
+      expect(repo.signupCount, 0);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets('a failed profile update keeps edits so the user can retry', (
     tester,
   ) async {

@@ -580,13 +580,35 @@ void main() {
     (tester) async {
       final repo = RegistrationGuardian();
       final sdk = RegistrationMethodSetup()..ready = false;
-      await start(tester, repo, const Size(377, 1800), 1, methodSetup: sdk);
+      await start(tester, repo, const Size(377, 852), 1, methodSetup: sdk);
+      final header = find.byType(AppBar);
+      final headerBefore = tester.getRect(header);
+      final dock = find.byType(ContributionButton).first;
+      final dockBefore = tester.getRect(dock);
+      final bubble = find.byKey(const ValueKey('guardian-bubble-0'));
+      final bubbleBefore = tester.getTopLeft(bubble);
+      // Decorative bubbles ignore pointers; drag their scrollable surface.
+      await tester.dragFrom(tester.getCenter(bubble), const Offset(0, -120));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(header), headerBefore);
+      expect(tester.getRect(dock), dockBefore);
+      expect(tester.getTopLeft(bubble).dy, lessThan(bubbleBefore.dy));
       await authorizeRegistration(tester);
       await tester.pumpAndSettle();
-      expect(
-        find.textContaining('No iniciamos un registro nuevo.'),
-        findsOneWidget,
+      final unavailable = find.textContaining(
+        'No iniciamos un registro nuevo.',
       );
+      await tester.scrollUntilVisible(
+        unavailable,
+        -200,
+        scrollable: find
+            .descendant(
+              of: find.byKey(const Key('guardian-registration-content')),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+      expect(unavailable, findsOneWidget);
       expect(repo.registrations, isEmpty);
       expect(sdk.secrets, isEmpty);
       expect(

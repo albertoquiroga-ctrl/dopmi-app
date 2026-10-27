@@ -8,11 +8,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/media/remote_photo.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
+import '../adoption/discovery_card_motion.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 import 'support_stories.dart';
@@ -466,177 +468,193 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
         : Duration(milliseconds: exiting ? 280 : 250);
     return SizedBox(
       height: widget.height,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          ExcludeSemantics(
-            child: IgnorePointer(
-              child: Transform(
-                alignment: Alignment.bottomCenter,
-                transform: Matrix4.identity()
-                  ..rotateZ(7 * math.pi / 180)
-                  ..translateByDouble(14, 22, 0, 1)
-                  ..scaleByDouble(.92, .92, 1, 1),
-                child: Opacity(opacity: .82, child: photo((page + 2) % 3)),
-              ),
-            ),
-          ),
-          ExcludeSemantics(
-            child: IgnorePointer(
-              child: Transform(
-                alignment: Alignment.bottomCenter,
-                transform: Matrix4.identity()
-                  ..rotateZ(4 * math.pi / 180)
-                  ..translateByDouble(8, 10, 0, 1)
-                  ..scaleByDouble(.985, .985, 1, 1),
-                child: photo((page + 1) % 3),
-              ),
-            ),
-          ),
-          AnimatedContainer(
-            key: const ValueKey('guardian-support-carousel'),
-            duration: duration,
-            curve: const Cubic(.22, 1, .36, 1),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x2915110d),
-                  offset: Offset(0, 18),
-                  blurRadius: 44,
+      child: DiscoverySwipeHint(
+        resetKey: 'guardian-support',
+        enabled: !dragging && !exiting,
+        builder: (context, hint) => hint.wrapStage(
+          Stack(
+            clipBehavior: Clip.none,
+            fit: StackFit.expand,
+            children: [
+              ExcludeSemantics(
+                child: IgnorePointer(
+                  child: Transform(
+                    alignment: Alignment.bottomCenter,
+                    transform: Matrix4.identity()
+                      ..rotateZ(7 * math.pi / 180)
+                      ..translateByDouble(14, 22, 0, 1)
+                      ..scaleByDouble(.92, .92, 1, 1),
+                    child: Opacity(opacity: .82, child: photo((page + 2) % 3)),
+                  ),
                 ),
-              ],
-            ),
-            transformAlignment: Alignment.bottomCenter,
-            transform: Matrix4.identity()
-              ..translateByDouble(drag, 0, 0, 1)
-              ..rotateZ((exiting ? drag.sign * 18 : drag / 28) * math.pi / 180),
-            child: AnimatedOpacity(
-              duration: duration,
-              opacity: exiting ? .35 : 1,
-              child: Listener(
-                onPointerCancel: (_) {
-                  pointerCanceled = true;
-                  if (!exiting) {
-                    setState(() {
-                      drag = 0;
-                      dragging = false;
-                    });
-                  }
-                },
-                child: GestureDetector(
-                  dragStartBehavior: DragStartBehavior.down,
-                  onHorizontalDragStart: exiting
-                      ? null
-                      : (_) => setState(() {
-                          dragging = true;
-                          pointerCanceled = false;
-                        }),
-                  onHorizontalDragUpdate: exiting
-                      ? null
-                      : (event) => setState(() => drag += event.delta.dx),
-                  onHorizontalDragEnd: exiting ? null : (_) => release(),
-                  onHorizontalDragCancel: () => setState(() {
-                    drag = 0;
-                    dragging = false;
-                  }),
-                  child: ReferenceFocusOutline(
-                    radius: 28,
-                    child: Semantics(
-                      key: const ValueKey('guardian-support-card-action'),
-                      container: true,
-                      button: true,
-                      label: 'Sé un Guardián. Imagen ${page + 1} de 3',
-                      onIncrease: () => advance(1),
-                      onDecrease: () => advance(-1),
-                      child: InkWell(
-                        splashFactory: NoSplash.splashFactory,
-                        overlayColor: const WidgetStatePropertyAll(
-                          Colors.transparent,
-                        ),
-                        onTap: exiting
+              ),
+              hint.wrapNext(
+                ExcludeSemantics(
+                  child: IgnorePointer(
+                    child: Transform(
+                      alignment: Alignment.bottomCenter,
+                      transform: Matrix4.identity()
+                        ..rotateZ(4 * math.pi / 180)
+                        ..translateByDouble(8, 10, 0, 1)
+                        ..scaleByDouble(.985, .985, 1, 1),
+                      child: photo((page + 1) % 3),
+                    ),
+                  ),
+                ),
+              ),
+              hint.wrapCurrent(
+                AnimatedContainer(
+                  key: const ValueKey('guardian-support-carousel'),
+                  duration: duration,
+                  curve: const Cubic(.22, 1, .36, 1),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x2915110d),
+                        offset: Offset(0, 18),
+                        blurRadius: 44,
+                      ),
+                    ],
+                  ),
+                  transformAlignment: Alignment.bottomCenter,
+                  transform: Matrix4.identity()
+                    ..translateByDouble(drag, 0, 0, 1)
+                    ..rotateZ(
+                      (exiting ? drag.sign * 18 : drag / 28) * math.pi / 180,
+                    ),
+                  child: AnimatedOpacity(
+                    duration: duration,
+                    opacity: exiting ? .35 : 1,
+                    child: Listener(
+                      onPointerCancel: (_) {
+                        pointerCanceled = true;
+                        if (!exiting) {
+                          setState(() {
+                            drag = 0;
+                            dragging = false;
+                          });
+                        }
+                      },
+                      child: GestureDetector(
+                        dragStartBehavior: DragStartBehavior.down,
+                        onHorizontalDragStart: exiting
                             ? null
-                            : widget.onOpenEnrollment ??
-                                  () => context.push('/guardian?enroll=1'),
-                        borderRadius: BorderRadius.circular(28),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(28),
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              photo(page),
-                              if (page != 0) ...[
-                                const IgnorePointer(
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Color(0x8015110d),
-                                          Color(0x2415110d),
-                                          Color(0x0f15110d),
-                                          Color(0x3315110d),
-                                        ],
-                                        stops: [0, .36, .62, 1],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SingleChildScrollView(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Sé un Guardián',
-                                          style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            height: 1.2,
+                            : (_) => setState(() {
+                                dragging = true;
+                                pointerCanceled = false;
+                              }),
+                        onHorizontalDragUpdate: exiting
+                            ? null
+                            : (event) => setState(() => drag += event.delta.dx),
+                        onHorizontalDragEnd: exiting ? null : (_) => release(),
+                        onHorizontalDragCancel: () => setState(() {
+                          drag = 0;
+                          dragging = false;
+                        }),
+                        child: ReferenceFocusOutline(
+                          radius: 28,
+                          child: Semantics(
+                            key: const ValueKey('guardian-support-card-action'),
+                            container: true,
+                            button: true,
+                            label: 'Sé un Guardián. Imagen ${page + 1} de 3',
+                            onIncrease: () => advance(1),
+                            onDecrease: () => advance(-1),
+                            child: InkWell(
+                              splashFactory: NoSplash.splashFactory,
+                              overlayColor: const WidgetStatePropertyAll(
+                                Colors.transparent,
+                              ),
+                              onTap: exiting
+                                  ? null
+                                  : widget.onOpenEnrollment ??
+                                        () =>
+                                            context.push('/guardian?enroll=1'),
+                              borderRadius: BorderRadius.circular(28),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(28),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    photo(page),
+                                    if (page != 0) ...[
+                                      const IgnorePointer(
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Color(0x8015110d),
+                                                Color(0x2415110d),
+                                                Color(0x0f15110d),
+                                                Color(0x3315110d),
+                                              ],
+                                              stops: [0, .36, .62, 1],
+                                            ),
                                           ),
                                         ),
-                                        const SizedBox(height: 14),
-                                        for (final label in [
-                                          'Rescatistas y casos verificados',
-                                          'Sigue tu huella',
-                                          'Cancela cuando quieras',
-                                        ])
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              bottom: 10,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.pets_outlined,
-                                                  color: yellow,
-                                                  size: 14,
+                                      ),
+                                      SingleChildScrollView(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(18),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Sé un Guardián',
+                                                style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.white,
+                                                  height: 1.2,
                                                 ),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: Text(
-                                                    label,
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      height: 1.3,
-                                                    ),
+                                              ),
+                                              const SizedBox(height: 14),
+                                              for (final label in [
+                                                'Rescatistas y casos verificados',
+                                                'Sigue tu huella',
+                                                'Cancela cuando quieras',
+                                              ])
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        bottom: 10,
+                                                      ),
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.pets_outlined,
+                                                        color: yellow,
+                                                        size: 14,
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      Expanded(
+                                                        child: Text(
+                                                          label,
+                                                          style:
+                                                              const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                height: 1.3,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                            ],
                                           ),
-                                      ],
-                                    ),
-                                  ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
                                 ),
-                              ],
-                            ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -644,22 +662,22 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
                   ),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            right: 8,
-            bottom: 8,
-            child: IconButton(
-              tooltip: 'Siguiente imagen Guardián',
-              onPressed: exiting ? null : () => advance(-1),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: ink,
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: IconButton(
+                  tooltip: 'Siguiente imagen Guardián',
+                  onPressed: exiting ? null : () => advance(-1),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: ink,
+                  ),
+                  icon: const Icon(Icons.chevron_right),
+                ),
               ),
-              icon: const Icon(Icons.chevron_right),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -728,35 +746,54 @@ class GuardianSupportDock extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 height: 1.2,
                 letterSpacing: 0,
-                color: ink,
+                color: DopmiTokens.orangeButton,
               ),
             );
             final button = Container(
               key: const ValueKey('guardian-support-cta'),
               alignment: Alignment.center,
               constraints: const BoxConstraints(minHeight: 52),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: yellow,
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    DopmiTokens.orange,
+                    DopmiTokens.sky,
+                    DopmiTokens.saffronSoft,
+                  ],
+                  stops: [0, .52, 1],
+                ),
                 borderRadius: BorderRadius.circular(999),
                 boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x59f7cb2d),
-                    offset: Offset(0, 6),
-                    blurRadius: 16,
-                  ),
+                  BoxShadow(color: Color(0x57eb6425), blurRadius: 10),
+                  BoxShadow(color: Color(0x47cbe8fa), blurRadius: 16),
+                  BoxShadow(color: Color(0x38fef3d4), blurRadius: 22),
                 ],
               ),
-              child: const Text(
-                'Suscríbete ahora',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  height: 1.2,
-                  letterSpacing: 0,
-                  color: ink,
+              child: Container(
+                alignment: Alignment.center,
+                constraints: const BoxConstraints(minHeight: 48),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: DopmiTokens.orangeButton,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: const Text(
+                  'Suscríbete ahora',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                    letterSpacing: 0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             );

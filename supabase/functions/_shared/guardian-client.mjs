@@ -14,7 +14,7 @@ const reply = (body, status = 200) => new Response(JSON.stringify(body), { statu
 // donor IDs, return URLs and status fields never reach checkout. A saved-method
 // selection accepts only its opaque ID; the service verifies its customer ownership.
 export function guardianClientHandler({ enabled, authenticate, checkout, method, methods, defaultMethod, removeMethod, addCard, savedCardMethod,
-  walletEnabled = () => false, addWallet, registration, registrationAction, registrationMethod }) {
+  walletEnabled = () => false, addWallet, nativeAddCard, registration, registrationAction, registrationMethod }) {
   return async req => {
     if (req.method === 'OPTIONS') return new Response(null, { headers });
     if (req.method !== 'POST') return reply({ error: 'method_not_allowed' }, 405);
@@ -78,6 +78,17 @@ export function guardianClientHandler({ enabled, authenticate, checkout, method,
             !/^pm_[A-Za-z0-9]+$/.test(input.payment_method_id ?? '')) return reply({ error: 'invalid_request' }, 400);
         return reply(await savedCardMethod(actor.id, { key: input.key, consent: true, consent_version: input.consent_version,
           action: input.action === 'saved_card_remove' ? 'remove' : 'default', selected_method_id: input.payment_method_id }));
+      }
+      if (['native_add_card', 'native_add_card_status'].includes(input?.action)) {
+        const preparing = input.action === 'native_add_card';
+        const allowed = preparing ? ['action','key','consent','consent_version'] : ['action','key'];
+        if (Object.keys(input).some(key => !allowed.includes(key)) || typeof nativeAddCard !== 'function' ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.key ?? '') ||
+            (preparing && (input.consent !== true || input.consent_version !== 'saved-cards-2026-10-03')))
+          return reply({ error: 'invalid_request' }, 400);
+        return reply(await nativeAddCard(actor.id, preparing
+          ? { action: input.action, key: input.key, consent: true, consent_version: input.consent_version }
+          : { action: input.action, key: input.key }));
       }
       if (input?.action === 'add_card') {
         if (Object.keys(input).some(key => !['action','key','consent','consent_version'].includes(key)) ||

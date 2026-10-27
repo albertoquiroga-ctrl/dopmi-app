@@ -1,12 +1,11 @@
-import '../../core/reference_focus_outline.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/reference_focus_outline.dart';
 
-class RescuerVerificationCard extends StatefulWidget {
+/// Private owner status: server state is preserved while matching f693's card.
+class RescuerVerificationCard extends StatelessWidget {
   const RescuerVerificationCard({
     super.key,
     required this.status,
@@ -14,148 +13,74 @@ class RescuerVerificationCard extends StatefulWidget {
   });
   final String? status;
   final VoidCallback onPressed;
-  @override
-  State<RescuerVerificationCard> createState() =>
-      _RescuerVerificationCardState();
-}
 
-class _RescuerVerificationCardState extends State<RescuerVerificationCard> {
-  bool hovered = false;
   @override
   Widget build(BuildContext context) {
-    final approved = widget.status == 'approved';
-    final review = widget.status == 'submitted';
-    final correction = [
-      'changes_requested',
-      'rejected',
-    ].contains(widget.status);
+    final approved = status == 'approved';
+    final review = status == 'submitted';
+    final correction = ['changes_requested', 'rejected'].contains(status);
+    final initial = status == null || ['draft', 'not_started'].contains(status);
     final title = approved
         ? 'Cuenta verificada'
-        : correction
-        ? 'Corrige tu verificación'
         : review
         ? 'Verificación en proceso'
-        : 'Verifícate para recibir donaciones';
-    final subtitle = approved
-        ? 'Tu expediente de verificación está aprobado'
         : correction
-        ? 'Hay datos que debes corregir para continuar'
-        : review
-        ? 'Te avisaremos cuando termine la revisión'
-        : 'Presenta tu expediente para revisión';
-    return Semantics(
-      container: true,
-      button: true,
-      child: ReferenceFocusOutline(
-        child: AnimatedContainer(
-          duration: MediaQuery.disableAnimationsOf(context)
-              ? Duration.zero
-              : const Duration(milliseconds: 120),
-          curve: Curves.ease,
-          constraints: const BoxConstraints(minHeight: 64),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: approved
-                  ? const Color(0x4746281d)
-                  : hovered
-                  ? const Color(0xffd8d2ca)
-                  : const Color(0xffe3e4ed),
-            ),
-            color: approved ? null : Colors.white,
-            gradient: approved
-                ? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xfff7f2ff), Colors.white],
-                  )
-                : null,
-          ),
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-            child: InkWell(
-              onTap: widget.onPressed,
-              onHover: (value) => setState(() => hovered = value),
-              borderRadius: BorderRadius.circular(20),
-              splashFactory: NoSplash.splashFactory,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
+        ? 'Revisa tu información'
+        : initial
+        ? 'Verifica tu cuenta'
+        : 'Verificación no disponible';
+    return ReferenceFocusOutline(
+      radius: 24,
+      child: Material(
+        color: DopmiTokens.ink,
+        borderRadius: BorderRadius.circular(24),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(24),
+          splashFactory: NoSplash.splashFactory,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 76),
+            padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: DopmiTokens.bodyFont,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2,
+                      color: approved
+                          ? DopmiTokens.sky
+                          : const Color(0xfffdf6f1),
+                    ),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    ExcludeSemantics(
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: const Color(0x1f46281d),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/profile/${approved ? 'icon-verified' : 'icon-shield'}.svg',
-                          width: 20,
-                          height: 20,
-                          colorFilter: const ColorFilter.mode(
-                            DopmiTokens.purple,
-                            BlendMode.srcIn,
-                          ),
-                        ),
+                const SizedBox(width: 14),
+                ExcludeSemantics(
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: approved
+                          ? DopmiTokens.sky
+                          : DopmiTokens.saffronSoft,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/profile/${review ? 'icon-clock' : 'icon-shield'}.svg',
+                      width: 22,
+                      height: 22,
+                      colorFilter: const ColorFilter.mode(
+                        DopmiTokens.ink,
+                        BlendMode.srcIn,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xff151423),
-                              letterSpacing: 0,
-                              height: 18.4 / 15,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            subtitle,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              color: Color(0xff4f4e5c),
-                              letterSpacing: 0,
-                              height: 15.2 / 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    ExcludeSemantics(
-                      child: SvgPicture.asset(
-                        'assets/profile/icon-chevron-right.svg',
-                        width: 20,
-                        height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xff4f4e5c),
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),

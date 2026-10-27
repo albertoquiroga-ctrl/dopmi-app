@@ -4,8 +4,6 @@ import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/media/remote_photo.dart';
 
-import '../../core/css_linear_gradient.dart';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -210,15 +208,6 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                 if (context.mounted) refresh();
               },
             ),
-            const SizedBox(height: 12),
-            RescuerVerificationCard(
-              status: data['verification_status'] as String?,
-              onPressed: () => context.push(
-                data['verification_status'] == 'approved'
-                    ? '/settings'
-                    : '/rescue/new?kind=verification',
-              ),
-            ),
             if (data['avatar_failed'] == true) ...[
               TextButton(
                 onPressed: refresh,
@@ -294,6 +283,15 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
               ),
             ],
             const SizedBox(height: 12),
+            RescuerVerificationCard(
+              status: data['verification_status'] as String?,
+              onPressed: () => context.push(
+                data['verification_status'] == 'approved'
+                    ? '/settings'
+                    : '/rescue/new?kind=verification',
+              ),
+            ),
+            const SizedBox(height: 12),
             OutlinedButton.icon(
               key: const ValueKey('owner-social-verification'),
               onPressed: () => Navigator.of(context).push<void>(
@@ -311,7 +309,7 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                 color: Colors.transparent,
                 child: InkWell(
                   key: const ValueKey('rescuer-public-preview'),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(24),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (_) => RescuerProfilePreview(
@@ -328,41 +326,21 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                     ),
                   ),
                   child: Container(
-                    constraints: const BoxConstraints(minHeight: 64),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
+                    constraints: const BoxConstraints(minHeight: 76),
+                    padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0x4746281d)),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0xfff7f2ff), Colors.white],
-                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      color: DopmiTokens.saffronSoft,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x33fab919),
+                          blurRadius: 32,
+                          offset: Offset(0, 12),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: const Color(0x1f46281d),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            'assets/profile/icon-user.svg',
-                            width: 20,
-                            height: 20,
-                            colorFilter: const ColorFilter.mode(
-                              purple,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
                         const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,14 +366,23 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        SvgPicture.asset(
-                          'assets/profile/icon-chevron-right.svg',
-                          width: 16,
-                          height: 16,
-                          colorFilter: const ColorFilter.mode(
-                            muted,
-                            BlendMode.srcIn,
+                        const SizedBox(width: 14),
+                        Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: DopmiTokens.orange,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          alignment: Alignment.center,
+                          child: SvgPicture.asset(
+                            'assets/profile/icon-user.svg',
+                            width: 22,
+                            height: 22,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ],
@@ -561,14 +548,6 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
 
   @override
   Widget build(BuildContext context) {
-    final verified = widget.status == 'approved';
-    final label = switch (widget.status) {
-      'approved' => 'Verificado',
-      'submitted' => 'En revisión',
-      'changes_requested' || 'rejected' => 'Requiere correcciones',
-      null || 'draft' || 'not_started' => 'Sin verificar',
-      _ => 'Verificación no disponible',
-    };
     final visualEditHeight =
         (MediaQuery.textScalerOf(context).scale(13) * 16 / 13 + 16).clamp(
           44.0,
@@ -591,7 +570,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
             onPressed: widget.onEdit,
             statesController: states,
             style: TextButton.styleFrom(
-              backgroundColor: const Color(0xf2ffffff),
+              backgroundColor: const Color(0xfff3f0ea),
               foregroundColor: DopmiTokens.purple,
               minimumSize: const Size(48, 44),
               tapTargetSize: MaterialTapTargetSize.padded,
@@ -633,34 +612,27 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
       widget.name.isEmpty ? '?' : widget.name.characters.first.toUpperCase(),
       style: const TextStyle(
         fontFamily: 'Inter',
-        fontSize: 28,
+        fontSize: 20,
         fontWeight: FontWeight.w700,
-        color: DopmiTokens.purple,
+        color: Colors.white,
         letterSpacing: 0,
       ),
     );
     final avatar = Container(
-      width: 72,
-      height: 72,
+      width: 56,
+      height: 56,
       alignment: Alignment.center,
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: DopmiTokens.orange,
         shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x1415110d),
-            offset: Offset(0, 2),
-            blurRadius: 8,
-          ),
-        ],
       ),
       child: ClipOval(
         child: widget.avatarSource != null
             ? RemotePhoto(
                 source: widget.avatarSource!,
                 key: const ValueKey('rescuer-profile-avatar'),
-                width: 72,
-                height: 72,
+                width: 56,
+                height: 56,
                 excludeFromSemantics: true,
                 loading: initial,
                 unavailable: (retry) => Tooltip(
@@ -673,8 +645,8 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
             : Image.network(
                 widget.avatarUrl!,
                 key: const ValueKey('rescuer-profile-avatar'),
-                width: 72,
-                height: 72,
+                width: 56,
+                height: 56,
                 fit: BoxFit.cover,
                 excludeFromSemantics: true,
                 frameBuilder: (context, child, frame, synchronous) =>
@@ -690,55 +662,13 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
           widget.name,
           style: const TextStyle(
             fontFamily: 'Inter',
-            fontSize: 20,
+            fontSize: 16,
             height: 1.2,
-            letterSpacing: -.4,
+            letterSpacing: 0,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: DopmiTokens.ink,
           ),
         ),
-        if (!verified) ...[
-          const SizedBox(height: 4),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: verified
-                  ? const Color(0x4722bd90)
-                  : const Color(0x38ffffff),
-              borderRadius: BorderRadius.circular(99),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ExcludeSemantics(
-                  child: SvgPicture.asset(
-                    'assets/profile/icon-shield.svg',
-                    width: 14,
-                    height: 14,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Flexible(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      height: 15.2 / 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
         if (widget.city.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
@@ -747,7 +677,7 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
               fontFamily: 'Inter',
               fontSize: 13,
               height: 16 / 13,
-              color: Color(0xebffffff),
+              color: DopmiTokens.muted,
               letterSpacing: 0,
             ),
           ),
@@ -767,19 +697,15 @@ class _RescuerIdentityCardState extends ConsumerState<RescuerIdentityCard> {
             ],
           );
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.fromLTRB(16, 14, 14, 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const CssLinearGradient(
-          degrees: 155,
-          colors: [Color(0xff7841f2), Color(0xff9b6cff), Color(0xffc4a8ff)],
-          stops: [0, .55, 1],
-        ),
+        color: Colors.white,
         boxShadow: const [
           BoxShadow(
-            color: Color(0x477841f2),
-            offset: Offset(0, 6),
-            blurRadius: 18,
+            color: Color(0x0f15110d),
+            offset: Offset(0, 8),
+            blurRadius: 24,
           ),
         ],
       ),

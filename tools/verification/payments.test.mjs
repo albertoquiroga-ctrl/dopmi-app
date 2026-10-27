@@ -166,16 +166,16 @@ test('support media is private and only the owner can write before receipt; staf
   assert.equal(bucket.public,false);assert.equal(bucket.file_size_limit,5242880);
   assert.deepEqual(bucket.allowed_mime_types,['image/jpeg']);
 });
-test('support is private, retries one durable receipt and rejects changed replay content', async () => {
+test('support Other remains private, retries one durable receipt and rejects changed replay content', async () => {
   await role(donor);
-  const body=JSON.stringify({topic:'guardian',case_name:'Luna',message:'Ayuda en México.'});
+  const body=JSON.stringify({topic:'other',case_name:'Luna',message:'Ayuda en México.'});
   const submit=async(data=body)=>(await db.query('select dopmi_submit_support_request($1,$2::jsonb) value',[key,data])).rows[0].value;
   const first=await submit(); assert.equal(first.status,'received');
   assert.deepEqual(await submit(),first);
-  assert.equal((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify({topic:'guardian',case_name:'Luna',message:'Changed'})])).rows[0].value,null);
+  assert.equal((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,JSON.stringify({topic:'other',case_name:'Luna',message:'Changed'})])).rows[0].value,null);
   assert.deepEqual((await db.query('select dopmi_my_support_request($1,$2::jsonb) value',[key,body])).rows[0].value,first);
   assert.deepEqual((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,first);
-  await rejected(()=>submit(JSON.stringify({topic:'guardian',message:'Otra solicitud'})),/solicitud cambió/);
+  await rejected(()=>submit(JSON.stringify({topic:'other',message:'Otra solicitud'})),/solicitud cambió/);
   await role(other);
   assert.equal((await db.query('select dopmi_my_support_request($1) value',[key])).rows[0].value,null);
   await rejected(()=>db.query('select * from private.dopmi_support_requests'),/permission denied/);
@@ -206,7 +206,7 @@ test('support administrative inbox requires real membership, is paginated and au
 test('support requires active identity and enforces per-account rate without blocking stable retries',async()=>{
   await role(donor);
   const body=JSON.stringify({topic:'account',message:'Necesito ayuda.'});
-  for (const invalid of [{topic:'shop',message:'Ayuda'}, {topic:'account',message:'\n\t'},
+  for (const invalid of [{topic:'shop',message:'Ayuda'}, {topic:'other_unknown',message:'Ayuda'}, {topic:'account',message:'\n\t'},
     {topic:'account',message:'Ayuda',owner_id:other}, {topic:'account',message:'a'.repeat(4001)}]) {
     await rejected(()=>db.query('select dopmi_submit_support_request($1,$2::jsonb)',[key,JSON.stringify(invalid)]),/inválida/);
   }
@@ -4000,7 +4000,8 @@ test('independent card setup saves for a non-subscriber without creating money o
     assert.equal((await db.query(`select count(*)::int n from private.${table}`)).rows[0].n,0);
   await role(donor);
   const receipt=(await db.query('select dopmi_saved_card_state() value')).rows[0].value;
-  assert.deepEqual(receipt,{key,status:'saved',card_id:'pm_savedCard'});
+  assert.deepEqual(receipt,{key,status:'saved',card_id:'pm_savedCard',
+    presentation:'hosted_checkout',add_only:true,default_unchanged:true});
   for(const actor of [other,staff]){await role(actor);assert.equal((await db.query('select dopmi_saved_card_state() value')).rows[0].value,null);}
 });
 

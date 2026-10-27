@@ -1582,6 +1582,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           : 'Reintentar mi solicitud',
       busy: busy,
       dark: decorateEnrollment,
+      cafe: p == null,
       onPressed: canSubmit ? () => submit() : null,
     );
     final enrollmentWidgets = <Widget>[
@@ -1654,8 +1655,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           if (!didPop) returnToBilling();
         },
         child: ContributionFrame(
-          title: '',
-          overlayBack: decorateEnrollment,
+          title: decorateEnrollment ? 'Suscripción Guardián' : '',
+          headerColor: decorateEnrollment ? const Color(0xffe6e6e6) : null,
+          showHeaderDivider: !decorateEnrollment,
           bottomNavigationBar: decorateEnrollment
               ? DecoratedBox(
                   decoration: const BoxDecoration(

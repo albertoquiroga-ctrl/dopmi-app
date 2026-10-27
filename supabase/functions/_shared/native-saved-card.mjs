@@ -17,6 +17,9 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
         setup.metadata?.consent_version !== savedCardConsentVersion ||
         !Array.isArray(setup.payment_method_types) || setup.payment_method_types.length !== 1 ||
         setup.payment_method_types[0] !== 'card') fail('saved_card_setup_mismatch');
+    if (job.purpose === 'add_card' &&
+        (setup.metadata?.dopmi_purpose !== 'add_card' || setup.metadata?.request_key !== job.request_key))
+      fail('saved_card_setup_mismatch');
   }
   function customerMatches(customer, expected) {
     if (customer?.id !== expected || customer.deleted || customer.livemode !== false)
@@ -53,7 +56,8 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
         if (Date.parse(job.expires_at) <= Date.now()) return await checkpoint('expired');
         const setup = await stripe.setupIntents.create({ customer: job.customer_id, usage: 'off_session',
           allowed_payment_method_types: ['card'],
-          metadata: { dopmi_saved_card_job: job.id, wallet_type: 'card', consent_version: savedCardConsentVersion } },
+          metadata: { dopmi_saved_card_job: job.id, wallet_type: 'card', consent_version: savedCardConsentVersion,
+            ...(job.purpose === 'add_card' ? { dopmi_purpose: 'add_card', request_key: job.request_key } : {}) } },
         { idempotencyKey: `dopmi-native-card-setup:${jobId}` });
         if (!/^seti_[A-Za-z0-9]+$/.test(setup?.id ?? '')) fail('saved_card_setup_mismatch');
         matches(setup, { ...job, setup_intent_id: setup.id });
@@ -108,10 +112,11 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
       }
     }
     return { key: job.request_key, status: job.status, method_status: methodStatus,
-      setup_client_secret: secret, checkout_url: null };
+      setup_client_secret: secret, checkout_url: null,
+      ...(job.purpose === 'add_card' ? { card_id: job.status === 'saved' ? job.payment_method_id : null } : {}) };
   }
   async function methodReceipt(actor, job) {
-    if (job?.owner_id !== actor) fail('saved_card_native_job_invalid');
+    if (job?.owner_id !== actor || job.purpose != null) fail('saved_card_native_job_invalid');
     if (job.wallet_type == null) return hosted.checkout(actor, { key: job.request_key,
       consent: true, consent_version: savedCardConsentVersion });
     if (job.wallet_type !== 'card') fail('saved_card_native_job_invalid');
@@ -131,6 +136,36 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
     if (job.request_key !== input.key) fail('saved_card_native_job_invalid');
     return methodReceipt(actor, job);
   }
+  async function addReceipt(actor, job, key) {
+    if (job?.owner_id !== actor || job.request_key !== key ||
+        job.consent_version !== savedCardConsentVersion || !job.consent_at)
+      fail('saved_card_native_job_invalid');
+    let result, presentation;
+    if (job.wallet_type == null && job.purpose == null) {
+      // A retry of a pre-upgrade add-only request keeps its original channel.
+      result = await hosted.checkout(actor, { key, consent: true, consent_version: savedCardConsentVersion });
+      presentation = 'hosted_checkout';
+    } else {
+      if (job.wallet_type !== 'card' || job.purpose !== 'add_card') fail('saved_card_native_job_invalid');
+      result = await receipt(job.id);
+      presentation = 'native_card';
+    }
+    return { ...result, method_status: result.method_status ?? result.status,
+      setup_client_secret: result.setup_client_secret ?? null, card_id: result.card_id ?? null,
+      presentation, add_only: true, default_unchanged: true };
+  }
+  async function addSubmit(actor, input) {
+    if (!uuid(input.key) || input.consent !== true || input.consent_version !== savedCardConsentVersion)
+      throw new PaymentError('saved_card_consent_required', 400);
+    const job = await rpc('prepare_add', { owner_id: actor, key: input.key,
+      consent: true, consent_version: savedCardConsentVersion, return_url: returnUrl });
+    return addReceipt(actor, job, input.key);
+  }
+  async function addStatus(actor, input) {
+    if (!uuid(input.key)) throw new PaymentError('saved_card_request_invalid', 400);
+    const job = await rpc('add_job', { owner_id: actor, key: input.key });
+    return job == null ? null : addReceipt(actor, job, input.key);
+  }
   async function reconcile() {
     let saved = 0, failed = 0;
     for (const candidate of await rpc('candidates', {})) {
@@ -149,5 +184,5 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
     await run(job.id);
     return { received: true, saved_native_card: true };
   }
-  return { run, receipt, submit, status, reconcile, handleWebhook };
+  return { run, receipt, submit, status, addSubmit, addStatus, reconcile, handleWebhook };
 }

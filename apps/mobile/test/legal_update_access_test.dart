@@ -4,6 +4,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/auth_screens.dart';
 import 'package:dopmi_mobile/features/identity/privacy_notice_screen.dart';
+import 'package:dopmi_mobile/features/identity/legal_document_frame.dart';
 import 'package:dopmi_mobile/features/identity/auth_ui.dart';
 import 'package:dopmi_mobile/features/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +144,40 @@ void main() {
           find.textContaining('extractos del aviso publicado'),
           findsNothing,
         );
+        final sections = tester
+            .widgetList<LegalDocumentSection>(find.byType(LegalDocumentSection))
+            .toList();
+        expect(sections, isNotEmpty);
+        final first = sections.first;
+        final firstButton = find.widgetWithText(TextButton, first.title);
+        expect(find.text(first.body), findsNothing);
+        await tester.ensureVisible(firstButton);
+        await tester.tap(firstButton);
+        await tester.pumpAndSettle();
+        expect(find.text(first.body), findsOneWidget);
+        await tester.ensureVisible(firstButton);
+        await tester.tap(firstButton);
+        await tester.pumpAndSettle();
+        expect(find.text(first.body), findsNothing);
+        for (final section in sections.where(
+          (section) => section.footer != null,
+        )) {
+          final toggle = find.widgetWithText(TextButton, section.title);
+          expect(find.byWidget(section.footer!), findsNothing);
+          await tester.ensureVisible(toggle);
+          await tester.tap(toggle);
+          await tester.pumpAndSettle();
+          expect(find.text(section.body), findsOneWidget);
+          expect(find.byWidget(section.footer!), findsOneWidget);
+          await tester.ensureVisible(toggle);
+          await tester.tap(toggle);
+          await tester.pumpAndSettle();
+          expect(find.byWidget(section.footer!), findsNothing);
+          await tester.ensureVisible(toggle);
+          await tester.tap(toggle);
+          await tester.pumpAndSettle();
+          expect(find.byWidget(section.footer!), findsOneWidget);
+        }
         expect(tester.takeException(), isNull);
       },
     );

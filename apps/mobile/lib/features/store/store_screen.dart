@@ -85,6 +85,26 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
                   ],
                 ),
               ),
+              if (resolved != null && resolved.enabled && actorCurrent)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      resolved.preview
+                          ? 'Vista previa de Tienda'
+                          : 'Tienda Dopmi',
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 32,
+                        height: 1.1,
+                        letterSpacing: -.64,
+                        fontWeight: FontWeight.w800,
+                        color: DopmiTokens.ink,
+                      ),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: catalog.when(
                   skipLoadingOnRefresh: false,
@@ -449,18 +469,6 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            widget.catalog.preview ? 'Vista previa de Tienda' : 'Tienda Dopmi',
-            style: const TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 32,
-              height: 1.1,
-              letterSpacing: -.64,
-              fontWeight: FontWeight.w800,
-              color: DopmiTokens.ink,
-            ),
-          ),
-          const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(

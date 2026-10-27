@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/media/photo_prefetch.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/reference_focus_outline.dart';
@@ -136,17 +137,23 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
         ? null
         : ColorFilter.mode(color, BlendMode.srcIn),
   );
+
+  Widget previewSheet(Widget child) => !widget.preview
+      ? child
+      : ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+            child: child,
+          ),
+        );
   @override
   Widget build(BuildContext context) {
     final record = widget.record;
     final photoPaths = photos;
     final heroHeight = MediaQuery.sizeOf(context).height * .42;
-    final height = widget.preview
-        ? (MediaQuery.sizeOf(context).height * .32).clamp(180.0, 240.0)
-        : heroHeight.clamp(260.0, 340.0);
-    final previewAccent = widget.preview
-        ? const Color(0xff7c3aed)
-        : const Color(0xff6b5000);
+    final height = heroHeight.clamp(260.0, 340.0);
+    const previewAccent = ink;
     final rescuer = record.data['rescuer_name'] as String? ?? '';
     final rescuerParts = rescuer.trim().split(RegExp(r'\s+'));
     final displayRescuer = widget.preview && rescuerParts.length > 1
@@ -357,230 +364,226 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: height - 22),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(28),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x0f15110d),
-                            offset: Offset(0, -8),
-                            blurRadius: 24,
+                    child: previewSheet(
+                      Container(
+                        decoration: BoxDecoration(
+                          color: widget.preview ? null : Colors.white,
+                          // CSS veil composited over its 22% white base.
+                          gradient: widget.preview
+                              ? const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  transform: GradientRotation(-math.pi / 12),
+                                  colors: [
+                                    Color(0x84ffffff),
+                                    Color(0xc7ffffff),
+                                    Color(0xdbffffff),
+                                  ],
+                                  stops: [0, .52, 1],
+                                )
+                              : null,
+                          border: widget.preview
+                              ? const Border(
+                                  top: BorderSide(color: Color(0xc7ffffff)),
+                                )
+                              : null,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(28),
                           ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      record.title,
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                        letterSpacing: -.56,
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.15,
-                                        color: ink,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0f15110d),
+                              offset: Offset(0, -8),
+                              blurRadius: 24,
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        record.title,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          letterSpacing: -.56,
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.15,
+                                          color: ink,
+                                        ),
                                       ),
-                                    ),
-                                    if (location.isNotEmpty) ...[
+                                      if (location.isNotEmpty) ...[
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            svg(
+                                              'location',
+                                              14,
+                                              color: previewAccent,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Expanded(
+                                              child: Text(
+                                                location,
+                                                style: TextStyle(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: previewAccent,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                      // The public catalog is gated by private.dopmi_rescuer_verified on the server.
                                       const SizedBox(height: 8),
                                       Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          svg(
-                                            'location',
-                                            14,
-                                            color: previewAccent,
-                                          ),
+                                          svg('icon-verified', 16),
                                           const SizedBox(width: 6),
                                           Expanded(
                                             child: Text(
-                                              location,
+                                              widget.preview &&
+                                                      record.data['rescuer_verified'] !=
+                                                          true
+                                                  ? 'Vista previa'
+                                                  : 'Rescatista verificado',
                                               style: TextStyle(
                                                 fontFamily: 'Inter',
                                                 letterSpacing: 0,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                                color: previewAccent,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                color: muted,
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     ],
-                                    // The public catalog is gated by private.dopmi_rescuer_verified on the server.
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        svg('icon-verified', 16),
-                                        const SizedBox(width: 6),
-                                        Expanded(
-                                          child: Text(
-                                            widget.preview &&
-                                                    record.data['rescuer_verified'] !=
-                                                        true
-                                                ? 'Vista previa'
-                                                : 'Rescatista verificado',
-                                            style: TextStyle(
-                                              fontFamily: 'Inter',
-                                              letterSpacing: 0,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w500,
-                                              color: muted,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              SizedBox(
-                                width: 42,
-                                height: 42,
-                                child: IconButton(
-                                  tooltip: 'Compartir',
-                                  onPressed: widget.preview
-                                      ? null
-                                      : widget.share,
-                                  style: IconButton.styleFrom(
-                                    overlayColor: Colors.transparent,
-                                    side: const BorderSide(
-                                      color: Color(0xffe6e2dd),
-                                      width: 1.5,
-                                    ),
-                                    shape: const CircleBorder(),
                                   ),
-                                  icon: svg('icon-share', 18, color: ink),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          LayoutBuilder(
-                            builder: (context, box) {
-                              final items = [
-                                _CaseFundingStat(
-                                  'Recibido',
-                                  record.fundedCents,
-                                  received: true,
-                                ),
-                                _CaseFundingStat(
-                                  widget.preview ? 'Solicitado' : 'Objetivo',
-                                  widget.preview
-                                      ? widget.requestedAmountCents ?? 0
-                                      : record.targetCents,
-                                  received: false,
-                                ),
-                              ];
-                              if (MediaQuery.textScalerOf(context).scale(18) >
-                                  25) {
-                                return Column(
-                                  children: [
-                                    items[0],
-                                    const SizedBox(height: 12),
-                                    items[1],
-                                  ],
-                                );
-                              }
-                              return Row(
-                                children: [
-                                  Expanded(child: items[0]),
-                                  const SizedBox(width: 12),
-                                  Expanded(child: items[1]),
-                                ],
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          LinearProgressIndicator(
-                            value: ratio,
-                            minHeight: 8,
-                            borderRadius: BorderRadius.circular(999),
-                            backgroundColor: const Color(0xffefe9df),
-                            color: yellow,
-                          ),
-                          if (categories.isNotEmpty) ...[
-                            const SizedBox(height: 20),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                for (final category in categories)
-                                  Container(
-                                    constraints: const BoxConstraints(
-                                      minHeight: 34,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: const Color(0xffe6e2dd),
+                                const SizedBox(width: 12),
+                                SizedBox(
+                                  width: 42,
+                                  height: 42,
+                                  child: IconButton(
+                                    tooltip: 'Compartir',
+                                    onPressed: widget.preview
+                                        ? null
+                                        : widget.share,
+                                    style: IconButton.styleFrom(
+                                      overlayColor: Colors.transparent,
+                                      side: const BorderSide(
+                                        color: Color(0xffe6e2dd),
+                                        width: 1.5,
                                       ),
-                                      borderRadius: BorderRadius.circular(999),
+                                      shape: const CircleBorder(),
                                     ),
-                                    child: Text(
-                                      category,
-                                      style: const TextStyle(
-                                        fontFamily: 'Inter',
-                                        letterSpacing: 0,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.1,
-                                        color: ink,
-                                      ),
-                                    ),
+                                    icon: svg('icon-share', 18, color: ink),
                                   ),
+                                ),
                               ],
                             ),
-                          ],
-                          const SizedBox(height: 20),
-                          const Text(
-                            'Mi historia',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              height: 1.3,
+                            const SizedBox(height: 20),
+                            LayoutBuilder(
+                              builder: (context, box) {
+                                final items = [
+                                  _CaseFundingStat(
+                                    'Recibido',
+                                    record.fundedCents,
+                                    received: true,
+                                  ),
+                                  _CaseFundingStat(
+                                    widget.preview ? 'Solicitado' : 'Objetivo',
+                                    widget.preview
+                                        ? widget.requestedAmountCents ?? 0
+                                        : record.targetCents,
+                                    received: false,
+                                  ),
+                                ];
+                                if (MediaQuery.textScalerOf(context).scale(18) >
+                                    25) {
+                                  return Column(
+                                    children: [
+                                      items[0],
+                                      const SizedBox(height: 12),
+                                      items[1],
+                                    ],
+                                  );
+                                }
+                                return Row(
+                                  children: [
+                                    Expanded(child: items[0]),
+                                    const SizedBox(width: 12),
+                                    Expanded(child: items[1]),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            LinearProgressIndicator(
+                              value: ratio,
+                              minHeight: 8,
+                              borderRadius: BorderRadius.circular(999),
+                              backgroundColor: DopmiTokens.saffronSoft,
                               color: ink,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            (record.publicData['story'] ??
-                                    record.publicData['description'] ??
-                                    '')
-                                as String,
-                            style: const TextStyle(
-                              fontFamily: 'Inter',
-                              letterSpacing: 0,
-                              fontSize: 14,
-                              height: 1.55,
-                              color: muted,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          if (widget.preview || eligible.isNotEmpty) ...[
+                            if (categories.isNotEmpty) ...[
+                              const SizedBox(height: 20),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  for (final category in categories)
+                                    Container(
+                                      constraints: const BoxConstraints(
+                                        minHeight: 34,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: const Color(0xffe6e2dd),
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        category,
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          letterSpacing: 0,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.1,
+                                          color: ink,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                            const SizedBox(height: 20),
                             const Text(
-                              'Ayúdame a recuperar:',
+                              'Mi historia',
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 letterSpacing: 0,
@@ -590,104 +593,139 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                                 color: ink,
                               ),
                             ),
-                            const SizedBox(height: 12),
-                          ],
-                          widget.needs,
-                          if (photoPaths.isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              (record.publicData['story'] ??
+                                      record.publicData['description'] ??
+                                      '')
+                                  as String,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                letterSpacing: 0,
+                                fontSize: 14,
+                                height: 1.55,
+                                color: muted,
+                              ),
+                            ),
                             const SizedBox(height: 20),
-                            LayoutBuilder(
-                              builder: (context, box) {
-                                final columns =
-                                    MediaQuery.textScalerOf(context).scale(14) >
-                                        20
-                                    ? 1
-                                    : 2;
-                                final size =
-                                    (box.maxWidth - 12 * (columns - 1)) /
-                                    columns;
-                                return Wrap(
-                                  spacing: 12,
-                                  runSpacing: 12,
-                                  children: [
-                                    for (var i = 0; i < photoPaths.length; i++)
-                                      SizedBox(
-                                        width: size,
-                                        height: size,
-                                        child: Semantics(
-                                          button: true,
-                                          label: 'Ver foto ${i + 1}',
-                                          child: InkWell(
-                                            splashFactory:
-                                                NoSplash.splashFactory,
-                                            overlayColor:
-                                                const WidgetStatePropertyAll(
-                                                  Colors.transparent,
-                                                ),
-                                            onTap: () => selectPhoto(i),
-                                            borderRadius: BorderRadius.circular(
-                                              18,
-                                            ),
-                                            child: RescuePublicPhoto(
-                                              photoPaths[i],
-                                              height: size,
-                                              radius: 18,
+                            if (widget.preview || eligible.isNotEmpty) ...[
+                              const Text(
+                                'Ayúdame a recuperar:',
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.3,
+                                  color: ink,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                            widget.needs,
+                            if (photoPaths.isNotEmpty) ...[
+                              const SizedBox(height: 20),
+                              LayoutBuilder(
+                                builder: (context, box) {
+                                  final columns =
+                                      MediaQuery.textScalerOf(context)
+                                              .scale(14) >
+                                          20
+                                      ? 1
+                                      : 2;
+                                  final size =
+                                      (box.maxWidth - 12 * (columns - 1)) /
+                                      columns;
+                                  return Wrap(
+                                    spacing: 12,
+                                    runSpacing: 12,
+                                    children: [
+                                      for (
+                                        var i = 0;
+                                        i < photoPaths.length;
+                                        i++
+                                      )
+                                        SizedBox(
+                                          width: size,
+                                          height: size,
+                                          child: Semantics(
+                                            button: true,
+                                            label: 'Ver foto ${i + 1}',
+                                            child: InkWell(
+                                              splashFactory:
+                                                  NoSplash.splashFactory,
+                                              overlayColor:
+                                                  const WidgetStatePropertyAll(
+                                                    Colors.transparent,
+                                                  ),
+                                              onTap: () => selectPhoto(i),
+                                              borderRadius:
+                                                  BorderRadius.circular(18),
+                                              child: RescuePublicPhoto(
+                                                photoPaths[i],
+                                                height: size,
+                                                radius: 18,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ],
+                            const SizedBox(height: 20),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton(
+                                onPressed: widget.preview || widget.busy
+                                    ? null
+                                    : widget.report,
+                                style: TextButton.styleFrom(
+                                  splashFactory: NoSplash.splashFactory,
+                                  overlayColor: Colors.transparent,
+                                  animationDuration: Duration.zero,
+                                  minimumSize: Size.zero,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  foregroundColor: muted,
+                                  padding: EdgeInsets.zero,
+                                  textStyle: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    letterSpacing: 0,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    svg('icon-alert-circle', 16, color: muted),
+                                    const SizedBox(width: 6),
+                                    const Flexible(child: Text('Reportar')),
                                   ],
-                                );
-                              },
-                            ),
-                          ],
-                          const SizedBox(height: 20),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: TextButton(
-                              onPressed: widget.preview || widget.busy
-                                  ? null
-                                  : widget.report,
-                              style: TextButton.styleFrom(
-                                splashFactory: NoSplash.splashFactory,
-                                overlayColor: Colors.transparent,
-                                animationDuration: Duration.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                foregroundColor: muted,
-                                padding: EdgeInsets.zero,
-                                textStyle: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  letterSpacing: 0,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  svg('icon-alert-circle', 16, color: muted),
-                                  const SizedBox(width: 6),
-                                  const Flexible(child: Text('Reportar')),
-                                ],
-                              ),
                             ),
-                          ),
-                          if (widget.error != null)
-                            Notice(widget.error!, isError: true),
-                          if (!widget.preview)
-                            OutlinedButton.icon(
-                              onPressed: widget.busy ? null : widget.favorite,
-                              icon: Icon(
-                                widget.saved
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
+                            if (widget.error != null)
+                              Notice(widget.error!, isError: true),
+                            if (!widget.preview)
+                              OutlinedButton.icon(
+                                onPressed: widget.busy ? null : widget.favorite,
+                                icon: Icon(
+                                  widget.saved
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                ),
+                                label: Text(
+                                  widget.saved
+                                      ? 'Caso guardado'
+                                      : 'Guardar caso',
+                                ),
                               ),
-                              label: Text(
-                                widget.saved ? 'Caso guardado' : 'Guardar caso',
-                              ),
-                            ),
-                          if (widget.updates != null) widget.updates!,
-                        ],
+                            if (widget.updates != null) widget.updates!,
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -773,9 +811,7 @@ class _CaseFundingStat extends StatelessWidget {
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              color: received
-                  ? const Color(0xffeee8ff)
-                  : const Color(0xfffff1df),
+              color: received ? ink : DopmiTokens.saffronSoft,
               borderRadius: BorderRadius.circular(12),
             ),
             alignment: Alignment.center,
@@ -785,7 +821,7 @@ class _CaseFundingStat extends StatelessWidget {
                     width: 16,
                     height: 16,
                     colorFilter: const ColorFilter.mode(
-                      purple,
+                      Colors.white,
                       BlendMode.srcIn,
                     ),
                   )
@@ -793,10 +829,7 @@ class _CaseFundingStat extends StatelessWidget {
                     'assets/profile/icon-star.svg',
                     width: 16,
                     height: 16,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xffc45c12),
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
                   ),
           ),
         ),

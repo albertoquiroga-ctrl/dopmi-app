@@ -1,8 +1,11 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 
 import '../../core/ui.dart';
 
@@ -35,11 +38,7 @@ class AuthFrame extends StatelessWidget {
         inputDecorationTheme: sheet
             ? theme.inputDecorationTheme.copyWith(
                 filled: true,
-                fillColor: WidgetStateColor.resolveWith(
-                  (states) => states.contains(WidgetState.focused)
-                      ? Colors.white
-                      : const Color(0xfffaf8f5),
-                ),
+                fillColor: Colors.white,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 12,
@@ -64,7 +63,7 @@ class AuthFrame extends StatelessWidget {
         filledButtonTheme: FilledButtonThemeData(
           style:
               FilledButton.styleFrom(
-                backgroundColor: ink,
+                backgroundColor: DopmiTokens.orangeButton,
                 foregroundColor: Colors.white,
                 disabledBackgroundColor: sheet ? const Color(0xffcfc8bf) : null,
                 disabledForegroundColor: sheet ? Colors.white : null,
@@ -103,57 +102,61 @@ class AuthFrame extends StatelessWidget {
               child: child,
             )
           : Scaffold(
-              body: SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, box) => SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: box.maxHeight),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(28, 24, 28, 28),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Wrap(
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    if (back)
-                                      IconButton(
-                                        tooltip: 'Volver',
-                                        icon: const Icon(
-                                          Icons.arrow_back_rounded,
+              body: DonorCanvas(
+                child: SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, box) => SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: box.maxHeight),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(28, 24, 28, 28),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Wrap(
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: [
+                                      if (back)
+                                        IconButton(
+                                          tooltip: 'Volver',
+                                          icon: const Icon(
+                                            Icons.arrow_back_rounded,
+                                          ),
+                                          onPressed:
+                                              onBack ??
+                                              () {
+                                                if (context.canPop()) {
+                                                  context.pop();
+                                                } else {
+                                                  context.go('/welcome');
+                                                }
+                                              },
                                         ),
-                                        onPressed:
-                                            onBack ??
-                                            () {
-                                              if (context.canPop()) {
-                                                context.pop();
-                                              } else {
-                                                context.go('/welcome');
-                                              }
-                                            },
-                                      ),
-                                    const Brand(),
-                                    if (accountLink)
-                                      TextButton(
-                                        onPressed: () => context.push('/login'),
-                                        child: const Text('Ya tengo cuenta'),
-                                      ),
-                                  ],
-                                ),
-                                SizedBox(height: accountLink ? 8 : 28),
-                                child,
-                              ],
-                            ),
-                            if (footer != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 24),
-                                child: footer!,
+                                      const Brand(),
+                                      if (accountLink)
+                                        TextButton(
+                                          onPressed: () =>
+                                              context.push('/login'),
+                                          child: const Text('Ya tengo cuenta'),
+                                        ),
+                                    ],
+                                  ),
+                                  SizedBox(height: accountLink ? 8 : 28),
+                                  child,
+                                ],
                               ),
-                          ],
+                              if (footer != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 24),
+                                  child: footer!,
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -307,9 +310,9 @@ class AuthHeading extends StatelessWidget {
     children: [
       ConstrainedBox(
         constraints: BoxConstraints(
-          // Source 14ch at Fraunces28; honor the user's text scale.
+          // Source heading width; honor the user's text scale.
           maxWidth: sheet
-              ? 262.836 * MediaQuery.textScalerOf(context).scale(28) / 28
+              ? 284 * MediaQuery.textScalerOf(context).scale(28) / 28
               : double.infinity,
         ),
         child: Semantics(
@@ -325,7 +328,7 @@ class AuthHeading extends StatelessWidget {
                           largeTitleFontSize != null &&
                               MediaQuery.textScalerOf(context).scale(28) > 40
                           ? largeTitleFontSize
-                          : null,
+                          : 28,
                     )
                   : Theme.of(context).textTheme.headlineLarge!;
               final scaler = MediaQuery.textScalerOf(context);
@@ -429,20 +432,20 @@ class _AuthSheet extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: intent == 'rescue'
                       ? const [
-                          Color.fromRGBO(40, 18, 72, .8),
-                          Color.fromRGBO(21, 17, 13, .4),
-                          Color.fromRGBO(21, 17, 13, .58),
-                          Color.fromRGBO(21, 17, 13, .92),
+                          Color.fromRGBO(70, 40, 29, .78),
+                          Color.fromRGBO(40, 18, 72, .42),
+                          Color.fromRGBO(21, 17, 13, .55),
+                          Color.fromRGBO(21, 17, 13, .9),
                         ]
                       : const [
-                          Color.fromRGBO(21, 17, 13, .72),
-                          Color.fromRGBO(21, 17, 13, .35),
-                          Color.fromRGBO(21, 17, 13, .55),
-                          Color.fromRGBO(21, 17, 13, .92),
+                          Color.fromRGBO(70, 40, 29, .72),
+                          Color.fromRGBO(21, 17, 13, .38),
+                          Color.fromRGBO(21, 17, 13, .5),
+                          Color.fromRGBO(21, 17, 13, .86),
                         ],
                   stops: intent == 'rescue'
-                      ? const [0, .3, .55, 1]
-                      : const [0, .28, .52, 1],
+                      ? const [0, .36, .6, 1]
+                      : const [0, .34, .58, 1],
                 ),
               ),
             ),
@@ -501,23 +504,10 @@ class _AuthSheet extends StatelessWidget {
                     Expanded(
                       child: Align(
                         alignment: Alignment.bottomCenter,
-                        child: Container(
-                          width: double.infinity,
+                        child: AuthFrostPanel(
                           key: const ValueKey('auth-form-sheet'),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(21, 17, 13, .28),
-                                offset: Offset(0, 12),
-                                blurRadius: 32,
-                              ),
-                            ],
-                          ),
                           child: Material(
-                            color: Colors.white,
+                            color: Colors.transparent,
                             child: SingleChildScrollView(
                               keyboardDismissBehavior:
                                   ScrollViewKeyboardDismissBehavior.onDrag,
@@ -549,7 +539,7 @@ class _AuthSheet extends StatelessWidget {
 class AuthFocusBorder extends OutlineInputBorder {
   const AuthFocusBorder()
     : super(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
         borderSide: const BorderSide(color: yellow),
       );
   @override
@@ -586,8 +576,8 @@ class AuthFocusBorder extends OutlineInputBorder {
 class AuthIdleBorder extends OutlineInputBorder {
   const AuthIdleBorder()
     : super(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-        borderSide: const BorderSide(color: Color(0xffe8e2d9)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: const BorderSide(color: DopmiTokens.line),
       );
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) => this;
@@ -754,5 +744,51 @@ class AuthSwitchFooter extends StatelessWidget {
         ),
       );
     },
+  );
+}
+
+/// f693 warm-trust access panel, over the retained photo/scrim.
+class AuthFrostPanel extends StatelessWidget {
+  const AuthFrostPanel({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(28),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x2446281d),
+          offset: Offset(0, 8),
+          blurRadius: 28,
+        ),
+        BoxShadow(
+          color: Color(0x1f15110d),
+          offset: Offset(0, 12),
+          blurRadius: 32,
+        ),
+      ],
+    ),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 28, sigmaY: 28),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            // CSS paints the white gradient over a separate .46 white layer.
+            // Precompose their alpha; a color+shader Paint multiplies it.
+            gradient: const LinearGradient(
+              begin: Alignment(-.259, -.966),
+              end: Alignment(.259, .966),
+              stops: [0, .52, 1],
+              colors: [Color(0xaaffffff), Color(0xd8ffffff), Color(0xe6ffffff)],
+            ),
+            border: Border.all(color: const Color(0xc7ffffff)),
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: child,
+        ),
+      ),
+    ),
   );
 }

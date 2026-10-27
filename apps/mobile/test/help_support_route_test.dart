@@ -179,9 +179,11 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
         var submissions = 0;
+        final selectedTopic = scale == 2 ? 'other' : 'guardian';
+        final selectedLabel = scale == 2 ? 'Otro…' : 'Guardián';
         final repository = SupportRepository((_, params) async {
           submissions++;
-          expect((params['payload'] as Map)['topic'], 'guardian');
+          expect((params['payload'] as Map)['topic'], selectedTopic);
           expect(
             (params['payload'] as Map)['message'],
             'Mi mensaje permanece.',
@@ -224,7 +226,15 @@ void main() {
           } else if (dismissal == 'back') {
             await tester.binding.handlePopRoute();
           } else {
-            final option = find.text('Guardián').last;
+            final options = find.text(selectedLabel);
+            if (options.evaluate().isEmpty) {
+              await tester.scrollUntilVisible(
+                options,
+                150,
+                scrollable: find.byType(Scrollable).last,
+              );
+            }
+            final option = options.last;
             await tester.ensureVisible(option);
             await tester.pumpAndSettle();
             expect(option.hitTestable(), findsOneWidget);
@@ -241,7 +251,7 @@ void main() {
           );
           expect(submissions, 0);
         }
-        expect(find.text('Guardián'), findsOneWidget);
+        expect(find.text(selectedLabel), findsOneWidget);
         final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
         await tester.ensureVisible(send);
         await tester.pumpAndSettle();

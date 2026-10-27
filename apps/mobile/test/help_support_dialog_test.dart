@@ -9,76 +9,98 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 
 void main() {
-  testWidgets('photo preview is local and retry reuses its uploaded path', (
-    tester,
-  ) async {
-    var picks = 0, uploads = 0, submissions = 0;
-    final ids = <String>[];
-    final paths = <String>[];
-    final repo = SupportRepository(
-      (name, params) async {
-        ids.add(params['target_request'] as String);
-        paths.add((params['payload'] as Map)['attachment_path'] as String);
-        if (++submissions == 1) throw StateError('retry');
-        return {'request_id': ids.last, 'status': 'received'};
-      },
-      upload: (id, bytes) async {
-        uploads++;
-        expect(img.decodeJpg(bytes), isNotNull);
-        return 'owner/$id/photo.jpg';
-      },
-    );
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: dopmiTheme(),
-        home: Scaffold(
-          body: HelpSupportDialog(
-            topics: const ['Cómo funcionan los apoyos'],
-            initialTopic: 0,
-            repository: repo,
-            pickImage: () async {
-              picks++;
-              return Uint8List.fromList(
-                img.encodePng(img.Image(width: 4, height: 4)),
-              );
-            },
+  testWidgets(
+    'Other photo preview is local and retry reuses its uploaded path and request',
+    (tester) async {
+      var picks = 0, uploads = 0, submissions = 0;
+      final ids = <String>[];
+      final paths = <String>[];
+      final sentTopics = <String>[];
+      final reconciliations = <String>[];
+      final repo = SupportRepository(
+        (name, params) async {
+          if (name == 'dopmi_my_support_request') {
+            reconciliations.add(params['target_request'] as String);
+            return null;
+          }
+          ids.add(params['target_request'] as String);
+          sentTopics.add((params['payload'] as Map)['topic'] as String);
+          paths.add((params['payload'] as Map)['attachment_path'] as String);
+          if (++submissions == 1) throw StateError('retry');
+          return {'request_id': ids.last, 'status': 'received'};
+        },
+        upload: (id, bytes) async {
+          uploads++;
+          expect(img.decodeJpg(bytes), isNotNull);
+          return 'owner/$id/photo.jpg';
+        },
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: dopmiTheme(),
+          home: Scaffold(
+            body: HelpSupportDialog(
+              topics: const ['Cómo funcionan los apoyos'],
+              initialTopic: 0,
+              repository: repo,
+              pickImage: () async {
+                picks++;
+                return Uint8List.fromList(
+                  img.encodePng(img.Image(width: 4, height: 4)),
+                );
+              },
+            ),
           ),
         ),
-      ),
-    );
-    await tester.enterText(find.byType(TextField).last, 'Ayuda con mi foto');
-    tester
-        .widget<OutlinedButton>(
-          find.widgetWithText(OutlinedButton, 'Adjuntar imagen (opcional)'),
-        )
-        .onPressed!();
-    await tester.runAsync(() async {
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-    });
-    await tester.pumpAndSettle();
-    expect(picks, 1);
-    expect(uploads, 0);
-    expect(find.byType(Image), findsOneWidget);
-    final preview = find
-        .ancestor(of: find.byType(Image), matching: find.byType(Container))
-        .first;
-    expect(tester.getSize(preview).height, 140);
-    expect(find.text('Cambiar imagen'), findsOneWidget);
-    expect(find.text('Continuar en correo'), findsNothing);
-    final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
-    tester.widget<FilledButton>(send).onPressed!();
-    await tester.pumpAndSettle();
-    expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
-    tester.widget<FilledButton>(send).onPressed!();
-    await tester.pumpAndSettle();
-    expect(uploads, 1);
-    expect(ids, hasLength(2));
-    expect(ids.first, ids.last);
-    expect(paths.first, paths.last);
-    expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
-    expect(find.text('Cambiar imagen'), findsNothing);
-    expect(tester.takeException(), isNull);
-  });
+      );
+      await tester.tap(find.byType(DropdownButtonFormField<int>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Otro…').last);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<DropdownButtonFormField<int>>(
+              find.byType(DropdownButtonFormField<int>),
+            )
+            .initialValue,
+        9,
+      );
+      await tester.enterText(find.byType(TextField).last, 'Ayuda con mi foto');
+      tester
+          .widget<OutlinedButton>(
+            find.widgetWithText(OutlinedButton, 'Adjuntar imagen (opcional)'),
+          )
+          .onPressed!();
+      await tester.runAsync(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 500));
+      });
+      await tester.pumpAndSettle();
+      expect(picks, 1);
+      expect(uploads, 0);
+      expect(find.byType(Image), findsOneWidget);
+      final preview = find
+          .ancestor(of: find.byType(Image), matching: find.byType(Container))
+          .first;
+      expect(tester.getSize(preview).height, 140);
+      expect(find.text('Cambiar imagen'), findsOneWidget);
+      expect(find.text('Continuar en correo'), findsNothing);
+      final send = find.widgetWithText(FilledButton, 'Enviar mensaje');
+      tester.widget<FilledButton>(send).onPressed!();
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Tu mensaje sigue aquí'), findsOneWidget);
+      tester.widget<FilledButton>(send).onPressed!();
+      await tester.pumpAndSettle();
+      expect(uploads, 1);
+      expect(sentTopics, ['other', 'other']);
+      expect(reconciliations, isEmpty);
+      expect(ids, hasLength(2));
+      expect(ids.first, ids.last);
+      expect(paths.first, paths.last);
+      expect(find.text('Recibimos tu mensaje.'), findsOneWidget);
+      expect(find.text('Cambiar imagen'), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
   for (final scale in [1.0, 2.0]) {
     testWidgets(
       'internal submission preserves draft and stable retry key at text scale $scale',

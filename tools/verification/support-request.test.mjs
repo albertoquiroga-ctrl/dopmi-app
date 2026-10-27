@@ -7,7 +7,8 @@ const request = body => new Request('https://example.test/support', {method:'POS
 test('support preserves authored accents and rejects identity injection, unsupported topics and oversized text', () => {
   assert.equal(parseSupportRequest(payload).message, 'Ayuda en México + información.');
   assert.equal(parseSupportRequest(payload).case_name, 'Luna & Sol');
-  for (const input of [null, [], {...payload,owner_id:id}, {...payload,topic:'shop'},
+  assert.equal(parseSupportRequest({...payload,topic:'other'}).topic, 'other');
+  for (const input of [null, [], {...payload,owner_id:id}, {...payload,topic:'shop'}, {...payload,topic:'other_unknown'},
     {...payload,request_id:'random'}, {...payload,message:' '}, {...payload,message:'a'.repeat(4001)},
     {...payload,case_name:'a'.repeat(121)}, {...payload,message:'secret\u0000'}]) {
     assert.throws(() => parseSupportRequest(input), SupportRequestError);
@@ -16,10 +17,10 @@ test('support preserves authored accents and rejects identity injection, unsuppo
 test('support acknowledges only a matching durable receipt and does not leak private failures', async () => {
   let called = 0;
   const handler = supportRequestHandler({authorize:async()=>id,receive:async(actor, data)=>{
-    called++; assert.equal(actor,id); assert.equal(data.message,'Ayuda en México + información.');
+    called++; assert.equal(actor,id); assert.equal(data.topic,'other'); assert.equal(data.message,'Ayuda en México + información.');
     return {request_id:id,status:'received',internal_secret:'never returned'};
   }});
-  const result = await handler(request(payload));
+  const result = await handler(request({...payload,topic:'other'}));
   assert.equal(result.status,200);
   assert.deepEqual(await result.json(),{request_id:id,status:'received'});
   assert.equal(called,1);

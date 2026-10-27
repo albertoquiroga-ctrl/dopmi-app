@@ -1,5 +1,3 @@
-import '../../core/css_linear_gradient.dart';
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,28 +99,13 @@ class SettingsVerificationCard extends StatelessWidget {
         : initial
         ? 'Iniciar verificación'
         : null;
-    final ink = approved
-        ? const Color(0xff0b7a5d)
-        : correction
-        ? const Color(0xffb51224)
-        : DopmiTokens.purple;
-    final gradient = approved
-        ? const [Color(0x1f2dc08e), Color(0x0d2dc08e)]
-        : correction
-        ? const [Color(0x1ae21d2f), Color(0x0ae21d2f)]
-        : const [Color(0x1a7c3aed), Color(0x0d7c3aed)];
+    const ink = DopmiTokens.ink;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: approved
-              ? const Color(0x592dc08e)
-              : correction
-              ? const Color(0xffffd4d8)
-              : const Color(0x4d7c3aed),
-        ),
-        gradient: CssLinearGradient(degrees: 149, colors: gradient),
+        border: Border.all(color: const Color(0x38eb6425)),
+        color: DopmiTokens.saffronSoft,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -136,11 +119,7 @@ class SettingsVerificationCard extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: approved
-                        ? const Color(0x332dc08e)
-                        : correction
-                        ? const Color(0x24e21d2f)
-                        : const Color(0x337c3aed),
+                    color: approved ? DopmiTokens.sky : Colors.white,
                   ),
                   child: SvgPicture.asset(
                     'assets/profile/icon-shield.svg',
@@ -190,7 +169,7 @@ class SettingsVerificationCard extends StatelessWidget {
                 child: FilledButton(
                   onPressed: onPressed,
                   style: FilledButton.styleFrom(
-                    backgroundColor: DopmiTokens.purple,
+                    backgroundColor: DopmiTokens.orangeButton,
                     foregroundColor: const Color(0xfffbfbff),
                     minimumSize: const Size(48, 48),
                     padding: const EdgeInsets.symmetric(

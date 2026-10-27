@@ -31,7 +31,11 @@ void main() {
     final icons = FontLoader('MaterialIcons')
       ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
     await tester.runAsync(icons.load);
-    final out = Directory('../../.tools/design-review');
+    const output = String.fromEnvironment(
+      'CAPTURE_OUT',
+      defaultValue: '../../.tools/design-review',
+    );
+    final out = Directory(output);
     await tester.runAsync(() => out.create(recursive: true));
     const filter = String.fromEnvironment('CAPTURE_FILTER');
     if (filter.startsWith('recovery20d21')) {
@@ -50,6 +54,7 @@ void main() {
       for (final route in [
         ('welcome', '/welcome'),
         ('onboarding', '/onboarding?intent=adopt'),
+        ('onboarding-rescue', '/onboarding?intent=rescue'),
         ('start', '/start?intent=adopt'),
         ('login', '/login'),
         ('login-google', '/login'),
@@ -59,6 +64,9 @@ void main() {
         ('confirm', '/confirm'),
         ('confirm-recovery', '/confirm-recovery'),
       ]) {
+        if (filter.isNotEmpty && !filter.split(',').contains(route.$1)) {
+          continue;
+        }
         final identity = FakeIdentityRepository();
         if (route.$1 == 'reset') {
           identity.user = const Identity(
@@ -93,6 +101,16 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
+        await tester.runAsync(() async {
+          for (final image in tester.widgetList<Image>(find.byType(Image))) {
+            await precacheImage(image.image, key.currentContext!);
+          }
+          await precacheImage(
+            const AssetImage('assets/canvas-grain-f693.png'),
+            key.currentContext!,
+          );
+        });
+        await tester.pumpAndSettle();
         expect(
           tester.takeException(),
           isNull,
@@ -104,6 +122,42 @@ void main() {
             '${out.path}/access-${route.$1}${large ? '-large' : ''}.png',
           ),
         );
+        if (route.$1 == 'welcome') {
+          for (final choice in [
+            ('adopt', 'Adoptar'),
+            ('rescue', 'Dar en adopción'),
+          ]) {
+            await tester.ensureVisible(find.text(choice.$2).last);
+            await tester.tap(find.text(choice.$2).last);
+            await tester.pumpAndSettle();
+            expect(tester.takeException(), isNull);
+            await tester.runAsync(
+              () => saveCapture(
+                key,
+                '${out.path}/access-welcome-${choice.$1}${large ? '-large' : ''}.png',
+              ),
+            );
+          }
+        }
+        if (route.$1.startsWith('onboarding')) {
+          final next = find.widgetWithText(FilledButton, 'Continuar');
+          await tester.ensureVisible(next);
+          await tester.tap(next);
+          await tester.pumpAndSettle();
+          await tester.runAsync(() async {
+            for (final image in tester.widgetList<Image>(find.byType(Image))) {
+              await precacheImage(image.image, key.currentContext!);
+            }
+          });
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          await tester.runAsync(
+            () => saveCapture(
+              key,
+              '${out.path}/access-${route.$1}-step2${large ? '-large' : ''}.png',
+            ),
+          );
+        }
         if (!large && route.$1 == 'login-google') {
           final fields = find.byType(TextFormField);
           final targets = {

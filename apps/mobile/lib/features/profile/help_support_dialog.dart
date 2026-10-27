@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/media/media_store.dart';
 import 'support_repository.dart';
@@ -73,7 +74,10 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
     'funds_evidence',
     'account',
     'trust_safety',
+    'other',
   ];
+  static const otherTopic = 9;
+  String get topicLabel => topic == otherTopic ? 'Otro…' : widget.topics[topic];
 
   Future<void> chooseImage() async {
     if (busy || received) return;
@@ -188,7 +192,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
       notice = null;
     });
     final body =
-        'Tema: ${widget.topics[topic]}\n'
+        'Tema: $topicLabel\n'
         '${caseName.text.trim().isEmpty ? '' : 'Caso relacionado: ${caseName.text.trim()}\n'}\n'
         '${message.text.trim()}';
     try {
@@ -197,7 +201,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
           scheme: 'mailto',
           path: 'soporte@dopmi.org',
           query:
-              'subject=${Uri.encodeComponent('Ayuda con Dopmi: ${widget.topics[topic]}')}'
+              'subject=${Uri.encodeComponent('Ayuda con Dopmi: $topicLabel')}'
               '&body=${Uri.encodeComponent(body)}',
         ),
       );
@@ -315,8 +319,8 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           splashFactory: NoSplash.splashFactory,
                           overlayColor: Colors.transparent,
                           animationDuration: Duration.zero,
-                          backgroundColor: yellow,
-                          foregroundColor: const Color(0xff0d0d0d),
+                          backgroundColor: DopmiTokens.orangeButton,
+                          foregroundColor: Colors.white,
                           textStyle: const TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 16,
@@ -352,10 +356,16 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                                 value: i,
                                 child: Text(widget.topics[i], softWrap: true),
                               ),
+                            const DropdownMenuItem(
+                              value: otherTopic,
+                              child: Text('Otro…'),
+                            ),
                           ],
-                          selectedItemBuilder: (_) => widget.topics
-                              .map((item) => Text(item, softWrap: true))
-                              .toList(),
+                          selectedItemBuilder: (_) => [
+                            for (final item in widget.topics)
+                              Text(item, softWrap: true),
+                            const Text('Otro…'),
+                          ],
                           onChanged: busy
                               ? null
                               : (value) =>
@@ -490,8 +500,8 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           splashFactory: NoSplash.splashFactory,
                           overlayColor: Colors.transparent,
                           animationDuration: Duration.zero,
-                          backgroundColor: yellow,
-                          foregroundColor: const Color(0xff0d0d0d),
+                          backgroundColor: DopmiTokens.orangeButton,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 18,
                             vertical: 12,

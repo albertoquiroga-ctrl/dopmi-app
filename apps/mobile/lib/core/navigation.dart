@@ -229,7 +229,17 @@ class DopmiBottomBar extends StatelessWidget {
             children: [
               Positioned.fill(
                 top: 19,
-                child: CustomPaint(painter: const _RescuerNavigationSurface()),
+                child: ClipPath(
+                  clipper: const _RescuerNavigationClipper(),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 36, sigmaY: 36),
+                    child: CustomPaint(
+                      painter: _RescuerNavigationSurface(
+                        highContrast: MediaQuery.highContrastOf(context),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Positioned(
                 left: 4,
@@ -275,7 +285,7 @@ class DopmiBottomBar extends StatelessWidget {
                   selected: selectedPath == '/publish',
                   label: 'Publicar',
                   child: Material(
-                    color: DopmiTokens.ink,
+                    color: DopmiTokens.orange,
                     shape: const CircleBorder(),
                     elevation: 2,
                     shadowColor: const Color(0x0f000000),
@@ -429,31 +439,60 @@ class _NavigationItem extends StatelessWidget {
   }
 }
 
+Path _rescuerNavigationPath(Size size) {
+  final surface = Path()
+    ..addRRect(
+      RRect.fromRectAndCorners(
+        Offset.zero & size,
+        topLeft: const Radius.circular(28),
+        topRight: const Radius.circular(28),
+      ),
+    );
+  final notch = Path()
+    ..addOval(Rect.fromCircle(center: Offset(size.width / 2, 0), radius: 36));
+  return Path.combine(PathOperation.difference, surface, notch);
+}
+
+class _RescuerNavigationClipper extends CustomClipper<Path> {
+  const _RescuerNavigationClipper();
+  @override
+  Path getClip(Size size) => _rescuerNavigationPath(size);
+  @override
+  bool shouldReclip(_RescuerNavigationClipper oldClipper) => false;
+}
+
 class _RescuerNavigationSurface extends CustomPainter {
-  const _RescuerNavigationSurface();
+  const _RescuerNavigationSurface({required this.highContrast});
+  final bool highContrast;
   @override
   void paint(Canvas canvas, Size size) {
-    final surface = Path()
-      ..addRRect(
-        RRect.fromRectAndCorners(
-          Offset.zero & size,
-          topLeft: const Radius.circular(28),
-          topRight: const Radius.circular(28),
-        ),
-      );
-    final notch = Path()
-      ..addOval(Rect.fromCircle(center: Offset(size.width / 2, 0), radius: 36));
-    final path = Path.combine(PathOperation.difference, surface, notch);
-    canvas.drawPath(path, Paint()..color = DopmiTokens.surface);
+    final path = _rescuerNavigationPath(size);
+    canvas.drawPath(
+      path,
+      highContrast
+          ? (Paint()..color = DopmiTokens.surface)
+          : (Paint()
+              ..shader = const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0x0fffffff),
+                  Color(0x24ffffff),
+                  Color(0x33ffffff),
+                ],
+                stops: [0, .52, 1],
+              ).createShader(Offset.zero & size)),
+    );
     canvas.drawPath(
       path,
       Paint()
-        ..color = DopmiTokens.line
+        ..color = highContrast ? DopmiTokens.line : const Color(0x47ffffff)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1,
     );
   }
 
   @override
-  bool shouldRepaint(_RescuerNavigationSurface oldDelegate) => false;
+  bool shouldRepaint(_RescuerNavigationSurface oldDelegate) =>
+      highContrast != oldDelegate.highContrast;
 }

@@ -137,6 +137,28 @@ test('independent add-card endpoint allows explicit saving consent only and deri
   assert.deepEqual(calls,[{actor:'owner',input:{key:body.key,consent:true,consent_version:body.consent_version}}]);
 });
 
+test('independent native add and status authenticate and allow only their exact owner-derived contract',async()=>{
+ const calls=[];
+ const handler=guardianClientHandler({enabled:()=>true,
+  authenticate:async()=>({id:'owner',email_confirmed_at:'fixture'}),
+  nativeAddCard:async(actor,input)=>{calls.push({actor,input});return{status:'pending'};}});
+ const body={action:'native_add_card',key:'77000000-0000-4000-8000-000000000001',consent:true,consent_version:'saved-cards-2026-10-03'};
+ for(const patch of [{consent:false},{consent_version:'saved-card-methods-2026-10-03'},{key:'bad'},
+  {customer_id:'cus_peer'},{owner_id:'peer'},{return_url:'https://evil.test'},{purpose:'registration'}])
+  assert.equal((await handler(request({...body,...patch}))).status,400);
+ assert.equal(calls.length,0);
+ assert.equal((await handler(request(body))).status,200);
+ const status={action:'native_add_card_status',key:body.key};
+ assert.equal((await handler(request(status))).status,200);
+ assert.equal((await handler(request({...status,consent:true}))).status,400);
+ assert.deepEqual(calls,[{actor:'owner',input:body},{actor:'owner',input:status}]);
+ const unauthenticated=guardianClientHandler({enabled:()=>true,authenticate:async()=>null,
+  nativeAddCard:async()=>{throw Error('must not be called');}});
+ assert.equal((await unauthenticated(request(body))).status,401);
+ const disabled=guardianClientHandler({enabled:()=>false,nativeAddCard:async()=>{throw Error('must not be called');}});
+ assert.equal((await disabled(request(body))).status,503);
+});
+
 test('native registration method is distinct from the wallet default and exposes only minimized card fields',async()=>{
  const f=fixture();f.state.link.subscription_id=null;f.state.link.registration_method_id='pm_one';
  const result=await f.read('owner');assert.equal(result.items[0].guardian_current,true);assert.equal(result.items[0].default,false);

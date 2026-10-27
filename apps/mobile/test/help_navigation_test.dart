@@ -1,5 +1,6 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/donor_canvas.dart';
+import 'package:dopmi_mobile/core/design_tokens.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/privacy_notice_screen.dart';
@@ -115,6 +116,43 @@ void main() {
           find.text('Elige un tema para ver las respuestas.'),
           findsOneWidget,
         );
+        await reveal(topic, above: true);
+        await tester.tap(topic);
+        await tester.pump();
+        await reveal(first);
+        await tester.tap(first);
+        await tester.pump();
+        final rescuerAudience = find.widgetWithText(TextButton, 'Rescatista');
+        await reveal(rescuerAudience, above: true);
+        await tester.tap(rescuerAudience);
+        await tester.pumpAndSettle();
+        expect(topic, findsNothing);
+        expect(first, findsNothing);
+        expect(
+          find.widgetWithText(OutlinedButton, 'Publicar casos'),
+          findsOneWidget,
+        );
+        expect(identity.profile.mode, 'donor');
+        final publish = find.widgetWithText(OutlinedButton, 'Publicar casos');
+        await reveal(publish);
+        await tester.tap(publish);
+        await tester.pump();
+        final publishQuestion = find.widgetWithText(
+          TextButton,
+          '¿Cómo publico un caso?',
+        );
+        await reveal(publishQuestion);
+        await tester.tap(publishQuestion);
+        await tester.pump();
+        final adopterAudience = find.widgetWithText(TextButton, 'Adoptante');
+        await reveal(adopterAudience, above: true);
+        await tester.tap(adopterAudience);
+        await tester.pumpAndSettle();
+        expect(publish, findsNothing);
+        expect(publishQuestion, findsNothing);
+        expect(topic, findsOneWidget);
+        expect(identity.profile.mode, 'donor');
+        await reveal(find.text('Elige un tema para ver las respuestas.'));
         expect(tester.takeException(), isNull);
       },
     );
@@ -159,7 +197,7 @@ void main() {
             matching: find.byType(DonorCanvas),
           ),
         );
-        expect(canvas.enabled, mode == 'donor');
+        expect(canvas.enabled, isTrue);
         final topic = find.widgetWithText(
           OutlinedButton,
           'Cómo funcionan los apoyos',
@@ -186,12 +224,9 @@ void main() {
         final supportStyle = tester.widget<FilledButton>(support).style!;
         expect(
           supportStyle.backgroundColor!.resolve({}),
-          const Color(0xff46281d),
+          DopmiTokens.orangeButton,
         );
-        expect(
-          supportStyle.foregroundColor!.resolve({}),
-          mode == 'rescuer' ? const Color(0xfffbfbff) : Colors.white,
-        );
+        expect(supportStyle.foregroundColor!.resolve({}), Colors.white);
         for (final link in {
           'Sobre nosotros': '/about',
           'Términos y Condiciones': '/terms',

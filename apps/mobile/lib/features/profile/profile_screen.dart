@@ -307,8 +307,6 @@ class _BasicInfoScreenState extends ConsumerState<BasicInfoScreen>
         ),
       ),
       body: DonorCanvas(
-        enabled:
-            ref.watch(experienceProvider).value != AccountExperience.rescuer,
         child: SafeArea(
           top: false,
           child: Stack(

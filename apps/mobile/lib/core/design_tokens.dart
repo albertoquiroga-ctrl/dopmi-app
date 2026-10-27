@@ -18,6 +18,8 @@ abstract final class DopmiTokens {
   static const orangeButton = Color(0xffc1511c); // 4.71:1 on white.
   static const cafeStrong = Color(0xff362017);
   static const sky = Color(0xffcbe8fa);
+  // Slightly darkened from f693 #3a6d8c so small selected labels meet 4.5:1.
+  static const skyInk = Color(0xff386a89);
   static const saffronSoft = Color(0xfffef3d4);
   static const orangeSoft = Color(0x1feb6425);
   static const yellowSoft = Color(0x2efab919);

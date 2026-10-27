@@ -15,7 +15,7 @@ import 'fake_identity_repository.dart';
 
 void main() {
   testWidgets(
-    'access primary keeps reference color while held and acts once on release',
+    'access primary keeps accessible f693 orange while held and acts once on release',
     (tester) async {
       tester.view.physicalSize = const Size(377, 852);
       tester.view.devicePixelRatio = 1;
@@ -54,7 +54,8 @@ void main() {
         return color;
       });
       final before = await sample();
-      expect(before, [70, 40, 29, 255]);
+      // f693 uses orange here; the approved contrast adjustment is #c1511c.
+      expect(before, [193, 81, 28, 255]);
       final gesture = await tester.startGesture(rect.center);
       await tester.pump(const Duration(milliseconds: 200));
       expect(await sample(), before);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../rescue/rescue_repository.dart';
 import 'contribution_layout.dart';
 
@@ -87,11 +88,17 @@ class GuardianMembershipCard extends StatelessWidget {
       ),
     );
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xffe6e2dd)),
-        borderRadius: BorderRadius.circular(20),
+        color: DopmiTokens.saffronSoft,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x33fab919),
+            offset: Offset(0, 12),
+            blurRadius: 32,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,9 +114,7 @@ class GuardianMembershipCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: active
-                          ? const Color(0xffe5f7ec)
-                          : const Color(0xffefede8),
+                      color: active ? Colors.white : const Color(0xffefede8),
                       borderRadius: BorderRadius.circular(999),
                     ),
                     child: Text(
@@ -118,7 +123,7 @@ class GuardianMembershipCard extends StatelessWidget {
                         fontSize: 12,
                         height: 1.2,
                         fontWeight: FontWeight.w600,
-                        color: active ? const Color(0xff157347) : muted,
+                        color: active ? ink : muted,
                       ),
                     ),
                   ),
@@ -126,11 +131,11 @@ class GuardianMembershipCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xfffff2b8),
-                  shape: BoxShape.circle,
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: DopmiTokens.orange,
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 alignment: Alignment.center,
                 child: SvgPicture.asset(
@@ -138,7 +143,7 @@ class GuardianMembershipCard extends StatelessWidget {
                   width: 18,
                   height: 18,
                   colorFilter: const ColorFilter.mode(
-                    Color(0xff6b5000),
+                    Colors.white,
                     BlendMode.srcIn,
                   ),
                 ),

@@ -26,7 +26,7 @@ class CaseInformation extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
+        PublicationFieldLabel(
           field.key == 'pet_name'
               ? 'Nombre de la mascota *'
               : field.key == 'age'

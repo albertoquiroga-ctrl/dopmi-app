@@ -8,6 +8,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/css_linear_gradient.dart';
+import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
+import '../../core/media/remote_photo.dart';
 import '../../core/adoption_view_day.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/reference_focus_outline.dart';
@@ -29,61 +32,65 @@ class RescueHomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: const CommunityNav(2),
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: ListenableBuilder(
-              listenable: identity,
-              builder: (context, _) {
-                final actor = identity.identity?.id;
-                final repository = ref.watch(rescueRepositoryProvider);
-                return ListView(
-                  padding: const EdgeInsets.fromLTRB(18, 16, 18, 32),
-                  children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Brand(),
-                        DonorNotificationButton(rescuer: true),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-                      child: RescuerGreeting(key: ValueKey('greeting-$actor')),
-                    ),
-                    const SizedBox(height: 4),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: LiveSection<Json>(
-                        key: ValueKey('home-$actor'),
-                        tables: const [
-                          'dopmi_rescue_records',
-                          'dopmi_adoptions',
-                          'dopmi_donations',
-                          'dopmi_notifications',
-                          'dopmi_favorites',
+      body: DonorCanvas(
+        child: SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: ListenableBuilder(
+                listenable: identity,
+                builder: (context, _) {
+                  final actor = identity.identity?.id;
+                  final repository = ref.watch(rescueRepositoryProvider);
+                  return ListView(
+                    padding: const EdgeInsets.fromLTRB(18, 16, 18, 32),
+                    children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Brand(),
+                          DonorNotificationButton(rescuer: true),
                         ],
-                        load: () async {
-                          final data = await repository.dashboardV2();
-                          if (identity.identity?.id != actor) {
-                            throw StateError('identity_changed');
-                          }
-                          return data;
-                        },
-                        builder: (data, refresh) => RescuerHomeDashboard(
-                          key: ValueKey(actor),
-                          data: data,
-                          refresh: refresh,
-                          actor: actor,
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                        child: RescuerGreeting(
+                          key: ValueKey('greeting-$actor'),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                      const SizedBox(height: 4),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: LiveSection<Json>(
+                          key: ValueKey('home-$actor'),
+                          tables: const [
+                            'dopmi_rescue_records',
+                            'dopmi_adoptions',
+                            'dopmi_donations',
+                            'dopmi_notifications',
+                            'dopmi_favorites',
+                          ],
+                          load: () async {
+                            final data = await repository.dashboardV2();
+                            if (identity.identity?.id != actor) {
+                              throw StateError('identity_changed');
+                            }
+                            return data;
+                          },
+                          builder: (data, refresh) => RescuerHomeDashboard(
+                            key: ValueKey(actor),
+                            data: data,
+                            refresh: refresh,
+                            actor: actor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -107,7 +114,7 @@ class RescuerGreeting extends ConsumerWidget {
           fontSize: 28,
           height: 40 / 28,
           fontWeight: FontWeight.w700,
-          color: Color(0xff151423),
+          color: DopmiTokens.ink,
         ),
       ),
     );
@@ -239,71 +246,34 @@ class RescuerHomeDashboard extends ConsumerStatefulWidget {
 }
 
 class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
-  String pendingProgram = 'adoption', activityView = 'none';
+  String pendingProgram = 'adoption';
   String period = 'month';
-  String? queuedCursor, failedCursor;
-  final acknowledged = <String>{};
-  bool acknowledging = false;
 
   Json counts(String program) =>
       Json.from(widget.data['${program}_counts'] as Map? ?? {});
   List<Json> get activity => _homeRows(widget.data['recent_activity']);
   List<Json> get evidence => _homeRows(widget.data['pending_evidence']);
 
-  @override
-  void didUpdateWidget(RescuerHomeDashboard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _presentPayments();
-  }
-
-  void _presentPayments() {
-    final cursor = widget.data['payments_cursor'] as String?;
-    if (activityView != 'payments' ||
-        activity.isEmpty ||
-        cursor == null ||
-        cursor.isEmpty ||
-        acknowledging ||
-        queuedCursor == cursor ||
-        failedCursor == cursor ||
-        acknowledged.contains(cursor)) {
-      return;
-    }
-    queuedCursor = cursor;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted ||
-          activityView != 'payments' ||
-          ref.read(identityControllerProvider).identity?.id != widget.actor) {
-        queuedCursor = null;
-        return;
-      }
-      setState(() => acknowledging = true);
-      try {
-        await ref.read(rescueRepositoryProvider).acknowledgePayments(cursor);
+  Future<void> _select(String selection) async {
+    switch (selection) {
+      case 'adoption':
+      case 'support':
+        context.go('/my-cases?program=$selection');
+        break;
+      case 'messages':
+        context.go('/messages');
+        break;
+      case 'payments':
+        final actor = widget.actor;
+        await context.push('/rescuer/received-payments');
         if (!mounted ||
-            ref.read(identityControllerProvider).identity?.id != widget.actor) {
+            widget.actor != actor ||
+            ref.read(identityControllerProvider).identity?.id != actor) {
           return;
         }
-        acknowledged.add(cursor);
-        failedCursor = null;
-        // Refresh the server count: a payment arriving meanwhile stays unseen.
         widget.refresh();
-      } catch (_) {
-        if (mounted) failedCursor = cursor;
-      } finally {
-        if (mounted) {
-          setState(() {
-            acknowledging = false;
-            queuedCursor = null;
-          });
-          _presentPayments();
-        }
-      }
-    });
-  }
-
-  void _select(String selection) {
-    setState(() => activityView = selection);
-    _presentPayments();
+        break;
+    }
   }
 
   bool get empty =>
@@ -324,7 +294,21 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _HomeVerificationStatus(status: verification),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
+        _HomeQuickAccess(
+          selected: 'none',
+          counts: {
+            'adoption': _homePendingCount(counts('adoption')),
+            'support': _homePendingCount(counts('support')),
+            'messages': _homeCount(widget.data['unanswered_conversations']),
+            'payments': _homeCount(widget.data['payments_unseen_count']),
+          },
+          onSelected: _select,
+        ),
+        _HomeAdoptionSummary(actor: widget.actor, counts: counts('adoption')),
+        const SizedBox(height: 20),
+        const _HomePhotoTips(),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
@@ -400,62 +384,8 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
           },
         ),
         const SizedBox(height: 20),
-        _HomeQuickAccess(
-          selected: activityView,
-          counts: {
-            'adoption': _homePendingCount(counts('adoption')),
-            'support': _homePendingCount(counts('support')),
-            'messages': _homeCount(widget.data['unanswered_conversations']),
-            'payments': _homeCount(widget.data['payments_unseen_count']),
-          },
-          onSelected: _select,
-        ),
-        if (activityView != 'none') ...[
-          const SizedBox(height: 20),
-          _HomeActivityPanel(
-            title: switch (activityView) {
-              'adoption' => 'Resumen de adopción',
-              'support' => 'Resumen de apoyo',
-              'messages' => 'Mensajes recientes',
-              _ => 'Actividad reciente',
-            },
-            onSeeAll: () => context.go('/profile'),
-            children: activityView == 'messages'
-                ? [_HomeRecentMessages(actor: widget.actor)]
-                : activityView == 'payments'
-                ? [
-                    if (activity.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        child: Text('Aún no tienes apoyos recibidos.'),
-                      ),
-                    for (var index = 0; index < activity.length; index++)
-                      _HomePaymentRow(
-                        item: activity[index],
-                        last: index == activity.length - 1,
-                      ),
-                    if (failedCursor != null)
-                      _AcknowledgementRetry(
-                        onPressed: () {
-                          setState(() => failedCursor = null);
-                          _presentPayments();
-                        },
-                      ),
-                  ]
-                : [
-                    for (final status in _homeStatuses)
-                      _HomeSummaryRow(
-                        program: activityView,
-                        status: status,
-                        count: _homeCount(counts(activityView)[status]),
-                        last: status == _homeStatuses.last,
-                      ),
-                  ],
-          ),
-        ],
         const SizedBox(height: 20),
         const StorePromotion(),
-        const _HomePhotoTips(),
       ],
     );
   }
@@ -521,6 +451,205 @@ int? _homePendingCount(Json counts) {
   return values.fold<int>(0, (sum, value) => sum + value!);
 }
 
+/// Summarizes only records authorized by the existing owner query.
+class _HomeAdoptionSummary extends ConsumerWidget {
+  const _HomeAdoptionSummary({required this.actor, required this.counts});
+  final String? actor;
+  final Json counts;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (actor == null || _homeCountsEmpty(counts)) {
+      return const SizedBox.shrink();
+    }
+    final active = _homeCount(counts['active']);
+    final pending = _homePendingCount(counts);
+    return LiveSection<List<Adoption>>(
+      key: ValueKey('home-adoption-summary-$actor'),
+      tables: const ['dopmi_adoptions'],
+      load: () async {
+        final repository = ref.read(communityRepositoryProvider);
+        final candidates = <String, Adoption>{};
+        var page = 1;
+        int? lastPage;
+        while (true) {
+          if (ref.read(identityControllerProvider).identity?.id != actor) {
+            throw StateError('identity_changed');
+          }
+          final result = await repository.mine(page);
+          lastPage ??= (result.total + 11) ~/ 12;
+          if (ref.read(identityControllerProvider).identity?.id != actor) {
+            throw StateError('identity_changed');
+          }
+          for (final post in result.items) {
+            if (post.owner == actor &&
+                const [
+                  'published',
+                  'draft',
+                  'submitted',
+                  'changes_requested',
+                  'rejected',
+                ].contains(post.status)) {
+              candidates[post.id] = post;
+            }
+          }
+          final published = candidates.values
+              .where((item) => item.status == 'published')
+              .length;
+          final desiredActive = (active ?? 0).clamp(0, 4);
+          if (result.items.isEmpty ||
+              page >= lastPage ||
+              (candidates.length >= 4 && published >= desiredActive)) {
+            break;
+          }
+          page++;
+        }
+        final ordered = candidates.values.toList()
+          ..sort((a, b) {
+            final state = (a.status == 'published' ? 0 : 1).compareTo(
+              b.status == 'published' ? 0 : 1,
+            );
+            return state != 0 ? state : a.name.compareTo(b.name);
+          });
+        return ordered.take(4).toList();
+      },
+      builder: (posts, _) {
+        if (posts.isEmpty ||
+            ref.read(identityControllerProvider).identity?.id != actor) {
+          return const SizedBox.shrink();
+        }
+        return Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+            decoration: BoxDecoration(
+              color: const Color(0xb8ffffff),
+              border: Border.all(color: const Color(0xc7ffffff)),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x0f46281d),
+                  blurRadius: 28,
+                  offset: Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'En adopción',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: DopmiTokens.ink,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  active == null || pending == null
+                      ? 'Tus casos activos y pendientes de publicar'
+                      : '${active == 1 ? '1 activo' : '$active activos'} | ${pending == 1 ? '1 pendiente de publicar' : '$pending pendientes de publicar'}',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.35,
+                    color: DopmiTokens.muted,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    SizedBox(
+                      width: 44.0 + (posts.length - 1) * 32,
+                      height: 44,
+                      child: Stack(
+                        children: [
+                          for (var index = 0; index < posts.length; index++)
+                            Positioned(
+                              left: index * 32.0,
+                              child: Semantics(
+                                image: true,
+                                label: posts[index].name.isEmpty
+                                    ? 'Mascota'
+                                    : posts[index].name,
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  padding: const EdgeInsets.all(2.5),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: ClipOval(
+                                    child: posts[index].photos.isEmpty
+                                        ? const _HomeAdoptionAvatarFallback()
+                                        : RemotePhoto(
+                                            source: adoptionPhotoSource(
+                                              ref.read(
+                                                communityRepositoryProvider,
+                                              ),
+                                              posts[index].photos.first,
+                                            ),
+                                            width: 39,
+                                            height: 39,
+                                            excludeFromSemantics: true,
+                                            loading:
+                                                const _HomeAdoptionAvatarFallback(),
+                                            unavailable: (_) =>
+                                                const _HomeAdoptionAvatarFallback(),
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    FilledButton(
+                      key: const ValueKey('home-adoption-cases'),
+                      onPressed: () => context.go('/my-cases?program=adoption'),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(48, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        shape: const StadiumBorder(),
+                        backgroundColor: DopmiTokens.ink,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(
+                          fontFamily: DopmiTokens.bodyFont,
+                          fontSize: 14,
+                          height: 1.2,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      child: const Text('Ver mis casos'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeAdoptionAvatarFallback extends StatelessWidget {
+  const _HomeAdoptionAvatarFallback();
+  @override
+  Widget build(BuildContext context) => const ColoredBox(
+    color: DopmiTokens.saffronSoft,
+    child: Icon(Icons.pets, size: 20, color: DopmiTokens.ink),
+  );
+}
+
 class _HomeVerificationStatus extends StatelessWidget {
   const _HomeVerificationStatus({required this.status});
   final String status;
@@ -534,22 +663,27 @@ class _HomeVerificationStatus extends StatelessWidget {
       children: [
         if (approved)
           SvgPicture.asset(
-            'assets/profile/icon-verified-purple.svg',
+            'assets/profile/icon-verified-celeste.svg',
             width: 16,
             height: 16,
             excludeFromSemantics: true,
           )
         else
-          const Icon(Icons.shield_outlined, color: purple, size: 16),
+          SvgPicture.asset(
+            'assets/profile/verify-shield-naranja-filled.svg',
+            width: 16,
+            height: 16,
+            excludeFromSemantics: true,
+          ),
         const SizedBox(width: 6),
         Flexible(
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               height: 1.3,
               fontWeight: FontWeight.w600,
-              color: purple,
+              color: approved ? DopmiTokens.muted : DopmiTokens.orangeButton,
             ),
           ),
         ),
@@ -801,16 +935,16 @@ class _HomeFunnelGrid extends StatelessWidget {
             ),
           ];
     const surfaces = [
-      Color(0xfff5f0ff),
-      Color(0xfffff4eb),
-      Color(0xffeef5ff),
-      Color(0xffecfdf3),
+      DopmiTokens.saffronSoft,
+      Color(0xffffe8d6),
+      Color(0xffefe4d8),
+      DopmiTokens.sky,
     ];
     const tones = [
-      Color(0xff6d28d9),
-      Color(0xffea580c),
-      Color(0xff2563eb),
-      Color(0xff16a34a),
+      Color(0xff996d00),
+      DopmiTokens.orangeButton,
+      DopmiTokens.ink,
+      Color(0xff31566b),
     ];
     return Column(
       key: ValueKey('home-funnel-${adoption ? 'adoption' : 'support'}'),
@@ -986,15 +1120,9 @@ class _HomeQuickAccess extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: DopmiTokens.sky,
+      border: Border.all(color: const Color(0xffb8ddf5)),
       borderRadius: BorderRadius.circular(28),
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x1415110d),
-          blurRadius: 28,
-          offset: Offset(0, 10),
-        ),
-      ],
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1086,8 +1214,8 @@ class _HomeQuickAccess extends StatelessWidget {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: selected == id
-                              ? const Color(0xfff3eeff)
-                              : const Color(0xfff0eeea),
+                              ? const Color(0xccffffff)
+                              : const Color(0xe0ffffff),
                           shape: BoxShape.circle,
                           border: selected == id
                               ? Border.all(color: purple)
@@ -1118,9 +1246,12 @@ class _HomeQuickAccess extends StatelessWidget {
                             ),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: purple,
+                              color: DopmiTokens.yellow,
                               borderRadius: BorderRadius.circular(99),
-                              border: Border.all(color: Colors.white, width: 2),
+                              border: Border.all(
+                                color: DopmiTokens.sky,
+                                width: 2,
+                              ),
                             ),
                             child: Text(
                               count > 9 ? '9+' : '$count',
@@ -1128,7 +1259,7 @@ class _HomeQuickAccess extends StatelessWidget {
                                 fontSize: 10,
                                 height: 1.2,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: DopmiTokens.ink,
                               ),
                             ),
                           ),
@@ -1168,14 +1299,9 @@ const _homeHeading = TextStyle(
 );
 
 class _HomeActivityPanel extends StatelessWidget {
-  const _HomeActivityPanel({
-    required this.title,
-    required this.children,
-    this.onSeeAll,
-  });
+  const _HomeActivityPanel({required this.title, required this.children});
   final String title;
   final List<Widget> children;
-  final VoidCallback? onSeeAll;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1188,200 +1314,13 @@ class _HomeActivityPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
-          children: [
-            Expanded(child: Text(title, style: _homeHeading)),
-            if (onSeeAll != null) ...[
-              const SizedBox(width: 12),
-              ReferenceFocusOutline(
-                radius: 6,
-                child: InkWell(
-                  onTap: onSeeAll,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      'Ver todo',
-                      style: TextStyle(
-                        fontSize: 13,
-                        height: 1.2,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff5c574f),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ],
+          children: [Expanded(child: Text(title, style: _homeHeading))],
         ),
         const SizedBox(height: 16),
         ...children,
       ],
     ),
   );
-}
-
-class _HomeRecentMessages extends ConsumerWidget {
-  const _HomeRecentMessages({required this.actor});
-  final String? actor;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => LiveSection<List<Json>>(
-    key: ValueKey('home-messages-$actor'),
-    tables: const ['dopmi_messages', 'dopmi_conversations'],
-    load: () async {
-      final result = await ref
-          .read(communityRepositoryProvider)
-          .rescuerThreads(1);
-      if (ref.read(identityControllerProvider).identity?.id != actor) {
-        throw StateError('identity_changed');
-      }
-      final threads = result.items
-          .where((item) => item['status'] != 'closed')
-          .toList();
-      threads.sort((a, b) {
-        final aUnread = (_homeCount(a['unread_count']) ?? 0) > 0;
-        final bUnread = (_homeCount(b['unread_count']) ?? 0) > 0;
-        if (aUnread != bUnread) return aUnread ? -1 : 1;
-        final recent = '${b['updated_at'] ?? ''}'.compareTo(
-          '${a['updated_at'] ?? ''}',
-        );
-        return recent != 0 ? recent : '${a['id']}'.compareTo('${b['id']}');
-      });
-      return threads;
-    },
-    builder: (threads, _) => Column(
-      children: [
-        if (threads.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Text('Aún no tienes mensajes recientes.'),
-          ),
-        for (var index = 0; index < threads.length; index++)
-          _HomeMessageRow(
-            item: threads[index],
-            last: index == threads.length - 1,
-          ),
-      ],
-    ),
-  );
-}
-
-class _HomeMessageRow extends StatelessWidget {
-  const _HomeMessageRow({required this.item, required this.last});
-  final Json item;
-  final bool last;
-  @override
-  Widget build(BuildContext context) {
-    final threadId = item['id'] as String?;
-    final unread = _homeCount(item['unread_count']) ?? 0;
-    final occurred = DateTime.tryParse('${item['updated_at'] ?? ''}');
-    final photo = item['photo'] as String? ?? '';
-    return ReferenceFocusOutline(
-      radius: 12,
-      child: InkWell(
-        key: ValueKey('home-message-$threadId'),
-        onTap: threadId == null || threadId.isEmpty
-            ? null
-            : () => context.push('/messages/${Uri.encodeComponent(threadId)}'),
-        borderRadius: BorderRadius.circular(12),
-        child: _HomeActivityRow(
-          last: last,
-          icon: SizedBox(
-            width: 44,
-            height: 44,
-            child: photo.isNotEmpty
-                ? AdoptionPhoto(photo, height: 44, radius: 99)
-                : Container(
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.chat_bubble_outline,
-                      color: purple,
-                      size: 20,
-                    ),
-                  ),
-          ),
-          title:
-              '${item['pet_name'] ?? 'Mascota'} · ${item['participant_name'] ?? 'Adoptante'}',
-          subtitle: item['last_message'] as String? ?? 'Inicia la conversación',
-          trailing: unread > 0
-              ? '$unread'
-              : occurred == null
-              ? ''
-              : _homeRelativeDate(occurred),
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeSummaryRow extends StatelessWidget {
-  const _HomeSummaryRow({
-    required this.program,
-    required this.status,
-    required this.count,
-    required this.last,
-  });
-  final String program, status;
-  final int? count;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    final (title, subtitle, color) = switch (status) {
-      'active' => (
-        'Casos activos',
-        program == 'adoption' ? 'Buscando hogar' : 'Recibiendo apoyo',
-        const Color(0xfff7cb2d),
-      ),
-      'review' => (
-        'Casos en revisión',
-        'Pendiente de aprobación',
-        const Color(0xff5c2fd4),
-      ),
-      'draft' => (
-        'Casos en borrador',
-        'Publicación incompleta',
-        const Color(0xff5c574f),
-      ),
-      _ => (
-        'Casos por corregir',
-        'Requieren corrección',
-        const Color(0xffc41c2e),
-      ),
-    };
-    return ReferenceFocusOutline(
-      radius: 12,
-      child: InkWell(
-        key: ValueKey('home-summary-$program-$status'),
-        onTap: () => context.push('/my-cases?program=$program&status=$status'),
-        borderRadius: BorderRadius.circular(12),
-        child: _HomeActivityRow(
-          last: last,
-          icon: Container(
-            width: 44,
-            height: 44,
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: SvgPicture.asset(
-              'assets/navigation/rtab-cases.svg',
-              width: 20,
-              height: 20,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-            ),
-          ),
-          title: title,
-          subtitle: subtitle,
-          trailing: '${count ?? '—'}',
-        ),
-      ),
-    );
-  }
 }
 
 class _HomePaymentRow extends StatelessWidget {
@@ -1550,7 +1489,7 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
         child: InkWell(
           onTap: () => showDialog<void>(
             context: context,
-            barrierColor: const Color(0xff15110d).withValues(alpha: .48),
+            barrierColor: DopmiTokens.ink.withValues(alpha: .48),
             barrierLabel: 'Cerrar consejos para fotos',
             builder: (_) => const _HomePhotoTipsDialog(),
           ),
@@ -1561,11 +1500,11 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
             decoration: BoxDecoration(
-              color: const Color(0xff15110d),
+              color: DopmiTokens.ink,
               borderRadius: BorderRadius.circular(24),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x4715110d),
+                  color: Color(0x2e46281d),
                   blurRadius: 32,
                   offset: Offset(0, 12),
                 ),
@@ -1604,7 +1543,7 @@ class _HomePhotoTipsState extends State<_HomePhotoTips> {
                   height: 52,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0xffefe8ff),
+                    color: DopmiTokens.saffronSoft,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: SvgPicture.asset(
@@ -1681,36 +1620,54 @@ class _HomePhotoTipsDialog extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                for (final tip in _homePhotoTips) ...[
-                  Container(
-                    padding: const EdgeInsets.only(left: 14),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        left: BorderSide(color: Color(0xffc4b5fd), width: 3),
+                for (var index = 0; index < _homePhotoTips.length; index++) ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: DopmiTokens.orangeSoft,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/profile/${const ['icon-sun.svg', 'notif-pet.svg', 'check.svg', 'publish-cam-lg.svg', 'icon-bolt.svg'][index]}',
+                          width: 22,
+                          height: 22,
+                          colorFilter: const ColorFilter.mode(
+                            DopmiTokens.orange,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tip.$1,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            height: 1.3,
-                            fontWeight: FontWeight.w700,
-                          ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _homePhotoTips[index].$1,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                height: 1.3,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _homePhotoTips[index].$2,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                height: 1.4,
+                                color: DopmiTokens.muted,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          tip.$2,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            height: 1.4,
-                            color: Color(0xff554e48),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 14),
                 ],
@@ -1754,7 +1711,7 @@ class _HomeEmpty extends StatelessWidget {
           height: 64,
           alignment: Alignment.center,
           decoration: const BoxDecoration(
-            color: Color(0x1a7c3aed),
+            color: DopmiTokens.saffronSoft,
             shape: BoxShape.circle,
           ),
           child: SvgPicture.asset(
@@ -1772,7 +1729,7 @@ class _HomeEmpty extends StatelessWidget {
             height: 1.3,
             fontWeight: FontWeight.w600,
             letterSpacing: -.36,
-            color: Color(0xff151423),
+            color: DopmiTokens.ink,
           ),
         ),
         const SizedBox(height: 8),
@@ -2275,7 +2232,7 @@ class RescuerPendingEmpty extends StatelessWidget {
           height: 64,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
-            color: Color(0x1a7c3aed),
+            color: DopmiTokens.saffronSoft,
           ),
           alignment: Alignment.center,
           child: SvgPicture.asset(
@@ -2285,7 +2242,7 @@ class RescuerPendingEmpty extends StatelessWidget {
             width: 32,
             height: 32,
             colorFilter: cases
-                ? const ColorFilter.mode(Color(0xff7c3aed), BlendMode.srcIn)
+                ? const ColorFilter.mode(DopmiTokens.ink, BlendMode.srcIn)
                 : null,
           ),
         ),

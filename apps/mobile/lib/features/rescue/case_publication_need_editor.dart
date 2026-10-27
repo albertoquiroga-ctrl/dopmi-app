@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
+import '../adoption/publication_frame.dart';
 import 'expense_evidence_card.dart';
 import 'rescue_public_photo.dart';
 import 'rescue_repository.dart';
@@ -219,8 +220,9 @@ class _CasePublicationNeedEditorState
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          '$label${required ? ' *' : ''}',
+        PublicationFieldLabel(
+          label,
+          required: required,
           style: const TextStyle(
             fontSize: 14,
             height: 1.4,
@@ -383,7 +385,16 @@ class _CasePublicationNeedEditorState
               field('receipt_reference', 'Folio o referencia del comprobante'),
               if (widget.type != 'food') ...[
                 SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
+                  contentPadding: const EdgeInsets.all(12),
+                  selected: urgent,
+                  selectedTileColor: DopmiTokens.orangeSoft,
+                  activeTrackColor: DopmiTokens.orangeButton,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: urgent ? DopmiTokens.orange : DopmiTokens.line,
+                    ),
+                  ),
                   value: urgent,
                   onChanged: busy || !sameSession
                       ? null
@@ -391,7 +402,10 @@ class _CasePublicationNeedEditorState
                           urgent = value;
                           dirty = true;
                         }),
-                  title: const Text('Marcar como urgente'),
+                  title: const Text(
+                    'Marcar como urgente',
+                    style: TextStyle(color: DopmiTokens.ink),
+                  ),
                   subtitle: const Text('Pasará por revisión de DopMi'),
                 ),
                 if (urgent)

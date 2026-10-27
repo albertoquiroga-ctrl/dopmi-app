@@ -252,8 +252,10 @@ class RescuerDonorModeCard extends StatelessWidget {
     final card = Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xffe3e4ed)),
+        color: settings ? Colors.white : DopmiTokens.sky,
+        border: Border.all(
+          color: settings ? const Color(0xffe3e4ed) : const Color(0xffb8ddf5),
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -1410,63 +1412,66 @@ class ProfileFrame extends StatelessWidget {
       4,
       selectedPath: rescuerSettings ? '/settings' : null,
     ),
-    body: SafeArea(
-      top: rescuerOverview,
-      child: ListView(
-        padding: rescuerOverview
-            ? const EdgeInsets.fromLTRB(18, 16, 18, 110)
-            : rescuerSettings
-            ? EdgeInsets.fromLTRB(
-                16,
-                88 + MediaQuery.paddingOf(context).top,
-                16,
-                32,
-              )
-            : const EdgeInsets.fromLTRB(16, 14, 16, 28),
-        children: [
-          if (rescuerOverview) ...[
-            SizedBox(
-              height: 42,
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/profile/logo-paw-naranja.svg',
-                    width: 40,
-                    height: 40,
-                    semanticsLabel: 'Dopmi',
-                  ),
-                  const Spacer(),
-                  const DonorNotificationButton(),
-                ],
+    body: DonorCanvas(
+      enabled: rescuerOverview || rescuerSettings,
+      child: SafeArea(
+        top: rescuerOverview,
+        child: ListView(
+          padding: rescuerOverview
+              ? const EdgeInsets.fromLTRB(18, 16, 18, 110)
+              : rescuerSettings
+              ? EdgeInsets.fromLTRB(
+                  16,
+                  88 + MediaQuery.paddingOf(context).top,
+                  16,
+                  32,
+                )
+              : const EdgeInsets.fromLTRB(16, 14, 16, 28),
+          children: [
+            if (rescuerOverview) ...[
+              SizedBox(
+                height: 42,
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/profile/logo-paw-naranja.svg',
+                      width: 40,
+                      height: 40,
+                      semanticsLabel: 'Dopmi',
+                    ),
+                    const Spacer(),
+                    const DonorNotificationButton(),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 40),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Semantics(
-                    header: true,
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 28,
-                        height: 1.1,
-                        fontWeight: FontWeight.w700,
-                        color: ink,
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 40),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 28,
+                          height: 1.1,
+                          fontWeight: FontWeight.w700,
+                          color: ink,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
+            ],
+            ...children,
           ],
-          ...children,
-        ],
+        ),
       ),
     ),
   );

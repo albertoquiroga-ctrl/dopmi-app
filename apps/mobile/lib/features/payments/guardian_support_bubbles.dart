@@ -80,7 +80,8 @@ class _GuardianSupportBubblesState extends State<GuardianSupportBubbles>
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Color(0xfff1eee8), Color(0xfffaf8f5)],
+                    colors: [Color(0xffe6e6e6), Colors.white],
+                    stops: [0, .78],
                   ),
                 ),
                 child: Stack(

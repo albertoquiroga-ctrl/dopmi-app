@@ -27,6 +27,10 @@ Deno.serve(guardianClientHandler({
   defaultMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
   removeMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
   addCard: (actor: string, input: unknown) => guardianRuntime().savedCard.checkout(actor, input),
+  nativeAddCard: (actor: string, input: { action: string }) => {
+    const service = guardianRuntime().savedNativeCard;
+    return input.action === 'native_add_card' ? service.addSubmit(actor, input) : service.addStatus(actor, input);
+  },
   addWallet: (actor: string, input: unknown) => guardianRuntime().savedWallet.submit(actor, input),
   savedCardMethod: (actor: string, input: unknown) => guardianRuntime().savedCardMethod.submit(actor, input),
   methods: (actor: string) => guardianRuntime().methods(actor),

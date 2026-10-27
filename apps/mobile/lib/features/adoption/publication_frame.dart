@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 
 class PublicationFrame extends StatefulWidget {
   const PublicationFrame({
@@ -187,6 +188,46 @@ class PublicationStepper extends StatelessWidget {
   );
 }
 
+class PublicationFieldLabel extends StatelessWidget {
+  const PublicationFieldLabel(
+    this.label, {
+    super.key,
+    this.required = false,
+    this.style,
+  });
+  final String label;
+  final bool required;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final raw = label.trimRight();
+    final marked = raw.endsWith('*');
+    return Text.rich(
+      TextSpan(
+        text: marked ? raw.substring(0, raw.length - 1).trimRight() : label,
+        children: required || marked
+            ? const [
+                TextSpan(
+                  text: ' *',
+                  style: TextStyle(color: DopmiTokens.orangeButton),
+                ),
+              ]
+            : null,
+      ),
+      style:
+          style ??
+          const TextStyle(
+            fontFamily: DopmiTokens.bodyFont,
+            fontSize: 14,
+            height: 17 / 14,
+            fontWeight: FontWeight.w500,
+            color: DopmiTokens.ink,
+          ),
+    );
+  }
+}
+
 class PublicationFooter extends StatelessWidget {
   const PublicationFooter({
     super.key,
@@ -196,10 +237,11 @@ class PublicationFooter extends StatelessWidget {
     this.busy = false,
     this.compact = false,
     this.saveEnabled = true,
+    this.review = false,
   });
   final String label;
   final VoidCallback? onContinue, onSave;
-  final bool busy, compact, saveEnabled;
+  final bool busy, compact, saveEnabled, review;
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(16),
@@ -222,9 +264,10 @@ class PublicationFooter extends StatelessWidget {
           onPressed: busy ? null : onContinue,
           style:
               FilledButton.styleFrom(
-                backgroundColor: DopmiTokens.purple,
+                backgroundColor: review
+                    ? DopmiTokens.orangeButton
+                    : DopmiTokens.purple,
                 foregroundColor: const Color(0xfffbfbff),
-                // Final warm-trust CSS keeps café and composites opacity .5 on white.
                 disabledBackgroundColor: const Color(0xffa3948e),
                 disabledForegroundColor: const Color(0xffc5c5c5),
                 minimumSize: const Size(0, 48),
@@ -241,9 +284,18 @@ class PublicationFooter extends StatelessWidget {
                 overlayColor: const WidgetStatePropertyAll(Colors.transparent),
                 backgroundColor: WidgetStateProperty.resolveWith(
                   (states) => states.contains(WidgetState.disabled)
-                      ? const Color(0xffa3948e)
+                      ? review
+                            ? Color.alphaBlend(
+                                DopmiTokens.orangeButton.withValues(alpha: .5),
+                                Colors.white,
+                              )
+                            : const Color(0xffa3948e)
                       : states.contains(WidgetState.hovered)
-                      ? const Color(0xff6d28d9)
+                      ? review
+                            ? DopmiTokens.orangeButton
+                            : DopmiTokens.cafeStrong
+                      : review
+                      ? DopmiTokens.orangeButton
                       : DopmiTokens.purple,
                 ),
               ),
@@ -252,6 +304,7 @@ class PublicationFooter extends StatelessWidget {
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
+                    color: Colors.white,
                     strokeWidth: 2,
                     semanticsLabel: 'Guardando publicación',
                   ),
@@ -513,11 +566,11 @@ class PublicationPhotoThumbnail extends StatelessWidget {
                 bottom: 8,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: const Color(0xff7c3aed),
-                    borderRadius: BorderRadius.circular(14),
+                    color: DopmiTokens.ink,
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text(
                       'Principal',
                       style: TextStyle(
@@ -586,24 +639,7 @@ class PublicationChoiceRow extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                height: 17 / 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff151423),
-              ),
-            ),
-            if (required)
-              const Text(
-                ' *',
-                style: TextStyle(fontSize: 14, color: Color(0xffd52222)),
-              ),
-          ],
-        ),
+        PublicationFieldLabel(label, required: required),
         const SizedBox(height: 8),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,14 +671,14 @@ class PublicationChoiceRow extends StatelessWidget {
                             ),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       foregroundColor: value == entry.key
-                          ? const Color(0xff7c3aed)
+                          ? DopmiTokens.skyInk
                           : const Color(0xff151423),
                       backgroundColor: value == entry.key
-                          ? const Color(0x147c3aed)
+                          ? DopmiTokens.sky
                           : Colors.white,
                       side: BorderSide(
                         color: value == entry.key
-                            ? const Color(0xff7c3aed)
+                            ? const Color(0xffb8ddf5)
                             : const Color(0xffe3e4ed),
                       ),
                       shape: RoundedRectangleBorder(
@@ -782,10 +818,10 @@ class PublicationTraitCheck extends StatelessWidget {
                     onChanged: onChanged == null ? null : (_) => advance(),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
-                    activeColor: DopmiTokens.purple,
+                    activeColor: DopmiTokens.orangeButton,
                     checkColor: Colors.white,
                     fillColor: WidgetStatePropertyAll(
-                      value == false ? Colors.white : DopmiTokens.purple,
+                      value == false ? Colors.white : DopmiTokens.orangeButton,
                     ),
                     side: const BorderSide(color: Color(0xffe3e4ed)),
                     shape: RoundedRectangleBorder(
@@ -939,7 +975,7 @@ class PublicationPreviewFrame extends StatelessWidget {
       ],
     ),
     clipBehavior: Clip.antiAlias,
-    child: child,
+    child: DonorCanvas(child: child),
   );
 }
 

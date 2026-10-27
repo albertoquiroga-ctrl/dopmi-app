@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../rescue/rescue_repository.dart';
 import '../rescue/rescue_public_photo.dart';
 
@@ -25,6 +26,8 @@ class ContributionFrame extends StatelessWidget {
     this.rescuer = false,
     this.bottomNavigationBar,
     this.overlayBack = false,
+    this.headerColor,
+    this.showHeaderDivider = true,
   });
   final String title;
   final VoidCallback? back;
@@ -32,13 +35,16 @@ class ContributionFrame extends StatelessWidget {
   final bool rescuer;
   final Widget? bottomNavigationBar;
   final bool overlayBack;
+  final Color? headerColor;
+  final bool showHeaderDivider;
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: overlayBack ? Colors.white : cream,
     extendBodyBehindAppBar: overlayBack,
     bottomNavigationBar: bottomNavigationBar,
     appBar: AppBar(
-      backgroundColor: overlayBack ? Colors.transparent : Colors.white,
+      backgroundColor:
+          headerColor ?? (overlayBack ? Colors.transparent : Colors.white),
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       toolbarHeight:
@@ -47,7 +53,7 @@ class ContributionFrame extends StatelessWidget {
           : (overlayBack ? 52 : 67),
       leadingWidth: 60,
       centerTitle: true,
-      bottom: overlayBack
+      bottom: overlayBack || !showHeaderDivider
           ? null
           : PreferredSize(
               preferredSize: Size.fromHeight(1),
@@ -288,17 +294,20 @@ class ContributionButton extends StatelessWidget {
     this.secondary = false,
     this.busy = false,
     this.dark = false,
+    this.cafe = false,
   });
   final String label;
   final VoidCallback? onPressed;
-  final bool secondary, busy, dark;
+  final bool secondary, busy, dark, cafe;
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
       splashFactory: NoSplash.splashFactory,
       overlayColor: const WidgetStatePropertyAll(Colors.transparent),
       animationDuration: Duration.zero,
-      minimumSize: WidgetStatePropertyAll(Size(0, dark ? 52 : 48)),
+      minimumSize: WidgetStatePropertyAll(
+        Size(0, dark || !secondary ? 52 : 48),
+      ),
       padding: const WidgetStatePropertyAll(
         EdgeInsets.symmetric(horizontal: 18, vertical: 11),
       ),
@@ -310,17 +319,15 @@ class ContributionButton extends StatelessWidget {
         ),
       ),
       shape: const WidgetStatePropertyAll(StadiumBorder()),
-      foregroundColor: WidgetStatePropertyAll(dark ? Colors.white : ink),
+      foregroundColor: WidgetStatePropertyAll(secondary ? ink : Colors.white),
       backgroundColor: WidgetStateProperty.resolveWith(
-        (states) => dark
-            ? (states.contains(WidgetState.disabled)
-                  ? const Color(0xff8a837c)
-                  : ink)
-            : states.contains(WidgetState.disabled)
-            ? (secondary ? cream : yellow).withValues(alpha: .5)
-            : secondary
+        (states) => secondary
             ? cream
-            : yellow,
+            : states.contains(WidgetState.disabled)
+            ? const Color(0xff8a837c)
+            : cafe
+            ? ink
+            : DopmiTokens.orangeButton,
       ),
       side: WidgetStatePropertyAll(
         BorderSide(
@@ -344,7 +351,7 @@ class ContributionButton extends StatelessWidget {
               height: 22,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: dark ? Colors.white : ink,
+                color: secondary ? ink : Colors.white,
               ),
             ),
           ),

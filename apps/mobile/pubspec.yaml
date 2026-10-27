@@ -44,6 +44,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/canvas-grain-f693.png
     - assets/dopmi-wordmark.png
     - assets/welcome-pets.png
     - assets/navigation/
