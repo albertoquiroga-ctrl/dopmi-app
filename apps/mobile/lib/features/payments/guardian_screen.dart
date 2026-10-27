@@ -15,6 +15,8 @@ import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 import 'guardian_payment_card.dart';
+import 'guardian_method_setup.dart';
+import 'independent_card_setup.dart';
 import 'payment_methods_feedback.dart';
 import 'saved_card_confirmation.dart';
 import 'payment_method_border.dart';
@@ -522,7 +524,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           jsonDecode(prefs.getString(savedCardStorageKey)!),
         );
         if (value['kind'] != 'add_card' ||
-            value['consent_version'] != savedCardConsent) {
+            value['consent_version'] != savedCardConsent ||
+            (value['presentation'] != null &&
+                ![
+                  'native_card',
+                  'hosted_checkout',
+                ].contains(value['presentation']))) {
           throw const FormatException('Intento incompleto');
         }
         savedCardReceipt({
@@ -530,7 +537,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           'status': 'pending',
           'card_id': null,
         });
-        savedCardIntent = value;
+        savedCardIntent = {
+          'kind': 'add_card',
+          'key': value['key'],
+          'consent_version': savedCardConsent,
+          if (value['presentation'] != null)
+            'presentation': value['presentation'],
+        };
       } catch (_) {
         savedCardError =
             'Consultamos el servidor para recuperar el alta de tu tarjeta.';
@@ -543,6 +556,22 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           .savedCardState();
       if (!current) return;
       savedCardStatus = result;
+      if (result != null &&
+          savedCardIntent?['key'] == result['key'] &&
+          result['presentation'] != null &&
+          savedCardIntent?['presentation'] != result['presentation']) {
+        final restored = {
+          'kind': 'add_card',
+          'key': result['key'],
+          'consent_version': savedCardConsent,
+          'presentation': result['presentation'],
+        };
+        if (!await prefs.setString(savedCardStorageKey, jsonEncode(restored))) {
+          throw const FormatException('No se pudo conservar el intento');
+        }
+        if (!current) return;
+        savedCardIntent = restored;
+      }
       if (result != null &&
           savedCardIntent != null &&
           result['key'] != savedCardIntent!['key']) {
@@ -557,6 +586,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
           'kind': 'add_card',
           'key': result!['key'],
           'consent_version': savedCardConsent,
+          'presentation': result['presentation'] ?? 'hosted_checkout',
         };
         if (!await prefs.setString(
           savedCardStorageKey,
@@ -800,6 +830,9 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             'kind': 'add_card',
             'key': const Uuid().v4(),
             'consent_version': savedCardConsent,
+            'presentation': ref.read(guardianMethodSetupProvider).available
+                ? 'native_card'
+                : 'hosted_checkout',
           };
       final prefs = await SharedPreferences.getInstance();
       if (!await prefs.setString(savedCardStorageKey, jsonEncode(next))) {
@@ -809,12 +842,29 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       savedCardIntent = next;
       pendingSavedFeedback = next['key'];
       final repo = ref.read(guardianRepositoryProvider);
-      final result = await repo.submit(next);
-      if (!current) return;
-      if (result['checkout_url'] is String) {
-        await repo.openCheckout(result['checkout_url']);
-      }
+      final result =
+          await IndependentCardSetup(
+            repository: repo,
+            sdk: ref.read(guardianMethodSetupProvider),
+          ).run(
+            next,
+            current: () =>
+                current &&
+                savedCardIntent?['key'] == next['key'] &&
+                ModalRoute.of(context)?.isCurrent == true &&
+                (WidgetsBinding.instance.lifecycleState == null ||
+                    WidgetsBinding.instance.lifecycleState ==
+                        AppLifecycleState.resumed),
+          );
+      if (!current || result == null) return;
       if (current) await load();
+      if (current &&
+          result.uncertain &&
+          savedCardStatus?['status'] != 'saved') {
+        setState(
+          () => savedCardError = 'El alta todavía no está confirmada. Puedes retomar la misma solicitud.',
+        );
+      }
     } catch (_) {
       if (current) {
         setState(
@@ -1208,7 +1258,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     if (widget.paymentMethodsOnly) {
       return ContributionFrame(
         title: 'Métodos de pago',
-        back: () => context.canPop() ? context.pop() : context.go('/settings'),
+        back: () => context.canPop() ? context.pop() : context.go('/profile'),
         child: DonorCanvas(
           child: Stack(
             children: [
@@ -1241,11 +1291,18 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                             ? 'Consultando el estado de tu método de pago…'
                             : cardsError != null
                             ? 'No se pudo confirmar tu método de pago.'
+                            : cards?.isEmpty == true
+                            ? 'Aún no tienes tarjetas guardadas.'
                             : (cards ?? []).any((card) => card.isDefault)
                             ? 'Método predeterminado confirmado por Stripe.'
                             : 'Aún no tienes un método predeterminado confirmado.',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.45,
+                          color: muted,
+                        ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       const Text(
                         'Guardar o cambiar una tarjeta no realiza una aportación.',
                         style: TextStyle(
@@ -1308,7 +1365,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                     if (enabled && cardsError != null) Notice(cardsError!),
                     if (enabled && cards != null && cards!.isNotEmpty)
                       for (var i = 0; i < cards!.length; i++) ...[
-                        if (i > 0) const SizedBox(height: 10),
+                        if (i > 0) const SizedBox(height: 12),
                         GuardianPaymentCardRow(
                           card: cards![i],
                           showMakeDefault:
@@ -1359,7 +1416,13 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                                       ),
                         ),
                       ],
-                    if (cards == null || cards!.isEmpty)
+                    if (enabled &&
+                        cards != null &&
+                        cards!.isEmpty &&
+                        fresh &&
+                        cardsError == null)
+                      const GuardianPaymentCardEmpty()
+                    else if (cards == null || cards!.isEmpty)
                       Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
@@ -1414,14 +1477,21 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                         style:
                             OutlinedButton.styleFrom(
                               foregroundColor: ink,
-                              minimumSize: const Size.fromHeight(56),
-                              side: const BorderSide(color: Color(0xffd5cfc6)),
+                              minimumSize: const Size.fromHeight(48),
+                              side: const BorderSide(
+                                color: Color(0xffc8c3bc),
+                                width: 1.5,
+                              ),
                               textStyle: const TextStyle(
                                 fontFamily: 'Inter',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
                               ),
-                              shape: const PaymentMethodBorder(),
+                              shape: const PaymentMethodBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(14),
+                                ),
+                              ),
                               splashFactory: NoSplash.splashFactory,
                             ).copyWith(
                               overlayColor: WidgetStateProperty.resolveWith(
@@ -1713,7 +1783,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
     }
     return ContributionFrame(
       title: 'Suscripción y pagos',
-      back: () => context.canPop() ? context.pop() : context.go('/settings'),
+      back: () => context.canPop() ? context.pop() : context.go('/profile'),
       child: DonorCanvas(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
@@ -1722,11 +1792,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
             spacing: 10,
             children: [
               const Text(
-                'Suscripción Dopmi',
+                'Suscripción Guardián',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   height: 1.3,
+                  color: ink,
                 ),
               ),
               if (enabled && fresh && p == null && canStart && intent == null)
@@ -1738,10 +1809,12 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                   status: status,
                   cents: p['gross_cents'] as int,
                   nextBilling: p['next_billing_at'],
+                  billing: true,
                 ),
               if (enabled && canChange && intent == null)
                 ContributionButton(
                   'Cambiar cantidad',
+                  cafe: true,
                   onPressed: busy || confirming || !fresh || !verified
                       ? null
                       : changeAmount,
@@ -1763,10 +1836,15 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       fontSize: 18,
                       height: 1.3,
                       fontWeight: FontWeight.w700,
+                      color: ink,
                     ),
                   ),
                 ),
-                GuardianHistoryPreview(key: ValueKey(owner), owner: owner),
+                GuardianHistoryPreview(
+                  key: ValueKey(owner),
+                  owner: owner,
+                  billing: true,
+                ),
               ],
               if (!enabled)
                 const Notice(

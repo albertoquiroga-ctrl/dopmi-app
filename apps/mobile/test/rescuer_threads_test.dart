@@ -129,15 +129,19 @@ void main() {
     WidgetTester tester,
     InboxCommunity repo, {
     double scale = 1,
+    bool reducedMotion = false,
   }) async {
     tester.view.physicalSize = scale > 1
         ? const Size(320, 640)
         : const Size(377, 852);
     tester.view.devicePixelRatio = 1;
     tester.platformDispatcher.textScaleFactorTestValue = scale;
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        FakeAccessibilityFeatures(disableAnimations: reducedMotion);
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'fixture@example.test', verified: true);
     await identity.setExperience('rescuer');
@@ -174,7 +178,63 @@ void main() {
   Finder row(String id) => find.byKey(ValueKey('rescuer-thread-$id'));
   final unreadFilter = find.byKey(const ValueKey('rescuer-unread-filter'));
 
+  Future<void> releaseRailAt(
+    WidgetTester tester,
+    Finder finder,
+    double target, {
+    bool settle = true,
+  }) async {
+    final controller = tester.widget<SingleChildScrollView>(finder).controller!;
+    final gesture = await tester.startGesture(tester.getCenter(finder));
+    await gesture.moveBy(const Offset(-20, 0));
+    await tester.pump(const Duration(milliseconds: 20));
+    await gesture.moveBy(Offset(controller.offset - target, 0));
+    await tester.pump(const Duration(milliseconds: 250));
+    await gesture.up();
+    if (settle) {
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 16),
+        EnginePhase.sendSemanticsUpdate,
+        const Duration(seconds: 3),
+      );
+    }
+  }
+
   for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'Todos stays fixed and the pet rail snaps only near a card at $scale',
+      (tester) async {
+        final repo = InboxCommunity()
+          ..groups = List.generate(
+            8,
+            (i) => inboxGroup('pet-$i', [], name: 'Mascota $i'),
+          );
+        await start(tester, repo, scale: scale);
+        final railFinder = find.byKey(const ValueKey('rescuer-pet-rail'));
+        final all = find.byKey(const ValueKey('rescuer-pet-all'));
+        await tester.ensureVisible(railFinder);
+        await tester.pumpAndSettle();
+        final allBefore = tester.getRect(all);
+        final step = tester.getSize(pet('pet-0')).width + 10;
+        final requests = repo.flatRequests.length;
+        await releaseRailAt(tester, railFinder, step + 12);
+        final controller = tester
+            .widget<SingleChildScrollView>(railFinder)
+            .controller!;
+        expect(controller.offset, closeTo(step, 1));
+        expect(
+          tester.getRect(pet('pet-1')).left,
+          closeTo(tester.getRect(railFinder).left, 1),
+        );
+        expect(tester.getRect(all), allBefore);
+        expect(all.hitTestable(), findsOneWidget);
+        final distant = step * 1.5;
+        await releaseRailAt(tester, railFinder, distant);
+        expect(controller.offset, closeTo(distant, 1));
+        expect(repo.flatRequests.length, requests);
+        expect(tester.takeException(), isNull);
+      },
+    );
     testWidgets(
       'pet and unread filters combine with complete badge counts at $scale',
       (tester) async {
@@ -257,6 +317,120 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'a pet rail fling keeps momentum and settles within bounds without filtering',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = List.generate(
+          8,
+          (i) => inboxGroup('pet-$i', [], name: 'Mascota $i'),
+        );
+      await start(tester, repo);
+      final finder = find.byKey(const ValueKey('rescuer-pet-rail'));
+      final all = find.byKey(const ValueKey('rescuer-pet-all'));
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      final controller = tester
+          .widget<SingleChildScrollView>(finder)
+          .controller!;
+      final allBefore = tester.getRect(all);
+      final threadRequests = List.of(repo.flatRequests);
+      final petRequests = List.of(repo.inboxRequests);
+
+      await tester.fling(finder, const Offset(-120, 0), 1800);
+      final releasedAt = controller.offset;
+      expect(releasedAt, greaterThan(0));
+      expect(releasedAt, lessThan(controller.position.maxScrollExtent));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(controller.offset, greaterThan(releasedAt + 1));
+      expect(controller.position.isScrollingNotifier.value, isTrue);
+      expect(controller.position.outOfRange, isFalse);
+
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 16),
+        EnginePhase.sendSemanticsUpdate,
+        const Duration(seconds: 3),
+      );
+      final settledAt = controller.offset;
+      expect(controller.position.isScrollingNotifier.value, isFalse);
+      expect(
+        settledAt,
+        inInclusiveRange(
+          controller.position.minScrollExtent,
+          controller.position.maxScrollExtent,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(controller.offset, closeTo(settledAt, 0.1));
+      expect(tester.getRect(all), allBefore);
+      expect(tester.widget<RescuerPetFilter>(all).selected, isTrue);
+      expect(repo.flatRequests, threadRequests);
+      expect(repo.inboxRequests, petRequests);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'reduced motion leaves manual pet scrolling free without a snap',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = List.generate(
+          8,
+          (i) => inboxGroup('pet-$i', [], name: 'Mascota $i'),
+        );
+      await start(tester, repo, reducedMotion: true);
+      final finder = find.byKey(const ValueKey('rescuer-pet-rail'));
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      final controller = tester
+          .widget<SingleChildScrollView>(finder)
+          .controller!;
+      final target = tester.getSize(pet('pet-0')).width + 22;
+      await releaseRailAt(tester, finder, target);
+      expect(controller.offset, closeTo(target, 1));
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'a new pointer hold interrupts a pet snap and never selects a filter',
+    (tester) async {
+      final repo = InboxCommunity()
+        ..groups = List.generate(
+          8,
+          (i) => inboxGroup('pet-$i', [], name: 'Mascota $i'),
+        );
+      await start(tester, repo);
+      final finder = find.byKey(const ValueKey('rescuer-pet-rail'));
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      final controller = tester
+          .widget<SingleChildScrollView>(finder)
+          .controller!;
+      final requests = repo.flatRequests.length;
+      await releaseRailAt(
+        tester,
+        finder,
+        tester.getSize(pet('pet-0')).width + 22,
+        settle: false,
+      );
+      await tester.pump(const Duration(milliseconds: 16));
+      final hold = await tester.startGesture(tester.getCenter(finder));
+      final heldAt = controller.offset;
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(controller.offset, closeTo(heldAt, 1));
+      await hold.cancel();
+      await tester.pumpAndSettle(
+        const Duration(milliseconds: 16),
+        EnginePhase.sendSemanticsUpdate,
+        const Duration(seconds: 3),
+      );
+      expect(repo.flatRequests.length, requests);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'read failure retries and never fabricates an empty conversation list',

@@ -99,7 +99,10 @@ void main() {
         expect(find.text('Tu impacto Guardián'), findsOneWidget);
         expect(find.text('Consultar registro Guardián'), findsOneWidget);
         expect(find.text('Este mes logramos'), findsOneWidget);
-        expect(find.text('Ayudar se siente bien'), findsNothing);
+        expect(
+          find.byKey(const ValueKey('guardian-support-card-action')),
+          findsNothing,
+        );
         expect(find.text('Suscríbete ahora'), findsNothing);
         expect(find.textContaining('Explorar'), findsNothing);
         // Personal history may resolve its public case; discovery is never loaded.
@@ -117,7 +120,10 @@ void main() {
         ..pendingMembership = Completer<Json>();
       final rescue = MembershipRescue();
       await start(tester, guardian, rescue);
-      expect(find.text('Ayudar se siente bien'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('guardian-support-card-action')),
+        findsNothing,
+      );
       expect(rescue.catalogReads, 0);
       guardian.pendingMembership!.complete({
         'plan': {'status': 'active'},
@@ -145,7 +151,10 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.text('Ayudar se siente bien'), findsNothing);
+    expect(
+      find.byKey(const ValueKey('guardian-support-card-action')),
+      findsNothing,
+    );
     expect(rescue.catalogReads, 0);
     expect(tester.takeException(), isNull);
   });
@@ -177,13 +186,30 @@ void main() {
             );
           final container = await start(tester, guardian, MembershipRescue());
           final started = tester.binding.clock.now();
-          expect(find.text('Ayudar se siente bien'), findsOneWidget);
+          expect(
+            find.byKey(const ValueKey('guardian-support-card-action')),
+            findsOneWidget,
+          );
           final target = card
               ? find.byKey(const ValueKey('guardian-support-card-action'))
               : find.text('Suscríbete ahora');
-          await tester.ensureVisible(target);
-          await tester.pumpAndSettle();
-          await tester.tap(target);
+          if (card) {
+            await Scrollable.ensureVisible(
+              tester.element(target),
+              alignment: 0,
+            );
+            await tester.pumpAndSettle();
+            // The poster can exceed the viewport on a wide window. Tap its
+            // visible upper area, rather than its center behind the dock/nav.
+            final visiblePoint =
+                tester.getTopLeft(target) +
+                Offset(tester.getSize(target).width / 2, 48);
+            await tester.tapAt(visiblePoint);
+          } else {
+            await tester.ensureVisible(target);
+            await tester.pumpAndSettle();
+            await tester.tap(target);
+          }
           await tester.pumpAndSettle();
           expect(container.read(routerProvider).state.uri.path, '/guardian');
           guardian.membership = {'registration': guardian.methodsRegistration};
@@ -195,7 +221,10 @@ void main() {
           if (guardian.pendingMembership != null) {
             await tester.pump();
             await tester.pump(const Duration(milliseconds: 500));
-            expect(find.text('Ayudar se siente bien'), findsNothing);
+            expect(
+              find.byKey(const ValueKey('guardian-support-card-action')),
+              findsNothing,
+            );
             expect(find.text('Suscríbete ahora'), findsNothing);
             guardian.pendingMembership!.complete(guardian.membership);
           }
@@ -211,7 +240,10 @@ void main() {
             findsOneWidget,
           );
           expect(find.text('Suscríbete ahora'), findsNothing);
-          expect(find.text('Ayudar se siente bien'), findsNothing);
+          expect(
+            find.byKey(const ValueKey('guardian-support-card-action')),
+            findsNothing,
+          );
           expect(guardian.registrationSubmissions, 0);
           expect(guardian.calls, isEmpty);
           expect(tester.takeException(), isNull);

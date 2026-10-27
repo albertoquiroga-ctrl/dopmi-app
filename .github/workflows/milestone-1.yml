@@ -1,6 +1,7 @@
 name: Dopmi integrated acceptance
 on:
   push:
+    branches: ['**']
   pull_request:
   workflow_dispatch:
     inputs:

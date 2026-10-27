@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  for (final scale in [1.0, 2.0]) {
+  for (final (scale, billing) in [
+    (1.0, false),
+    (2.0, false),
+    (1.0, true),
+    (2.0, true),
+  ]) {
     testWidgets(
-      'Billing evidence stays legible at scale $scale without a fictitious card or date',
+      'Membership evidence stays legible at scale $scale (billing $billing) without a fictitious card or date',
       (tester) async {
         await tester.binding.setSurfaceSize(const Size(320, 640));
         addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -13,9 +18,13 @@ void main() {
           MaterialApp(
             home: MediaQuery(
               data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-              child: const Scaffold(
+              child: Scaffold(
                 body: SingleChildScrollView(
-                  child: GuardianMembershipCard(status: 'active', cents: 7525),
+                  child: GuardianMembershipCard(
+                    status: 'active',
+                    cents: 7525,
+                    billing: billing,
+                  ),
                 ),
               ),
             ),
@@ -24,7 +33,8 @@ void main() {
         expect(find.text('Suscripción activa'), findsOneWidget);
         expect(find.text(r'$75.25'), findsOneWidget);
         expect(find.text('Por confirmar'), findsOneWidget);
-        expect(find.text('En Stripe'), findsOneWidget);
+        expect(find.text('Guardián'), billing ? findsNothing : findsOneWidget);
+        expect(find.text('En Stripe'), billing ? findsNothing : findsOneWidget);
         expect(find.textContaining('4242'), findsNothing);
         expect(tester.takeException(), isNull);
       },

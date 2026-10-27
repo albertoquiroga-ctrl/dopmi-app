@@ -454,7 +454,11 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          svg('icon-verified', 16),
+                                          svg(
+                                            'icon-verified',
+                                            16,
+                                            color: const Color(0xff66add4),
+                                          ),
                                           const SizedBox(width: 6),
                                           Expanded(
                                             child: Text(
@@ -782,7 +786,9 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                         ),
                       ),
                       child: Text(
-                        eligible.isEmpty ? 'Sin gastos disponibles' : 'Donar',
+                        eligible.isEmpty
+                            ? 'Sin gastos disponibles'
+                            : 'Quiero apoyar',
                       ),
                     ),
                   ),

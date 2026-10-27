@@ -61,6 +61,10 @@ import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/profile_overview.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_hero.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
+
+import '../test/guardian_enrollment_test.dart' show EnrollmentMethodSetup;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,7 +79,6 @@ import '../test/fake_account_photo_repository.dart';
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
 import '../test/rescue_test.dart' show FakeRescue, FakeCaseUpdates;
-import '../test/rescuer_pending_evidence_test.dart' show PendingEvidenceRescue;
 import '../test/case_publication_test.dart'
     show DraftCaseRescue, expenseFixture, WizardVideos;
 import '../test/expense_field_test.dart'
@@ -1822,12 +1825,16 @@ void main() {
             id: 'pm_one',
             brand: 'visa',
             last4: '4242',
+            expMonth: 8,
+            expYear: 2028,
             isDefault: true,
           ),
           const GuardianPaymentCard(
             id: 'pm_two',
             brand: 'mastercard',
             last4: '5556',
+            expMonth: 3,
+            expYear: 2029,
             isDefault: false,
           ),
         ];
@@ -2330,6 +2337,10 @@ void main() {
             ),
           guardianEnabledProvider.overrideWithValue(true),
           guardianRepositoryProvider.overrideWithValue(guardian),
+          if (spec.$1.startsWith('guardian-billing-enrollment'))
+            guardianMethodSetupProvider.overrideWithValue(
+              EnrollmentMethodSetup(),
+            ),
           profilePaymentHistoryProvider.overrideWithValue(
             fixturePaymentHistory,
           ),
@@ -3012,18 +3023,17 @@ void main() {
           ),
           findsOneWidget,
         );
-        final heading = tester.getRect(find.text('Ayudar se siente bien'));
+        expect(find.text('Ayudar se siente bien'), findsNothing);
         final hero = tester.getRect(find.byType(GuardianSupportCard));
         final cta = tester.getRect(
           find.byKey(const ValueKey('guardian-support-cta')),
         );
-        // 78px frame top + 2px padding + centered 31px text in 40px.
-        expect(heading.top, closeTo(84.5, 1));
-        expect(hero.top, closeTo(148, 1));
-        expect(hero.height, closeTo(548, 1));
+        // f693 removed the inactive heading; preserve the full poster and dock.
+        expect(hero.width, closeTo(321, 1));
+        expect(hero.height, greaterThan(300));
         expect(cta.top, closeTo(708, 1));
         expect(cta.height, closeTo(52, 1));
-        expect(hero.bottom + 12, closeTo(cta.top, 1));
+        expect(hero.bottom + 12, lessThanOrEqualTo(cta.top + 1));
         expect(cta.bottom, lessThanOrEqualTo(852 - 92));
       }
       if (spec.$1 == 'adoption-empty') {
@@ -3273,7 +3283,7 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-detail-amount')) {
-        await tester.tap(find.text('Donar'));
+        await tester.tap(find.text('Quiero apoyar'));
         await tester.pumpAndSettle();
         if (!large) {
           expect(tester.getSize(find.byType(TextField)).height, closeTo(52, 1));

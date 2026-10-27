@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/identity_controller.dart';
@@ -33,8 +34,176 @@ const _statusLabels = {
 };
 
 class GuardianHistoryPreview extends ConsumerWidget {
-  const GuardianHistoryPreview({super.key, required this.owner});
+  const GuardianHistoryPreview({
+    super.key,
+    required this.owner,
+    this.billing = false,
+  });
   final String owner;
+  final bool billing;
+
+  Widget _billingEntry(BuildContext context, Json item) {
+    final paid = item['paid_cents'] as int?;
+    final confirmed = paid != null && paid > 0;
+    final amountCents = paid != null && paid > 0
+        ? paid
+        : item['authorized_cents'] as int;
+    final status = item['status'];
+    final label = switch (status) {
+      'assigned' || 'transferred' => confirmed ? 'Pagado' : 'En revisión',
+      'skipped' => 'Sin cargo',
+      'not_paid' => 'Sin pago',
+      'processing' => 'En proceso',
+      'refund_pending' => 'Por devolver',
+      'refunded' => 'Devuelto',
+      'refund_reconciling' => 'En conciliación',
+      _ => 'En revisión',
+    };
+    final completed = confirmed && ['assigned', 'transferred'].contains(status);
+    final date = DateTime.tryParse(
+      (item['period_start'] ?? item['created_at'])?.toString() ?? '',
+    )?.toLocal();
+    const months = [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ];
+    final large = MediaQuery.textScalerOf(context).scale(14) > 21;
+    final thumb = Container(
+      width: 52,
+      height: 52,
+      decoration: BoxDecoration(
+        color: const Color(0xfff3efe8),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: const Icon(Icons.pets, color: ink, size: 24),
+    );
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          item['kind'] == 'initial' ? 'Activación Guardián' : 'Suscripción',
+          maxLines: large ? null : 1,
+          overflow: large ? null : TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 15,
+            height: 1.3,
+            fontWeight: FontWeight.w700,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          date == null
+              ? 'Fecha por confirmar'
+              : '${date.day} ${months[date.month - 1]} ${date.year}',
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.35,
+            fontWeight: FontWeight.w500,
+            color: muted,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          confirmed ? 'Pago confirmado' : 'Importe autorizado',
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.35,
+            fontWeight: FontWeight.w500,
+            color: muted,
+          ),
+        ),
+      ],
+    );
+    final amount = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: large
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.end,
+      children: [
+        Text(
+          '${completed ? '+' : ''}${contributionMoney(amountCents).replaceAll(' MXN', '')}',
+          style: TextStyle(
+            fontSize: 15,
+            height: 1.2,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -.3,
+            color: completed ? DopmiTokens.tealInk : ink,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+          decoration: BoxDecoration(
+            color: const Color(0xffe8e4de),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              height: 1.2,
+              fontWeight: FontWeight.w500,
+              color: ink,
+            ),
+          ),
+        ),
+      ],
+    );
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1415110d),
+            offset: Offset(0, 8),
+            blurRadius: 24,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Color(0x0a15110d)),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: ExpansionTile(
+          key: ValueKey('billing:$owner:${item['id']}'),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          shape: const Border(),
+          collapsedShape: const Border(),
+          leading: large ? null : thumb,
+          trailing: large ? const SizedBox.shrink() : amount,
+          title: large
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    thumb,
+                    const SizedBox(height: 12),
+                    copy,
+                    const SizedBox(height: 12),
+                    amount,
+                  ],
+                )
+              : copy,
+          children: [GuardianCycleReceipt(owner: owner, item: item)],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(guardianEnabledProvider) ||
@@ -66,6 +235,14 @@ class GuardianHistoryPreview extends ConsumerWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, height: 1.55, color: muted),
                 ),
+              )
+            else if (billing)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 12,
+                children: [
+                  for (final item in items) _billingEntry(context, item),
+                ],
               )
             else
               Material(

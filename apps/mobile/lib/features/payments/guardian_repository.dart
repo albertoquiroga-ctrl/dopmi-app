@@ -310,6 +310,17 @@ class GuardianRepository {
     return result == null ? null : savedCardReceipt(result);
   }
 
+  Future<Json?> nativeSavedCardStatus(String key) async {
+    final result = await client.functions.invoke(
+      'guardian-client',
+      body: {'action': 'native_add_card_status', 'key': key},
+    );
+    if (result.status != 200) throw const FormatException('Alta no confirmada');
+    return result.data == null
+        ? null
+        : nativeSavedCardReceipt(result.data, key);
+  }
+
   Future<List<GuardianPaymentCard>> paymentMethods() async {
     final response = await client.functions.invoke(
       'guardian-client',
@@ -386,6 +397,24 @@ class GuardianRepository {
       return receipt;
     }
     if (intent['kind'] == 'add_card') {
+      if (intent['presentation'] == 'native_card') {
+        if (intent['consent_version'] != savedCardConsent) {
+          throw const FormatException('Solicitud de tarjeta incompleta');
+        }
+        final result = await client.functions.invoke(
+          'guardian-client',
+          body: {
+            'action': 'native_add_card',
+            'key': intent['key'],
+            'consent': true,
+            'consent_version': savedCardConsent,
+          },
+        );
+        if (result.status != 200) {
+          throw const FormatException('Alta no confirmada');
+        }
+        return nativeSavedCardReceipt(result.data, intent['key'] as String);
+      }
       final result = await client.functions.invoke(
         'guardian-client',
         body: {
@@ -508,13 +537,60 @@ Json savedCardReceipt(Object? value) {
       (value['status'] == 'saved'
           ? value['card_id'] is! String ||
                 !RegExp(r'^pm_[A-Za-z0-9]+$').hasMatch(value['card_id'])
-          : value['card_id'] != null)) {
+          : value['card_id'] != null) ||
+      (value['presentation'] != null &&
+          (![
+                'native_card',
+                'hosted_checkout',
+              ].contains(value['presentation']) ||
+              value['add_only'] != true ||
+              value['default_unchanged'] != true))) {
     throw const FormatException('Alta no confirmada');
   }
   return {
     'key': value['key'],
     'status': value['status'],
     'card_id': value['card_id'],
+    if (value['presentation'] != null) ...{
+      'presentation': value['presentation'],
+      'add_only': true,
+      'default_unchanged': true,
+    },
+  };
+}
+
+Json nativeSavedCardReceipt(Object? value, String key) {
+  final receipt = savedCardReceipt(value);
+  final data = value as Map;
+  final presentation = receipt['presentation'];
+  final secret = data['setup_client_secret'];
+  final checkout = data['checkout_url'];
+  if (receipt['key'] != key ||
+      !['native_card', 'hosted_checkout'].contains(presentation) ||
+      receipt['add_only'] != true ||
+      receipt['default_unchanged'] != true ||
+      (secret != null &&
+          (presentation != 'native_card' ||
+              receipt['status'] != 'pending' ||
+              secret is! String ||
+              !RegExp(r'^seti_[A-Za-z0-9]+_secret_[A-Za-z0-9]+$')
+                  .hasMatch(secret) ||
+              ![
+                'requires_payment_method',
+                'requires_confirmation',
+                'requires_action',
+              ].contains(data['method_status']))) ||
+      (checkout != null &&
+          (presentation != 'hosted_checkout' ||
+              receipt['status'] != 'pending' ||
+              checkout is! String))) {
+    throw const FormatException('Alta no confirmada');
+  }
+  return {
+    ...receipt,
+    'method_status': data['method_status'],
+    'setup_client_secret': secret,
+    'checkout_url': checkout,
   };
 }
 

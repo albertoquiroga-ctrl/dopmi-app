@@ -9,6 +9,127 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'payment_repository_test.dart' show session;
 
 void main() {
+  test('native independent add and status bind the same request without sending client ownership', () async {
+    const key = '00000000-0000-4000-8000-000000000099';
+    final requests = <Map<String, dynamic>>[];
+    var missing = false;
+    final client = SupabaseClient(
+      'http://127.0.0.1:54321',
+      'synthetic-key',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+      httpClient: MockClient((request) async {
+        if (request.url.path.startsWith('/auth/')) {
+          return http.Response(
+            jsonEncode(session()),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        final body = Map<String, dynamic>.from(jsonDecode(request.body) as Map);
+        requests.add(body);
+        final statusRequest = body['action'] == 'native_add_card_status';
+        return http.Response(
+          jsonEncode(
+            statusRequest && missing
+                ? null
+                : {
+                    'key': key,
+                    'status': statusRequest ? 'saved' : 'pending',
+                    'card_id': statusRequest ? 'pm_added' : null,
+                    'presentation': 'native_card',
+                    'add_only': true,
+                    'default_unchanged': true,
+                    'method_status': statusRequest
+                        ? 'succeeded'
+                        : 'requires_payment_method',
+                    'setup_client_secret': statusRequest
+                        ? null
+                        : 'seti_synthetic_secret_synthetic',
+                    'checkout_url': null,
+                    'customer_id': 'must-not-leave-boundary',
+                  },
+          ),
+          200,
+          headers: {'content-type': 'application/json'},
+        );
+      }),
+    );
+    addTearDown(client.dispose);
+    await client.auth.signInWithPassword(
+      email: 'fixture@example.test',
+      password: 'synthetic-password',
+    );
+    final repo = GuardianRepository(client);
+    final intent = {
+      'kind': 'add_card',
+      'key': key,
+      'presentation': 'native_card',
+      'consent_version': savedCardConsent,
+      'customer_id': 'untrusted-customer',
+      'donor_id': 'untrusted-owner',
+    };
+    final receipt = await repo.submit(intent);
+    expect(receipt['setup_client_secret'], 'seti_synthetic_secret_synthetic');
+    expect(receipt.containsKey('customer_id'), isFalse);
+    final status = await repo.nativeSavedCardStatus(key);
+    expect(status!['card_id'], 'pm_added');
+    expect(requests, [
+      {
+        'action': 'native_add_card',
+        'key': key,
+        'consent': true,
+        'consent_version': savedCardConsent,
+      },
+      {'action': 'native_add_card_status', 'key': key},
+    ]);
+    missing = true;
+    expect(await repo.nativeSavedCardStatus(key), isNull);
+    expect(requests.last, {'action': 'native_add_card_status', 'key': key});
+    await expectLater(
+      repo.submit({...intent, 'consent_version': savedCardMethodConsent}),
+      throwsFormatException,
+    );
+    expect(requests.length, 3);
+  });
+
+  test(
+    'native add receipts reject changed purposes, channel and request identity',
+    () {
+      const key = '00000000-0000-4000-8000-000000000099';
+      final valid = {
+        'key': key,
+        'status': 'pending',
+        'card_id': null,
+        'presentation': 'native_card',
+        'add_only': true,
+        'default_unchanged': true,
+        'method_status': 'requires_payment_method',
+        'setup_client_secret': 'seti_synthetic_secret_synthetic',
+        'checkout_url': null,
+      };
+      for (final patch in [
+        {'key': '00000000-0000-4000-8000-000000000098'},
+        {'presentation': 'unknown'},
+        {'add_only': false},
+        {'default_unchanged': false},
+        {'setup_client_secret': 'pi_synthetic_secret_synthetic'},
+        {'checkout_url': 'https://checkout.stripe.com/setup'},
+        {'method_status': 'processing'},
+        {'status': 'saved', 'card_id': 'pm_added'},
+      ]) {
+        expect(
+          () => nativeSavedCardReceipt({...valid, ...patch}, key),
+          throwsFormatException,
+        );
+      }
+      expect(
+        savedCardReceipt(valid).containsKey('setup_client_secret'),
+        isFalse,
+      );
+      expect(savedCardReceipt(valid)['presentation'], 'native_card');
+    },
+  );
+
   for (final action in ['default', 'remove']) {
     test(
       'independent $action HTTP preserves intent and minimizes receipt',

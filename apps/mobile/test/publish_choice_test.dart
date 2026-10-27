@@ -97,9 +97,7 @@ Future<ProviderContainer> publishApp(
 
 void main() {
   for (final status in ['approved', 'not_started', 'draft', 'submitted']) {
-    testWidgets('receive opens a private case draft: $status', (
-      tester,
-    ) async {
+    testWidgets('receive opens a private case draft: $status', (tester) async {
       final rescue = PublishRoutingRescue(status);
       await publishApp(tester, rescue);
       await tester.ensureVisible(find.byType(PublishTypeCard).last);
@@ -209,8 +207,7 @@ void main() {
     rescue.pending!.complete({'verification_status': 'not_started'});
     await tester.pumpAndSettle();
     expect(
-      GoRouterState.of(tester.element(find.byType(RescueEditorScreen)))
-          .uri
+      GoRouterState.of(tester.element(find.byType(RescueEditorScreen))).uri
           .toString(),
       '/rescue/new?kind=case',
     );

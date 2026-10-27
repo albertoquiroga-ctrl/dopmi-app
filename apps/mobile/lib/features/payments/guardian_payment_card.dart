@@ -83,7 +83,7 @@ class GuardianPaymentCardRow extends StatelessWidget {
     final action = !card.isDefault && showMakeDefault
         ? TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: const Color(0xff554e48),
+              foregroundColor: muted,
               padding: EdgeInsets.zero,
               minimumSize: const Size(40, 40),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -93,6 +93,7 @@ class GuardianPaymentCardRow extends StatelessWidget {
                 height: 1.25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.w600,
+                decoration: TextDecoration.underline,
               ),
             ),
             onPressed: onMakeDefault,
@@ -121,7 +122,7 @@ class GuardianPaymentCardRow extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 card.guardianCurrent || onRemove == null
                     ? const Color(0xffa8a29b)
-                    : const Color(0xffd92d20),
+                    : const Color(0xff9a9289),
                 BlendMode.srcIn,
               ),
             ),
@@ -134,7 +135,9 @@ class GuardianPaymentCardRow extends StatelessWidget {
         textDirection: Directionality.of(context),
         textScaler: scaler,
       )..layout();
-      return painter.width;
+      final width = painter.width;
+      painter.dispose();
+      return width;
     }
 
     return LayoutBuilder(
@@ -152,33 +155,37 @@ class GuardianPaymentCardRow extends StatelessWidget {
               );
         final titleWidth = textWidth(
           '${card.brandLabel} •••• ${card.last4}',
-          const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         );
         final inlineWidth =
-            28 +
+            32 +
             52 +
-            titleWidth +
-            (action == null ? 0 : 8 + actionWidth) +
-            (remove == null ? 0 : 52);
+            (titleWidth < 80 ? titleWidth : 80) +
+            (action == null && remove == null
+                ? 0
+                : 12 + (actionWidth > 40 ? actionWidth : 40));
         final large =
             constraints.maxWidth < inlineWidth || scaler.scale(12) > 18;
         return Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: const Color(0xffe6e2dd)),
-            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: const Color(0xffe8e8e8)),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
+                crossAxisAlignment: card.isDefault
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
                 children: [
                   Container(
                     width: 40,
                     height: 40,
                     decoration: const BoxDecoration(
-                      color: Color(0xffefede8),
+                      color: Color(0xfff3f4f6),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -186,6 +193,10 @@ class GuardianPaymentCardRow extends StatelessWidget {
                         'assets/profile/icon-card.svg',
                         width: 18,
                         height: 18,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0xff6b7280),
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ),
@@ -197,9 +208,9 @@ class GuardianPaymentCardRow extends StatelessWidget {
                         Text(
                           '${card.brandLabel} •••• ${card.last4}',
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 15,
                             height: 1.25,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                             color: ink,
                           ),
                         ),
@@ -208,7 +219,7 @@ class GuardianPaymentCardRow extends StatelessWidget {
                           const Text(
                             'En uso por Guardián',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               height: 1.25,
                               color: muted,
                             ),
@@ -219,20 +230,21 @@ class GuardianPaymentCardRow extends StatelessWidget {
                           Text(
                             'Vence ${card.expiryLabel}',
                             style: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               height: 1.25,
                               color: muted,
                             ),
                           ),
                         ],
-                        if (card.isDefault) const SizedBox(height: 2),
+                        if (card.isDefault) const SizedBox(height: 4),
                         if (card.isDefault)
                           const Text(
                             'Predeterminada',
                             style: TextStyle(
                               fontSize: 12,
                               height: 1.25,
-                              color: Color(0xff554e48),
+                              color: muted,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         if (card.wallet != null) const SizedBox(height: 2),
@@ -250,13 +262,18 @@ class GuardianPaymentCardRow extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (action != null && !large) ...[
-                    const SizedBox(width: 8),
-                    action,
-                  ],
-                  if (remove != null && !large) ...[
+                  if ((action != null || remove != null) && !large) ...[
                     const SizedBox(width: 12),
-                    remove,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ?action,
+                        if (action != null && remove != null)
+                          const SizedBox(height: 8),
+                        ?remove,
+                      ],
+                    ),
                   ],
                 ],
               ),
@@ -277,4 +294,47 @@ class GuardianPaymentCardRow extends StatelessWidget {
       },
     );
   }
+}
+
+class GuardianPaymentCardEmpty extends StatelessWidget {
+  const GuardianPaymentCardEmpty({super.key});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
+    decoration: BoxDecoration(
+      color: const Color(0xfffafafa),
+      border: Border.all(color: const Color(0xffe8e8e8)),
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Column(
+      children: [
+        Container(
+          width: 48,
+          height: 48,
+          decoration: const BoxDecoration(
+            color: Color(0xfff3f4f6),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: SvgPicture.asset(
+              'assets/profile/icon-card.svg',
+              width: 22,
+              height: 22,
+              colorFilter: const ColorFilter.mode(
+                Color(0xff9a9289),
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'Agrega una tarjeta para guardarla de forma segura con Stripe.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14, height: 1.45, color: muted),
+        ),
+      ],
+    ),
+  );
 }

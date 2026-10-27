@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/media/remote_photo.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
@@ -14,17 +15,6 @@ import 'case_update_repository.dart';
 import 'rescue_repository.dart';
 import 'rescue_public_photo.dart';
 import 'rescue_videos.dart';
-
-const _thankYouStyle = TextStyle(
-  fontSize: 26,
-  height: 1.2,
-  fontWeight: FontWeight.w600,
-  color: Colors.white,
-  shadows: [
-    Shadow(offset: Offset(0, 1), blurRadius: 2, color: Color(0xbf000000)),
-    Shadow(offset: Offset(0, 2), blurRadius: 8, color: Color(0x73000000)),
-  ],
-);
 
 const _storyGradient = DecoratedBox(
   decoration: BoxDecoration(
@@ -822,51 +812,21 @@ class _SupportStoriesState extends ConsumerState<SupportStories>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    if (segment.kind == SupportStoryKind.thanks)
-                                      Semantics(
-                                        label: 'Agradecimiento',
-                                        child: const Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Da un pequeño gesto,',
-                                              style: _thankYouStyle,
-                                            ),
-                                            SizedBox(height: 4),
-                                            Text.rich(
-                                              TextSpan(
-                                                children: [
-                                                  TextSpan(text: 'haz una '),
-                                                  TextSpan(
-                                                    text: 'GRAN',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w800,
-                                                      letterSpacing: .52,
-                                                    ),
-                                                  ),
-                                                  TextSpan(
-                                                    text: ' diferencia.',
-                                                  ),
-                                                ],
-                                              ),
-                                              style: _thankYouStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    else ...[
+                                    if (segment.kind !=
+                                        SupportStoryKind.thanks) ...[
                                       Text(
                                         record.title,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 34,
                                           height: 1.05,
                                           letterSpacing: -.68,
                                           fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          shadows: [
+                                          color:
+                                              segment.kind ==
+                                                  SupportStoryKind.urgency
+                                              ? DopmiTokens.orange
+                                              : Colors.white,
+                                          shadows: const [
                                             Shadow(
                                               offset: Offset(0, 1),
                                               blurRadius: 2,

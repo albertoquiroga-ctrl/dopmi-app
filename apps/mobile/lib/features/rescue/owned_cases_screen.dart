@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/donor_notification_button.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -86,7 +88,7 @@ class _OwnedCasesTitle extends StatelessWidget {
           height: 1.1,
           letterSpacing: 0,
           fontWeight: FontWeight.w700,
-          color: Color(0xff151423),
+          color: DopmiTokens.ink,
         ),
       ),
     ),
@@ -220,6 +222,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
             _CaseButton(
               label: 'Listo',
               pill: true,
+              accent: DopmiTokens.orangeButton,
               onPressed: () => Navigator.pop(context, selected),
             ),
           ],
@@ -289,217 +292,224 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: const CommunityNav(2, selectedPath: '/my-cases'),
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: ListView(
-              key: const ValueKey('owned-cases-scroll'),
-              controller: scroll,
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 32),
-              children: [
-                SizedBox(
-                  height: 42,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/profile/logo-paw-naranja.svg',
-                        width: 40,
-                        height: 40,
-                        semanticsLabel: 'Dopmi',
-                      ),
-                      const DonorNotificationButton(rescuer: true),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                const _OwnedCasesTitle(),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xffe2ddf1)),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: large
-                      ? Column(
-                          children: [
-                            for (final entry in const {
-                              'adoption': 'Adopción',
-                              'support': 'Apoyo',
-                            }.entries)
-                              SizedBox(
-                                width: double.infinity,
-                                child: _ProgramTab(
-                                  label: entry.value,
-                                  selected: program == entry.key,
-                                  onPressed: busy
-                                      ? null
-                                      : () => scope(() {
-                                          program = entry.key;
-                                          archived = false;
-                                        }),
-                                ),
-                              ),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            for (final entry in const {
-                              'adoption': 'Adopción',
-                              'support': 'Apoyo',
-                            }.entries)
-                              Expanded(
-                                child: _ProgramTab(
-                                  label: entry.value,
-                                  selected: program == entry.key,
-                                  onPressed: busy
-                                      ? null
-                                      : () => scope(() {
-                                          program = entry.key;
-                                          archived = false;
-                                        }),
-                                ),
-                              ),
-                          ],
-                        ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    TextButton.icon(
-                      onPressed: busy ? null : filters,
-                      icon: const Icon(Icons.tune, size: 22),
-                      label: const Text(
-                        'Filtrar',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      style: TextButton.styleFrom(
-                        foregroundColor: statuses.length == _caseFilters.length
-                            ? const Color(0xff999188)
-                            : ink,
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(80, 48),
-                      ),
-                    ),
-                    const Spacer(),
-                    _CaseIcon(
-                      label: archived ? 'Volver a casos' : 'Ver archivo',
-                      asset: 'icon-inbox-archive',
-                      fill: archived ? yellow : Colors.transparent,
-                      color: archived ? Colors.white : const Color(0xff8a837c),
-                      onPressed: busy
-                          ? null
-                          : () => scope(() => archived = !archived),
-                    ),
-                  ],
-                ),
-                if (busy) const LinearProgressIndicator(),
-                if (error != null) Notice(error!, isError: true),
-                const SizedBox(height: 12),
-                LiveSection<Json>(
-                  key: ValueKey(
-                    '$actor/$program/$archived/$selected/$page/$revision',
-                  ),
-                  tables: const [
-                    'dopmi_adoptions',
-                    'dopmi_rescue_records',
-                    'dopmi_threads',
-                    'dopmi_donations',
-                  ],
-                  load: () => repository.ownedCases(
-                    page,
-                    program: program,
-                    statuses: archived ? const [] : selected,
-                    archived: archived,
-                  ),
-                  builder: (data, _) {
-                    final items = (data['items'] as List? ?? const [])
-                        .map((item) => Json.from(item as Map))
-                        .toList();
-                    final total = data['total'] as int? ?? 0;
-                    final totalOwned = data['total_owned'] as int? ?? total;
-                    if (totalOwned == 0) {
-                      return const _OwnedCasesEmpty();
-                    }
-                    if (items.isEmpty) {
-                      return Text(
-                        archived
-                            ? 'No tienes casos archivados.'
-                            : program == 'adoption'
-                            ? 'No tienes casos en adopción en este momento.'
-                            : 'No tienes casos recibiendo apoyo en este momento.',
-                        style: const TextStyle(fontSize: 14, color: muted),
-                      );
-                    }
-                    final groups = archived
-                        ? {'Archivo': items}
-                        : {
-                            'En proceso': items
-                                .where(
-                                  (item) => _phase(item['status']) != 'active',
-                                )
-                                .toList(),
-                            program == 'adoption'
-                                ? 'Buscando hogar'
-                                : 'Recibiendo apoyo': items
-                                .where(
-                                  (item) => _phase(item['status']) == 'active',
-                                )
-                                .toList(),
-                          };
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: DonorCanvas(
+        child: SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 520),
+              child: ListView(
+                key: const ValueKey('owned-cases-scroll'),
+                controller: scroll,
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 32),
+                children: [
+                  SizedBox(
+                    height: 42,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        for (final group in groups.entries)
-                          if (group.value.isNotEmpty) ...[
-                            if (!archived)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: Text(
-                                  group.key,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    height: 1.25,
-                                    fontWeight: FontWeight.w700,
-                                    color: ink,
+                        SvgPicture.asset(
+                          'assets/profile/logo-paw-naranja.svg',
+                          width: 40,
+                          height: 40,
+                          semanticsLabel: 'Dopmi',
+                        ),
+                        const DonorNotificationButton(rescuer: true),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const _OwnedCasesTitle(),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xffe2ddf1)),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: large
+                        ? Column(
+                            children: [
+                              for (final entry in const {
+                                'adoption': 'Adopción',
+                                'support': 'Apoyo',
+                              }.entries)
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: _ProgramTab(
+                                    label: entry.value,
+                                    selected: program == entry.key,
+                                    onPressed: busy
+                                        ? null
+                                        : () => scope(() {
+                                            program = entry.key;
+                                            archived = false;
+                                          }),
                                   ),
                                 ),
-                              ),
-                            for (final item in group.value)
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: _OwnedCaseCard(
-                                  key: ValueKey('$program/${item['id']}'),
-                                  item: item,
-                                  archived: archived,
-                                  busy: busy,
-                                  onOpen: () => open(item),
-                                  onOperation: (operation) =>
-                                      operate(item, operation),
-                                  onCompleted: () => archiveCompleted(item),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              for (final entry in const {
+                                'adoption': 'Adopción',
+                                'support': 'Apoyo',
+                              }.entries)
+                                Expanded(
+                                  child: _ProgramTab(
+                                    label: entry.value,
+                                    selected: program == entry.key,
+                                    onPressed: busy
+                                        ? null
+                                        : () => scope(() {
+                                            program = entry.key;
+                                            archived = false;
+                                          }),
+                                  ),
                                 ),
-                              ),
-                            const SizedBox(height: 10),
-                          ],
-                        if (total > 20)
-                          PageControls(
-                            page: page,
-                            total: total,
-                            size: 20,
-                            change: (value) {
-                              setState(() => page = value);
-                              resetScroll();
-                            },
+                            ],
                           ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: busy ? null : filters,
+                        icon: const Icon(Icons.tune, size: 22),
+                        label: const Text(
+                          'Filtrar',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              statuses.length == _caseFilters.length
+                              ? const Color(0xff999188)
+                              : ink,
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(80, 48),
+                        ),
+                      ),
+                      const Spacer(),
+                      _CaseIcon(
+                        label: archived ? 'Volver a casos' : 'Ver archivo',
+                        asset: 'icon-inbox-archive',
+                        fill: archived ? yellow : Colors.transparent,
+                        color: archived
+                            ? Colors.white
+                            : const Color(0xff8a837c),
+                        onPressed: busy
+                            ? null
+                            : () => scope(() => archived = !archived),
+                      ),
+                    ],
+                  ),
+                  if (busy) const LinearProgressIndicator(),
+                  if (error != null) Notice(error!, isError: true),
+                  const SizedBox(height: 12),
+                  LiveSection<Json>(
+                    key: ValueKey(
+                      '$actor/$program/$archived/$selected/$page/$revision',
+                    ),
+                    tables: const [
+                      'dopmi_adoptions',
+                      'dopmi_rescue_records',
+                      'dopmi_threads',
+                      'dopmi_donations',
+                    ],
+                    load: () => repository.ownedCases(
+                      page,
+                      program: program,
+                      statuses: archived ? const [] : selected,
+                      archived: archived,
+                    ),
+                    builder: (data, _) {
+                      final items = (data['items'] as List? ?? const [])
+                          .map((item) => Json.from(item as Map))
+                          .toList();
+                      final total = data['total'] as int? ?? 0;
+                      final totalOwned = data['total_owned'] as int? ?? total;
+                      if (totalOwned == 0) {
+                        return const _OwnedCasesEmpty();
+                      }
+                      if (items.isEmpty) {
+                        return Text(
+                          archived
+                              ? 'No tienes casos archivados.'
+                              : program == 'adoption'
+                              ? 'No tienes casos en adopción en este momento.'
+                              : 'No tienes casos recibiendo apoyo en este momento.',
+                          style: const TextStyle(fontSize: 14, color: muted),
+                        );
+                      }
+                      final groups = archived
+                          ? {'Archivo': items}
+                          : {
+                              'En proceso': items
+                                  .where(
+                                    (item) =>
+                                        _phase(item['status']) != 'active',
+                                  )
+                                  .toList(),
+                              program == 'adoption'
+                                  ? 'Buscando hogar'
+                                  : 'Recibiendo apoyo': items
+                                  .where(
+                                    (item) =>
+                                        _phase(item['status']) == 'active',
+                                  )
+                                  .toList(),
+                            };
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (final group in groups.entries)
+                            if (group.value.isNotEmpty) ...[
+                              if (!archived)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Text(
+                                    group.key,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      height: 1.25,
+                                      fontWeight: FontWeight.w700,
+                                      color: ink,
+                                    ),
+                                  ),
+                                ),
+                              for (final item in group.value)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: _OwnedCaseCard(
+                                    key: ValueKey('$program/${item['id']}'),
+                                    item: item,
+                                    archived: archived,
+                                    busy: busy,
+                                    onOpen: () => open(item),
+                                    onOperation: (operation) =>
+                                        operate(item, operation),
+                                    onCompleted: () => archiveCompleted(item),
+                                  ),
+                                ),
+                              const SizedBox(height: 10),
+                            ],
+                          if (total > 20)
+                            PageControls(
+                              page: page,
+                              total: total,
+                              size: 20,
+                              change: (value) {
+                                setState(() => page = value);
+                                resetScroll();
+                              },
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -523,9 +533,7 @@ class _ProgramTab extends StatelessWidget {
     child: TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        backgroundColor: selected
-            ? const Color(0xff151423)
-            : Colors.transparent,
+        backgroundColor: selected ? DopmiTokens.ink : Colors.transparent,
         foregroundColor: selected ? Colors.white : const Color(0xff4f4e5c),
         minimumSize: const Size(0, 44),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1225,7 +1233,7 @@ class _CaseCheckRow extends StatelessWidget {
                       child: Checkbox(
                         value: value,
                         onChanged: onChanged,
-                        activeColor: purple,
+                        activeColor: DopmiTokens.orangeButton,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         visualDensity: VisualDensity.compact,
                       ),
@@ -1554,10 +1562,12 @@ class _CaseButton extends StatelessWidget {
     this.outlined = false,
     this.danger = false,
     this.pill = false,
+    this.accent,
   });
   final String label;
   final VoidCallback? onPressed;
   final bool outlined, danger, pill;
+  final Color? accent;
   @override
   Widget build(BuildContext context) {
     final shape = outlined || danger || pill
@@ -1591,7 +1601,9 @@ class _CaseButton extends StatelessWidget {
         : FilledButton(
             onPressed: onPressed,
             style: FilledButton.styleFrom(
-              backgroundColor: danger ? const Color(0xfffff1f2) : purple,
+              backgroundColor: danger
+                  ? const Color(0xfffff1f2)
+                  : accent ?? purple,
               foregroundColor: danger ? const Color(0xffc41c2e) : Colors.white,
               disabledBackgroundColor: danger ? const Color(0xfffff7f8) : null,
               disabledForegroundColor: danger ? const Color(0xffdb7a89) : null,

@@ -12,10 +12,12 @@ class GuardianMembershipCard extends StatelessWidget {
     required this.status,
     required this.cents,
     this.nextBilling,
+    this.billing = false,
   });
   final String? status;
   final int cents;
   final Object? nextBilling;
+  final bool billing;
   @override
   Widget build(BuildContext context) {
     final active = status == 'active';
@@ -150,16 +152,18 @@ class GuardianMembershipCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'Guardián',
-            style: TextStyle(
-              fontSize: 18,
-              height: 1.2,
-              fontWeight: FontWeight.w700,
-              color: ink,
+          if (!billing) ...[
+            const SizedBox(height: 10),
+            const Text(
+              'Guardián',
+              style: TextStyle(
+                fontSize: 18,
+                height: 1.2,
+                fontWeight: FontWeight.w700,
+                color: ink,
+              ),
             ),
-          ),
+          ],
           const SizedBox(height: 10),
           Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -190,9 +194,11 @@ class GuardianMembershipCard extends StatelessWidget {
               'Próximo cobro',
               date == null
                   ? 'Por confirmar'
+                  : billing
+                  ? '${date.day} ${const ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'][date.month - 1]} ${date.year}'
                   : '${date.day}/${date.month}/${date.year}',
             ),
-          meta('Método de pago', 'En Stripe'),
+          if (!billing) meta('Método de pago', 'En Stripe'),
         ],
       ),
     );

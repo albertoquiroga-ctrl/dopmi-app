@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
-import 'onboarding_flow.dart' show wordSafeOnboardingStyle;
+import '../../core/heading_layout.dart';
 
 export 'onboarding_flow.dart';
 
@@ -74,7 +74,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 bool cssLeading = false,
               }) => textHeight(
                 text,
-                wordSafeOnboardingStyle(context, text, style, width),
+                wordSafeHeadingStyle(context, text, style, width),
                 width,
                 cssLeading: cssLeading,
               );
@@ -268,7 +268,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       Text(
                         'Bienvenido a DopMi',
                         textAlign: TextAlign.center,
-                        style: wordSafeOnboardingStyle(
+                        style: wordSafeHeadingStyle(
                           context,
                           'Bienvenido a DopMi',
                           const TextStyle(
@@ -376,7 +376,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   : const Duration(milliseconds: 450),
                               curve: const Cubic(.22, 1, .36, 1),
                               textAlign: TextAlign.center,
-                              style: wordSafeOnboardingStyle(
+                              style: wordSafeHeadingStyle(
                                 context,
                                 selected == null
                                     ? '¿Cómo quieres ayudar hoy?'
@@ -563,7 +563,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                                         ),
                                                   curve: Curves.ease,
                                                   textAlign: TextAlign.center,
-                                                  style: wordSafeOnboardingStyle(
+                                                  style: wordSafeHeadingStyle(
                                                     context,
                                                     option.$2,
                                                     TextStyle(
@@ -626,7 +626,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                   Text(
                                     selected.$2,
                                     textAlign: TextAlign.center,
-                                    style: wordSafeOnboardingStyle(
+                                    style: wordSafeHeadingStyle(
                                       context,
                                       selected.$2,
                                       const TextStyle(

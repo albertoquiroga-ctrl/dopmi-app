@@ -1,3 +1,5 @@
+import 'dart:ui' show SemanticsAction;
+
 import 'package:dopmi_mobile/features/rescue/verification_form.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,7 +16,6 @@ import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -651,7 +652,10 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 100));
       expect(repo.catalogCalls, 1);
-      expect(find.text('Ayudar se siente bien'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('guardian-support-card-action')),
+        findsOneWidget,
+      );
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(
         find.byWidgetPredicate(
@@ -680,7 +684,6 @@ void main() {
           path: '/rescue-cases',
           large: large,
         );
-        expect(find.text('Ayudar se siente bien'), findsOneWidget);
         expect(find.textContaining('No pudimos completar'), findsOneWidget);
         expect(
           find.byWidgetPredicate(
@@ -693,10 +696,19 @@ void main() {
           findsNothing,
         );
         expect(repo.catalogCalls, 1);
+        final promotion = find.byKey(
+          const ValueKey('guardian-support-card-action'),
+        );
+        await tester.scrollUntilVisible(
+          promotion,
+          160,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(promotion, findsOneWidget);
         repo.failCatalog = false;
         await tester.scrollUntilVisible(
           find.text('Volver a intentar'),
-          150,
+          -150,
           scrollable: find.byType(Scrollable).first,
         );
         await Scrollable.ensureVisible(
@@ -708,12 +720,15 @@ void main() {
         await tester.pumpAndSettle();
         expect(repo.catalogCalls, 2);
         await tester.scrollUntilVisible(
-          find.text('Ayudar se siente bien'),
+          find.text('Choco'),
           -150,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
-        expect(find.text('Ayudar se siente bien'), findsOneWidget);
+        expect(
+          find.byKey(const ValueKey('guardian-support-card-action')),
+          findsOneWidget,
+        );
         expect(find.text('Choco'), findsOneWidget);
         expect(find.textContaining('No pudimos completar'), findsNothing);
         expect(find.text('Volver a intentar'), findsNothing);
@@ -878,18 +893,8 @@ void main() {
       UncontrolledProviderScope(container: container, child: const DopmiApp()),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Ayudar se siente bien'), findsOneWidget);
-    // Source CSS h1 letter-spacing:0; paragraph inherits normal (0).
-    for (final copy in ['Ayudar se siente bien']) {
-      expect(
-        tester
-            .renderObject<RenderParagraph>(find.text(copy))
-            .text
-            .style!
-            .letterSpacing,
-        0,
-      );
-    }
+    expect(find.text('Ayudar se siente bien'), findsNothing);
+    expect(find.text('Suscríbete ahora'), findsOneWidget);
 
     final heroImage = find.image(
       const AssetImage('assets/guardian/guardian-carousel-hero.jpg'),
@@ -949,7 +954,16 @@ void main() {
       matching: find.byType(RotatedBox),
     );
     expect(tester.widget<RotatedBox>(expenseChevron).quarterTurns, 1);
-    expect(find.byTooltip('Apoyar al caso').first, findsOneWidget);
+    final contribution = find.widgetWithText(FilledButton, 'Quiero apoyar');
+    expect(contribution, findsOneWidget);
+    expect(tester.widget<FilledButton>(contribution).onPressed, isNotNull);
+    expect(find.byTooltip('Apoyar al caso'), findsNothing);
+    expect(
+      tester
+          .widget<PublicExpenseCard>(find.byType(PublicExpenseCard))
+          .showContributeAction,
+      isFalse,
+    );
     expect(find.text('No hay evidencia pública disponible.'), findsNothing);
     await tester.tap(
       find.byWidgetPredicate(
@@ -1004,8 +1018,17 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(messages);
     await tester.pumpAndSettle();
+    expect(container.read(routerProvider).state.uri.path, '/messages');
+    expect(find.text('Chats'), findsOneWidget);
+    expect(find.text('Mensajes recientes'), findsNothing);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(DopmiBottomBar),
+        matching: find.text('Inicio'),
+      ),
+    );
+    await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/rescuer');
-    expect(find.text('Mensajes recientes'), findsOneWidget);
     final inbox = find.descendant(
       of: find.byType(DopmiBottomBar),
       matching: find.text('Mensajes'),
@@ -1213,10 +1236,17 @@ void main() {
       );
       await tester.tap(expense);
       await tester.pumpAndSettle();
-      final action = find.byWidgetPredicate(
-        (w) => w is IconButton && w.tooltip == 'Aportación no disponible',
+      final expenseCard = tester.widget<PublicExpenseCard>(
+        find.byType(PublicExpenseCard),
       );
-      expect(tester.widget<IconButton>(action).onPressed, isNull);
+      expect(expenseCard.canContribute, isFalse);
+      expect(expenseCard.showContributeAction, isFalse);
+      expect(find.byTooltip('Apoyar al caso'), findsNothing);
+      expect(find.text('Quiero apoyar'), findsNothing);
+      expect(tester.widget<FilledButton>(footer).onPressed, isNull);
+      await tester.tap(footer);
+      await tester.pumpAndSettle();
+      expect(find.text('Elige un monto a donar:'), findsNothing);
       expect(find.text('Mi historia'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
@@ -1379,9 +1409,13 @@ void main() {
       expect(find.text('Gasto 22'), findsOneWidget);
       await tester.ensureVisible(find.text('Gasto 22'));
       await tester.pumpAndSettle();
-      expect(find.byTooltip('Apoyar al caso').last, findsOneWidget);
-      await tester.ensureVisible(find.byTooltip('Apoyar al caso').last);
-      await tester.tap(find.byTooltip('Apoyar al caso').last);
+      expect(find.byType(PublicExpenseCard), findsNWidgets(22));
+      expect(find.byTooltip('Apoyar al caso'), findsNothing);
+      final contribution = find.widgetWithText(FilledButton, 'Quiero apoyar');
+      expect(contribution, findsOneWidget);
+      expect(tester.widget<FilledButton>(contribution).onPressed, isNotNull);
+      await tester.ensureVisible(contribution);
+      await tester.tap(contribution);
       await tester.pumpAndSettle();
       expect(find.text('Elige un monto a donar:'), findsOneWidget);
       expect(find.text('\$75'), findsNothing);

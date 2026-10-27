@@ -88,28 +88,7 @@ class SupportHomePage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Container(
-                          constraints: const BoxConstraints(minHeight: 46),
-                          padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-                          alignment: Alignment.centerLeft,
-                          child: Semantics(
-                            header: true,
-                            child: const Text(
-                              'Ayudar se siente bien',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 28,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0,
-                                height: 1.1,
-                                color: ink,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (eligible.isNotEmpty || status != null)
-                          const SizedBox(height: 12),
+                        const SizedBox(height: 8),
                         if (error != null) Notice(error!, isError: true),
                         if (status != null)
                           status!
@@ -151,32 +130,49 @@ class SupportHomePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     sliver: SliverLayoutBuilder(
                       builder: (context, constraints) {
+                        final heroWidth = constraints.crossAxisExtent - 20;
                         final dockHeight = _guardianDockHeight(
                           context,
                           constraints.crossAxisExtent - 36,
                         );
                         final bottom = dockBottom;
+                        // The reference crops only the poster's outer artwork.
+                        // Its embedded chip/headline must survive a short screen;
+                        // enlarged text uses the complete source poster instead.
+                        final posterHeight = heroWidth * 1280 / 720;
+                        final minimumPosterHeight = large
+                            ? posterHeight
+                            : math.min(
+                                posterHeight,
+                                math.max(360.0, heroWidth * 1104 / 720),
+                              );
+                        // Rotated cards and the active card's shadow extend
+                        // below the deck. Keep the flowing price outside them.
+                        final deckFootprint = large ? 44.0 : 12.0;
                         final height = math.max(
-                          _guardianDockStacks(
-                                context,
-                                constraints.crossAxisExtent - 36,
-                              )
-                              ? (constraints.crossAxisExtent - 52) * 1280 / 720
-                              : 260.0,
-                          constraints.viewportMainAxisExtent -
-                              constraints.precedingScrollExtent -
-                              dockHeight -
-                              bottom -
-                              12,
+                          minimumPosterHeight,
+                          math.min(
+                            posterHeight,
+                            constraints.viewportMainAxisExtent -
+                                constraints.precedingScrollExtent -
+                                dockHeight -
+                                bottom -
+                                deckFootprint,
+                          ),
                         );
                         return SliverToBoxAdapter(
                           child: Column(
                             children: [
-                              GuardianSupportCard(
-                                height: height,
-                                onOpenEnrollment: () => openGuardian(context),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                child: GuardianSupportCard(
+                                  height: height,
+                                  onOpenEnrollment: () => openGuardian(context),
+                                ),
                               ),
-                              const SizedBox(height: 12),
+                              SizedBox(height: deckFootprint),
                               if (large)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -370,7 +366,7 @@ class _CaseProgress extends CustomPainter {
         2 * math.pi * value,
         false,
         Paint()
-          ..color = yellow
+          ..color = DopmiTokens.sky
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4
           ..strokeCap = StrokeCap.round,

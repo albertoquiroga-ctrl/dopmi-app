@@ -4,6 +4,7 @@ import 'package:dopmi_mobile/features/payments/guardian_registration.dart';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/payments/guardian_payment_card.dart';
+import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -18,6 +19,44 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'payments_test.dart' show pumpUntil, tapButton;
+
+class NativeAddGuardian extends FakeGuardian {
+  final nativeReads = <String>[];
+
+  @override
+  Future<Json> submit(Json intent) async {
+    if (intent['kind'] != 'add_card') return super.submit(intent);
+    calls.add(Json.from(intent));
+    savedCard = {
+      'key': intent['key'],
+      'status': 'pending',
+      'card_id': null,
+      'presentation': 'native_card',
+      'add_only': true,
+      'default_unchanged': true,
+    };
+    return {
+      ...savedCard!,
+      'method_status': 'requires_payment_method',
+      'setup_client_secret': 'seti_synthetic_secret_synthetic',
+    };
+  }
+
+  @override
+  Future<Json?> nativeSavedCardStatus(String key) async {
+    nativeReads.add(key);
+    savedCard = {...savedCard!, 'status': 'saved', 'card_id': 'pm_added'};
+    cards = const [
+      GuardianPaymentCard(
+        id: 'pm_added',
+        brand: 'visa',
+        last4: '1234',
+        isDefault: false,
+      ),
+    ];
+    return Json.from(savedCard!);
+  }
+}
 
 class FakeGuardian extends GuardianRepository {
   FakeGuardian()
@@ -243,6 +282,7 @@ void main() {
     String owner = 'one',
     bool verified = true,
     bool methods = false,
+    GuardianMethodSetup? methodSetup,
   }) async {
     tester.view.physicalSize = const Size(390, 2400);
     tester.view.devicePixelRatio = 1;
@@ -268,6 +308,8 @@ void main() {
         communityRepositoryProvider.overrideWithValue(FakeCommunity()),
         guardianRepositoryProvider.overrideWithValue(repo),
         guardianEnabledProvider.overrideWithValue(enabled),
+        if (methodSetup != null)
+          guardianMethodSetupProvider.overrideWithValue(methodSetup),
         routerInitialLocationProvider.overrideWithValue(
           methods ? '/settings/payment-methods' : '/guardian',
         ),
@@ -282,7 +324,7 @@ void main() {
     );
     await pumpUntil(
       tester,
-      find.text(methods ? 'Métodos de pago' : 'Suscripción Dopmi'),
+      find.text(methods ? 'Métodos de pago' : 'Suscripción Guardián'),
     );
     await tester.pumpAndSettle();
     if (enabled && find.text('Suscribirme').evaluate().isNotEmpty) {
@@ -304,6 +346,63 @@ void main() {
   }
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  testWidgets(
+    'adding an independent card presents native Stripe and persists only recovery metadata',
+    (tester) async {
+      final repo = NativeAddGuardian();
+      var prepared = 0, presented = 0;
+      final sdk = GuardianMethodSetupSdk(
+        publishableKey: 'pk_test_synthetic',
+        enabled: true,
+        web: false,
+        platform: TargetPlatform.android,
+        initialize: (_, _) async {},
+        prepare: (parameters) async {
+          prepared++;
+          expect(
+            parameters.setupIntentClientSecret,
+            'seti_synthetic_secret_synthetic',
+          );
+          expect(parameters.paymentIntentClientSecret, isNull);
+        },
+        show: () async {
+          presented++;
+          final prefs = await SharedPreferences.getInstance();
+          final stored = prefs.getString('dopmi-saved-card:one:intent')!;
+          final recovery = Json.from(jsonDecode(stored));
+          expect(recovery.keys.toSet(), {
+            'kind',
+            'key',
+            'consent_version',
+            'presentation',
+          });
+          expect(recovery['presentation'], 'native_card');
+          expect(recovery['consent_version'], savedCardConsent);
+          expect(stored.contains('_secret_'), isFalse);
+          expect(stored.contains('checkout_url'), isFalse);
+        },
+      );
+      await start(tester, repo, methods: true, methodSetup: sdk);
+      await tester.ensureVisible(find.text('Agregar tarjeta'));
+      await tester.tap(find.text('Agregar tarjeta'));
+      await tester.pumpAndSettle();
+      expect(repo.calls, isEmpty);
+      await tapButton(tester, 'Guardar y continuar');
+      expect(prepared, 1);
+      expect(presented, 1);
+      expect(repo.opened, 0);
+      expect(repo.calls.single['kind'], 'add_card');
+      expect(repo.calls.single['presentation'], 'native_card');
+      expect(repo.nativeReads, [repo.calls.single['key']]);
+      expect(repo.cards.single.isDefault, isFalse);
+      expect(repo.value['plan'], isNull);
+      expect(find.text('Tarjeta agregada'), findsOneWidget);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('dopmi-saved-card:one:intent'), isNull);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('review blocks a retained Checkout but preserves its reference', (
     tester,
@@ -690,7 +789,7 @@ void main() {
         };
       await start(tester, repo, methods: true);
       expect(find.text('Aún no tienes tarjetas guardadas.'), findsOneWidget);
-      expect(find.text('Suscripción Dopmi'), findsNothing);
+      expect(find.text('Suscripción Guardián'), findsNothing);
       await tester.ensureVisible(find.text('Agregar tarjeta'));
       await tester.tap(find.text('Agregar tarjeta'));
       await tester.pumpAndSettle();
@@ -831,7 +930,7 @@ void main() {
     expect(repo.calls, isEmpty);
     await tester.tap(find.byTooltip('Regresar'));
     await tester.pumpAndSettle();
-    expect(find.text('Configuración'), findsWidgets);
+    expect(find.text('Mi perfil'), findsOneWidget);
     expect(repo.calls, isEmpty);
   });
   testWidgets(

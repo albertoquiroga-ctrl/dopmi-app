@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/donor_canvas.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/ui.dart' show Notice;
@@ -18,6 +19,83 @@ import 'match_thread_row.dart';
 const _ink = Color(0xff151423);
 const _muted = Color(0xff4f4e5c);
 const _line = Color(0xffe3e4ed);
+
+double _petCardWidth(BuildContext context, String name) {
+  final scaler = MediaQuery.textScalerOf(context);
+  if (scaler.scale(13) <= 18) return 78;
+  final painter = TextPainter(
+    text: TextSpan(
+      text: name,
+      style: const TextStyle(
+        fontFamily: 'Inter',
+        fontSize: 13,
+        height: 1.2,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    textDirection: Directionality.of(context),
+    textScaler: scaler,
+  )..layout();
+  final width = (painter.width + 18).clamp(78.0, 180.0).toDouble();
+  painter.dispose();
+  return width;
+}
+
+/// A nearby card settles after momentum ends; distant stops stay free.
+/// Ballistic activity is interruptible by Flutter's ordinary pointer handling.
+class _PetRailSnapPhysics extends ScrollPhysics {
+  const _PetRailSnapPhysics({
+    required this.stops,
+    required this.shouldSnap,
+    super.parent,
+  });
+  final List<double> stops;
+  final bool Function() shouldSnap;
+
+  @override
+  _PetRailSnapPhysics applyTo(ScrollPhysics? ancestor) => _PetRailSnapPhysics(
+    stops: stops,
+    shouldSnap: shouldSnap,
+    parent: buildParent(ancestor),
+  );
+
+  @override
+  Simulation? createBallisticSimulation(
+    ScrollMetrics position,
+    double velocity,
+  ) {
+    final tolerance = toleranceFor(position);
+    if (!shouldSnap() ||
+        stops.isEmpty ||
+        position.outOfRange ||
+        velocity.abs() > tolerance.velocity) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+    var target = position.pixels;
+    var nearest = double.infinity;
+    for (final stop in stops) {
+      final candidate = stop
+          .clamp(position.minScrollExtent, position.maxScrollExtent)
+          .toDouble();
+      final distance = (candidate - position.pixels).abs();
+      if (distance < nearest) {
+        nearest = distance;
+        target = candidate;
+      }
+    }
+    final proximity = (position.viewportDimension * .12).clamp(8.0, 24.0);
+    if (nearest <= tolerance.distance || nearest > proximity) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+    return ScrollSpringSimulation(
+      spring,
+      position.pixels,
+      target,
+      velocity,
+      tolerance: tolerance,
+    );
+  }
+}
 
 class RescuerThreadsScreen extends ConsumerStatefulWidget {
   const RescuerThreadsScreen({super.key});
@@ -36,6 +114,7 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
   List<Json> pets = [];
   final scroll = ScrollController();
   final rail = ScrollController();
+  bool railPointerScrolling = false;
   VoidCallback? cancel;
   Timer? timer;
   int activePage = 1;
@@ -198,47 +277,129 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
         ],
       );
     }
-    return SingleChildScrollView(
-      key: const ValueKey('rescuer-pet-rail'),
-      controller: rail,
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.only(top: 4, bottom: 8),
-      clipBehavior: Clip.none,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RescuerPetFilter(
-            name: 'Todos',
-            selected: petFilter == null,
-            onTap: () => filterPet(null),
-          ),
-          for (final pet in pets.where(selectorVisible)) ...[
-            const SizedBox(width: 10),
-            RescuerPetFilter(
-              key: ValueKey('rescuer-pet-${pet['id']}'),
-              name: pet['pet_name'] as String? ?? 'Mascota',
-              photo: pet['photo'] as String? ?? '',
-              unread: (pet['unread_count'] as num? ?? 0).toInt(),
-              selected: petFilter == pet['id'],
-              onTap: () => filterPet(pet['id'] as String),
-            ),
-          ],
-          if (pets.length < petTotal) ...[
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 100,
-              child: TextButton(
-                key: const ValueKey('rescuer-pets-more'),
-                onPressed: petsBusy ? null : () => loadPets(more: true),
-                child: Text(
-                  petsBusy ? 'Cargando…' : 'Ver más mascotas',
-                  textAlign: TextAlign.center,
+    final visiblePets = pets.where(selectorVisible).toList();
+    final stops = <double>[];
+    var cursor = 0.0;
+    for (final pet in visiblePets) {
+      stops.add(cursor);
+      cursor +=
+          _petCardWidth(context, pet['pet_name'] as String? ?? 'Mascota') + 10;
+    }
+    if (pets.length < petTotal) stops.add(cursor);
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 8),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0xfaffffff),
+                  offset: Offset(10, 0),
+                  blurRadius: 18,
+                  spreadRadius: -10,
                 ),
-              ),
+              ],
             ),
-          ],
-        ],
-      ),
+            child: RescuerPetFilter(
+              key: const ValueKey('rescuer-pet-all'),
+              name: 'Todos',
+              isAll: true,
+              selected: petFilter == null,
+              onTap: () => filterPet(null),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: ClipRect(
+            child: Stack(
+              children: [
+                Listener(
+                  // Wheel deltas remain free; a new pointer drag re-enables snap.
+                  onPointerSignal: (_) => railPointerScrolling = true,
+                  onPointerDown: (_) => railPointerScrolling = false,
+                  child: SingleChildScrollView(
+                    key: const ValueKey('rescuer-pet-rail'),
+                    controller: rail,
+                    scrollDirection: Axis.horizontal,
+                    physics: _PetRailSnapPhysics(
+                      stops: stops,
+                      shouldSnap: () =>
+                          mounted && !reduceMotion && !railPointerScrolling,
+                    ),
+                    padding: const EdgeInsets.only(top: 4, bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < visiblePets.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 10),
+                          RescuerPetFilter(
+                            key: ValueKey(
+                              'rescuer-pet-${visiblePets[i]['id']}',
+                            ),
+                            name:
+                                visiblePets[i]['pet_name'] as String? ??
+                                'Mascota',
+                            photo: visiblePets[i]['photo'] as String? ?? '',
+                            unread:
+                                (visiblePets[i]['unread_count'] as num? ?? 0)
+                                    .toInt(),
+                            selected: petFilter == visiblePets[i]['id'],
+                            onTap: () =>
+                                filterPet(visiblePets[i]['id'] as String),
+                          ),
+                        ],
+                        if (pets.length < petTotal) ...[
+                          if (visiblePets.isNotEmpty) const SizedBox(width: 10),
+                          SizedBox(
+                            width: 100,
+                            child: TextButton(
+                              key: const ValueKey('rescuer-pets-more'),
+                              onPressed: petsBusy
+                                  ? null
+                                  : () => loadPets(more: true),
+                              child: Text(
+                                petsBusy ? 'Cargando…' : 'Ver más mascotas',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 12,
+                  child: IgnorePointer(
+                    child: ListenableBuilder(
+                      listenable: rail,
+                      builder: (_, _) => Opacity(
+                        opacity: rail.hasClients && rail.offset > 0 ? 1 : 0,
+                        child: const DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xfaffffff), Color(0x00ffffff)],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -251,223 +412,227 @@ class _RescuerThreadsState extends ConsumerState<RescuerThreadsScreen>
     child: Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: const CommunityNav(3),
-      body: SafeArea(
-        bottom: false,
-        child: ListView(
-          key: const PageStorageKey('rescuer-inbox-scroll'),
-          controller: scroll,
-          padding: const EdgeInsets.fromLTRB(18, 16, 18, 88),
-          children: [
-            SizedBox(
-              height: 42,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SvgPicture.asset(
-                    'assets/profile/logo-paw-naranja.svg',
-                    width: 40,
-                    height: 40,
-                    semanticsLabel: 'Dopmi',
-                  ),
-                  const DonorNotificationButton(rescuer: true),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              constraints: const BoxConstraints(minHeight: 46),
-              padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
-              alignment: Alignment.centerLeft,
-              child: Semantics(
-                header: true,
-                child: Text(
-                  history ? 'Historial de mensajes' : 'Mensajes',
-                  style: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 28,
-                    height: 1.1,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700,
-                    color: _ink,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            petSelector(context),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 12,
-                runSpacing: 8,
-                children: [
-                  Semantics(
-                    header: true,
-                    child: const Text(
-                      'Chats',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 22,
-                        height: 1.15,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -.44,
-                        color: _ink,
-                      ),
-                    ),
-                  ),
-                  Semantics(
-                    button: true,
-                    selected: unreadOnly,
-                    child: ReferenceFocusOutline(
-                      radius: 4,
-                      child: InkWell(
-                        key: const ValueKey('rescuer-unread-filter'),
-                        onTap: () => setState(() {
-                          unreadOnly = !unreadOnly;
-                          page = 1;
-                        }),
-                        overlayColor: const WidgetStatePropertyAll(
-                          Colors.transparent,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Text(
-                            unreadOnly ? 'Mostrar todos' : 'Sin leer',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 14,
-                              height: 1.2,
-                              fontWeight: FontWeight.w600,
-                              color: unreadOnly ? DopmiTokens.purple : _muted,
-                              decoration: unreadOnly
-                                  ? TextDecoration.underline
-                                  : null,
-                              decorationColor: DopmiTokens.purple,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            LiveSection<DataPage<Json>>(
-              key: ValueKey('threads:$history:$page:$petFilter:$unreadOnly'),
-              tables: const [
-                'dopmi_threads',
-                'dopmi_messages',
-                'dopmi_notifications',
-                'dopmi_adoptions',
-                'dopmi_rescue_records',
-              ],
-              load: () => ref
-                  .read(communityRepositoryProvider)
-                  .rescuerThreads(
-                    page,
-                    groupId: petFilter,
-                    unreadOnly: unreadOnly,
-                    history: history,
-                  ),
-              builder: (result, refresh) {
-                restoreOffset();
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: DonorCanvas(
+        child: SafeArea(
+          bottom: false,
+          child: ListView(
+            key: const PageStorageKey('rescuer-inbox-scroll'),
+            controller: scroll,
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 88),
+            children: [
+              SizedBox(
+                height: 42,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      key: const ValueKey('rescuer-chats-panel'),
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xffebe8f3)),
-                        borderRadius: BorderRadius.circular(22),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x0f46281d),
-                            offset: Offset(0, 2),
-                            blurRadius: 14,
-                          ),
-                        ],
-                      ),
-                      child: result.items.isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                16,
-                                12,
-                                16,
-                                16,
-                              ),
-                              child: Text(
-                                unreadOnly
-                                    ? 'No tienes mensajes sin leer.'
-                                    : history
-                                    ? 'Aún no tienes conversaciones en tu historial.'
-                                    : 'Aún no tienes mensajes',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  height: 1.45,
-                                  color: _muted,
-                                ),
-                              ),
-                            )
-                          : Column(
-                              children: [
-                                for (var i = 0; i < result.items.length; i++)
-                                  RescuerThreadRow(
-                                    result.items[i],
-                                    flat: true,
-                                    key: ValueKey(
-                                      'rescuer-thread-${result.items[i]['id']}',
-                                    ),
-                                    last: i == result.items.length - 1,
-                                    open: () async {
-                                      await context.push(
-                                        '/messages/${result.items[i]['id']}',
-                                      );
-                                      if (mounted) {
-                                        refresh();
-                                        loadPets();
-                                      }
-                                    },
-                                  ),
-                              ],
-                            ),
+                    SvgPicture.asset(
+                      'assets/profile/logo-paw-naranja.svg',
+                      width: 40,
+                      height: 40,
+                      semanticsLabel: 'Dopmi',
                     ),
-                    if (result.total > 20)
-                      PageControls(
-                        page: page,
-                        total: result.total,
-                        size: 20,
-                        change: (value) => setState(() => page = value),
-                      ),
+                    const DonorNotificationButton(rescuer: true),
                   ],
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 4,
-              children: [
-                TextButton(
-                  onPressed: () => showHistory(!history),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                constraints: const BoxConstraints(minHeight: 46),
+                padding: const EdgeInsets.fromLTRB(2, 2, 2, 4),
+                alignment: Alignment.centerLeft,
+                child: Semantics(
+                  header: true,
                   child: Text(
-                    history ? 'Ver casos en adopción' : 'Historial de mensajes',
+                    history ? 'Historial de mensajes' : 'Mensajes',
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 28,
+                      height: 1.1,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.w700,
+                      color: DopmiTokens.ink,
+                    ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () => context.push('/my-conversations'),
-                  child: const Text('Mis conversaciones'),
+              ),
+              const SizedBox(height: 12),
+              petSelector(context),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 12,
+                  runSpacing: 8,
+                  children: [
+                    Semantics(
+                      header: true,
+                      child: const Text(
+                        'Chats',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 22,
+                          height: 1.15,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -.44,
+                          color: DopmiTokens.ink,
+                        ),
+                      ),
+                    ),
+                    Semantics(
+                      button: true,
+                      selected: unreadOnly,
+                      child: ReferenceFocusOutline(
+                        radius: 4,
+                        child: InkWell(
+                          key: const ValueKey('rescuer-unread-filter'),
+                          onTap: () => setState(() {
+                            unreadOnly = !unreadOnly;
+                            page = 1;
+                          }),
+                          overlayColor: const WidgetStatePropertyAll(
+                            Colors.transparent,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Text(
+                              unreadOnly ? 'Mostrar todos' : 'Sin leer',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 14,
+                                height: 1.2,
+                                fontWeight: FontWeight.w600,
+                                color: DopmiTokens.ink,
+                                decoration: unreadOnly
+                                    ? TextDecoration.underline
+                                    : null,
+                                decorationColor: DopmiTokens.purple,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 10),
+              LiveSection<DataPage<Json>>(
+                key: ValueKey('threads:$history:$page:$petFilter:$unreadOnly'),
+                tables: const [
+                  'dopmi_threads',
+                  'dopmi_messages',
+                  'dopmi_notifications',
+                  'dopmi_adoptions',
+                  'dopmi_rescue_records',
+                ],
+                load: () => ref
+                    .read(communityRepositoryProvider)
+                    .rescuerThreads(
+                      page,
+                      groupId: petFilter,
+                      unreadOnly: unreadOnly,
+                      history: history,
+                    ),
+                builder: (result, refresh) {
+                  restoreOffset();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        key: const ValueKey('rescuer-chats-panel'),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xffebe8f3)),
+                          borderRadius: BorderRadius.circular(22),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0f46281d),
+                              offset: Offset(0, 2),
+                              blurRadius: 14,
+                            ),
+                          ],
+                        ),
+                        child: result.items.isEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  12,
+                                  16,
+                                  16,
+                                ),
+                                child: Text(
+                                  unreadOnly
+                                      ? 'No tienes mensajes sin leer.'
+                                      : history
+                                      ? 'Aún no tienes conversaciones en tu historial.'
+                                      : 'Aún no tienes mensajes',
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 14,
+                                    height: 1.45,
+                                    color: _muted,
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  for (var i = 0; i < result.items.length; i++)
+                                    RescuerThreadRow(
+                                      result.items[i],
+                                      flat: true,
+                                      key: ValueKey(
+                                        'rescuer-thread-${result.items[i]['id']}',
+                                      ),
+                                      last: i == result.items.length - 1,
+                                      open: () async {
+                                        await context.push(
+                                          '/messages/${result.items[i]['id']}',
+                                        );
+                                        if (mounted) {
+                                          refresh();
+                                          loadPets();
+                                        }
+                                      },
+                                    ),
+                                ],
+                              ),
+                      ),
+                      if (result.total > 20)
+                        PageControls(
+                          page: page,
+                          total: result.total,
+                          size: 20,
+                          change: (value) => setState(() => page = value),
+                        ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 12,
+                runSpacing: 4,
+                children: [
+                  TextButton(
+                    onPressed: () => showHistory(!history),
+                    child: Text(
+                      history
+                          ? 'Ver casos en adopción'
+                          : 'Historial de mensajes',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => context.push('/my-conversations'),
+                    child: const Text('Mis conversaciones'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     ),
@@ -482,29 +647,18 @@ class RescuerPetFilter extends StatelessWidget {
     required this.onTap,
     this.photo = '',
     this.unread = 0,
+    this.isAll = false,
   });
   final String name, photo;
   final bool selected;
   final int unread;
+  final bool isAll;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final large = MediaQuery.textScalerOf(context).scale(13) > 18;
-    final painter = TextPainter(
-      text: TextSpan(
-        text: name,
-        style: const TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 13,
-          height: 1.2,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-      textScaler: MediaQuery.textScalerOf(context),
-    )..layout();
-    final width = large ? (painter.width + 18).clamp(78.0, 180.0) : 78.0;
+    final width = _petCardWidth(context, name);
     return Semantics(
       button: true,
       selected: selected,
@@ -521,17 +675,17 @@ class RescuerPetFilter extends StatelessWidget {
               width: width,
               padding: const EdgeInsets.fromLTRB(8, 10, 8, 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: selected ? DopmiTokens.sky : Colors.white,
                 border: Border.all(
                   color: selected
-                      ? const Color(0x5946281d)
+                      ? const Color(0xffb8ddf5)
                       : const Color(0xffe6e2dd),
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
                     color: selected
-                        ? const Color(0x2446281d)
+                        ? const Color(0x1446281d)
                         : const Color(0x0f15110d),
                     offset: Offset(0, selected ? 8 : 2),
                     blurRadius: selected ? 22 : 12,
@@ -554,22 +708,27 @@ class RescuerPetFilter extends StatelessWidget {
                             Container(
                               width: 52,
                               height: 52,
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xffefe8ff),
-                                    Color(0xfff7f4ff),
-                                  ],
-                                ),
+                                color: isAll ? const Color(0xb8ffffff) : null,
+                                gradient: isAll
+                                    ? null
+                                    : const LinearGradient(
+                                        colors: [
+                                          Color(0xffefe8ff),
+                                          Color(0xfff7f4ff),
+                                        ],
+                                      ),
                               ),
                               alignment: Alignment.center,
                               child: SvgPicture.asset(
                                 'assets/profile/icon-messages.svg',
                                 width: 22,
                                 height: 22,
-                                colorFilter: const ColorFilter.mode(
-                                  DopmiTokens.purple,
+                                colorFilter: ColorFilter.mode(
+                                  isAll
+                                      ? DopmiTokens.skyInk
+                                      : DopmiTokens.purple,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -587,7 +746,7 @@ class RescuerPetFilter extends StatelessWidget {
                                   minHeight: 18,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: DopmiTokens.purple,
+                                  color: DopmiTokens.yellow,
                                   borderRadius: BorderRadius.circular(99),
                                   boxShadow: const [
                                     BoxShadow(
@@ -604,7 +763,7 @@ class RescuerPetFilter extends StatelessWidget {
                                     fontSize: 11,
                                     height: 18 / 11,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color: DopmiTokens.ink,
                                   ),
                                 ),
                               ),
@@ -1060,7 +1219,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
               padding: const EdgeInsets.symmetric(horizontal: 7),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: DopmiTokens.purple,
+                color: DopmiTokens.yellow,
                 borderRadius: BorderRadius.circular(99),
               ),
               child: Text(
@@ -1070,7 +1229,7 @@ class _RescuerThreadRowState extends State<RescuerThreadRow> {
                   fontSize: 12,
                   height: 22 / 12,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: DopmiTokens.ink,
                 ),
               ),
             ),

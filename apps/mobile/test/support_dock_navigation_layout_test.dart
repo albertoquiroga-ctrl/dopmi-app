@@ -88,6 +88,26 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
+        final heroImage = find.image(
+          const AssetImage('assets/guardian/guardian-carousel-hero.jpg'),
+        );
+        final image = tester.widget<Image>(heroImage);
+        const sourceSize = Size(720, 1280);
+        final fitted = applyBoxFit(
+          image.fit!,
+          sourceSize,
+          tester.getSize(heroImage),
+        );
+        final visibleSource = image.alignment
+            .resolve(Directionality.of(tester.element(heroImage)))
+            .inscribe(fitted.source, Offset.zero & sourceSize);
+        expect(
+          visibleSource.top,
+          lessThanOrEqualTo(88.1),
+          reason: 'The chip begins at source y=110; retain its top margin instead of cropping the embedded copy.',
+        );
+        expect(visibleSource.left, closeTo(0, .1));
+        expect(visibleSource.right, closeTo(sourceSize.width, .1));
         final dock = find.byType(GuardianSupportDock);
         final cta = find.byKey(const ValueKey('guardian-support-cta'));
         final nav = find.byType(DopmiBottomBar);
@@ -142,6 +162,20 @@ void main() {
           closeTo(tester.getRect(nav).top - 10, .1),
         );
         expect(tester.getRect(cta).overlaps(tester.getRect(nav)), isFalse);
+        if (fixture.$2 >= 2) {
+          expect(
+            tester.getRect(dock).top,
+            greaterThanOrEqualTo(
+              tester
+                      .getRect(
+                        find.byKey(const ValueKey('guardian-support-carousel')),
+                      )
+                      .bottom +
+                  40,
+            ),
+            reason: 'The enlarged price must clear the rotated deck and its shadow.',
+          );
+        }
         expect(
           find.text('Suscr\u00edbete ahora').hitTestable(),
           findsOneWidget,

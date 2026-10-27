@@ -61,12 +61,55 @@ void main() {
         lessThan(tester.getTopLeft(find.text('Historial de pagos')).dy),
       );
       expect(find.text('Suscripción'), findsOneWidget);
-      expect(tester.getTopLeft(find.text('Suscripción')).dx, 93);
+      expect(find.text('Suscripción Guardián'), findsOneWidget);
+      expect(find.text('Guardián'), findsNothing);
+      expect(find.text('En Stripe'), findsNothing);
+      expect(
+        find.ancestor(
+          of: find.text('Suscripción'),
+          matching: find.byType(ExpansionTile),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        tester.getTopLeft(find.text('24 sep 2026')).dy,
+        greaterThan(tester.getTopLeft(find.text('Suscripción')).dy),
+      );
+      expect(find.text(r'+$50'), findsOneWidget);
       expect(find.text('Pagado'), findsOneWidget);
       expect(find.text('Aún no hay pagos registrados.'), findsNothing);
       await tester.tap(find.text('Suscripción'));
       await tester.pumpAndSettle();
       expect(find.text('Neto asignado: \$43.14 MXN'), findsOneWidget);
+      expect(repo.calls, isEmpty);
+    },
+  );
+  testWidgets(
+    'Billing separates real cycles and never presents an authorized amount as a paid contribution',
+    (tester) async {
+      final repo = HistoryRepo()
+        ..read = (_) async => {
+          'items': [
+            cycle('paid', 'assigned'),
+            cycle('skipped', 'skipped'),
+            cycle('pending', 'processing'),
+          ],
+          'next_cursor': null,
+        };
+      await start(tester, repo);
+      await tester.pumpAndSettle();
+      expect(find.byType(ExpansionTile), findsNWidgets(3));
+      expect(find.text(r'+$50'), findsOneWidget);
+      expect(find.text(r'$50'), findsNWidgets(2));
+      expect(find.text('Pago confirmado'), findsOneWidget);
+      expect(find.text('Importe autorizado'), findsNWidgets(2));
+      expect(find.text('Pagado'), findsOneWidget);
+      expect(find.text('Sin cargo'), findsOneWidget);
+      expect(find.text('En proceso'), findsOneWidget);
+      await tester.tap(find.text('Suscripción').at(1));
+      await tester.pumpAndSettle();
+      expect(find.text('Ciclo omitido sin cargo ni deuda'), findsOneWidget);
+      expect(find.textContaining('Pago confirmado:'), findsNothing);
       expect(repo.calls, isEmpty);
     },
   );

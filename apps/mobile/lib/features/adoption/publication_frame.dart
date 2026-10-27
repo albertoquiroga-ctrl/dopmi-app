@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
+import '../../core/heading_layout.dart';
 
 class PublicationFrame extends StatefulWidget {
   const PublicationFrame({
@@ -138,14 +139,21 @@ class _PublicationHeader extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Semantics(
             header: true,
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 28,
-                height: 1.1,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff15110d),
+            child: LayoutBuilder(
+              builder: (context, constraints) => Text(
+                title,
+                style: wordSafeHeadingStyle(
+                  context,
+                  title,
+                  const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 28,
+                    height: 1.1,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xff15110d),
+                  ),
+                  constraints.maxWidth,
+                ),
               ),
             ),
           ),
