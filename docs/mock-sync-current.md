@@ -1,63 +1,49 @@
-# Checkpoint — 27/oct/2026, 03:46 CDMX
+# Checkpoint — 27/oct/2026, 06:32 CDMX
 
-Corte vigente; supersede pendientes históricos inferiores. Dueño: integrador/root.
-Producto **dopmi-app**, checkout candidate-git-20261014, rama codex/finish-release-20261015.
-Referencia congelada **f693c0367643605fa8495c1ae3c171df4ccf85b6**, warm-trust.
-Seguimiento cada cuatro horas ACTIVE, comprobado en su automatización existente;
-no segunda cola Flutter ni pruebas/documentos generados sólo por el reloj.
+Dueño integrador/root; una cola Flutter. Producto dopmi-app, rama
+codex/finish-release-20261015, checkout candidate-git-20261014. Cambios ajenos preservados.
+Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust congelada; futuros pushes aparte.
 
-- **Implementado:** fuente local **48c144f7137fbc4d5a53f48bbc072f024df1c539**,
-  90 archivos del delta f693 y corrección de borrador privado. F4 móvil (alta nativa
-  independiente de tarjeta) y F3-D (mensajes/Casos/Historias) siguen sin commit;
-  por tanto 48c144f7 todavía NO es candidato final. Cambios ajenos conservados.
-- **Verificado local:** F1 53 pruebas y análisis sin incidencias en su corte;
-  F2 revisión visual cerrada, incluido canvas del ProfileFrame real normal/200%;
-  F3 focales corregidas sin repetir las ya verdes; capturador F3/F4 PASS13s.
-  F4 backend105 PASS; móvil84 PASS/1 expectativa de regreso obsoleta, corregida
-  y prueba aislada PASS1s. No sumar tandas solapadas como una suite integral.
-  Revisión independiente de F3-D sin defecto material; falta ejecutar sus pruebas
-  nuevas y revisar renders F3/F4. Fuente posterior requiere análisis/CI final.
-- **Backend pendiente:** tres migraciones aditivas (other de soporte, recibos de
-  presentación de movimientos, alta nativa de tarjeta), todavía NO aplicadas a DEV;
-  Edge financiero nuevo tampoco desplegado. Contraste remoto de historia84 y cuerpos
-  de soporte/ledger ya realizado; falta el paquete final y preflight fresco completo.
-- **Publicado:** Play interno **2.3.3 (338)**, fuente **a4b46284b6db06d1430c0a4f2ea4ed419425afb2**,
-  CI40455807031 cuatro SUCCESS, CM6ae03ffdc76bf166cac18c43 trece SUCCESS.
-  **Instalado:** último comprobado337, no atribuir338 ni f693 al Samsung.
-  **Aceptado:** recorridos previos concretos; UX integral del nuevo delta pendiente.
-- **Reutilizar:** recuperación real aceptada, Tienda privada/aislamiento/expiración,
-  P3 y su único aporteTEST, publicación4pasos y apertura/salida Connect337.
-  No repetir correo, pagos, KYC, fixtures, CI338 ni otra toma para diagnosticar video.
-- **Estado remoto:** último readback operacional27oct06:07UTC, video/Tienda/limpieza
-  OFF, job6 pausado, cola0, finanzas e historia preservadas. Ningún ON/escritura
-  operacional propios desde ese corte. Cámara→Stream ready→deleted probado;
-  reproducción completa de la toma no, causa profunda429/502 aún desconocida.
-- **Pendientes externos:** Samsung no detectado en último intento; autorización
-  puntual del reemplazo de token Stream vencido pendiente, no creado; decisión
-  nueva pending_stripe pendiente. No interpretar silencio como respuesta.
+- **Implementado/GitHub:** b50ed67696dae532bccde80aa4736283a3059508; código de app
+  c19357e9 intacto, sucesor sólo corrige9pruebas y capturador antiguo. Árbol de producto limpio.
+- **Local verificado:** F1/F2/F3/F4nativo cerrados por alcance y revisores. F3D50PASS;
+  correcciones39PASS; últimas9suites61PASS43s. Los cinco capturadores que ejecuta CI
+  pasaron: design5s/perfil63s/integral6s/recuperación6s/Tienda4s. Analyze0/18.5s,
+  configuración17PASS. No sumar tandas solapadas como una suite integral.
+- **CI actual:**40492133689/b50 TERMINADA, cuatro jobs SUCCESS: Flutter,
+  web/PostgreSQL, identidad/adopción e iOS simulador. Recibo real11:27UTC.
+  CI40488879166/c193 terminal: web/PostgreSQL,Auth/backend,iOS SUCCESS; Flutter
+  analyze0 pero15expectativas obsoletas fallaron. Corrección local pasó, no redispatch idéntico.
+- **DEV aplicado/verificado:** migración agrupada20261027115406, historia84→85;
+  payload2519c0fd…916bce/MD52fdee303…938cb; nueve postchecks verdaderos11:54:22UTC.
+  guardian-client130→131 ACTIVE,28fuentesLFexactas y otras31funciones intactas.
+  Código/seguridad independientes cerraron readbacks. SQL/Edge video/Tienda/cleanupOFF,
+  job6pausado;34metadatos exactos11:59:23UTC. No smokeStripe/SDK nativo atribuido.
+- **Publicado:** Play2.3.3(338)/a4b46284/CM6ae03ffdc76bf166cac18c43; **instalado comprobado337**.
+  Único envío f693 aceptado: CM6ae0997ff94c6e56883fd1d3, estado QUEUED y fuente
+  b50 confirmados por GET. Tag codex/support-four-steps-b50ed676 exacto; versión339
+  sólo prevista. Compilación/artefacto/Play/instalación/QA/aceptación aún pendientes.
+  iOS sólo CI.
+- **Bloqueos externos:** Samsung no detectado; autorización puntual de nuevo token Stream
+  vencido pendiente (no creado); decisión nueva pending_stripe pendiente. Sin ON/escrituras
+  operacionales ni otra toma/pago/correo propios. Reutilizar recuperación/Tienda/P3/Connect válidos.
+- **Siguiente acción única:** seguir el MISMO CM6ae0997ff94c6e56883fd1d3 hasta
+  compilación y publicación; no otroPOST. Pin revisado c229d745…bb29fa, paquete
+  3596db8b…293ac9; actuals/revisiones y reserva únicos en f693/internal-release/.
+  Después Play/instalación/QA afectada/demo/aceptación; no repetir CI ni fixtures cerradas.
 
-**Cuatro cierres restantes**, por orden y sin ampliar a futuros pushes del mock:
-1. Root cierra F3-D y F4 móvil, revisión visual pendiente y fija un SHA final;
-   no reabrir F1/F2 ni mensual de Guardián sin delta demostrado.
-2. Root/revisores: gates integrados del mismo SHA y tres paquetes DEV exactos;
-   conservar TEST, autorización y migración aditiva, aplicar/verificar sólo al estar listos.
-3. Root/humano: distribución agrupada, instalación y QA de riesgos afectados;
-   diagnóstico de reproducción con clip retenido, sin otra coordinación de cámara.
-4. Titular/UX: demo comparativa y aceptación; informe de adaptaciones en el tablero.
-
-iOS físico y comercio público conservan sus límites. Nueva lógica pending_stripe
-no se implementa sin respuesta. No hay base suficiente para otra hora de finalización.
-
-**Retro independiente:** la evidencia reciente sí muestra implementación material y
-reintentos focales proporcionales, no un bucle idéntico en los tres logs examinados.
-El retraso previo incluye coordinación de cámara, CI duplicada y errores de preparación;
-el cambio de referencia amplía trabajo pero no explica todo. Error nuevo demostrado:
-expectativa de test de regreso desactualizada; arreglo aislado PASS, no repetir85.
-Una mejora vigente, dueño root: cerrar el WIP antes del gate integrado para que fuente,
-capturas y CI correspondan al mismo candidato. Éxito comprobable: SHA único y ninguna
-repetición intacta sin un fallo/cambio nuevo. No atribuir ahorro ni desglose de horas.
-Revisores: checkpoint_efficiency_audit (proceso), f1_product_review (canvas F2),
-f693_code_review (F3-D). Evidencia: .tools/integral20d21-20261018/f693/.
+Retro independiente: cambios visuales dejaron9tests y un capturador ligados a referencias
+anteriores. Se contrastaron con fuente y se preservaron foco/navegación/48px/escalado/privacidad;
+Gallery no acredita paridad. Root ejecutó los capturadores afectados antes de la nueva CI,
+sin nuevo harness. CI por push sólo ramas conserva4gates y evita disparo por tags;
+ahorro real de ese cambio aún no medido. No estimación nueva sin evidencia.
+Retro independiente adicional: preparación/revisión antes del baseline funcionó en este
+intento:11:52:50→reserva11:54:05→postflight11:54:22, dentro5min. No demuestra ahorro
+general ni reparto de horas/tokens/coste. BufferUnicode detectado antesdeploy fue
+reemplazado por JSONASCII;28hashes/readback exactos. No ampliarvigencia/excluirfinanzas.
+Próximo checkpoint compara cierres comprobados,
+no cantidad de pruebas/documentos. Dueño root; no nuevas tomas/pagos/CI por el reloj.
+Heartbeat de4h existente ACTIVE verificado, sin duplicarlo. Evidencia privada: f693/.
 
 ## Historial operativo anterior
 

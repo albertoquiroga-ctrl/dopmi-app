@@ -1,5 +1,30 @@
 # Auditoría del historial de migraciones
 
+## 27/10/2026 — Soporte, recibos y tarjeta nativa agrupados en DEV
+
+Autoridad técnica continua24/25oct, fuente b50ed67696dae532bccde80aa4736283a3059508,
+CI40492133689 cuatroSUCCESS. Un apply reservado y exitoso:
+codex_f693_support_ledger_native_card_v1, plataforma **20261027115406**. Corresponde
+a tres fuentes Git aditivas, sin renombrar/reparar/reaplicar historia:
+
+- 20261027081500_support_other_topic.sql:3958B/SHA256141f3800…f0c4d2.
+- 20261027103000_received_ledger_presentation_receipts.sql:4726B/454a725b…11c62f.
+- 20261027141000_independent_native_saved_card.sql:8592B/fcf941af…5865a5.
+
+Payload agrupado101938B/SHA2562519c0fdd47d44e7c1424bf89ea166f7c796338be3d0355ca4a907e87d916bce;
+MD5 remoto **2fdee303005a34a3c0c29cc3c98938cb** idéntico. Historia84→85,84anteriores
+exactas; postflight11:54:22UTC nueveTRUE: catálogo, filas protegidas, configuraciónOFF,
+jobs y legado conservados. Proyección externa excluye sólo refund_checked_at;
+checksum completo antes/después dentrotransacción no excluye campos.
+
+Después un deploy guardian-client130→131 ACTIVE, mismoID/JWTmanualpreexistentefalse,
+28fuentesLFexactas al bundlee82c2993…41dd666 y otras31funciones intactas. Sólo cuatro
+deltas reales revisados: index,guardian-client,native-saved-card y payments.mjs (fix
+Connect ya canónico en payments108).34metadatos iguales11:59:23UTC, video/cleanupOFF,
+Tienda/enlacesOFF, job6pausado. Código/seguridad independientes cerraron los readbacks.
+Sin smokeStripe, cobros, ON, build o aceptación atribuida. Evidencia y reservas únicas:
+.tools/integral20d21-20261018/f693/dev-operation/v3/.
+
 ## 24/10/2026 — Historial privado de método de pago aplicado en DEV
 
 Autoridad: objetivo vigente del titular para cierre integral autónomo; paquete

@@ -1,22 +1,23 @@
 # Cola vigente — 27/oct/2026: cierre finito del delta f693
 
 Integrador/root; una cola Flutter. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6.
-Fuente local48c144f7, aún con F3-D/F4 móvil propios sin commit; no candidato final.
+Candidato b50ed67696dae532bccde80aa4736283a3059508 en GitHub; CI40492133689 cuatroSUCCESS.
 
 | Batch | Estado real y dueño | Salida pendiente |
 |---|---|---|
 | F0 · Inventario | CERRADO, producto/UI | No reabrir ni absorber pushes posteriores. |
 | F1 · Base y acceso | CERRADO local, móvil/revisores | Incluido en48; validación final del candidato/dispositivo no atribuida. |
 | F2 · Rescatista y cuenta | CERRADO local, móvil/producto | Canvas de ProfileFrame cerrado con dos capturas nuevas; QA integrada pendiente. |
-| F3 · Recorridos principales | A/B/C implementados y focales resueltas; D sin commit | Root ejecuta pruebas nuevas de mensajes/Casos/Historias y cierra revisión visual F3/F4. |
-| F4 · Finanzas | Backend alta nativa105PASS en48; móvil84PASS+arreglo aislado1PASS, sin commit | Integrar móvil; tres migraciones y Edge aún no DEV. pending_stripe espera decisión humana, no supuesto. |
-| F5 · Candidato integrado | Root/revisores, después F3/F4 | SHA final único, gates integrados, paquetes DEV revisados, distribución/instalación, QA afectada y aceptación UX. |
+| F3 · Recorridos principales | CERRADO local en c193; gestos50PASS y revisión visual independiente cerrada | QA integrada/dispositivo pendiente. |
+| F4 · Finanzas | CERRADO local y contratosDEV: V3 remota20261027115406/history85, Guardian131/28fuentesexactas; revisiones cerradas | QA nativa del candidato pendiente. pending_stripe espera decisión humana. |
+| F5 · Candidato integrado | Root/revisores; CI40492133689/b50 cuatroSUCCESS y DEV cerrado | CM6ae0997ff94c6e56883fd1d3 QUEUED/fuente b50 real. Seguir mismohandle→artefacto/Play→instalación/QA afectada/aceptación UX;339 prevista. |
 
 No repetir recuperación/Tienda/P3/aporteTEST/Connect ni cámaras para producir evidencia.
 338/a4 ya publicada, instalación pendiente; no nueva build aislada para ajustes menores.
 Samsung, credencial Stream y decisión pending_stripe pendientes; trabajo local independiente
 continúa. Checkpoint y cuatro cierres restantes en mock-sync-current.md. Último estado
-remoto operacional leído OFF/job6pausado/cola0; no ON/escritura nuevos en este corte.
+remoto operacional leído OFF/job6pausado; V3+Guardian131 aplicados y verificados,
+sin ON/proveedor/dinero. ADB12:00:41UTC disponible, cero dispositivos.
 
 ## Cola histórica inmediatamente anterior
 

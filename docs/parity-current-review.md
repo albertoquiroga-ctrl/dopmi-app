@@ -1,21 +1,28 @@
 # Corte vigente — f693 implementado parcialmente; evidencia previa preservada
 
-27oct03:46CDMX: fuente local48c144f7137fbc4d5a53f48bbc072f024df1c539, aún sin WIP
-F3-D/F4 móvil; no candidato final ni nueva CI/release del delta. Referencia congelada
+27oct06:32CDMX: candidato b50ed67696dae532bccde80aa4736283a3059508 en GitHub;
+CI40492133689 cuatroSUCCESS; CM6ae0997ff94c6e56883fd1d3 encola, todavía no release
+del delta verificada. Referencia congelada
 f693c0367643605fa8495c1ae3c171df4ccf85b6. Futuras revisiones se inventarían aparte.
 
 | Grupo | Implementación / evidencia vigente | Límite o salida pendiente |
 |---|---|---|
 | F1 base/acceso/onboarding | En48;53focalesPASS/analyze0 en ese corte;17renders y revisión producto cerrada | Nativo compilado/dispositivo/aceptación no atribuidos; gate integrado final. |
 | F2 Home/perfiles/ayuda/documentos/Tienda | En48;16renders y dos ProfileFrame canvas; producto cerró único P2 pendiente | Tienda sigue privada/OFF; QA integrada posterior. |
-| F3 descubrir/apoyo/Guardián/detalle/publicación | A/B/C en48; pruebas afectadas corregidas; capturador F3/F4 PASS13s | Revisión de renders final; F3-D mensajes/Casos/Historias sin commit/prueba nueva pendiente. Mensual sin delta no se reconstruye. |
-| F4 métodos nativos/recibos/soporte | Backend105/9/19 focalesPASS y revisiones; móvil84PASS+expectativa de regreso corregida1PASS | Móvil sin commit; tres migraciones+Edge sin aplicar/desplegar. pending_stripe decisión humana pendiente. |
-| F5 candidato | 338/a4 publicada y CI verde, alcance anterior | SHA final nuevo/CI/DEV/Play/instalación/QA afectada y aceptación integral pendientes. |
+| F3 descubrir/apoyo/Guardián/detalle/publicación | A/B/C en48; pruebas afectadas corregidas; capturador F3/F4 PASS13s | F3-D50PASS; revisión producto de renders finales cerrada, canvas/arco y reflujo corregidos. Mensual sin delta no se reconstruye. |
+| F4 métodos nativos/recibos/soporte | Backend105/9/19 focalesPASS y revisiones; móvil84PASS+1PASS. DEV V3 historia85 y Guardian131 exactos,9postchecks/28fuentes/otras31/34metadatos preservados; código/seguridad cerraron | QA de SDK real del candidato y decisión humana pending_stripe pendientes. |
+| F5 candidato | CI40492133689/b50 cuatroSUCCESS y DEV cerrado; envío único CM6ae0997ff94c6e56883fd1d3 QUEUED/b50 confirmado | Compilación/artefacto/Play/instalación/QA afectada/aceptación pendientes; no otroPOST ni CI verde repetida. |
 
 Los conteos son tandas acotadas distintas, no un total integrado. Último Samsung
 comprobado337. La matriz b9 y el informe inferior conservan evidencia previa válida;
 no acreditan por sí solos f693 ni autorizan repetición de correo/pagos/cámara/fixtures.
 Estado, dueños y cuatro cierres finitos en checkpoint y backlog existentes.
+
+
+Adaptación adicional del historial de Guardián: se muestran tarjetas de ciclos y su
+recibo real. El mock atribuye cada tarjeta a una mascota; un ciclo real puede repartir
+el neto entre varias. No se inventan foto, destinatario ni tarjeta histórica cuando
+el contrato no los aporta. El importe autorizado no se etiqueta como pagado.
 
 ## Evidencia acumulada b9 y límites históricos
 
@@ -122,11 +129,13 @@ Cola/propietarios en backlog. Este corte supersede pendientes históricos inferi
 
 Este es el estado del informe, no una declaración de paridad terminada ni una
 solicitud de otra aprobación. Las decisiones están en product-decisions; la matriz
-superior distingue la evidencia vigente de lo que falta comprobar.
+superior distingue la evidencia vigente de lo que falta comprobar. Referencia actual
+f693/warm-trust; la evidencia instalada anterior conserva su alcance y no acredita
+por sí sola el candidato b50.
 
 | Diferencia respecto al mock | Resultado y motivo |
 |---|---|
-| Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet para guardar el método de Guardián mediante SetupIntent y onboarding de Stripe Connect para el rescatista. Los correctivos 333/334 no modifican sus adaptadores ni la configuración TEST. Los datos sensibles permanecen en Stripe. |
+| Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet/SetupIntent para el método de Guardián y onboarding de Stripe Connect para el rescatista. F693 añade alta independiente de tarjeta por el componente nativo, sin sustituir el método de Guardián ni cambiar el predeterminado por inferencia. Contrato DEV aplicado; recorrido nativo del candidato pendiente. Los datos sensibles permanecen en Stripe. |
 | Dónde dar de alta la cuenta del rescatista | Modo Rescatista → Perfil → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. El alta financiera no es un paso automático del asistente.337 comprobó apertura de la introducción nativa TEST y salida a Dopmi tras corregir contrato/permisos. No se completó alta ni se introdujeron datos/condiciones. Fallback sólo sinSDK, nunca después de un error nativo. |
 | Fondo comunitario, bonos y resultados ficticios | Se conserva la asignación del neto completo a gastos elegibles, comisión Dopmi del 2%, costos reales de Stripe y conciliación. Si falta capacidad no se cobra ni se crea deuda por un mes omitido. No se muestran bonos o fondos simulados como actividad real. La excepción P3 sólo existe en DEV: gasto ficticio de $100 y único aporte de $20 TEST; $20−$0.40−$4.43=$15.17 netos, conciliados contra Stripe TEST. |
 | Tienda: cashback,5% y aportación por compra | El diseño y la vista privada TEST están implementados. Tienda pública y salida a comercios siguen apagadas hasta disponer de catálogo, derechos, enlaces y permisos válidos. Las comisiones corresponden a Dopmi; se retiraron esas promesas. Aceptar el diseño interno no activa el comercio. |
@@ -136,10 +145,12 @@ superior distingue la evidencia vigente de lo que falta comprobar.
 | Cámara o galería que carga inmediatamente | Por decisión del titular, revisión local con duración/reproducción antes de Subir o Descartar.337 comprobó toma real5.5s neutra/audio oído, carga única a Stream, ready y cancelación/borrado; reproducción completa pendiente por fallo de selector QA y provider.inspect429. Ubicación/conservación del archivo local no acreditada. No otra toma automática para resolver ese fallo. |
 | Video procesado frente a video público | Estar listo no equivale a estar aprobado. Se conservan dueño, propósito, versión y moderación; comprobantes y evidencia de gastos siguen privados. Retirada, eliminación y reintentos permanecen vigentes. Las historias excluyen expense_evidence. |
 | Caso sin gastos disponibles y caso cerrado | Se conservan historia, medios, aviso y botón deshabilitado; se oculta el encabezado de solicitud de dinero cuando no hay capacidad. Cerrar no borra la publicación. Añadir despedida no reabre el caso ni altera aportaciones. El titular aceptó la claridad de esa ficha TEST. |
-| Contraste y efectos CSS | El naranja del mock se conserva en decoración; texto y controles se adaptan para contraste accesible. Grain feTurbulence/saturate/inset-shadow CSS no se reproducen literalmente.334 verificó controles/statusbar;335 instalada verificó spinner blanco;336 instalada verificó carga/error legibles y P3 movimiento/salida. No se declara identidad pixel por pixel ni aceptación UX integral. |
+| Contraste y efectos CSS | F693 reproduce warm-trust y utiliza el SVG original de grano renderizado como asset de200px; F1/F2 tienen comparación real de renders y revisión independiente. Se conservan contraste accesible y controles legibles; no se declara identidad de cada píxel entre renderizadores ni aceptación UX integral. La evidencia física334–336 pertenece a esos binarios anteriores. |
+| Tarjetas mensuales atribuidas a una mascota | Un ciclo real puede distribuir el neto entre varios casos. Se muestran ciclo, estado, importes y recibo reales; no se inventan destinatario, foto o resultado cuando el contrato histórico no los aporta. Importe autorizado y pago confirmado siguen siendo estados distintos. |
+| Nuevo estado pending_stripe del mock | Decisión de lógica pendiente: presentación privada antes de revisión frente al gate financiero existente; no se implementa una transición nueva por silencio. Se conservan borradores privados, verificación de rescatista, moderación y publicación aprobada. Los contratos de tarjeta desplegados no resuelven esta decisión. |
 | Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados del mock. |
 | Edad y fotos de registros históricos | El mock sólo dibuja categorías de edad y sus medios principales. Se conservan valores libres anteriores sin deducir una categoría y las fotos adicionales existentes, plegadas en medios. No se eliminan datos para imitar el fixture. |
-| Pruebas y aceptación aún pendientes | Resolver reproducción privada con clip retenido antes de otra toma; completar evidencia continua cámara→Stream→play cuando haya dispositivo; distribuir/instalar el delta de iconos a4b46284 y evaluar paridad con titular/UX. Connect nativo introducción/salida y cuatro pasos físicos337 cerrados. Tienda grant/revocación y P3 se conservan sin repetir dinero. iOS físico/TestFlight no verificados, fuera del gate interno; comercio público/salida externa apagados por decisión. |
+| Pruebas y aceptación aún pendientes | Distribuir/instalar b50/f693 y comprobar sólo cambios afectados, incluido alta nativa independiente; evaluar paridad con titular/UX. Resolver reproducción privada con clip retenido y credencial Stream vigente antes de otra toma. Connect introducción/salida y cuatro pasos físicos337 cerrados; Tienda y P3 conservados sin repetir dinero. iOS físico/TestFlight no verificados; comercio público/salida externa apagados por decisión. |
 
 Fuentes Stripe inspeccionadas en174f: app.dart y payment_screens.dart para rutas,
 oneoff_payment_sheet.dart para PaymentIntent, guardian_method_setup.dart para
