@@ -1,44 +1,65 @@
-# Checkpoint — 27/oct/2026, 01:05 CDMX
+# Checkpoint — 27/oct/2026, 03:46 CDMX
 
-Este corte supersede los pendientes históricos inferiores. Dueño: integrador/root;
-una cola Flutter. Seguimiento activo cada cuatro horas, sin pruebas por el reloj.
+Corte vigente; supersede pendientes históricos inferiores. Dueño: integrador/root.
+Producto **dopmi-app**, checkout candidate-git-20261014, rama codex/finish-release-20261015.
+Referencia congelada **f693c0367643605fa8495c1ae3c171df4ccf85b6**, warm-trust.
+Seguimiento cada cuatro horas ACTIVE, comprobado en su automatización existente;
+no segunda cola Flutter ni pruebas/documentos generados sólo por el reloj.
 
-- **Producto:** dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
-  HEAD a4b46284b6db06d1430c0a4f2ea4ed419425afb2; cambios propios de entrada a borrador
-  todavía sin commit. Se conservan cambios ajenos.
-- **Publicado:** Play interno 2.3.3 (338), fuente a4b46284, CI40455807031 cuatro SUCCESS,
-  CM6ae03ffdc76bf166cac18c43 trece SUCCESS. Artefacto y publicación comprobados por
-  separado 27oct06:26UTC. **Instalado:** último comprobado337; 338 pendiente de Samsung.
-  No más CI, build ni POST de338; su publicación es terminal.
-- **Referencia:** evidencia b9f6d5f/warm-trust conservada. Nuevo delta remoto
-  f693c0367643605fa8495c1ae3c171df4ccf85b6, dos commits26oct22:34/22:53CDMX,
-  inventariado aparte por producto y UI. No hay paridad acreditada contra f693;
-  futuros pushes tendrán otro inventario. Cola finita en backlog, sin reabrir3iconos.
-- **Avance nuevo:** iconos338 cerrados localmente/CI/publicación; comparación normal
-  y320px200% revisada. Entrada a borrador privado corregida conforme acuerdo existente:
-  diez pruebas focales PASS en4s, sin envío automático ni cambio de permisos servidor;
-  revisión/commit pendientes, se agrupará con el delta nuevo, sin release aislada.
-- **Reutilizar:** recuperación real aceptada, Tienda privada/aislamiento, P3/aporte TEST,
-  navegación4pasos y apertura/salida Connect337. No repetir pagos, KYC, correo ni fixtures.
-- **Video parcial:** cámara5.5s→Stream ready→deleted sí; reproducción de esa toma no.
-  Selector rechazado antes del input y luego provider.inspect429/playback502; causa
-  profunda desconocida. Diagnosticar con clip retenido antes de otra cámara.
-- **Último servidor comprobado:** 27oct06:07UTC, video/Tienda/limpieza OFF, job6 pausado,
-  cola0,19 assets/18 originales conservados, finanzas/historia intactas y único nuevo
-  borrador QA privado exacto conciliado. Sin ON posterior propio.
-- **Bloqueos concretos:** Samsung no detectado al último intento; token Stream QA
-  vencido26oct, reemplazo preparado pero NO creado y pendiente de autorización puntual.
-  Nueva decisión abierta f693: pending_stripe para nuevos envíos. Identidad DopMi
-  aprobada para enviar, borradores permitidos antes y tres componentes Stripe se conservan.
-- **Aceptación:** UX integral,338 en dispositivo y cámara completa pendientes.
-  iOS físico y comercio público conservan sus límites. No atribuir aceptación por CI.
+- **Implementado:** fuente local **48c144f7137fbc4d5a53f48bbc072f024df1c539**,
+  90 archivos del delta f693 y corrección de borrador privado. F4 móvil (alta nativa
+  independiente de tarjeta) y F3-D (mensajes/Casos/Historias) siguen sin commit;
+  por tanto 48c144f7 todavía NO es candidato final. Cambios ajenos conservados.
+- **Verificado local:** F1 53 pruebas y análisis sin incidencias en su corte;
+  F2 revisión visual cerrada, incluido canvas del ProfileFrame real normal/200%;
+  F3 focales corregidas sin repetir las ya verdes; capturador F3/F4 PASS13s.
+  F4 backend105 PASS; móvil84 PASS/1 expectativa de regreso obsoleta, corregida
+  y prueba aislada PASS1s. No sumar tandas solapadas como una suite integral.
+  Revisión independiente de F3-D sin defecto material; falta ejecutar sus pruebas
+  nuevas y revisar renders F3/F4. Fuente posterior requiere análisis/CI final.
+- **Backend pendiente:** tres migraciones aditivas (other de soporte, recibos de
+  presentación de movimientos, alta nativa de tarjeta), todavía NO aplicadas a DEV;
+  Edge financiero nuevo tampoco desplegado. Contraste remoto de historia84 y cuerpos
+  de soporte/ledger ya realizado; falta el paquete final y preflight fresco completo.
+- **Publicado:** Play interno **2.3.3 (338)**, fuente **a4b46284b6db06d1430c0a4f2ea4ed419425afb2**,
+  CI40455807031 cuatro SUCCESS, CM6ae03ffdc76bf166cac18c43 trece SUCCESS.
+  **Instalado:** último comprobado337, no atribuir338 ni f693 al Samsung.
+  **Aceptado:** recorridos previos concretos; UX integral del nuevo delta pendiente.
+- **Reutilizar:** recuperación real aceptada, Tienda privada/aislamiento/expiración,
+  P3 y su único aporteTEST, publicación4pasos y apertura/salida Connect337.
+  No repetir correo, pagos, KYC, fixtures, CI338 ni otra toma para diagnosticar video.
+- **Estado remoto:** último readback operacional27oct06:07UTC, video/Tienda/limpieza
+  OFF, job6 pausado, cola0, finanzas e historia preservadas. Ningún ON/escritura
+  operacional propios desde ese corte. Cámara→Stream ready→deleted probado;
+  reproducción completa de la toma no, causa profunda429/502 aún desconocida.
+- **Pendientes externos:** Samsung no detectado en último intento; autorización
+  puntual del reemplazo de token Stream vencido pendiente, no creado; decisión
+  nueva pending_stripe pendiente. No interpretar silencio como respuesta.
 
-Revisión independiente de proceso cerrada: coordinación de cámara, preflight que no
-contempló el borrador conocido y CI duplicada causaron retrabajo comprobado. No hay
-medición fiable para repartir todas las horas/tokens. Root agrupará cambios por lote,
-probará sólo riesgos afectados y detendrá una estrategia que repita un fallo sin
-información nueva. Próxima acción: F1 visual del corte f693; QA móvil bloqueada sigue
-separada. Estado del objetivo: activo; no prometer otra hora de cierre sin alcance resuelto.
+**Cuatro cierres restantes**, por orden y sin ampliar a futuros pushes del mock:
+1. Root cierra F3-D y F4 móvil, revisión visual pendiente y fija un SHA final;
+   no reabrir F1/F2 ni mensual de Guardián sin delta demostrado.
+2. Root/revisores: gates integrados del mismo SHA y tres paquetes DEV exactos;
+   conservar TEST, autorización y migración aditiva, aplicar/verificar sólo al estar listos.
+3. Root/humano: distribución agrupada, instalación y QA de riesgos afectados;
+   diagnóstico de reproducción con clip retenido, sin otra coordinación de cámara.
+4. Titular/UX: demo comparativa y aceptación; informe de adaptaciones en el tablero.
+
+iOS físico y comercio público conservan sus límites. Nueva lógica pending_stripe
+no se implementa sin respuesta. No hay base suficiente para otra hora de finalización.
+
+**Retro independiente:** la evidencia reciente sí muestra implementación material y
+reintentos focales proporcionales, no un bucle idéntico en los tres logs examinados.
+El retraso previo incluye coordinación de cámara, CI duplicada y errores de preparación;
+el cambio de referencia amplía trabajo pero no explica todo. Error nuevo demostrado:
+expectativa de test de regreso desactualizada; arreglo aislado PASS, no repetir85.
+Una mejora vigente, dueño root: cerrar el WIP antes del gate integrado para que fuente,
+capturas y CI correspondan al mismo candidato. Éxito comprobable: SHA único y ninguna
+repetición intacta sin un fallo/cambio nuevo. No atribuir ahorro ni desglose de horas.
+Revisores: checkpoint_efficiency_audit (proceso), f1_product_review (canvas F2),
+f693_code_review (F3-D). Evidencia: .tools/integral20d21-20261018/f693/.
+
+## Historial operativo anterior
 
 Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
 y guardado tras SMS humano; readback del editor desde servidor176filas muestra

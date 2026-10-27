@@ -1,24 +1,22 @@
-# Cola vigente — 27/oct/2026: delta f693 y cierre integrado
+# Cola vigente — 27/oct/2026: cierre finito del delta f693
 
-Supersede las filas históricas inferiores. Integrador/root asigna implementación y
-revisiones independientes; una única cola Flutter. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6.
+Integrador/root; una cola Flutter. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6.
+Fuente local48c144f7, aún con F3-D/F4 móvil propios sin commit; no candidato final.
 
-| Batch finito | Responsable / dependencia | Criterio de salida |
+| Batch | Estado real y dueño | Salida pendiente |
 |---|---|---|
-| F0 · Inventario | Producto/UI independientes; CERRADO | Delta b9→f693 identificado, fuentes alcanzables y simulaciones excluidas; no atribuye implementación. |
-| F1 · Base y acceso | Implementador móvil asignado por root; F0 | Fondo/splash/onboarding/cuenta comparados y corregidos; conservar Auth, recuperación y textos legales vigentes. Revisión visual/código y comprobaciones afectadas. |
-| F2 · Rescatista y cuenta | Mismo implementador móvil, después F1 | Inicio/perfiles/ayuda/documentos/resúmenes/filtros y título Tienda contrastados; datos/estados reales, reglas existentes y privacidad conservados. |
-| F3 · Recorridos principales | Implementador móvil; después F2 | Adoptar/Apoyar/detalle/Guardián/publicación/mensajes del delta comparados; gestos y accesibilidad afectados verificados. Sin rehacer iconos338 ni Stripe nativo. |
-| F4 · Estados financieros nuevos | Root + backend y después móvil; decisión pending_stripe pendiente | Acordar sólo lógica nueva, contrastar métodos reales y adaptar simulaciones; seguridad/código inspeccionan contratos y evidencia. No migración ni ciclo nuevo por inferencia. |
-| F5 · Candidato integrado | Root + revisores; F1–F4 | Un candidato agrupado, gates integrados, Play/instalación/QA afectada separados, demo e informe de adaptaciones; aceptación titular/UX. |
+| F0 · Inventario | CERRADO, producto/UI | No reabrir ni absorber pushes posteriores. |
+| F1 · Base y acceso | CERRADO local, móvil/revisores | Incluido en48; validación final del candidato/dispositivo no atribuida. |
+| F2 · Rescatista y cuenta | CERRADO local, móvil/producto | Canvas de ProfileFrame cerrado con dos capturas nuevas; QA integrada pendiente. |
+| F3 · Recorridos principales | A/B/C implementados y focales resueltas; D sin commit | Root ejecuta pruebas nuevas de mensajes/Casos/Historias y cierra revisión visual F3/F4. |
+| F4 · Finanzas | Backend alta nativa105PASS en48; móvil84PASS+arreglo aislado1PASS, sin commit | Integrar móvil; tres migraciones y Edge aún no DEV. pending_stripe espera decisión humana, no supuesto. |
+| F5 · Candidato integrado | Root/revisores, después F3/F4 | SHA final único, gates integrados, paquetes DEV revisados, distribución/instalación, QA afectada y aceptación UX. |
 
-Cierre previo aprovechable:338/a4b46284 publicada, instalación pendiente; diez pruebas
-focales del arreglo de entrada a borradores PASS, revisión/commit pendientes para agrupar.
-Recuperación, Tienda, P3/pagoTEST, cuatro pasos y Connect337 no se repiten. Cámara completa
-sigue parcial: diagnosticar reproducción con retenido; Samsung/token válido pendientes,
-sin ON ni nueva toma por rutina. Último servidor comprobado OFF/job6 pausado/cola0.
-Checkpoint breve: [mock-sync-current.md](mock-sync-current.md). No ampliar a otro push
-sin inventario aparte ni generar una build por ajuste visual pequeño.
+No repetir recuperación/Tienda/P3/aporteTEST/Connect ni cámaras para producir evidencia.
+338/a4 ya publicada, instalación pendiente; no nueva build aislada para ajustes menores.
+Samsung, credencial Stream y decisión pending_stripe pendientes; trabajo local independiente
+continúa. Checkpoint y cuatro cierres restantes en mock-sync-current.md. Último estado
+remoto operacional leído OFF/job6pausado/cola0; no ON/escritura nuevos en este corte.
 
 ## Cola histórica inmediatamente anterior
 

@@ -1,10 +1,21 @@
-# Corte vigente — f693 inventariado; evidencia b9 preservada
+# Corte vigente — f693 implementado parcialmente; evidencia previa preservada
 
-27oct:338/a4b46284 publicada, CI40455807031 cuatro SUCCESS; instalación pendiente.
-Delta f693c0367643605fa8495c1ae3c171df4ccf85b6 inventariado por producto y UI,
-con cola F0–F5 en backlog; **la matriz b9 siguiente no acredita paridad f693**.
-No se reabre evidencia válida de recuperación/Tienda/P3/Stripe ni los tres iconos.
-Estado y bloqueos actuales en mock-sync-current; los párrafos inferiores son historia.
+27oct03:46CDMX: fuente local48c144f7137fbc4d5a53f48bbc072f024df1c539, aún sin WIP
+F3-D/F4 móvil; no candidato final ni nueva CI/release del delta. Referencia congelada
+f693c0367643605fa8495c1ae3c171df4ccf85b6. Futuras revisiones se inventarían aparte.
+
+| Grupo | Implementación / evidencia vigente | Límite o salida pendiente |
+|---|---|---|
+| F1 base/acceso/onboarding | En48;53focalesPASS/analyze0 en ese corte;17renders y revisión producto cerrada | Nativo compilado/dispositivo/aceptación no atribuidos; gate integrado final. |
+| F2 Home/perfiles/ayuda/documentos/Tienda | En48;16renders y dos ProfileFrame canvas; producto cerró único P2 pendiente | Tienda sigue privada/OFF; QA integrada posterior. |
+| F3 descubrir/apoyo/Guardián/detalle/publicación | A/B/C en48; pruebas afectadas corregidas; capturador F3/F4 PASS13s | Revisión de renders final; F3-D mensajes/Casos/Historias sin commit/prueba nueva pendiente. Mensual sin delta no se reconstruye. |
+| F4 métodos nativos/recibos/soporte | Backend105/9/19 focalesPASS y revisiones; móvil84PASS+expectativa de regreso corregida1PASS | Móvil sin commit; tres migraciones+Edge sin aplicar/desplegar. pending_stripe decisión humana pendiente. |
+| F5 candidato | 338/a4 publicada y CI verde, alcance anterior | SHA final nuevo/CI/DEV/Play/instalación/QA afectada y aceptación integral pendientes. |
+
+Los conteos son tandas acotadas distintas, no un total integrado. Último Samsung
+comprobado337. La matriz b9 y el informe inferior conservan evidencia previa válida;
+no acreditan por sí solos f693 ni autorizan repetición de correo/pagos/cámara/fixtures.
+Estado, dueños y cuatro cierres finitos en checkpoint y backlog existentes.
 
 ## Evidencia acumulada b9 y límites históricos
 
