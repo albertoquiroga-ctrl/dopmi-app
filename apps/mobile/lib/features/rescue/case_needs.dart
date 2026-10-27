@@ -221,12 +221,14 @@ class CaseDraftNeeds extends StatelessWidget {
         'veterinary': (
           'Veterinario',
           'Agrega consulta o tratamiento veterinario.',
+          '🩺',
         ),
         'medicine': (
           'Medicina',
           'Agrega una medicina, costo y tratamiento relacionado.',
+          '💊',
         ),
-        'food': ('Alimento', 'Agrega croquetas y el costo a cubrir.'),
+        'food': ('Alimento', 'Agrega croquetas y el costo a cubrir.', '🥣'),
       }.entries) ...[
         OutlinedButton(
           onPressed: enabled ? () => onAdd(entry.key) : null,
@@ -240,10 +242,24 @@ class CaseDraftNeeds extends StatelessWidget {
           ),
           child: Row(
             children: [
-              SvgPicture.asset(
-                'assets/profile/need-${entry.key}.svg',
+              SizedBox(
                 width: 32,
                 height: 32,
+                child: ExcludeSemantics(
+                  child: Text(
+                    entry.value.$3,
+                    textScaler: TextScaler.noScaling,
+                    style: const TextStyle(
+                      fontSize: 32,
+                      height: 1,
+                      fontFamilyFallback: [
+                        'Noto Color Emoji',
+                        'Apple Color Emoji',
+                        'Segoe UI Emoji',
+                      ],
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(

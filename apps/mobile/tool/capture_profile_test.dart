@@ -1552,6 +1552,7 @@ void main() {
       ('case-publication-information-nameless-large', '/rescue/case-one'),
       ('case-publication-needs-list', '/rescue/case-one'),
       ('case-publication-needs-list-large', '/rescue/case-one'),
+      ('case-publication-needs-list-icons-large', '/rescue/case-one'),
       ('case-publication-review-list', '/rescue/case-one'),
       ('case-publication-review-list-large', '/rescue/case-one'),
       ('case-publication-needs-medicine', '/rescue/case-one'),
@@ -4067,7 +4068,11 @@ void main() {
         }
       }
       if (spec.$1.startsWith('case-publication-needs-list')) {
-        await tester.ensureVisible(find.text('Consulta veterinaria'));
+        await tester.ensureVisible(
+          find.text(
+            spec.$1.contains('icons') ? 'Alimento' : 'Consulta veterinaria',
+          ),
+        );
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-publication-grid')) {
