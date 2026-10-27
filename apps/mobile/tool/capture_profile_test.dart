@@ -3031,22 +3031,28 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1 == 'support-home') {
-        // Q38-07 dock at 377x852: 92px bottom reserve and 52px CTA.
-        // Minimum20 supersedes the old $50 label; geometry is independent
-        // of the glyph widths and keeps the action above navigation.
+        // Closed f693 dock at 377x852: 92px bottom reserve, 52px CTA,
+        // and 36/21px insets for 17px Inter, 24px padding and a 2px border.
+        // The former symmetric 36px inset predates the current CTA width.
         final cta = tester.getRect(
           find.byKey(const ValueKey('guardian-support-cta')),
         );
         final price = tester.getRect(find.text('Desde \$20 / mes'));
         expect(cta.top, closeTo(708, 1));
         expect(cta.height, closeTo(52, 1));
-        expect(cta.right, closeTo(341, 1));
+        expect(
+          cta.right,
+          closeTo(
+            tester.view.physicalSize.width / tester.view.devicePixelRatio - 21,
+            1,
+          ),
+        );
         expect(price.left, closeTo(36, 1));
         expect(price.center.dy, closeTo(cta.center.dy, 1));
         expect(price.right, lessThan(cta.left));
       }
       if (spec.$1 == 'support-home-empty') {
-        // Same Q38-07 dock contract as the populated screen. With no
+        // Same closed f693 dock contract as the populated screen. With no
         // eligible cases the rings disappear; registration stays reachable.
         expect(find.byType(SupportCaseRing), findsNothing);
         expect(
