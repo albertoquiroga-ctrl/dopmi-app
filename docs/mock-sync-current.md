@@ -1,44 +1,44 @@
-# Checkpoint — 26/oct/2026, 23:14 CDMX: revisión de eficiencia solicitada
+# Checkpoint — 27/oct/2026, 01:05 CDMX
 
 Este corte supersede los pendientes históricos inferiores. Dueño: integrador/root;
-una sola cola Flutter. Durante esta revisión no iniciar pruebas ni publicaciones.
+una cola Flutter. Seguimiento activo cada cuatro horas, sin pruebas por el reloj.
 
-- **Referencia:** mock b9f6d5f39f9db2d3c72fcfc130ae03bfc0a9f1ef, warm-trust.
-  Producto: dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
-- **Publicado e instalado:** Play interno 2.3.3 (337), fuente
-  fb0a3495dfa7ad85a2249d33a9929fdd2590b34f. CI40358538461 y CM6adf83cc93adc6d8e55fa26d
-  aprobados; no volver a construir ese candidato. HEAD documental:63b9684.
-- **Nuevo QA cerrado:** Connect TEST abrió su introducción nativa y volvió a Dopmi
-  sin datos, autenticación, términos ni alta completa. Publicación recorrió
-  1→2→3→4→3→2→1 conservando datos/portada sintética. Único caso nuevo: draft5,
-  público=false, una foto, cero gastos/videos. No se envió a revisión.
-- **Cámara parcial:** toma humana real de5.5s llegó a Stream y quedó ready;
-  cancelada/deleted, cola0. Reproducción completa no acreditada: selector QA falló
-  antes del input y después hubo provider.inspect429/HTTP502. Causa del límite
-  desconocida. No atribuir códec/red/expiración ni pedir otra toma por rutina.
-- **Cierre operativo conservado:** último tuple comprobado27oct03:40UTC,
-  video/Tienda/limpieza OFF y job6 pausado; sin activaciones posteriores propias.
-  Dieciocho assets originales y finanzas intactos; fila19 deleted. Lectura15s
-  acreditó invariantes; la canónica8s falló57014 y conserva su gate fallido.
-  Stream excluye UID19 en lista completa; error de ruta no demuestra HTTP404.
-- **Único delta de producto pendiente:** case_needs.dart cambia tres SVG heredados
-  por los tres Unicode del mock. Sin commit/publicación/validación nueva: la prueba
-  focal terminó por agotamiento de memoria del entorno; no afirmar PASS ni reintentar
-  igual. Al observar procesos no quedaba Dart/Flutter ejecutándose.
-- **Preparado, no ejecutado:** lectura privada de despedida retenida en
-  public-video-qa-design/p2-retained-playback-qa/continuation337; sin reserva/ON.
-  Revisiones finales deben conciliarse antes de operar. No es prueba de cámara nueva.
+- **Producto:** dopmi-app, rama codex/finish-release-20261015, checkout candidate-git-20261014.
+  HEAD a4b46284b6db06d1430c0a4f2ea4ed419425afb2; cambios propios de entrada a borrador
+  todavía sin commit. Se conservan cambios ajenos.
+- **Publicado:** Play interno 2.3.3 (338), fuente a4b46284, CI40455807031 cuatro SUCCESS,
+  CM6ae03ffdc76bf166cac18c43 trece SUCCESS. Artefacto y publicación comprobados por
+  separado 27oct06:26UTC. **Instalado:** último comprobado337; 338 pendiente de Samsung.
+  No más CI, build ni POST de338; su publicación es terminal.
+- **Referencia:** evidencia b9f6d5f/warm-trust conservada. Nuevo delta remoto
+  f693c0367643605fa8495c1ae3c171df4ccf85b6, dos commits26oct22:34/22:53CDMX,
+  inventariado aparte por producto y UI. No hay paridad acreditada contra f693;
+  futuros pushes tendrán otro inventario. Cola finita en backlog, sin reabrir3iconos.
+- **Avance nuevo:** iconos338 cerrados localmente/CI/publicación; comparación normal
+  y320px200% revisada. Entrada a borrador privado corregida conforme acuerdo existente:
+  diez pruebas focales PASS en4s, sin envío automático ni cambio de permisos servidor;
+  revisión/commit pendientes, se agrupará con el delta nuevo, sin release aislada.
+- **Reutilizar:** recuperación real aceptada, Tienda privada/aislamiento, P3/aporte TEST,
+  navegación4pasos y apertura/salida Connect337. No repetir pagos, KYC, correo ni fixtures.
+- **Video parcial:** cámara5.5s→Stream ready→deleted sí; reproducción de esa toma no.
+  Selector rechazado antes del input y luego provider.inspect429/playback502; causa
+  profunda desconocida. Diagnosticar con clip retenido antes de otra cámara.
+- **Último servidor comprobado:** 27oct06:07UTC, video/Tienda/limpieza OFF, job6 pausado,
+  cola0,19 assets/18 originales conservados, finanzas/historia intactas y único nuevo
+  borrador QA privado exacto conciliado. Sin ON posterior propio.
+- **Bloqueos concretos:** Samsung no detectado al último intento; token Stream QA
+  vencido26oct, reemplazo preparado pero NO creado y pendiente de autorización puntual.
+  Nueva decisión abierta f693: pending_stripe para nuevos envíos. Identidad DopMi
+  aprobada para enviar, borradores permitidos antes y tres componentes Stripe se conservan.
+- **Aceptación:** UX integral,338 en dispositivo y cámara completa pendientes.
+  iOS físico y comercio público conservan sus límites. No atribuir aceptación por CI.
 
-Cola finita: (1) validar/cerrar delta de iconos; (2) resolver reproductor con fixture
-retenido antes de cualquier nueva cámara; (3) agrupar candidato final, gates y QA
-afectada, demo/informe y aceptación del titular/UX. Sin repetir pagos, recuperación,
-Tienda ni fixtures ya resueltas. iOS físico y comercio público siguen con sus límites.
-Última pantalla observada: Rescatista→Avances del caso cerrado; sin handoff humano.
-
-Evidencia privada: camera-upload337/{stripe337-open-once,connect-closed337,
-publication-draft-postflight,after-budget15-invariants,playback-failure-safe-log}.
-Este checkpoint no atribuye aceptación integral. La demora incluye retrabajo de QA
-y sobrecarga del método; no existe desglose fiable de todas las horas.
+Revisión independiente de proceso cerrada: coordinación de cámara, preflight que no
+contempló el borrador conocido y CI duplicada causaron retrabajo comprobado. No hay
+medición fiable para repartir todas las horas/tokens. Root agrupará cambios por lote,
+probará sólo riesgos afectados y detendrá una estrategia que repita un fallo sin
+información nueva. Próxima acción: F1 visual del corte f693; QA móvil bloqueada sigue
+separada. Estado del objetivo: activo; no prometer otra hora de cierre sin alcance resuelto.
 
 Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
 y guardado tras SMS humano; readback del editor desde servidor176filas muestra

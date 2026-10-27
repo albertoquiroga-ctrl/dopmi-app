@@ -1,3 +1,44 @@
+## 27/10/2026 01:05 CDMX — Checkpoint de cuatro horas y retro independiente
+
+338/a4b46284 publicada en Play interno, CM6ae03ffdc76bf166cac18c43/13SUCCESS,
+CI40455807031/4SUCCESS; artefacto y publicación comprobados06:26UTC. Instalación338
+pendiente, último Samsung337. Diez focales de entrada a borrador PASS4s; código aún
+sin commit/revisión, se agrupa. Nuevo mock f693 inventariado aparte; no equivale a
+paridad ni justifica retroactivamente el retraso anterior. Estado/cola finita actualizados
+sin otro tablero. Heartbeat dopmi-checkpoint-y-revisi-n-cada-4-horas activo y consultado.
+
+Revisor independiente checkpoint_efficiency_audit, sólo fuentes/evidencia: retrabajo
+comprobado por selector QA/429, preflight que omitía borrador QA conocido y tag que
+lanzó CI duplicada. No existe desglose fiable de horas. Dueño root: (1) clip retenido
+antes de otra cámara; éxito=hipótesis resuelta/información nueva, mismo fallo sin dato
+nuevo detiene estrategia; (2) agrupar delta f693 y pruebas por riesgo cambiado, medir
+que no se repitan fixtures/CI verdes; (3) siguiente preflight contrasta sólo filas
+QA exactas conocidas y rechaza otra deriva. No modificar seguridad para pasar gates.
+Token QA vencido/reemplazo no creado, Samsung y decisión pending_stripe pendientes;
+trabajo visual independiente sigue disponible. No operaciones ON ni nuevo pago/build
+como consecuencia de este checkpoint. No promesa nueva de hora de terminación.
+
+## 26/10/2026 — Iconos fieles al mock; CI del candidato final en curso
+
+Fuente a4b46284b6db06d1430c0a4f2ea4ed419425afb2 enviada a GitHub: sólo
+case_needs.dart y variante del capturador.🩺/💊/🥣 exactos de b9 sustituyen tresSVG
+heredados; claves/acciones/semántica funcional intactas.44focalesPASS17s y analyze0
+77.7s; la ejecución anterior por memoria queda como fallida. Cambio de método:
+sinDDS/pub y concurrencia1, sin otro Flutter vivo. No prueba causa general delOOM.
+Capturas normal y Alimento320px/200% sin recorte del delta, revisión independiente
+de producto/código cerrada. Large original no muestra iconos y no los acredita.
+Recibos/logs: support-four-steps/icons-final y icons-*.log. CI40455807031 exacta:
+web/base de datos y backend SUCCESS al observar; Flutter/iOS in_progress, no verde
+atribuido ni redispatch. Delta todavía sin publicación/instalación/aceptación.
+
+Samsung ya no aparece por USB; ningún ON nuevo ni otra toma. La lectura retenida
+337 sigue sin reserva. Seguridad detectó antes de operar título real del detalle
+mal reconocido y falso Inicio por tabs: parent/home corregidos contra ambosXML
+reales, manifestfc8b421b y revisiones independientes cerradas. No reparar durante
+ON ni reabrir cámara para diagnosticar. Sesión Supabase recuperada al reabrir pestaña,
+sin nueva credencial; no se cambiaron secretos. Preparación release338 reutiliza
+operadores existentes y comparador19; CI/lecturas/pin propios aún requeridos.
+
 ## 26/10/2026 23:14 CDMX — Checkpoint por demora; no nueva operación
 
 El titular vuelve a pedir checkpoint y explicación de eficiencia. Estado y cola

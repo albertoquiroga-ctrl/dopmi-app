@@ -1,3 +1,13 @@
+## 26/10/2026 — Checkpoint de avance y eficiencia cada cuatro horas
+
+El titular pide checkpoint de este estilo cada4h, con revisión de errores del
+método y mejoras para reducir la demora. Seguimiento de este chat activo:
+dopmi-checkpoint-y-revisi-n-cada-4-horas. Comparar avances comprobados contra el
+corte anterior; decir claramente si no hubo avance y cambiar estrategias que
+repiten fallos sin información nueva. No crear otra cola, documentación duplicada
+ni pruebas/builds/tomas por el reloj. Conserva gates y permisos; no renueva
+operaciones consumidas ni atribuye aceptación. Desactivar al cerrar la entrega.
+
 ## 26/10/2026 — Permiso específico de Account Sessions en TEST
 
 Titular autorizó únicamente AccountSessions→Escritura para la clave existente

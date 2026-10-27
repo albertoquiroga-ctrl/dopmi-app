@@ -1,18 +1,24 @@
-# Cola vigente — 26/oct, 23:14 CDMX: checkpoint de eficiencia
+# Cola vigente — 27/oct/2026: delta f693 y cierre integrado
 
-Este corte supersede las filas antiguas inferiores. Root conserva una cola Flutter.
+Supersede las filas históricas inferiores. Integrador/root asigna implementación y
+revisiones independientes; una única cola Flutter. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6.
 
-| Pendiente finito | Salida |
-|---|---|
-| 1. Iconos de necesidades | Validar el único delta local de3Unicode del mock. Prueba focal abortada por memoria, no repetir igual ni declarar verde. |
-| 2. Reproductor | Lectura de un clip retenido con selector preparado antes de ON; no otra cámara/carga/build para diagnosticar ese fallo. Paquete preparado, no ejecutado. |
-| 3. Entrega final | Agrupar correcciones, CI/release/QA afectada, demo e informe de adaptaciones; aceptación titular/UX separada. |
+| Batch finito | Responsable / dependencia | Criterio de salida |
+|---|---|---|
+| F0 · Inventario | Producto/UI independientes; CERRADO | Delta b9→f693 identificado, fuentes alcanzables y simulaciones excluidas; no atribuye implementación. |
+| F1 · Base y acceso | Implementador móvil asignado por root; F0 | Fondo/splash/onboarding/cuenta comparados y corregidos; conservar Auth, recuperación y textos legales vigentes. Revisión visual/código y comprobaciones afectadas. |
+| F2 · Rescatista y cuenta | Mismo implementador móvil, después F1 | Inicio/perfiles/ayuda/documentos/resúmenes/filtros y título Tienda contrastados; datos/estados reales, reglas existentes y privacidad conservados. |
+| F3 · Recorridos principales | Implementador móvil; después F2 | Adoptar/Apoyar/detalle/Guardián/publicación/mensajes del delta comparados; gestos y accesibilidad afectados verificados. Sin rehacer iconos338 ni Stripe nativo. |
+| F4 · Estados financieros nuevos | Root + backend y después móvil; decisión pending_stripe pendiente | Acordar sólo lógica nueva, contrastar métodos reales y adaptar simulaciones; seguridad/código inspeccionan contratos y evidencia. No migración ni ciclo nuevo por inferencia. |
+| F5 · Candidato integrado | Root + revisores; F1–F4 | Un candidato agrupado, gates integrados, Play/instalación/QA afectada separados, demo e informe de adaptaciones; aceptación titular/UX. |
 
-Cerrados en337: instalación Play, apertura/salida Connect TEST y navegación1→2→3→4
-con regreso/datos conservados; único borrador privado, sin gastos/videos/envío.
-Cámara: carga/ready/borrado sí; reproducción completa no. Último cierre OFF/job6pausado,
-sin activaciones propias posteriores. No repetir pagos, recuperación, Tienda ni fixtures
-resueltas. Detalle/evidencia/causas: [checkpoint](mock-sync-current.md).
+Cierre previo aprovechable:338/a4b46284 publicada, instalación pendiente; diez pruebas
+focales del arreglo de entrada a borradores PASS, revisión/commit pendientes para agrupar.
+Recuperación, Tienda, P3/pagoTEST, cuatro pasos y Connect337 no se repiten. Cámara completa
+sigue parcial: diagnosticar reproducción con retenido; Samsung/token válido pendientes,
+sin ON ni nueva toma por rutina. Último servidor comprobado OFF/job6 pausado/cola0.
+Checkpoint breve: [mock-sync-current.md](mock-sync-current.md). No ampliar a otro push
+sin inventario aparte ni generar una build por ajuste visual pequeño.
 
 ## Cola histórica inmediatamente anterior
 
