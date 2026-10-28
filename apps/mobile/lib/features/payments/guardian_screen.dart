@@ -1422,7 +1422,8 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                         fresh &&
                         cardsError == null)
                       const GuardianPaymentCardEmpty()
-                    else if (cards == null || cards!.isEmpty)
+                    else if (cardsError == null &&
+                        (cards == null || cards!.isEmpty))
                       Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(

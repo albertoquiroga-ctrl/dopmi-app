@@ -1,8 +1,20 @@
+import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/identity/identity_controller.dart';
+import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/payment_methods_feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'community_test.dart' show FakeCommunity;
+import 'fake_identity_repository.dart';
+import 'guardian_test.dart' show FakeGuardian;
+import 'payments_test.dart' show pumpUntil;
 
 void main() {
   setUpAll(() async {
@@ -10,6 +22,60 @@ void main() {
       ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
     await font.load();
   });
+  testWidgets(
+    'failed card inventory keeps retry available without claiming no saved cards',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      tester.view.physicalSize = const Size(390, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final repo = FakeGuardian()..failCards = true;
+      final identity = FakeIdentityRepository()
+        ..user = const Identity('one', 'fixture@example.test', verified: true);
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          guardianRepositoryProvider.overrideWithValue(repo),
+          guardianEnabledProvider.overrideWithValue(true),
+          routerInitialLocationProvider.overrideWithValue(
+            '/settings/payment-methods',
+          ),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await identity.changes.close();
+      });
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const DopmiApp(),
+        ),
+      );
+      await pumpUntil(tester, find.text('Métodos de pago'));
+      await tester.pumpAndSettle();
+      const inventoryError =
+          'No se pudieron consultar tus tarjetas. Actualiza el estado para reintentar.';
+      expect(find.text(inventoryError), findsOneWidget);
+      expect(
+        find.text('No se pudo confirmar tu método de pago.'),
+        findsOneWidget,
+      );
+      expect(find.text('Aún no tienes tarjetas guardadas.'), findsNothing);
+
+      final before = repo.reads;
+      await tester.tap(find.text('Actualizar estado'));
+      await tester.pumpAndSettle();
+      expect(repo.reads, before + 1);
+      expect(find.text(inventoryError), findsOneWidget);
+      expect(find.text('Aún no tienes tarjetas guardadas.'), findsNothing);
+      expect(repo.calls, isEmpty);
+      expect(repo.opened, 0);
+      expect(tester.takeException(), isNull);
+    },
+  );
   for (final large in [false, true]) {
     testWidgets(
       'feedback is immediate, overlays without overflow and expires at 2600ms: large=$large',
