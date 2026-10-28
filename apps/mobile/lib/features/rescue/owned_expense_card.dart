@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -48,8 +49,8 @@ class OwnedExpenseSummary extends StatelessWidget {
   final RescueRecord record;
   final Json? funding;
   final VoidCallback onOpen;
-  static const ink = Color(0xff151423);
-  static const muted = Color(0xff4f4e5c);
+  static const ink = DopmiTokens.ink;
+  static const muted = DopmiTokens.muted;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +130,7 @@ class OwnedExpenseSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xffe3e4ed)),
+        border: Border.all(color: DopmiTokens.line),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

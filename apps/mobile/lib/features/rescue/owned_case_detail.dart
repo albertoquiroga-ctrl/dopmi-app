@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/design_tokens.dart';
 import '../../core/reference_focus_outline.dart';
 import '../adoption/community_ui.dart';
 import 'rescue_repository.dart';
@@ -47,7 +48,7 @@ class OwnedCaseDetail extends StatelessWidget {
         height: 1.25,
         letterSpacing: -.48,
         fontWeight: FontWeight.w700,
-        color: Color(0xff151423),
+        color: DopmiTokens.ink,
       ),
     );
     final city = record.publicData['city'] is String
@@ -59,7 +60,7 @@ class OwnedCaseDetail extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(99),
-          border: Border.all(color: const Color(0xffe3e4ed)),
+          border: Border.all(color: DopmiTokens.line),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -69,7 +70,7 @@ class OwnedCaseDetail extends StatelessWidget {
               width: 12,
               height: 12,
               colorFilter: const ColorFilter.mode(
-                Color(0xff4f4e5c),
+                DopmiTokens.muted,
                 BlendMode.srcIn,
               ),
             ),
@@ -82,7 +83,7 @@ class OwnedCaseDetail extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 12,
                   height: 15 / 12,
-                  color: Color(0xff4f4e5c),
+                  color: DopmiTokens.muted,
                 ),
               ),
             ),
@@ -109,7 +110,7 @@ class OwnedCaseDetail extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xffe3e4ed)),
+                        border: Border.all(color: DopmiTokens.line),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +142,7 @@ class OwnedCaseDetail extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 14,
                               height: 1.55,
-                              color: Color(0xff151423),
+                              color: DopmiTokens.ink,
                             ),
                           ),
                           if (record.status == 'closed')
@@ -152,7 +153,7 @@ class OwnedCaseDetail extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.4,
-                                color: Color(0xff4f4e5c),
+                                color: DopmiTokens.muted,
                               ),
                             ),
                         ],
@@ -178,7 +179,7 @@ class OwnedCaseDetail extends StatelessWidget {
                         fontFamily: 'Inter',
                         fontSize: 19,
                         height: 1.3,
-                        color: Color(0xff151423),
+                        color: DopmiTokens.ink,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
