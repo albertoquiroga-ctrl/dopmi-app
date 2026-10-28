@@ -1,20 +1,19 @@
-# Cola vigente — 27/oct/2026: cierre finito del delta f693
+# Cola vigente — f693, cierre finito
 
-Integrador/root; una cola Flutter. Mock f693c0367643605fa8495c1ae3c171df4ccf85b6.
-Publicado comprobado Play2.3.3(339)/b50ed676/CM6ae0997ff94c6e56883fd1d3;
-CI40492133689 cuatroSUCCESS. Instalación/aceptación339 pendientes.
+28oct05:24UTC. Fuente3cf65d7335e1035b2bf504aee1f0a45b08c07081/CI40632841781
+cuatroSUCCESS. Publicada341=3cf; última instalación verificada340=f821. Una cola Flutter/root; TEST y OFF.
 
-| Batch | Dueño y estado real | Salida pendiente |
+| Lote / dueño | Estado comprobado | Siguiente salida |
 |---|---|---|
-| F0–F3 base y recorridos | Evidencia local previa conservada | No reabrir inventario ni pruebas intactas. |
-| F4 finanzas | V3DEVhistoria85/Guardian131 comprobados; tokenStream reemplazado | SDKreal del candidato pendiente. |
-| F4P esperaStripe + CTA | Backend/móvil y UI cerrados localmente por revisores; seis capturas afectadas PASS | CongelarSHA/CIrealPG. |
-| F5 candidato integrado | Root tras F4P | PaqueteDEVaditivo y release agrupados; Play/instalación/QA/demo/aceptación. |
+| Cámara / root+humano | CERRADO: toma neutra, Stream privado/play completo comparado y borrado; OFF/job6pausado/cola0 | No repetir toma ni carga. Audio local humano; audio físico Stream no atribuido. |
+| Correctivo final / root+revisores | Tres fixes agrupados3cf; CI final4SUCCESS; producto/código cerrados | CERRADO distribución341:13SUCCESS/artefacto/Playinternalcompleted; falta instalación/QA afectada tras handoff. |
+| Stripe nativo / root+humano | Cuenta anterior tiene customer eliminado en Stripe TEST; no reemplazo automático. Handoff activo para donante legítimo | Tras confirmar acceso e instalar341, abrir/cerrar componente una vez sin datos/guardar/pagar; conciliar mismo intento. |
+| Aceptación / titular+UX |340 física y pruebas vigentes por grupo; informe en tablero | Demo del candidato instalado e informe → conformidad o diferencias concretas. |
 
-Decisiones27oct en product-decisions.md. No nuevo pago, correo, toma ni replay339.
-TeléfonoMTPsinADB; pregunta de depuración pendiente. ServidoresOFF/job6pausado;
-ninguna migraciónPendingStripe aplicada. Próximaacción root: fijar el candidato con las correcciones
-visuales cerradas y ejecutar unaCI integrada. Ver checkpoint para límites exactos.
+No repetir recuperación, pagos TEST, Tienda, P3 ni auditoría global. Baseline original
+conserva FALSE:27grupos exactos; Connect y dos tombstones autorizadas requieren
+conciliación explícita. Historia86/funciones/flagsOFF/job6pausado; no nuevos servicios
+ON por espera. Fuente de continuidad: mock-sync-current.md; evidencia única: tablero.
 
 ## Cola histórica inmediatamente anterior
 

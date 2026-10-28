@@ -4,8 +4,9 @@ Respuesta humana call_2f3765f8/item0: añadir esperaStripe sólo a nuevos envío
 IdentidadDopmiaprobada→enviarcaso→siStripefalta, pending_stripe privado; alconfirmar
 READYservidor entra automáticamente a revisiónDopmi, nunca publicación automática.
 Casos ya enrevisión/publicados conservanestado; gastos/adopción conservansusreglas.
-Los tres componentes nativosStripe siguen excepción almock. Implementación local;
-no atribuir migraciónDEV/CI/dispositivo hasta comprobarlos.
+Los tres componentes nativosStripe siguen excepción almock. Implementación,
+evidencia y estado de entrega se consultan en mock-sync-current.md; esta entrada
+conserva la decisión humana y no duplica el estado de cada distribución.
 
 ## 27/10/2026 — Reemplazo acotado de credencial Stream DEV
 

@@ -1,43 +1,107 @@
-# Checkpoint — 27/oct/2026, 08:38 CDMX
+# Continuación — 28/oct/2026, 05:24 UTC
 
-Dueño root/integrador; una cola Flutter. Producto dopmi-app en
-codex/finish-release-20261015, checkout candidate-git-20261014. Referencia congelada
-f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust. Cambios ajenos preservados.
+Producto dopmi-app; mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6,
+warm-trust. Root integrador, única cola Flutter. TEST y cierre OFF.
 
-- **Publicado comprobado:** 2.3.3(339), SHA b50ed67696dae532bccde80aa4736283a3059508,
-  Play internal/completed, CM6ae0997ff94c6e56883fd1d3/13SUCCESS. CI40492133689 cuatroSUCCESS.
-  Artefacto/Play leídos13:01UTC. AAB binario/certificado no inspeccionados aparte.
-  Último instalado comprobado337; 339 aún sin instalación/aceptación. No repetirPOST339.
-- **DEV comprobado:** V3 historia85/20261027115406 y Guardian131; nueve postchecks,
-  28fuentesLF/otras31funciones exactas. Video/Tienda/enlaces/cleanupOFF/job6pausado.
-  Token Stream vencido reemplazado una vez con autorización27oct: sóloStreamEdit,
-  expira3nov23:59CDMX. Guardado enDEV;34secretos,otros33metadatos intactos. SinON/proveedor.
-- **Nuevo lote autorizado, implementado local:** pending_stripe sólo nuevos casos;
-  privado hastaConnectREADY→revisiónDopmi automática, jamás publicación. Históricos,
-  gastos/adopción/3SDKStripe preservados. SQL5b5b4517…2a07d1a:600focalesPASS;
-  falloP1 aislado/cancelación16PASS; código/seguridad cerrados. Tres carrerasPG nuevas
-  revisadas estáticamente, ejecución PostgreSQL real pendienteCI. NO aplicado enDEV.
-- **Móvil local:** analyze0;51PASS iniciales y4fallos de helpers resueltos en3+1PASS,
-  sin sumar tandas solapadas. Código/seguridad lógica cerrados. CTA377 y modalStripe corregidos; seis capturas afectadas PASS y tres previas
-  owned reutilizadas. Producto independiente cerró CTA/X/modal; código y seguridad
-  cerraron sus alcances. Normal377 dirigido1PASS; modal2PASS;115%/200% previos válidos.
-  Prueba normal usa bottom760 de referencia y1px de redondeo del hueco12px.
-  Medición Inter319.9565 determinó ancho320, sin modificar fuente/padding/borde.
-- **Bloqueo externo:** teléfono presenteMTP, sin interfazADB; reinicioADBúnico sin cambio.
-  Pregunta puntual sobre depuraciónUSB ya pendiente. No repetir petición de conexión.
-- **Siguientes cierres finitos:** (1) UI/test/capturas/revisión CERRADOS localmente;
-  (2) congelarSHA y unaCI integral con PostgreSQLreal; (3) paqueteDEVaditivo+distribución
-  agrupados, fuentes/firmas/TEST exactos; (4) Play→instalación→QAafectada/demo/aceptación.
-  Reutilizar recuperación/Tienda/P3/aporteTEST/Connect válidos. Cámara337 llegóready/borrado,
-  reproduccióncompleta aún no probada; no otra toma por rutina. iOS sóloCI.
+**Handoff de acceso activo:** el titular debe entrar con el donante TEST ya elegido.
+No observar/controlar/actualizar el Samsung hasta confirmar que está dentro de Dopmi
+sin credenciales visibles. Marcador recovery-real327/human-handoff.active vigente.
 
-Eficiencia: CM339 midió9m11cola+19m32ejecución; no explica todo el tiempo anterior.
-Los checks dirigidos evitan repetir51PASS por helpers; el render377 expuso un caso
-no cubierto por393 y se corrige antes de otra build. Retro independiente acotada encurso.
-Heartbeat4h existenteACTIVE, sin duplicarlo. Evidencia privada f693/internal-release/,
-f693/stream-replacement.actual.private.json y f693/cta-geometry/. No estimación nueva sinbase.
+- **Implementado/verificado:** 3cf65d7335e1035b2bf504aee1f0a45b08c07081/origin igual;
+  CI40632841781/cuatro SUCCESS comprobados04:50:25. Siete rutas cliente respecto
+  a340: enlace Stripe del historial recibido (20 focales/3 renders), paleta de
+  detalle/gasto propio (9 focales/4 renders), error de tarjetas distinto de vacío
+  (RED previo,4 pruebas GREEN). Revisiones independientes cerradas; sin backenddelta.
+- **Publicado:** Play interno2.3.3(341)/3cf, CM6ae182f6eed83fe5d283fea6/13SUCCESS.
+  Artefacto05:23:53 y Playinternal/completed05:23:55 comprobados; paquete
+  com.mycompany.dopmi/workflow android-guardian-internal. Tag remoto
+  codex/final-parity-3cf65d73; pin e7c7477a…4e70a3; único POST05:07:06UTC.
+- **Dispositivo:** última comprobación340/f821 en SamsungSM-S938B/Vending/115%.
+ 341 NO instalada/verificada por root; HANDOFF humano sigue activo. Helper341
+  preparado/revisado sólo por10reemplazos contados, privacidad sin cambios y no
+  ejecutado. Artefacto/Play no acreditan instalación, QA física ni aceptación.
+- **Cámara cerrada:** misma toma Gallery3.797s/6801574B → Stream3.42s privado →
+  Play único03:44:14 → borrado. Comparación temporal independiente PASS: movimiento
+  y último frame coinciden (correlaciones0.9977–0.9983). Humano confirmó audio local;
+  no audio físico Stream atribuido. No otra toma/QA requerida. Original local retenido.
+  RAW22ec…8631 y streamseleccionadoe397…7368 difieren: no afirmar identidad de bytes.
+- **DEV cierre05:24:** historia86, video/Tienda OFF, job6pausado/cola0;21assets con
+  dos tombstones nuevas deleted/pending/URLnull/snapshotnull,3 clips aprobados retenidos.
+  Los19 originales conservan rawdigest7ebd…6c7c;20previos al segundo intento9050…0365.
+  Guard histórico protected_rows_unchanged sigue FALSE:27/29grupos exactos, Connect3
+  y dos tombstones se concilian como deltas explícitos, sin falsear el recibo anterior.
+- **Stripe pendiente físico:** customer de la cuenta previa eliminado desde25oct,
+  confirmado por GET Stripe Sandbox. No sustitución automática ni nuevo intento.
+  El error UI ahora evita el falso mensaje de lista vacía. Esperar donante legítimo
+  y comprobar una sola entrada/salida del componente, sin datos ni guardar tarjeta.
+- **Método corregido:** primer playback interrumpido por assert inventado de sonido,
+  no por vencimiento. La receta corregida usó etiqueta de fuente/reloj real y produjo
+  evidencia temporal; no se repite cámara. Safetyread de release corrigió columna
+  contra migración y fórmula contra SQL original antes de la lectura real exitosa.
 
-## Historial operativo anterior
+**Siguientes finitos:** humano confirmar acceso donante sin credenciales visibles;
+root instalar/verificar341 y QA afectada/Stripe sin guardar tarjeta ni cobrar;
+titular/UX demo e informe
+existentes → aceptación o diferencias concretas. Sin otra suite/pago/Tienda/P3.
+Guardian136:28fuentes exactas;32Edge sólo versión+4/EZBRigual. No redeploy este run.
+
+## Corte previo comprobado — 340 publicada
+
+# Checkpoint — 27/oct/2026, corte comprobado 17:48 UTC
+
+Root/integrador; una cola Flutter. Producto dopmi-app; referencia congelada
+f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust. Fuente final
+f82134f59f21bf09774d22f1128d059bea5a4477, CI40528719305/cuatro SUCCESS.
+Frente a3c sólo cambia capture_profile_test.dart; runtime idéntico.
+
+- **DEV aplicado y verificado:** PendingStripe historia86, versión20261027164055,
+  MD5f418713546b8e4d633fc847fc3eb2ed7. Apply success; postflight16:46:18UTC
+  19TRUE/0FALSE y grupos protegidos exactos. Video/Tienda/enlaces/cleanup OFF,
+  job6pausado. No reaplicar. V1 fallida y V2 no aplicada están conciliadas.
+- **Recuperación DEV:** reinicio único16:28UTC; lectura16:32:59 confirmó historia85
+  antes de V3. UNKNOWN/reinicio pendiente de cortes anteriores quedan resueltos.
+  CPUalta fue observada; causa de los timeouts no demostrada.
+- **Publicado y comprobado:**2.3.3(340), SHA f82134f59f21bf09774d22f1128d059bea5a4477,
+  GooglePlay interno/completed, com.mycompany.dopmi. CM6ae0da47e7954a852bb9edd5
+  FINISHED/13SUCCESS; tagcodex/pending-stripe-f82134f5. Artefacto/build-info17:47:08
+  y readbackPlay17:47:13UTC concuerdan. Código/seguridad independientes cerraron
+  los recibos. Pin5595d2b6…3a3708f; reserva/POSTúnicos consumidos, no repetir.
+  Cola real17m26s; inicio17:24:45UTC. Compilación/publicación acreditadas;
+  AAB binario/certificado no inspeccionados aparte. Último instalado probado337.
+- **Cierre DEV:**17:47:43UTC19TRUE;17:48:02los34metadatos exactos, otros33intactos.
+  Video/Tienda/preview/enlaces/cleanupOFF, grants0, job6pausado. No cargas/pagos nuevos.
+  Guardian132 y otros31versiones+1trasrestart; hashes/metadata restante exactos.
+- **Bloqueo físico:**ADBvacío en turno original y dos continuaciones, incluido
+  cierre posterior a340. Windows ve A36/MTP/modem/composite OK, sin interfazADB.
+  Pregunta de depuraciónUSB ya pendiente; ninguna reinstalación de drivers indicada.
+  Se agotó trabajo independiente autorizado: fuente/CI/DEV/distribución/informe listos.
+  Faltan instalación desdePlay, QAafectada y aceptación comparativa; no afirmar cierre.
+- **Stream:** reemplazo autorizado27oct guardado una vez;34metadatos, otros33
+  intactos, sóloStreamEdit, hasta3nov23:59CDMX. No servicios ON ni archivos nuevos.
+- **Pendientes finitos/dueño:**titular habilita depuraciónUSB/autoriza computadora;
+  root comprueba interfaz y sesión, instala340desdePlay y verifica pantallas afectadas
+  con pruebas vigentes. Titular/UX evalúan demo comparativa; no otra build/fixture por
+  rutina. Cámara337 ready/borrado comprobados, reproducción completa pendiente.
+  Recuperación/Tienda/P3/aporteTEST/Connect válidos se reutilizan. iOS sóloCI.
+  Informe de excepciones y mini recorrido340 en parity-current-review.md.
+
+
+Medidor del objetivo leído27oct17:15UTC:141644s (39h20m44s),48,100,448tokens
+acumulados. Es el contador del objetivo, sin desglose fiable por actividad ni
+conversión a costo. Próximo checkpoint compara incrementos y entregas materiales.
+CM339 midió9m11cola+19m32ejecución; ese build no explica el tiempo total.
+Consulta postflight materializada:19TRUE/1.824s, sin inferir ahorro comparativo.
+Checkpoint4h existente revisado, sin duplicarlo. Retro independiente: corregir
+encabezado al conciliar y usar followup_task para reactivar agentes terminados;
+comprobar próxima reasignación activa y ausencia de UNKNOWN ya resuelto.
+Evidencia privada f693/pending-stripe-dev-v2/, pending-stripe-dev-v3/ y
+pending-stripe-release/. Próximo: titular habilita interfazADB; root instala desde
+Play, verifica pantallas y prepara demo; titular/UX evalúan aceptación. No otra
+build ni fixture por continuidad. Retro de release independiente comprobó recibos,
+UNKNOWN resuelto y un soloPOST; ajustado este pie para coincidir con el encabezado.
+
+## Historial operativo anterior — supersedido por el corte superior
+
 
 Actualización26oct: permiso AccountSessionsWrite de DopmiSupabaseTest autorizado
 y guardado tras SMS humano; readback del editor desde servidor176filas muestra

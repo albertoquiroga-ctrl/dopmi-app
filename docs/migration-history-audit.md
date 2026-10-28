@@ -1,5 +1,25 @@
 # Auditoría del historial de migraciones
 
+## 27/10/2026 — PendingStripe de nuevos casos aplicado en DEV
+
+Fuente f82134f59f21bf09774d22f1128d059bea5a4477, CI40528719305 cuatroSUCCESS.
+Plataforma20261027164055/codex_f693_pending_stripe_support_cases_v1 corresponde a
+Git20261027133656_pending_stripe_support_cases.sql:30329B/LF,
+SHA2568049d2859c701abe954fe963a6d7e39f3746f06df0f29bbab4d05943fa633fdf.
+Payloadguardado289958B/SHA2567d6a4c234a1a32403dccc41adb09fddc590806fb092e2cb09224a57135f73cc9,
+MD5remotof418713546b8e4d633fc847fc3eb2ed7. Historia85→86;85anteriores exactas.
+Postflight16:46:18UTC19TRUE; funciones9/ACL/auditoría/defaults/filas protegidas,
+OFF/jobs/legado preservados. No reparar, renombrar o reaplicar.
+
+V1rechazada42883 y V2timeout quedaron conciliadas sin aplicación. Un reinicioDEV
+observado16:28UTC recuperó lecturas;16:32:59 confirmóhistoria85antesV3. No másrestart.
+Inventario posterior:32versiones+1 (Guardian132); demáscampos/EZBR exactos, sin
+nuevodeployEdge. Querymaterializedreadonly19TRUE en1.824s. Auditoría histórica
+compara todascolumnas previas, excluyendo sólo3aditivas tras exigiruser/user/NULL;
+no filtra filas ni relaja checksfinancieros. Recibos privados pending-stripe-dev-v2/,
+pending-stripe-dev-v3/ y pending-stripe-release/. CredencialStream sólo reemplazada
+con autorización propia;34metadatos/otros33intactos y serviciosOFF.
+
 ## 27/10/2026 — Soporte, recibos y tarjeta nativa agrupados en DEV
 
 Autoridad técnica continua24/25oct, fuente b50ed67696dae532bccde80aa4736283a3059508,
