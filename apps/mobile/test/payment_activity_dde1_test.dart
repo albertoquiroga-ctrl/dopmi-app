@@ -6,6 +6,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/payments/payment_activity_repository.dart';
 import 'package:dopmi_mobile/features/payments/payment_activity_screen.dart';
+import 'package:dopmi_mobile/features/payments/payment_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -110,6 +111,20 @@ class PresentedActivityRepository extends ActivityRepository {
   }
 }
 
+class StripeHistoryPayments extends PaymentRepository {
+  StripeHistoryPayments() : super(FakeRescue().client);
+  final opened = <String>[];
+  Completer<void>? opening;
+  Object? failure;
+
+  @override
+  Future<void> openStripe(String value) async {
+    opened.add(value);
+    if (opening != null) await opening!.future;
+    if (failure != null) throw failure!;
+  }
+}
+
 void main() {
   Future<
     ({
@@ -121,6 +136,7 @@ void main() {
   mountPresented(
     WidgetTester tester, {
     PresentedActivityRepository? repository,
+    StripeHistoryPayments? payments,
     bool received = true,
     bool readOnly = false,
     bool settle = true,
@@ -139,6 +155,8 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
           paymentActivityRepositoryProvider.overrideWithValue(repo),
+          if (payments != null)
+            paymentRepositoryProvider.overrideWithValue(payments),
         ],
         child: MaterialApp(
           theme: dopmiTheme(),
@@ -172,6 +190,152 @@ void main() {
     await tester.pumpAndSettle();
     return repo;
   }
+
+  testWidgets(
+    'received history opens the mock Stripe URL once and retains the ledger on return',
+    (tester) async {
+      final payments = StripeHistoryPayments()..opening = Completer<void>();
+      final harness = await mountPresented(tester, payments: payments);
+      final link = find.text('Consultar mi historial en mi cuenta Stripe');
+      final firstRow = find.byType(PaymentActivityCard).first;
+      expect(link, findsOneWidget);
+      expect(
+        tester
+            .getBottomLeft(
+              find.text(
+                'Sigue así, personas como tú son especiales para la manada.',
+              ),
+            )
+            .dy,
+        lessThan(tester.getTopLeft(link).dy),
+      );
+      expect(
+        tester.getBottomLeft(link).dy,
+        lessThan(tester.getTopLeft(firstRow).dy),
+      );
+      await tester.tap(link);
+      await tester.pump();
+      await tester.tap(link);
+      await tester.pump();
+      expect(payments.opened, ['https://connect.stripe.com/']);
+
+      payments.opening!.complete();
+      await tester.pumpAndSettle();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(payments.opened, ['https://connect.stripe.com/']);
+      expect(harness.repo.pageCalls, 1);
+      expect(find.text('Pago TEST 0'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('received history keeps the Stripe link above its empty state', (
+    tester,
+  ) async {
+    final payments = StripeHistoryPayments();
+    final repo = PresentedActivityRepository()..rows = [];
+    await mountPresented(tester, repository: repo, payments: payments);
+    final link = find.text('Consultar mi historial en mi cuenta Stripe');
+    final empty = find.text(
+      'Aún no has recibido pagos por tus casos de apoyo.',
+    );
+    expect(
+      tester.getBottomLeft(link).dy,
+      lessThan(tester.getTopLeft(empty).dy),
+    );
+    await tester.tap(link);
+    await tester.pumpAndSettle();
+    expect(payments.opened, ['https://connect.stripe.com/']);
+    expect(tester.takeException(), isNull);
+  });
+
+  for (final configuration in [(true, true), (false, false)]) {
+    testWidgets(
+      'Stripe history is inactive for read-only previews and absent for donors: $configuration',
+      (tester) async {
+        final payments = StripeHistoryPayments();
+        await mountPresented(
+          tester,
+          payments: payments,
+          received: configuration.$1,
+          readOnly: configuration.$2,
+        );
+        final link = find.text('Consultar mi historial en mi cuenta Stripe');
+        if (configuration.$1) {
+          final button = tester.widget<TextButton>(
+            find.ancestor(of: link, matching: find.byType(TextButton)),
+          );
+          expect(button.onPressed, isNull);
+        } else {
+          expect(link, findsNothing);
+        }
+        expect(payments.opened, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets(
+    'Stripe opening failure keeps history and permits explicit retry',
+    (tester) async {
+      final payments = StripeHistoryPayments()
+        ..failure = StateError('private launcher detail');
+      await mountPresented(tester, payments: payments);
+      final link = find.text('Consultar mi historial en mi cuenta Stripe');
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+      expect(
+        find.text('No pudimos abrir Stripe. Vuelve a intentar.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('private launcher'), findsNothing);
+      expect(find.text('Pago TEST 0'), findsOneWidget);
+      expect(find.text('Reintentar historial'), findsNothing);
+      payments.failure = null;
+      await tester.tap(link);
+      await tester.pumpAndSettle();
+      expect(payments.opened, [
+        'https://connect.stripe.com/',
+        'https://connect.stripe.com/',
+      ]);
+      expect(
+        find.text('No pudimos abrir Stripe. Vuelve a intentar.'),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('late Stripe failure cannot affect a different owner history', (
+    tester,
+  ) async {
+    final payments = StripeHistoryPayments()..opening = Completer<void>();
+    final repo = PresentedActivityRepository()..rows = [];
+    final harness = await mountPresented(
+      tester,
+      repository: repo,
+      payments: payments,
+    );
+    await tester.tap(find.text('Consultar mi historial en mi cuenta Stripe'));
+    await tester.pump();
+    harness.identity.emit(
+      const IdentityEvent(
+        Identity('other', 'other@example.test', verified: true),
+      ),
+    );
+    await tester.pumpAndSettle();
+    payments.opening!.completeError(StateError('private old-owner detail'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('No pudimos abrir Stripe. Vuelve a intentar.'),
+      findsNothing,
+    );
+    expect(find.textContaining('private old-owner'), findsNothing);
+    expect(payments.opened, ['https://connect.stripe.com/']);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('unified pages retain centavos and real multiple assignments', (
     tester,

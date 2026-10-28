@@ -1429,6 +1429,9 @@ void main() {
       ('payment-history', '/payments'),
       ('payment-history-large', '/payments'),
       ('payment-history-empty', '/payments'),
+      ('payment-history-received', '/rescuer/received-payments'),
+      ('payment-history-received-large', '/rescuer/received-payments'),
+      ('payment-history-received-empty', '/rescuer/received-payments'),
       ('contribution-amount', '/contribute-case/case-one'),
       ('contribution-amount-large', '/contribute-case/case-one'),
       ('case-detail-large', '/rescue-cases/case-one'),
@@ -2086,6 +2089,7 @@ void main() {
           spec.$1.startsWith('owned-case-detail') ||
           spec.$1.startsWith('private-file') ||
           spec.$1.startsWith('connect-account') ||
+          spec.$1.startsWith('payment-history-received') ||
           spec.$1.startsWith('account-access-options') ||
           spec.$1.startsWith('managed-updates') ||
           spec.$1.startsWith('owned-cases') ||
@@ -5007,7 +5011,27 @@ void main() {
           await tester.pumpAndSettle();
           expect(target.hitTestable(), findsOneWidget);
         }
-        if (spec.$1.startsWith('payment-history')) {
+        if (spec.$1.startsWith('payment-history-received')) {
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/rescuer/received-payments',
+          );
+          final link = find.text('Consultar mi historial en mi cuenta Stripe');
+          expect(link, findsOneWidget);
+          if (large) {
+            await tester.ensureVisible(link);
+            await tester.pumpAndSettle();
+          }
+          expect(link.hitTestable(), findsOneWidget);
+          if (spec.$1.endsWith('-empty')) {
+            expect(
+              find.text('Aún no has recibido pagos por tus casos de apoyo.'),
+              findsOneWidget,
+            );
+          }
+          expect(find.textContaining('4242'), findsNothing);
+          expect(find.textContaining('5556'), findsNothing);
+        } else if (spec.$1.startsWith('payment-history')) {
           if (spec.$1.endsWith('-empty')) {
             expect(
               find.text('Aún no hay movimientos en tu historial.'),

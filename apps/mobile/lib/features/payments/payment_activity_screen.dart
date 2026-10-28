@@ -110,6 +110,8 @@ class _ActivityListState extends ConsumerState<_ActivityList>
   final _failedReceipts = <String>{};
   bool _visibilityCheckPending = false;
   bool _acknowledging = false;
+  bool _openingStripe = false;
+  String? _stripeError;
   Json? cursor;
   String? error;
   bool busy = false;
@@ -285,6 +287,31 @@ class _ActivityListState extends ConsumerState<_ActivityList>
     }
   }
 
+  Future<void> _openStripeHistory() async {
+    if (!current || !widget.received || widget.readOnly || _openingStripe) {
+      return;
+    }
+    setState(() {
+      _openingStripe = true;
+      _stripeError = null;
+    });
+    try {
+      await ref
+          .read(paymentRepositoryProvider)
+          .openStripe('https://connect.stripe.com/');
+    } catch (cause) {
+      if (current) {
+        setState(() {
+          _stripeError = cause is FormatException
+              ? cause.message
+              : 'No pudimos abrir Stripe. Vuelve a intentar.';
+        });
+      }
+    } finally {
+      if (current) setState(() => _openingStripe = false);
+    }
+  }
+
   @override
   void dispose() {
     generation++;
@@ -340,6 +367,42 @@ class _ActivityListState extends ConsumerState<_ActivityList>
                   'Sigue así, personas como tú son especiales para la manada.',
                   style: TextStyle(fontSize: 14, height: 1.45, color: ink),
                 ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: widget.readOnly || _openingStripe
+                        ? null
+                        : _openStripeHistory,
+                    style: TextButton.styleFrom(
+                      foregroundColor: muted,
+                      disabledForegroundColor: muted,
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 48),
+                      alignment: Alignment.centerLeft,
+                      textStyle: Theme.of(context).textTheme.labelLarge
+                          ?.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            height: 1.4,
+                            decoration: TextDecoration.underline,
+                          ),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Consultar mi historial en mi cuenta Stripe',
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Icon(Icons.chevron_right, size: 14),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_stripeError != null) Notice(_stripeError!, isError: true),
               ] else
                 const Text.rich(
                   TextSpan(
@@ -361,7 +424,7 @@ class _ActivityListState extends ConsumerState<_ActivityList>
                   ),
                   style: TextStyle(fontSize: 14, height: 1.45, color: ink),
                 ),
-              const SizedBox(height: 20),
+              SizedBox(height: widget.received ? 12 : 20),
               if (widget.received &&
                   !widget.readOnly &&
                   _failedReceipts.isNotEmpty) ...[
