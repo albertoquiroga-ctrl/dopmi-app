@@ -1,19 +1,16 @@
-# Cola vigente — f693, cierre finito
+# Cola vigente — f693, candidata341 lista para evaluación
 
-28oct05:24UTC. Fuente3cf65d7335e1035b2bf504aee1f0a45b08c07081/CI40632841781
-cuatroSUCCESS. Publicada341=3cf; última instalación verificada340=f821. Una cola Flutter/root; TEST y OFF.
+App3cf65d73/CI40632841781 cuatroSUCCESS/Play2.3.3(341)/CM13SUCCESS/SamsungVending115%.
+TEST; una cola Flutter. No nueva implementación ni build este turno.
 
 | Lote / dueño | Estado comprobado | Siguiente salida |
 |---|---|---|
-| Cámara / root+humano | CERRADO: toma neutra, Stream privado/play completo comparado y borrado; OFF/job6pausado/cola0 | No repetir toma ni carga. Audio local humano; audio físico Stream no atribuido. |
-| Correctivo final / root+revisores | Tres fixes agrupados3cf; CI final4SUCCESS; producto/código cerrados | CERRADO distribución341:13SUCCESS/artefacto/Playinternalcompleted; falta instalación/QA afectada tras handoff. |
-| Stripe nativo / root+humano | Cuenta anterior tiene customer eliminado en Stripe TEST; no reemplazo automático. Handoff activo para donante legítimo | Tras confirmar acceso e instalar341, abrir/cerrar componente una vez sin datos/guardar/pagar; conciliar mismo intento. |
-| Aceptación / titular+UX |340 física y pruebas vigentes por grupo; informe en tablero | Demo del candidato instalado e informe → conformidad o diferencias concretas. |
+| Implementación/QA/distribución / root | CERRADO técnico de los paquetes y recorridos documentados.341 instalada; cámara reutilizada; historial/link/Stripe/regreso comprobados | No repetir suites, pagos, cámara, Tienda oP3. |
+| Alta nativa / root | CERRADO:1job expired, mismoSETI canceled/métodoNULL, sinretry niotroSDK; UIvencimiento limpia intento | Conservar clienteTEST/auditoría y cierreOFF; no nuevo intento para ocupar espera. |
+| Aceptación / titular+UX | Informe y demos reales en tablero;341 instalada, teléfonoAdoptar/donante | Confirmar conformidad f693/warm-trust con adaptaciones declaradas o lista concreta de diferencias. |
 
-No repetir recuperación, pagos TEST, Tienda, P3 ni auditoría global. Baseline original
-conserva FALSE:27grupos exactos; Connect y dos tombstones autorizadas requieren
-conciliación explícita. Historia86/funciones/flagsOFF/job6pausado; no nuevos servicios
-ON por espera. Fuente de continuidad: mock-sync-current.md; evidencia única: tablero.
+Handoff de acceso resuelto. Video/Tienda/preview/enlaces/limpieza OFF; job6pausado.
+El cliente eliminado de la cuenta anterior sigue sin reemplazo automático.
 
 ## Cola histórica inmediatamente anterior
 

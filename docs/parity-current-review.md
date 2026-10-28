@@ -1,39 +1,41 @@
-# Corte vigente — f693, 341 publicada y QA final pendiente
+# Corte vigente — f693, 341 instalada; aceptación pendiente
 
-28oct05:24UTC. Mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust.
+28oct14:17UTC. Mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust.
 Publicado: Playinterno2.3.3(341)/3cf65d7335e1035b2bf504aee1f0a45b08c07081,
 CM6ae182f6eed83fe5d283fea6/13SUCCESS. Artefacto05:23:53 y publicación05:23:55
-comprobados; CI40632841781 cuatroSUCCESS. Última instalación comprobada340/f821;
-341 física y aceptación pendientes. Handoff de acceso activo: no leer ni tocar móvil.
+comprobados; CI40632841781 cuatroSUCCESS. Instalación341 comprobada13:14UTC/Vending/Samsung115%, misma cuenta donante.
+Handoff resuelto; aceptación integral pendiente.
 
 
 | Grupo | Evidencia vigente | Salida pendiente |
 |---|---|---|
 | Acceso/recuperación |QA327correo/reinicio/claridad aceptada; marco y regresión vigentes |No repetir. Aceptación integral separada. |
-| Perfil/Casos/Apoyar |340física115%: propia cuenta, dos modos, tarjetas/CTA/scroll/retorno; producto independiente conforme |Evaluación humana integrada. |
-| Stripe nativo |ConnectTEST→Back→LEAVE→Dopmi real340; tresSDK preservados. Sin submit/pago/Terms; diálogo vendor inglés |Entrada independiente de tarjeta y QA final afectada, sin cargos nuevos. |
-| Historial recibido |Datos propios340/privacidad; se detectó enlace externo omitido del mockf693 |Corregido356,20focales/3renders/analyze0/revisiones cerradas; falta distribución/QA del enlace. |
+| Perfil/Casos/Apoyar |341perfil/dos modos/regreso115%;340casos/Apoyar/CTA/scroll reutilizables; renders de paleta propia final revisados |Evaluación humana integrada. Sin otro detalle propio físico atribuido a esa cuenta. |
+| Stripe nativo |ConnectTEST→Back→LEAVE→Dopmi340 reutilizable;341 alta independiente abrióactividadPaymentSheet→retorno→expiración/canceledmismoSETI/métodoNULL. TresSDK preservados |No tarjeta guardada, PNG/formulario vacío/localizaciónSDK o autenticaciónPortal atribuidos. Aceptación humana separada. |
+| Historial recibido |341real: vacío con enlacelegible; tap único abreURIexactaStripe/Chrome yBack1 vuelve alhistorial.20focales/3renders/revisiónproducto cerrados |Aceptación integral; no autenticación del portal atribuida. |
 | Publicación/PendingStripe |Cuatro pasos, normalización y medios; DEVhistoria86/CI carreras y privacidad; históricos conservados |Reutilizar evidencia vigente. No inventar nueva publicación para demo. |
 | Video |340: toma neutra Gallery3.797s → Streamprivado3.42s → Play03:44:14 → comparación temporal independientePASS/movimiento y EOF → borrado; OFF/job6pausado/cola0 |CERRADO técnico. No otra toma. Audio local confirmado por humano; audio físico Stream no atribuido. |
 | Tienda |QAprivada/catalogo/filtros/revocación/caducidad vigentes; pública/enlaces OFF por decisión |Aceptación interna ya clara; activación comercial fuera de este corte. |
-| Entrega final |340artefacto/Play/instalación separados y reales;3cf implementado/revisado/CI4SUCCESS |341artefacto/Play comprobados; instalar tras handoff→QA afectada→demo/aceptación. |
+| Entrega final |341artefacto/Play/instalación reales;3cf implementado/revisado/CI4SUCCESS |341artefacto/Play/instalación/QA afectada y cierreSETI comprobados; resta aceptación humana. |
 
 Evidencia340 en f693/device340 (privada, no publicar perfil/contactos). Renders
 finales del enlace en f693/stripe-history-link-renders-font: normal,320px200%,vacío.
 No implican aceptación humana. Enlace abre el portal literalStripe del mock;
 no promete sesión automática ni modo sandbox del portal, no delega acceso.
-DEV tras UIConnect y cámara conserva27/29tablas exactas; digestConnect(count3) y
-dos tombstones privadas de video cambiaron de forma explícita,
-columnas exactas no establecidas. No atribuir finanzas invariables por ese hash;
-las otras27tablas sí se contrastaron. El guard original FALSE se conserva. Video/Tienda/cleanupOFF yjob6pausado.
+El preflight anterior aQA341 conservó27/29grupos exactos al baseline original;
+Connect y dos tombstones se conciliaron explícitamente, manteniendo elFALSE original.
+QA341 agregó1cliente/1jobTEST terminales.9customers previos exactos y12jobs previos
+exactos sólo en la proyección establecida sinpurpose; no afirmar identidad total de
+filas. Donaciones/suscripciones/ciclos conservan3digests; flagsOFF/job6pausado.
 
-## Mini recorrido comprobado340 y delta pendiente341
+## Mini recorrido comprobado — 341 y evidencia vigente reutilizada
 
 | Pantalla | Acción | Resultado observado / esperado | Señal de problema |
 |---|---|---|---|
 | Apoyar |Desplazar cabecera→CTA |340 muestra composición/CTA legibles al desplazar |Solape persistente o texto recortado. |
 | Perfil/Mi cuenta |Abrir Stripe→Back→LEAVE |340 abre componente nativo TEST y regresa a la misma cuenta |Error de permiso o pérdida de sesión. |
-| Perfil/Mi historial |Abrir movimientos recibidos |340 muestra netos reales propios;356 añade enlace idéntico a f693 |Datos ajenos, enlace ausente o fallo sin recuperación. |
+| Perfil/Mi historial |Pulsar enlaceStripe y regresar |341 abreURIexacta enChrome yBack1 regresa al mismohistorial; el ledger donante mantiene20TEST/Visa4242 |Enlaceausente, URIajena, datosajenos o pérdida de regreso. |
+| Perfil/Métodos de pago |AbrirStripe→cerrar→conciliar vencimiento |341:actividadSDK→Dopmi;1jobexpired/SETIcanceled, métodoNULL yAgregarhabilitado; no cargó/guardótarjeta |Otrojob, método no autorizado, éxitofalso o retry retenido trasexpirar. |
 | Avances TEST |Galería→revisar→Subir→reproducir→cancelar |340: privado/sin revisión, movimiento y EOF comparados, borrado confirmado; servicios OFF |Carga automática, clip público o recurso no conciliado. |
 
 ColorCTA naranja#c1511c conserva contrasteblanco4.7072 frente3.2905 delmock.
@@ -152,7 +154,7 @@ por sí sola el candidato final3cf.
 
 | Diferencia respecto al mock | Resultado y motivo |
 |---|---|
-| Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet/SetupIntent para el método de Guardián y onboarding de Stripe Connect para el rescatista. F693 añade alta independiente de tarjeta por el componente nativo, sin sustituir el método de Guardián ni cambiar el predeterminado por inferencia. Contrato DEV aplicado; recorrido nativo del candidato pendiente. Los datos sensibles permanecen en Stripe. |
+| Tarjeta y alta financiera simuladas | Se conservan los tres componentes de Stripe que pidió el titular: PaymentSheet para el aporte puntual, PaymentSheet/SetupIntent para el método de Guardián y onboarding de Stripe Connect para el rescatista. F693 añade alta independiente de tarjeta por el componente nativo, sin sustituir el método de Guardián ni cambiar el predeterminado por inferencia. Contrato DEV aplicado;341 abrióPaymentSheet y volvió aDopmi sin ingreso de datos. El único intentoTEST quedóexpired enDopmi/canceled confirmado porStripe, sin método asociado y sin reintento del operador. No se capturó el formulario ni se afirmó que estuviera vacío. Los datos sensibles permanecen en Stripe. |
 | Dónde dar de alta la cuenta del rescatista | Perfil de Rescatista → Mi cuenta → Completar datos en Stripe; también Ajustes → Datos bancarios. Al enviar un caso nuevo sin Stripe listo, se ofrece continuar al onboarding nativo mientras el caso permanece privado.337 comprobó introducción TEST y salida; no se completó alta ni se aceptaron términos. Fallback sólo sin SDK, nunca tras error nativo. |
 | Fondo comunitario, bonos y resultados ficticios | Se conserva la asignación del neto completo a gastos elegibles, comisión Dopmi del 2%, costos reales de Stripe y conciliación. Si falta capacidad no se cobra ni se crea deuda por un mes omitido. No se muestran bonos o fondos simulados como actividad real. La excepción P3 sólo existe en DEV: gasto ficticio de $100 y único aporte de $20 TEST; $20−$0.40−$4.43=$15.17 netos, conciliados contra Stripe TEST. |
 | Tienda: cashback,5% y aportación por compra | El diseño y la vista privada TEST están implementados. Tienda pública y salida a comercios siguen apagadas hasta disponer de catálogo, derechos, enlaces y permisos válidos. Las comisiones corresponden a Dopmi; se retiraron esas promesas. Aceptar el diseño interno no activa el comercio. |
@@ -164,10 +166,20 @@ por sí sola el candidato final3cf.
 | Caso sin gastos disponibles y caso cerrado | Se conservan historia, medios, aviso y botón deshabilitado; se oculta el encabezado de solicitud de dinero cuando no hay capacidad. Cerrar no borra la publicación. Añadir despedida no reabre el caso ni altera aportaciones. El titular aceptó la claridad de esa ficha TEST. |
 | Contraste y efectos CSS | F693 reproduce warm-trust y utiliza el SVG original de grano renderizado como asset de200px; F1/F2 tienen comparación real de renders y revisión independiente. Se conservan contraste accesible y controles legibles; no se declara identidad de cada píxel entre renderizadores ni aceptación UX integral. La evidencia física334–336 pertenece a esos binarios anteriores. |
 | Tarjetas mensuales atribuidas a una mascota | Un ciclo real puede distribuir el neto entre varios casos. Se muestran ciclo, estado, importes y recibo reales; no se inventan destinatario, foto o resultado cuando el contrato histórico no los aporta. Importe autorizado y pago confirmado siguen siendo estados distintos. |
-| Nuevo estado pending_stripe del mock | Decisión humana27oct resuelta e implementada para nuevos envíos: identidad aprobada → caso privado pendienteStripe → READY confirmado por servidor → revisión Dopmi, nunca publicación automática. Casos ya en revisión/publicados, gastos y adopción conservan reglas. CI40528719305 PostgreSQL/carreras verdes; DEV20261027164055/19TRUE; teléfono y aceptación del candidato pendientes. |
+| Nuevo estado pending_stripe del mock | Decisión humana27oct resuelta e implementada para nuevos envíos: identidad aprobada → caso privado pendienteStripe → READY confirmado por servidor → revisión Dopmi, nunca publicación automática. Casos ya en revisión/publicados, gastos y adopción conservan reglas. CI40528719305 PostgreSQL/carreras verdes; DEV20261027164055/19TRUE; no nuevo envío físico PendingStripe atribuido en341. Aceptación integral separada. |
 | Errores y situaciones sin diseño | Se conservan vacíos, permisos, interrupciones, reintento sin duplicados, recuperación tras reinicio y limpieza de contexto al cambiar de cuenta. No se reemplazan errores reales por éxitos simulados. En TEST un cliente Stripe fue eliminado externamente: el servicio falla cerrado y3cf distingue el error de una lista vacía; recuperación del vínculo eliminado no está diseñada ni se crea un reemplazo automático. |
 | Edad y fotos de registros históricos | El mock sólo dibuja categorías de edad y sus medios principales. Se conservan valores libres anteriores sin deducir una categoría y las fotos adicionales existentes, plegadas en medios. No se eliminan datos para imitar el fixture. |
-| Pruebas y aceptación aún pendientes |341/3cf publicada en Play interno, CI40632841781 cuatroSUCCESS; última instalación comprobada340/f821. Falta instalar341 y QA afectada, incluida entrada/salida nativa de tarjeta con donante legítimo, y evaluación comparativa del titular/UX. Cámara completa cerrada; Connect introducción/salida y cuatro pasos cerrados; Tienda/P3 se conservan sin repetir dinero. iOS físico/TestFlight y comercio público siguen fuera de la evidencia ejecutada. |
+| Pruebas y aceptación aún pendientes |341/3cf publicada e instalada desdePlay, CI40632841781 cuatroSUCCESS. QA afectada y entrada/salida nativa con donante legítimo comprobadas; resta la evaluación comparativa del titular/UX. Cámara completa cerrada; Connect introducción/salida y cuatro pasos cerrados; Tienda/P3 se conservan sin repetir dinero. iOS físico/TestFlight y comercio público siguen fuera de la evidencia ejecutada. |
+
+
+Cierre nativo real28oct:1job/clienteTEST nuevos; ningún cargo/tarjeta/Guardian/default
+confirmado por esta operación. MismoSETI canceled13:59:09UTC, PGexpired y aviso UI;
+root no reintentó porque ya había caducado. Historial previo verificado con proyección
+establecida (sinpurpose);3grupos financieros y9customers previos exactos. TeléfonoAdoptar.
+Incidente de evidencia: Workbench autoabrió un payload cuyo client_secret del SETI ya
+cancelado apareció en una salida de herramienta. Se cerró el payload; el valor no está
+en los archivos/commits. No se afirma eliminación de la salida pasada. Recibos finales
+sanitizados en f693/device341; no prueba de formularioSDK vacío ni de apariencia interna.
 
 Contraste independiente de excepciones27oct: ocho familias verificadas en fuentes
 (mock f693 y app f821), sin nuevas pruebas remotas: Stripe, dinero real frente a

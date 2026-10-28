@@ -1,49 +1,34 @@
-# Continuación — 28/oct/2026, 05:24 UTC
+# Continuación — 28/oct/2026, 341 instalada; aceptación pendiente
 
-Producto dopmi-app; mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6,
-warm-trust. Root integrador, única cola Flutter. TEST y cierre OFF.
+Producto dopmi-app. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust;
+rama irlanda/apoyar-detalle-perfil confirmada28oct13:51UTC. App3cf65d7335e1035b2bf504aee1f0a45b08c07081;
+HEAD puede ser documental posterior. Root integrador; una cola Flutter; TEST.
 
-**Handoff de acceso activo:** el titular debe entrar con el donante TEST ya elegido.
-No observar/controlar/actualizar el Samsung hasta confirmar que está dentro de Dopmi
-sin credenciales visibles. Marcador recovery-real327/human-handoff.active vigente.
+- **Implementado/verificado:** tres fixes finales, CI40632841781/cuatroSUCCESS,
+  pruebas/renders y revisiones independientes vigentes. No código app/build nuevo este turno.
+- **Publicado:** Play interno2.3.3(341), CM6ae182f6eed83fe5d283fea6/13SUCCESS;
+  artefacto/Play/fuente concordantes. No repetir POST/build por continuidad.
+- **Instalado/probado:** SamsungSM-S938B/Vending/115%, misma cuenta donante TEST.
+  Perfil/dos modos/regreso, tarjetas/consentimiento, actividadPaymentSheet→Dopmi,
+  historial recibido→URIStripe exacta→Chrome→Back1 y ledger previo20TEST/Visa4242.
+  Handoff anterior resuelto; teléfono quedó Adoptar. Ninguna contraseña/código leído.
+- **Alta nativa CERRADA:** único jobb0d7…/key7b94…/SETI vinculado; PGexpired y
+  proveedor canceled13:59:09UTC/07:59:09CDMX, métodoNULL. RootNOreintentó: ya había
+  expirado al comprobar la precondición. UIaviso de vencimiento/Agregar habilitado.
+  Se conservan clienteTEST nuevo y auditoría;12jobs previos coinciden en proyección
+  establecida sinpurpose,9customers previos y3grupos financieros exactos.
+- **Cierre14:14UTC:** historia86,21assets/cola0; video/Tienda/preview/enlacesOFF,
+  job6pausado y otros5jobs exactos.34metadatosEdge exactos/OFF13:56UTC.
+- **Límites:** sin PNG/formularioSDK vacío/localización acreditados; sin audio físico
+  Stream o iOS físico/TestFlight. Cámara/Stream visual completo cerrado; no repetir.
+  IncidenteWorkbench: unclient_secret del SETI ya cancelado apareció en herramienta;
+  payload cerrado, valor ausente de archivos. No afirmar borrado de la salida pasada.
 
-- **Implementado/verificado:** 3cf65d7335e1035b2bf504aee1f0a45b08c07081/origin igual;
-  CI40632841781/cuatro SUCCESS comprobados04:50:25. Siete rutas cliente respecto
-  a340: enlace Stripe del historial recibido (20 focales/3 renders), paleta de
-  detalle/gasto propio (9 focales/4 renders), error de tarjetas distinto de vacío
-  (RED previo,4 pruebas GREEN). Revisiones independientes cerradas; sin backenddelta.
-- **Publicado:** Play interno2.3.3(341)/3cf, CM6ae182f6eed83fe5d283fea6/13SUCCESS.
-  Artefacto05:23:53 y Playinternal/completed05:23:55 comprobados; paquete
-  com.mycompany.dopmi/workflow android-guardian-internal. Tag remoto
-  codex/final-parity-3cf65d73; pin e7c7477a…4e70a3; único POST05:07:06UTC.
-- **Dispositivo:** última comprobación340/f821 en SamsungSM-S938B/Vending/115%.
- 341 NO instalada/verificada por root; HANDOFF humano sigue activo. Helper341
-  preparado/revisado sólo por10reemplazos contados, privacidad sin cambios y no
-  ejecutado. Artefacto/Play no acreditan instalación, QA física ni aceptación.
-- **Cámara cerrada:** misma toma Gallery3.797s/6801574B → Stream3.42s privado →
-  Play único03:44:14 → borrado. Comparación temporal independiente PASS: movimiento
-  y último frame coinciden (correlaciones0.9977–0.9983). Humano confirmó audio local;
-  no audio físico Stream atribuido. No otra toma/QA requerida. Original local retenido.
-  RAW22ec…8631 y streamseleccionadoe397…7368 difieren: no afirmar identidad de bytes.
-- **DEV cierre05:24:** historia86, video/Tienda OFF, job6pausado/cola0;21assets con
-  dos tombstones nuevas deleted/pending/URLnull/snapshotnull,3 clips aprobados retenidos.
-  Los19 originales conservan rawdigest7ebd…6c7c;20previos al segundo intento9050…0365.
-  Guard histórico protected_rows_unchanged sigue FALSE:27/29grupos exactos, Connect3
-  y dos tombstones se concilian como deltas explícitos, sin falsear el recibo anterior.
-- **Stripe pendiente físico:** customer de la cuenta previa eliminado desde25oct,
-  confirmado por GET Stripe Sandbox. No sustitución automática ni nuevo intento.
-  El error UI ahora evita el falso mensaje de lista vacía. Esperar donante legítimo
-  y comprobar una sola entrada/salida del componente, sin datos ni guardar tarjeta.
-- **Método corregido:** primer playback interrumpido por assert inventado de sonido,
-  no por vencimiento. La receta corregida usó etiqueta de fuente/reloj real y produjo
-  evidencia temporal; no se repite cámara. Safetyread de release corrigió columna
-  contra migración y fórmula contra SQL original antes de la lectura real exitosa.
-
-**Siguientes finitos:** humano confirmar acceso donante sin credenciales visibles;
-root instalar/verificar341 y QA afectada/Stripe sin guardar tarjeta ni cobrar;
-titular/UX demo e informe
-existentes → aceptación o diferencias concretas. Sin otra suite/pago/Tienda/P3.
-Guardian136:28fuentes exactas;32Edge sólo versión+4/EZBRigual. No redeploy este run.
+**Único siguiente:** titular/UX evaluar341 contra f693 y aceptar el corte con sus
+adaptaciones declaradas o señalar pantalla→acción→diferencia. Informe/demos:
+parity-current-review.md; evidencia privada f693/device341. No más QA/builds por espera.
+Retro independiente: limitar lectura de proveedor a evento/recurso/estado/hora/TEST,
+con actividad/retorno/recibos y capturas Dopmi; evitar payloadAX e inputs del proveedor.
 
 ## Corte previo comprobado — 340 publicada
 

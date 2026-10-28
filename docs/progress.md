@@ -1,5 +1,49 @@
 ## 27/10/2026 — 340 publicada; cierre OFF verificado; bloqueo ADB
 
+## 28/10/2026 — 341 instalada y cierre nativo; aceptación pendiente
+
+App3cf65d7335e1035b2bf504aee1f0a45b08c07081/CI40632841781/cuatroSUCCESS/Play2.3.3(341)
+CM6ae182f6eed83fe5d283fea6/13SUCCESS. Handoff liberado por respuesta humana; instaló
+Vending13:14UTC/07:14CDMX enSM-S938B, misma cuenta donante confirmada yfont1.15.
+Sin credenciales escritas/leídas, cambios app, nuevaCI/build ni serviciosON en este turno.
+
+QA341 real: perfil, dos modos legítimos sinKYC/alta/casos nuevos, vacío de tarjetas y
+consentimiento; PaymentSheetActivity y vuelta aMethods; historial recibido con enlace
+legible→VIEWhttps://connect.stripe.com/→Chrome→Back1→mismo historial; ledger donante
+conserva20TEST/24oct/Visa4242. Cuenta restauradaAdoptante y teléfonoAdoptar. Revisiones
+independientes producto/seguridad cerradas con sus límites. Propios warm-trust conservan
+sus renders/pruebas revisadas; no se atribuye otro detalle propio físico en esa cuenta.
+
+UnicoSetupIntent/job creado13:23UTC, sin entradas en campos ni método asociado. La
+guarda rechazó un editable no vacío: valor no impreso/archivado; no afirmarplaceholder,
+autofill o formulario vacío. Tras35min, PGyaexpired13:59:56: precondición detuvo al
+operador ANTESretry/reserva. StripeTESTconfirmó evento setup_intent.canceled del MISMO
+recurso13:59:09UTC/07:59:09CDMX ypmNULL. Cierre automático, no retry niotroSDK. App
+ActualizarEstado(read)mostróalta vencida, limpióintento yhabilitóAgregar. ClienteTEST y
+auditoría conservados. Evidencia f693/device341/provider-expiry-summary,
+final-server-close, final-card-history-projection ycapturascard-expiry-closed.
+
+Cierre14:14UTC: historia86,assets21/cola0, video/Tienda/preview/enlacesOFF/job6pausado;
+otros5jobs exactos.34metadataEdge exactos/OFF13:56UTC. Donaciones10/suscripciones3/
+ciclos44 y susdigests exactos.9customers previos exactos;12jobs previos exactos en la
+proyección establecida sinpurpose (no identidad de todas las columnas). Consulta
+readonly inicial de cierre corrigió nombre decolumna, sin mutación ni suite nueva.
+
+Incidente real: EventsWorkbench autoseleccionópayload ygetAX incluyóclient_secret del
+SETI YA CANCELADO. Se ocultó/cerrópayload; valor no copiado a archivos ni commits,
+no eliminación del historial de herramienta atribuida. Recibo sanitizado declara la
+exposición. Revisor de seguridad examinó estado terminal y límites; no clave de cuenta.
+Retro independiente de proceso: único ajuste es limitar PREVIAMENTE lectura a recurso,
+evento,estado,hora,TEST, con actividad/retorno/recibo público ycapturasDopmi; no payloadAX
+ni PNG de inputs. Criterio de efecto en siguienteconsumo necesario: evidencia suficiente
+sin otroSETI/inputs/payload; sin ahorro cuantificado. No nuevas cadenas/harness.
+
+Rama mock irlanda/apoyar-detalle-perfil sigue f693 alconsultarla13:51UTC; defaultHEAD
+961b557 no amplía este corte. Sólo falta aceptación comparativa del titular/UX o lista
+pantalla→acción→diferencia. Cámara/Stream visual y QA anteriores se reutilizan; iOS
+físico/TestFlight, audio físicoStream, apariencia/formularioSDK ycomercio público no
+se atribuyen. No reabrir servicios, fixtures o pruebas por la espera de aceptación.
+
 ## 28/10/2026, 05:07 UTC — Cámara cerrada y candidato final341 enviado
 
 Fuente3cf65d7335e1035b2bf504aee1f0a45b08c07081. CI40632841781/cuatroSUCCESS;
