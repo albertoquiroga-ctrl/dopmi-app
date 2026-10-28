@@ -1,3 +1,13 @@
+## 28/10/2026 — Aceptación del corte f693 / 341
+
+El titular respondió «Acepto el corte con sus límites» a la evaluación final
+(call_5e173484e2284d58ba4c0a3da98d93dc/item0). Acepta la entrega interna TEST
+2.3.3(341), fuente3cf65d7335e1035b2bf504aee1f0a45b08c07081, contra
+f693/warm-trust con las adaptaciones y límites de parity-current-review.md.
+Supersede la aceptación pendiente de este corte; no acredita pruebas no realizadas
+ni autoriza LIVE, comercio público, otra referencia, publicación general o merge.
+Se conserva el último cierre OFF/job6pausado. Seguimiento cada4h eliminado al cerrar.
+
 ## 27/10/2026 — Espera de Stripe para nuevos casos de apoyo
 
 Respuesta humana call_2f3765f8/item0: añadir esperaStripe sólo a nuevos envíos.

@@ -1,4 +1,4 @@
-# Cola vigente — f693, candidata341 lista para evaluación
+# Cola vigente — f693, entrega341 aceptada con sus límites
 
 App3cf65d73/CI40632841781 cuatroSUCCESS/Play2.3.3(341)/CM13SUCCESS/SamsungVending115%.
 TEST; una cola Flutter. No nueva implementación ni build este turno.
@@ -7,7 +7,7 @@ TEST; una cola Flutter. No nueva implementación ni build este turno.
 |---|---|---|
 | Implementación/QA/distribución / root | CERRADO técnico de los paquetes y recorridos documentados.341 instalada; cámara reutilizada; historial/link/Stripe/regreso comprobados | No repetir suites, pagos, cámara, Tienda oP3. |
 | Alta nativa / root | CERRADO:1job expired, mismoSETI canceled/métodoNULL, sinretry niotroSDK; UIvencimiento limpia intento | Conservar clienteTEST/auditoría y cierreOFF; no nuevo intento para ocupar espera. |
-| Aceptación / titular+UX | Informe y demos reales en tablero;341 instalada, teléfonoAdoptar/donante | Confirmar conformidad f693/warm-trust con adaptaciones declaradas o lista concreta de diferencias. |
+| Aceptación / titular | CERRADO28oct: «Acepto el corte con sus límites»;341/f693/warm-trust e informe existente | Sin lote activo de esta entrega. Futuras activaciones o referencias requieren alcance propio. |
 
 Handoff de acceso resuelto. Video/Tienda/preview/enlaces/limpieza OFF; job6pausado.
 El cliente eliminado de la cuenta anterior sigue sin reemplazo automático.

@@ -1,3 +1,13 @@
+## 28/10/2026 — Entrega341 aceptada; seguimiento cerrado
+
+El titular aceptó explícitamente «el corte con sus límites» (call_5e173484e2284d58ba4c0a3da98d93dc/item0):
+app3cf65d73 / Play interno2.3.3(341) / referenciaf693-warm-trust. Implementación,
+verificación, publicación e instalación conservan sus recibos previos; aceptación
+humana registrada por separado. Informe de adaptaciones y flujos ausentes en
+parity-current-review.md. No quedan lotes técnicos de este corte aceptado.
+Seguimiento de cuatro horas eliminado: respuesta de la app deleteStatus=deleted.
+Sin operaciones de producto nuevas; conserva cierre OFF/TEST y límites declarados.
+
 ## 27/10/2026 — 340 publicada; cierre OFF verificado; bloqueo ADB
 
 ## 28/10/2026 — 341 instalada y cierre nativo; aceptación pendiente

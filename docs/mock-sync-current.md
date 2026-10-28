@@ -1,4 +1,4 @@
-# Continuación — 28/oct/2026, 341 instalada; aceptación pendiente
+# Cierre — 28/oct/2026, 341 aceptada con sus límites
 
 Producto dopmi-app. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust;
 rama irlanda/apoyar-detalle-perfil confirmada28oct13:51UTC. App3cf65d7335e1035b2bf504aee1f0a45b08c07081;
@@ -24,9 +24,14 @@ HEAD puede ser documental posterior. Root integrador; una cola Flutter; TEST.
   IncidenteWorkbench: unclient_secret del SETI ya cancelado apareció en herramienta;
   payload cerrado, valor ausente de archivos. No afirmar borrado de la salida pasada.
 
-**Único siguiente:** titular/UX evaluar341 contra f693 y aceptar el corte con sus
-adaptaciones declaradas o señalar pantalla→acción→diferencia. Informe/demos:
-parity-current-review.md; evidencia privada f693/device341. No más QA/builds por espera.
+**Aceptado:** el titular respondió «Acepto el corte con sus límites» el28oct
+(call_5e173484e2284d58ba4c0a3da98d93dc/item0). Aceptación interna TEST de341
+contra f693/warm-trust y el informe existente; no atribuye pruebas pendientes.
+
+**Cierre:** sin trabajo técnico pendiente dentro de este corte aceptado. Informe:
+parity-current-review.md; evidencia privada f693/device341. Seguimiento de cuatro
+horas eliminado tras aceptación. Una futura referencia, activación comercial o LIVE
+requiere su alcance y permisos propios; no repetir QA/builds ni tocar el teléfono.
 Retro independiente: limitar lectura de proveedor a evento/recurso/estado/hora/TEST,
 con actividad/retorno/recibos y capturas Dopmi; evitar payloadAX e inputs del proveedor.
 

@@ -1,26 +1,27 @@
-# Corte vigente — f693, 341 instalada; aceptación pendiente
+# Corte vigente — f693, 341 aceptada con sus límites
 
 28oct14:17UTC. Mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust.
 Publicado: Playinterno2.3.3(341)/3cf65d7335e1035b2bf504aee1f0a45b08c07081,
 CM6ae182f6eed83fe5d283fea6/13SUCCESS. Artefacto05:23:53 y publicación05:23:55
 comprobados; CI40632841781 cuatroSUCCESS. Instalación341 comprobada13:14UTC/Vending/Samsung115%, misma cuenta donante.
-Handoff resuelto; aceptación integral pendiente.
+Handoff resuelto. El titular aceptó este corte con sus límites el28oct
+(call_5e173484e2284d58ba4c0a3da98d93dc/item0); aceptación interna TEST.
 
 
-| Grupo | Evidencia vigente | Salida pendiente |
+| Grupo | Evidencia vigente | Cierre y límites |
 |---|---|---|
-| Acceso/recuperación |QA327correo/reinicio/claridad aceptada; marco y regresión vigentes |No repetir. Aceptación integral separada. |
-| Perfil/Casos/Apoyar |341perfil/dos modos/regreso115%;340casos/Apoyar/CTA/scroll reutilizables; renders de paleta propia final revisados |Evaluación humana integrada. Sin otro detalle propio físico atribuido a esa cuenta. |
-| Stripe nativo |ConnectTEST→Back→LEAVE→Dopmi340 reutilizable;341 alta independiente abrióactividadPaymentSheet→retorno→expiración/canceledmismoSETI/métodoNULL. TresSDK preservados |No tarjeta guardada, PNG/formulario vacío/localizaciónSDK o autenticaciónPortal atribuidos. Aceptación humana separada. |
-| Historial recibido |341real: vacío con enlacelegible; tap único abreURIexactaStripe/Chrome yBack1 vuelve alhistorial.20focales/3renders/revisiónproducto cerrados |Aceptación integral; no autenticación del portal atribuida. |
+| Acceso/recuperación |QA327correo/reinicio/claridad aceptada; marco y regresión vigentes |Aceptado en el corte con sus límites; no repetir. |
+| Perfil/Casos/Apoyar |341perfil/dos modos/regreso115%;340casos/Apoyar/CTA/scroll reutilizables; renders de paleta propia final revisados |Aceptado en el corte. Sin otro detalle propio físico atribuido a esa cuenta. |
+| Stripe nativo |ConnectTEST→Back→LEAVE→Dopmi340 reutilizable;341 alta independiente abrióactividadPaymentSheet→retorno→expiración/canceledmismoSETI/métodoNULL. TresSDK preservados |No tarjeta guardada, PNG/formulario vacío/localizaciónSDK o autenticaciónPortal atribuidos. Límites aceptados. |
+| Historial recibido |341real: vacío con enlacelegible; tap único abreURIexactaStripe/Chrome yBack1 vuelve alhistorial.20focales/3renders/revisiónproducto cerrados |Aceptado con límites; no autenticación del portal atribuida. |
 | Publicación/PendingStripe |Cuatro pasos, normalización y medios; DEVhistoria86/CI carreras y privacidad; históricos conservados |Reutilizar evidencia vigente. No inventar nueva publicación para demo. |
 | Video |340: toma neutra Gallery3.797s → Streamprivado3.42s → Play03:44:14 → comparación temporal independientePASS/movimiento y EOF → borrado; OFF/job6pausado/cola0 |CERRADO técnico. No otra toma. Audio local confirmado por humano; audio físico Stream no atribuido. |
 | Tienda |QAprivada/catalogo/filtros/revocación/caducidad vigentes; pública/enlaces OFF por decisión |Aceptación interna ya clara; activación comercial fuera de este corte. |
-| Entrega final |341artefacto/Play/instalación reales;3cf implementado/revisado/CI4SUCCESS |341artefacto/Play/instalación/QA afectada y cierreSETI comprobados; resta aceptación humana. |
+| Entrega final |341artefacto/Play/instalación reales;3cf implementado/revisado/CI4SUCCESS |341artefacto/Play/instalación/QA afectada y cierreSETI comprobados; titular aceptó el corte con sus límites. |
 
 Evidencia340 en f693/device340 (privada, no publicar perfil/contactos). Renders
 finales del enlace en f693/stripe-history-link-renders-font: normal,320px200%,vacío.
-No implican aceptación humana. Enlace abre el portal literalStripe del mock;
+Los renders no acreditan pruebas físicas adicionales. Enlace abre el portal literalStripe del mock;
 no promete sesión automática ni modo sandbox del portal, no delega acceso.
 El preflight anterior aQA341 conservó27/29grupos exactos al baseline original;
 Connect y dos tombstones se conciliaron explícitamente, manteniendo elFALSE original.
