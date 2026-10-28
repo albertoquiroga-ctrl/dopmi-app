@@ -1,3 +1,24 @@
+## 28/10/2026 — Inicio de beta LIVE y B1 de configuración
+
+Titular solicita beta real, noTEST, y reactiva seguimiento4h. Confirma invitación y
+producción limpia; declara cierre jurídico/fiscal, reserva20,000MXN y sin tope
+agregado. Autoriza publicaciones QA enPlayinterno con ventana5min preCodemagic.
+Detalles y precedencia enproduct-decisions; no dictamen ni saldo bancario atribuidos.
+
+MCP: DEVhealthy/PRODinactivo; restore únicoPROD aceptado y luego ACTIVE_HEALTHY.
+SQL23:07UTC registra48migraciones,Auth0/Storage0/40tablas; sieteEdgev1históricas.
+Sin copiaDEV, migración, despliegue, cambiosAuth/flags/secretos ni cobros. Seguridad
+revisó alcance delrestore; inventario/cotejo aún pendiente. StripeMCPUNAUTHORIZED;
+sesiónDashboard legítimaLIVE sí funciona: capacidades activas/due0. Lectura limitada
+a metadatos; sin payloads/eventos/credenciales archivados. Recibos beta-prelaunch.
+
+B1 cincoarchivos: configuraciónprod explícita/registrada y separaciónTEST. Python27
+PASS, Flutter19PASS (environment+identity), analyze dirigido0 después de corregir
+un aviso estilístico enfixture; código/seguridad independientes sin hallazgos.
+Aún no integraSDK/workflow/consentimientoLIVE; no beta publicada/instalada. Paridad
+341aceptada se conserva. Automatización dopmi-beta-real-y-checkpoint-cada-4-horas
+ACTIVE; trabajo siguiente B0/B2 en la cola existente, sin repetir QAconsumida.
+
 ## 28/10/2026 — Entrega341 aceptada; seguimiento cerrado
 
 El titular aceptó explícitamente «el corte con sus límites» (call_5e173484e2284d58ba4c0a3da98d93dc/item0):

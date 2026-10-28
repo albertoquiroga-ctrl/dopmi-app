@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class AppConfig {
+  static const _productionHost = 'ysaoeuidcvgtlmphmeyb.supabase.co';
+  static const _productionUrl = 'https://$_productionHost';
+
   const AppConfig({
     required this.url,
     required this.key,
@@ -51,8 +54,7 @@ class AppConfig {
   bool get appleNativeAvailable =>
       appleEnabled && !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
   bool get isValid {
-    // Production cannot be selected until its project has been commissioned.
-    if (environment != 'test') return false;
+    if (environment != 'test' && environment != 'production') return false;
     final uri = Uri.tryParse(url);
     final callback = Uri.tryParse(redirect);
     if (uri == null ||
@@ -61,17 +63,27 @@ class AppConfig {
         !callback.hasScheme) {
       return false;
     }
+    final production = environment == 'production';
+    if (production) {
+      if (url != _productionUrl && url != '$_productionUrl/') {
+        return false;
+      }
+    } else if (uri.host == _productionHost) {
+      return false;
+    }
     if (uri.scheme != 'https' &&
         !['localhost', '127.0.0.1', '10.0.2.2'].contains(uri.host)) {
       return false;
     }
-    if (key.startsWith('sb_publishable_')) return true;
+    if (RegExp(r'^sb_publishable_[A-Za-z0-9_-]+$').hasMatch(key)) return true;
     try {
+      final parts = key.split('.');
+      if (parts.length != 3) return false;
       final payload = jsonDecode(
-        utf8.decode(base64Url.decode(base64Url.normalize(key.split('.')[1]))),
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
       ) as Map;
       return payload['role'] == 'anon' &&
-          (payload['ref'] == null ||
+          ((!production && payload['ref'] == null) ||
               payload['ref'] == uri.host.split('.').first);
     } catch (_) {
       return false;

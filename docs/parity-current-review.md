@@ -1,3 +1,19 @@
+# Beta real — cambios de entorno posteriores al corte aceptado
+
+28/oct/2026: nueva entrega de preparación LIVE; la paridad341/f693/warm-trust
+inferior permanece aceptada. Este tablero sigue siendo único: cola y dependencias
+B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuevo.
+
+| Grupo afectado | Hecho actual | Evidencia/criterio pendiente |
+|---|---|---|
+| Entorno | PROD restaurado/healthy, Auth0/Storage0,48migraciones y sieteEdgehistóricas | Cotejo por contenido, ACL/RLS y delta antes de aplicar; no copiarDEV. |
+| Configuracióncliente | B1Python27/Flutter19/analyze0 y revisiones cerradas | Integrar consumidoresSDK/CI/candidato; perfil válido no equivale a betaLIVE. |
+| Dinero/consentimiento | CuentaDopmiLIVE con capacidades activas; código actual aún TEST | B2rechazo de cruces, consentimientoLIVE y firmas/permisos; sin cargos de QA por inferencia. |
+| Usuarios/operación | Invitación/producciónlimpia/reserva20mil/sin tope agregadodecididos | Admisión efectiva servidor, Auth/SMTP/OAuth/admin, webhooks/worker/alertas y operación. |
+| Distribución/aceptación | Última instalación comprobada341TEST | NuevoSHA/artefacto/Play/install/QA/aceptación por separado; cinco minutos preCodemagic. |
+
+## Paridad aceptada anterior y límites conservados
+
 # Corte vigente — f693, 341 aceptada con sus límites
 
 28oct14:17UTC. Mock congelado f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust.

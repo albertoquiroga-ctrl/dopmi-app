@@ -1,3 +1,27 @@
+## 28/10/2026 — Beta real por invitación y QA continua
+
+El titular encarga pasar de TEST a beta prelaunch con usuarios reales, Stripe LIVE
+y base de producción, aceptando costos. Confirma beta por invitación y producción
+limpia, sin trasladar Auth, casos, archivos, Connect o movimientos TEST desde DEV.
+Este alcance supersede la restricción exclusivamente TEST del corte341; no modifica
+su aceptación ni convierte su evidencia en verificación LIVE.
+
+El titular declara cerrado el punto jurídico/fiscal y pide continuar como resuelto.
+Se registra su declaración, sin atribuir al agente dictamen profesional ni revisión
+de un documento que no recibió. Fija reserva propia20,000MXN y ningún tope agregado
+de cobros beta. Conserva límites por operación, consentimiento, comisiones/costos,
+idempotencia y políticas ya acordadas; la reserva declarada no es saldo verificado.
+
+Los mensajes QA autorizan corregir y publicar candidatos en Play interno mediante
+Codemagic sin permisos rutinarios por build. Antes del envío, avisar y abrir una
+ventana de cinco minutos para incorporar mensajes pendientes; validar el delta y
+reservar un único intento. No autoriza publicación general ni pagos del agente sin
+importe/destino/consentimiento del pagador. Conservar los tres componentes Stripe.
+
+Seguimiento solicitado cada4h, activo como dopmi-beta-real-y-checkpoint-cada-4-horas.
+Comparar avance, separar estados de entrega y corregir repeticiones; no generar
+trabajo por el reloj. La cola única y el estado vigente están en backlog/checkpoint.
+
 ## 28/10/2026 — Aceptación del corte f693 / 341
 
 El titular respondió «Acepto el corte con sus límites» a la evaluación final

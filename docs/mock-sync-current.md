@@ -1,3 +1,30 @@
+# Continuación — beta real por invitación, 28/oct/2026
+
+Producto dopmi-app; rama codex/finish-release-20261015. Base app3cf65d73/Play341,
+paridad f693/warm-trust aceptada. Cambios beta aún no publicados como app.
+
+- Autoridad nueva: LIVE/baseproducción/usuarios reales; producción limpia e
+  invitación confirmadas. Reserva20,000MXN declarada/sin tope agregado. Titular da
+  por cerrado punto jurídico/fiscal; no se atribuye dictamen inspeccionado.
+- B0: restore_project únicoPRODysaoeuidcvgtlmphmeyb aceptado; ACTIVE_HEALTHY.
+  SQL23:07UTC:48migraciones/hasta20260928221656, Auth0/Storage0/40tablas; sieteEdgev1.
+  Faltan cotejoSQL/ACL y configuraciónAuth/secretos/cron; DEVohqx no modificado.
+  StripeDashboardDopmiLIVE consultado: charges/payouts/transfers activos, sin due.
+  ConectorStripe pide reautenticación; navegador legítimo funciona. Ningún pago.
+- B1 implementado: opt-in --production-beta + entorno/host registrados + clave
+  públicaLIVE, TEST separado; aún sin consumidoresSDK/workflow/consentimientoLIVE.
+  Python27PASS, Flutter19PASS, analyze0 y revisión independiente código/seguridad.
+- Publicado/instalado: sólo último corte comprobado341TEST. No build beta, migración,
+  despliegueEdge, escritura de secretos o flags nuevos en esta preparación.
+- Seguimiento4h reactivado: dopmi-beta-real-y-checkpoint-cada-4-horas. Cola finitaB0–B5
+  enbacklog. Ventana5min antes de enviar cada candidatoCodemagic para mensajesQA.
+
+Siguiente: integrador completar inventarioPROD y contratoB2; revisión independiente.
+Recibos privados .tools/beta-prelaunch-20261028. No repetir cámara/P3/paridad cerrada.
+Conservar privacidad, identidad/firma, datosDEV y estados autorizados por entorno.
+
+## Corte aceptado previo — 341
+
 # Cierre — 28/oct/2026, 341 aceptada con sus límites
 
 Producto dopmi-app. Referencia f693c0367643605fa8495c1ae3c171df4ccf85b6/warm-trust;

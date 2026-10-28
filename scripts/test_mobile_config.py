@@ -1,7 +1,11 @@
 import base64
 import importlib.util
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
 
 spec = importlib.util.spec_from_file_location("mobile_config", Path(__file__).with_name("write-mobile-config.py"))
@@ -70,11 +74,125 @@ class MobileConfigTests(unittest.TestCase):
             with self.subTest(guardian=guardian), self.assertRaises(ValueError):
                 config.build_config({**self.env, "SUPABASE_URL": "https://another-project.supabase.co"}, guardian)
 
-    def test_production_stays_closed_until_commissioned(self):
+    def test_production_requires_its_explicit_build_option(self):
         for environment in ("production", "staging", ""):
             with self.subTest(environment=environment), self.assertRaises(ValueError):
                 config.build_config({**self.env, "DOPMI_ENVIRONMENT": environment})
         self.assertEqual(config.build_config(self.env)["DOPMI_ENVIRONMENT"], "test")
+
+    def production_env(self):
+        return {**self.env, "DOPMI_ENVIRONMENT": "production",
+                "SUPABASE_URL": "https://ysaoeuidcvgtlmphmeyb.supabase.co",
+                "STRIPE_PUBLISHABLE_KEY": "pk_live_fixture"}
+
+    def test_production_beta_uses_registered_project_and_live_public_key(self):
+        result = config.build_config(self.production_env(), production_beta=True)
+        self.assertEqual(result["DOPMI_ENVIRONMENT"], "production")
+        self.assertEqual(result["SUPABASE_URL"], "https://ysaoeuidcvgtlmphmeyb.supabase.co")
+        self.assertEqual(result["ENABLE_GUARDIAN"], "true")
+        self.assertEqual(result["STRIPE_PUBLISHABLE_KEY"], "pk_live_fixture")
+        self.assertEqual(result["AUTH_REDIRECT_URL"], "io.dopmi.app://auth/callback")
+        self.assertEqual(result["ENABLE_GUARDIAN_TEST"], "false")
+        self.assertEqual(result["ENABLE_MEASUREMENT_TEST"], "false")
+        self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
+        self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "")
+        self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
+
+    def test_production_beta_cannot_be_combined_with_test_build_options(self):
+        for guardian, measurement in ((True, False), (False, True), (True, True)):
+            with self.subTest(guardian=guardian, measurement=measurement), self.assertRaises(ValueError):
+                config.build_config(self.production_env(), guardian, measurement, production_beta=True)
+
+    def test_production_beta_does_not_copy_test_flags_or_merchant(self):
+        env = {**self.production_env(), "ENABLE_GUARDIAN_TEST": "true",
+               "ENABLE_MEASUREMENT_TEST": "true", "ENABLE_NATIVE_WALLETS_TEST": "true",
+               "APPLE_PAY_MERCHANT_ID": "merchant.test.fixture"}
+        result = config.build_config(env, production_beta=True)
+        for name in ("ENABLE_GUARDIAN_TEST", "ENABLE_MEASUREMENT_TEST", "ENABLE_NATIVE_WALLETS_TEST"):
+            self.assertEqual(result[name], "false")
+        self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "")
+        self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
+
+    def test_test_profile_cannot_copy_live_configuration(self):
+        result = config.build_config(self.env, True, True)
+        self.assertEqual(result["ENABLE_GUARDIAN"], "false")
+        self.assertEqual(result["STRIPE_PUBLISHABLE_KEY"], "")
+        with self.assertRaises(ValueError):
+            config.build_config({**self.env, "STRIPE_PUBLISHABLE_KEY": "pk_live_fixture"}, True)
+
+    def test_environment_and_endpoint_crosses_fail_closed(self):
+        for env, production in (
+            (self.production_env(), False),
+            (self.env, True),
+            ({**self.production_env(), "SUPABASE_URL": self.env["SUPABASE_URL"]}, True),
+            ({**self.env, "SUPABASE_URL": self.production_env()["SUPABASE_URL"]}, False),
+            ({**self.production_env(), "SUPABASE_URL": "https://another-project.supabase.co"}, True),
+            ({**self.production_env(), "DOPMI_ENVIRONMENT": "staging"}, True),
+        ):
+            with self.subTest(environment=env.get("DOPMI_ENVIRONMENT"), production=production), self.assertRaises(ValueError):
+                config.build_config(env, production_beta=production)
+
+    def test_production_beta_rejects_non_live_or_server_stripe_keys_without_echo(self):
+        for value in ("", "pk_test_fixture", "sk_live_fixture", "rk_live_fixture", "sb_secret_fixture"):
+            with self.subTest(value=value), self.assertRaises(ValueError) as caught:
+                config.build_config({**self.production_env(), "STRIPE_PUBLISHABLE_KEY": value}, production_beta=True)
+            if value:
+                self.assertNotIn(value, str(caught.exception))
+
+    def test_production_beta_requires_the_exact_anon_project_reference(self):
+        for project in (None, "", "another-project", "ohqxranynackjignryep", "ysaoeuidcvgtlmphmeyb"):
+            env = {**self.production_env(), "SUPABASE_PUBLISHABLE_KEY": self.jwt("anon", project)}
+            with self.subTest(project=project):
+                if project == "ysaoeuidcvgtlmphmeyb":
+                    self.assertEqual(config.build_config(env, production_beta=True)["SUPABASE_PUBLISHABLE_KEY"], env["SUPABASE_PUBLISHABLE_KEY"])
+                else:
+                    with self.assertRaises(ValueError):
+                        config.build_config(env, production_beta=True)
+
+    def test_production_beta_rejects_server_supabase_keys_without_echo(self):
+        for value in ("sb_secret_fixture", self.jwt("service_role", "ysaoeuidcvgtlmphmeyb")):
+            with self.subTest(value=value), self.assertRaises(ValueError) as caught:
+                config.build_config({**self.production_env(), "SUPABASE_PUBLISHABLE_KEY": value}, production_beta=True)
+            self.assertNotIn(value, str(caught.exception))
+
+    def test_cli_production_beta_and_failure_remove_stale_config(self):
+        script = Path(__file__).with_name("write-mobile-config.py").resolve()
+        for options, env in (
+            (["--production-beta"], self.production_env()),
+            ([], self.production_env()),
+            (["--production-beta"], self.env),
+            (["--production-beta", "--guardian-test"], self.production_env()),
+            (["--production-beta", "--measurement-test"], self.production_env()),
+            (["--production-beta"], {**self.production_env(), "STRIPE_PUBLISHABLE_KEY": "sk_live_fixture"}),
+        ):
+            with self.subTest(options=options, environment=env.get("DOPMI_ENVIRONMENT")), tempfile.TemporaryDirectory() as directory:
+                target = Path(directory) / "config.json"
+                target.write_text('{"stale": true}')
+                # Keep host runtime variables while isolating the fixture's supported options.
+                child_env = {name: value for name, value in os.environ.items()
+                             if name not in set(self.production_env()) | {
+                                 "ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "GOOGLE_SERVER_CLIENT_ID",
+                                 "GOOGLE_IOS_CLIENT_ID", "ENABLE_NATIVE_WALLETS_TEST", "APPLE_PAY_MERCHANT_ID"}}
+                process = subprocess.run([sys.executable, str(script), *options], cwd=directory,
+                                         env={**child_env, **env}, capture_output=True, text=True)
+                if options == ["--production-beta"] and env == self.production_env():
+                    self.assertEqual(process.returncode, 0, process.stderr)
+                    self.assertEqual(json.loads(target.read_text())["ENABLE_GUARDIAN"], "true")
+                else:
+                    self.assertNotEqual(process.returncode, 0)
+                    self.assertFalse(target.exists())
+                for value in (env["SUPABASE_PUBLISHABLE_KEY"], env.get("STRIPE_PUBLISHABLE_KEY", "")):
+                    if value:
+                        self.assertNotIn(value, process.stdout + process.stderr)
+
+    def test_production_example_contains_only_empty_public_credentials(self):
+        example = Path(__file__).resolve().parents[1] / "apps/mobile/config.production.example.json"
+        values = json.loads(example.read_text())
+        self.assertEqual(values["DOPMI_ENVIRONMENT"], "production")
+        self.assertEqual(values["SUPABASE_URL"], self.production_env()["SUPABASE_URL"])
+        self.assertEqual(values["SUPABASE_PUBLISHABLE_KEY"], "")
+        self.assertEqual(values["STRIPE_PUBLISHABLE_KEY"], "")
+        self.assertEqual(values["STRIPE_PUBLISHABLE_KEY_TEST"], "")
 
     def test_rejects_anon_key_from_another_project(self):
         payload = base64.urlsafe_b64encode(json.dumps({"role": "anon", "ref": "another-project"}).encode()).decode().rstrip("=")
@@ -143,8 +261,11 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
 
     @staticmethod
-    def jwt(role):
-        payload = base64.urlsafe_b64encode(json.dumps({"role": role}).encode()).decode().rstrip("=")
+    def jwt(role, project=None):
+        claims = {"role": role}
+        if project is not None:
+            claims["ref"] = project
+        payload = base64.urlsafe_b64encode(json.dumps(claims).encode()).decode().rstrip("=")
         return f"e30.{payload}.test_signature"
 
 

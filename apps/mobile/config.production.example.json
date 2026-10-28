@@ -1,0 +1,15 @@
+{
+  "DOPMI_ENVIRONMENT": "production",
+  "SUPABASE_URL": "https://ysaoeuidcvgtlmphmeyb.supabase.co",
+  "SUPABASE_PUBLISHABLE_KEY": "",
+  "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
+  "ENABLE_GOOGLE_AUTH": "false",
+  "ENABLE_APPLE_AUTH": "false",
+  "ENABLE_GUARDIAN": "true",
+  "STRIPE_PUBLISHABLE_KEY": "",
+  "ENABLE_GUARDIAN_TEST": "false",
+  "ENABLE_NATIVE_WALLETS_TEST": "false",
+  "ENABLE_MEASUREMENT_TEST": "false",
+  "STRIPE_PUBLISHABLE_KEY_TEST": "",
+  "APPLE_PAY_MERCHANT_ID": ""
+}
