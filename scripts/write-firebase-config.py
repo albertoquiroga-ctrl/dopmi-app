@@ -13,6 +13,10 @@ PACKAGE = "com.mycompany.dopmi"
 TEST_PROJECT = "dopmi-e3b6a"
 TEST_PROJECT_NUMBER = "623928073757"
 TEST_ANDROID_APP = "1:623928073757:android:d2022415cbf2751e41b0f4"
+# Android package/signature identity is shared; this Web client is dedicated to PROD.
+PRODUCTION_ANDROID_GOOGLE_WEB_CLIENT_ID = (
+    "623928073757-t777q7q3nn8fkc40e6hnsqdsb31foq7c.apps.googleusercontent.com"
+)
 
 
 def decode(env, name):
@@ -66,6 +70,10 @@ def google_ios_scheme(env, ios_value, production_beta=False, platform="both"):
     if (str(ios_value.get("GCM_SENDER_ID", "")) != number
             or not re.fullmatch(rf"1:{re.escape(number)}:ios:[0-9a-f]{{16,64}}", ios_value.get("GOOGLE_APP_ID", ""))):
         raise ValueError("Google sign-in requires the selected Firebase project number and app ID.")
+    if production_beta and platform == "android":
+        if env.get("GOOGLE_SERVER_CLIENT_ID", "").strip() != PRODUCTION_ANDROID_GOOGLE_WEB_CLIENT_ID:
+            raise ValueError("Production Android Google sign-in requires its registered production Web client ID.")
+        return None
     clients = []
     names = ("GOOGLE_SERVER_CLIENT_ID",) if platform == "android" else ("GOOGLE_SERVER_CLIENT_ID", "GOOGLE_IOS_CLIENT_ID")
     for name in names:

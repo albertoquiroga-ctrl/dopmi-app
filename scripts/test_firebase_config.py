@@ -32,6 +32,19 @@ class FirebaseConfigTests(unittest.TestCase):
                 "GOOGLE_SERVER_CLIENT_ID": f"{number}-web.apps.googleusercontent.com",
                 "GOOGLE_IOS_CLIENT_ID": f"{number}-ios.apps.googleusercontent.com"}
 
+    def production_android_google_env(self):
+        android, ios = self.files(True)
+        number = "782231363420"
+        android["project_info"]["project_number"] = number
+        android["client"][0]["client_info"]["mobilesdk_app_id"] = f"1:{number}:android:abcdef0123456789abcdef"
+        ios.update(GCM_SENDER_ID=number, GOOGLE_APP_ID=f"1:{number}:ios:0123456789abcdef012345")
+        return {**self.env(True, android, ios),
+                "FIREBASE_PRODUCTION_ANDROID_APP_ID": android["client"][0]["client_info"]["mobilesdk_app_id"],
+                "FIREBASE_PRODUCTION_IOS_APP_ID": ios["GOOGLE_APP_ID"],
+                "ENABLE_GOOGLE_AUTH": "true",
+                "GOOGLE_SERVER_CLIENT_ID": "623928073757-t777q7q3nn8fkc40e6hnsqdsb31foq7c.apps.googleusercontent.com",
+                "GOOGLE_IOS_CLIENT_ID": ""}
+
     def files(self, production=False):
         project = "dopmi-production" if production else config.TEST_PROJECT
         number = "934560123456" if production else config.TEST_PROJECT_NUMBER
@@ -254,7 +267,8 @@ class FirebaseConfigTests(unittest.TestCase):
 
     def test_android_google_accepts_web_only_without_ios_identity_changes(self):
         for production in (False, True):
-            env = {**self.google_env(production), "GOOGLE_IOS_CLIENT_ID": ""}
+            env = (self.production_android_google_env() if production else
+                   {**self.google_env(), "GOOGLE_IOS_CLIENT_ID": ""})
             with self.subTest(production=production):
                 configs = config.build_config(env, production, platform="android")
                 with self.assertRaises(ValueError):
@@ -270,6 +284,29 @@ class FirebaseConfigTests(unittest.TestCase):
                     self.assertEqual(info.read_bytes(), original)
                     self.assertEqual((root / "android/app/google-services.json").read_bytes(), configs[0])
                     self.assertEqual((root / "ios/Runner/GoogleService-Info.plist").read_bytes(), configs[1])
+
+    def test_production_android_google_preserves_separate_firebase_measurement(self):
+        env = self.production_android_google_env()
+        android, ios = config.build_config(env, production_beta=True, platform="android")
+        self.assertEqual(json.loads(android)["project_info"]["project_number"], "782231363420")
+        self.assertEqual(plistlib.loads(ios)["GCM_SENDER_ID"], "782231363420")
+        self.assertEqual(android, base64.b64decode(env["FIREBASE_PRODUCTION_ANDROID_CONFIG_BASE64"]))
+        self.assertEqual(ios, base64.b64decode(env["FIREBASE_PRODUCTION_IOS_CONFIG_BASE64"]))
+
+    def test_production_android_google_rejects_unregistered_web_clients(self):
+        for value in ("623928073757-sdrj0np47q7gj8rvnh2tvhltnb0oubje.apps.googleusercontent.com",
+                      "623928073757-anotherweb.apps.googleusercontent.com",
+                      "782231363420-web.apps.googleusercontent.com", "not-a-client-id", ""):
+            env = {**self.production_android_google_env(), "GOOGLE_SERVER_CLIENT_ID": value}
+            with self.subTest(client=value), self.assertRaises(ValueError):
+                config.build_config(env, production_beta=True, platform="android")
+
+    def test_shared_android_google_pin_does_not_replace_ios_registration(self):
+        env = {**self.production_android_google_env(),
+               "GOOGLE_IOS_CLIENT_ID": "782231363420-ios.apps.googleusercontent.com"}
+        for platform in ("ios", "both"):
+            with self.subTest(platform=platform), self.assertRaises(ValueError):
+                config.build_config(env, production_beta=True, platform=platform)
 
     def test_google_test_profile_rejects_coordinated_foreign_project_metadata(self):
         android, ios = self.files()
