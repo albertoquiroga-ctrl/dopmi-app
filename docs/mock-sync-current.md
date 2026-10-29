@@ -1,7 +1,7 @@
 # Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
 
-Producto dopmi-app; rama codex/finish-release-20261015. Fuente1c7c4fae44613f9c6e36132d8c9814341a151330;
-CI40810594540 cuatroSUCCESS; HEAD puede ser documental20f7c510. Último app publicado,
+Producto dopmi-app; rama codex/finish-release-20261015. Candidato078f712b2632f014d171e3ae4efce3ab14515ddd;
+CI40822216873 enprogreso; backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
 instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
 
 - **Decisión vigente:** LIVE/producción limpia, reserva20,000MXN declarada/sin tope
@@ -36,11 +36,15 @@ instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa pa
 - **Distribución:** todavía sin buildbeta, instalación o aceptaciónLIVE. Al estar
   listo el candidato, ventana5min para mensajesQA y un envíoCodemagic/Playinterno,
   comprobando artefacto/canal/instalación porseparado. No cargos inventados poragente.
+  AdaptadorPROD mínimo preparado/inertoconplaceholders,10pruebaspurasPASS/ASTválido;
+  revisión código/seguridadsinP1/P2 pendientes. Falta runtimepúblico/CI4SUCCESS/
+  numeración/preflight ypinconcreto revisado. No usar permisos/fixtures341 comoPROD.
 - **Método:** reutilizar CI1c7 paraEdge; nuevoCI cerrará eldelta nativo, sin repetir
   fullFlutterlocal. PurgaDartasíncrona descartada trasrevisión; barreranativa reemplaza
   eseensayo. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
 
-Siguiente: titular completaStripe/Resend/grantVercel; integrador cierra configuración,
+Siguiente: cerrar CI078f (tresjobsSUCCESS/FluttercompilaciónAndroid enprogreso),
+titular completaStripe/Resend/grantVercel; integrador cierra configuración,
 registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
 no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,
 identidad/firma y estados autorizados porentorno; no apagarPROD por hábitosQADEV.
