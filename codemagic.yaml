@@ -313,9 +313,21 @@ workflows:
 
     scripts:
       - name: Create runtime configuration
-        script: python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test
+        script: |
+          set -euo pipefail
+          case "${DOPMI_ENVIRONMENT:-test}" in
+            test) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          esac
       - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py --platform ios
+        script: |
+          set -euo pipefail
+          case "${DOPMI_ENVIRONMENT:-test}" in
+            test) python3 ../../scripts/write-firebase-config.py --platform ios ;;
+            production) python3 ../../scripts/write-firebase-config.py --production-beta --platform ios ;;
+            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          esac
 
       - name: Install dependencies
         script: flutter pub get
@@ -350,12 +362,15 @@ workflows:
           fi
           echo "IPA ready for publishing: $IPA_PATH"
           python3 - "$BUILD_NUMBER" <<'PYINFO'
-          import os, subprocess, sys
+          import json, os, subprocess, sys
           from pathlib import Path
           sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          configuration = json.loads(Path('config.json').read_text())
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
-              "Guardian test: true\nDistribution: TestFlight (external eligible)\n")
+              f"Environment: {configuration['DOPMI_ENVIRONMENT']}\n"
+              f"Guardian test: {configuration['ENABLE_GUARDIAN_TEST']}\n"
+              "Distribution: TestFlight (external eligible)\n")
           PYINFO
 
     artifacts:

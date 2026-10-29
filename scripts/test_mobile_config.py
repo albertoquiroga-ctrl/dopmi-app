@@ -1,12 +1,15 @@
 import base64
+import contextlib
 import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location("mobile_config", Path(__file__).with_name("write-mobile-config.py"))
 config = importlib.util.module_from_spec(spec)
@@ -259,6 +262,71 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "")
         self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
         self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
+
+    def test_testflight_routes_both_configs_to_the_selected_environment(self):
+        git = shutil.which("git")
+        git_bash = Path(git).resolve().parents[1] / "bin/bash.exe" if git else None
+        bash = (str(git_bash) if os.name == "nt" and git_bash and git_bash.exists()
+                else shutil.which("bash") if os.name != "nt" else None)
+        if not bash:
+            self.skipTest("Bash is needed to execute the Codemagic configuration steps")
+        workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text()
+        workflow = workflow.split("\n  ios-testflight:\n", 1)[1]
+
+        def configuration_script(name):
+            step = workflow.split(f"      - name: {name}\n", 1)[1].split("      - name:", 1)[0]
+            lines = step.split("        script:", 1)[1].splitlines()
+            if lines[0].strip() == "|":
+                return "\n".join(line[10:] for line in lines[1:] if line.startswith("          "))
+            return lines[0].strip()
+
+        script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join(
+            configuration_script(name) for name in ("Create runtime configuration", "Create Firebase configuration")
+        )
+        test_calls = ["../../scripts/write-mobile-config.py --guardian-test --measurement-test",
+                      "../../scripts/write-firebase-config.py --platform ios"]
+        production_calls = ["../../scripts/write-mobile-config.py --production-beta",
+                            "../../scripts/write-firebase-config.py --production-beta --platform ios"]
+        for selected, expected in ((None, test_calls), ("test", test_calls),
+                                   ("production", production_calls), ("staging", None)):
+            with self.subTest(environment=selected), tempfile.TemporaryDirectory() as directory:
+                binary = Path(directory) / "bin/python3"
+                binary.parent.mkdir()
+                binary.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> calls.txt\n')
+                binary.chmod(0o755)
+                env = {name: value for name, value in os.environ.items()
+                       if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
+                if selected is not None:
+                    env["DOPMI_ENVIRONMENT"] = selected
+                process = subprocess.run([bash, "-c", script], cwd=directory, env=env,
+                                         capture_output=True, text=True)
+                calls = Path(directory) / "calls.txt"
+                if expected is None:
+                    self.assertNotEqual(process.returncode, 0)
+                    self.assertFalse(calls.exists(), "Unknown environments must not invoke either writer")
+                else:
+                    self.assertEqual(process.returncode, 0, process.stderr)
+                    self.assertEqual(calls.read_text().splitlines(), expected)
+
+    def test_testflight_build_info_describes_the_generated_profile(self):
+        workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text()
+        workflow = workflow.split("\n  ios-testflight:\n", 1)[1]
+        embedded = workflow.split("<<'PYINFO'\n", 1)[1].split("          PYINFO", 1)[0]
+        program = "\n".join(line[10:] for line in embedded.splitlines())
+        for production in (False, True):
+            with self.subTest(production=production), tempfile.TemporaryDirectory() as directory:
+                generated = (config.build_config(self.production_env(), production_beta=True) if production
+                             else config.build_config(self.env, guardian_test=True, measurement_test=True))
+                Path(directory, "config.json").write_text(json.dumps(generated))
+                Path(directory, "build").mkdir()
+                with contextlib.chdir(directory), patch.dict(os.environ, {"RELEASE_NAME": "2.3.3"}), \
+                        patch.object(sys, "argv", ["-", "999"]), \
+                        patch.object(subprocess, "check_output", return_value="fixture-source\n"):
+                    exec(compile(program, "codemagic.yaml:ios-testflight-build-info", "exec"), {})
+                artifact = Path(directory, "build/guardian-build-info.txt").read_text()
+                self.assertIn("Environment: production\n" if production else "Environment: test\n", artifact)
+                self.assertIn("Guardian test: false\n" if production else "Guardian test: true\n", artifact)
+                self.assertIn("Commit: fixture-source\nVersion: 2.3.3 (999)\n", artifact)
 
     @staticmethod
     def jwt(role, project=None):
