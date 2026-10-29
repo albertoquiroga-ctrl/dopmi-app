@@ -1,57 +1,43 @@
-# Checkpoint — beta real, 29/oct/2026 17:29 UTC (11:29 CDMX)
+# Checkpoint — beta real, 29/oct/2026 19:02 UTC (13:02 CDMX)
 
-Producto: dopmi-app. Rama: codex/finish-release-20261015. Candidato móvil:
-`d5171d9f449ee21276290084728f92b012df72e2`, CI40876640101, cuatro jobs SUCCESS.
-Backend desplegado:1c7c4fae. Admin PROD:2201bf9b. Una sola cola Flutter.
-Última app publicada, instalada y aceptada:2.3.3(341) TEST/3cf65d73,
-contra f693/warm-trust; conservar esa aceptación y sus límites.
+Producto dopmi-app; codex/finish-release-20261015; única cola Flutter.
+Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086, CI40936283326 pendiente.
+Backend desplegado1c7c4fae; admin PROD2201bf9b. Última app publicada,
+instalada y aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust; no reabrir su QA.
 
-- **Alcance:** producción limpia y Stripe LIVE; registro estándar, distribución
-  por Play internal/alfa y TestFlight. Reserva20,000MXN declarada, sin tope agregado.
-  No copiar fixtures, usuarios, medios ni dinero DEV. No inventar cargos reales.
-- **Implementado/verificado:** aislamiento de entornos y privacidad Android;
-  Google callback por perfil/plataforma, Android Web-only y número TEST fijo.
-  Python27+19+10 PASS y CI final cuatro SUCCESS. OAuth real y QA beta aún faltan.
-- **PROD configurado:** foundation+Connect, historia50; ocho Edge verificadas.
-  RAK LIVE guardada. Resend SMTP guardado y persistencia comprobada, sin envío.
-  Auth con confirmación y signup OFF; SQL todavía TEST, cobros sin habilitar.
-- **Webhooks completados:** dos destinos LIVE habilitados, Snapshot April22Dahlia:
-  plataforma exactamente24 eventos; Connect sólo account.updated y ámbito de
-  cuentas conectadas persistido. Firmas distintas en Edge Secrets PROD, digest y
-  persistencia tras reload comprobados. Cuatro secretos custom conservados; valores
-  sólo en memoria durante traslado, vistas ocultas y referencias sensibles limpiadas.
-  No entrega LIVE aceptada ni evento/pago de prueba atribuidos.
-- **Worker no instalado:** Vault y Edge contienen el nuevo secreto, con igualdad
-  de entradas y digest Edge comprobados. El único apply falló en resolución de la
-  secuencia; postflight14:21UTC confirma rollback: historia50 exacta, sin extensiones,
-  sin job y finanzas0. No hay programador activo ni HTTP ejecutado. Correctivo OID/
-  dependencia DEFAULT, sin grants, revisado por código y seguridad: SQL33f3e03a…
-  3fce98/manifest2ac1119c…1b733a4. Nuevo permiso de ejecución solicitado, pendiente;
-  no repetir el intento consumido ni recrear el secreto.
-- **Publicado:** panel https://dopmi-app.vercel.app, deploy8fCh/2201bf9b READY,
-  configuración JS realmente cargada de PROD verificada. Alias DEV fue restaurado
-  y contrastado; no nuevo deploy manual. Sin identidad/membresía admin creada.
-  Beta móvil LIVE todavía no publicada, instalada, probada ni aceptada.
-- **Accesos/pendientes:** Google Cloud verificado por titular; proyecto PROD sin
-  clientes OAuth, consentimiento por configurar. Stripe MCP sigue UNAUTHORIZED;
-  reconexión solicitada para eficiencia, Dashboard operativo. No se amplió la RAK.
-- **Retrabajo:** wizard24 persistió25 por un evento extra no mostrado. Guardar sin
-  cambiar selección fue ineficaz; pausa→vaciar→reseleccionar24→guardar→GET exacto
-  corrigió el mismo recurso, sin recrearlo. Causa inicial no demostrada. Worker
-  suponía una asociación OWNED BY que la fuente pg_cron no crea; el error combinado
-  no acreditaba falta de permisos. No se relajaron ACL ni guardas para continuar.
-- **Una mejora, integrador:** contrastar la precondición problemática con el contrato
-  exacto del proveedor antes de reservar el siguiente intento. Retro independiente
-  inspeccionó paquete y rollback; efecto pendiente del próximo postflight necesario:
-  historia51/prefijo50 intacto, único job pausado y cero HTTP. Sin suite nueva por reloj.
+- Alcance vigente: producción limpia/Stripe LIVE, registro estándar y distribución
+  Play internal/alfa/TestFlight; sin copiar DEV ni inventar cobros. Reserva20mil
+  declarada/sin tope agregado; conservar privacidad y tres componentes Stripe.
+- Implementado: perfiles estrictos/Firebase PROD; TestFlight609c617d ya selecciona
+  perfil por entorno y rechaza desconocidos, Python29 PASS y revisión independiente.
+  Candidato f20b añade sólo copy condicional de Stream, producto/código/seguridad
+  cerrados; sin nueva suite local por texto. CI final en curso, no otra buildCM.
+- Verificado en PROD: historia51; foundation+Connect+worker. Correctivo autorizado
+  por continuación expresa29oct aplicado UNA vez18:45:15UTC: SQL33f3e03a…3fce98,
+  nueva20261029184515, prefijo50 exacto y cuerpo SQL exacto. pg_cron1.6.4/pg_net0.20.4,
+  único job1 pausado, runs0/HTTP0/finanzas0. Mismo Vault/Edge; sin extraer/recrear token.
+  SQL sigueTEST: instalación pausada no acredita conciliación ni admisión LIVE.
+- Configurado: RAK LIVE, dos webhooks24/1+firmas separadas y SMTP persistidos.
+  Panel https://dopmi-app.vercel.app publicado/config PROD verificada; no administrador
+  nuevo ni entrega real de correo. No pagos/eventos LIVE aceptados atribuidos.
+- Google: proyecto accesible, sin marca/clientes creados. Pendientes ya consultados:
+  correo público de soporte en consentimiento Google y SHA1 pública App signing de
+  Play (no Upload key). Clipboard/descarga no entregaron certificado; no repetirlos.
+  OAuth Apple/iOS se configura aparte y no bloquea la entrega Android.
+- Legales: GET público todavía TEST. Propuesta privada seis cambios, versiones28oct,
+  Stripe LIVE y Cloudflare sólo cuando video habilitado; revisión independiente
+  cerrada. Publicación exacta preguntada; no dictamen ni publicación atribuidos.
+- Retro: mejora anterior comprobada en el trabajo necesario: contrastar contrato
+  pg_cron real antes de reserva resolvió un correctivo único con postflight51/pausa/0HTTP.
+  Sin ahorro cuantificado, suite nueva ni otra mejora por reloj.
 
-**Siguiente, root:** (1) permiso correctivo→worker pausado; (2) preparar y configurar
-OAuth Google/Apple; (3) entrega de correo, admin legítimo y operación LIVE;
-(4) runtime/pin revisado→ventana5min→un Codemagic→Play/install/QA/aceptación.
-Sin estimación final sustentada hasta resolver configuración externa. Tienda/video
-conservan sus límites; no apagar producción por hábitos de QA DEV.
-Recibos privados: .tools/beta-prelaunch-20261028/{edge-production,worker-production,
-vercel-production,firebase-production}. Seguimiento4h activo; no otra cola o tablero.
+Pendientes finitos/root: (1) respuestas Google→paquete OAuth/configuración;
+(2) publicación legal autorizada y entrega correo/identidad admin legítima;
+(3) paquete activación SQL+flags+worker revisado, sin cargos inventados;
+(4) runtime/pin+CI final→ventana5min→un Codemagic→Play/install/QA/aceptación.
+Beta móvil LIVE aún no publicada, instalada, probada ni aceptada. Sin estimación
+final sustentada mientras faltan esos accesos/decisiones. Seguimiento4h activo.
+Recibos privados .tools/beta-prelaunch-20261028; no otro tablero ni cola.
 
 ## Corte aceptado previo — 341
 

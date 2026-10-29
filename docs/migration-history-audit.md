@@ -39,6 +39,19 @@ explica defecto del resolvedor; error combinado no mide permisos por separado.
 Correctivo OID+dependencia DEFAULT/ACL reales mantiene pausa/currval y requiere
 su nuevo permiso de ejecución, aún pendiente. No grants ni reparación de historia.
 
+Actualización29oct18:45UTC: titular pidió continuar producción después del paquete
+correctivo concreto presentado; recibo apply-correction1 registra esa autoridad.
+Una reserva/aplicación SUCCESS:20261029184515/dopmi_production_worker_paused_install,
+SQL33f3e03ad16017be2586a21972c6cedd0be3721fca639efc535db3a9053fce98;
+historia51/prior50MD5e30f83080cb38df825518a90539a029d exactos, cuerpo exacto,
+statementsMD5283a2c7485d796f2329fc1a0c4da476c. pg_cron1.6.4/pg_net0.20.4,
+único job1PAUSADO/* * * * */runs0/HTTP0/finanzas0. SecuenciaOID35266/relkindS,
+dependenciaDEFAULT válida/SELECTtrue/USAGEfalse; pg_get_serial_sequenceNULL
+no indica falta de SELECT. Vault metadata exacta y secreto existente preservados;
+sin grants nuevos, HTTP, extracción token, cobros ni modoLIVE. Postflight18:45:16UTC
+y comparación SQL exacta inspeccionados independientemente por seguridad/proceso.
+Recibos worker-production/correction1-*.actual.private.json; no reaplicar.
+
 ## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
 
 PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:

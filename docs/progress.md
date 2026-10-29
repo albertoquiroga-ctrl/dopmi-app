@@ -1,3 +1,31 @@
+## 29/10/2026 19:02UTC — Worker pausado cerrado y candidato beta agrupado
+
+Desde17:29 hay progreso comprobado: correctivo worker aplicado una vez18:45UTC,
+historia51/prior50 exactas, SQL exacto, pg_cron/pg_net y job1PAUSADO, runs/HTTP/
+finanzas0. Se conserva SQLTEST y secreto existente; no admisión ni conciliaciónLIVE.
+Seguridad cerró recibos; proceso comprobó efecto de contrastar contrato proveedor
+antes de reservar, sin nueva mejora/suite ni ahorro supuesto. Audit/checkpoint
+conservan timestamps/hashes y fallido anterior; no repetir instalación ni crear token.
+
+Fuente609c617d corrige selección TEST/PROD de TestFlight y reporte real de entorno;
+Python29PASS, revisión código/seguridad cerrada; firma/workflow/identidad preservados.
+Revisión copy encontró P2: Stream afirmado actual con PRODvideo no configurado.
+f20b27e6aa21a0d15a5af1bfd35249767c44d086 lo condiciona a disponibilidad, sin flags,
+rutas/contratos/versiones nuevas. Producto y código/seguridad independientes cerraron.
+CI final40936283326 pendiente; no suite local redundante por texto ni envíoCodemagic.
+
+Google soporte y SHA1 pública App signing consultados; marca/clientes no creados.
+Descarga/clipboard no entregaron certificado y ADB0; no bucle alternativoSDK.
+Stripe consulta LIVE readonly vuelve a confirmar charges/payouts/details=true,
+card_payments/transfersactive/requisitosactuales-vencidos0; no cobro, secreto o escritura.
+Propuesta web legal seis sustituciones exactas y delta condicional revisados;
+publicación pública preguntada, aún no ejecutada. Respeta límites explícitosTEST
+de Twilio/limpieza y declaración jurídica humana, sin atribuir dictamen propio.
+
+Implementado/revisado no equivale a CI final, publicación, instalación o aceptación.
+Última app aceptada341TEST. Root continúa OAuth→correo/admin→activación revisada→
+runtime/pin/CI→ventana5min→CM único/Play/QA. No repetir paridad/fixtures aceptadas.
+
 ## 29/10/2026 17:29UTC — Checkpoint: webhooks listos; worker revertido y correctivo pendiente
 
 Desde el checkpoint anterior hay avance comprobado: CI40876640101/d5171d9f cerró
