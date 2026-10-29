@@ -1,4 +1,4 @@
-# Continuación — beta real por invitación, checkpoint29/oct/2026 03:12UTC
+# Continuación — beta real por invitación, checkpoint29/oct/2026 03:16UTC
 
 Producto dopmi-app; rama codex/finish-release-20261015. Paridad341/f693/warm-trust
 aceptada. Último instalado/publicado/aceptado:2.3.3(341)TEST, fuente3cf65d73.
@@ -19,12 +19,16 @@ sin tope agregado. No copiar fixtures, cuentas, documentos o dinero desdeDEV.
   por timeout deherramienta, no repetir ciegamente. Analytics/Crashlytics optinOFF.
 - **B3Connect:** destino separado con firma propia/account.updated, vínculoSQL,
   cola/contexto inmutable y Account exacto;33focalesPASS/Deno5checks; revisiones
-  independientes código/seguridad sinP1/P2. Delta local todavía sincommit/aplicación/
-  despliegue. Los dos tests ya se registraron en npm; noFlutter modificado desde75.
+  independientes código/seguridad sinP1/P2. Fuente1c7c4fae44613f9c6e36132d8c9814341a151330 subida, CI40810594540:
+  web/database yPostgreSQL SUCCESS; Flutter/iOS enprogreso alobservar. Sinaplicación
+  deldeltaConnect/despliegue; dos suites registradasnpm. NoDart cambiado desde75.
 - **Stripe:** creación/guardado RAKLIVE autorizado por titular. Intento de formulario
   cambió aWorkbench; conciliaciónAPIKeys mostró cero claves restringidas. Ningún
   valor creado/leído/guardado. Pregunta de coordinación pendiente antes de reintentar;
   no falta renovar autorización. Webhooks/secretos/LIVE operativo aún pendientes.
+- **Decisión nueva pendiente:** invitación no tiene alta directa decontraseña; titular
+  elige recorrido y primeradministradorPROD. ConfigfilesFirebase pedidos al titular
+  por descarga automática sinruta recuperable; no pedir contenido/secretos porchat.
 - **Otros pendientes:** SMTP/OAuth/invitaciones/admin y Edge/worker/alertas; Vercel
   env403scope requieregrant legítimo. No beta build, instalación ni aceptaciónLIVE.
 - **Método:** reutilizar CI75 que cerró cuatrogates; evitar repetir fullFlutterlocal.
@@ -32,8 +36,8 @@ sin tope agregado. No copiar fixtures, cuentas, documentos o dinero desdeDEV.
   sin nueva colaFlutter ni cámara/pagos. No estimación final fiable antes de cerrar
   configuración remota. Seguimiento4h activo, una colaFlutter, ventana5min preCodemagic.
 
-Siguiente/dueño: integrador integra B3revisado, completa credenciales/configuración y
-admisión; titular sólo resuelve coordinación Stripe ya preguntada. Después un
+Siguiente/dueño: integrador concilia CI1c7 y completa B3/configuración/admisión;
+titular resuelve coordinaciónStripe, archivosFirebase y las dos decisiones de alta. Después un
 candidatoLIVE porCodemagic/Playinterno, instalación y QAlegítima. Recibos privados:
 .tools/beta-prelaunch-20261028. Este checkpoint no renueva operaciones consumidas.
 

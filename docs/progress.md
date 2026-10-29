@@ -29,6 +29,22 @@ informaciónnueva. Siguiente integrador: cerrar B3/configuración/admisión remo
 luego ventana5min yúnica buildbeta; pendienteQA/aceptaciónLIVE. Sin plazo final
 sustentable antes de credenciales/SMTP/OAuth/invitaciones/Vercel.
 
+03:16UTC complemento: B3Connect subido1c7c4fae44613f9c6e36132d8c9814341a151330;
+CI40810594540 backend/web yPostgreSQL SUCCESS, Flutter/iOS siguen enprogreso.
+No deploy/migraciónConnect aún. Descargar configuracionesFirebase no dio ruta
+recuperable (waitForEvent timeout, downloadMedia indica botón sinURLdescargable);
+no repetir; titular solicitado a descargarlas manualmente enDownloads. Apps sí
+registradas, AndroidID1:782231363420:android:5c014a48c2f3d1e3376b99/proyecto782231363420.
+Nueva revisión readonly de admisión encuentra invitación sin flujo de crearcontraseña:
+Supabaseinvite confirma email/perfil sinmetadata niadmin/legales. Recomendaciónconsultada
+al titular: invitación→contraseña→legales→entrar, versus recuperaciónposterior;
+primeradminPROD solicitado. No implementar decisión ni otorgarrol sinrespuesta.
+AdvisorPROD03:11:70RLSsinpolicy/22anonSECDEF/120authSECDEF. Revisiónindependiente
+acotada de22anon no demuestraP1/P2; APIs públicas/medios con guardas. Matizcan_write_photo:
+grantanon observado aunquefuente sóloauth; guarda anónimaFALSE, sinexposicióndemostrada.
+No se cierran todoslosavisos ni auditoríaglobal, ni se revocan permisos a ciegas.
+[Interpretación del aviso](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable).
+
 ## 28/10/2026 — B4 implementado; B3 preparado y gates reales pendientes
 
 B2publicado83e6e6fc6a13783e1fa8dc95c9461cd553fac6ef/CI40793197789 cuatroSUCCESS;
