@@ -31,10 +31,15 @@ instalada y aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust; no reabrir su QA.
   pg_cron real antes de reserva resolvió un correctivo único con postflight51/pausa/0HTTP.
   Sin ahorro cuantificado, suite nueva ni otra mejora por reloj.
 
-Pendientes finitos/root: (1) respuestas Google→paquete OAuth/configuración;
-(2) publicación legal autorizada y entrega correo/identidad admin legítima;
-(3) paquete activación SQL+flags+worker revisado, sin cargos inventados;
-(4) runtime/pin+CI final→ventana5min→un Codemagic→Play/install/QA/aceptación.
+Preparación financiera cerrada: manifestb985f22c…c12682, revisión independiente
+sin P1/P2. Orden corregido según bootstrap existente: binding SQLproduction con
+masterLIVE=false/flagsOFF/jobpausado permite legales/registro; una sola build PROD;
+alta humana/correo/bootstrap y Google real; flags preparadas→resume→masterON último.
+Ninguna de esas fases ejecutada. No exigir administrador antes de su propia app.
+Pendientes finitos/root: (1) respuestas Google→OAuth/configuración y publicación
+legal autorizada; (2) binding cerrado/runtime/pin+CI final→ventana5min→un CM→Play;
+(3) registro/correo/admin legítimo y QA de acceso instalada; (4) habilitación financiera
+revisada/conciliación y aceptación, sin cargos inventados ni otra build por etapas.
 Beta móvil LIVE aún no publicada, instalada, probada ni aceptada. Sin estimación
 final sustentada mientras faltan esos accesos/decisiones. Seguimiento4h activo.
 Recibos privados .tools/beta-prelaunch-20261028; no otro tablero ni cola.
