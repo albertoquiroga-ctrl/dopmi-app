@@ -66,10 +66,17 @@ export async function verifySignature(body, header, secret, now = Date.now(), { 
 function withinRetryWindow(created) {
   if (!Number.isFinite(Date.parse(created)) || Date.now() - Date.parse(created) > 23 * 3600000) throw new PaymentError('manual_reconciliation_required');
 }
+function requireConnectEventIdentity(eventId, accountId) {
+  if (typeof eventId !== 'string' || eventId.length > 160 || !/^evt_[A-Za-z0-9]+$/.test(eventId) ||
+      typeof accountId !== 'string' || accountId.length > 160 || !/^acct_[A-Za-z0-9]+$/.test(accountId))
+    throw new PaymentError('connect_event_invalid', 400);
+}
 export function paymentService({ rpc, stripe, returnUrl, logger = console, lookupCustomer = async (_actor) => null, expectedLivemode = false }) {
   requireExpectedLivemode(expectedLivemode);
-  async function refreshAccount(account) {
+  async function refreshAccount(account, { exactAccount = false } = {}) {
     const current = await stripe(`accounts/${account.account_id}`);
+    if (exactAccount && (current.object !== 'account' || current.id !== account.account_id))
+      throw new PaymentError('connect_account_mismatch');
     if ('livemode' in current && current.livemode !== expectedLivemode)
       throw new PaymentError('connect_account_mismatch');
     await rpc('connect_save', { actor: account.owner_id, account_id: current.id,
@@ -238,6 +245,25 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     return null;
   }
   async function processEvent(payload) {
+    if (payload && typeof payload === 'object' && ('event_scope' in payload || 'event_account' in payload)) {
+      if (Array.isArray(payload) || Object.keys(payload).length !== 3 ||
+          payload.event_scope !== 'connect_account_updated' ||
+          !['event_id', 'event_account', 'event_scope'].every(key => Object.hasOwn(payload, key)))
+        throw new PaymentError('connect_event_context_invalid');
+      requireConnectEventIdentity(payload.event_id, payload.event_account);
+      // This scope is admitted only by the signed Connect HTTP boundary. The
+      // durable context is a lookup hint; PostgreSQL owns the account/owner.
+      // Read the platform Account directly; no connected Events permission.
+      const account = await rpc('lookup_account', { account_id: payload.event_account });
+      // The historical SQL dispatcher serializes an unfound row type with
+      // null columns, rather than necessarily returning JSON null.
+      if (!account || (account.account_id === null && account.owner_id === null)) return [];
+      if (account.account_id !== payload.event_account ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(account.owner_id ?? ''))
+        throw new PaymentError('connect_account_mismatch');
+      await refreshAccount(account, { exactAccount: true });
+      return [];
+    }
     // Read current processor state; delivery order and duplicates are irrelevant.
     const event = await stripe(`events/${payload.event_id}`);
     if (event.livemode !== expectedLivemode) throw new PaymentError(expectedLivemode ? 'test_mode_rejected' : 'live_mode_rejected');
@@ -396,6 +422,22 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     await executeJob(job, true);
     return { received: true };
   }
+  async function handleConnectWebhook(eventId, accountId) {
+    requireConnectEventIdentity(eventId, accountId);
+    const payload = { event_id: eventId, event_account: accountId, event_scope: 'connect_account_updated' };
+    await rpc('connect_event_enqueue', { event_id: eventId, event_account: accountId });
+    const job = await rpc('claim', { job_key: eventId });
+    if (job?.skipped && job.status === 'done') {
+      await processEvent(payload);
+      return { received: true, duplicate: true };
+    }
+    if (!job || job.skipped) throw new PaymentError('processor_busy', 503);
+    if (job.kind !== 'event' || job.payload?.event_id !== eventId || job.payload?.event_account !== accountId ||
+        job.payload?.event_scope !== payload.event_scope || Object.keys(job.payload).length !== 3)
+      throw new PaymentError('connect_event_context_invalid');
+    await executeJob(job, true);
+    return { received: true };
+  }
   async function reprocessDonation(donationId) {
     if (!/^[0-9a-f-]{36}$/i.test(donationId ?? '')) throw new PaymentError('invalid_input', 400);
     let d = await rpc('replay_get', { donation_id: donationId });
@@ -433,5 +475,5 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     const result = await work();
     return { processed: result.processed, failed: result.failed + failed };
   }
-  return { connect, checkout, work, reconcile, processEvent, settleIntent, handleWebhook, reprocessDonation };
+  return { connect, checkout, work, reconcile, processEvent, settleIntent, handleWebhook, handleConnectWebhook, reprocessDonation };
 }

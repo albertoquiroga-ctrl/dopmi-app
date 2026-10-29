@@ -1,5 +1,22 @@
 # Auditoría del historial de migraciones
 
+## 29/10/2026 — Foundation PROD aplicada y verificada, sin LIVE activado
+
+Autoridad técnica: beta de producción limpia solicitada por titular; ejecución
+aditiva necesaria, sin cobros/flags nifixtures. Fuente75d5963a/CI40798988780
+cuatroSUCCESS, revisiónestática exacta sinP1/P2. Preflight03:00:22UTC coincide48
+historia/MD5/bytes, Auth/Storage/perfiles/donaciones0, cincoextensiones/sincron.
+Payload70fuentes547687B/SHA256ba7347dc82126d4b056a84ded099ffdbaf63197a44a7c8d7e9a23a944a5a2af5,
+manifest5bc8135a…3d5ff4/amboslegales exactos. Una reserva03:05:13UTC y un applySUCCESS:
+20261029030514/codex_production_beta_schema_20261028. Historia48→49;48anteriores
+MD5/bytes exactos. MD5 statements::text nuevo6855a6ca78cc868c42940526f9c5986d,
+549515B (representaciónJSONdehistory, distinta delpayloadSQL).
+Postflight03:05:27UTC:43tablasRLStrue/151funciones/bucketsprivados; Auth/perfiles/
+donaciones/Storage/medios/colas/cohorte/grants/productos/destinos0. ModoSQLTEST,
+video/Tienda/preview/enlacesOFF, cincoextensiones/sincron. No bootstrapadmin,
+credenciales, seed, cobros o migraciónDEV. Recibos privados production-delta/
+apply.reserved y postflight.actual. No reaplicar/repair/renombrar.
+
 ## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
 
 PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:

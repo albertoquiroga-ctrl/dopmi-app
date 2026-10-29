@@ -1,3 +1,34 @@
+## 29/10/2026 03:12UTC — Checkpoint beta: CI completa y foundation PROD aplicada
+
+Frente al checkpoint anterior: B4publicado75d5963a1e2feeae4ccf1ec51ada27311322fd59,
+CI40798988780 cuatroSUCCESS (Flutter/iOS/PostgreSQL/web-database). Cierra gateB4
+sin repetir fullFlutterlocal interrumpido. Sigue341TEST como única app publicada,
+instalada y aceptada; no buildbeta/cargoLIVE nuevo.
+
+PROD: organizaciónPro confirmada; foundation70fuentes exactas aplicadas una vez
+20261029030514. Postflight03:05:27UTC49historia/prior48exactas,43tablasRLS,
+151funciones/bucketsprivados y todoslosconteos0. SQLTEST/serviciosOFF/sincron;
+DEVintacto. Auditoría de migraciones conserva hashes/reserva/correspondencia.
+Firebase dopmi-production yAndroid+iOS com.mycompany.dopmi registrados realmente.
+Configfiles no validados ni enviados: descarga iOS terminó en timeout y suresultado
+no se confirmó; no atribuir configuracióncompleta ni repetir botón sinconciliar.
+
+B3Connectlocal: dos destinos/firma separada, account.updated vinculado aSQL,
+contexto mínimo inmutable encola existente, refrescoexacto sinEvents conectados.
+33focalesPASS/3.2s yDeno5checks previos; código yseguridad independientes sinP1/P2,
+inspeccionaron fuentes/aserciones. Dos suites registradas npm. Pendientecommit/CI/
+delta despuésfoundation49/Edge yentrega realStripe; no concurrenciaPG atribuida.
+RAKLIVE yFirebaseautorizados; formularioStripe cambió aWorkbench alintentarcrear,
+conciliaciónAPIKeys mostró ceroclaves restringidas. No valor leído/guardado; pregunta
+concreta deconcurrencia pendiente antes de reintentar, no renovación depermiso.
+
+Mejorapequeña: usar CIexacta que ya cerró cuatrogates y validar sólo deltaafectado.
+Efecto observado enB3necesario:33focales/3.2s, ninguna nueva colaFlutter/cámara/pago;
+no se afirma ahorro cuantificado. Evitar más lecturas dehistorial/suites/docssin
+informaciónnueva. Siguiente integrador: cerrar B3/configuración/admisión remota,
+luego ventana5min yúnica buildbeta; pendienteQA/aceptaciónLIVE. Sin plazo final
+sustentable antes de credenciales/SMTP/OAuth/invitaciones/Vercel.
+
 ## 28/10/2026 — B4 implementado; B3 preparado y gates reales pendientes
 
 B2publicado83e6e6fc6a13783e1fa8dc95c9461cd553fac6ef/CI40793197789 cuatroSUCCESS;

@@ -7,6 +7,7 @@ const profiles = Object.freeze({
     accountId: null,
     keyName: 'STRIPE_SECRET_KEY_H4_TEST',
     webhookName: 'STRIPE_WEBHOOK_SECRET_H4_TEST',
+    connectWebhookName: 'STRIPE_CONNECT_WEBHOOK_SECRET_H4_TEST',
   }),
   production: Object.freeze({
     projectRef: 'ysaoeuidcvgtlmphmeyb',
@@ -14,6 +15,7 @@ const profiles = Object.freeze({
     accountId: null,
     keyName: 'STRIPE_SECRET_KEY_LIVE',
     webhookName: 'STRIPE_WEBHOOK_SECRET_LIVE',
+    connectWebhookName: 'STRIPE_CONNECT_WEBHOOK_SECRET_LIVE',
   }),
 });
 
@@ -48,7 +50,7 @@ export function resolvePaymentEnvironment(env) {
     invalid();
   }
   const other = profiles[environment === 'test' ? 'production' : 'test'];
-  if (env[other.keyName] || env[other.webhookName]) invalid();
+  if (env[other.keyName] || env[other.webhookName] || env[other.connectWebhookName]) invalid();
   const secretKey = env[profile.keyName];
   requireStripeKey(secretKey, profile.expectedLivemode);
   const accountId = profile.expectedLivemode ? env.STRIPE_PLATFORM_ACCOUNT_ID_LIVE : null;
@@ -56,6 +58,10 @@ export function resolvePaymentEnvironment(env) {
       && (typeof accountId !== 'string' || !/^acct_[A-Za-z0-9]+$/.test(accountId))) invalid();
   const webhookSecret = env[profile.webhookName];
   if (typeof webhookSecret !== 'string' || !/^whsec_[A-Za-z0-9_]+$/.test(webhookSecret)) invalid();
+  const connectWebhookSecret = env[profile.connectWebhookName] ?? null;
+  if ((profile.expectedLivemode || connectWebhookSecret !== null)
+      && (typeof connectWebhookSecret !== 'string' || !/^whsec_[A-Za-z0-9_]+$/.test(connectWebhookSecret)
+        || connectWebhookSecret === webhookSecret)) invalid();
   return Object.freeze({
     environment,
     projectRef: local ? 'local' : profile.projectRef,
@@ -63,6 +69,7 @@ export function resolvePaymentEnvironment(env) {
     accountId,
     secretKey,
     webhookSecret,
+    connectWebhookSecret,
     returnUrl: `${url}/functions/v1/payment-return`,
   });
 }

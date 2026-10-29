@@ -6,11 +6,11 @@ B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuev
 
 | Grupo afectado | Hecho actual | Evidencia/criterio pendiente |
 |---|---|---|
-| Entorno | PROD restaurado/healthy, Auth0/Storage0,48migraciones; cotejo47exactos+cleanupsemántico | Delta70fuentes preparado/revisado noaplicado; AuthsignupOFF/confirmemailON, secretos0. Configuración real pendiente. |
-| Configuracióncliente | B1/B2en83e6e6fc/CI4SUCCESS; B4SDK/copy/admin/Firebase/workflow localimplementado | CIexactaB4 pendiente; fullFlutterlocal1537sinfallos pero watchdog8min lo cortó. Perfilesreales/artefacto/instalación no acreditados. |
-| Dinero/consentimiento | BackendB4local1110PASS/8SKIP, admisiónSQLyparlegalLIVE28oct revisados; tresSDKpreservados | Configuración remota/PgTAPcandidato/recorrido legítimoLIVE pendientes. No se ha ejecutado ningún cargo nuevo. |
-| Usuarios/operación | Invitación/producciónlimpia/reserva20mil/sin tope agregadodecididos | Admisión efectiva servidor, Auth/SMTP/OAuth/admin, webhooks/worker/alertas y operación. |
-| Distribución/aceptación | Última instalación comprobada341TEST | NuevoSHA/artefacto/Play/install/QA/aceptación por separado; cinco minutos preCodemagic. |
+| Entorno | Foundation70 aplicada una vez, registro20261029030514; historia49/prior48exactas,43tablasRLS/151funciones, Auth/Storage/dinero0; Proconfirmado | Configuración/activaciónLIVE aún pendiente; modosSQLTEST/serviciosOFF. DEVintacto. |
+| Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs aún sin validar. Build/Play/instalación beta no acreditados. |
+| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS y revisión código/seguridad cerrada | B3Connectlocal sincommit/deploy; RAK autorizada/no creada, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. |
+| Usuarios/operación | Invitación/producciónlimpia/reserva20mil/sin tope agregadodecididos | Integrador: admisión efectiva servidor, Auth/SMTP/OAuth/admin, alertas/operación; Vercelscope403. |
+| Distribución/aceptación | Última instalación/aceptación341TEST; beta todavía no publicada | NuevoSHA/artefacto/Play/install/QA/aceptación separados; ventana5min preCodemagic. |
 
 ## Paridad aceptada anterior y límites conservados
 

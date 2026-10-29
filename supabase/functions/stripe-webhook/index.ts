@@ -17,6 +17,9 @@ Deno.serve(async (req) => {
       Date.now(),
       { expectedLivemode: context.expectedLivemode },
     );
+    // Production uses a separate signed destination for connected accounts.
+    // Preserve the historical TEST endpoint while refusing cross-scope delivery.
+    if (context.expectedLivemode && event.account) throw new PaymentError('invalid_event_scope', 400);
     eventId = event.id;
     if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') === 'true') {
       const { guardianRuntime } = await import('../_shared/guardian-runtime.ts');

@@ -55,6 +55,9 @@ content_path = "./supabase/templates/recovery.html"
 verify_jwt = false
 [functions.stripe-webhook]
 verify_jwt = false
+# Only the independently signed account.updated destination is admitted here.
+[functions.stripe-connect-webhook]
+verify_jwt = false
 [functions.payment-worker]
 verify_jwt = false
 [functions.payment-return]

@@ -13,6 +13,7 @@ const live = {
   DOPMI_PAYMENTS_LIVE_ENABLED: 'true',
   STRIPE_SECRET_KEY_LIVE: 'rk_live_fixture',
   STRIPE_WEBHOOK_SECRET_LIVE: 'whsec_live_fixture',
+  STRIPE_CONNECT_WEBHOOK_SECRET_LIVE: 'whsec_connect_live_fixture',
   STRIPE_PLATFORM_ACCOUNT_ID_LIVE: 'acct_ProductionFixture',
 };
 
@@ -43,6 +44,7 @@ test('production binds LIVE activation, project, account and separate secrets', 
   assert.equal(resolved.accountId, live.STRIPE_PLATFORM_ACCOUNT_ID_LIVE);
   assert.equal(resolved.secretKey, live.STRIPE_SECRET_KEY_LIVE);
   assert.equal(resolved.webhookSecret, live.STRIPE_WEBHOOK_SECRET_LIVE);
+  assert.equal(resolved.connectWebhookSecret, live.STRIPE_CONNECT_WEBHOOK_SECRET_LIVE);
   assert.equal(resolved.returnUrl, `${live.SUPABASE_URL}/functions/v1/payment-return`);
   assert.ok(Object.isFrozen(resolved));
 });
@@ -80,6 +82,8 @@ test('unknown environments and invalid inputs fail closed', () => {
 });
 
 test('opposite mode credentials and LIVE flags cannot be carried across', () => {
+  denied({ ...dev, STRIPE_CONNECT_WEBHOOK_SECRET_LIVE: live.STRIPE_CONNECT_WEBHOOK_SECRET_LIVE });
+  denied({ ...live, STRIPE_CONNECT_WEBHOOK_SECRET_H4_TEST: 'whsec_connect_test_fixture' });
   denied({ ...dev, DOPMI_PAYMENTS_LIVE_ENABLED: 'true' });
   denied({ ...dev, STRIPE_SECRET_KEY_LIVE: live.STRIPE_SECRET_KEY_LIVE });
   denied({ ...dev, STRIPE_WEBHOOK_SECRET_LIVE: live.STRIPE_WEBHOOK_SECRET_LIVE });
@@ -97,6 +101,9 @@ test('generic keys and webhook secrets never substitute for isolated credentials
 });
 
 test('public keys and absent or malformed webhook bindings cannot start a server', () => {
+  for (const secret of [undefined, '', 'not_a_webhook_secret', live.STRIPE_WEBHOOK_SECRET_LIVE]) {
+    denied({ ...live, STRIPE_CONNECT_WEBHOOK_SECRET_LIVE: secret });
+  }
   for (const key of [undefined, '', 'pk_live_fixture', 'rk_test_fixture']) {
     denied({ ...live, STRIPE_SECRET_KEY_LIVE: key });
   }

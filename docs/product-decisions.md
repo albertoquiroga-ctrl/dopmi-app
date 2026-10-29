@@ -1,3 +1,15 @@
+## 28/10/2026 — Pro, credencial Stripe y Firebase de producción autorizados
+
+Respuestas humanas call_72a87639830747e391883475aad47fa2: contrataciónSupabasePro
+completada por titular; crear una clave restringida LIVE «Dopmi Production beta»,
+17recursos mínimos revisados, sincaducidad/desde cualquierIP; guardar sólo suvalor
+como STRIPE_SECRET_KEY_LIVE en PRODysaoeuidcvgtlmphmeyb, memoria durante traslado,
+sinmostrar/archivar y sin ejecutar cobros/transferencias. No ampliarpermisos.
+Autoriza Firebase «Dopmi Production»/dopmi-production enenlacenest.com, Android/iOS
+com.mycompany.dopmi y nuevapropiedadGA enDopmi. SóloAnalytics/Crashlytics con
+consentimientosOFF; Gemini/DeveloperProgramOFF. Estadoejecutado encheckpoint;
+autorización no equivale a credencialguardada, configvalidada o betalista.
+
 ## 28/10/2026 — Beta real por invitación y QA continua
 
 El titular encarga pasar de TEST a beta prelaunch con usuarios reales, Stripe LIVE

@@ -1,46 +1,41 @@
-# Continuación — beta real por invitación, 28/oct/2026
+# Continuación — beta real por invitación, checkpoint29/oct/2026 03:12UTC
 
-Producto dopmi-app; rama codex/finish-release-20261015. Base app3cf65d73/Play341,
-paridad f693/warm-trust aceptada. Cambios beta aún no publicados como app.
+Producto dopmi-app; rama codex/finish-release-20261015. Paridad341/f693/warm-trust
+aceptada. Último instalado/publicado/aceptado:2.3.3(341)TEST, fuente3cf65d73.
+Beta LIVE autorizada por invitación, producción limpia; reserva20,000MXN declarada,
+sin tope agregado. No copiar fixtures, cuentas, documentos o dinero desdeDEV.
 
-- Autoridad nueva: LIVE/baseproducción/usuarios reales; producción limpia e
-  invitación confirmadas. Reserva20,000MXN declarada/sin tope agregado. Titular da
-  por cerrado punto jurídico/fiscal; no se atribuye dictamen inspeccionado.
-- B0: restore_project únicoPRODysaoeuidcvgtlmphmeyb aceptado; ACTIVE_HEALTHY.
-  SQL23:07UTC:48migraciones/hasta20260928221656, Auth0/Storage0/40tablas; sieteEdgev1.
-  Cotejo48 cerrado:47hashes normalizados iguales y cleanup sólo comentarios/espacios,
-  dosFKrealesSETNULL. Auth: signup/anonymous/manual-linkOFF, confirmemailON; sin
-  customEdgeSecrets. Faltan SMTP/OAuth/ACLoperativos; DEVohqx no modificado.
-  StripeDashboardDopmiLIVE consultado: charges/payouts/transfers activos, sin due.
-  ConectorStripe pide reautenticación; navegador legítimo funciona. Ningún pago.
-- B1 fuente35bfbbbd: opt-in --production-beta + entorno/host registrados + clave
-  públicaLIVE, TEST separado. Python27PASS/Flutter19PASS/analyze0; revisiones cerradas.
-  CI40785747436 fallóformato, corregido. B2fuente83e6e6fc/CI40793197789 cuatroSUCCESS.
-- B2 implementado/revisado en83e6e6fc: contexto servidor+SQL+cuentaStripe, consentimientos por modo,
-  firmas y objetos ligados, historial/idempotencia preservados. HostednuevoLIVE
-  bloqueado; Android usa componentes integrados. Auth precede runtime financiero.
-  Regresión1074PASS/8SKIP antes de últimos correctivos; focalfinal64PASS/Deno4checks.
-  Código/SQL y dos hallazgos de seguridad cerrados. CIintegrada83 cuatroSUCCESS.
-- Acceso SupabaseDashboard recuperado con inicio habitual. SQLMCP agotó300s y una
-  sonda25s; SQLEditorUI resolviócotejo, sin reintentosMCP. B3delta70fuentes/547687B,
-  SHAba7347dc…5a2af5/revisiónestática cerrada, aún NOaplicado (historia48).
-- B4 local implementado/revisado: tresSDK/copyLIVE, parlegal28oct/17TEST, admisión
-  nuevaSQL/Connect y salidas conservadas; Adminmodo/link, perfilFirebaseaislado y
-  workflowexistente con overrides porbuild. Backend1110PASS/8SKIP; SDK64PASS,
-  Admin63PASS/build; Python27+12PASS. UIregresión100PASS antesfixturecorregida;
-  Connect13PASS/2s después. FullFlutterlocal fue detenido por watchdog8min tras1537
-  sinfallos; NOsuitecompleta. Analyze2infos corregidos ycheckdirigido0; falta CI B4.
-- Intervención pendiente: contrataciónPro; confirmarcreación/guardadoRAKLIVE y
-  FirebasePROD en formulariospreparados. No asumir aprobación por tiempo transcurrido.
-  Vercellista proyectos, detalle/env403scope dop-mi; requieregrantconexión o GUIlegítima.
-- Publicado/instalado: sólo último corte comprobado341TEST. No build beta, migración,
-  despliegueEdge, escritura de secretos o flags nuevos en esta preparación.
-- Seguimiento4h reactivado: dopmi-beta-real-y-checkpoint-cada-4-horas. Cola finitaB0–B5
-  enbacklog. Ventana5min antes de enviar cada candidatoCodemagic para mensajesQA.
+- **Implementado/verificado:** B1/B2/B4 fuente75d5963a1e2feeae4ccf1ec51ada27311322fd59,
+  CI40798988780 cuatroSUCCESS (Flutter/iOS/PostgreSQL/web-database). Cierra validación
+  integrada B4; no repetir fullFlutterlocal cortado por watchdog ni QA341 aceptada.
+- **Producción aplicado:** delta70fuentes/547687B/SHAba7347dc…5a2af5, un apply reservado,
+  registro20261029030514/codex_production_beta_schema_20261028. Postflight03:05:27UTC:
+  historia48→49/prior48exactas,43tablasnuevasRLS,151funciones, bucketsprivados,
+  Auth/perfiles/donaciones/Storage/medios/colas0. ModoSQLTEST, video/Tienda/preview/
+  enlacesOFF, sincron; no cobros ni activaciónLIVE. DEVintacto.
+- **Infraestructura real:** organizaciónSupabasePRO confirmada porconector. Firebase
+  dopmi-production creado; Android+iOS com.mycompany.dopmi registrados. Configfiles
+  aún sin validar/entregar aCodemagic; descarga iOS quedó sin resultado confirmado
+  por timeout deherramienta, no repetir ciegamente. Analytics/Crashlytics optinOFF.
+- **B3Connect:** destino separado con firma propia/account.updated, vínculoSQL,
+  cola/contexto inmutable y Account exacto;33focalesPASS/Deno5checks; revisiones
+  independientes código/seguridad sinP1/P2. Delta local todavía sincommit/aplicación/
+  despliegue. Los dos tests ya se registraron en npm; noFlutter modificado desde75.
+- **Stripe:** creación/guardado RAKLIVE autorizado por titular. Intento de formulario
+  cambió aWorkbench; conciliaciónAPIKeys mostró cero claves restringidas. Ningún
+  valor creado/leído/guardado. Pregunta de coordinación pendiente antes de reintentar;
+  no falta renovar autorización. Webhooks/secretos/LIVE operativo aún pendientes.
+- **Otros pendientes:** SMTP/OAuth/invitaciones/admin y Edge/worker/alertas; Vercel
+  env403scope requieregrant legítimo. No beta build, instalación ni aceptaciónLIVE.
+- **Método:** reutilizar CI75 que cerró cuatrogates; evitar repetir fullFlutterlocal.
+  Efecto en siguiente trabajo necesario: B3 se verificó sólo con33focales (3.2s),
+  sin nueva colaFlutter ni cámara/pagos. No estimación final fiable antes de cerrar
+  configuración remota. Seguimiento4h activo, una colaFlutter, ventana5min preCodemagic.
 
-Siguiente: integrador commit/CI B4 y preparación B3; titular resuelve tres pasos.
-Recibos privados .tools/beta-prelaunch-20261028. No repetir cámara/P3/paridad cerrada.
-Conservar privacidad, identidad/firma, datosDEV y estados autorizados por entorno.
+Siguiente/dueño: integrador integra B3revisado, completa credenciales/configuración y
+admisión; titular sólo resuelve coordinación Stripe ya preguntada. Después un
+candidatoLIVE porCodemagic/Playinterno, instalación y QAlegítima. Recibos privados:
+.tools/beta-prelaunch-20261028. Este checkpoint no renueva operaciones consumidas.
 
 ## Corte aceptado previo — 341
 
