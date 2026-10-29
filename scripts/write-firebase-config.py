@@ -54,8 +54,65 @@ def has_emulator(value):
     return False
 
 
-def build_config(env, production_beta=False):
+def google_ios_scheme(env, ios_value, production_beta=False, platform="both"):
+    enabled = env.get("ENABLE_GOOGLE_AUTH", "false").strip().lower() or "false"
+    if enabled not in ("true", "false"):
+        raise ValueError("ENABLE_GOOGLE_AUTH must be true or false.")
+    if enabled == "false":
+        return None
+    # The selected registration owns the number; downloaded metadata cannot
+    # redefine TEST as another project while retaining its PROJECT_ID/BUNDLE_ID.
+    number = production_pins(env)[3] if production_beta else TEST_PROJECT_NUMBER
+    if (str(ios_value.get("GCM_SENDER_ID", "")) != number
+            or not re.fullmatch(rf"1:{re.escape(number)}:ios:[0-9a-f]{{16,64}}", ios_value.get("GOOGLE_APP_ID", ""))):
+        raise ValueError("Google sign-in requires the selected Firebase project number and app ID.")
+    clients = []
+    names = ("GOOGLE_SERVER_CLIENT_ID",) if platform == "android" else ("GOOGLE_SERVER_CLIENT_ID", "GOOGLE_IOS_CLIENT_ID")
+    for name in names:
+        value = env.get(name, "").strip()
+        if not re.fullmatch(rf"{re.escape(number)}-[A-Za-z0-9_-]+\.apps\.googleusercontent\.com", value):
+            raise ValueError("Google sign-in requires Web and iOS client IDs for the selected profile.")
+        clients.append(value)
+    if platform == "android":
+        return None
+    client = clients[1]
+    scheme = "com.googleusercontent.apps." + client.removesuffix(".apps.googleusercontent.com")
+    if (ios_value.get("CLIENT_ID", client) != client
+            or ios_value.get("REVERSED_CLIENT_ID", scheme) != scheme):
+        raise ValueError("Firebase Google iOS identity does not match the selected profile.")
+    return scheme
+
+
+def build_ios_info(env, contents, ios_config, production_beta=False):
+    """Derive only Google URL schemes; retain application identity and other URLs."""
+    try:
+        info = plistlib.loads(contents)
+        scheme = google_ios_scheme(env, plistlib.loads(ios_config), production_beta, platform="ios")
+        entries = info["CFBundleURLTypes"]
+        if not isinstance(entries, list):
+            raise ValueError()
+        preserved = []
+        for entry in entries:
+            schemes = entry["CFBundleURLSchemes"]
+            if not isinstance(schemes, list) or any(not isinstance(value, str) for value in schemes):
+                raise ValueError()
+            remaining = [value for value in schemes if not value.startswith("com.googleusercontent.apps.")]
+            if remaining or not schemes:
+                preserved.append({**entry, "CFBundleURLSchemes": remaining})
+        if not any("io.dopmi.app" in entry["CFBundleURLSchemes"] for entry in preserved):
+            raise ValueError()
+        if scheme:
+            preserved.append({"CFBundleURLSchemes": [scheme]})
+        info["CFBundleURLTypes"] = preserved
+        return plistlib.dumps(info, sort_keys=False)
+    except (KeyError, TypeError, ValueError, plistlib.InvalidFileException):
+        raise ValueError("iOS application identity or Google URL scheme is invalid.") from None
+
+
+def build_config(env, production_beta=False, platform="both"):
     """Return both validated files unchanged; performs no I/O or provider calls."""
+    if platform not in ("android", "ios", "both"):
+        raise ValueError("Firebase configuration platform must be android, ios or both.")
     environment = env.get("DOPMI_ENVIRONMENT", "test")
     if environment not in ("test", "production") or (environment == "production") != production_beta:
         raise ValueError("Production Firebase requires DOPMI_ENVIRONMENT=production and --production-beta together.")
@@ -88,26 +145,37 @@ def build_config(env, production_beta=False):
             raise ValueError()
     except (KeyError, TypeError, ValueError, OverflowError, plistlib.InvalidFileException):
         raise ValueError("Firebase configuration belongs to another app or environment, or is invalid.") from None
+    google_ios_scheme(env, ios_value, production_beta, platform)
+    if env.get("ENABLE_GOOGLE_AUTH", "false").strip().lower() == "true":
+        number = production_pins(env)[3] if production_beta else TEST_PROJECT_NUMBER
+        if str(android_value["project_info"].get("project_number", "")) != number:
+            raise ValueError("Google sign-in requires the selected Android Firebase project number.")
     return android, ios
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--production-beta", action="store_true")
+    parser.add_argument("--platform", choices=("android", "ios", "both"), default="both")
     args = parser.parse_args(argv)
     paths = (ROOT / "android" / "app" / "google-services.json",
              ROOT / "ios" / "Runner" / "GoogleService-Info.plist")
+    info_path = ROOT / "ios" / "Runner" / "Info.plist"
     # A rejected environment must not leave older connected files for a build.
     for path in paths:
         path.unlink(missing_ok=True)
     try:
-        configs = build_config(os.environ, args.production_beta)
+        configs = build_config(os.environ, args.production_beta, args.platform)
+        info_contents = (build_ios_info(os.environ, info_path.read_bytes(), configs[1], args.production_beta)
+                         if args.platform != "android" else None)
     except ValueError as error:
         raise SystemExit(str(error)) from None
     for path, contents in zip(paths, configs):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(contents)
         path.chmod(0o600)
+    if info_contents is not None:
+        info_path.write_bytes(info_contents)
     print("Firebase client configuration ready for com.mycompany.dopmi.")
 
 

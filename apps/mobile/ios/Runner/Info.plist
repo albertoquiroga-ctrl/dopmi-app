@@ -30,10 +30,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array><string>io.dopmi.app</string></array>
 		</dict>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array><string>com.googleusercontent.apps.623928073757-439do5al810qu3vd717rgdmphtnrsclh</string></array>
-		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>

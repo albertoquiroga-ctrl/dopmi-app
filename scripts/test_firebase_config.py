@@ -18,6 +18,20 @@ spec.loader.exec_module(config)
 
 
 class FirebaseConfigTests(unittest.TestCase):
+    def info(self):
+        return {
+            "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
+            "CFBundleDisplayName": "Dopmi",
+            "FirebaseCrashlyticsCollectionEnabled": False,
+            "CFBundleURLTypes": [{"CFBundleURLSchemes": ["io.dopmi.app", "another-preserved-callback"]}],
+        }
+
+    def google_env(self, production=False):
+        number = self.files(production)[1]["GCM_SENDER_ID"]
+        return {**self.env(production), "ENABLE_GOOGLE_AUTH": "true",
+                "GOOGLE_SERVER_CLIENT_ID": f"{number}-web.apps.googleusercontent.com",
+                "GOOGLE_IOS_CLIENT_ID": f"{number}-ios.apps.googleusercontent.com"}
+
     def files(self, production=False):
         project = "dopmi-production" if production else config.TEST_PROJECT
         number = "934560123456" if production else config.TEST_PROJECT_NUMBER
@@ -163,11 +177,15 @@ class FirebaseConfigTests(unittest.TestCase):
             expected = config.build_config(env, production)
             with self.subTest(production=production), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
+                info = root / "ios/Runner/Info.plist"
+                info.parent.mkdir(parents=True)
+                info.write_bytes(plistlib.dumps(self.info()))
                 output = io.StringIO()
                 with patch.object(config, "ROOT", root), patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(output):
                     config.main(["--production-beta"] if production else [])
                 self.assertEqual((root / "android/app/google-services.json").read_bytes(), expected[0])
                 self.assertEqual((root / "ios/Runner/GoogleService-Info.plist").read_bytes(), expected[1])
+                self.assertEqual(plistlib.loads(info.read_bytes()), self.info())
                 self.assertNotIn("synthetic-client-value", output.getvalue())
                 for value in env.values():
                     if len(value) > 50:
@@ -184,6 +202,124 @@ class FirebaseConfigTests(unittest.TestCase):
             with patch.object(config, "ROOT", root), patch.dict(os.environ, env, clear=True), self.assertRaises(SystemExit):
                 config.main(["--production-beta"])
             self.assertTrue(all(not path.exists() for path in paths))
+
+    def test_google_scheme_is_derived_from_each_profile_preserving_other_identity(self):
+        for production in (False, True):
+            env = self.google_env(production)
+            _, ios = config.build_config(env, production)
+            original = self.info()
+            original["CFBundleURLTypes"].append({"CFBundleURLSchemes": [
+                "com.googleusercontent.apps.623928073757-old", "unrelated-preserved-callback"]})
+            result = plistlib.loads(config.build_ios_info(env, plistlib.dumps(original), ios, production))
+            expected = self.info()
+            expected["CFBundleURLTypes"].append({"CFBundleURLSchemes": ["unrelated-preserved-callback"]})
+            number = self.files(production)[1]["GCM_SENDER_ID"]
+            expected["CFBundleURLTypes"].append({"CFBundleURLSchemes": [f"com.googleusercontent.apps.{number}-ios"]})
+            self.assertEqual(result, expected)
+            self.assertEqual(config.build_ios_info(env, plistlib.dumps(result), ios, production), plistlib.dumps(result, sort_keys=False))
+
+    def test_enabled_google_rejects_missing_malformed_or_crossed_profile_clients(self):
+        for production in (False, True):
+            for name in ("GOOGLE_IOS_CLIENT_ID", "GOOGLE_SERVER_CLIENT_ID"):
+                other = self.google_env(not production)[name]
+                for value in ("", "not-a-client-id", other):
+                    with self.subTest(production=production, name=name, value=value), self.assertRaises(ValueError):
+                        config.build_config({**self.google_env(production), name: value}, production)
+
+    def test_declared_firebase_ios_client_and_reversed_scheme_must_match_profile(self):
+        for key in ("CLIENT_ID", "REVERSED_CLIENT_ID"):
+            android, ios = self.files(True)
+            ios[key] = ("623928073757-foreign.apps.googleusercontent.com" if key == "CLIENT_ID"
+                        else "com.googleusercontent.apps.623928073757-foreign")
+            env = {**self.google_env(True), **self.env(True, android, ios)}
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                config.build_config(env, True)
+        for production in (False, True):
+            android, ios = self.files(production)
+            env = self.google_env(production)
+            ios["CLIENT_ID"] = env["GOOGLE_IOS_CLIENT_ID"]
+            ios["REVERSED_CLIENT_ID"] = "com.googleusercontent.apps." + ios["CLIENT_ID"].removesuffix(".apps.googleusercontent.com")
+            env.update(self.env(production, android, ios))
+            self.assertEqual(config.build_config(env, production)[1], plistlib.dumps(ios))
+
+    def test_disabled_google_needs_no_client_and_removes_only_its_old_schemes(self):
+        env = self.env(True)
+        _, ios = config.build_config(env, True)
+        original = self.info()
+        original["CFBundleURLTypes"].append({"CFBundleURLSchemes": ["com.googleusercontent.apps.623928073757-old"]})
+        result = plistlib.loads(config.build_ios_info(env, plistlib.dumps(original), ios, True))
+        self.assertEqual(result, self.info())
+        self.assertEqual(config.build_config(env, True)[1], ios)
+        self.assertNotIn("CLIENT_ID", plistlib.loads(ios))
+
+    def test_android_google_accepts_web_only_without_ios_identity_changes(self):
+        for production in (False, True):
+            env = {**self.google_env(production), "GOOGLE_IOS_CLIENT_ID": ""}
+            with self.subTest(production=production):
+                configs = config.build_config(env, production, platform="android")
+                with self.assertRaises(ValueError):
+                    config.build_config(env, production, platform="ios")
+                with tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    info = root / "ios/Runner/Info.plist"
+                    info.parent.mkdir(parents=True)
+                    original = plistlib.dumps(self.info())
+                    info.write_bytes(original)
+                    with patch.object(config, "ROOT", root), patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(io.StringIO()):
+                        config.main((["--production-beta"] if production else []) + ["--platform", "android"])
+                    self.assertEqual(info.read_bytes(), original)
+                    self.assertEqual((root / "android/app/google-services.json").read_bytes(), configs[0])
+                    self.assertEqual((root / "ios/Runner/GoogleService-Info.plist").read_bytes(), configs[1])
+
+    def test_google_test_profile_rejects_coordinated_foreign_project_metadata(self):
+        android, ios = self.files()
+        foreign_number = self.files(True)[1]["GCM_SENDER_ID"]
+        android["project_info"]["project_number"] = foreign_number
+        ios["GCM_SENDER_ID"] = foreign_number
+        ios["GOOGLE_APP_ID"] = f"1:{foreign_number}:ios:0123456789abcdef012345"
+        env = {**self.env(False, android, ios), "ENABLE_GOOGLE_AUTH": "true",
+               "GOOGLE_SERVER_CLIENT_ID": f"{foreign_number}-web.apps.googleusercontent.com",
+               "GOOGLE_IOS_CLIENT_ID": f"{foreign_number}-ios.apps.googleusercontent.com"}
+        # PROJECT_ID and BUNDLE_ID still say TEST; coordinated metadata cannot
+        # redefine the authoritative registered TEST project number.
+        bad_environments = {"coordinated": env}
+        for target in ("android_number", "ios_app_id"):
+            android, ios = self.files()
+            if target == "android_number":
+                android["project_info"]["project_number"] = foreign_number
+            else:
+                ios["GOOGLE_APP_ID"] = f"1:{foreign_number}:ios:0123456789abcdef012345"
+            bad_environments[target] = {**self.google_env(), **self.env(False, android, ios)}
+        for target, bad in bad_environments.items():
+            for platform in ("android", "ios", "both"):
+                with self.subTest(target=target, platform=platform), self.assertRaises(ValueError):
+                    config.build_config(bad, platform=platform)
+
+    def test_main_validates_google_before_writing_any_connected_configuration(self):
+        for invalid in (False, True):
+            with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                info = root / "ios/Runner/Info.plist"
+                info.parent.mkdir(parents=True)
+                original = plistlib.dumps(self.info())
+                info.write_bytes(original)
+                env = self.google_env(True)
+                if invalid:
+                    env["GOOGLE_IOS_CLIENT_ID"] = self.google_env()["GOOGLE_IOS_CLIENT_ID"]
+                with patch.object(config, "ROOT", root), patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(io.StringIO()):
+                    if invalid:
+                        with self.assertRaises(SystemExit):
+                            config.main(["--production-beta"])
+                    else:
+                        config.main(["--production-beta"])
+                firebase_paths = (root / "android/app/google-services.json", root / "ios/Runner/GoogleService-Info.plist")
+                if invalid:
+                    self.assertTrue(all(not path.exists() for path in firebase_paths))
+                    self.assertEqual(info.read_bytes(), original)
+                else:
+                    self.assertEqual(tuple(path.read_bytes() for path in firebase_paths), config.build_config(env, True))
+                    self.assertEqual(plistlib.loads(info.read_bytes())["CFBundleURLTypes"][-1],
+                                     {"CFBundleURLSchemes": ["com.googleusercontent.apps.934560123456-ios"]})
 
 
 if __name__ == "__main__":

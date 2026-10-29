@@ -27,7 +27,7 @@ workflows:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
       - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py
+        script: python3 ../../scripts/write-firebase-config.py --platform android
 
       - name: Install dependencies
         script: flutter pub get
@@ -83,7 +83,7 @@ workflows:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
       - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py
+        script: python3 ../../scripts/write-firebase-config.py --platform android
 
       - name: Install dependencies
         script: flutter pub get
@@ -154,8 +154,8 @@ workflows:
         script: |
           set -euo pipefail
           case "${DOPMI_ENVIRONMENT:-test}" in
-            test) python3 ../../scripts/write-firebase-config.py ;;
-            production) python3 ../../scripts/write-firebase-config.py --production-beta ;;
+            test) python3 ../../scripts/write-firebase-config.py --platform android ;;
+            production) python3 ../../scripts/write-firebase-config.py --production-beta --platform android ;;
             *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
           esac
       - name: Install dependencies
@@ -247,7 +247,7 @@ workflows:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py
       - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py
+        script: python3 ../../scripts/write-firebase-config.py --platform ios
 
       - name: Install dependencies
         script: flutter pub get
@@ -315,7 +315,7 @@ workflows:
       - name: Create runtime configuration
         script: python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test
       - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py
+        script: python3 ../../scripts/write-firebase-config.py --platform ios
 
       - name: Install dependencies
         script: flutter pub get
