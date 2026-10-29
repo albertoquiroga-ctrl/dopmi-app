@@ -1,7 +1,7 @@
-# Checkpoint — beta real, 29/oct/2026 19:02 UTC (13:02 CDMX)
+# Checkpoint — beta real, 29/oct/2026 21:32 UTC (15:32 CDMX)
 
 Producto dopmi-app; codex/finish-release-20261015; única cola Flutter.
-Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086, CI40936283326 pendiente.
+Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086, CI40936283326 completada/cuatro jobs SUCCESS.
 Backend desplegado1c7c4fae; admin PROD2201bf9b. Última app publicada,
 instalada y aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust; no reabrir su QA.
 
@@ -11,7 +11,7 @@ instalada y aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust; no reabrir su QA.
 - Implementado: perfiles estrictos/Firebase PROD; TestFlight609c617d ya selecciona
   perfil por entorno y rechaza desconocidos, Python29 PASS y revisión independiente.
   Candidato f20b añade sólo copy condicional de Stream, producto/código/seguridad
-  cerrados; sin nueva suite local por texto. CI final en curso, no otra buildCM.
+  cerrados; sin nueva suite local por texto. CI final SUCCESS19:22:59UTC; sin buildCM.
 - Verificado en PROD: historia51; foundation+Connect+worker. Correctivo autorizado
   por continuación expresa29oct aplicado UNA vez18:45:15UTC: SQL33f3e03a…3fce98,
   nueva20261029184515, prefijo50 exacto y cuerpo SQL exacto. pg_cron1.6.4/pg_net0.20.4,
@@ -43,6 +43,13 @@ revisada/conciliación y aceptación, sin cargos inventados ni otra build por et
 Beta móvil LIVE aún no publicada, instalada, probada ni aceptada. Sin estimación
 final sustentada mientras faltan esos accesos/decisiones. Seguimiento4h activo.
 Recibos privados .tools/beta-prelaunch-20261028; no otro tablero ni cola.
+
+Cotejo4h: frente19:02 sólo hay nuevo cierre automático verificable de CI final;
+sin funcionalidad, despliegue, publicación, instalación ni aceptación nuevos.
+Preguntas Google/SHA1 pública/textos siguen pendientes; no repetir solicitudes,
+preflights de escritura, builds o suites mientras no haya información nueva.
+Dueño root: resolver esas entradas y ejecutar la secuencia finita ya revisada.
+Sin incidente/retrabajo nuevo; se conserva mejora anterior comprobada, sin otra regla.
 
 ## Corte aceptado previo — 341
 

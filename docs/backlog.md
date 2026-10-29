@@ -10,7 +10,7 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 | B1 / móvil + revisores | B0; configuración estricta TEST/producción | Configuración y fixformato integrados en83e6e6fc/CI40793197789 cuatroSUCCESS. |
 | B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Fuente83e6e6fc/CI4SUCCESS; revisiones cerradas. Ningún despliegue nuevo; historial y modo protegidos. |
 | B3 / integrador + seguridad | B0/B2; preparar producción | Historia51 y8Edge verificadas; RAK/SMTP y dos webhooks LIVE+firmas24/1 configurados. Worker correctivo aplicado/verificado una vez: job1PAUSADO/runs0/HTTP0/finanzas0. OAuth/correo real/admin/operación y publicación legal pendientes. No copiarDEV ni inventar cargos. |
-| B4 / móvil + integrador | B1/B2; SDK y distribución | f20b27e6/CI40936283326 pendiente; baseGoogle d5171d9f/CI4SUCCESS y TestFlight609/Python29PASS revisados. Copy Stream condicional corregida/revisada. Runtime/OAuth/pin reales pendientes. Una ventana5min y un Codemagic cuando esté listo; ninguna build beta aún. |
+| B4 / móvil + integrador | B1/B2; SDK y distribución | f20b27e6/CI40936283326 cuatro SUCCESS; baseGoogle d5171d9f/CI4SUCCESS y TestFlight609/Python29PASS revisados. Copy Stream condicional corregida/revisada. Runtime/OAuth/pin reales pendientes. Una ventana5min y un Codemagic cuando esté listo; ninguna build beta aún. |
 | B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, registro estándar/correo y roles, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene
