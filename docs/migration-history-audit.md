@@ -29,6 +29,16 @@ authyservicerevocados. Conteos0/SQLTEST. HistorynuevoMD55085b9b99467c0b803a9b45c
 4470Brepresentación. Sinwebhooks/Edge/secretos/flags/cobros enestaoperación.
 Recibo privado connect-production-apply.reserved; no reaplicar.
 
+Worker PROD29oct: un apply autorizado14:20UTC, SQL e7d4c4cc…e25823, abortó
+con P0001 al resolver/consultar secuencia cron. Observer14:21:30UTC confirma
+rollback completo: historia50/prefijo y digest exactos, sin pg_cron/pg_net/job,
+finanzas0 y modoTEST. Vault nuevo y Edge ya guardados se conservan. No entrada de
+historia aplicada ni HTTP; no repetir el apply consumido. Paquete fallido archivado
+privadamente en worker-production/failed-attempt1. Fuente pg_cron sin OWNEDBY
+explica defecto del resolvedor; error combinado no mide permisos por separado.
+Correctivo OID+dependencia DEFAULT/ACL reales mantiene pausa/currval y requiere
+su nuevo permiso de ejecución, aún pendiente. No grants ni reparación de historia.
+
 ## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
 
 PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:

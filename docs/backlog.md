@@ -9,8 +9,8 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 | B0 / integrador | Descubrir entornos y acuerdos actuales | Cotejo48resuelto/47exactos+cleanupsemántico; Authsignup/anonymousOFF/confirmemailON; customSecrets0, sinDEVmodificado. SMTPPRODguardado; faltan OAuth/entrega/operación. |
 | B1 / móvil + revisores | B0; configuración estricta TEST/producción | Configuración y fixformato integrados en83e6e6fc/CI40793197789 cuatroSUCCESS. |
 | B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Fuente83e6e6fc/CI4SUCCESS; revisiones cerradas. Ningún despliegue nuevo; historial y modo protegidos. |
-| B3 / integrador + seguridad | B0/B2; preparar producción | HistoriaPROD50 y8Edgeverificadas. RAKLIVE17permisos guardada; ResendSMTP guardado/reloadON/sinenvío. VercelPROD2201bfREADY/configJSverificada/aliasPreviewrestaurado. Webhooks2 yworkerpausado preparados, permiso propio pendiente; OAuth/admin/entrega/activación aún faltan. No copiarDEV. |
-| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | 2201bf/CI40833210003 cuatroSUCCESS; privacidadAndroid cerrada. DeltaGoogle d5171d9f/27+19+10PASS/revisionescerradas; CI40876640101 enprogreso. Runtime/OAuth reales/pin final pendientes. Ventana5min antes de únicoCodemagic; sinbuildbeta. |
+| B3 / integrador + seguridad | B0/B2; preparar producción | Historia50 y8Edge verificadas; RAK/SMTP y dos webhooks LIVE+firmas configurados, conjuntos exactos24/1. Worker secreto guardado, apply fallido/revertido; correctivo revisado espera permiso. OAuth/correo real/admin/operación pendientes. No copiarDEV ni inventar cargos. |
+| B4 / móvil + integrador | B1/B2; SDK y distribución | d5171d9f, CI40876640101 cuatro SUCCESS, Python27+19+10 PASS y revisiones cerradas. Runtime/OAuth/pin reales pendientes. Una ventana5min y un Codemagic cuando esté listo; ninguna build beta aún. |
 | B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, registro estándar/correo y roles, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene

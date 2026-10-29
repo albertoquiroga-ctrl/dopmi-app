@@ -1,3 +1,44 @@
+## 29/10/2026 17:29UTC — Checkpoint: webhooks listos; worker revertido y correctivo pendiente
+
+Desde el checkpoint anterior hay avance comprobado: CI40876640101/d5171d9f cerró
+cuatro jobs SUCCESS. Dos webhooks LIVE SnapshotApril22Dahlia creados una vez cada
+uno; GET confirma plataforma24 exactos y Connect1 account.updated. Edición de
+Connect confirma ámbito de cuentas conectadas persistido. Firmas distintas guardadas
+en PROD, digests y persistencia tras reload cotejados; RAK y worker previos intactos.
+Cuatro filas custom actuales, sin valores publicados/archivados, vistas ocultas y
+variables sensibles limpiadas. No eventos de prueba, cargos ni entrega LIVE aceptada.
+Evidencia: recibo único edge-production/stripe-live-webhooks.execution.reserved.private.json.
+
+Retrabajo plataforma: wizard24→GET25 con transfer.canceled no visible. Un Save de
+selección intacta no cambió25. Se pausó el mismo destino, vació y reconstruyó la
+selección; único Save final→GET24/disabled, firma guardada, reactivación del alcance
+original→GET24/enabled. Causa inicial no demostrada; no wildcard, nuevo Create ni
+RAK ampliada. Shell LIVE permaneció sólo lectura. Conector MCP sigue requiriendo
+reautenticación; solicitada por eficiencia, Dashboard ya resuelve esta configuración.
+
+Worker: token nuevo creado en Vault y Edge, igualdad de entradas/digest Edge
+comprobados sin leer valores guardados. Único apply14:20UTC abortó en guarda de
+secuencia; postflight14:21:30 confirma historia50 exacta, sin extensiones/job,
+finanzas0/SQLTEST/sin installer en curso. No reintento ni HTTP. Fuente pg_cron crea
+secuencia sin OWNEDBY; resolvedor asumía ese vínculo. No atribuir falta de ACL al
+error combinado. Correctivo OID+relkind+dependencia DEFAULT+permisos reales conserva
+currval, detección upsert, transacción y pausa; dos revisiones cerradas. SQL33f3e03a…
+3fce98/manifest2ac1119c…1b733a4 espera nuevo permiso ya solicitado. Mismo secreto;
+paquete fallido exacto conservado en failed-attempt1. No migración51 acreditada.
+
+Retro independiente beta_config_process_review inspeccionó recibos/fuentes/rollback.
+Una mejora: contrastar la precondición problemática con el contrato exacto del proveedor
+antes de reservar. Efecto se comprobará en postflight del siguiente intento necesario
+si se autoriza; no suite, build o captura por reloj. No ahorro cuantificado.
+
+Google Cloud verificado por titular y página PROD sin clientes OAuth comprobada;
+consentimiento por configurar. Última acción de navegación fue interrumpida por
+heartbeat, sin alta OAuth ni credencial nueva; conciliar pantalla antes de continuar.
+AdminPROD2201bf publicado; móvil último publicado/instalado/aceptado sigue341TEST.
+BetaLIVE no distribuida ni aceptada; cobros no habilitados. Root: permiso worker y
+OAuth→correo/admin/operación→runtime/pin→5min→CM único→Play/install/QA. Seguimiento4h
+activo. No plazo final sustentado; no repetir la paridad aceptada ni fixtures.
+
 ## 29/10/2026 12:55UTC — Credenciales PROD guardadas, panel publicado y delta Google
 
 RAKLIVE DopmiProductionbeta creada una vez con17permisos autorizados y trasladada
