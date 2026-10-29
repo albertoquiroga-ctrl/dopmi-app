@@ -8,7 +8,7 @@ B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuev
 |---|---|---|
 | Entorno | Foundation70 aplicada una vez, registro20261029030514; historia49/prior48exactas,43tablasRLS/151funciones, Auth/Storage/dinero0; Proconfirmado | Configuración/activaciónLIVE aún pendiente; modosSQLTEST/serviciosOFF. DEVintacto. |
 | Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs reales validadas conbuilderestricto. Build/Play/instalación beta no acreditados. |
-| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS/CI4SUCCESS, SQLy8Edgeprincipales aplicados/readback+HTTP8/8 | RAK autorizada/2FApendiente, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. DeltaAndroidarranqueprivado revisado; ochoJVM pendientesCI, sinpruebaSDKtráfico/iOS atribuida. |
+| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS/CI4SUCCESS, SQLy8Edgeprincipales aplicados/readback+HTTP8/8 | RAK autorizada/2FApendiente, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. DeltaAndroidarranqueprivado revisado ytaskJVMnativeSUCCESS en2201bf9b/CI40833210003 cuatroSUCCESS; sinpruebaSDKtráfico/iOSfísico atribuida. |
 | Usuarios/operación | Sin filtro interno/producciónlimpia/reserva20mil/sin tope agregadodecididos | Integrador: registro estándar, Auth/SMTP/OAuth/admin, alertas/operación; Resendlogin/Vercelgrant/Stripeverificación pendientes. |
 | Distribución/aceptación | Última instalación/aceptación341TEST; beta todavía no publicada | NuevoSHA/artefacto/Play/install/QA/aceptación separados; ventana5min preCodemagic. |
 

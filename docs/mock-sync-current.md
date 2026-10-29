@@ -1,8 +1,8 @@
 # Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
 
 Producto dopmi-app; rama codex/finish-release-20261015. Candidato2201bf9bb791067b7ebf9b595c2c2a99b572f68e;
-CI40833210003 enprogreso. CI078f/40822216873 falló en arnésJVM; otros tresjobsSUCCESS.
-Correctivoharness revisado/sinP1P2; runtime idéntico078f;
+CI40833210003 cuatroSUCCESS comprobados29oct11:00UTC. CI078f/40822216873 falló en
+arnésJVM y queda supersedida. Correctivoharness revisado/sinP1P2; runtime idéntico078f;
 backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
 instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
 
@@ -33,23 +33,21 @@ instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa pa
   Resendlogin, Stripe2FA ygrantVercel pendientes. SchedulerpreparadoPAUSADO/noaplicado.
 - **Privacidad Android:** corregido arranque previo aFirebaseproviders: overridesOFF
   cadaarranque; cambioGMPpurga síncrona sólo dosraícesCrashlytics antes delsello.
-  Dart exactoalbaseline. Código/seguridad cerradosestáticamente; ochofixturesJVM
-  no ejecutados: Config.packageName incompatible y dependenciaGradle ausente.
-  Ambos corregidoslocalmente; shadowlstat4.17 corregido sóloenfixture paraENOENT/
-  symlinks. Runtimeintacto. Python27+12PASS previos. iOS/DataTransport/tráficoSDK
-  no acreditados. SiguienteCI valida losmismosochocasos.
+  Dart exactoalbaseline. Código/seguridad cerrados; arnéscorregido ytaskJVM ejecutada
+  SUCCESS07:14:48UTC enCI2201bf. Fixtureochocasos conservada; XMLJUnit noarchivado.
+  Flutter1596PASS/analyze/capturas/APK yotros3gatesSUCCESS. Python27+12PASS previos.
+  iOSfísico/DataTransport/tráficoSDK no acreditados.
 - **Distribución:** todavía sin buildbeta, instalación o aceptaciónLIVE. Al estar
   listo el candidato, ventana5min para mensajesQA y un envíoCodemagic/Playinterno,
   comprobando artefacto/canal/instalación porseparado. No cargos inventados poragente.
   AdaptadorPROD mínimo preparado/inertoconplaceholders,10pruebaspurasPASS/ASTválido;
-  revisión código/seguridadsinP1/P2 pendientes. Falta runtimepúblico/CI4SUCCESS/
+  revisión código/seguridadsinP1/P2 pendientes. Falta runtimepúblico/
   numeración/preflight ypinconcreto revisado. No usar permisos/fixtures341 comoPROD.
-- **Método:** reutilizar CI1c7 paraEdge; nuevoCI cerrará eldelta nativo, sin repetir
-  fullFlutterlocal. PurgaDartasíncrona descartada trasrevisión; barreranativa reemplaza
-  eseensayo. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
+- **Método:** CI2201bf cerró delta nativo, sin repetir fullFlutterlocal. Logconfirma
+  nuevoorden: APK→JVM07:13:49→SUCCESS07:14:48→analyze07:14:48. Mismosgates; no ahorro
+  cuantificado. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
 
-Siguiente: comprobar CI40833210003 delcorrectivo (noCodemagic);
-titular completaStripe/Resend/grantVercel; integrador cierra configuración,
+Siguiente: titular completaStripe/Resend/grantVercel; integrador cierra configuración,
 registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
 no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,
 identidad/firma y estados autorizados porentorno; no apagarPROD por hábitosQADEV.
