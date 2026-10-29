@@ -1,15 +1,16 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
 const id = value => typeof value === 'string' ? value : value?.id;
 
 // Reconcile existing full refunds only. This service never creates a refund,
 // charge, transfer, partial reversal, or a replacement for a failed reversal.
-export function guardianRefundService({ stripe, rpc, logger = console }) {
+export function guardianRefundService({ stripe, rpc, logger = console, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function refundEvidence(s) {
     const charge = await stripe.charges.retrieve(s.charge_id);
-    if (charge?.id !== s.charge_id || charge.livemode !== false || id(charge.payment_intent) !== s.payment_intent_id
+    if (charge?.id !== s.charge_id || charge.livemode !== expectedLivemode || id(charge.payment_intent) !== s.payment_intent_id
       || charge.amount !== s.gross_cents || charge.currency !== 'mxn' || charge.paid !== true || charge.captured !== true
       || typeof charge.disputed !== 'boolean' || !Number.isSafeInteger(charge.amount_refunded)
       || charge.amount_refunded < 0 || charge.amount_refunded > s.gross_cents) fail('guardian_refund_charge_mismatch');
@@ -21,7 +22,7 @@ export function guardianRefundService({ stripe, rpc, logger = console }) {
         || (list.has_more && list.data.length === 0)) fail('guardian_refund_list_invalid');
       for (const r of list.data) {
         if (!/^re_[A-Za-z0-9]+$/.test(r?.id ?? '') || seen.has(r.id) || id(r.charge) !== s.charge_id
-          || (r.payment_intent != null && id(r.payment_intent) !== s.payment_intent_id) || r.livemode === true
+          || (r.payment_intent != null && id(r.payment_intent) !== s.payment_intent_id) || ('livemode' in r && r.livemode !== expectedLivemode)
           || r.currency !== 'mxn' || !Number.isSafeInteger(r.amount) || r.amount <= 0 || r.amount > s.gross_cents
           || !['succeeded', 'pending', 'requires_action', 'failed', 'canceled'].includes(r.status)) fail('guardian_refund_list_invalid');
         seen.add(r.id);
@@ -40,7 +41,7 @@ export function guardianRefundService({ stripe, rpc, logger = console }) {
   }
   async function reversalEvidence(s, r) {
     const transfer = await stripe.transfers.retrieve(r.transfer_id);
-    if (transfer?.id !== r.transfer_id || transfer.livemode !== false || transfer.amount !== r.amount_cents
+    if (transfer?.id !== r.transfer_id || transfer.livemode !== expectedLivemode || transfer.amount !== r.amount_cents
       || transfer.currency !== 'mxn' || id(transfer.destination) !== r.destination || id(transfer.source_transaction) !== s.charge_id
       || transfer.transfer_group !== `dopmi_guardian_${s.cycle_id}` || typeof transfer.reversed !== 'boolean'
       || !Number.isSafeInteger(transfer.amount_reversed)) fail('guardian_reversal_transfer_mismatch');
@@ -55,7 +56,8 @@ export function guardianRefundService({ stripe, rpc, logger = console }) {
     const reversal = list.data[0];
     if (!transfer.reversed || list.data.length !== 1 || !/^trr_[A-Za-z0-9]+$/.test(reversal?.id ?? '')
       || id(reversal.transfer) !== r.transfer_id || reversal.amount !== r.amount_cents
-      || reversal.currency !== 'mxn') fail('guardian_reversal_evidence_mismatch');
+      || reversal.currency !== 'mxn' || ('livemode' in reversal && reversal.livemode !== expectedLivemode))
+      fail('guardian_reversal_evidence_mismatch');
     return reversal.id;
   }
   async function reconcileCycle(cycleId, forceReview = false) {
@@ -109,7 +111,7 @@ export function guardianRefundService({ stripe, rpc, logger = console }) {
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('invalid_event_identity');
     const event = await stripe.events.retrieve(eventId);
-    if (event?.id !== eventId || event.livemode !== false) fail('guardian_refund_event_mismatch');
+    if (event?.id !== eventId || event.livemode !== expectedLivemode) fail('guardian_refund_event_mismatch');
     if (event.account) return null;
     const object = event.data?.object;
     let lookup;

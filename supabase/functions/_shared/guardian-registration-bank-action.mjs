@@ -1,8 +1,9 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 import { assertRegistrationPaymentIdentity } from './guardian-registration-payment.mjs';
 
 // Secret is transient and owner-scoped; no create/confirm/retry API is called.
-export function guardianRegistrationBankAction({ stripe, authorizeAction }) {
+export function guardianRegistrationBankAction({ stripe, authorizeAction, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   return async (owner, input) => {
     const validate = attempt => {
       if (!attempt || attempt.id !== input.attempt_id || attempt.registration_id !== input.id ||
@@ -13,11 +14,11 @@ export function guardianRegistrationBankAction({ stripe, authorizeAction }) {
     const attempt = await authorizeAction(owner, input.id, input.attempt_id);
     validate(attempt);
     const intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id);
-    assertRegistrationPaymentIdentity(attempt, intent);
+    assertRegistrationPaymentIdentity(attempt, intent, { expectedLivemode });
     // Cancellation, method changes, capacity loss and TTL can win during I/O.
     const current = await authorizeAction(owner, input.id, input.attempt_id);
     validate(current);
-    assertRegistrationPaymentIdentity(current, intent);
+    assertRegistrationPaymentIdentity(current, intent, { expectedLivemode });
     if (current.id !== attempt.id || !current.pay_requested_at || current.resolved_at ||
         current.registration_id !== input.id || current.owner_id !== owner)
       throw new PaymentError('guardian_registration_action_unavailable', 409);

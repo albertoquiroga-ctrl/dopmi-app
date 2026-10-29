@@ -1,15 +1,16 @@
 import { guardianRegistrationConsumer } from './guardian-registration-consumer.mjs';
 import { readRegistrationSettlementEvidence } from './guardian-registration-settlement.mjs';
 import { assertRegistrationPaymentIdentity, registrationPaymentEvidence } from './guardian-registration-payment.mjs';
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 
 const uuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value ?? '');
 
 // Driver uses only server-owned discovery and identities. Runtime integration
-// must preserve its existing test/collection gates; no timer is created here.
-export function guardianRegistrationWorker({ stripe, paymentRpc, bind, authorize, resolve, settle }) {
+// must preserve its existing environment/collection gates; no timer is created here.
+export function guardianRegistrationWorker({ stripe, paymentRpc, bind, authorize, resolve, settle, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   const load = id => paymentRpc('get', { id });
-  const consumer = guardianRegistrationConsumer({ stripe, load, bind, authorize,
+  const consumer = guardianRegistrationConsumer({ stripe, load, bind, authorize, expectedLivemode,
     observe: (id, evidence) => paymentRpc('observe', { id, state: evidence.state,
       payment_intent_id: evidence.paymentIntentId }),
   });
@@ -28,7 +29,7 @@ export function guardianRegistrationWorker({ stripe, paymentRpc, bind, authorize
       if (!attempt.resolved_at && attempt.pay_requested_at &&
           ['processor_succeeded', 'processor_canceled'].includes(attempt.processor_state)) {
         if (attempt.processor_state === 'processor_succeeded' && !attempt.settlement) {
-          const evidence = await readRegistrationSettlementEvidence(stripe, attempt);
+          const evidence = await readRegistrationSettlementEvidence(stripe, attempt, { expectedLivemode });
           await settle(evidence);
         }
         // SQL independently rechecks terminal evidence and the settlement.
@@ -55,13 +56,14 @@ export function guardianRegistrationWorker({ stripe, paymentRpc, bind, authorize
     return { observed, finalized, failed };
   }
   // Signature verification belongs to the HTTP boundary. The event and its
-  // PaymentIntent are re-read in TEST; metadata is only a lookup hint. Neither
+  // PaymentIntent are re-read in the configured mode; metadata is only a lookup
+  // hint. Neither
   // webhook delivery nor a forged hint may create/authorize a payment.
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? ''))
       throw new PaymentError('guardian_event_invalid', 400);
     const event = await stripe.events.retrieve(eventId);
-    if (event?.id !== eventId || event.livemode !== false)
+    if (event?.id !== eventId || event.livemode !== expectedLivemode)
       throw new PaymentError('guardian_event_invalid', 400);
     if (!['payment_intent.succeeded', 'payment_intent.canceled'].includes(event.type)) return null;
     const paymentIntentId = event.data?.object?.id;
@@ -71,8 +73,8 @@ export function guardianRegistrationWorker({ stripe, paymentRpc, bind, authorize
     if (!attempt || attempt.id !== attemptId || !attempt.pay_requested_at ||
         attempt.stripe_payment_intent_id !== paymentIntentId) return null;
     const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    assertRegistrationPaymentIdentity(attempt, intent);
-    const freshState = registrationPaymentEvidence(attempt, intent).state;
+    assertRegistrationPaymentIdentity(attempt, intent, { expectedLivemode });
+    const freshState = registrationPaymentEvidence(attempt, intent, { expectedLivemode }).state;
     if (['processor_succeeded', 'processor_canceled'].includes(attempt.processor_state) &&
         ['processor_succeeded', 'processor_canceled'].includes(freshState) &&
         attempt.processor_state !== freshState)

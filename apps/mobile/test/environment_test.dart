@@ -22,9 +22,7 @@ void main() {
 
   String jwt(String role, [String? project]) {
     final payload = base64Url.encode(
-      utf8.encode(
-        jsonEncode({'role': role, 'ref': ?project}),
-      ),
+      utf8.encode(jsonEncode({'role': role, 'ref': ?project})),
     );
     return 'e30.$payload.signature';
   }
@@ -67,7 +65,11 @@ void main() {
   });
 
   test('TEST cannot connect to the production host', () {
-    for (final url in [productionUrl, '$productionUrl/', '$productionUrl:443']) {
+    for (final url in [
+      productionUrl,
+      '$productionUrl/',
+      '$productionUrl:443',
+    ]) {
       expect(candidate(url: url).isValid, isFalse);
     }
     expect(

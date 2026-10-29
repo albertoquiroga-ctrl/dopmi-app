@@ -1,3 +1,29 @@
+## 28/10/2026 — B2 local revisado; sin activación LIVE
+
+B1publicado35bfbbbd/CI40785747436: web/backend/iOSSUCCESS; FlutterFAILED en formato,
+antes de pruebas/análisis. Corregidos sólo los dosDart propios; siguiente formatter
+exit0/0cambios. Retro independiente: comprobar formato propio antes del siguiente
+commit necesario; falta acreditar pasoCI del nuevoSHA, no repetir CIantigua.
+
+B2 contexto estricto entorno/host/clave/firma/SQL/cuenta; modo propagado en servicios,
+objetos financieros ligados e historial conservado. Migración aditiva nueva inicia
+TEST y RPCsóloservicio; preparación nueva liga consentimiento a modo. Revisión
+detectó reutilización de pendingTEST enLIVE: se corrigió antes de llamadasStripe.
+Seguridad detectó hostedLIVE sin contrato y runtime previo aAuth: corregidos, nuevo
+hostedLIVE409sinRPC y autenticación verificada antes de construir runtime. Revisores
+independientes cerraron esos deltas, sin atribuir auditoríaLIVE global.
+
+Regresiónbackend1074PASS/8SKIP/0FAIL, antes del último guardhosted y handlerAuth;
+después,64focalesPASS/0SKIP y Denocheck cuatroentrypointsPASS. SQLPGlite6incluido;
+PgTAP/PostgreSQL/CI del nuevoSHA pendientes. Gate npm registra las cuatro suites
+nuevas. Se corrigió una fixture de respuesta perdida para aceptar GETCharge nuevo,
+manteniendo la misma clave, conteo de escrituras y aserciones financieras.
+
+SQLremoto: cotejo contenido48migraciones no completado; un timeout300s y sonda25s,
+sin escritura. Dashboard recuperado por loginhabitual; no repetir canalSQL fallido
+sin diagnóstico. SDKmóvilB4 avanza aparte, rootúnica colaFlutter. Sin migración,
+Edge, secretos, buildbeta ni cobros nuevos; últimoPlay/instalado341TEST aceptado.
+
 ## 28/10/2026 — Inicio de beta LIVE y B1 de configuración
 
 Titular solicita beta real, noTEST, y reactiva seguimiento4h. Confirma invitación y

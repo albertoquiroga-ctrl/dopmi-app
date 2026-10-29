@@ -1,11 +1,12 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 import { assertRegistrationPaymentIdentity, registrationPaymentEvidence } from './guardian-registration-payment.mjs';
 
 // Server-only ports. Deliberately not wired to a worker until evidence can be
 // persisted and settled transactionally. No client-supplied amount or method.
-export function guardianRegistrationConsumer({ stripe, load, bind, authorize, observe }) {
+export function guardianRegistrationConsumer({ stripe, load, bind, authorize, observe, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function record(attempt, intent) {
-    const evidence = registrationPaymentEvidence(attempt, intent);
+    const evidence = registrationPaymentEvidence(attempt, intent, { expectedLivemode });
     const saved = await observe(attempt.id, evidence);
     // The locked database may already hold later terminal evidence. Never
     // return the stale processor snapshot after that authoritative merge.
@@ -35,17 +36,17 @@ export function guardianRegistrationConsumer({ stripe, load, bind, authorize, ob
         confirm: false, metadata: { guardian_registration_attempt_id: attempt.id },
       }, { idempotencyKey: `guardian-registration-create:${attempt.id}` });
       const candidate = { ...attempt, stripe_payment_intent_id: intent.id };
-      assertRegistrationPaymentIdentity(candidate, intent);
+      assertRegistrationPaymentIdentity(candidate, intent, { expectedLivemode });
       attempt = await bind(attempt.id, intent.id);
     }
-    assertRegistrationPaymentIdentity(attempt, intent);
+    assertRegistrationPaymentIdentity(attempt, intent, { expectedLivemode });
     if (attempt.pay_requested_at) return reconcile(attempt);
     if (intent.status !== 'requires_confirmation') return { state: 'unresolved' };
     const authorized = await authorize(attempt.id);
     // Only the transaction that obtains the one-way marker may send. A race,
     // expired reservation or cancellation must never become another confirm.
     if (!authorized) return { state: 'not_authorized' };
-    assertRegistrationPaymentIdentity(authorized, intent);
+    assertRegistrationPaymentIdentity(authorized, intent, { expectedLivemode });
     if (!authorized.pay_requested_at || authorized.id !== attempt.id ||
         authorized.payment_key !== `guardian-registration:${attempt.id}`)
       throw new PaymentError('guardian_registration_authorization_mismatch', 409);
@@ -62,7 +63,7 @@ export function guardianRegistrationConsumer({ stripe, load, bind, authorize, ob
   }
   async function reconcile(attempt) {
     let intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id);
-    assertRegistrationPaymentIdentity(attempt, intent);
+    assertRegistrationPaymentIdentity(attempt, intent, { expectedLivemode });
     // The sender can crash after the durable marker and before confirm. A
     // card can also be definitively declined. Leaving either state unresolved
     // forever would block every later monthly evaluation for this owner.

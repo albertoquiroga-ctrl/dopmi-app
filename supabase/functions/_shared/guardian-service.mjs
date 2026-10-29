@@ -1,6 +1,6 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
 import { readGuardianPaidEvidence } from './guardian-reconciliation.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const attentionCodes = new Set(['guardian_destination_mismatch', 'guardian_charge_mismatch',
   'guardian_transfer_mismatch', 'guardian_refund_mismatch', 'guardian_charge_needs_review']);
@@ -9,19 +9,20 @@ const objectId = object => typeof object === 'string' ? object : object?.id;
 
 // All mutable processor operations use persisted jobs and a bounded retry
 // window shorter than Stripe's minimum idempotency retention (24 hours).
-export function guardianService({ stripe, rpc, lookupSubscription, logger = console }) {
+export function guardianService({ stripe, rpc, lookupSubscription, logger = console, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function reconcileInvoice(invoiceId) {
     if (!/^in_[A-Za-z0-9]+$/.test(invoiceId ?? '')) fail('invalid_invoice_identity');
     const binding = await rpc('lookup_invoice', { invoice_id: invoiceId });
     if (!binding) fail('guardian_invoice_not_bound');
     if (binding.settlement) return binding.settlement;
     try {
-      const evidence = await readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot: binding }, invoiceId);
+      const evidence = await readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot: binding }, invoiceId, { expectedLivemode });
       return await rpc('settle', evidence);
     } finally { await rpc('checked', { invoice_id: invoiceId }); }
   }
   function validateCharge(charge, settled) {
-    if (charge?.id !== settled.charge_id || charge.livemode !== false
+    if (charge?.id !== settled.charge_id || charge.livemode !== expectedLivemode
       || objectId(charge.payment_intent) !== settled.payment_intent_id || charge.currency !== 'mxn'
       || charge.amount !== settled.gross_cents || charge.paid !== true || charge.captured !== true)
       fail('guardian_charge_mismatch');
@@ -50,7 +51,7 @@ export function guardianService({ stripe, rpc, lookupSubscription, logger = cons
           source_transaction: settled.charge_id, transfer_group: `dopmi_guardian_${job.cycle_id}`,
           metadata: { dopmi_guardian_cycle: job.cycle_id, dopmi_guardian_expense: job.expense_id } };
         result = await stripe.transfers.create(fields, { idempotencyKey: job.job_key });
-        if (!/^tr_[A-Za-z0-9]+$/.test(result?.id ?? '') || result.livemode !== false
+        if (!/^tr_[A-Za-z0-9]+$/.test(result?.id ?? '') || result.livemode !== expectedLivemode
           || result.amount !== fields.amount || result.currency !== fields.currency
           || objectId(result.destination) !== fields.destination || objectId(result.source_transaction) !== fields.source_transaction
           || result.transfer_group !== fields.transfer_group || result.reversed !== false || result.amount_reversed !== 0)
@@ -60,7 +61,9 @@ export function guardianService({ stripe, rpc, lookupSubscription, logger = cons
         // Read before creating: recover a lost Stripe response or a refund
         // already initiated from the Dashboard without issuing another refund.
         const list = await stripe.refunds.list({ charge: settled.charge_id, limit: 100 });
-        if (list.has_more !== false || !Array.isArray(list.data)) fail('guardian_refund_mismatch');
+        if (list.has_more !== false || !Array.isArray(list.data) ||
+            list.data.some(refund => 'livemode' in refund && refund.livemode !== expectedLivemode))
+          fail('guardian_refund_mismatch');
         const refunds = list.data.filter(r => r.status !== 'failed' && r.status !== 'canceled');
         if (refunds.length > 1) fail('guardian_refund_mismatch');
         result = refunds[0];
@@ -70,7 +73,8 @@ export function guardianService({ stripe, rpc, lookupSubscription, logger = cons
             metadata: { dopmi_guardian_cycle: job.cycle_id } }, { idempotencyKey: job.job_key });
         }
         if (!/^re_[A-Za-z0-9]+$/.test(result?.id ?? '') || objectId(result.charge) !== settled.charge_id
-          || result.amount !== settled.refund_cents || result.currency !== 'mxn') fail('guardian_refund_mismatch');
+          || result.amount !== settled.refund_cents || result.currency !== 'mxn'
+          || ('livemode' in result && result.livemode !== expectedLivemode)) fail('guardian_refund_mismatch');
         if (result.status !== 'succeeded') fail('guardian_refund_pending');
       } else fail('guardian_job_invalid');
       await rpc('finish', { job_id: job.id, lease: job.lease, result_id: result.id });

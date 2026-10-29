@@ -10,7 +10,7 @@ const input = { expense_id: '91000000-0000-4000-8000-000000000001',
 function fixture() {
   const donation = { id: '93000000-0000-4000-8000-000000000001', donor_id: actor,
     expense_id: input.expense_id, idempotency_key: input.key, gross_cents: input.gross_cents,
-    payment_status: 'pending', payment_flow: 'native', created_at: new Date().toISOString() };
+    consent_version: oneoffConsentVersion, payment_status: 'pending', payment_flow: 'native', created_at: new Date().toISOString() };
   const state = { loseCreate: false, loseBind: false, status: 'requires_payment_method',
     mutate: value => value, creates: [], reads: [], cancels: [], rpc: [], intents: new Map(), hosted: [],
     cancel: () => { state.status = 'canceled'; } };
@@ -126,7 +126,7 @@ test('missing consent and changed response ownership stop before provider work',
   assert.equal(f.state.creates.length, 0);
 });
 
-test('historical hosted attempt resumes original channel and never creates native intent', async () => {
+test('consent-bound hosted attempt resumes original channel and never creates native intent', async () => {
   const f = fixture(); f.donation.payment_flow = 'hosted';
   assert.equal((await f.service.submit(actor, input)).url, 'https://checkout.stripe.com/synthetic');
   assert.equal(f.state.creates.length, 0);
@@ -175,7 +175,7 @@ for (const finalStatus of ['canceled', 'succeeded', 'processing'])
     const paths = [];
     const pi = () => ({ id: 'pi_synthetic', livemode: false, amount: 10000, amount_received: 10000,
       currency: 'mxn', status: processorStatus, metadata: { dopmi_donation: f.donation.id, consent_version: oneoffConsentVersion },
-      latest_charge: { id: 'ch_synthetic', paid: true, captured: true, disputed: false, amount: 10000,
+      latest_charge: { id: 'ch_synthetic', livemode: false, paid: true, captured: true, disputed: false, amount: 10000,
         currency: 'mxn', amount_refunded: 0, balance_transaction: { currency: 'mxn', amount: 10000, fee: 600 } } });
     const worker = paymentService({ logger: {},
       rpc: async (operation, data) => {

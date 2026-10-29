@@ -1,4 +1,4 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 
 export const savedCardMethodConsentVersion = 'saved-card-methods-2026-10-03';
 
@@ -9,13 +9,14 @@ const active = job => job?.status === 'pending';
 // Independent wallet actions. PostgreSQL must reserve the owner/customer/target
 // under the shared wallet lock and deny these jobs while Guardian is changing.
 // This module cannot select an owner or create a financial obligation.
-export function savedCardMethodService({ stripe, rpc }) {
+export function savedCardMethodService({ stripe, rpc, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   function customerMatches(customer, job) {
-    if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== false)
+    if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== expectedLivemode)
       fail('saved_card_customer_mismatch');
   }
   function methodMatches(method, job, detached = false) {
-    if (method?.id !== job.selected_method_id || method.livemode !== false || method.type !== 'card' ||
+    if (method?.id !== job.selected_method_id || method.livemode !== expectedLivemode || method.type !== 'card' ||
         (detached ? method.customer != null : id(method.customer) !== job.customer_id))
       fail('saved_card_method_owner_mismatch');
   }
@@ -23,7 +24,7 @@ export function savedCardMethodService({ stripe, rpc }) {
     if (!Array.isArray(page?.data) || page.has_more !== false) fail('saved_card_usage_unconfirmed');
     for (const value of page.data) {
       if (!new RegExp(`^${prefix}_[A-Za-z0-9]+$`).test(value?.id ?? '') ||
-          value.livemode !== false || id(value.customer) !== customer)
+          value.livemode !== expectedLivemode || id(value.customer) !== customer)
         fail('saved_card_usage_unconfirmed');
     }
     return page.data;

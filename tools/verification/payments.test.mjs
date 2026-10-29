@@ -267,7 +267,7 @@ const rpc = async (operation,data) => {
 };
 const prepare = (overrides={}) => rpc('prepare',{actor:donor,expense_id:expense,key,gross_cents:10000,...overrides});
 const settle = (id,overrides={}) => rpc('settle',{donation_id:id,currency:'mxn',gross_cents:10000,charge_id:'ch_one',payment_intent_id:'pi_one',stripe_fee_cents:600,...overrides});
-const transferResult = (d,id,amount=9200) => ({id,amount,destination:'acct_test',currency:'mxn',source_transaction:'ch_one',transfer_group:`dopmi_${d.id}`,reversed:false,amount_reversed:0});
+const transferResult = (d,id,amount=9200) => ({id,livemode:false,amount,destination:'acct_test',currency:'mxn',source_transaction:'ch_one',transfer_group:`dopmi_${d.id}`,reversed:false,amount_reversed:0});
 function stripeFixture(d, overrides={}) {
   const calls=[];
   return { calls, stripe:async (path,body,idempotency,account) => {
@@ -275,10 +275,10 @@ function stripeFixture(d, overrides={}) {
     if (Object.hasOwn(overrides,path)) return overrides[path](body,idempotency,account);
     if (path === 'events/evt_intent') return {livemode:false,type:'payment_intent.succeeded',data:{object:{id:'pi_one'}}};
     if (path === 'events/evt_session') return {livemode:false,type:'checkout.session.completed',data:{object:{id:'cs_one'}}};
-    if (path === 'checkout/sessions/cs_one') return {metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
-    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path === 'checkout/sessions/cs_one') return {livemode:false,metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',livemode:false,status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',livemode:false,paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
     if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
-    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'charges/ch_one') return {id:'ch_one',payment_intent:'pi_one',livemode:false,disputed:false,amount_refunded:0};
     if (path === 'transfers') return transferResult(d,'tr_fixture');
     if (path === 'payouts?limit=10') return {data:[]};
     throw new Error(`unexpected Stripe path ${path}`);
@@ -504,7 +504,7 @@ test('scheduled reconciliation finds pending checkouts without an ambiguous SQL 
 test('unsuccessful payment does not confirm, allocate or transfer funds',async () => {
   const d=await prepare();
   const fixture=stripeFixture(d,{
-    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async ()=>({id:'pi_one',status:'requires_payment_method',metadata:{dopmi_donation:d.id}}),
+    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async ()=>({id:'pi_one',livemode:false,status:'requires_payment_method',metadata:{dopmi_donation:d.id}}),
   });
   assert.equal(await serviceFor(fixture.stripe).settleIntent('pi_one',d.id),null);
   const result=await rpc('get',{donation_id:d.id});
@@ -516,7 +516,7 @@ test('expired unpaid checkout releases reservation and never transfers',async ()
   const d=await prepare();
   const fixture=stripeFixture(d,{
     'events/evt_expired':async ()=>({livemode:false,type:'checkout.session.expired',data:{object:{id:'cs_one'}}}),
-    'checkout/sessions/cs_one':async ()=>({metadata:{dopmi_donation:d.id},status:'expired',payment_status:'unpaid'}),
+    'checkout/sessions/cs_one':async ()=>({livemode:false,metadata:{dopmi_donation:d.id},status:'expired',payment_status:'unpaid'}),
   });
   await serviceFor(fixture.stripe).handleWebhook('evt_expired');
   const result=await rpc('get',{donation_id:d.id});
@@ -579,7 +579,7 @@ function refundFixture(d, overrides={}) {
   const reversal={id:'trr_full',transfer:'tr_fixture',amount:9200,currency:'mxn'};
   return stripeFixture(d,{
     'events/evt_external_refund':async ()=>({livemode:false,type:'charge.refunded',data:{object:{id:'ch_one',metadata:{dopmi_donation:d.id}}}}),
-    'charges/ch_one':async ()=>({id:'ch_one',payment_intent:'pi_one',amount:10000,currency:'mxn',disputed:false,amount_refunded:10000}),
+    'charges/ch_one':async ()=>({id:'ch_one',livemode:false,payment_intent:'pi_one',amount:10000,currency:'mxn',disputed:false,amount_refunded:10000}),
     'refunds?charge=ch_one&limit=100':async ()=>({has_more:false,data:[{id:'re_external',charge:'ch_one',currency:'mxn',amount:10000,status:'succeeded'}]}),
     'transfers/tr_fixture':async ()=>({...transferResult(d,'tr_fixture'),reversed,amount_reversed:reversed?9200:0}),
     'transfers/tr_fixture/reversals':async body=>{assert.equal(body.amount,9200);reversed=true;return reversal;},
@@ -691,7 +691,7 @@ test('reversal RPC and audit evidence are inaccessible to clients including admi
 });
 test('partial external refund requests review and never automatically reverses the whole transfer',async () => {
   const d=await transferredDonation(); const fixture=refundFixture(d,{
-    'charges/ch_one':async ()=>({payment_intent:'pi_one',amount_refunded:1000}),
+    'charges/ch_one':async ()=>({livemode:false,payment_intent:'pi_one',amount_refunded:1000}),
   });
   await assert.rejects(()=>serviceFor(fixture.stripe).handleWebhook('evt_external_refund'),/partial_refund_review/);
   assert.equal(fixture.calls.some(c=>c.path.includes('/reversals')),false);
@@ -976,7 +976,7 @@ test('Connect onboarding is resumable and payout status is read from the connect
     if (path === 'accounts/acct_new') return {id:'acct_new',livemode:false,details_submitted:true,
       payouts_enabled:true,capabilities:{transfers:'active'}};
     if (path === 'account_links') return {url:'https://connect.stripe.com/setup/test'};
-    if (path === 'payouts?limit=10') return {data:[{id:'po_one',amount:8000,currency:'mxn',status:'paid',arrival_date:1800000000}]};
+    if (path === 'payouts?limit=10') return {data:[{id:'po_one',livemode:false,amount:8000,currency:'mxn',status:'paid',arrival_date:1800000000}]};
     throw new Error(`unexpected Stripe path ${path}`);
   };
   const service=paymentService({rpc,stripe,returnUrl:'https://example.test/return'});
@@ -996,7 +996,7 @@ test('worker retries a lost Stripe response without creating a second transfer',
   const d=await prepare(); await settle(d.id);
   const calls=[]; let fail=true;
   const stripe=async (path,body,idempotency) => {
-    if (path.startsWith('charges/')) return {disputed:false,amount_refunded:0};
+    if (path.startsWith('charges/')) return {id:'ch_one',payment_intent:'pi_one',livemode:false,disputed:false,amount_refunded:0};
     calls.push({path,body,idempotency});
     if (fail) { fail=false; throw new Error('lost response'); }
     return transferResult(d,'tr_one');
@@ -1015,10 +1015,10 @@ test('webhook finishes its transfer before acknowledging and duplicate events st
   const stripe=async (path,body,idempotency) => {
     calls.push({path,body,idempotency});
     if (path === 'events/evt_paid' || path === 'events/evt_checkout') return {livemode:false,type:path.endsWith('paid')?'payment_intent.succeeded':'checkout.session.completed',data:{object:path.endsWith('paid')?{id:'pi_one'}:{id:'cs_one'}}};
-    if (path === 'checkout/sessions/cs_one') return {metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
-    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path === 'checkout/sessions/cs_one') return {livemode:false,metadata:{dopmi_donation:d.id},payment_status:'paid',payment_intent:'pi_one'};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',livemode:false,status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',livemode:false,paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
     if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
-    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'charges/ch_one') return {id:'ch_one',payment_intent:'pi_one',livemode:false,disputed:false,amount_refunded:0};
     if (path === 'transfers') return transferResult(d,'tr_webhook');
     throw new Error(`unexpected Stripe path ${path}`);
   };
@@ -1036,9 +1036,9 @@ test('webhook returns a retryable failure and leaves its event unfinished when t
   const d=await prepare(); let fail=true;
   const stripe=async (path) => {
     if (path === 'events/evt_retry') return {livemode:false,type:'payment_intent.succeeded',data:{object:{id:'pi_one'}}};
-    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
+    if (path.startsWith('payment_intents/pi_one')) return {id:'pi_one',livemode:false,status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:10000,currency:'mxn',latest_charge:{id:'ch_one',livemode:false,paid:true,captured:true,disputed:false,amount:10000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:10000,currency:'mxn',fee:600}}};
     if (path === 'accounts/acct_test') return {id:'acct_test',payouts_enabled:true,details_submitted:true,capabilities:{transfers:'active'}};
-    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'charges/ch_one') return {id:'ch_one',payment_intent:'pi_one',livemode:false,disputed:false,amount_refunded:0};
     if (path === 'transfers') { if (fail) { fail=false; throw new Error('Stripe unavailable'); } return transferResult(d,'tr_retry'); }
     throw new Error(`unexpected Stripe path ${path}`);
   };
@@ -1057,7 +1057,7 @@ test('an existing confirmed donation can be replayed without creating a checkout
   const calls=[];
   const stripe=async (path,body,idempotency) => {
     calls.push({path,body,idempotency});
-    if (path === 'charges/ch_one') return {disputed:false,amount_refunded:0};
+    if (path === 'charges/ch_one') return {id:'ch_one',payment_intent:'pi_one',livemode:false,disputed:false,amount_refunded:0};
     if (path === 'transfers') return transferResult(d,'tr_replay');
     throw new Error(`unexpected Stripe path ${path}`);
   };
@@ -1265,7 +1265,7 @@ test('Stripe permission failures are processor configuration errors, not user-ac
 test('MXN 50 test payment transfers the actual 4314-cent net using its original charge',async () => {
   const d=await prepare({gross_cents:5000});
   const fixture=stripeFixture(d,{
-    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async () => ({id:'pi_one',status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:5000,currency:'mxn',latest_charge:{id:'ch_one',paid:true,captured:true,disputed:false,amount:5000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:5000,currency:'mxn',fee:586}}}),
+    'payment_intents/pi_one?expand[]=latest_charge.balance_transaction':async () => ({id:'pi_one',livemode:false,status:'succeeded',metadata:{dopmi_donation:d.id},amount_received:5000,currency:'mxn',latest_charge:{id:'ch_one',livemode:false,paid:true,captured:true,disputed:false,amount:5000,currency:'mxn',amount_refunded:0,balance_transaction:{amount:5000,currency:'mxn',fee:586}}}),
     transfers:async () => transferResult(d,'tr_net',4314),
   });
   await serviceFor(fixture.stripe).handleWebhook('evt_intent');
@@ -1396,7 +1396,7 @@ function guardianStripeFixture() {
     amount_paid:5000,amount_remaining:0,amount_due:5000,total:5000,attempt_count:1,attempted:true,starting_balance:0,
     total_taxes:[],total_discount_amounts:[],lines:{has_more:false,total_count:1,data:[{amount:5000,currency:'mxn',quantity:1,
       pricing:{price_details:{price:'price_guardian1'}},parent:{subscription_item_details:{subscription:subscription.id}},taxes:[],discount_amounts:[]}]},
-    payments:{has_more:false,data:[{id:'inpay_guardian1',invoice:'in_guardian1',status:'paid',amount_paid:5000,amount_requested:5000,
+    payments:{has_more:false,data:[{id:'inpay_guardian1',livemode:false,invoice:'in_guardian1',status:'paid',amount_paid:5000,amount_requested:5000,
       payment:{type:'payment_intent',payment_intent:'pi_guardianRenewal1'}}]}};
   const stripe={invoices:{retrieve:async()=>structuredClone(invoice)},subscriptions:{retrieve:async()=>structuredClone(subscription)},
     paymentIntents:{retrieve:async()=>({id:'pi_guardianRenewal1',livemode:false,customer:'cus_guardian1',currency:'mxn',status:'succeeded',amount_received:5000,latest_charge:structuredClone(charge)})},

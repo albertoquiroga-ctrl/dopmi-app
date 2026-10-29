@@ -1,4 +1,4 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 import { registrationPaymentEvidence } from './guardian-registration-payment.mjs';
 import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
 
@@ -6,16 +6,17 @@ const id = value => typeof value === 'string' ? value : value?.id;
 
 // Read-only evidence. Settlement separately rechecks capacity under rescuer
 // locks and assigns all actual net or prepares a full refund, never a part.
-export function registrationSettlementEvidence(attempt, intent) {
+export function registrationSettlementEvidence(attempt, intent, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   const fail = () => { throw new PaymentError('guardian_registration_charge_unconfirmed', 409); };
-  if (registrationPaymentEvidence(attempt, intent).state !== 'processor_succeeded') fail();
+  if (registrationPaymentEvidence(attempt, intent, { expectedLivemode }).state !== 'processor_succeeded') fail();
   // Stripe defaults to asynchronous automatic capture. Success still cannot
   // settle until the same paid/captured charge has its complete balance/fee.
   if (intent.application_fee_amount != null || intent.transfer_data != null ||
       !['automatic', 'automatic_async'].includes(intent.capture_method)) fail();
   const charge = intent.latest_charge;
   if (!charge || typeof charge === 'string' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '') ||
-      charge.livemode !== false || id(charge.payment_intent) !== intent.id ||
+      charge.livemode !== expectedLivemode || id(charge.payment_intent) !== intent.id ||
       id(charge.customer) !== attempt.customer_id || charge.currency !== 'mxn' ||
       charge.amount !== attempt.gross_cents || charge.paid !== true || charge.captured !== true ||
       charge.disputed !== false || charge.amount_refunded !== 0 || charge.refunded !== false ||
@@ -31,11 +32,12 @@ export function registrationSettlementEvidence(attempt, intent) {
     customer_id: attempt.customer_id, payment_method_id: attempt.payment_method_id,
     payment_intent_id: intent.id, charge_id: charge.id, gross_cents: attempt.gross_cents,
     platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net,
-    ...chargePaymentMethodSnapshot(charge) };
+    ...chargePaymentMethodSnapshot(charge, { expectedLivemode }) };
 }
 
-export async function readRegistrationSettlementEvidence(stripe, attempt) {
+export async function readRegistrationSettlementEvidence(stripe, attempt, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   const intent = await stripe.paymentIntents.retrieve(attempt.stripe_payment_intent_id,
     { expand: ['latest_charge.balance_transaction'] });
-  return registrationSettlementEvidence(attempt, intent);
+  return registrationSettlementEvidence(attempt, intent, { expectedLivemode });
 }

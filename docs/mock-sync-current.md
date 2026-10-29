@@ -11,15 +11,24 @@ paridad f693/warm-trust aceptada. Cambios beta aún no publicados como app.
   Faltan cotejoSQL/ACL y configuraciónAuth/secretos/cron; DEVohqx no modificado.
   StripeDashboardDopmiLIVE consultado: charges/payouts/transfers activos, sin due.
   ConectorStripe pide reautenticación; navegador legítimo funciona. Ningún pago.
-- B1 implementado: opt-in --production-beta + entorno/host registrados + clave
-  públicaLIVE, TEST separado; aún sin consumidoresSDK/workflow/consentimientoLIVE.
-  Python27PASS, Flutter19PASS, analyze0 y revisión independiente código/seguridad.
+- B1 fuente35bfbbbd: opt-in --production-beta + entorno/host registrados + clave
+  públicaLIVE, TEST separado. Python27PASS/Flutter19PASS/analyze0; revisiones cerradas.
+  CI40785747436: tresjobsSUCCESS/Flutterfallóformato; corregido localmente,0cambios
+  al repetir formatter de los dos Dart propios. No atribuir CIFlutter aprobada.
+- B2 implementado local: contexto servidor+SQL+cuentaStripe, consentimientos por modo,
+  firmas y objetos ligados, historial/idempotencia preservados. HostednuevoLIVE
+  bloqueado; Android usa componentes integrados. Auth precede runtime financiero.
+  Regresión1074PASS/8SKIP antes de últimos correctivos; focalfinal64PASS/Deno4checks.
+  Código/SQL y dos hallazgos de seguridad cerrados. PgTAP/CIcandidato pendientes.
+- Acceso SupabaseDashboard recuperado con inicio habitual. SQLMCP agotó300s y una
+  sonda25s; no repetir ese canal sin diagnóstico. Cotejo48SQL aún no acreditado.
+  SDKmóvil B4 implementado por agente, pendiente validación en única colaFlutter.
 - Publicado/instalado: sólo último corte comprobado341TEST. No build beta, migración,
   despliegueEdge, escritura de secretos o flags nuevos en esta preparación.
 - Seguimiento4h reactivado: dopmi-beta-real-y-checkpoint-cada-4-horas. Cola finitaB0–B5
   enbacklog. Ventana5min antes de enviar cada candidatoCodemagic para mensajesQA.
 
-Siguiente: integrador completar inventarioPROD y contratoB2; revisión independiente.
+Siguiente: integrador publicar fuenteB2 revisada y completar inventarioPROD; B3.
 Recibos privados .tools/beta-prelaunch-20261028. No repetir cámara/P3/paridad cerrada.
 Conservar privacidad, identidad/firma, datosDEV y estados autorizados por entorno.
 

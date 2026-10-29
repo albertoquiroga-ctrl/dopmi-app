@@ -5,13 +5,13 @@ import { guardianClientEnabled, guardianClientHandler, nativeWalletEnabled } fro
 Deno.serve(guardianClientHandler({
   enabled: () => guardianClientEnabled((name: string) => Deno.env.get(name)),
   walletEnabled: () => nativeWalletEnabled((name: string) => Deno.env.get(name)),
-  registrationMethod: (actor: string, input: { action: string }) => {
-    const service = guardianRuntime().registrationMethod;
+  registrationMethod: async (actor: string, input: { action: string }) => {
+    const service = (await guardianRuntime()).registrationMethod;
     return input.action === 'registration_method' ? service.submit(actor, input) : service.status(actor, input);
   },
-  registrationAction: (actor: string, input: unknown) => guardianRuntime().registrationAction(actor, input),
-  registration: (actor: string, input: { action: string }) => {
-    const service = guardianRuntime().registration;
+  registrationAction: async (actor: string, input: unknown) => (await guardianRuntime()).registrationAction(actor, input),
+  registration: async (actor: string, input: { action: string }) => {
+    const service = (await guardianRuntime()).registration;
     if (input.action === 'register') return service.register(actor, input);
     if (input.action === 'registration_cancel') return service.cancel(actor, input);
     if (input.action === 'registration_amount') return service.changeAmount(actor, input);
@@ -23,16 +23,16 @@ Deno.serve(guardianClientHandler({
     const { data, error } = await db.auth.getUser(token);
     return error ? null : data.user;
   },
-  checkout: (actor: string, input: unknown) => guardianRuntime().initial.checkout(actor, input),
-  defaultMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
-  removeMethod: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
-  addCard: (actor: string, input: unknown) => guardianRuntime().savedCard.checkout(actor, input),
-  nativeAddCard: (actor: string, input: { action: string }) => {
-    const service = guardianRuntime().savedNativeCard;
+  checkout: async (actor: string, input: unknown) => (await guardianRuntime()).initial.checkout(actor, input),
+  defaultMethod: async (actor: string, input: unknown) => (await guardianRuntime()).method.checkout(actor, input),
+  removeMethod: async (actor: string, input: unknown) => (await guardianRuntime()).method.checkout(actor, input),
+  addCard: async (actor: string, input: unknown) => (await guardianRuntime()).savedCard.checkout(actor, input),
+  nativeAddCard: async (actor: string, input: { action: string }) => {
+    const service = (await guardianRuntime()).savedNativeCard;
     return input.action === 'native_add_card' ? service.addSubmit(actor, input) : service.addStatus(actor, input);
   },
-  addWallet: (actor: string, input: unknown) => guardianRuntime().savedWallet.submit(actor, input),
-  savedCardMethod: (actor: string, input: unknown) => guardianRuntime().savedCardMethod.submit(actor, input),
-  methods: (actor: string) => guardianRuntime().methods(actor),
-  method: (actor: string, input: unknown) => guardianRuntime().method.checkout(actor, input),
+  addWallet: async (actor: string, input: unknown) => (await guardianRuntime()).savedWallet.submit(actor, input),
+  savedCardMethod: async (actor: string, input: unknown) => (await guardianRuntime()).savedCardMethod.submit(actor, input),
+  methods: async (actor: string) => (await guardianRuntime()).methods(actor),
+  method: async (actor: string, input: unknown) => (await guardianRuntime()).method.checkout(actor, input),
 }));

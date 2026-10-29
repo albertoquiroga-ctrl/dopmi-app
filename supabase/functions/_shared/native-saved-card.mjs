@@ -1,4 +1,4 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 import { savedCardConsentVersion } from './saved-card.mjs';
 
 const id = value => typeof value === 'string' ? value : value?.id;
@@ -9,9 +9,10 @@ const fail = code => { throw new PaymentError(code, 503); };
 // A card SetupIntent saves authorization only. Registration, payment collection,
 // and allocation remain distinct durable operations. Checkout jobs created by
 // earlier releases resume through their original service and idempotency keys.
-export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
+export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   function matches(setup, job) {
-    if (setup?.id !== job.setup_intent_id || setup.livemode !== false ||
+    if (setup?.id !== job.setup_intent_id || setup.livemode !== expectedLivemode ||
         id(setup.customer) !== job.customer_id || setup.usage !== 'off_session' ||
         setup.metadata?.dopmi_saved_card_job !== job.id || setup.metadata?.wallet_type !== 'card' ||
         setup.metadata?.consent_version !== savedCardConsentVersion ||
@@ -22,7 +23,7 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
       fail('saved_card_setup_mismatch');
   }
   function customerMatches(customer, expected) {
-    if (customer?.id !== expected || customer.deleted || customer.livemode !== false)
+    if (customer?.id !== expected || customer.deleted || customer.livemode !== expectedLivemode)
       fail('saved_card_customer_mismatch');
   }
   async function run(jobId) {
@@ -85,7 +86,7 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
       const methodId = id(setup.payment_method);
       if (!/^pm_[A-Za-z0-9]+$/.test(methodId ?? '')) fail('saved_card_method_mismatch');
       const method = await stripe.paymentMethods.retrieve(methodId);
-      if (method?.id !== methodId || method.livemode !== false || id(method.customer) !== job.customer_id ||
+      if (method?.id !== methodId || method.livemode !== expectedLivemode || id(method.customer) !== job.customer_id ||
           method.type !== 'card' || method.card?.wallet != null) fail('saved_card_method_mismatch');
       return await checkpoint('native_saved', { setup_intent_id: setup.id, payment_method_id: methodId });
     } finally {
@@ -177,7 +178,7 @@ export function nativeSavedCardService({ stripe, rpc, hosted, returnUrl }) {
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('saved_card_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('saved_card_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('saved_card_event_invalid');
     if (!['setup_intent.succeeded', 'setup_intent.canceled', 'setup_intent.setup_failed'].includes(event.type)) return null;
     const job = await rpc('lookup_setup', { setup_intent_id: event.data?.object?.id });
     if (!job) return null;

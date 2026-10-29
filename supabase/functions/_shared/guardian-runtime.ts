@@ -17,17 +17,18 @@ import { guardianRegistrationWorker } from './guardian-registration-worker.mjs';
 import { registrationPaymentReply } from './guardian-registration-rpc.mjs';
 import { guardianRegistrationBankAction } from './guardian-registration-bank-action.mjs';
 import { guardianRefundService } from './guardian-refunds.mjs';
-import { PaymentError, requireTestKey } from './payments.mjs';
+import { PaymentError } from './payments.mjs';
+import { verifiedPaymentEnvironment } from './payment-environment.ts';
 
 // Separate client/version from H4. Creating this runtime requires an explicit
-// test-only worker flag. The client endpoint additionally requires every lifecycle
+// worker flag. The client endpoint additionally requires every lifecycle
 // flag and its own checkout gate; all remain off until integrated acceptance.
-export function guardianRuntime() {
+export async function guardianRuntime() {
   if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') !== 'true')
     throw new PaymentError('guardian_worker_disabled', 503);
-  const key = Deno.env.get('STRIPE_SECRET_KEY_H4_TEST');
-  requireTestKey(key);
-  const stripe = new Stripe(key!, { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, timeout: 20000 });
+  const context = await verifiedPaymentEnvironment();
+  const { expectedLivemode } = context;
+  const stripe = new Stripe(context.secretKey, { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, timeout: 20000 });
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     { auth: { persistSession: false } });
   async function call(name: string, operation: string, data: unknown) {
@@ -36,28 +37,28 @@ export function guardianRuntime() {
     return result.data;
   }
   const settlement = (operation: string, data: unknown) => call('dopmi_guardian_settlement_server', operation, data);
-  const refunds = guardianRefundService({ stripe,
+  const refunds = guardianRefundService({ stripe, expectedLivemode,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_refund_server', operation, data),
   });
-  const service = guardianService({ stripe,
+  const service = guardianService({ stripe, expectedLivemode,
     rpc: settlement,
     lookupSubscription: (stripe_subscription_id: string) => call('dopmi_guardian_subscription_server', 'lookup', { stripe_subscription_id }),
   });
-  const initial = guardianActivationService({ stripe,
+  const initial = guardianActivationService({ stripe, expectedLivemode,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_activation_server', operation, data),
-    settle: settlement, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+    settle: settlement, returnUrl: context.returnUrl,
   });
-  const schedule = guardianScheduleService({ stripe,
+  const schedule = guardianScheduleService({ stripe, expectedLivemode,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_schedule_server', operation, data),
   });
-  const collection = guardianCollectionService({ stripe, reconcileInvoice: service.reconcileInvoice,
+  const collection = guardianCollectionService({ stripe, expectedLivemode, reconcileInvoice: service.reconcileInvoice,
     recoveryRpc: (operation: string, data: unknown) => call('dopmi_guardian_recovery_server', operation, data),
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_collection_server', operation, data),
   });
-  const changes = guardianChangeService({ stripe,
+  const changes = guardianChangeService({ stripe, expectedLivemode,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_change_server', operation, data),
   });
-  const method = guardianMethodService({ stripe,
+  const method = guardianMethodService({ stripe, expectedLivemode,
     rpc: async (operation: string, data: unknown) => {
       const result = await db.rpc('dopmi_guardian_method_server', { operation, data });
       if (result.error) {
@@ -69,18 +70,18 @@ export function guardianRuntime() {
         throw new PaymentError('guardian_database_unavailable', 503);
       }
       return result.data;
-    }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+    }, returnUrl: context.returnUrl,
   });
-  const methods = guardianMethodListService({ stripe, lookup: async (actor: string) => {
+  const methods = guardianMethodListService({ stripe, expectedLivemode, lookup: async (actor: string) => {
     const result = await db.rpc('dopmi_saved_card_owner_server', { target_actor: actor });
     if (result.error) throw new PaymentError('guardian_methods_unavailable', 503);
     return result.data;
   } });
-  const savedCard = savedCardService({ stripe,
+  const savedCard = savedCardService({ stripe, expectedLivemode,
     rpc: (operation: string, data: unknown) => call('dopmi_saved_card_server', operation, data),
-    returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+    returnUrl: context.returnUrl,
   });
-  const savedCardMethod = savedCardMethodService({ stripe,
+  const savedCardMethod = savedCardMethodService({ stripe, expectedLivemode,
     rpc: async (operation: string, data: unknown) => {
       const result = await db.rpc('dopmi_saved_card_method_server', { operation, data });
       if (result.error) {
@@ -94,7 +95,7 @@ export function guardianRuntime() {
       return result.data;
     },
   });
-  const savedWallet = nativeSavedWalletService({ stripe,
+  const savedWallet = nativeSavedWalletService({ stripe, expectedLivemode,
     rpc: async (operation: string, data: unknown) => {
       const result = await db.rpc('dopmi_saved_wallet_server', { operation, data });
       if (result.error) {
@@ -106,11 +107,11 @@ export function guardianRuntime() {
         throw new PaymentError('guardian_database_unavailable', 503);
       }
       return result.data;
-    }, returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+    }, returnUrl: context.returnUrl,
   });
-  const savedNativeCard = nativeSavedCardService({ stripe, hosted: savedCard,
+  const savedNativeCard = nativeSavedCardService({ stripe, expectedLivemode, hosted: savedCard,
     rpc: (operation: string, data: unknown) => call('dopmi_saved_native_card_server', operation, data),
-    returnUrl: `${Deno.env.get('SUPABASE_URL')!}/functions/v1/payment-return`,
+    returnUrl: context.returnUrl,
   });
   const registration = guardianRegistrationService({ savedCard, savedNativeCard,
     rpc: (operation: string, data: unknown) => call('dopmi_guardian_registration_server', operation, data),
@@ -132,7 +133,7 @@ export function guardianRuntime() {
     if (result.error) throw new PaymentError('guardian_database_unavailable', 503);
     return result.data;
   }
-  const registrationPayments = guardianRegistrationWorker({ stripe,
+  const registrationPayments = guardianRegistrationWorker({ stripe, expectedLivemode,
     paymentRpc: async (operation: string, data: unknown) => {
       const result = await db.rpc('dopmi_guardian_registration_payment_server', { operation, data });
       // A valid UUID from untrusted processor metadata may have no binding.
@@ -145,7 +146,7 @@ export function guardianRuntime() {
     resolve: (id: string) => registrationCommand('dopmi_guardian_registration_resolve_payment', { target_attempt: id }),
     settle: (evidence: unknown) => settlement('settle_registration', evidence),
   });
-  const registrationAction = guardianRegistrationBankAction({ stripe,
+  const registrationAction = guardianRegistrationBankAction({ stripe, expectedLivemode,
     authorizeAction: (owner: string, registrationId: string, attemptId: string) => registrationCommand(
       'dopmi_guardian_registration_bank_action', { target_owner: owner, target_registration: registrationId, target_attempt: attemptId }),
   });

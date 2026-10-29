@@ -1,3 +1,4 @@
+import { requireExpectedLivemode } from './payments.mjs';
 import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
 
 // Guardián renewals are never collected from a webhook alone. The server must
@@ -20,24 +21,27 @@ export async function guardianInvoiceCycleKey(subscriptionId, invoiceId) {
   return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
 }
 
-export function guardianRenewalCandidate(invoice, subscription, expected) {
-  return checkGuardianInvoice(invoice, subscription, expected, 'draft');
+export function guardianRenewalCandidate(invoice, subscription, expected, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  return checkGuardianInvoice(invoice, subscription, expected, 'draft', { expectedLivemode });
 }
 
 // Re-read both objects after finalization. The caller must compare the invoice
 // with the identity persisted at reservation time, not an ID supplied by a
 // browser or an untrusted webhook. This check does not authorize a Stripe pay.
-export function guardianFinalizedInvoiceForCollection(invoice, subscription, expected) {
+export function guardianFinalizedInvoiceForCollection(invoice, subscription, expected, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!/^in_[A-Za-z0-9]+$/.test(expected?.invoice_id ?? '') || invoice?.id !== expected.invoice_id)
     throw new GuardianBillingError('invoice_identity_mismatch');
-  return checkGuardianInvoice(invoice, subscription, expected, 'open');
+  return checkGuardianInvoice(invoice, subscription, expected, 'open', { expectedLivemode });
 }
 
 // Recovery may close an attempted but unpaid invoice; it never authorizes a
 // payment. Retain all ownership/amount/line checks and allow a canceled plan.
-export function guardianUnpaidInvoiceForRecovery(invoice, subscription, expected) {
+export function guardianUnpaidInvoiceForRecovery(invoice, subscription, expected, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (invoice?.id !== expected?.invoice_id) throw new GuardianBillingError('invoice_identity_mismatch');
-  checkGuardianInvoiceIdentity(invoice, subscription, expected, 'recovery');
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, 'recovery', { expectedLivemode });
   if (invoice.status !== 'open' || invoice.auto_advance !== false || invoice.collection_method !== 'send_invoice'
     || invoice.currency !== 'mxn' || invoice.total !== expected.gross_cents || invoice.amount_due !== expected.gross_cents
     || invoice.amount_remaining !== expected.gross_cents || invoice.amount_paid !== 0 || invoice.starting_balance !== 0
@@ -50,10 +54,11 @@ export function guardianUnpaidInvoiceForRecovery(invoice, subscription, expected
 // Only a fully paid, undisputed Stripe charge with an expanded balance
 // transaction supplies a trustworthy processor fee. This calculation never
 // creates an allocation, marks a cycle paid, or moves funds by itself.
-export function guardianPaidInvoice(invoice, subscription, expected, invoicePayments, paymentIntent) {
+export function guardianPaidInvoice(invoice, subscription, expected, invoicePayments, paymentIntent, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!/^in_[A-Za-z0-9]+$/.test(expected?.invoice_id ?? '') || invoice?.id !== expected.invoice_id)
     throw new GuardianBillingError('invoice_identity_mismatch');
-  checkGuardianInvoiceIdentity(invoice, subscription, expected, true);
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, true, { expectedLivemode });
   if (invoice.status !== 'paid' || invoice.currency !== 'mxn' || invoice.auto_advance !== false
     || invoice.collection_method !== 'send_invoice' || invoice.amount_paid !== expected.gross_cents
     || invoice.amount_remaining !== 0 || invoice.total !== expected.gross_cents
@@ -68,7 +73,7 @@ export function guardianPaidInvoice(invoice, subscription, expected, invoicePaym
   if (invoicePayments?.has_more !== false || !Array.isArray(payments)
     || payments.length === 0 || successful?.length !== 1
     || payments.some(entry => !/^inpay_[A-Za-z0-9]+$/.test(entry?.id ?? '')
-      || entry.invoice !== invoice.id || (entry !== payment && entry.amount_paid !== 0))
+      || entry.livemode !== expectedLivemode || entry.invoice !== invoice.id || (entry !== payment && entry.amount_paid !== 0))
     || !/^inpay_[A-Za-z0-9]+$/.test(payment?.id ?? '')
     || payment.invoice !== invoice.id || payment.status !== 'paid'
     || payment.amount_requested !== expected.gross_cents
@@ -77,11 +82,11 @@ export function guardianPaidInvoice(invoice, subscription, expected, invoicePaym
     || payment.payment.payment_intent !== paymentIntent?.id)
     throw new GuardianBillingError('invoice_payment_mismatch');
   const charge = paymentIntent?.latest_charge;
-  if (!/^pi_[A-Za-z0-9]+$/.test(paymentIntent?.id ?? '') || paymentIntent?.livemode !== false
+  if (!/^pi_[A-Za-z0-9]+$/.test(paymentIntent?.id ?? '') || paymentIntent?.livemode !== expectedLivemode
     || paymentIntent.status !== 'succeeded' || paymentIntent.customer !== expected.customer_id
     || paymentIntent.currency !== 'mxn' || paymentIntent.amount_received !== expected.gross_cents
     || !charge || typeof charge === 'string' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '')
-    || charge.livemode !== false || charge.payment_intent !== paymentIntent.id
+    || charge.livemode !== expectedLivemode || charge.payment_intent !== paymentIntent.id
     || charge.currency !== 'mxn' || charge.amount !== expected.gross_cents
     || charge.paid !== true || charge.captured !== true || charge.disputed !== false
     || charge.amount_refunded !== 0)
@@ -98,13 +103,14 @@ export function guardianPaidInvoice(invoice, subscription, expected, invoicePaym
     invoice_payment_id: payment.id,
     payment_intent_id: paymentIntent.id, charge_id: charge.id,
     gross_cents: expected.gross_cents, platform_fee_cents: platformFee,
-    stripe_fee_cents: balance.fee, net_cents: net, ...chargePaymentMethodSnapshot(charge) };
+    stripe_fee_cents: balance.fee, net_cents: net, ...chargePaymentMethodSnapshot(charge, { expectedLivemode }) };
 }
 
 // Price evidence after a billing boundary is not evidence of payment. Inspect
 // the exact renewal line without finalizing, paying, editing or voiding it.
-export function guardianInvoicePriceEvidence(invoice, subscription, expected, periodStart) {
-  checkGuardianInvoiceIdentity(invoice, subscription, expected);
+export function guardianInvoicePriceEvidence(invoice, subscription, expected, periodStart, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, false, { expectedLivemode });
   checkInvoiceLine(invoice, expected);
   const period = invoice.lines.data[0].period;
   if (!['draft', 'open', 'paid', 'void'].includes(invoice.status) || invoice.auto_advance !== false
@@ -132,7 +138,8 @@ function checkInvoiceLine(invoice, expected) {
     throw new GuardianBillingError('invoice_line_mismatch');
 }
 
-function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcilingPaid = false) {
+function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcilingPaid = false, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   const subId = invoice?.parent?.subscription_details?.subscription ?? invoice?.subscription;
   const id = typeof subId === 'string' ? subId : subId?.id;
   if (!expected || !/^sub_[A-Za-z0-9]+$/.test(expected.subscription_id ?? '')
@@ -140,8 +147,8 @@ function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcili
     || !/^price_[A-Za-z0-9]+$/.test(expected.price_id ?? '')
     || !Number.isSafeInteger(expected.gross_cents) || expected.gross_cents < 1000 || expected.gross_cents > 1000000)
     throw new GuardianBillingError('invalid_guardian_subscription');
-  if (!/^in_[A-Za-z0-9]+$/.test(invoice?.id ?? '') || invoice?.livemode !== false
-    || subscription?.livemode !== false || id !== expected.subscription_id
+  if (!/^in_[A-Za-z0-9]+$/.test(invoice?.id ?? '') || invoice?.livemode !== expectedLivemode
+    || subscription?.livemode !== expectedLivemode || id !== expected.subscription_id
     || subscription?.id !== expected.subscription_id || invoice?.customer !== expected.customer_id
     || subscription?.customer !== expected.customer_id || invoice?.billing_reason !== 'subscription_cycle')
     throw new GuardianBillingError('invoice_identity_mismatch');
@@ -156,8 +163,9 @@ function checkGuardianInvoiceIdentity(invoice, subscription, expected, reconcili
     throw new GuardianBillingError('billing_not_fail_closed');
 }
 
-function checkGuardianInvoice(invoice, subscription, expected, requiredStatus) {
-  checkGuardianInvoiceIdentity(invoice, subscription, expected);
+function checkGuardianInvoice(invoice, subscription, expected, requiredStatus, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  checkGuardianInvoiceIdentity(invoice, subscription, expected, false, { expectedLivemode });
   if (invoice.status !== requiredStatus || invoice.auto_advance !== false
     || invoice.collection_method !== 'send_invoice' || invoice.attempt_count !== 0)
     throw new GuardianBillingError('invoice_not_safe_to_collect');

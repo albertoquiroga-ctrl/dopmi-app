@@ -3,6 +3,7 @@ import Stripe from 'npm:stripe@22.6.0';
 import { paymentService, PaymentError, paymentLog, stripeApi } from './payments.mjs';
 import { oneoffCaseService } from './oneoff-case.mjs';
 import { oneoffNativeService } from './oneoff-native.mjs';
+import { verifiedPaymentEnvironment } from './payment-environment.ts';
 
 export const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -12,8 +13,20 @@ export const cors = {
 export function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: { ...cors, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 }
-export function runtime() {
-  const url = Deno.env.get('SUPABASE_URL')!;
+export async function paymentActor(req: Request) {
+  const token = req.headers.get('Authorization')?.match(/^Bearer (.+)$/i)?.[1];
+  if (!token) throw new PaymentError('sign_in_required', 401);
+  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+    { auth: { persistSession: false } });
+  const { data, error } = await db.auth.getUser(token);
+  if (error || !data.user || !data.user.email_confirmed_at) throw new PaymentError('sign_in_required', 401);
+  return data.user.id;
+}
+
+export async function runtime() {
+  const context = await verifiedPaymentEnvironment();
+  const { expectedLivemode } = context;
+  const url = context.returnUrl.replace('/functions/v1/payment-return', '');
   const db = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
   const rpc = async (operation: string, data: unknown) => {
     const request = operation === 'refund_begin' || operation === 'refund_finish'
@@ -37,21 +50,18 @@ export function runtime() {
     }
     return result.data;
   };
-  // H4 uses an isolated test key without replacing the pre-existing Stripe
-  // configuration. Production enablement must remove this override explicitly.
-  const stripe = stripeApi(
-    Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ??
-      Deno.env.get('STRIPE_SECRET_KEY'),
-  );
-  const returnUrl = `${url}/functions/v1/payment-return`;
-  const service = paymentService({ rpc, stripe, returnUrl, lookupCustomer: async (actor: string) => {
+  const stripe = stripeApi(context.secretKey, fetch, { expectedLivemode });
+  const returnUrl = context.returnUrl;
+  const service = paymentService({ rpc, stripe, returnUrl, expectedLivemode, lookupCustomer: async (actor: string) => {
     const result = await db.rpc('dopmi_saved_card_owner_server', { target_actor: actor });
     if (result.error) throw new PaymentError('saved_card_customer_unavailable', 503);
     return result.data;
   } });
-  const native = Deno.env.get('DOPMI_ONEOFF_NATIVE_TEST_ENABLED') === 'true'
+  const nativeFlag = expectedLivemode ? 'DOPMI_ONEOFF_NATIVE_ENABLED' : 'DOPMI_ONEOFF_NATIVE_TEST_ENABLED';
+  const native = Deno.env.get(nativeFlag) === 'true'
     ? oneoffNativeService({
-      stripe: new Stripe((Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ?? Deno.env.get('STRIPE_SECRET_KEY'))!,
+      expectedLivemode,
+      stripe: new Stripe(context.secretKey,
         { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, timeout: 20000 }),
       hosted: service,
       rpc: async (operation: string, data: unknown) => {
@@ -62,7 +72,8 @@ export function runtime() {
       },
     }) : null;
   const nativeCase = native ? oneoffCaseService({
-    stripe: new Stripe((Deno.env.get('STRIPE_SECRET_KEY_H4_TEST') ?? Deno.env.get('STRIPE_SECRET_KEY'))!,
+    expectedLivemode,
+    stripe: new Stripe(context.secretKey,
       { apiVersion: '2026-08-26.dahlia', maxNetworkRetries: 0, timeout: 20000 }),
     hosted: service,
     rpc: async (operation: string, data: unknown) => {
@@ -72,14 +83,7 @@ export function runtime() {
       return result.data;
     },
   }) : null;
-  async function actor(req: Request) {
-    const token = req.headers.get('Authorization')?.match(/^Bearer (.+)$/i)?.[1];
-    if (!token) throw new PaymentError('sign_in_required', 401);
-    const { data, error } = await db.auth.getUser(token);
-    if (error || !data.user || !data.user.email_confirmed_at) throw new PaymentError('sign_in_required', 401);
-    return data.user.id;
-  }
-  return { rpc, service, native, nativeCase, actor };
+  return { rpc, service, native, nativeCase, actor: paymentActor };
 }
 export function failure(error: unknown) {
   return json({ error: error instanceof PaymentError ? error.code : 'payment_unavailable' }, error instanceof PaymentError ? Math.min(error.status, 503) : 503);

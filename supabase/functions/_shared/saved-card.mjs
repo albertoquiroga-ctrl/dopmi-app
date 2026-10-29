@@ -1,15 +1,17 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 
 export const savedCardConsentVersion = 'saved-cards-2026-10-03';
 const id = value => typeof value === 'string' ? value : value?.id;
 const fail = code => { throw new PaymentError(code, 503); };
-function customerMatches(customer, expected) {
-  if (customer?.id !== expected || customer.deleted === true || customer.livemode !== false)
+function customerMatches(customer, expected, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  if (customer?.id !== expected || customer.deleted === true || customer.livemode !== expectedLivemode)
     fail('saved_card_customer_mismatch');
 }
-function sessionMatches(session, job) {
-  if (!/^cs_(test_)?[A-Za-z0-9]+$/.test(session?.id ?? '') ||
-      (job.session_id && session.id !== job.session_id) || session.livemode !== false ||
+function sessionMatches(session, job, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  if (!/^cs_(test_|live_)?[A-Za-z0-9]+$/.test(session?.id ?? '') ||
+      (job.session_id && session.id !== job.session_id) || session.livemode !== expectedLivemode ||
       session.mode !== 'setup' || id(session.customer) !== job.customer_id ||
       session.client_reference_id !== job.id || session.metadata?.dopmi_saved_card_job !== job.id ||
       session.metadata?.consent_version !== savedCardConsentVersion ||
@@ -20,7 +22,8 @@ function sessionMatches(session, job) {
 // Add-only: no subscription/customer default update, no PaymentIntent/charge.
 // Durable SQL ownership and leases precede provider writes. No success is inferred
 // from the browser redirect or webhook payload; all three objects are re-read.
-export function savedCardService({ stripe, rpc, returnUrl }) {
+export function savedCardService({ stripe, rpc, returnUrl, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   const address = new URL(returnUrl);
   if (address.protocol !== 'https:' || address.username || address.password || address.search || address.hash)
     fail('saved_card_return_url_invalid');
@@ -42,10 +45,10 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
         const customer = await stripe.customers.create({},
           { idempotencyKey: `dopmi-saved-card-customer:${job.wallet_id}` });
         if (!/^cus_[A-Za-z0-9]+$/.test(customer?.id ?? '')) fail('saved_card_customer_mismatch');
-        customerMatches(customer, customer.id);
+        customerMatches(customer, customer.id, { expectedLivemode });
         await checkpoint('customer', { customer_id: customer.id });
       }
-      customerMatches(await stripe.customers.retrieve(job.customer_id), job.customer_id);
+      customerMatches(await stripe.customers.retrieve(job.customer_id), job.customer_id, { expectedLivemode });
       if (!job.session_id) {
         const suffix = job.id.replaceAll('-', '').slice(0, 8).replace(/[0-9]/g, n => 'abcdefghij'[Number(n)]);
         const created = await stripe.checkout.sessions.create({ mode: 'setup', currency: 'mxn',
@@ -56,24 +59,24 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
           expires_at: Math.floor(Date.parse(job.expires_at) / 1000),
           success_url: job.return_url, cancel_url: job.return_url,
         }, { idempotencyKey: `dopmi-saved-card-session:${job.id}` });
-        sessionMatches(created, job);
+        sessionMatches(created, job, { expectedLivemode });
         await checkpoint('session', { session_id: created.id });
       }
       const session = await stripe.checkout.sessions.retrieve(job.session_id);
-      sessionMatches(session, job);
+      sessionMatches(session, job, { expectedLivemode });
       if (session.status === 'expired') return await checkpoint('expired', { session_id: session.id });
       if (session.status !== 'complete') return job;
       const setupId = id(session.setup_intent);
       if (!/^seti_[A-Za-z0-9]+$/.test(setupId ?? '')) fail('saved_card_setup_mismatch');
       const setup = await stripe.setupIntents.retrieve(setupId);
-      if (setup?.id !== setupId || setup.livemode !== false || id(setup.customer) !== job.customer_id ||
+      if (setup?.id !== setupId || setup.livemode !== expectedLivemode || id(setup.customer) !== job.customer_id ||
           setup.usage !== 'off_session' || setup.metadata?.dopmi_saved_card_job !== job.id ||
           setup.metadata?.consent_version !== savedCardConsentVersion) fail('saved_card_setup_mismatch');
       if (setup.status !== 'succeeded') return job;
       const methodId = id(setup.payment_method);
       if (!/^pm_[A-Za-z0-9]+$/.test(methodId ?? '')) fail('saved_card_method_mismatch');
       const method = await stripe.paymentMethods.retrieve(methodId);
-      if (method?.id !== methodId || method.livemode !== false || id(method.customer) !== job.customer_id ||
+      if (method?.id !== methodId || method.livemode !== expectedLivemode || id(method.customer) !== job.customer_id ||
           method.type !== 'card') fail('saved_card_method_mismatch');
       // The independently recorded consent permits use in future authorized
       // contributions. Setup alone can leave Checkout redisplay unspecified.
@@ -81,7 +84,7 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
         await stripe.paymentMethods.update(methodId, { allow_redisplay: 'always' },
           { idempotencyKey: `dopmi-saved-card-redisplay:${job.id}` });
         const saved = await stripe.paymentMethods.retrieve(methodId);
-        if (saved?.id !== methodId || saved.livemode !== false || id(saved.customer) !== job.customer_id ||
+        if (saved?.id !== methodId || saved.livemode !== expectedLivemode || id(saved.customer) !== job.customer_id ||
             saved.type !== 'card' || saved.allow_redisplay !== 'always')
           fail('saved_card_redisplay_unconfirmed');
       }
@@ -100,7 +103,7 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
     let url = null;
     if (job.status === 'pending' && job.session_id) {
       const session = await stripe.checkout.sessions.retrieve(job.session_id);
-      sessionMatches(session, job);
+      sessionMatches(session, job, { expectedLivemode });
       if (session.status === 'open') {
         const parsed = new URL(session.url);
         if (parsed.protocol !== 'https:' || parsed.hostname !== 'checkout.stripe.com' || parsed.username || parsed.password)
@@ -122,7 +125,7 @@ export function savedCardService({ stripe, rpc, returnUrl }) {
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('saved_card_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('saved_card_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('saved_card_event_invalid');
     if (!['checkout.session.completed', 'checkout.session.expired'].includes(event.type)) return null;
     const job = await rpc('lookup_session', { session_id: event.data?.object?.id });
     if (!job) return null;

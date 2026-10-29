@@ -1,5 +1,6 @@
 import { PaymentError, paymentLog, verifySignature } from '../_shared/payments.mjs';
 import { failure, json, runtime } from '../_shared/runtime.ts';
+import { paymentEnvironment } from '../_shared/payment-environment.ts';
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405);
@@ -8,20 +9,18 @@ Deno.serve(async (req) => {
     if (Number(req.headers.get('Content-Length') ?? 0) > 262144) return json({ error: 'body_too_large' }, 413);
     const body = await req.text();
     if (body.length > 262144) return json({ error: 'body_too_large' }, 413);
-    // H4 uses an isolated sandbox destination without replacing the
-    // programmer's pre-existing webhook configuration.
-    const webhookSecret =
-      Deno.env.get('STRIPE_WEBHOOK_SECRET_H4_TEST') ??
-      Deno.env.get('STRIPE_WEBHOOK_SECRET');
+    const context = paymentEnvironment();
     const event = await verifySignature(
       body,
       req.headers.get('Stripe-Signature'),
-      webhookSecret,
+      context.webhookSecret,
+      Date.now(),
+      { expectedLivemode: context.expectedLivemode },
     );
     eventId = event.id;
     if (Deno.env.get('DOPMI_GUARDIAN_WORKER_ENABLED') === 'true') {
       const { guardianRuntime } = await import('../_shared/guardian-runtime.ts');
-      const guardian = guardianRuntime();
+      const guardian = await guardianRuntime();
       // Reconcile only the already-authorized native attempt behind this PI.
       // Do not gate prior payment evidence on permission for new collections.
       const registrationEvent = await guardian.registrationPayments.handleWebhook(event.id);
@@ -63,7 +62,7 @@ Deno.serve(async (req) => {
         if (calendarEvent) return json(calendarEvent);
       }
     }
-    const { service } = runtime();
+    const { service } = await runtime();
     // The event is durably queued and claimed before processing. Required
     // transfers/refunds finish before the event is marked done; failures return
     // a retryable non-2xx response to Stripe.

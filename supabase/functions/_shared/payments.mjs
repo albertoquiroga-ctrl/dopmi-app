@@ -9,10 +9,19 @@ export function paymentLog(logger, event, fields) {
   try { logger.info?.(JSON.stringify({ event, ...fields })); } catch { /* Logs must not change payment outcomes. */ }
 }
 export function requireTestKey(key) {
-  if (!/^(sk|rk)_test_/.test(key ?? '')) throw new PaymentError('payments_not_configured', 503);
+  requireStripeKey(key);
 }
-export function stripeApi(key, fetcher = fetch) {
-  requireTestKey(key);
+export function requireExpectedLivemode(value) {
+  if (typeof value !== 'boolean') throw new PaymentError('payments_not_configured', 503);
+  return value;
+}
+export function requireStripeKey(key, expectedLivemode = false) {
+  requireExpectedLivemode(expectedLivemode);
+  if (typeof key !== 'string' || !(expectedLivemode ? /^(sk|rk)_live_/ : /^(sk|rk)_test_/).test(key))
+    throw new PaymentError('payments_not_configured', 503);
+}
+export function stripeApi(key, fetcher = fetch, { expectedLivemode = false } = {}) {
+  requireStripeKey(key, expectedLivemode);
   return async (path, fields, idempotencyKey, account) => {
     const headers = { Authorization: `Bearer ${key}`, 'Stripe-Version': '2025-02-24.acacia' };
     if (idempotencyKey) headers['Idempotency-Key'] = idempotencyKey;
@@ -28,11 +37,15 @@ export function stripeApi(key, fetcher = fetch) {
       response.status === 401 || response.status === 403 ? 503 : response.status,
       { source: 'stripe', operation: path.split(/[/?]/)[0], stripe_status: response.status, stripe_request_id: response.headers.get('Request-Id') },
     );
-    if (result.livemode === true) throw new PaymentError('live_mode_rejected');
+    // Some transport objects (including Account) do not expose livemode.
+    // Financial services still require an explicit matching mode as evidence.
+    if ('livemode' in result && result.livemode !== expectedLivemode)
+      throw new PaymentError(expectedLivemode ? 'test_mode_rejected' : 'live_mode_rejected');
     return result;
   };
 }
-export async function verifySignature(body, header, secret, now = Date.now()) {
+export async function verifySignature(body, header, secret, now = Date.now(), { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!secret || !header) throw new PaymentError('invalid_signature', 400);
   const parts = header.split(',').map(v => v.split('='));
   const timestamps = parts.filter(([k]) => k === 't');
@@ -46,15 +59,19 @@ export async function verifySignature(body, header, secret, now = Date.now()) {
   });
   if (!valid) throw new PaymentError('invalid_signature', 400);
   const event = JSON.parse(body);
-  if (event.livemode !== false || !event.id?.startsWith('evt_')) throw new PaymentError('invalid_test_event', 400);
+  if (event.livemode !== expectedLivemode || !event.id?.startsWith('evt_'))
+    throw new PaymentError(expectedLivemode ? 'invalid_live_event' : 'invalid_test_event', 400);
   return event;
 }
 function withinRetryWindow(created) {
   if (!Number.isFinite(Date.parse(created)) || Date.now() - Date.parse(created) > 23 * 3600000) throw new PaymentError('manual_reconciliation_required');
 }
-export function paymentService({ rpc, stripe, returnUrl, logger = console, lookupCustomer = async (_actor) => null }) {
+export function paymentService({ rpc, stripe, returnUrl, logger = console, lookupCustomer = async (_actor) => null, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function refreshAccount(account) {
     const current = await stripe(`accounts/${account.account_id}`);
+    if ('livemode' in current && current.livemode !== expectedLivemode)
+      throw new PaymentError('connect_account_mismatch');
     await rpc('connect_save', { actor: account.owner_id, account_id: current.id,
       transfers_enabled: current.capabilities?.transfers === 'active', payouts_enabled: current.payouts_enabled === true,
       details_submitted: current.details_submitted === true });
@@ -80,10 +97,10 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
           throw new PaymentError('access_denied', 403);
       };
       await validateOwner();
-      // Account has no livemode field. stripeApi requires a test key, and the
-      // AccountSession below must explicitly confirm test mode.
+      // Account has no livemode field. The transport checks its configured key;
+      // AccountSession must explicitly confirm the server's expected mode.
       if (current.object !== 'account' || current.id !== account.account_id ||
-          ('livemode' in current && current.livemode !== false) ||
+          ('livemode' in current && current.livemode !== expectedLivemode) ||
           current.type !== 'express' || current.country !== 'MX')
         throw new PaymentError('connect_account_mismatch');
       const session = await stripe('account_sessions', {
@@ -93,7 +110,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       });
       await validateOwner();
       if (session.object !== 'account_session' || session.account !== account.account_id ||
-          session.livemode !== false || typeof session.client_secret !== 'string' ||
+          session.livemode !== expectedLivemode || typeof session.client_secret !== 'string' ||
           session.client_secret.length < 16 || !Number.isSafeInteger(session.expires_at) ||
           session.expires_at <= Math.floor(Date.now() / 1000) ||
           session.components?.account_onboarding?.enabled !== true ||
@@ -110,6 +127,8 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       return { url: link.url };
     }
     const payouts = await stripe('payouts?limit=10', undefined, undefined, account.account_id);
+    if (payouts.data.some(payout => payout.livemode !== expectedLivemode))
+      throw new PaymentError('payout_mismatch');
     return { ready: account.verified === true && current.capabilities?.transfers === 'active' && current.payouts_enabled === true,
       verified: account.verified === true,
       transfers_enabled: current.capabilities?.transfers === 'active', payouts_enabled: current.payouts_enabled === true,
@@ -117,6 +136,9 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       payouts: payouts.data.map(p => ({ id: p.id, amount: p.amount, currency: p.currency, status: p.status, arrival_date: p.arrival_date })) };
   }
   async function checkout(actor, input) {
+    // LIVE authorization belongs to the consent-bound native payment flow.
+    // Historical payment evidence remains available through reconciliation.
+    if (expectedLivemode) throw new PaymentError('native_checkout_required', 409);
     if (!Number.isSafeInteger(input.gross_cents) || !/^[0-9a-f-]{36}$/i.test(input.key ?? '') || !/^[0-9a-f-]{36}$/i.test(input.expense_id ?? '')) throw new PaymentError('invalid_input', 400);
     const d = await rpc('prepare', { actor, expense_id: input.expense_id, gross_cents: input.gross_cents, key: input.key });
     if (d.payment_flow === 'native') throw new PaymentError('payment_channel_mismatch');
@@ -133,7 +155,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     if (owner != null) {
       if (!/^cus_[A-Za-z0-9]+$/.test(owner.customer_id ?? '')) throw new PaymentError('saved_card_customer_mismatch');
       const current = await stripe(`customers/${owner.customer_id}`);
-      if (current.id !== owner.customer_id || current.deleted === true || current.livemode !== false)
+      if (current.id !== owner.customer_id || current.deleted === true || current.livemode !== expectedLivemode)
         throw new PaymentError('saved_card_customer_mismatch');
       customer = current.id;
     }
@@ -150,14 +172,17 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       expires_at: Math.floor(Date.parse(d.created_at) / 1000) + 3600,
       success_url: `${returnUrl}?flow=payment`, cancel_url: `${returnUrl}?flow=payment`,
     }, `dopmi-checkout-${d.id}`);
+    if (session.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
     await rpc('checkout_save', { donation_id: d.id, session_id: session.id, url: session.url });
     return { donation_id: d.id, url: session.url, status: 'pending' };
   }
   async function settleIntent(id, expectedDonationId) {
     const pi = await stripe(`payment_intents/${id}?expand[]=latest_charge.balance_transaction`);
+    if (pi.id !== id || pi.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
     if (expectedDonationId && pi.metadata?.dopmi_donation !== expectedDonationId) throw new PaymentError('charge_mismatch');
     if (pi.status !== 'succeeded' || !pi.metadata?.dopmi_donation) return null;
     const charge = pi.latest_charge;
+    if (charge?.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
     if (!charge || typeof charge === 'string' || !charge.paid || !charge.captured || charge.disputed) throw new PaymentError('charge_needs_review');
     const d = await rpc('get', { donation_id: pi.metadata.dopmi_donation });
     if (!d || d.gross_cents !== pi.amount_received || charge.currency !== 'mxn' || charge.amount !== d.gross_cents || pi.currency !== 'mxn') throw new PaymentError('charge_mismatch');
@@ -174,23 +199,23 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     await refreshAccount(account);
     return rpc('settle', { donation_id: d.id, currency: pi.currency, gross_cents: pi.amount_received,
       charge_id: charge.id, payment_intent_id: pi.id, stripe_fee_cents: balance.fee,
-      ...chargePaymentMethodSnapshot(charge) });
+      ...chargePaymentMethodSnapshot(charge, { expectedLivemode }) });
   }
   async function reconcileIntent(id, expectedDonationId) {
     let pi = await stripe(`payment_intents/${id}`);
-    if (pi.id !== id || pi.livemode !== false || pi.metadata?.dopmi_donation !== expectedDonationId)
+    if (pi.id !== id || pi.livemode !== expectedLivemode || pi.metadata?.dopmi_donation !== expectedDonationId)
       throw new PaymentError('charge_mismatch');
     const d = await rpc('get', { donation_id: expectedDonationId });
     if (!d || d.stripe_payment_intent_id !== id || d.currency !== pi.currency || d.gross_cents !== pi.amount)
       throw new PaymentError('charge_mismatch');
-    if (pi.metadata?.consent_version === 'oneoff-test-2026-10-15' &&
+    if (pi.metadata?.consent_version === (expectedLivemode ? 'oneoff-live-2026-10-28' : 'oneoff-test-2026-10-15') &&
         Date.now() - Date.parse(d.created_at) >= 3600000 &&
         ['requires_payment_method', 'requires_confirmation', 'requires_action'].includes(pi.status)) {
       try {
         await stripe(`payment_intents/${id}/cancel`, {}, `dopmi-native-oneoff-expire-${d.id}`);
       } catch { /* Read after a lost response or a racing confirmation. */ }
       pi = await stripe(`payment_intents/${id}`);
-      if (pi.id !== id || pi.livemode !== false || pi.metadata?.dopmi_donation !== expectedDonationId ||
+      if (pi.id !== id || pi.livemode !== expectedLivemode || pi.metadata?.dopmi_donation !== expectedDonationId ||
           d.currency !== pi.currency || d.gross_cents !== pi.amount) throw new PaymentError('charge_mismatch');
     }
     if (pi.status === 'canceled') {
@@ -200,6 +225,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     return settleIntent(id, expectedDonationId);
   }
   async function reconcileSession(session, expectedDonationId) {
+    if (session.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
     if (expectedDonationId && session.metadata?.dopmi_donation !== expectedDonationId) throw new PaymentError('charge_mismatch');
     if (!session.metadata?.dopmi_donation) return null;
     if (session.payment_status === 'paid') return settleIntent(typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id, session.metadata.dopmi_donation);
@@ -209,7 +235,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
   async function processEvent(payload) {
     // Read current processor state; delivery order and duplicates are irrelevant.
     const event = await stripe(`events/${payload.event_id}`);
-    if (event.livemode !== false) throw new PaymentError('live_mode_rejected');
+    if (event.livemode !== expectedLivemode) throw new PaymentError(expectedLivemode ? 'test_mode_rejected' : 'live_mode_rejected');
     const object = event.data.object;
     if (event.type === 'account.updated') {
       const account = await rpc('lookup_account', { account_id: object.id });
@@ -227,10 +253,12 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       await reconcileIntent(object.id, object.metadata.dopmi_donation);
     } else if (event.type === 'charge.dispute.created') {
       const charge = await stripe(`charges/${object.charge}`);
+      if (charge.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
       if (charge.payment_intent) await rpc('hold', { payment_intent_id: charge.payment_intent });
     } else if (event.type === 'charge.refunded' && object.metadata?.dopmi_donation) {
       const d = await rpc('get', { donation_id: object.metadata.dopmi_donation });
       const charge = await stripe(`charges/${object.id}`);
+      if (charge.livemode !== expectedLivemode) throw new PaymentError('charge_mismatch');
       if (d && charge.amount_refunded > d.refund_cents) {
         if (charge.amount_refunded !== d.gross_cents) {
           await rpc('hold', { payment_intent_id: charge.payment_intent });
@@ -253,18 +281,18 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
   async function reverseRefundedTransfer(job) {
     const d = await rpc('get', { donation_id: job.donation_id });
     const charge = await stripe(`charges/${d.stripe_charge_id}`);
-    if (charge.id !== d.stripe_charge_id || charge.payment_intent !== d.stripe_payment_intent_id
+    if (charge.livemode !== expectedLivemode || charge.id !== d.stripe_charge_id || charge.payment_intent !== d.stripe_payment_intent_id
       || charge.currency !== d.currency || charge.amount !== d.gross_cents || charge.disputed) throw new PaymentError('charge_mismatch');
     if (charge.amount_refunded !== d.gross_cents) throw new PaymentError('refund_not_complete', 503);
     const refunds = await stripe(`refunds?charge=${d.stripe_charge_id}&limit=100`);
     const succeeded = refunds.data.filter(r => r.status === 'succeeded');
-    if (refunds.has_more || succeeded.length === 0 || succeeded.some(r => r.charge !== d.stripe_charge_id || r.currency !== d.currency || !r.id?.startsWith('re_') || !Number.isSafeInteger(r.amount) || r.amount <= 0)
+    if (refunds.has_more || succeeded.length === 0 || succeeded.some(r => r.charge !== d.stripe_charge_id || r.currency !== d.currency || !r.id?.startsWith('re_') || !Number.isSafeInteger(r.amount) || r.amount <= 0 || ('livemode' in r && r.livemode !== expectedLivemode))
       || succeeded.reduce((sum,r) => sum+r.amount,0) !== d.gross_cents) throw new PaymentError('refund_not_complete', 503);
     const account = await rpc('lookup_account', { account_id: d.destination });
     if (!account || account.owner_id !== d.rescuer_id) throw new PaymentError('destination_mismatch');
     let transfer = await stripe(`transfers/${d.stripe_transfer_id}`);
     const validate = t => {
-      if (t.id !== d.stripe_transfer_id || t.amount !== d.allocated_cents || t.currency !== d.currency
+      if (t.livemode !== expectedLivemode || t.id !== d.stripe_transfer_id || t.amount !== d.allocated_cents || t.currency !== d.currency
         || t.destination !== d.destination || t.source_transaction !== d.stripe_charge_id
         || t.transfer_group !== `dopmi_${d.id}`) throw new PaymentError('transfer_mismatch');
     };
@@ -279,7 +307,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     const reversals = await stripe(`transfers/${transfer.id}/reversals?limit=100`);
     // Partial/manual reversals require separate reconciliation; never guess an amount.
     const reversal = reversals.data.find(r => r.transfer === transfer.id && r.amount === d.allocated_cents && r.currency === d.currency && r.id?.startsWith('trr_'));
-    if (reversals.has_more || reversals.data.length !== 1 || !reversal) throw new PaymentError('transfer_mismatch');
+    if (reversals.has_more || reversals.data.length !== 1 || !reversal || ('livemode' in reversal && reversal.livemode !== expectedLivemode)) throw new PaymentError('transfer_mismatch');
     await rpc('refund_finish', { job_id: job.id, lease: job.lease, charge_id: charge.id, transfer_id: transfer.id,
       refund_id: succeeded[0].id, refund_ids: succeeded.map(r => r.id), refund_cents: d.gross_cents,
       reversal_id: reversal.id, reversed_cents: transfer.amount_reversed });
@@ -297,20 +325,24 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       } else {
         const d = await rpc('get', { donation_id: job.donation_id });
         if (!d?.processed_at || d.payment_status !== 'confirmed') throw new PaymentError('unconfirmed_payment');
+        const charge = await stripe(`charges/${d.stripe_charge_id}`);
+        if (charge.livemode !== expectedLivemode || charge.id !== d.stripe_charge_id ||
+            charge.payment_intent !== d.stripe_payment_intent_id) throw new PaymentError('charge_mismatch');
         if (job.kind === 'transfer') {
           if (d.transfer_status === 'reversed') throw new PaymentError('charge_needs_review');
           const account = await rpc('lookup_account', { account_id: d.destination });
           if (!account || account.owner_id !== d.rescuer_id) throw new PaymentError('destination_mismatch');
-          const charge = await stripe(`charges/${d.stripe_charge_id}`);
           if (charge.disputed || charge.amount_refunded > d.refund_cents) throw new PaymentError('charge_needs_review');
           result = await stripe('transfers', { amount: d.allocated_cents, currency: 'mxn', destination: d.destination,
             source_transaction: d.stripe_charge_id, transfer_group: `dopmi_${d.id}`, 'metadata[dopmi_donation]': d.id }, `dopmi-transfer-${d.id}`);
-          if (!result.id?.startsWith('tr_') || result.amount !== d.allocated_cents || result.currency !== 'mxn'
+          if (result.livemode !== expectedLivemode || !result.id?.startsWith('tr_') || result.amount !== d.allocated_cents || result.currency !== 'mxn'
             || result.destination !== d.destination || result.source_transaction !== d.stripe_charge_id
             || result.transfer_group !== `dopmi_${d.id}` || result.reversed || result.amount_reversed > 0) throw new PaymentError('transfer_mismatch');
         } else {
           result = await stripe('refunds', { charge: d.stripe_charge_id, amount: d.refund_cents, 'metadata[dopmi_donation]': d.id }, `dopmi-refund-${d.id}`);
+          if ('livemode' in result && result.livemode !== expectedLivemode) throw new PaymentError('refund_not_complete', 503);
           if (result.status !== 'succeeded') result = await stripe(`refunds/${result.id}`);
+          if ('livemode' in result && result.livemode !== expectedLivemode) throw new PaymentError('refund_not_complete', 503);
           if (result.status !== 'succeeded') throw new PaymentError('refund_not_complete', 503);
         }
       }

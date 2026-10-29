@@ -1,5 +1,5 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
 const id = value => typeof value === 'string' ? value : value?.id;
@@ -12,16 +12,18 @@ export function guardianMonthlyAnchor(created) {
   return { config, next };
 }
 
-function checkPrice(price, a, expectedId) {
+function checkPrice(price, a, expectedId, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!/^price_[A-Za-z0-9]+$/.test(price?.id ?? '') || (expectedId && price.id !== expectedId)
-    || price.livemode !== false || price.active !== true || price.currency !== 'mxn' || price.unit_amount !== a.gross_cents
+    || price.livemode !== expectedLivemode || price.active !== true || price.currency !== 'mxn' || price.unit_amount !== a.gross_cents
     || price.recurring?.interval !== 'month' || price.recurring?.interval_count !== 1 || price.recurring?.usage_type !== 'licensed'
     || price.billing_scheme !== 'per_unit' || price.transform_quantity != null) fail('guardian_schedule_price_mismatch');
 }
-function checkSubscription(sub, job, setup = true) {
+function checkSubscription(sub, job, setup = true, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   const a = job.activation, item = sub?.items?.data?.[0];
   if (!/^sub_[A-Za-z0-9]+$/.test(sub?.id ?? '') || (job.subscription_id && sub.id !== job.subscription_id)
-    || sub.livemode !== false || id(sub.customer) !== a.customer_id || sub.status !== 'active'
+    || sub.livemode !== expectedLivemode || id(sub.customer) !== a.customer_id || sub.status !== 'active'
     || sub.collection_method !== 'send_invoice' || sub.days_until_due !== 1
     || id(sub.default_payment_method) !== a.payment_method_id || sub.automatic_tax?.enabled !== false
     || sub.items?.has_more !== false || sub.items?.data?.length !== 1 || item.quantity !== 1
@@ -34,13 +36,14 @@ function checkSubscription(sub, job, setup = true) {
 const isPaused = sub => sub.pause_collection?.behavior === 'keep_as_draft' && sub.pause_collection.resumes_at == null
   && sub.cancel_at_period_end === false && sub.cancel_at == null;
 
-// Server-only, test-key runtime. No invoice is paid here. Creation is guarded
+// Server-only, mode-bound runtime. No invoice is paid here. Creation is guarded
 // by end-of-period cancellation; only an atomic pause+uncancel update removes
 // that guard. Fixed request keys and persisted checkpoints recover lost replies.
-export function guardianScheduleService({ stripe, rpc, logger = console, now = () => Date.now() }) {
+export function guardianScheduleService({ stripe, rpc, logger = console, now = () => Date.now(), expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function stopSetup(job) {
     const owned = sub => {
-      if (sub?.id !== job.subscription_id || sub.livemode !== false || id(sub.customer) !== job.activation.customer_id)
+      if (sub?.id !== job.subscription_id || sub.livemode !== expectedLivemode || id(sub.customer) !== job.activation.customer_id)
         fail('guardian_schedule_subscription_mismatch');
     };
     let sub = await stripe.subscriptions.retrieve(job.subscription_id);
@@ -58,14 +61,14 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
     const a = await rpc('source', { cycle_id: cycleId });
     const s = a.settlement;
     const charge = await stripe.charges.retrieve(s.charge_id);
-    if (charge?.id !== s.charge_id || charge.livemode !== false || id(charge.payment_intent) !== s.payment_intent_id
+    if (charge?.id !== s.charge_id || charge.livemode !== expectedLivemode || id(charge.payment_intent) !== s.payment_intent_id
       || id(charge.customer) !== a.customer_id || charge.amount !== a.gross_cents || charge.currency !== 'mxn'
       || charge.paid !== true || charge.captured !== true || charge.disputed !== false || charge.amount_refunded !== 0)
       fail('guardian_schedule_charge_mismatch');
     const customer = await stripe.customers.retrieve(a.customer_id);
     const method = await stripe.paymentMethods.retrieve(a.payment_method_id);
-    if (customer?.id !== a.customer_id || customer.deleted === true || customer.livemode !== false || customer.balance !== 0
-      || method?.id !== a.payment_method_id || method.livemode !== false || id(method.customer) !== a.customer_id)
+    if (customer?.id !== a.customer_id || customer.deleted === true || customer.livemode !== expectedLivemode || customer.balance !== 0
+      || method?.id !== a.payment_method_id || method.livemode !== expectedLivemode || id(method.customer) !== a.customer_id)
       fail('guardian_schedule_customer_mismatch');
     let stripeNow = Math.floor(now() / 1000);
     if (customer.test_clock) {
@@ -98,7 +101,7 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
         currency: 'mxn', unit_amount: a.gross_cents, recurring: { interval: 'month', interval_count: 1 },
         product_data: { name: `Guardián mensual ${a.gross_cents / 100} MXN` },
       }, { idempotencyKey: `guardian-price:${cycleId}` });
-      checkPrice(price, a, job.price_id);
+      checkPrice(price, a, job.price_id, { expectedLivemode });
       if (!job.price_id) await checkpoint('price', { price_id: price.id });
       let sub = job.subscription_id ? await stripe.subscriptions.retrieve(job.subscription_id)
         : await stripe.subscriptions.create({ customer: a.customer_id, default_payment_method: a.payment_method_id,
@@ -108,7 +111,7 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
         }, { idempotencyKey: `guardian-subscription:${cycleId}` });
       // A previous cancellation may have succeeded with its response lost.
       if (job.activation.cancellation_requested_at && job.subscription_id) return await stopSetup(job);
-      checkSubscription(sub, job);
+      checkSubscription(sub, job, true, { expectedLivemode });
       if (!isPaused(sub) && sub.cancel_at_period_end !== true) fail('guardian_schedule_missing_guard');
       if (!job.subscription_id) await checkpoint('subscription', { subscription_id: sub.id });
       job = await rpc('get', { cycle_id: cycleId });
@@ -119,7 +122,7 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
           cancel_at_period_end: false, proration_behavior: 'none' }, { idempotencyKey: `guardian-pause:${cycleId}` });
       }
       sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      checkSubscription(sub, job);
+      checkSubscription(sub, job, true, { expectedLivemode });
       if (!isPaused(sub)) fail('guardian_schedule_pause_unconfirmed');
       return await checkpoint('ready');
     } catch (error) {
@@ -150,7 +153,7 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('guardian_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('guardian_event_invalid');
     if (!['customer.subscription.updated', 'customer.subscription.deleted'].includes(event.type)) return null;
     return syncSubscription(event.data?.object?.id);
   }
@@ -164,11 +167,11 @@ export function guardianScheduleService({ stripe, rpc, logger = console, now = (
       }
       if (job.lifecycle_pending) return { received: true, guardian_schedule: true };
       const sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      if (sub.id !== job.subscription_id || sub.livemode !== false || id(sub.customer) !== job.activation.customer_id)
+      if (sub.id !== job.subscription_id || sub.livemode !== expectedLivemode || id(sub.customer) !== job.activation.customer_id)
         fail('guardian_schedule_subscription_mismatch');
       if (sub.status === 'canceled') await rpc('canceled', { cycle_id: job.cycle_id, subscription_id: sub.id });
       else if (job.status === 'ready') {
-        try { checkSubscription(sub, job, false); if (!isPaused(sub)) fail('guardian_schedule_pause_unconfirmed'); }
+        try { checkSubscription(sub, job, false, { expectedLivemode }); if (!isPaused(sub)) fail('guardian_schedule_pause_unconfirmed'); }
         catch (error) { await rpc('attention', { cycle_id: job.cycle_id, subscription_id: sub.id,
           expected_price_id: job.price_id, expected_method_id: job.activation.payment_method_id }); throw error; }
       }

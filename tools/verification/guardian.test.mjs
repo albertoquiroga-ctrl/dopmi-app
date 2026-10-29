@@ -145,7 +145,7 @@ const paymentIntent = { id: 'pi_guardian1', livemode: false, customer: subscript
   latest_charge: { id: 'ch_guardian1', livemode: false, payment_intent: 'pi_guardian1',
     currency: 'mxn', amount: 5000, paid: true, captured: true, disputed: false,
     amount_refunded: 0, balance_transaction: { currency: 'mxn', amount: 5000, fee: 586 } } };
-const invoicePayments = { has_more: false, data: [{ id: 'inpay_guardian1', invoice: invoice.id,
+const invoicePayments = { has_more: false, data: [{ id: 'inpay_guardian1', livemode: false, invoice: invoice.id,
   status: 'paid', amount_requested: 5000, amount_paid: 5000,
   payment: { type: 'payment_intent', payment_intent: paymentIntent.id } }] };
 
@@ -159,7 +159,7 @@ test('paid invoice needs processor confirmation before calculating the full assi
   });
   assert.equal(guardianPaidInvoice({ ...paid, attempt_count: 2 }, subscription, saved,
     { ...invoicePayments, data: [
-      { id: 'inpay_failed', invoice: paid.id, status: 'open', amount_paid: 0 },
+      { id: 'inpay_failed', livemode: false, invoice: paid.id, status: 'open', amount_paid: 0 },
       ...invoicePayments.data,
     ] }, paymentIntent).net_cents, 4314);
   for (const changed of [{ amount_paid: 0 }, { amount_remaining: 5000 }, { status: 'open' },
@@ -177,7 +177,7 @@ test('paid invoice needs processor confirmation before calculating the full assi
     { ...invoicePayments, has_more: true }, paymentIntent), /invoice_payment_mismatch/);
   assert.throws(() => guardianPaidInvoice(paid, subscription, saved,
     { ...invoicePayments, data: [
-      { id: 'inpay_other', invoice: paid.id, status: 'open', amount_paid: 100 },
+      { id: 'inpay_other', livemode: false, invoice: paid.id, status: 'open', amount_paid: 100 },
       ...invoicePayments.data,
     ] }, paymentIntent), /invoice_payment_mismatch/);
 });

@@ -1,15 +1,16 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 import { chargePaymentMethodSnapshot } from './payment-method-snapshot.mjs';
 
 export const guardianConsentVersion = 'guardian-2026-09-24';
 const fail = code => { throw new GuardianBillingError(code); };
 const id = value => typeof value === 'string' ? value : value?.id;
-const sessionId = value => /^cs_(test_)?[A-Za-z0-9]+$/.test(value ?? '');
+const sessionId = value => /^cs_(test_|live_)?[A-Za-z0-9]+$/.test(value ?? '');
 
-function checkSession(session, activation) {
+function checkSession(session, activation, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!sessionId(session?.id) || (activation.session_id && activation.session_id !== session.id)
-    || session.livemode !== false || session.mode !== 'payment'
+    || session.livemode !== expectedLivemode || session.mode !== 'payment'
     || session.client_reference_id !== activation.cycle_id || session.currency !== 'mxn'
     || session.amount_total !== activation.gross_cents || session.amount_subtotal !== activation.gross_cents
     || !(session.expires_at === Math.floor(Date.parse(activation.checkout_expires_at) / 1000)
@@ -25,27 +26,29 @@ function checkSession(session, activation) {
 
 // The persisted Checkout ID is the ownership boundary. Neither redirect
 // parameters nor metadata supplied by a browser may establish a payment.
-function initialCharge(session, intent, activation) {
-  checkSession(session, activation);
+function initialCharge(session, intent, activation, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  checkSession(session, activation, { expectedLivemode });
   if (session.status !== 'complete' || session.payment_status !== 'paid') fail('guardian_initial_unpaid');
   const customer = id(session.customer), method = id(intent?.payment_method);
   const charge = intent?.latest_charge;
   if (!/^cus_[A-Za-z0-9]+$/.test(customer ?? '') || !/^pm_[A-Za-z0-9]+$/.test(method ?? '')
     || !/^pi_[A-Za-z0-9]+$/.test(intent?.id ?? '') || id(session.payment_intent) !== intent.id
-    || intent.livemode !== false || intent.status !== 'succeeded' || id(intent.customer) !== customer
+    || intent.livemode !== expectedLivemode || intent.status !== 'succeeded' || id(intent.customer) !== customer
     || intent.amount !== activation.gross_cents || intent.amount_received !== activation.gross_cents
     || intent.currency !== 'mxn' || intent.setup_future_usage !== 'off_session'
     || intent.application_fee_amount != null || intent.transfer_data != null
     || !charge || typeof charge === 'string' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '')
-    || charge.livemode !== false || id(charge.payment_intent) !== intent.id || id(charge.customer) !== customer
+    || charge.livemode !== expectedLivemode || id(charge.payment_intent) !== intent.id || id(charge.customer) !== customer
     || charge.amount !== activation.gross_cents || charge.currency !== 'mxn'
     || charge.paid !== true || charge.captured !== true || typeof charge.disputed !== 'boolean' || charge.amount_refunded !== 0)
     fail('guardian_initial_charge_mismatch');
   return { customer, method, charge };
 }
 
-export function guardianInitialEvidence(session, intent, activation) {
-  const { customer, method, charge } = initialCharge(session, intent, activation);
+export function guardianInitialEvidence(session, intent, activation, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  const { customer, method, charge } = initialCharge(session, intent, activation, { expectedLivemode });
   if (charge.disputed) fail('guardian_initial_disputed');
   const balance = charge.balance_transaction;
   if (!balance || typeof balance === 'string' || id(balance.source) !== charge.id
@@ -58,10 +61,11 @@ export function guardianInitialEvidence(session, intent, activation) {
   return { donor_id: activation.donor_id, checkout_session_id: session.id,
     customer_id: customer, payment_method_id: method, payment_intent_id: intent.id, charge_id: charge.id,
     gross_cents: activation.gross_cents, platform_fee_cents: platform, stripe_fee_cents: balance.fee, net_cents: net,
-    ...chargePaymentMethodSnapshot(charge) };
+    ...chargePaymentMethodSnapshot(charge, { expectedLivemode }) };
 }
 
-export function guardianActivationService({ stripe, rpc, settle, returnUrl, logger = console }) {
+export function guardianActivationService({ stripe, rpc, settle, returnUrl, logger = console, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   const returnAddress = new URL(returnUrl);
   if (returnAddress.protocol !== 'https:' || returnAddress.username || returnAddress.password
     || returnAddress.search || returnAddress.hash) fail('guardian_return_url_invalid');
@@ -84,12 +88,12 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     try {
       if (claimed.saved_customer_id) {
         const customer = await stripe.customers.retrieve(claimed.saved_customer_id);
-        if (customer?.id !== claimed.saved_customer_id || customer.deleted === true || customer.livemode !== false)
+        if (customer?.id !== claimed.saved_customer_id || customer.deleted === true || customer.livemode !== expectedLivemode)
           fail('guardian_checkout_customer_mismatch');
       }
       const session = await stripe.checkout.sessions.create(fields(claimed),
         { idempotencyKey: `guardian-checkout:${claimed.cycle_id}` });
-      checkSession(session, claimed);
+      checkSession(session, claimed, { expectedLivemode });
       return await rpc('save_checkout', { cycle_id: claimed.cycle_id, lease: claimed.lease, session_id: session.id });
     } catch (error) {
       await rpc('checkout_failed', { cycle_id: claimed.cycle_id, lease: claimed.lease });
@@ -106,7 +110,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
     if (a.payment_review) return null;
     try {
       let checkout = await stripe.checkout.sessions.retrieve(a.session_id);
-      checkSession(checkout, a);
+      checkSession(checkout, a, { expectedLivemode });
       if (a.cancellation_requested_at && checkout.status === 'open' && checkout.payment_status === 'unpaid') {
         // Expiration may race a completed payment or lose its response. Only
         // the independent read below decides what actually happened.
@@ -114,7 +118,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
           { idempotencyKey: `guardian-expire:${a.cycle_id}` }); }
         catch { /* reconcile the persisted session before retrying */ }
         checkout = await stripe.checkout.sessions.retrieve(a.session_id);
-        checkSession(checkout, a);
+        checkSession(checkout, a, { expectedLivemode });
         if (checkout.status === 'open') fail('guardian_cancel_unconfirmed');
       }
       if (checkout.status === 'expired' && checkout.payment_status === 'unpaid') {
@@ -125,7 +129,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
       if (checkout.payment_status !== 'paid') {
         if (checkout.status === 'complete' && /^pi_[A-Za-z0-9]+$/.test(paymentIntentId ?? '')) {
           const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
-          if (intent?.id !== paymentIntentId || intent.livemode !== false
+          if (intent?.id !== paymentIntentId || intent.livemode !== expectedLivemode
             || id(intent.customer) !== id(checkout.customer) || intent.amount !== a.gross_cents || intent.currency !== 'mxn')
             fail('guardian_initial_charge_mismatch');
           if (['canceled', 'requires_payment_method'].includes(intent.status) && intent.amount_received === 0)
@@ -135,14 +139,14 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
       }
       if (!/^pi_[A-Za-z0-9]+$/.test(paymentIntentId ?? '')) fail('guardian_initial_charge_mismatch');
       const intent = await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge.balance_transaction'] });
-      const { charge } = initialCharge(checkout, intent, a);
+      const { charge } = initialCharge(checkout, intent, a, { expectedLivemode });
       if (charge.disputed) {
         await rpc('review_payment', { cycle_id: a.cycle_id, session_id: a.session_id,
           reason: 'disputed', payment_intent_id: intent.id, charge_id: charge.id,
           gross_cents: a.gross_cents, disputed: true });
         return null;
       }
-      return await settle('settle_initial', guardianInitialEvidence(checkout, intent, a));
+      return await settle('settle_initial', guardianInitialEvidence(checkout, intent, a, { expectedLivemode }));
     } finally { await rpc('checked', { cycle_id: a.cycle_id }); }
   }
   async function checkout(donor, input) {
@@ -151,7 +155,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
       gross_cents: input.gross_cents, consent: true, consent_version: guardianConsentVersion, return_url: returnUrl }));
     if (!a.session_id) return { cycle_id: a.cycle_id, status: a.status, checkout_url: null };
     const session = await stripe.checkout.sessions.retrieve(a.session_id);
-    checkSession(session, a);
+    checkSession(session, a, { expectedLivemode });
     // The return URL never confirms anything; webhooks and reconciliation do.
     let url = null;
     if (!a.cancellation_requested_at && a.status === 'pending' && session.status === 'open' && session.payment_status === 'unpaid') {
@@ -184,7 +188,7 @@ export function guardianActivationService({ stripe, rpc, settle, returnUrl, logg
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('guardian_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('guardian_event_invalid');
     if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded',
       'checkout.session.async_payment_failed', 'checkout.session.expired'].includes(event.type)) return null;
     if (!await rpc('lookup_session', { session_id: event.data?.object?.id })) return null;

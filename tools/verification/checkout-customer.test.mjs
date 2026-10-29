@@ -20,11 +20,11 @@ function fixture(owner, customer={id:'cus_owned',livemode:false}) {
       if(path==='customers/cus_owned')return customer;
       if(path==='checkout/sessions'){
         if(sessions.has(key))assert.deepEqual(body,sessions.get(key).body,'provider rejects changed idempotent parameters');
-        else sessions.set(key,{body:structuredClone(body),session:{id:'cs_one',url:'https://checkout.stripe.com/test'}});
+        else sessions.set(key,{body:structuredClone(body),session:{id:'cs_one',livemode:false,url:'https://checkout.stripe.com/test'}});
         if(state.loseProviderResponse){state.loseProviderResponse=false;throw Error('lost processor response');}
         return structuredClone(sessions.get(key).session);
       }
-      if(path==='checkout/sessions/cs_one')return {id:'cs_one',status:'open',payment_status:'unpaid',metadata:{dopmi_donation:'donation-one'},url:'https://checkout.stripe.com/test'};
+      if(path==='checkout/sessions/cs_one')return {id:'cs_one',livemode:false,status:'open',payment_status:'unpaid',metadata:{dopmi_donation:'donation-one'},url:'https://checkout.stripe.com/test'};
       throw Error(path);
     }});
   return {service,calls,state,sessions};

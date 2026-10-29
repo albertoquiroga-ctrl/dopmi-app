@@ -1,3 +1,4 @@
+import { requireExpectedLivemode } from './payments.mjs';
 import { GuardianBillingError, guardianUnpaidInvoiceForRecovery } from './guardian-billing.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
@@ -8,10 +9,11 @@ const knownStates = new Set([...cancelable, 'processing', 'succeeded']);
 // Invoice default PaymentIntents must be canceled through invoice voiding.
 // Never call pay, confirm, capture or PaymentIntent.cancel from recovery.
 // Unknown/multiple/partly paid objects remain attention without any write.
-export function guardianRecoveryService({ stripe, rpc, paid }) {
+export function guardianRecoveryService({ stripe, rpc, paid, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   function identity(invoice, job) {
     const period = invoice?.lines?.data?.[0]?.period;
-    if (invoice?.id !== job.invoice_id || invoice.livemode !== false || invoice.customer !== job.customer_id
+    if (invoice?.id !== job.invoice_id || invoice.livemode !== expectedLivemode || invoice.customer !== job.customer_id
       || id(invoice.parent?.subscription_details?.subscription) !== job.subscription_id
       || invoice.billing_reason !== 'subscription_cycle' || invoice.currency !== 'mxn'
       || period?.start !== job.period_start || period?.end !== job.period_end)
@@ -27,20 +29,20 @@ export function guardianRecoveryService({ stripe, rpc, paid }) {
     if (invoice.status === 'open') {
       const sub = await stripe.subscriptions.retrieve(job.subscription_id);
       guardianUnpaidInvoiceForRecovery(invoice, sub, { invoice_id: job.invoice_id, subscription_id: job.subscription_id,
-        customer_id: job.customer_id, price_id: job.price_id, gross_cents: job.gross_cents });
+        customer_id: job.customer_id, price_id: job.price_id, gross_cents: job.gross_cents }, { expectedLivemode });
     } else if (![0, job.gross_cents].includes(invoice.amount_remaining)) fail('guardian_recovery_void_unconfirmed');
     const list = await stripe.invoicePayments.list({ invoice: job.invoice_id, limit: 100 });
     const payment = list?.data?.[0];
     if (list?.has_more !== false || !Array.isArray(list.data) || list.data.length !== 1
       || !/^inpay_[A-Za-z0-9]+$/.test(payment?.id ?? '') || id(payment.invoice) !== job.invoice_id
-      || payment.livemode !== false || payment.currency !== 'mxn' || payment.is_default !== true
+      || payment.livemode !== expectedLivemode || payment.currency !== 'mxn' || payment.is_default !== true
       || !['open', 'canceled'].includes(payment.status) || ![null, 0].includes(payment.amount_paid)
       || (payment.amount_requested !== job.gross_cents && !(invoice.status === 'void' && payment.amount_requested === 0))
       || payment.payment?.type !== 'payment_intent' || !/^pi_[A-Za-z0-9]+$/.test(id(payment.payment.payment_intent) ?? '')
       || (job.recovery_invoice_payment_id && job.recovery_invoice_payment_id !== payment.id))
       fail('guardian_recovery_payment_mismatch');
     const intent = await stripe.paymentIntents.retrieve(id(payment.payment.payment_intent), { expand: ['latest_charge'] });
-    if (intent?.id !== id(payment.payment.payment_intent) || intent.livemode !== false || id(intent.customer) !== job.customer_id
+    if (intent?.id !== id(payment.payment.payment_intent) || intent.livemode !== expectedLivemode || id(intent.customer) !== job.customer_id
       || intent.currency !== 'mxn' || intent.amount !== job.gross_cents
       || !Number.isSafeInteger(intent.amount_received) || intent.amount_received < 0 || intent.amount_received > job.gross_cents
       || !Number.isSafeInteger(intent.amount_capturable) || intent.amount_capturable < 0
@@ -53,7 +55,7 @@ export function guardianRecoveryService({ stripe, rpc, paid }) {
       if (intent.amount_received !== 0 || intent.amount_capturable !== 0) fail('guardian_recovery_funds_unconfirmed');
       const charge = intent.latest_charge;
       if (charge != null && (typeof charge !== 'object' || !/^ch_[A-Za-z0-9]+$/.test(charge.id ?? '')
-        || charge.livemode !== false || id(charge.payment_intent) !== intent.id || id(charge.customer) !== job.customer_id
+        || charge.livemode !== expectedLivemode || id(charge.payment_intent) !== intent.id || id(charge.customer) !== job.customer_id
         || charge.currency !== 'mxn' || charge.amount !== job.gross_cents || charge.paid !== false || charge.status !== 'failed'))
         fail('guardian_recovery_charge_unconfirmed');
     }

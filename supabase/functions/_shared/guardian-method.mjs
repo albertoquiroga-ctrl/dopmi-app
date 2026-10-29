@@ -1,18 +1,20 @@
 import { GuardianBillingError } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const id = value => typeof value === 'string' ? value : value?.id;
 const fail = code => { throw new GuardianBillingError(code); };
 const pending = job => ['pending', 'attention'].includes(job?.status);
 const timestamp = n => Number.isSafeInteger(n) && n > 0 && n <= 4102444800;
-function sessionMatches(s, j) {
-  if (!/^cs_(test_)?[A-Za-z0-9]+$/.test(s?.id ?? '') || (j.session_id && s.id !== j.session_id)
-    || s.livemode !== false || s.mode !== 'setup' || id(s.customer) !== j.customer_id
+function sessionMatches(s, j, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  if (!/^cs_(test_|live_)?[A-Za-z0-9]+$/.test(s?.id ?? '') || (j.session_id && s.id !== j.session_id)
+    || s.livemode !== expectedLivemode || s.mode !== 'setup' || id(s.customer) !== j.customer_id
     || s.client_reference_id !== j.id || s.payment_intent != null || s.subscription != null || s.invoice != null
     || (s.currency != null && s.currency !== 'mxn')) fail('guardian_method_session_mismatch');
 }
-function subscriptionMatches(s, j) {
-  if (s?.id !== j.subscription_id || s.livemode !== false || id(s.customer) !== j.customer_id
+function subscriptionMatches(s, j, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  if (s?.id !== j.subscription_id || s.livemode !== expectedLivemode || id(s.customer) !== j.customer_id
     || s.status !== 'active' || s.collection_method !== 'send_invoice' || s.days_until_due !== 1
     || s.pause_collection?.behavior !== 'keep_as_draft' || s.pause_collection.resumes_at != null
     || s.cancel_at_period_end !== false || s.cancel_at != null || s.automatic_tax?.enabled !== false
@@ -28,7 +30,8 @@ const calendar = s => JSON.stringify([s.billing_cycle_anchor, s.items.data[0].cu
 
 // Checkout owns authentication and collection of payment details. This service
 // never confirms/pays an invoice and never exposes a SetupIntent client secret.
-export function guardianMethodService({ stripe, rpc, returnUrl, logger = console }) {
+export function guardianMethodService({ stripe, rpc, returnUrl, logger = console, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   const address = new URL(returnUrl);
   if (address.protocol !== 'https:' || address.username || address.password || address.search || address.hash)
     fail('guardian_return_url_invalid');
@@ -38,19 +41,19 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
       fail('guardian_method_in_use');
     const method = await stripe.paymentMethods.retrieve(methodId);
     const detached = method?.customer == null && job.mutation_requested_at && job.payment_method_id === methodId;
-    if (method?.id !== methodId || method.livemode !== false || method.type !== 'card' ||
+    if (method?.id !== methodId || method.livemode !== expectedLivemode || method.type !== 'card' ||
         (!detached && id(method.customer) !== job.customer_id)) fail('guardian_method_owner_mismatch');
     await checkpoint('verified_saved', { payment_method_id: methodId });
     const sub = await stripe.subscriptions.retrieve(job.subscription_id);
-    subscriptionMatches(sub, job);
+    subscriptionMatches(sub, job, { expectedLivemode });
     const customer = await stripe.customers.retrieve(job.customer_id);
-    if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== false)
+    if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== expectedLivemode)
       fail('guardian_method_owner_mismatch');
     let inUse = id(sub.default_payment_method) === methodId || id(customer.invoice_settings?.default_payment_method) === methodId;
     const subscriptions = await stripe.subscriptions.list({ customer: job.customer_id, status: 'all', limit: 100 });
     if (!Array.isArray(subscriptions?.data) || subscriptions.has_more !== false) fail('guardian_method_usage_unconfirmed');
     for (const item of subscriptions.data) {
-      if (!/^sub_[A-Za-z0-9]+$/.test(item.id ?? '') || item.livemode !== false || id(item.customer) !== job.customer_id ||
+      if (!/^sub_[A-Za-z0-9]+$/.test(item.id ?? '') || item.livemode !== expectedLivemode || id(item.customer) !== job.customer_id ||
           !['incomplete', 'incomplete_expired', 'trialing', 'active', 'past_due', 'canceled', 'unpaid', 'paused'].includes(item.status))
         fail('guardian_method_usage_unconfirmed');
       if (item.status !== 'canceled' && id(item.default_payment_method) === methodId) inUse = true;
@@ -59,7 +62,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
       const invoices = await stripe.invoices.list({ customer: job.customer_id, status, limit: 100 });
       if (!Array.isArray(invoices?.data) || invoices.has_more !== false) fail('guardian_method_usage_unconfirmed');
       for (const invoice of invoices.data) {
-        if (!/^in_[A-Za-z0-9]+$/.test(invoice.id ?? '') || invoice.livemode !== false || id(invoice.customer) !== job.customer_id || invoice.status !== status)
+        if (!/^in_[A-Za-z0-9]+$/.test(invoice.id ?? '') || invoice.livemode !== expectedLivemode || id(invoice.customer) !== job.customer_id || invoice.status !== status)
           fail('guardian_method_usage_unconfirmed');
         if (id(invoice.default_payment_method) === methodId) inUse = true;
       }
@@ -75,8 +78,8 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
     }
     const afterMethod = await stripe.paymentMethods.retrieve(methodId);
     const after = await stripe.subscriptions.retrieve(job.subscription_id);
-    subscriptionMatches(after, job);
-    if (afterMethod?.id !== methodId || afterMethod.livemode !== false || afterMethod.customer != null ||
+    subscriptionMatches(after, job, { expectedLivemode });
+    if (afterMethod?.id !== methodId || afterMethod.livemode !== expectedLivemode || afterMethod.customer != null ||
         id(after.default_payment_method) !== id(sub.default_payment_method) || calendar(after) !== calendar(sub))
       fail('guardian_method_removal_unconfirmed');
     return checkpoint('removed', { payment_method_id: methodId });
@@ -108,31 +111,31 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
             client_reference_id: job.id, integration_identifier: `dopmi_method_${suffix}`,
             expires_at: Math.floor(Date.parse(job.expires_at) / 1000), success_url: job.return_url, cancel_url: job.return_url,
           }, { idempotencyKey: `guardian-method-session:${jobId}` });
-          sessionMatches(created, job);
+          sessionMatches(created, job, { expectedLivemode });
           await checkpoint('session', { session_id: created.id });
         }
         session = await stripe.checkout.sessions.retrieve(job.session_id);
-        sessionMatches(session, job);
+        sessionMatches(session, job, { expectedLivemode });
         if (session.status === 'expired') return await checkpoint('expired', { session_id: session.id });
         if (session.status !== 'complete') return job;
         setupId = id(session.setup_intent);
         if (!/^seti_[A-Za-z0-9]+$/.test(setupId ?? '')) fail('guardian_method_setup_mismatch');
         const setup = await stripe.setupIntents.retrieve(setupId);
-        if (setup?.id !== setupId || setup.livemode !== false || id(setup.customer) !== job.customer_id || setup.usage !== 'off_session')
+        if (setup?.id !== setupId || setup.livemode !== expectedLivemode || id(setup.customer) !== job.customer_id || setup.usage !== 'off_session')
           fail('guardian_method_setup_mismatch');
         if (setup.status !== 'succeeded') return job;
         methodId = id(setup.payment_method);
         if (!/^pm_[A-Za-z0-9]+$/.test(methodId ?? '')) fail('guardian_method_setup_mismatch');
       }
       const method = await stripe.paymentMethods.retrieve(methodId);
-      if (method?.id !== methodId || method.livemode !== false || id(method.customer) !== job.customer_id)
+      if (method?.id !== methodId || method.livemode !== expectedLivemode || id(method.customer) !== job.customer_id)
         fail('guardian_method_owner_mismatch');
       if (job.selected_method_id && method.type !== 'card') fail('guardian_method_owner_mismatch');
       await checkpoint(job.selected_method_id ? 'verified_saved' : 'verified', {
         ...(job.selected_method_id ? {} : { session_id: session.id, setup_intent_id: setupId }),
         payment_method_id: methodId });
       let sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      subscriptionMatches(sub, job);
+      subscriptionMatches(sub, job, { expectedLivemode });
       await checkpoint('snapshot', { billing_anchor: sub.billing_cycle_anchor });
       const before = calendar(sub);
       if (id(sub.default_payment_method) !== methodId || !job.mutation_requested_at) {
@@ -144,7 +147,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
         }
       }
       sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      subscriptionMatches(sub, job);
+      subscriptionMatches(sub, job, { expectedLivemode });
       if (id(sub.default_payment_method) !== methodId || calendar(sub) !== before) fail('guardian_method_unconfirmed');
       return await checkpoint('applied', { payment_method_id: methodId });
     } catch (error) {
@@ -161,7 +164,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
     let url = null;
     if (pending(job) && job.session_id && job.plan_status === 'active' && !job.cancellation_requested_at) {
       const session = await stripe.checkout.sessions.retrieve(job.session_id);
-      sessionMatches(session, job);
+      sessionMatches(session, job, { expectedLivemode });
       if (session.status === 'open') {
         const parsed = new URL(session.url);
         if (parsed.protocol !== 'https:' || parsed.hostname !== 'checkout.stripe.com' || parsed.username || parsed.password)
@@ -186,7 +189,7 @@ export function guardianMethodService({ stripe, rpc, returnUrl, logger = console
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('guardian_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('guardian_event_invalid');
     if (!['checkout.session.completed', 'checkout.session.expired', 'checkout.session.async_payment_succeeded',
       'checkout.session.async_payment_failed'].includes(event.type)) return null;
     const job = await rpc('lookup_session', { session_id: event.data?.object?.id });

@@ -8,7 +8,7 @@ B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuev
 |---|---|---|
 | Entorno | PROD restaurado/healthy, Auth0/Storage0,48migraciones y sieteEdgehistóricas | Cotejo por contenido, ACL/RLS y delta antes de aplicar; no copiarDEV. |
 | Configuracióncliente | B1Python27/Flutter19/analyze0 y revisiones cerradas | Integrar consumidoresSDK/CI/candidato; perfil válido no equivale a betaLIVE. |
-| Dinero/consentimiento | CuentaDopmiLIVE con capacidades activas; código actual aún TEST | B2rechazo de cruces, consentimientoLIVE y firmas/permisos; sin cargos de QA por inferencia. |
+| Dinero/consentimiento | CuentaDopmiLIVE con capacidades activas; B2local revisado,64focalesPASS yDeno4checks | CI/PgTAP/configuración remota pendientes. ModoTEST por defecto; noLIVE por inferencia ni hostednuevo sin contrato. |
 | Usuarios/operación | Invitación/producciónlimpia/reserva20mil/sin tope agregadodecididos | Admisión efectiva servidor, Auth/SMTP/OAuth/admin, webhooks/worker/alertas y operación. |
 | Distribución/aceptación | Última instalación comprobada341TEST | NuevoSHA/artefacto/Play/install/QA/aceptación por separado; cinco minutos preCodemagic. |
 

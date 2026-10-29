@@ -1,24 +1,27 @@
 import { GuardianBillingError, guardianInvoicePriceEvidence } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
 const id = value => typeof value === 'string' ? value : value?.id;
 const empty = value => Array.isArray(value) && value.length === 0;
 const timestamp = value => Number.isSafeInteger(value) && value > 0 && value <= 4102444800;
 
-function identity(sub, job) {
-  if (sub?.id !== job.subscription_id || sub.livemode !== false || id(sub.customer) !== job.customer_id)
+function identity(sub, job, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  if (sub?.id !== job.subscription_id || sub.livemode !== expectedLivemode || id(sub.customer) !== job.customer_id)
     fail('guardian_change_subscription_mismatch');
 }
-function priceMatches(price, expectedId, amount) {
+function priceMatches(price, expectedId, amount, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!/^price_[A-Za-z0-9]+$/.test(price?.id ?? '') || (expectedId && price.id !== expectedId)
-    || price.livemode !== false || price.active !== true || price.currency !== 'mxn' || price.unit_amount !== amount
+    || price.livemode !== expectedLivemode || price.active !== true || price.currency !== 'mxn' || price.unit_amount !== amount
     || price.billing_scheme !== 'per_unit' || price.transform_quantity != null || price.custom_unit_amount != null
     || price.recurring?.interval !== 'month' || price.recurring?.interval_count !== 1 || price.recurring?.usage_type !== 'licensed')
     fail('guardian_change_price_mismatch');
 }
-function safeSubscription(sub, job) {
-  identity(sub, job);
+function safeSubscription(sub, job, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
+  identity(sub, job, { expectedLivemode });
   const item = sub.items?.data?.[0];
   if (sub.status !== 'active' || sub.collection_method !== 'send_invoice' || sub.days_until_due !== 1
     || sub.pause_collection?.behavior !== 'keep_as_draft' || sub.pause_collection.resumes_at != null
@@ -35,10 +38,11 @@ function safeSubscription(sub, job) {
 
 // Changes are scheduled by changing a same-interval price with no proration;
 // the current invoice retains its snapshot. No invoice is paid by this service.
-export function guardianChangeService({ stripe, rpc, logger = console, now = () => Date.now() }) {
+export function guardianChangeService({ stripe, rpc, logger = console, now = () => Date.now(), expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   async function stripeTime(job) {
     const customer = await stripe.customers.retrieve(job.customer_id);
-    if (customer?.id !== job.customer_id || customer.deleted === true || customer.livemode !== false || customer.balance !== 0)
+    if (customer?.id !== job.customer_id || customer.deleted === true || customer.livemode !== expectedLivemode || customer.balance !== 0)
       fail('guardian_change_customer_mismatch');
     if (!customer.test_clock) return Math.floor(now() / 1000);
     const clock = await stripe.testHelpers.testClocks.retrieve(id(customer.test_clock));
@@ -57,7 +61,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
       if (!Array.isArray(list.data) || typeof list.has_more !== 'boolean' || list.data.length > 20
         || (list.has_more && list.data.length === 0)) fail('guardian_change_boundary_list_invalid');
       for (const invoice of list.data) {
-        if (!/^in_[A-Za-z0-9]+$/.test(invoice?.id ?? '') || invoice.livemode !== false
+        if (!/^in_[A-Za-z0-9]+$/.test(invoice?.id ?? '') || invoice.livemode !== expectedLivemode
           || id(invoice.parent?.subscription_details?.subscription) !== job.subscription_id
           || seen.has(invoice.id)) fail('guardian_change_boundary_list_invalid');
         seen.add(invoice.id);
@@ -73,7 +77,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
     if (invoice?.id !== invoiceId) fail('guardian_change_boundary_invoice_mismatch');
     try {
       return guardianInvoicePriceEvidence(invoice, sub, { subscription_id: job.subscription_id,
-        customer_id: job.customer_id, price_id: job.price_id, gross_cents: job.new_gross_cents }, job.effective_from);
+        customer_id: job.customer_id, price_id: job.price_id, gross_cents: job.new_gross_cents }, job.effective_from, { expectedLivemode });
     } catch { fail('guardian_change_boundary_invoice_mismatch'); }
   }
   async function run(requestId) {
@@ -90,13 +94,13 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
     const stillPending = () => job.status === 'pending';
     const finishCanceled = sub => checkpoint('canceled', { subscription_id: sub.id, customer_id: id(sub.customer), status: sub.status });
     async function finishAmount(sub) {
-      const item = safeSubscription(sub, job);
+      const item = safeSubscription(sub, job, { expectedLivemode });
       if (!job.mutation_requested_at || !job.price_id || id(item.price) !== job.price_id || item.id !== job.item_id
         || sub.billing_cycle_anchor !== job.billing_anchor || item.current_period_start < job.period_start
         || item.current_period_end < job.effective_from
         || (item.current_period_start === job.period_start && (item.current_period_end !== job.effective_from
           || (id(sub.latest_invoice) ?? null) !== job.latest_invoice_id))) fail('guardian_change_unconfirmed');
-      priceMatches(await stripe.prices.retrieve(job.price_id), job.price_id, job.new_gross_cents);
+      priceMatches(await stripe.prices.retrieve(job.price_id), job.price_id, job.new_gross_cents, { expectedLivemode });
       const observedTime = await stripeTime(job);
       const crossed = item.current_period_start !== job.period_start || observedTime >= job.effective_from;
       if (crossed && item.current_period_start < job.effective_from) fail('guardian_change_boundary_pending');
@@ -107,7 +111,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
         verified_period_start: item.current_period_start, ...evidence });
     }
     function unchanged(sub) {
-      const item = safeSubscription(sub, job);
+      const item = safeSubscription(sub, job, { expectedLivemode });
       if (id(item.price) !== job.old_price_id || item.id !== job.item_id || item.current_period_start !== job.period_start
         || item.current_period_end !== job.effective_from || sub.billing_cycle_anchor !== job.billing_anchor
         || (id(sub.latest_invoice) ?? null) !== job.latest_invoice_id) fail('guardian_change_calendar_changed');
@@ -115,7 +119,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
     }
     try {
       let sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      identity(sub, job);
+      identity(sub, job, { expectedLivemode });
       if (sub.status === 'canceled') return await finishCanceled(sub);
       if (job.kind === 'cancel') {
         if (!await checkpoint('write')) return await rpc('get', { request_id: requestId });
@@ -125,16 +129,16 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
         await stripe.subscriptions.cancel(job.subscription_id, { invoice_now: false, prorate: false },
           { idempotencyKey: `guardian-change-cancel:${job.subscription_id}` });
         sub = await stripe.subscriptions.retrieve(job.subscription_id);
-        identity(sub, job);
+        identity(sub, job, { expectedLivemode });
         if (sub.status !== 'canceled') fail('guardian_change_cancel_unconfirmed');
         return await finishCanceled(sub);
       }
       if (job.kind !== 'amount') fail('guardian_change_kind_invalid');
-      let item = safeSubscription(sub, job);
+      let item = safeSubscription(sub, job, { expectedLivemode });
       if (job.price_id && id(item.price) === job.price_id && job.mutation_requested_at) return await finishAmount(sub);
       if (!job.item_id) {
         if (id(item.price) !== job.registered_price_id) fail('guardian_change_price_mismatch');
-        priceMatches(await stripe.prices.retrieve(job.registered_price_id), job.registered_price_id, job.previous_gross_cents);
+        priceMatches(await stripe.prices.retrieve(job.registered_price_id), job.registered_price_id, job.previous_gross_cents, { expectedLivemode });
         await checkpoint('snapshot', { item_id: item.id, period_start: item.current_period_start,
           effective_from: item.current_period_end, billing_anchor: sub.billing_cycle_anchor,
           latest_invoice_id: id(sub.latest_invoice) ?? null });
@@ -148,11 +152,11 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
         currency: 'mxn', unit_amount: job.new_gross_cents, recurring: { interval: 'month', interval_count: 1 },
         product_data: { name: `Guardián mensual ${job.new_gross_cents / 100} MXN` },
       }, { idempotencyKey: `guardian-change-price:${requestId}` });
-      priceMatches(price, job.price_id, job.new_gross_cents);
+      priceMatches(price, job.price_id, job.new_gross_cents, { expectedLivemode });
       if (!job.price_id) await checkpoint('price', { price_id: price.id });
       if (!stillPending()) return job;
       sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      item = safeSubscription(sub, job);
+      item = safeSubscription(sub, job, { expectedLivemode });
       if (id(item.price) === job.price_id && job.mutation_requested_at) return await finishAmount(sub);
       unchanged(sub);
       if (await stripeTime(job) >= job.effective_from - 120) fail('guardian_change_too_late');
@@ -164,7 +168,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
       await stripe.subscriptions.update(job.subscription_id, { items: [{ id: job.item_id, price: job.price_id, quantity: 1 }],
         billing_cycle_anchor: 'unchanged', proration_behavior: 'none' }, { idempotencyKey: `guardian-change-amount:${requestId}` });
       sub = await stripe.subscriptions.retrieve(job.subscription_id);
-      identity(sub, job);
+      identity(sub, job, { expectedLivemode });
       if (sub.status === 'canceled') return await finishCanceled(sub);
       return await finishAmount(sub);
     } catch (error) {
@@ -186,7 +190,7 @@ export function guardianChangeService({ stripe, rpc, logger = console, now = () 
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('guardian_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('guardian_event_invalid');
     if (!['customer.subscription.updated', 'customer.subscription.deleted'].includes(event.type)) return null;
     const candidates = await rpc('lookup_subscription', { subscription_id: event.data?.object?.id });
     if (!candidates.length) return null;

@@ -1,4 +1,4 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 import { savedCardConsentVersion } from './saved-card.mjs';
 
 const id = value => typeof value === 'string' ? value : value?.id;
@@ -9,9 +9,10 @@ const fail = code => { throw new PaymentError(code, 503); };
 // The SQL adapter must reserve the owner/customer/provider under the existing
 // saved-card lock, retain an immutable SetupIntent, and enforce the lease.
 // Client calls must reserve the authenticated owner; a caller cannot supply a job ID.
-export function nativeSavedWalletService({ stripe, rpc, returnUrl }) {
+export function nativeSavedWalletService({ stripe, rpc, returnUrl, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   function matches(setup, job) {
-    if (setup?.id !== job.setup_intent_id || setup.livemode !== false ||
+    if (setup?.id !== job.setup_intent_id || setup.livemode !== expectedLivemode ||
         id(setup.customer) !== job.customer_id || setup.usage !== 'off_session' ||
         setup.metadata?.dopmi_saved_card_job !== job.id ||
         setup.metadata?.wallet_type !== job.wallet_type ||
@@ -44,12 +45,12 @@ export function nativeSavedWalletService({ stripe, rpc, returnUrl }) {
         // Share the same stable customer identity as ordinary saved cards.
         const created = await stripe.customers.create({},
           { idempotencyKey: `dopmi-saved-card-customer:${job.wallet_id}` });
-        if (!/^cus_[A-Za-z0-9]+$/.test(created?.id ?? '') || created.deleted || created.livemode !== false)
+        if (!/^cus_[A-Za-z0-9]+$/.test(created?.id ?? '') || created.deleted || created.livemode !== expectedLivemode)
           fail('saved_wallet_customer_mismatch');
         if (!await checkpoint('customer', { customer_id: created.id })) return rpc('get', { id: jobId });
       }
       const customer = await stripe.customers.retrieve(job.customer_id);
-      if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== false)
+      if (customer?.id !== job.customer_id || customer.deleted || customer.livemode !== expectedLivemode)
         fail('saved_wallet_customer_mismatch');
       if (!job.setup_intent_id) {
         if (Date.parse(job.expires_at) <= Date.now()) return checkpoint('expired');
@@ -88,7 +89,7 @@ export function nativeSavedWalletService({ stripe, rpc, returnUrl }) {
       const methodId = id(setup.payment_method);
       if (!/^pm_[A-Za-z0-9]+$/.test(methodId ?? '')) fail('saved_wallet_method_mismatch');
       const method = await stripe.paymentMethods.retrieve(methodId);
-      if (method?.id !== methodId || method.livemode !== false || method.type !== 'card' ||
+      if (method?.id !== methodId || method.livemode !== expectedLivemode || method.type !== 'card' ||
           id(method.customer) !== job.customer_id || method.card?.wallet?.type !== job.wallet_type)
         fail('saved_wallet_method_mismatch');
       return checkpoint('native_saved', { setup_intent_id: setup.id, payment_method_id: methodId });
@@ -141,7 +142,7 @@ export function nativeSavedWalletService({ stripe, rpc, returnUrl }) {
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('saved_wallet_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('saved_wallet_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('saved_wallet_event_invalid');
     if (!['setup_intent.succeeded', 'setup_intent.canceled', 'setup_intent.setup_failed'].includes(event.type)) return null;
     const job = await rpc('lookup_setup', { setup_intent_id: event.data?.object?.id });
     if (!job) return null;

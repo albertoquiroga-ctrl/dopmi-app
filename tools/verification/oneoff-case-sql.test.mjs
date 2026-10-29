@@ -218,6 +218,8 @@ test('case full-refund worker retries response loss with same request, releasing
  const args=op==='claim'?[data.job_key]:op==='finish_job'?[JSON.stringify(data)]:op==='replay_get'?[data.donation_id]:[op,JSON.stringify(data)];
  return (await db.query(query,args)).rows[0].value;
  },stripe:async(path,body,key)=>{
+ if(path==='charges/ch_case')return {id:'ch_case',livemode:false,payment_intent:'pi_case',paid:true,captured:true,
+   disputed:false,currency:'mxn',amount:10000,amount_refunded:0};
  assert.equal(path,'refunds');assert.equal(body.amount,10000);assert.equal(body.charge,'ch_case');calls.push({body,key});
  if(lost){lost=false;throw Error('lost after accepted');}return {id:'re_worker',status:'succeeded'};
  }});

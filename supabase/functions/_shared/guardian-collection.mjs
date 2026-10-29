@@ -1,7 +1,7 @@
 import { guardianRecoveryService } from './guardian-recovery.mjs';
 import { GuardianBillingError, guardianInvoiceCycleKey, guardianRenewalCandidate,
   guardianFinalizedInvoiceForCollection } from './guardian-billing.mjs';
-import { paymentLog } from './payments.mjs';
+import { paymentLog, requireExpectedLivemode } from './payments.mjs';
 
 const fail = code => { throw new GuardianBillingError(code); };
 const id = value => typeof value === 'string' ? value : value?.id;
@@ -12,7 +12,8 @@ const canceled = sub => sub.status === 'canceled' || sub.cancel_at_period_end ==
 // One invoice, one persisted reservation and at most one pay invocation. A lost
 // pay response is recovered through fresh evidence and, for a confirmed unpaid
 // attempt, invoice voiding. Recovery never repeats payment authorization.
-export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileInvoice, logger = console, now = () => Date.now() }) {
+export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileInvoice, logger = console, now = () => Date.now(), expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   function period(invoice) {
     const p = invoice.lines?.data?.[0]?.period;
     if (!Number.isSafeInteger(p?.start) || !Number.isSafeInteger(p?.end) || p.start < 1 || p.end <= p.start)
@@ -20,7 +21,7 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
     return p;
   }
   function identity(invoice, job) {
-    if (invoice?.id !== job.invoice_id || invoice.livemode !== false || invoice.customer !== job.customer_id
+    if (invoice?.id !== job.invoice_id || invoice.livemode !== expectedLivemode || invoice.customer !== job.customer_id
       || id(invoice.parent?.subscription_details?.subscription) !== job.subscription_id
       || invoice.billing_reason !== 'subscription_cycle' || invoice.currency !== 'mxn') fail('invoice_identity_mismatch');
     const p = period(invoice);
@@ -32,8 +33,8 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
     // A canceled subscription can still have a known unpaid invoice to void.
     // This relaxation never permits collection; cancellation is checked again.
     const checking = sub.status === 'canceled' ? { ...sub, status: 'active' } : sub;
-    if (invoice.status === 'draft') guardianRenewalCandidate(invoice, checking, expected(job));
-    else guardianFinalizedInvoiceForCollection(invoice, checking, expected(job));
+    if (invoice.status === 'draft') guardianRenewalCandidate(invoice, checking, expected(job), { expectedLivemode });
+    else guardianFinalizedInvoiceForCollection(invoice, checking, expected(job), { expectedLivemode });
   }
   async function prepare(invoice) {
     const subscriptionId = id(invoice.parent?.subscription_details?.subscription);
@@ -44,10 +45,10 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
     const sub = await stripe.subscriptions.retrieve(subscriptionId);
     const snapshot = { invoice_id: invoice.id, subscription_id: plan.stripe_subscription_id,
       customer_id: plan.stripe_customer_id, price_id: plan.stripe_price_id, gross_cents: plan.gross_cents };
-    guardianRenewalCandidate(invoice, sub, expected(snapshot));
+    guardianRenewalCandidate(invoice, sub, expected(snapshot), { expectedLivemode });
     if (invoice.automatic_tax?.enabled !== false || sub.automatic_tax?.enabled !== false) fail('guardian_collection_tax_changed');
     const customer = await stripe.customers.retrieve(plan.stripe_customer_id);
-    if (customer.id !== plan.stripe_customer_id || customer.livemode !== false || customer.deleted === true || customer.balance !== 0)
+    if (customer.id !== plan.stripe_customer_id || customer.livemode !== expectedLivemode || customer.deleted === true || customer.balance !== 0)
       fail('guardian_collection_customer_mismatch');
     let stripeNow = Math.floor(now() / 1000);
     if (customer.test_clock) {
@@ -67,13 +68,13 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
     await reconcileInvoice(job.invoice_id);
     return rpc('paid', { invoice_id: job.invoice_id });
   }
-  const recovery = guardianRecoveryService({ stripe, rpc: recoveryRpc, paid });
+  const recovery = guardianRecoveryService({ stripe, rpc: recoveryRpc, paid, expectedLivemode });
   async function run(invoiceId) {
     if (!/^in_[A-Za-z0-9]+$/.test(invoiceId ?? '')) fail('invalid_invoice_identity');
     let job = await rpc('get', { invoice_id: invoiceId });
     if (job?.status === 'paid' || job?.status === 'skipped') return job;
     let invoice = await stripe.invoices.retrieve(invoiceId);
-    if (invoice?.id !== invoiceId || invoice.livemode !== false) fail('invoice_identity_mismatch');
+    if (invoice?.id !== invoiceId || invoice.livemode !== expectedLivemode) fail('invoice_identity_mismatch');
     if (!job) job = await prepare(invoice);
     if (!job) return null;
     try {
@@ -107,7 +108,7 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
         if (canceled(sub)) await checkpoint('skip');
         if (invoice.status === 'draft') {
           const customer = await stripe.customers.retrieve(job.customer_id);
-          if (customer.id !== job.customer_id || customer.livemode !== false || customer.deleted === true || customer.balance !== 0)
+          if (customer.id !== job.customer_id || customer.livemode !== expectedLivemode || customer.deleted === true || customer.balance !== 0)
             fail('guardian_collection_customer_mismatch');
           await stripe.invoices.finalizeInvoice(invoiceId, { auto_advance: false },
             { idempotencyKey: `guardian-finalize:${invoiceId}` });
@@ -119,8 +120,8 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
         if (job.decision === 'collect') {
           const customer = await stripe.customers.retrieve(job.customer_id);
           const method = await stripe.paymentMethods.retrieve(job.payment_method_id);
-          if (customer.id !== job.customer_id || customer.deleted === true || customer.livemode !== false || customer.balance !== 0
-            || method.id !== job.payment_method_id || method.livemode !== false || id(method.customer) !== job.customer_id
+          if (customer.id !== job.customer_id || customer.deleted === true || customer.livemode !== expectedLivemode || customer.balance !== 0
+            || method.id !== job.payment_method_id || method.livemode !== expectedLivemode || id(method.customer) !== job.customer_id
             || id(sub.default_payment_method) !== job.payment_method_id || sub.automatic_tax?.enabled !== false)
             fail('guardian_collection_customer_mismatch');
           const authorization = await checkpoint('authorize_pay');
@@ -173,7 +174,7 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
         if (!Array.isArray(list.data) || typeof list.has_more !== 'boolean' || (list.has_more && list.data.length === 0))
           fail('guardian_invoice_list_invalid');
         for (const invoice of list.data) {
-          if (id(invoice.parent?.subscription_details?.subscription) !== source.subscription_id || invoice.livemode !== false)
+          if (id(invoice.parent?.subscription_details?.subscription) !== source.subscription_id || invoice.livemode !== expectedLivemode)
             fail('invoice_identity_mismatch');
           if (['draft', 'open', 'paid'].includes(invoice.status)) await visit(invoice.id);
         }
@@ -189,7 +190,7 @@ export function guardianCollectionService({ stripe, rpc, recoveryRpc, reconcileI
   async function handleWebhook(eventId) {
     if (!/^evt_[A-Za-z0-9]+$/.test(eventId ?? '')) fail('guardian_event_invalid');
     const event = await stripe.events.retrieve(eventId);
-    if (event.livemode !== false) fail('guardian_event_invalid');
+    if (event.livemode !== expectedLivemode) fail('guardian_event_invalid');
     if (!['invoice.created', 'invoice.finalized', 'invoice.paid', 'invoice.payment_failed', 'invoice.payment_action_required', 'invoice.voided', 'invoice_payment.paid'].includes(event.type)) return null;
     const invoiceId = event.type === 'invoice_payment.paid' ? id(event.data?.object?.invoice) : event.data?.object?.id;
     const result = await run(invoiceId);

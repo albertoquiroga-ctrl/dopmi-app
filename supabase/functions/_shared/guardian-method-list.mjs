@@ -1,11 +1,12 @@
-import { PaymentError } from './payments.mjs';
+import { PaymentError, requireExpectedLivemode } from './payments.mjs';
 
 const id = value => typeof value === 'string' ? value : value?.id;
 const fail = () => { throw new PaymentError('guardian_methods_unavailable', 503); };
 
 // Reads only. The server-owned registry supplies the Stripe identities.
 // Never return raw provider objects, billing details, or client secrets.
-export function guardianMethodListService({ stripe, lookup }) {
+export function guardianMethodListService({ stripe, lookup, expectedLivemode = false }) {
+  requireExpectedLivemode(expectedLivemode);
   return async actor => {
     const link = await lookup(actor);
     if (!link) return { items: [] };
@@ -13,11 +14,11 @@ export function guardianMethodListService({ stripe, lookup }) {
         (link.subscription_id != null && !/^sub_[A-Za-z0-9]+$/.test(link.subscription_id)) ||
         (link.registration_method_id != null && !/^pm_[A-Za-z0-9]+$/.test(link.registration_method_id))) fail();
     const customer = await stripe.customers.retrieve(link.customer_id);
-    if (customer?.id !== link.customer_id || customer.deleted === true || customer.livemode !== false) fail();
+    if (customer?.id !== link.customer_id || customer.deleted === true || customer.livemode !== expectedLivemode) fail();
     let defaultId = id(customer.invoice_settings?.default_payment_method);
     if (link.subscription_id) {
       const subscription = await stripe.subscriptions.retrieve(link.subscription_id);
-      if (subscription?.id !== link.subscription_id || subscription.livemode !== false ||
+      if (subscription?.id !== link.subscription_id || subscription.livemode !== expectedLivemode ||
           id(subscription.customer) !== link.customer_id) fail();
       defaultId = id(subscription.default_payment_method);
     }
@@ -29,7 +30,7 @@ export function guardianMethodListService({ stripe, lookup }) {
       if (!Array.isArray(result?.data) || typeof result.has_more !== 'boolean') fail();
       for (const method of result.data) {
         if (!/^pm_[A-Za-z0-9]+$/.test(method?.id ?? '') || seen.has(method.id) ||
-            method.livemode !== false || id(method.customer) !== link.customer_id || method.type !== 'card') fail();
+            method.livemode !== expectedLivemode || id(method.customer) !== link.customer_id || method.type !== 'card') fail();
         seen.add(method.id);
         const card = method.card;
         if (!card || !/^[a-z_]{2,30}$/.test(card.brand ?? '') || !/^\d{4}$/.test(card.last4 ?? '') ||

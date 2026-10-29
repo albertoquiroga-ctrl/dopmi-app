@@ -1,3 +1,4 @@
+import { requireExpectedLivemode } from './payments.mjs';
 import { GuardianBillingError, guardianPaidInvoice } from './guardian-billing.mjs';
 
 // Server-only evidence reader. Inject a StripeClient using the Billing API
@@ -5,11 +6,12 @@ import { GuardianBillingError, guardianPaidInvoice } from './guardian-billing.mj
 // subscription amounts/ownership from a browser or webhook into this function.
 // This does not authorize allocation: settlement must separately lock and
 // validate the persisted invoice/cycle binding and reservation in PostgreSQL.
-export async function readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot }, invoiceId) {
+export async function readGuardianPaidEvidence({ stripe, lookupSubscription, invoiceSnapshot }, invoiceId, { expectedLivemode = false } = {}) {
+  requireExpectedLivemode(expectedLivemode);
   if (!/^in_[A-Za-z0-9]+$/.test(invoiceId ?? ''))
     throw new GuardianBillingError('invalid_invoice_identity');
   const invoice = await stripe.invoices.retrieve(invoiceId, { expand: ['payments'] });
-  if (invoice?.id !== invoiceId || invoice.livemode !== false || invoice.status !== 'paid')
+  if (invoice?.id !== invoiceId || invoice.livemode !== expectedLivemode || invoice.status !== 'paid')
     throw new GuardianBillingError('invoice_not_confirmed');
   const subscriptionId = invoice.parent?.subscription_details?.subscription;
   if (!/^sub_[A-Za-z0-9]+$/.test(subscriptionId ?? ''))
@@ -38,6 +40,6 @@ export async function readGuardianPaidEvidence({ stripe, lookupSubscription, inv
     invoice_id: invoiceId, subscription_id: plan.stripe_subscription_id,
     customer_id: plan.stripe_customer_id, price_id: invoiceSnapshot?.price_id ?? plan.stripe_price_id,
     gross_cents: invoiceSnapshot?.gross_cents ?? plan.gross_cents,
-  }, payments, intent);
+  }, payments, intent, { expectedLivemode });
   return { donor_id: plan.donor_id, ...evidence };
 }

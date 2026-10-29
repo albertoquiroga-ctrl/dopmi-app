@@ -7,10 +7,10 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 | Batch / dueño | Dependencia y objetivo | Estado / salida |
 |---|---|---|
 | B0 / integrador | Descubrir entornos y acuerdos actuales | PROD restaurado una vez/healthy, SQL48migraciones/Auth0/Storage0, sieteEdgehistóricas; cuentaStripeLIVE consultada. Completar Auth/secretos-metadata/ACL y delta exacto. |
-| B1 / móvil + revisores | B0; configuración estricta TEST/producción | Implementado5archivos; Python27PASS/Flutter19PASS/analyze0; código/seguridad independientes cerrados. SDK/workflow aún no consumen perfilLIVE. |
-| B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Pendiente: distinguir entorno de objetos y firmas, conservar negativos/idempotencia y consentimientos históricos; revisar antes de desplegar. |
+| B1 / móvil + revisores | B0; configuración estricta TEST/producción | Fuente35bfbbbd, Python27PASS/Flutter19PASS/analyze0. CI40785747436 tresSUCCESS/FlutterformatoFAILED, fixlocal verificado; pendiente CIpróximoSHA. |
+| B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Implementado local/revisado: modo/firmas/objetos, contextoSQL+cuenta, consentimientos y Authprevio. HostednuevoLIVE bloqueado; regresión1074PASS8SKIP previa a últimos fixes, focalfinal64PASS/Deno4checks. Pendiente CI/PgTAP del candidato; nada desplegado. |
 | B3 / integrador + seguridad | B0/B2; preparar producción | Pendiente: deltaSQL por contenido, Edge/configAuth/invitaciones/SMTP/OAuth/secretos/webhook/worker/monitoreo; reversión sin copiarDEV. |
-| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | Pendiente: tresSDKLIVE, términos/consentimiento coherentes y enlaces de modo; candidato/CI final, ventana5min, un envíoCodemagic/Play interno. |
+| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | SDK/DI implementados por agente, pendientes colaFlutter/revisión; root integra copy/consentimiento, enlacesadmin/workflow. Candidato/CI final, ventana5min, un envíoCodemagic/Play interno. |
 | B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, admisión invitada/ajena, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene
