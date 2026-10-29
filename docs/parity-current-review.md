@@ -7,9 +7,9 @@ B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuev
 | Grupo afectado | Hecho actual | Evidencia/criterio pendiente |
 |---|---|---|
 | Entorno | Foundation70 aplicada una vez, registro20261029030514; historia49/prior48exactas,43tablasRLS/151funciones, Auth/Storage/dinero0; Proconfirmado | Configuración/activaciónLIVE aún pendiente; modosSQLTEST/serviciosOFF. DEVintacto. |
-| Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs aún sin validar. Build/Play/instalación beta no acreditados. |
-| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS y revisión código/seguridad cerrada | B3Connect1c7c4fae subido, CI40810594540 backend/PGSUCCESS yFlutter/iOS pendientes, sindeploy; RAK autorizada/no creada, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. |
-| Usuarios/operación | Invitación/producciónlimpia/reserva20mil/sin tope agregadodecididos | Integrador: admisión efectiva servidor, Auth/SMTP/OAuth/admin, alertas/operación; Vercelscope403. |
+| Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs reales validadas conbuilderestricto. Build/Play/instalación beta no acreditados. |
+| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS/CI4SUCCESS, SQLy8Edgeprincipales aplicados/readback+HTTP8/8 | RAK autorizada/2FApendiente, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. DeltaAndroidarranqueprivado revisado; ochoJVM pendientesCI, sinpruebaSDKtráfico/iOS atribuida. |
+| Usuarios/operación | Sin filtro interno/producciónlimpia/reserva20mil/sin tope agregadodecididos | Integrador: registro estándar, Auth/SMTP/OAuth/admin, alertas/operación; Resendlogin/Vercelgrant/Stripeverificación pendientes. |
 | Distribución/aceptación | Última instalación/aceptación341TEST; beta todavía no publicada | NuevoSHA/artefacto/Play/install/QA/aceptación separados; ventana5min preCodemagic. |
 
 ## Paridad aceptada anterior y límites conservados

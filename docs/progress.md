@@ -1,3 +1,58 @@
+## 29/10/2026 05:13UTC — Edge PROD comprobadas y correctivo nativo listo para CI
+
+OchoEdgeprincipales desplegadas una vez desde1c7c4fae; sieteIDs existentes v2,
+stripe-connect-webhook nuevo v1; readbackfuentes/verifyJWT exactos. Manifestf668fba8…98e6c.
+SondasHTTP8/8: retorno200, cuatro401, Guardian503apagado ydoswebhooks405GET;
+consultaSQL04:09:23UTC historia50 y Auth/perfiles/donaciones/Storage/video/cola0,
+SQLTEST/serviciosopcionalesOFF/sincron conservados. No secretos/cobros ni fixturesDEV.
+GETwebhook falló conexión conNode; Windowscurl mismoGET405cerró incertidumbre,
+sin redeploy ni repetirsietepruebas. Receiptfinal conserva fallo inicial conciliado.
+
+AuthPRODguardado: SiteURLdopmi.org, único redirectio.dopmi.app://auth/callback,
+plantillasES existentes deconfirmación/recuperación; OTP8/3600s compatibleconcliente.
+SMTPsólo draftsinpassword/noguardado; signupOFF. Resendlogin/Stripe2FA/Vercelgrant
+pendienteshumanos; ningún correoniusuario/rol creado.
+
+AndroidSDKpuede heredar true nativo antesdeDart enactualizaciónTEST→PROD;
+seacreditó con fuentesSDK, no transmisiónreal. Primera purgaDartasíncrona descartada:
+wrapper deleteUnsentReports noespera purgareal. Revisión independiente detectóP2
+antesdecommit. Soluciónnativa attachBaseContext: overridesOFF antesdeproviders,
+cambioGMPpurga síncrona sólo .crashlytics.v3 ylegacyv1, sinseguirsymlinks; sello
+despuésdeborrado yfalloscerrados. MismoGMPconservadiagnósticos; Auth/medios/prefs
+usuarios intactos. Dart restauradoexacto20f7c510. Código/seguridad cerraron estática;
+ochoRobolectricfixtures pendientesCI. Pythonconfig27+Firebase12PASS; ensayoDart13
+previo noacredita soluciónfinal. CIreutilizaJDK/SDK/APK existentes. iOS/DataTransport/
+tráficoSDK no cubiertos. Publicado/instalado/aceptado sigue341TEST; sin buildbeta.
+
+Método: reviewerproceso verificóreconciliaciónHTTPfinal; cambiarcliente trasfallo
+deconexión evitó redeploy/pruebasintactas. Próximaacción integrador: commit/CIúnica
+delcorrectivonativo yseguir configuraciónal llegaraccesos; noesperasconsumiendoON.
+
+## 28/10/2026 CDMX — Registro estándar, Firebase validado y Connect PROD aplicado
+
+Titular retira invitación/filtro deDopmi y controla distribución enlas tiendas;
+primeradminPROD correo corporativo elegido por el titular (recibo privado). Registroestándar revisadoestáticamente
+compatible concontraseña/confirmación/legalesLIVE; no inviteflow nuevo. Cuenta yrol
+no creados; se conserva bootstrapprivilegiado tras confirmación legítima.
+Firebase original descargadopor titular validado con build_config(production_beta=True):
+681BAndroid/883BiOS, proyectodopmi-production/782231363420 ypkgcom.mycompany.dopmi,
+Androidapp5c014a48c2f3d1e3376b99/iOSfe262c3231816d5e376b99. Hashes ycopiasoriginales
+sólo en .tools/beta-prelaunch-20261028/firebase-production; no clavesenGit ni envíoCM.
+
+CI1c7c4fae44613f9c6e36132d8c9814341a151330/40810594540 cuatroSUCCESS. DeltaConnect
+PROD aplicado una vez20261029034038; postflight50/prior49exactas/OIDACLconservados/
+helperinvokerEXECanonauthservicefalse, conteos0 ymodoTEST. Auditoría yreceiptguardanpins.
+No Edge/cobrosLIVE aún, ni otra pruebaFlutterlocal/cámara/pago. Reutilizar CIexacta.
+
+Stripeformulario mismo17recursos conciliado sin clave creada; envío de puntero
+abrió Workbench, no se atribuye causa definitiva. CerradoWorkbench yrestauradomismo
+alcance; Enter mostró verificaciónobligatoria. Titular debe completarla, lecturas
+suspendidas; ningún valor leído/guardado ni ampliaciónscope. No repetircreación antes
+conciliar. SMTPPRODcustomOFF; Resendpide login habitual. Vercel403scope confirmado y
+linkdegrant oficial10min entregado al titular. Preparadores independientes deEdge
+inertoy schedulerpausado avanzan; sin tokens ni operaciones. Publicado/instalado/
+aceptado sigue341TEST. Paquetes finalizan antes de pedir accesospersistentesnuevos.
+
 ## 29/10/2026 03:12UTC — Checkpoint beta: CI completa y foundation PROD aplicada
 
 Frente al checkpoint anterior: B4publicado75d5963a1e2feeae4ccf1ec51ada27311322fd59,

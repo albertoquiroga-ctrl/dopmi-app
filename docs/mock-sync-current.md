@@ -1,45 +1,49 @@
-# Continuación — beta real por invitación, checkpoint29/oct/2026 03:16UTC
+# Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
 
-Producto dopmi-app; rama codex/finish-release-20261015. Paridad341/f693/warm-trust
-aceptada. Último instalado/publicado/aceptado:2.3.3(341)TEST, fuente3cf65d73.
-Beta LIVE autorizada por invitación, producción limpia; reserva20,000MXN declarada,
-sin tope agregado. No copiar fixtures, cuentas, documentos o dinero desdeDEV.
+Producto dopmi-app; rama codex/finish-release-20261015. Fuente1c7c4fae44613f9c6e36132d8c9814341a151330;
+CI40810594540 cuatroSUCCESS; HEAD puede ser documental20f7c510. Último app publicado,
+instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
 
-- **Implementado/verificado:** B1/B2/B4 fuente75d5963a1e2feeae4ccf1ec51ada27311322fd59,
-  CI40798988780 cuatroSUCCESS (Flutter/iOS/PostgreSQL/web-database). Cierra validación
-  integrada B4; no repetir fullFlutterlocal cortado por watchdog ni QA341 aceptada.
-- **Producción aplicado:** delta70fuentes/547687B/SHAba7347dc…5a2af5, un apply reservado,
-  registro20261029030514/codex_production_beta_schema_20261028. Postflight03:05:27UTC:
-  historia48→49/prior48exactas,43tablasnuevasRLS,151funciones, bucketsprivados,
-  Auth/perfiles/donaciones/Storage/medios/colas0. ModoSQLTEST, video/Tienda/preview/
-  enlacesOFF, sincron; no cobros ni activaciónLIVE. DEVintacto.
-- **Infraestructura real:** organizaciónSupabasePRO confirmada porconector. Firebase
-  dopmi-production creado; Android+iOS com.mycompany.dopmi registrados. Configfiles
-  aún sin validar/entregar aCodemagic; descarga iOS quedó sin resultado confirmado
-  por timeout deherramienta, no repetir ciegamente. Analytics/Crashlytics optinOFF.
-- **B3Connect:** destino separado con firma propia/account.updated, vínculoSQL,
-  cola/contexto inmutable y Account exacto;33focalesPASS/Deno5checks; revisiones
-  independientes código/seguridad sinP1/P2. Fuente1c7c4fae44613f9c6e36132d8c9814341a151330 subida, CI40810594540:
-  web/database yPostgreSQL SUCCESS; Flutter/iOS enprogreso alobservar. Sinaplicación
-  deldeltaConnect/despliegue; dos suites registradasnpm. NoDart cambiado desde75.
-- **Stripe:** creación/guardado RAKLIVE autorizado por titular. Intento de formulario
-  cambió aWorkbench; conciliaciónAPIKeys mostró cero claves restringidas. Ningún
-  valor creado/leído/guardado. Pregunta de coordinación pendiente antes de reintentar;
-  no falta renovar autorización. Webhooks/secretos/LIVE operativo aún pendientes.
-- **Decisión nueva pendiente:** invitación no tiene alta directa decontraseña; titular
-  elige recorrido y primeradministradorPROD. ConfigfilesFirebase pedidos al titular
-  por descarga automática sinruta recuperable; no pedir contenido/secretos porchat.
-- **Otros pendientes:** SMTP/OAuth/invitaciones/admin y Edge/worker/alertas; Vercel
-  env403scope requieregrant legítimo. No beta build, instalación ni aceptaciónLIVE.
-- **Método:** reutilizar CI75 que cerró cuatrogates; evitar repetir fullFlutterlocal.
-  Efecto en siguiente trabajo necesario: B3 se verificó sólo con33focales (3.2s),
-  sin nueva colaFlutter ni cámara/pagos. No estimación final fiable antes de cerrar
-  configuración remota. Seguimiento4h activo, una colaFlutter, ventana5min preCodemagic.
+- **Decisión vigente:** LIVE/producción limpia, reserva20,000MXN declarada/sin tope
+  agregado. Titular retira invitaciones/filtro dentro deDopmi: distribución porPlay
+  internal/alfa yTestFlight; registro normal+confirmacióncorreo+legales/moderación.
+  PrimeradminPROD elegido:correo corporativo elegido por titular (recibo privado), sólo tras identidad nueva
+  confirmada; todavía sin cuenta ni membresía. No copiar Auth/casos/archivos/dineroDEV.
+- **SQLPROD aplicado:** foundation70 registro20261029030514 (49historia/43nuevasRLS/
+  151funciones); Connect20261029034038 (historia50/prior49exactas, mismoOID/ACLdispatcher,
+  helperprivadoinvoker/sinEXECAPI). Auth/perfiles/donaciones/Storage/cola0 alpostflight.
+  SQLmodoTEST, serviciosopcionalesOFF, sincron. No activaciónLIVE/cobros niDEVmodificado.
+- **Firebase/Pro:** organizaciónPRO confirmada; dopmi-production/782231363420,
+  Android+iOS com.mycompany.dopmi registrados. Descargas titular validadas conbuilder
+  estricto, proyecto/pkg/IDs exactos; hashesAndroid4251324a…165938, iOS7d022279…83ae4e.
+  Dosplistdescargadosidénticos. Configoriginalprivada/sinenviar aún aCodemagic.
+  Analytics/Crashlytics consentidosOFF de inicio; sinAuth/FirestoreFirebase.
+- **Stripe:** RAKLIVE «Dopmi Production beta»/17recursos autorizada. Cero claves
+  restringidas conciliadas trasenvíodepuntero sinresultado. Mismoformulario ypermisos
+  restaurados, Workbenchcerrado yEnter→«Verificación obligatoria». Titular completa
+  verificación; lecturasStripe suspendidas. Ningún valor leído/guardado; no reenviar
+  creación sin conciliar estado. Destino EdgeSecretsPROD preparado/STRIPE_SECRET_KEY_LIVE.
+- **B3 aplicado:** ocho Edge principales ACTIVE, fuente1c7c4fae yreadback exacto;
+  ocho sondasHTTP sincredencial conrechazos/retorno esperados. Historia50 yconteos0
+  conservados04:09UTC. AuthSiteURLhttps://dopmi.org, callbackexacto yplantillasES
+  confirmación/recuperación guardados; OTP8/3600s compatible. SignupOFF hastaSMTP/listo.
+  SMTPdraft sinsecreto/no guardado. Integrador: Stripe/SMTP/webhooks/OAuth/admin/worker;
+  Resendlogin, Stripe2FA ygrantVercel pendientes. SchedulerpreparadoPAUSADO/noaplicado.
+- **Privacidad Android:** corregido arranque previo aFirebaseproviders: overridesOFF
+  cadaarranque; cambioGMPpurga síncrona sólo dosraícesCrashlytics antes delsello.
+  Dart exactoalbaseline. Código/seguridad cerradosestáticamente; ochofixturesJVM
+  pendientesCI. Python27+12PASS. iOS/DataTransport/tráficoSDK no acreditados.
+- **Distribución:** todavía sin buildbeta, instalación o aceptaciónLIVE. Al estar
+  listo el candidato, ventana5min para mensajesQA y un envíoCodemagic/Playinterno,
+  comprobando artefacto/canal/instalación porseparado. No cargos inventados poragente.
+- **Método:** reutilizar CI1c7 paraEdge; nuevoCI cerrará eldelta nativo, sin repetir
+  fullFlutterlocal. PurgaDartasíncrona descartada trasrevisión; barreranativa reemplaza
+  eseensayo. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
 
-Siguiente/dueño: integrador concilia CI1c7 y completa B3/configuración/admisión;
-titular resuelve coordinaciónStripe, archivosFirebase y las dos decisiones de alta. Después un
-candidatoLIVE porCodemagic/Playinterno, instalación y QAlegítima. Recibos privados:
-.tools/beta-prelaunch-20261028. Este checkpoint no renueva operaciones consumidas.
+Siguiente: titular completaStripe/Resend/grantVercel; integrador cierra configuración,
+registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
+no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,
+identidad/firma y estados autorizados porentorno; no apagarPROD por hábitosQADEV.
 
 ## Corte aceptado previo — 341
 

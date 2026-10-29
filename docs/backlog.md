@@ -1,4 +1,4 @@
-# Cola vigente — beta real por invitación, 28/oct/2026
+# Cola vigente — beta real por canales de prueba, 28/oct/2026
 
 La paridad341/f693 está aceptada. Nuevo alcance LIVE autorizado, producción limpia,
 reserva declarada20,000MXN/sin tope agregado; decisiones en product-decisions.md.
@@ -9,9 +9,9 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 | B0 / integrador | Descubrir entornos y acuerdos actuales | Cotejo48resuelto/47exactos+cleanupsemántico; Authsignup/anonymousOFF/confirmemailON; customSecrets0, sinDEVmodificado. Falta SMTP/OAuth/operación. |
 | B1 / móvil + revisores | B0; configuración estricta TEST/producción | Configuración y fixformato integrados en83e6e6fc/CI40793197789 cuatroSUCCESS. |
 | B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Fuente83e6e6fc/CI4SUCCESS; revisiones cerradas. Ningún despliegue nuevo; historial y modo protegidos. |
-| B3 / integrador + seguridad | B0/B2; preparar producción | Foundation70 aplicada/49historia/prior48exactas/43RLS/vacíos; Pro confirmado; Firebase2apps registradas. Integrador: B3Connect1c7c4fae/CI40810594540 backend+PGSUCCESS/móvilpendiente→delta; RAK autorizada/no creada, coordinación pendiente; configfiles/Edge/AuthSMTP/OAuth/invitaciones (recorrido/primeradmin consultados)/webhooks/worker/monitoreo y Vercelscope403. No copiarDEV. |
-| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | Fuente75d5963a/CI40798988780 cuatroSUCCESS; B4integrado cerrado. Faltan perfilesreales/configuración y build: ventana5min y un envíoCodemagic/Playinterno. No repetir fullFlutterlocal ni evidencia341. |
-| B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, admisión invitada/ajena, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
+| B3 / integrador + seguridad | B0/B2; preparar producción | HistoriaPROD50/prior49exactas; ochoEdgeprincipales desplegadas/readback+HTTP8/8. AuthURL/callback/plantillasES guardados; SMTPdraft sinsecreto/no guardado/signupOFF. Pro/Firebase2apps/configsvalidadas. Integrador: secretos/webhooks/SMTP/OAuth/admin/worker/monitoreo. Stripe2FA, Resendlogin yVercelgrant pendientes. Schedulerpausado preparado/noaplicado. Sinfiltrointerno; no copiarDEV. |
+| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | 75d5963a/CI4SUCCESS; delta privacidadAndroid previo aFirebaseproviders revisado código/seguridad, ochoJVM pendientesCI. Python27+12PASS/Dartintacto. Faltan configuración real/build: ventana5min y un envíoCodemagic/Playinterno. No repetir fullFlutterlocal/evidencia341. |
+| B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, registro estándar/correo y roles, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene
 sesiónLIVE de navegador; conectorMCP requiere reautenticación. No es falta de sesión

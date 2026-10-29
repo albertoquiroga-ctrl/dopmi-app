@@ -17,6 +17,18 @@ video/Tienda/preview/enlacesOFF, cincoextensiones/sincron. No bootstrapadmin,
 credenciales, seed, cobros o migraciónDEV. Recibos privados production-delta/
 apply.reserved y postflight.actual. No reaplicar/repair/renombrar.
 
+ConnectPROD posterior (28/octCDMX,03:40UTC29oct): fuente1c7c4fae/CI40810594540
+cuatroSUCCESS, código/seguridad independientes cerrados y33focalesPASS. Archivo
+20261029012454_connect_account_webhook_context.sql4464B/SHA2562dea63d6ca42cfbc6a0eb3bce4a971fa542e0d6d71a3ba07af3885ac8491fcb1,
+exacto GitLF. Preflight49/queue0/Auth0/donaciones0/SQLTEST/dispatcherMD5
+1211fed6f787a1efbb64de1bbed205c0. Una reserva/applySUCCESS:
+20261029034038/production_connect_account_webhook_context; postflight03:40:55UTC
+historia50/prior49exactas, dispatcherOID35105/ACLpostgres+servicepreservados,
+nuevoMD542ee8b93847ee06b742239c3cba69cb8, helperinvoker/search_pathvacío/EXECanon,
+authyservicerevocados. Conteos0/SQLTEST. HistorynuevoMD55085b9b99467c0b803a9b45c809fadfa,
+4470Brepresentación. Sinwebhooks/Edge/secretos/flags/cobros enestaoperación.
+Recibo privado connect-production-apply.reserved; no reaplicar.
+
 ## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
 
 PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:

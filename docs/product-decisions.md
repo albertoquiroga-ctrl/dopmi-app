@@ -1,3 +1,18 @@
+## 28/10/2026 CDMX — Beta controlada por tiendas, sin filtro de invitación
+
+Respuesta humana call_dcbeb906608e4370b60c21358748bb17/item0: no añadir invitaciones
+ni filtros dentro de Dopmi; el titular controla distribución mediante Play internal/
+alfa y TestFlight/AppStore. Supersede la beta por invitación elegida antes ese día.
+Conservar registro estándar con contraseña, confirmación de correo, legales LIVE,
+moderación y autorización servidor; no desarrollar un alta de invitación. Las listas
+de las tiendas controlan distribución, no sustituyen autorización de datos/pagos.
+
+Item1 elige correo corporativo elegido por el titular (recibo privado) como primer administrador de PROD. La
+membresía se otorga sólo a la identidad nueva con ese correo confirmado, mediante
+bootstrapprivilegiado existente; no copiar DEV ni crear/leer contraseña. Todavía
+no hay identidad PROD creada ni privilegio otorgado. Firebase descargado por titular;
+validación/configuración real queda en checkpoint y ledger, no en esta decisión.
+
 ## 28/10/2026 — Pro, credencial Stripe y Firebase de producción autorizados
 
 Respuestas humanas call_72a87639830747e391883475aad47fa2: contrataciónSupabasePro
