@@ -80,6 +80,12 @@ jobs:
           dart format lib test test_backend
           git diff --exit-code -- lib test test_backend
         working-directory: apps/mobile
+      - name: Android development build (no production credentials)
+        run: flutter build apk --debug --dart-define-from-file=config.example.json
+        working-directory: apps/mobile
+      - name: Verify native privacy before Firebase startup
+        run: ./gradlew :app:testDebugUnitTest --console=plain
+        working-directory: apps/mobile/android
       - name: Analyze and verify the selected scope
         env:
           CHECK_SCOPE: ${{ inputs.scope || 'full' }}
@@ -117,12 +123,6 @@ jobs:
             .tools/integral20d21-20261018/store/*.png
           include-hidden-files: true
           if-no-files-found: error
-      - name: Android development build (no production credentials)
-        run: flutter build apk --debug --dart-define-from-file=config.example.json
-        working-directory: apps/mobile
-      - name: Verify native privacy before Firebase startup
-        run: ./gradlew :app:testDebugUnitTest --console=plain
-        working-directory: apps/mobile/android
       - uses: actions/upload-artifact@v4
         with:
           name: dopmi-android-development

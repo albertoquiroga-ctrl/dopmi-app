@@ -9,8 +9,15 @@ import android.content.SharedPreferences
 import android.content.pm.ProviderInfo
 import android.database.Cursor
 import android.net.Uri
+import android.system.ErrnoException
+import android.system.OsConstants
+import android.system.StructStat
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.LinkOption
+import java.nio.file.NoSuchFileException
+import java.nio.file.attribute.BasicFileAttributes
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
@@ -25,14 +32,14 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
+import org.robolectric.shadows.ShadowLinux
 
 // The probe reads real Android preferences without initializing Firebase. The
 // shadow also blocks Firebase if test tooling supplies merged manifest providers.
 @RunWith(RobolectricTestRunner::class)
 @Config(
     manifest = Config.NONE, application = Application::class, sdk = [35],
-    packageName = "com.mycompany.dopmi",
-    shadows = [SuppressedFirebaseInitProvider::class],
+    shadows = [SuppressedFirebaseInitProvider::class, HostFileStatLinux::class],
 )
 class DopmiApplicationTest {
     @get:Rule
@@ -276,6 +283,31 @@ private class FailingMarkerContext(base: Context) : ContextWrapper(base) {
 class SuppressedFirebaseInitProvider {
     @Implementation
     fun onCreate(): Boolean = false
+}
+
+// Robolectric 4.17's ShadowLinux.lstat delegates to stat: missing paths produce
+// mode 0 and existing symlinks follow their targets. Model Android's lstat using
+// real host fixture metadata; preserve all other ShadowLinux implementations.
+@Implements(className = "libcore.io.Linux", minSdk = 26, isInAndroidSdk = false)
+class HostFileStatLinux : ShadowLinux() {
+    @Implementation
+    public override fun lstat(path: String): StructStat {
+        val attributes = try {
+            Files.readAttributes(
+                File(path).toPath(), BasicFileAttributes::class.java, LinkOption.NOFOLLOW_LINKS,
+            )
+        } catch (cause: NoSuchFileException) {
+            throw ErrnoException("lstat", OsConstants.ENOENT)
+        } catch (cause: IOException) {
+            throw ErrnoException("lstat", OsConstants.EIO)
+        }
+        val mode = when {
+            attributes.isSymbolicLink -> OsConstants.S_IFLNK
+            attributes.isDirectory -> OsConstants.S_IFDIR
+            else -> OsConstants.S_IFREG
+        }
+        return StructStat(0, 0, mode, 0, 0, 0, 0, attributes.size(), 0, 0, 0, 0, 0)
+    }
 }
 
 private class CollectionProbeProvider : ContentProvider() {

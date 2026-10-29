@@ -1,7 +1,8 @@
 # Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
 
 Producto dopmi-app; rama codex/finish-release-20261015. Candidato078f712b2632f014d171e3ae4efce3ab14515ddd;
-CI40822216873 enprogreso; backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
+CI40822216873 falló en arnésJVM; otros tresjobsSUCCESS. Correctivoharnesslocal en revisión;
+backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
 instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
 
 - **Decisión vigente:** LIVE/producción limpia, reserva20,000MXN declarada/sin tope
@@ -32,7 +33,10 @@ instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa pa
 - **Privacidad Android:** corregido arranque previo aFirebaseproviders: overridesOFF
   cadaarranque; cambioGMPpurga síncrona sólo dosraícesCrashlytics antes delsello.
   Dart exactoalbaseline. Código/seguridad cerradosestáticamente; ochofixturesJVM
-  pendientesCI. Python27+12PASS. iOS/DataTransport/tráficoSDK no acreditados.
+  no ejecutados: Config.packageName incompatible y dependenciaGradle ausente.
+  Ambos corregidoslocalmente; shadowlstat4.17 corregido sóloenfixture paraENOENT/
+  symlinks. Runtimeintacto. Python27+12PASS previos. iOS/DataTransport/tráficoSDK
+  no acreditados. SiguienteCI valida losmismosochocasos.
 - **Distribución:** todavía sin buildbeta, instalación o aceptaciónLIVE. Al estar
   listo el candidato, ventana5min para mensajesQA y un envíoCodemagic/Playinterno,
   comprobando artefacto/canal/instalación porseparado. No cargos inventados poragente.
@@ -43,7 +47,7 @@ instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa pa
   fullFlutterlocal. PurgaDartasíncrona descartada trasrevisión; barreranativa reemplaza
   eseensayo. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
 
-Siguiente: cerrar CI078f (tresjobsSUCCESS/FluttercompilaciónAndroid enprogreso),
+Siguiente: cerrar revisiónharness y enviar una CI delcorrectivo (noCodemagic);
 titular completaStripe/Resend/grantVercel; integrador cierra configuración,
 registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
 no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,

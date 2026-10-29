@@ -70,6 +70,12 @@ flutter {
     source = "../.."
 }
 
+// AGP's host-test package consumes Flutter's generated assets. Declare the
+// producer even when the APK was built earlier in a separate Gradle invocation.
+tasks.matching { it.name == "packageDebugUnitTestForUnitTest" }.configureEach {
+    dependsOn("copyFlutterAssetsDebug")
+}
+
 dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.17")

@@ -1,3 +1,23 @@
+## 29/10/2026 — Checkpoint 4h: fallo de arnés nativo y corrección agrupada
+
+CI40822216873/078f: web-database, identity-adoption e iOS SUCCESS. Flutteranalyze/
+tests/capturas/APK debug PASS; falló Verify native privacy05:33:37UTC antesdeejecutar
+losochocasos. Logreal: Config4.17 sinpackageName y PackageForHostTest consume
+copyFlutterAssetsDebug sin dependencia declarada. No defecto runtime demostrado.
+Worker corrigió sólo build.gradle/test; inspección primaria agrupó un tercerfallo
+delharness: ShadowLinux.lstat4.17=stat, incompatibleconausentes/symlinks. Fixture
+HostFileStatLinux hereda implementaciones y usa atributosNIO/NOFOLLOW+ENOENT/EIO;
+runtime, Dart y ochocasos intactos. EjecuciónJVM de corrección aún pendiente.
+
+Revisorproceso independiente: adelantar APK+native dentrodel mismojob es ensayo
+razonable para feedbacktemprano, sin demostrar ahorro ni corregirpor sísolo causas.
+Rootmovió ambosstepsexistentes antesanalyze/tests/capturas, mismoscomandos/gates/
+SDK/cola; comparacióntextualPASS. Éxito se comprobará en siguienteCI ya necesaria;
+si dificulta diagnóstico, revertir sóloorden. No suite/hook/captura/pago porreloj.
+Publicado/instalado/aceptado sigue341TEST; PROD no alterado por estecheckpoint.
+Bloqueoshumanos previos Stripe2FA/Resend/Vercel siguenpendientes; lecturasStripe
+suspendidas y formulariosconservados. Dueñoroot: revisión agrupada→commit/CI única.
+
 ## 29/10/2026 05:13UTC — Edge PROD comprobadas y correctivo nativo listo para CI
 
 OchoEdgeprincipales desplegadas una vez desde1c7c4fae; sieteIDs existentes v2,
