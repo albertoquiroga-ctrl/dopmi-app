@@ -6,11 +6,13 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import '../../core/ui.dart';
 import 'guardian_repository.dart';
 import 'native_wallet_sdk.dart';
+import 'payment_environment.dart';
 
 final guardianMethodSetupProvider = Provider<GuardianMethodSetup>(
   (ref) => GuardianMethodSetupSdk(
-    publishableKey: const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY_TEST'),
-    merchantId: const String.fromEnvironment('APPLE_PAY_MERCHANT_ID'),
+    publishableKey: ref.watch(paymentEnvironmentProvider).publishableKey,
+    merchantId: ref.watch(paymentEnvironmentProvider).merchantId,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
     enabled: ref.watch(guardianEnabledProvider),
   ),
 );
@@ -27,6 +29,7 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
     required this.publishableKey,
     this.merchantId = '',
     this.enabled = false,
+    this.paymentEnvironment = const PaymentEnvironment(),
     TargetPlatform? platform,
     bool? web,
     Future<void> Function(String, String)? initialize,
@@ -34,11 +37,18 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
     Future<void> Function()? show,
   }) : platform = platform ?? defaultTargetPlatform,
        web = web ?? kIsWeb,
-       _initialize = initialize ?? initializeDopmiStripeTest,
+       _initialize =
+           initialize ??
+           ((key, merchant) => initializeDopmiStripe(
+             key,
+             merchant,
+             paymentEnvironment: paymentEnvironment,
+           )),
        _prepare = prepare ?? _prepareStripe,
        _show = show ?? _showStripe;
 
   final String publishableKey, merchantId;
+  final PaymentEnvironment paymentEnvironment;
   final bool enabled, web;
   final TargetPlatform platform;
   final Future<void> Function(String, String) _initialize;
@@ -52,8 +62,7 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
       enabled &&
       !web &&
       [TargetPlatform.android, TargetPlatform.iOS].contains(platform) &&
-      RegExp(r'^pk_test_[A-Za-z0-9]+$').stringMatch(publishableKey) ==
-          publishableKey;
+      paymentEnvironment.acceptsPublishableKey(publishableKey);
 
   @override
   Future<void> present(
@@ -71,7 +80,10 @@ class GuardianMethodSetupSdk implements GuardianMethodSetup {
     _pending = true;
     try {
       try {
-        await (_initialization ??= _initialize(publishableKey, merchantId));
+        await (_initialization ??= _initialize(
+          publishableKey,
+          paymentEnvironment.isTest ? merchantId : '',
+        ));
       } catch (_) {
         _initialization = null;
         rethrow;

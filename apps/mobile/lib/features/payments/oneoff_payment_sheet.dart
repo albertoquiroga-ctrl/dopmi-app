@@ -5,11 +5,13 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../../core/ui.dart';
 import 'native_wallet_sdk.dart';
+import 'payment_environment.dart';
 
 final oneoffPaymentSheetProvider = Provider<OneoffPaymentSheet>(
   (ref) => OneoffPaymentSheetSdk(
-    publishableKey: const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY_TEST'),
-    merchantId: const String.fromEnvironment('APPLE_PAY_MERCHANT_ID'),
+    publishableKey: ref.watch(paymentEnvironmentProvider).publishableKey,
+    merchantId: ref.watch(paymentEnvironmentProvider).merchantId,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
   ),
 );
 
@@ -24,6 +26,7 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
   OneoffPaymentSheetSdk({
     required this.publishableKey,
     this.merchantId = '',
+    this.paymentEnvironment = const PaymentEnvironment(),
     TargetPlatform? platform,
     bool? web,
     Future<void> Function(String, String)? initialize,
@@ -31,11 +34,18 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
     Future<void> Function()? show,
   }) : platform = platform ?? defaultTargetPlatform,
        web = web ?? kIsWeb,
-       _initialize = initialize ?? initializeDopmiStripeTest,
+       _initialize =
+           initialize ??
+           ((key, merchant) => initializeDopmiStripe(
+             key,
+             merchant,
+             paymentEnvironment: paymentEnvironment,
+           )),
        _prepare = prepare ?? _prepareStripe,
        _show = show ?? _showStripe;
 
   final String publishableKey, merchantId;
+  final PaymentEnvironment paymentEnvironment;
   final TargetPlatform platform;
   final bool web;
   final Future<void> Function(String, String) _initialize;
@@ -48,7 +58,7 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
   bool get available =>
       !web &&
       [TargetPlatform.android, TargetPlatform.iOS].contains(platform) &&
-      RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(publishableKey);
+      paymentEnvironment.acceptsPublishableKey(publishableKey);
 
   @override
   Future<void> present(
@@ -66,7 +76,10 @@ class OneoffPaymentSheetSdk implements OneoffPaymentSheet {
     _pending = true;
     try {
       try {
-        await (_initialization ??= _initialize(publishableKey, merchantId));
+        await (_initialization ??= _initialize(
+          publishableKey,
+          paymentEnvironment.isTest ? merchantId : '',
+        ));
       } catch (_) {
         _initialization = null;
         rethrow;

@@ -19,6 +19,7 @@ import 'payment_result_page.dart';
 import 'payment_history_row.dart';
 import 'guardian_history_screen.dart';
 import 'oneoff_payment_sheet.dart';
+import 'payment_environment.dart';
 
 class ContributeScreen extends ConsumerStatefulWidget {
   const ContributeScreen(
@@ -306,7 +307,9 @@ class _ContributeState extends ConsumerState<ContributeScreen>
     if (!currentOwner() || busy || sheetAwaiting) return;
     if (!locked && !ref.read(oneoffPaymentSheetProvider).available) {
       setState(
-        () => error = 'El pago seguro de prueba no está disponible en este dispositivo. No se inició un cobro.',
+        () => error = ref.read(paymentEnvironmentProvider).isProduction
+            ? 'El pago seguro no está disponible en este dispositivo. Intenta más tarde.'
+            : 'El pago seguro de prueba no está disponible en este dispositivo. No se inició un cobro.',
       );
       return;
     }
@@ -632,6 +635,7 @@ class _ContributeState extends ConsumerState<ContributeScreen>
       return PopScope(
         canPop: !busy && !sheetAwaiting,
         child: PaymentResultPage(
+          paymentEnvironment: ref.watch(paymentEnvironmentProvider),
           value: result,
           refresh: checkOutcome,
           back: back,
@@ -831,8 +835,10 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                   if (error != null) Notice(error!, isError: true),
                   if (!locked &&
                       !ref.watch(oneoffPaymentSheetProvider).available)
-                    const Notice(
-                      'El pago seguro de prueba no está disponible en este dispositivo.',
+                    Notice(
+                      ref.watch(paymentEnvironmentProvider).isProduction
+                          ? 'El pago seguro no está disponible en este dispositivo.'
+                          : 'El pago seguro de prueba no está disponible en este dispositivo.',
                     ),
                   if (outcome == null)
                     ContributionButton(
@@ -860,9 +866,13 @@ class _ContributeState extends ConsumerState<ContributeScreen>
                     ),
                   ],
                   const SizedBox(height: 18),
-                  const Text(
-                    'Solo pagos de prueba. Al confirmar autorizas esta aportación por el importe del resumen. Captura tu método de pago en el componente seguro de Stripe dentro de Dopmi; Dopmi no recibe los datos de tu tarjeta.',
-                    style: TextStyle(fontSize: 13, height: 1.55, color: muted),
+                  Text(
+                    '${ref.watch(paymentEnvironmentProvider).isProduction ? 'Aportación real.' : 'Solo pagos de prueba.'} Al confirmar autorizas esta aportación por el importe del resumen. Captura tu método de pago en el componente seguro de Stripe dentro de Dopmi; Dopmi no recibe los datos de tu tarjeta.',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.55,
+                      color: muted,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -1258,8 +1268,13 @@ class _ConnectState extends ConsumerState<ConnectScreen>
       error = null;
     });
     try {
-      final repo = ref.read(paymentRepositoryProvider);
       final client = ref.read(connectClientProvider);
+      final environment = ref.read(paymentEnvironmentProvider);
+      if (!environment.acceptsPublishableKey(client.key)) {
+        throw const FormatException(
+          'La configuración de Stripe no está disponible. Intenta más tarde.',
+        );
+      }
       if (client.available) {
         final owner = ref.read(identityControllerProvider).identity?.id;
         await client.run(
@@ -1268,9 +1283,22 @@ class _ConnectState extends ConsumerState<ConnectScreen>
               owner != null &&
               ref.read(identityControllerProvider).identity?.id == owner,
         );
-      } else {
+      } else if (environment.isTest &&
+          client.enabled &&
+          (client.web ||
+              ![
+                TargetPlatform.android,
+                TargetPlatform.iOS,
+              ].contains(client.platform))) {
+        // Only unsupported TEST platforms retain their existing hosted path.
+        // Invalid configuration and a failed native SDK never switch channels.
+        final repo = ref.read(paymentRepositoryProvider);
         final result = await repo.action('connect_onboard');
         if (mounted) await repo.openStripe(result['url'] as String);
+      } else {
+        throw const FormatException(
+          'La configuración integrada de Stripe no está disponible en este dispositivo. Intenta más tarde.',
+        );
       }
     } catch (cause) {
       if (mounted) setState(() => error = paymentError(cause));
@@ -1293,9 +1321,11 @@ class _ConnectState extends ConsumerState<ConnectScreen>
     child: ListView(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
       children: [
-        const Text(
-          'STRIPE CONNECT · PRUEBA',
-          style: TextStyle(
+        Text(
+          ref.watch(paymentEnvironmentProvider).isProduction
+              ? 'STRIPE CONNECT · PAGOS REALES'
+              : 'STRIPE CONNECT · PRUEBA',
+          style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
             color: purple,
@@ -1328,7 +1358,9 @@ class _ConnectState extends ConsumerState<ConnectScreen>
                 ),
               Text(
                 data['ready'] == true
-                    ? 'Cuenta habilitada para recibir aportaciones de prueba'
+                    ? ref.watch(paymentEnvironmentProvider).isProduction
+                          ? 'Cuenta habilitada para recibir aportaciones reales'
+                          : 'Cuenta habilitada para recibir aportaciones de prueba'
                     : 'Tu cuenta todavía necesita completar su configuración',
               ),
               Text(

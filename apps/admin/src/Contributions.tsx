@@ -18,6 +18,7 @@ function money(cents: number) { return new Intl.NumberFormat('es-MX', { style: '
 function date(value: string) { return new Intl.DateTimeFormat('es-MX', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)); }
 
 export default function Contributions({ api }: { api: AdminApi }) {
+  const production = api.environment === 'production';
   const [status, setStatus] = useState('all');
   const [page, setPage] = useState(1);
   const [revision, setRevision] = useState(0);
@@ -37,7 +38,7 @@ export default function Contributions({ api }: { api: AdminApi }) {
 
   return <>
     <header className="page-heading"><div>
-      <p className="eyebrow">Stripe Connect · modo de prueba</p>
+      <p className="eyebrow">Stripe Connect · {production ? 'dinero real' : 'modo de prueba'}</p>
       <h1>Aportes</h1>
       <p>Consulta el cobro, la comisión del 2%, los costos de Stripe y el neto asignado al gasto elegido.</p>
     </div><span className="read-only">Consulta administrativa</span></header>
@@ -61,7 +62,7 @@ export default function Contributions({ api }: { api: AdminApi }) {
                 <td><strong>{money(item.gross_cents)}</strong><small>Dopmi: {money(item.platform_fee_cents)}</small><small>Stripe: {item.stripe_fee_cents === null ? 'Por confirmar' : money(item.stripe_fee_cents)}</small></td>
                 <td><strong>{item.processed_at === null ? 'Por confirmar' : money(item.allocated_cents)}</strong><small>{item.expense_title}</small></td>
                 <td><strong>{payments[item.payment_status] || 'En revisión'}</strong><small>{transfers[item.transfer_status] || 'En revisión'}</small><small>{statuses[item.status]}</small>
-                  {item.stripe_charge_id && /^ch_[a-zA-Z0-9_]+$/.test(item.stripe_charge_id) && <a href={`https://dashboard.stripe.com/test/payments/${item.stripe_charge_id}`} target="_blank" rel="noreferrer">Ver en Stripe</a>}
+                  {item.stripe_charge_id && /^ch_[a-zA-Z0-9_]+$/.test(item.stripe_charge_id) && <a href={`https://dashboard.stripe.com/${production ? '' : 'test/'}payments/${item.stripe_charge_id}`} target="_blank" rel="noreferrer">Ver en Stripe</a>}
                 </td><td>{date(item.created_at)}</td><td>{money(item.refund_cents)}<small>{item.refund_status === 'refunded' ? 'Devuelta' : item.refund_status === 'attention' ? 'Requiere revisión' : item.refund_status === 'pending' ? 'En proceso' : 'Sin devolución'}</small></td></tr>)}</tbody></table></div>}
       <p className="notice">Transferido a Stripe no confirma un depósito bancario. El rescatista puede consultar sus depósitos en su cuenta de cobro. Los fallos se reintentan con la misma referencia; los intentos sin resultado seguro requieren conciliación.</p>
       <footer className="pagination"><span>Página {page} de {Math.max(1, Math.ceil(data.total / 20))}</span><div><button className="secondary" disabled={loading || page === 1} onClick={() => setPage(p => p - 1)}>Anterior</button><button className="secondary" disabled={loading || page * 20 >= data.total} onClick={() => setPage(p => p + 1)}>Siguiente</button></div></footer>

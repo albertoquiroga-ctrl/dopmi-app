@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_environment.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -31,6 +32,68 @@ Map<String, dynamic> session() => {
   },
 };
 void main() {
+  for (final config in [
+    (mode: 'test', consent: 'oneoff-test-2026-10-15'),
+    (mode: 'production', consent: 'oneoff-live-2026-10-28'),
+  ]) {
+    test(
+      'expense checkout uses compiled ${config.mode} consent and preserves the same attempt',
+      () async {
+        final requests = <http.Request>[];
+        final client = SupabaseClient(
+          'http://127.0.0.1:54321',
+          'synthetic-key',
+          authOptions: const AuthClientOptions(autoRefreshToken: false),
+          httpClient: MockClient((request) async {
+            requests.add(request);
+            return http.Response(
+              jsonEncode({'status': 'pending', 'key': attempt}),
+              200,
+              headers: {'content-type': 'application/json'},
+              request: request,
+            );
+          }),
+        );
+        addTearDown(client.dispose);
+        await PaymentRepository(
+          client,
+          paymentEnvironment: PaymentEnvironment(environment: config.mode),
+        ).checkout(expense, 2000, attempt);
+        expect(jsonDecode(requests.single.body), {
+          'action': 'native_checkout',
+          'expense_id': expense,
+          'gross_cents': 2000,
+          'key': attempt,
+          'consent': true,
+          'consent_version': config.consent,
+        });
+      },
+    );
+  }
+  test(
+    'an unknown checkout environment sends neither expense nor case requests',
+    () async {
+      final client = SupabaseClient(
+        'http://127.0.0.1:54321',
+        'synthetic-key',
+        authOptions: const AuthClientOptions(autoRefreshToken: false),
+        httpClient: MockClient((_) async => fail('must not create a checkout')),
+      );
+      addTearDown(client.dispose);
+      final repo = PaymentRepository(
+        client,
+        paymentEnvironment: const PaymentEnvironment(environment: 'unknown'),
+      );
+      expect(
+        () => repo.checkout(expense, 2000, attempt),
+        throwsFormatException,
+      );
+      expect(
+        () => repo.caseCheckout(expense, 2000, attempt),
+        throwsFormatException,
+      );
+    },
+  );
   for (final mode in [
     'pending',
     'disabled',

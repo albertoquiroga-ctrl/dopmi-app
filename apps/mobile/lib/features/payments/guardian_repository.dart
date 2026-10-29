@@ -5,13 +5,14 @@ import '../adoption/community_repository.dart';
 import 'payment_repository.dart';
 import 'guardian_payment_card.dart';
 import 'guardian_registration.dart';
+import 'payment_environment.dart';
 
 const guardianConsent = 'guardian-2026-09-24';
 const guardianRegistrationConsent = 'guardian-registration-2026-10-14';
 const savedCardConsent = 'saved-cards-2026-10-03';
 const savedCardMethodConsent = 'saved-card-methods-2026-10-03';
 final guardianEnabledProvider = Provider<bool>(
-  (ref) => const bool.fromEnvironment('ENABLE_GUARDIAN_TEST'),
+  (ref) => ref.watch(paymentEnvironmentProvider).guardianEnabled,
 );
 final guardianRepositoryProvider = Provider<GuardianRepository>(
   (ref) => GuardianRepository(Supabase.instance.client),

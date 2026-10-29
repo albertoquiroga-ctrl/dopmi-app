@@ -2,11 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
+import 'payment_environment.dart';
+
 final nativeWalletSdkProvider = Provider<NativeWalletSdk>(
   (ref) => NativeWalletSdk(
-    publishableKey: const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY_TEST'),
-    merchantId: const String.fromEnvironment('APPLE_PAY_MERCHANT_ID'),
-    enabled: const bool.fromEnvironment('ENABLE_NATIVE_WALLETS_TEST'),
+    publishableKey: ref.watch(paymentEnvironmentProvider).publishableKey,
+    merchantId: ref.watch(paymentEnvironmentProvider).merchantId,
+    enabled: ref.watch(paymentEnvironmentProvider).nativeWalletsEnabled,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
   ),
 );
 
@@ -15,6 +18,7 @@ class NativeWalletSdk {
     required this.publishableKey,
     this.merchantId = '',
     this.enabled = false,
+    this.paymentEnvironment = const PaymentEnvironment(),
     TargetPlatform? platform,
     bool? web,
     Future<void> Function(String key, String merchant)? initialize,
@@ -23,11 +27,18 @@ class NativeWalletSdk {
     confirm,
   }) : platform = platform ?? defaultTargetPlatform,
        web = web ?? kIsWeb,
-       _initialize = initialize ?? initializeDopmiStripeTest,
+       _initialize =
+           initialize ??
+           ((key, merchant) => initializeDopmiStripe(
+             key,
+             merchant,
+             paymentEnvironment: paymentEnvironment,
+           )),
        _supported = supported ?? _supportedStripe,
        _confirm = confirm ?? _confirmStripe;
 
   final String publishableKey, merchantId;
+  final PaymentEnvironment paymentEnvironment;
   final bool enabled, web;
   final TargetPlatform platform;
   final Future<void> Function(String, String) _initialize;
@@ -37,8 +48,9 @@ class NativeWalletSdk {
 
   String? get provider {
     if (!enabled ||
+        !paymentEnvironment.isTest ||
         web ||
-        !RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(publishableKey)) {
+        !paymentEnvironment.acceptsPublishableKey(publishableKey)) {
       return null;
     }
     if (platform == TargetPlatform.android) return 'google_pay';
@@ -103,11 +115,21 @@ class NativeWalletSdk {
 }
 
 Future<void> initializeDopmiStripeTest(String key, String merchant) async {
-  if (!RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(key)) {
-    throw const FormatException('Stripe de prueba no está disponible.');
+  await initializeDopmiStripe(key, merchant);
+}
+
+Future<void> initializeDopmiStripe(
+  String key,
+  String merchant, {
+  PaymentEnvironment paymentEnvironment = const PaymentEnvironment(),
+}) async {
+  if (!paymentEnvironment.acceptsPublishableKey(key)) {
+    throw const FormatException('Stripe no está disponible en este entorno.');
   }
   Stripe.publishableKey = key;
-  Stripe.merchantIdentifier = merchant.isEmpty ? null : merchant;
+  Stripe.merchantIdentifier = paymentEnvironment.isTest && merchant.isNotEmpty
+      ? merchant
+      : null;
   Stripe.urlScheme = 'io.dopmi.app';
   await Stripe.instance.applySettings();
 }

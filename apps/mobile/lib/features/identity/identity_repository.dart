@@ -6,6 +6,40 @@ import 'native_identity.dart';
 
 const currentTermsVersion = 'terms-2026-10-17';
 const currentPrivacyVersion = 'privacy-2026-10-17';
+const productionTermsVersion = 'terms-live-2026-10-28';
+const productionPrivacyVersion = 'privacy-live-2026-10-28';
+
+typedef LegalVersions = ({String terms, String privacy, String date});
+
+LegalVersions? legalVersionsForEnvironment(String environment) =>
+    switch (environment) {
+      'test' => (
+        terms: currentTermsVersion,
+        privacy: currentPrivacyVersion,
+        date: '17 de octubre de 2026',
+      ),
+      'production' => (
+        terms: productionTermsVersion,
+        privacy: productionPrivacyVersion,
+        date: '28 de octubre de 2026',
+      ),
+      _ => null,
+    };
+
+bool hasCurrentLegalConsent(
+  Profile? profile,
+  String? ownerId, {
+  required String environment,
+}) {
+  final versions = legalVersionsForEnvironment(environment);
+  return versions != null &&
+      ownerId != null &&
+      profile?.id == ownerId &&
+      profile?.termsVersion == versions.terms &&
+      profile?.privacyVersion == versions.privacy &&
+      profile?.adultConfirmed == true;
+}
+
 // Kept for build-253 test fixtures and migration compatibility only.
 const developmentTermsVersion = 'development-2026-09-13';
 
@@ -133,6 +167,11 @@ class SupabaseIdentityRepository implements IdentityRepository {
   final SupabaseClient client;
   final AppConfig config;
   final SharedPreferences preferences;
+  LegalVersions get _legalVersions =>
+      legalVersionsForEnvironment(config.environment) ??
+      (throw const FormatException(
+        'El entorno de la cuenta no está disponible.',
+      ));
   String get recoveryKey => 'dopmi.${Uri.parse(config.url).host}.recovery';
   String get recoveryIntentKey => '$recoveryKey.intent';
   Identity? _identity(User? user) => user == null
@@ -204,6 +243,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
     required String password,
     required String intent,
   }) async {
+    final versions = _legalVersions;
     await client.auth.signUp(
       email: email.trim(),
       password: password,
@@ -212,9 +252,9 @@ class SupabaseIdentityRepository implements IdentityRepository {
         'display_name': name.trim(),
         'phone': phone.trim(),
         'intent': intent,
-        'terms_version': currentTermsVersion,
+        'terms_version': versions.terms,
         'terms_accepted': true,
-        'privacy_version': currentPrivacyVersion,
+        'privacy_version': versions.privacy,
         'adult_confirmed': true,
       },
     );
@@ -462,11 +502,12 @@ class SupabaseIdentityRepository implements IdentityRepository {
 
   @override
   Future<void> acceptTerms() async {
+    final versions = _legalVersions;
     await client.rpc(
       'dopmi_accept_legal',
       params: {
-        'accepted_terms': currentTermsVersion,
-        'accepted_privacy': currentPrivacyVersion,
+        'accepted_terms': versions.terms,
+        'accepted_privacy': versions.privacy,
         'confirms_adult': true,
       },
     );

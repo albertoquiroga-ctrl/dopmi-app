@@ -755,48 +755,65 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
 }
 
 class TermsScreen extends StatelessWidget {
-  const TermsScreen({super.key});
+  const TermsScreen({super.key, this.environment = 'test'});
+  final String environment;
   @override
-  Widget build(BuildContext context) => LegalDocumentFrame(
-    title: 'Términos y Condiciones',
-    lead: 'terms-2026-10-17 · 17 de octubre de 2026',
-    children: [
-      const LegalDocumentSection(
-        'Quién puede usar Dopmi',
-        'Debes tener 18 años o más, proporcionar información veraz y cuidar la privacidad y seguridad de otras personas.',
-      ),
-      const LegalDocumentSection(
-        'Adopciones, casos y moderación',
-        'Dopmi facilita el contacto y seguimiento. Una publicación puede requerir verificación, correcciones o retirarse. No garantizamos una adopción, atención veterinaria o resultado específico. Los borradores y correcciones son privados hasta su aprobación.',
-      ),
-      const LegalDocumentSection(
-        'Aportaciones al caso',
-        'Puedes elegir una aportación desde \$10 MXN al caso, sin cubrir todo su faltante. El servidor distribuye el neto entre gastos aprobados del mismo caso. La comisión Dopmi es del 2 % del importe bruto y también se descuentan los costos reales de Stripe. Si después del cargo no cabe todo el neto en gastos elegibles de ese caso, corresponde devolver el pago completo; no se asigna parcialmente ni a otro caso. Un pago pendiente no confirma éxito ni una devolución.',
-      ),
-      const LegalDocumentSection(
-        'Guardián',
-        'El registro permite elegir una aportación mensual desde \$20 MXN, con opciones de \$50, \$200 y \$500 o un monto personalizado. Sólo se cobra cuando todo el neto puede asignarse a gastos aprobados. Sin capacidad, el registro se conserva sin cargo; un mes omitido no genera deuda y se evalúa el siguiente ciclo. Los cambios de monto aplican al siguiente ciclo. Cancelar detiene ciclos futuros; un pago ya iniciado puede terminar de procesarse. El historial se conserva y no hay devolución automática de pagos anteriores.',
-      ),
-      const LegalDocumentSection(
-        'Autorizaciones separadas',
-        'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de prueba usan exclusivamente Stripe TEST y no representan dinero real. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.',
-      ),
-      const LegalDocumentSection(
-        'Conducta y contenido',
-        'No publiques información engañosa, ilegal, discriminatoria, violenta o que invada derechos de terceros. Conservas responsabilidad sobre tu contenido y autorizas a Dopmi a alojarlo y mostrarlo para operar el servicio. Podemos restringir cuentas por fraude, abuso, riesgo o incumplimiento y conservar la evidencia que corresponda.',
-      ),
-      LegalDocumentSection(
-        'Cuenta, privacidad y soporte',
-        'Puedes consultar Cuenta y privacidad, cancelar Guardián y consultar comprobantes propios sin aceptar una actualización. Para solicitar eliminación usa Cuenta y privacidad o escribe a soporte@dopmi.org. Recibir una solicitud no acredita titularidad ni confirma un borrado. Si no puedes recuperar ningún acceso, la solicitud queda pendiente de revisión por caso antes de consultar o eliminar datos.',
-        footer: TextButton(
-          onPressed: () => context.push('/privacy-notice'),
-          child: const Text('Leer Aviso de privacidad'),
+  Widget build(BuildContext context) {
+    final versions = legalVersionsForEnvironment(environment);
+    if (versions == null) {
+      return const LegalDocumentFrame(
+        title: 'Términos y Condiciones',
+        lead: 'Documento no disponible',
+        children: [
+          Notice(
+            'No pudimos confirmar el entorno de la cuenta. Intenta más tarde.',
+          ),
+        ],
+      );
+    }
+    return LegalDocumentFrame(
+      title: 'Términos y Condiciones',
+      lead: '${versions.terms} · ${versions.date}',
+      children: [
+        const LegalDocumentSection(
+          'Quién puede usar Dopmi',
+          'Debes tener 18 años o más, proporcionar información veraz y cuidar la privacidad y seguridad de otras personas.',
         ),
-      ),
-      const Text(
-        'Versión terms-2026-10-17 · 17 de octubre de 2026',
-        style: TextStyle(fontSize: 12, height: 1.5, color: muted),
-      ),
-    ],
-  );
+        const LegalDocumentSection(
+          'Adopciones, casos y moderación',
+          'Dopmi facilita el contacto y seguimiento. Una publicación puede requerir verificación, correcciones o retirarse. No garantizamos una adopción, atención veterinaria o resultado específico. Los borradores y correcciones son privados hasta su aprobación.',
+        ),
+        const LegalDocumentSection(
+          'Aportaciones al caso',
+          'Puedes elegir una aportación desde \$10 MXN al caso, sin cubrir todo su faltante. El servidor distribuye el neto entre gastos aprobados del mismo caso. La comisión Dopmi es del 2 % del importe bruto y también se descuentan los costos reales de Stripe. Si después del cargo no cabe todo el neto en gastos elegibles de ese caso, corresponde devolver el pago completo; no se asigna parcialmente ni a otro caso. Un pago pendiente no confirma éxito ni una devolución.',
+        ),
+        const LegalDocumentSection(
+          'Guardián',
+          'El registro permite elegir una aportación mensual desde \$20 MXN, con opciones de \$50, \$200 y \$500 o un monto personalizado. Sólo se cobra cuando todo el neto puede asignarse a gastos aprobados. Sin capacidad, el registro se conserva sin cargo; un mes omitido no genera deuda y se evalúa el siguiente ciclo. Los cambios de monto aplican al siguiente ciclo. Cancelar detiene ciclos futuros; un pago ya iniciado puede terminar de procesarse. El historial se conserva y no hay devolución automática de pagos anteriores.',
+        ),
+        LegalDocumentSection(
+          'Autorizaciones separadas',
+          environment == 'production'
+              ? 'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de esta beta usan Stripe LIVE y dinero real, y requieren la confirmación correspondiente. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.'
+              : 'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de prueba usan exclusivamente Stripe TEST y no representan dinero real. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.',
+        ),
+        const LegalDocumentSection(
+          'Conducta y contenido',
+          'No publiques información engañosa, ilegal, discriminatoria, violenta o que invada derechos de terceros. Conservas responsabilidad sobre tu contenido y autorizas a Dopmi a alojarlo y mostrarlo para operar el servicio. Podemos restringir cuentas por fraude, abuso, riesgo o incumplimiento y conservar la evidencia que corresponda.',
+        ),
+        LegalDocumentSection(
+          'Cuenta, privacidad y soporte',
+          'Puedes consultar Cuenta y privacidad, cancelar Guardián y consultar comprobantes propios sin aceptar una actualización. Para solicitar eliminación usa Cuenta y privacidad o escribe a soporte@dopmi.org. Recibir una solicitud no acredita titularidad ni confirma un borrado. Si no puedes recuperar ningún acceso, la solicitud queda pendiente de revisión por caso antes de consultar o eliminar datos.',
+          footer: TextButton(
+            onPressed: () => context.push('/privacy-notice'),
+            child: const Text('Leer Aviso de privacidad'),
+          ),
+        ),
+        Text(
+          'Versión ${versions.terms} · ${versions.date}',
+          style: const TextStyle(fontSize: 12, height: 1.5, color: muted),
+        ),
+      ],
+    );
+  }
 }

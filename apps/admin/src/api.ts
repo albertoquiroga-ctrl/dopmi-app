@@ -53,7 +53,9 @@ export function validateProfileFieldFeedback(feedback: ProfileFieldFeedback): vo
 }
 export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string; public_email?:string; public_phone?:string; public_address?:string; website_url?:string; contact_consent?:boolean; contact_publication_enabled?:boolean; field_feedback?:ProfileFieldFeedback; approved_snapshot?:Partial<RescuerPublicProfile> };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
+export type AdminEnvironment = 'test' | 'production';
 export type AdminApi = {
+  readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
   videoModeration?: VideoModerationApi;
   listSupportRequests?: (page: number) => Promise<SupportPage>;
@@ -83,8 +85,9 @@ export type AdminApi = {
   profileAvatarUrl?: (path:string) => Promise<string>;
 };
 
-export function createAdminApi(client: SupabaseClient): AdminApi {
+export function createAdminApi(client: SupabaseClient, environment: AdminEnvironment = 'test'): AdminApi {
   return {
+    environment,
     storeCatalog: createStoreCatalogApi(client),
     videoModeration: createVideoModerationApi(client),
     listSupportRequests: supportRequests(client),
@@ -135,17 +138,26 @@ export function createAdminApi(client: SupabaseClient): AdminApi {
 export function configuredApi(): AdminApi | null {
   const url = import.meta.env.VITE_SUPABASE_URL;
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const environment = import.meta.env.VITE_DOPMI_ENVIRONMENT ?? 'test';
   if (!url || !key) return null;
   try {
+    if (environment !== 'test' && environment !== 'production') return null;
     const parsed = new URL(url);
-    if (parsed.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(parsed.hostname)) return null;
-    // Frontends must never accept a secret key or a service-role JWT.
-    if (key.startsWith('sb_secret_')) return null;
-    if (key.startsWith('eyJ')) {
-      const payload = JSON.parse(atob(key.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-      if (payload.role !== 'anon') return null;
+    if (parsed.username || parsed.password || parsed.search || parsed.hash || parsed.pathname !== '/') return null;
+    const local = ['localhost', '127.0.0.1'].includes(parsed.hostname);
+    const project = environment === 'production' ? 'ysaoeuidcvgtlmphmeyb' : 'ohqxranynackjignryep';
+    if (local) {
+      if (environment !== 'test' || !['http:', 'https:'].includes(parsed.protocol)) return null;
+    } else if (parsed.protocol !== 'https:' || parsed.hostname !== `${project}.supabase.co` || parsed.port) return null;
+    // Only public client credentials reach the frontend. An opaque publishable
+    // key's project binding still requires the deployment's operational check.
+    if (!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key)) {
+      const parts = key.split('.');
+      if (parts.length !== 3 || parts.some((part: string) => !/^[A-Za-z0-9_-]+$/.test(part))) return null;
+      const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (payload.role !== 'anon' || (local ? payload.ref != null : payload.ref !== project)) return null;
     }
-    return createAdminApi(createClient(url, key));
+    return createAdminApi(createClient(parsed.origin, key), environment);
   } catch { return null; }
 }
 

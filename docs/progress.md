@@ -1,3 +1,42 @@
+## 28/10/2026 — B4 implementado; B3 preparado y gates reales pendientes
+
+B2publicado83e6e6fc6a13783e1fa8dc95c9461cd553fac6ef/CI40793197789 cuatroSUCCESS;
+cierra el fallo de formato previo. B4local integra tresSDKconmode/keys/flags,
+copyLIVE/TEST, parlegal17TEST/28octLIVE, exencionesrouter, admisiónnuevaSQLantes
+decompartirdatos/cobrar y Connectadmit. Conserva SDKembebido y nofallbackhostedLIVE.
+Adminvalidaentorno/host/keypública y cambiaetiqueta/linkStripe. FirebaseperfilPROD
+separado y workflowexistente requierenoptin/pines/archivos propios; buildinforegistra
+backend/env/SHA/flags e IDs/hashesFirebase sinclaves. ConfiggeneradaignoradaGit.
+Revisiones independientes código/producto/seguridad cerradas en sus paquetes, no
+atribuyen auditoría globalLIVE, dictamen ni comportamiento instalado.
+
+Verificaciónlocal: backend1110PASS/8SKIP; SQL36PASS/2SKIP incluidosenregresión,
+57focalesConnect/modePASS, SDK64PASS, Admin63PASS/build, Python27+12PASS. Analyze
+completo dio2infos estilísticos; corregidos y checkdirigido0. UI+legal100PASSantes
+deinterrupciónporfixtureConnect; éste después13PASS/2s. FullFlutterlocal terminó
+por watchdog externo8min tras1537 sinfallos ysin cierre: NOsuitePASScompleta.
+No repetirlocalentera; el gateCIexactoB4 obligatorio cerrará validación integrada.
+
+Retrabajoharness: faltó FakeCommunity, luego cierreclienteesperaba indefinidamente.
+Diagnóstico situóesperaenclient.dispose despuésdecuerpo/aserciones. Creación+cierre
+enrunAsync resolvieron13casos; interaccióninternaJSONisolate siguehipótesis, no defecto
+SDK acreditado. Revisorproceso: reutilizar ciclo devida completo en siguienteharness
+pertinente, sinrepetirwatchdogsinlocalizaciónnueva. Corte8minlocal no es fallo app.
+
+Incidenteprivacidad: getAXState delcallbackGitHub→Supabase emitióURLautenticación
+concredencialesdesesión. No se copiaron/guardaron valores enarchivos/Git; no afirmar
+borrado de la salida ni revocación. Lecturas siguientes emit:false+exclusiónURLs/
+encabezados; comprobaciónProjects saneada, revisiónproceso independiente acotada.
+
+PRODcotejo48 cerrado:47hashiguales+cleanupmismaSQL/FKrealSETNULL. Authsignup/
+anonymous/manual-linkOFF, confirmemailON, customEdgeSecrets0. Delta70fuentes
+atómico547687B/SHAba7347dc…5a2af5 revisado/noaplicado; historiapermanece48.
+Tres pasos humanos pendientes enformularios: contratarPro, autorizarRAKStripeLIVE
+aguardarúnicamentePROD, crearFirebasePROD+apps. Vercellista2proyectos pero detalle/
+env403scope dop-mi requieregrant deconexión oGUIlegítima. Resend/dopmi.org histórico
+descubierto; faltaSMTPPROD real. Ningún servicioLIVE nuevoactivado/cobro ni buildbeta.
+ÚltimoPlay/instalado/aceptado sigue341TEST; no pedirreaceptacióndeese corte.
+
 ## 28/10/2026 — B2 local revisado; sin activación LIVE
 
 B1publicado35bfbbbd/CI40785747436: web/backend/iOSSUCCESS; FlutterFAILED en formato,

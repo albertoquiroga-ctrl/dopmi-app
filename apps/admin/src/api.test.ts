@@ -1,6 +1,57 @@
 import { createClient } from '@supabase/supabase-js';
-import { expect, test, vi } from 'vitest';
-import { createAdminApi, type RescuerPublicProfile } from './api';
+import { afterEach, expect, test, vi } from 'vitest';
+import { configuredApi, createAdminApi, type RescuerPublicProfile } from './api';
+
+afterEach(() => vi.unstubAllEnvs());
+
+const testProject = 'ohqxranynackjignryep';
+const productionProject = 'ysaoeuidcvgtlmphmeyb';
+const anonKey = (ref: string | null, role = 'anon') => `e30.${btoa(JSON.stringify({ role, ...(ref === null ? {} : { ref }) })).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')}.fixture`;
+function configure(environment: string | undefined, url: string, key = 'sb_publishable_fixture') {
+  vi.stubEnv('VITE_DOPMI_ENVIRONMENT', environment);
+  vi.stubEnv('VITE_SUPABASE_URL', url);
+  vi.stubEnv('VITE_SUPABASE_PUBLISHABLE_KEY', key);
+  return configuredApi();
+}
+
+test('configuration defaults to TEST and requires explicit production with its registered host', () => {
+  expect(configure(undefined, `https://${testProject}.supabase.co`)?.environment).toBe('test');
+  expect(configure('production', `https://${productionProject}.supabase.co`, anonKey(productionProject))?.environment).toBe('production');
+  expect(createAdminApi({} as Parameters<typeof createAdminApi>[0]).environment).toBe('test');
+});
+
+test('crossed, unknown or credential-bearing endpoints cannot configure an admin client', () => {
+  for (const [environment, url] of [
+    [undefined, `https://${productionProject}.supabase.co`],
+    ['test', `https://${productionProject}.supabase.co`],
+    ['production', `https://${testProject}.supabase.co`],
+    ['production', 'http://localhost:54321'],
+    ['staging', `https://${productionProject}.supabase.co`],
+    ['production', 'https://another-project.supabase.co'],
+    ['test', 'https://example.test'],
+    ['production', `http://${productionProject}.supabase.co`],
+    ['production', `https://user@${productionProject}.supabase.co`],
+    ['production', `https://${productionProject}.supabase.co?mode=test`],
+    ['production', `https://${productionProject}.supabase.co/path`],
+  ]) expect(configure(environment, url!)).toBeNull();
+});
+
+test('only public credentials with the selected JWT project can configure either remote environment', () => {
+  for (const [environment, project, other] of [['test', testProject, productionProject], ['production', productionProject, testProject]]) {
+    const url = `https://${project}.supabase.co`;
+    expect(configure(environment, url, anonKey(project))?.environment).toBe(environment);
+    for (const key of [anonKey(other), anonKey(null), anonKey(project, 'service_role'), 'sb_secret_fixture', 'sk_live_fixture', 'rk_test_fixture', 'pk_live_fixture', 'not-a-client-key']) {
+      expect(configure(environment, url, key)).toBeNull();
+    }
+  }
+});
+
+test('local Supabase acceptance is TEST only and accepts its legacy ref-less anon credential', () => {
+  expect(configure('test', 'http://127.0.0.1:54321', anonKey(null))?.environment).toBe('test');
+  expect(configure('test', 'http://localhost:54321', 'sb_publishable_localfixture')?.environment).toBe('test');
+  expect(configure('production', 'http://127.0.0.1:54321', anonKey(null))).toBeNull();
+  expect(configure('test', 'http://localhost:54321', anonKey(productionProject))).toBeNull();
+});
 
 test('profile moderation sends the actual PostgREST owner parameter and version', async () => {
   const fetcher = vi.fn(async () => new Response(JSON.stringify({ owner_id: 'owner', version: 5 }), { headers: { 'Content-Type': 'application/json' } }));

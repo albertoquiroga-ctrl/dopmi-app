@@ -78,6 +78,11 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     return current;
   }
   async function connect(actor, action) {
+    if (!['status', 'onboard', 'session'].includes(action)) throw new PaymentError('invalid_input', 400);
+    if (expectedLivemode && action !== 'status') {
+      const admission = await rpc('connect_admit', { actor });
+      if (admission?.allowed !== true) throw new PaymentError('legal_consent_required', 403);
+    }
     let account = await rpc(action === 'status' ? 'connect_status' : 'connect_get', { actor });
     if (!account.account_id) {
       if (action === 'status') return { ready: false, verified: account.verified, transfers_enabled: false, payouts_enabled: false, payouts: [] };

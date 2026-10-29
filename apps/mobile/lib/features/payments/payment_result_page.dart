@@ -8,6 +8,7 @@ import 'contribution_layout.dart';
 import 'payment_repository.dart';
 import 'case_allocation_list.dart';
 import 'payment_success_details.dart';
+import 'payment_environment.dart';
 
 class PaymentResultPage extends StatelessWidget {
   const PaymentResultPage({
@@ -23,12 +24,14 @@ class PaymentResultPage extends StatelessWidget {
     this.casePhoto,
     this.busy = false,
     this.error,
+    this.paymentEnvironment = const PaymentEnvironment.compiled(),
   });
   final Json value;
   final VoidCallback refresh, back;
   final VoidCallback? retry, continueAttempt, checkWhileAuthorizing;
   final String? caseId, caseName, casePhoto, error;
   final bool busy;
+  final PaymentEnvironment paymentEnvironment;
 
   @override
   Widget build(BuildContext context) {
@@ -278,10 +281,12 @@ class PaymentResultPage extends StatelessWidget {
                     ),
                 ],
                 const SizedBox(height: 12),
-                const Text(
-                  'Solo pagos de prueba.',
+                Text(
+                  paymentEnvironment.isProduction
+                      ? 'Aportaciones reales mediante Stripe.'
+                      : 'Solo pagos de prueba.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: muted),
+                  style: const TextStyle(fontSize: 12, color: muted),
                 ),
               ],
             ),

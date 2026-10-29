@@ -36,6 +36,7 @@ import 'guardian_activation_failure.dart';
 import 'guardian_registration.dart';
 import 'guardian_registration_method_control.dart';
 import 'guardian_registration_screen.dart';
+import 'payment_environment.dart';
 
 class GuardianScreen extends ConsumerStatefulWidget {
   const GuardianScreen({
@@ -1198,6 +1199,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         activation?['status'] == 'failed' &&
         activation?['cancellation_requested_at'] == null) {
       return GuardianActivationFailure(
+        paymentEnvironment: ref.watch(paymentEnvironmentProvider),
         cents: failedActivationCents!,
         onRetry: beginEnrollment,
         onReturn: () => context.go('/rescue-cases'),
@@ -1215,6 +1217,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
         activation?['status'] == 'active' &&
         plan?['status'] == 'active') {
       return GuardianActivationSuccess(
+        paymentEnvironment: ref.watch(paymentEnvironmentProvider),
         cents: plan!['gross_cents'] as int,
         nextBilling: plan!['next_billing_at'] as String?,
         onReturn: () => context.go('/rescue-cases'),
@@ -1667,6 +1670,7 @@ class _GuardianState extends ConsumerState<GuardianScreen>
       const SizedBox(height: 16),
       if (p == null)
         GuardianEnrollmentConfirmation(
+          paymentEnvironment: ref.watch(paymentEnvironmentProvider),
           firstPaymentDate: date(DateTime.now().toIso8601String()),
           nextBillingDate: date(
             guardianNextBilling(DateTime.now()).toIso8601String(),
@@ -1911,8 +1915,10 @@ class _GuardianState extends ConsumerState<GuardianScreen>
                       'Cancelación del alta en revisión. No inicies otro pago.',
                     _ => 'Cancelación del alta solicitada. Estamos confirmando el cierre con Stripe; un pago ya iniciado sigue en conciliación.',
                   }),
-                const Notice(
-                  'Solo modo de prueba. No uses datos de una tarjeta real.',
+                Notice(
+                  ref.watch(paymentEnvironmentProvider).isProduction
+                      ? 'Aportaciones reales con el método de pago que autorices.'
+                      : 'Solo modo de prueba. No uses datos de una tarjeta real.',
                 ),
                 if (busy) const LinearProgressIndicator(),
                 if (p != null) ...[

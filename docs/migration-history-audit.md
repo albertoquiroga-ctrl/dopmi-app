@@ -1,5 +1,24 @@
 # Auditoría del historial de migraciones
 
+## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
+
+PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:
+48migraciones/Auth0/Storage0/40tablas, cincoextensiones/sincron. Cotejo posterior por
+SQLEditor:47MD5normalizados coinciden; h10_auth_reference_cleanup20260928221656
+difiere sólo en comentarios/formato frenteaGit20260928223000. Sus dos sentencias
+FK son idénticas y pg_get_constraintdef confirma ambas ONDELETESETNULL. No reparar,
+renombrar ni repetir estas48migraciones. SQLMCPtuvo timeout300s+sonda25s; no se
+reintentó para obtener el cotejo, que cerró porGUI. Receiptprivado production-history-content-compared.
+
+Delta propuesto70fuentes:67ausentes+B2modo+2legales, 547687B,
+SHA256ba7347dc82126d4b056a84ded099ffdbaf63197a44a7c8d7e9a23a944a5a2af5.
+Unatxexterna y63wrappers retirados reversiblemente; revisiónestática independiente
+sinP1/P2. Conserva SETLOCALlock2s/statement30s de fuentemensual hastaCOMMIT.
+Manifest5bc8135a…3d5ff4/preflight48historia exacta+vacíos/guardas RLS/defaultsTEST/OFF.
+Sólo preparado; no apply ni historia49 acreditados. B2fuente83e6e6fc/CI40793197789
+cuatroSUCCESS; nuevasdoslegales aún requieren CI del próximo candidato antes de aplicar.
+No bootstrapadmin, fixtures, cronDEV, datos/medios/credenciales copiados desdeDEV.
+
 ## 27/10/2026 — PendingStripe de nuevos casos aplicado en DEV
 
 Fuente f82134f59f21bf09774d22f1128d059bea5a4477, CI40528719305 cuatroSUCCESS.

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dopmi_mobile/features/payments/connect_client.dart';
+import 'package:dopmi_mobile/features/payments/payment_environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,41 +10,86 @@ Map<String, dynamic> session() => {
   'expires_at': DateTime.now().millisecondsSinceEpoch ~/ 1000 + 300,
 };
 void main() {
-  test(
-    'Connect rejects live/web/unsupported/disabled before SDK or server',
-    () async {
-      for (final config in [
-        ConnectClient(
-          key: 'pk_live_invalid',
-          enabled: true,
-          platform: TargetPlatform.android,
-          session: () async => throw StateError('server'),
-        ),
-        ConnectClient(
-          key: 'pk_test_ok',
-          enabled: true,
-          web: true,
-          platform: TargetPlatform.android,
-          session: () async => throw StateError('server'),
-        ),
-        ConnectClient(
-          key: 'pk_test_ok',
-          enabled: true,
-          web: false,
-          platform: TargetPlatform.windows,
-          session: () async => throw StateError('server'),
-        ),
-        ConnectClient(
-          key: 'pk_test_ok',
-          enabled: false,
-          platform: TargetPlatform.android,
-          session: () async => throw StateError('server'),
-        ),
-      ]) {
-        await expectLater(config.run(() => true), throwsFormatException);
-      }
-    },
-  );
+  test('Connect opens LIVE only with explicit production mode', () async {
+    var initialized = 0, requests = 0, presented = 0, loggedOut = 0;
+    final client = ConnectClient(
+      key: 'pk_live_synthetic',
+      paymentEnvironment: const PaymentEnvironment(environment: 'production'),
+      enabled: true,
+      web: false,
+      platform: TargetPlatform.android,
+      session: () async {
+        requests++;
+        return session();
+      },
+      initialize: (key, fetch) async {
+        expect(key, 'pk_live_synthetic');
+        expect(await fetch(), 'synthetic_session_secret');
+        initialized++;
+      },
+      present: () async {
+        presented++;
+      },
+      logout: () async {
+        loggedOut++;
+      },
+    );
+    expect(client.available, true);
+    await client.run(() => true);
+    expect([initialized, requests, presented, loggedOut], [1, 1, 1, 1]);
+  });
+  test('Connect rejects missing, crossed and unknown production configuration before the server', () async {
+    for (final config in [
+      (mode: 'production', key: 'pk_test_synthetic'),
+      (mode: 'production', key: ''),
+      (mode: 'production', key: 'sk_live_synthetic'),
+      (mode: 'unknown', key: 'pk_live_synthetic'),
+    ]) {
+      final client = ConnectClient(
+        key: config.key,
+        paymentEnvironment: PaymentEnvironment(environment: config.mode),
+        enabled: true,
+        web: false,
+        platform: TargetPlatform.android,
+        session: () async => fail('must not request a session'),
+        initialize: (_, _) async => fail('must not initialize'),
+      );
+      expect(client.available, false);
+      await expectLater(client.run(() => true), throwsFormatException);
+    }
+  });
+  test('Connect rejects a LIVE key in TEST, web, unsupported and disabled before SDK or server', () async {
+    for (final config in [
+      ConnectClient(
+        key: 'pk_live_invalid',
+        enabled: true,
+        platform: TargetPlatform.android,
+        session: () async => throw StateError('server'),
+      ),
+      ConnectClient(
+        key: 'pk_test_ok',
+        enabled: true,
+        web: true,
+        platform: TargetPlatform.android,
+        session: () async => throw StateError('server'),
+      ),
+      ConnectClient(
+        key: 'pk_test_ok',
+        enabled: true,
+        web: false,
+        platform: TargetPlatform.windows,
+        session: () async => throw StateError('server'),
+      ),
+      ConnectClient(
+        key: 'pk_test_ok',
+        enabled: false,
+        platform: TargetPlatform.android,
+        session: () async => throw StateError('server'),
+      ),
+    ]) {
+      await expectLater(config.run(() => true), throwsFormatException);
+    }
+  });
   test('Connect double tap shares one session/presentation and clears native state', () async {
     var requests = 0, presented = 0, loggedOut = 0;
     final gate = Completer<void>();

@@ -6,11 +6,11 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 
 | Batch / dueño | Dependencia y objetivo | Estado / salida |
 |---|---|---|
-| B0 / integrador | Descubrir entornos y acuerdos actuales | PROD restaurado una vez/healthy, SQL48migraciones/Auth0/Storage0, sieteEdgehistóricas; cuentaStripeLIVE consultada. Completar Auth/secretos-metadata/ACL y delta exacto. |
-| B1 / móvil + revisores | B0; configuración estricta TEST/producción | Fuente35bfbbbd, Python27PASS/Flutter19PASS/analyze0. CI40785747436 tresSUCCESS/FlutterformatoFAILED, fixlocal verificado; pendiente CIpróximoSHA. |
-| B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Implementado local/revisado: modo/firmas/objetos, contextoSQL+cuenta, consentimientos y Authprevio. HostednuevoLIVE bloqueado; regresión1074PASS8SKIP previa a últimos fixes, focalfinal64PASS/Deno4checks. Pendiente CI/PgTAP del candidato; nada desplegado. |
-| B3 / integrador + seguridad | B0/B2; preparar producción | Pendiente: deltaSQL por contenido, Edge/configAuth/invitaciones/SMTP/OAuth/secretos/webhook/worker/monitoreo; reversión sin copiarDEV. |
-| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | SDK/DI implementados por agente, pendientes colaFlutter/revisión; root integra copy/consentimiento, enlacesadmin/workflow. Candidato/CI final, ventana5min, un envíoCodemagic/Play interno. |
+| B0 / integrador | Descubrir entornos y acuerdos actuales | Cotejo48resuelto/47exactos+cleanupsemántico; Authsignup/anonymousOFF/confirmemailON; customSecrets0, sinDEVmodificado. Falta SMTP/OAuth/operación. |
+| B1 / móvil + revisores | B0; configuración estricta TEST/producción | Configuración y fixformato integrados en83e6e6fc/CI40793197789 cuatroSUCCESS. |
+| B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Fuente83e6e6fc/CI4SUCCESS; revisiones cerradas. Ningún despliegue nuevo; historial y modo protegidos. |
+| B3 / integrador + seguridad | B0/B2; preparar producción | Delta70fuentes atómico revisado/no aplicado. Pendientes tres pasos humanos preparados (Pro, RAKLIVE, FirebasePROD), migración/Edge/AuthSMTP/OAuth/invitaciones/webhook/worker/monitoreo y Vercelscope403. No copiarDEV. |
+| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | Fuente local completa/revisada, backend1110PASS8SKIP/Admin63PASSbuild/SDK64PASS/Python39PASS. FullFlutterlocal cortado8min/1537sinfallos, noPASSfinal; falta CIexactaB4/perfilesreales. Después ventana5min y un envíoCodemagic/Playinterno. |
 | B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, admisión invitada/ajena, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene

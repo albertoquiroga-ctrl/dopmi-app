@@ -57,6 +57,25 @@ describe('contribuciones administrativas', () => {
     expect(screen.getByText('$92.00')).toBeInTheDocument();
     expect(screen.getByText('Dopmi: $2.00')).toBeInTheDocument();
     expect(screen.getByText('Transferencia en proceso')).toBeInTheDocument();
+    expect(screen.getByText('Stripe Connect · modo de prueba')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Ver en Stripe' })).toHaveAttribute('href', 'https://dashboard.stripe.com/test/payments/ch_abc');
+  });
+
+  it('identifica dinero real y abre el cobro LIVE desde el entorno de la API', async () => {
+    render(<Contributions api={client({ environment: 'production' })} />);
+    await screen.findByText('Ana López');
+    expect(screen.getByText('Stripe Connect · dinero real')).toBeInTheDocument();
+    expect(screen.queryByText('Stripe Connect · modo de prueba')).not.toBeInTheDocument();
+    const link = screen.getByRole('link', { name: 'Ver en Stripe' });
+    expect(link).toHaveAttribute('href', 'https://dashboard.stripe.com/payments/ch_abc');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(screen.queryByRole('button', { name: /cobrar|devolver/i })).not.toBeInTheDocument();
+  });
+
+  it('no convierte una referencia Stripe malformada en un enlace externo', async () => {
+    render(<Contributions api={client({ environment: 'production', listContributions: async () => ({ total: 1, items: [{ ...donation, stripe_charge_id: 'ch_abc?redirect=elsewhere' }] }) })} />);
+    await screen.findByText('Ana López');
+    expect(screen.queryByRole('link', { name: 'Ver en Stripe' })).not.toBeInTheDocument();
   });
 
   it('recarga la cola cuando cambia filtro o se solicita refresco', async () => {

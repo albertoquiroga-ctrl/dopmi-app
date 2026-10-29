@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dopmi_mobile/features/payments/guardian_method_setup.dart';
 import 'package:dopmi_mobile/features/payments/guardian_repository.dart';
 import 'package:dopmi_mobile/features/payments/independent_card_setup.dart';
+import 'package:dopmi_mobile/features/payments/payment_environment.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -79,6 +80,68 @@ class IndependentSetupSdk implements GuardianMethodSetup {
 }
 
 void main() {
+  test(
+    'LIVE setup keeps the embedded card sheet and wallet configuration absent',
+    () async {
+      final parameters = <SetupPaymentSheetParameters>[];
+      var initialized = 0, shown = 0;
+      final sdk = GuardianMethodSetupSdk(
+        publishableKey: 'pk_live_synthetic',
+        paymentEnvironment: const PaymentEnvironment(environment: 'production'),
+        merchantId: 'merchant.synthetic',
+        enabled: true,
+        web: false,
+        platform: TargetPlatform.iOS,
+        initialize: (key, merchant) async {
+          expect(key, 'pk_live_synthetic');
+          expect(merchant, isEmpty);
+          initialized++;
+        },
+        prepare: (value) async {
+          parameters.add(value);
+        },
+        show: () async {
+          shown++;
+        },
+      );
+      expect(sdk.available, true);
+      await sdk.present(setupSecret, current: currentOwner);
+      expect(initialized, 1);
+      expect(shown, 1);
+      final value = parameters.single;
+      expect(value.setupIntentClientSecret, setupSecret);
+      expect(value.paymentIntentClientSecret, isNull);
+      expect(value.customerId, isNull);
+      expect(value.customerEphemeralKeySecret, isNull);
+      expect(value.applePay, isNull);
+      expect(value.googlePay, isNull);
+      expect(value.returnURL, 'io.dopmi.app://payments/return');
+    },
+  );
+  test('native setup rejects crossed, missing, secret and unknown production configuration', () async {
+    for (final config in [
+      (mode: 'production', key: 'pk_test_synthetic'),
+      (mode: 'production', key: ''),
+      (mode: 'production', key: 'sk_live_synthetic'),
+      (mode: 'unknown', key: 'pk_live_synthetic'),
+    ]) {
+      final sdk = GuardianMethodSetupSdk(
+        publishableKey: config.key,
+        paymentEnvironment: PaymentEnvironment(environment: config.mode),
+        enabled: true,
+        web: false,
+        platform: TargetPlatform.android,
+        initialize: (_, _) async => fail('must not initialize'),
+        prepare: (_) async => fail('must not prepare'),
+        show: () async => fail('must not show'),
+      );
+      expect(sdk.available, false);
+      await expectLater(
+        sdk.present(setupSecret, current: currentOwner),
+        throwsFormatException,
+      );
+    }
+  });
   test('independent card setup uses the native component and confirms only the same request', () async {
     final repo = IndependentSetupRepository();
     final sdk = IndependentSetupSdk();

@@ -328,7 +328,8 @@ class AboutScreen extends ConsumerWidget {
 }
 
 class TransparencyScreen extends StatefulWidget {
-  const TransparencyScreen({super.key});
+  const TransparencyScreen({super.key, this.environment = 'test'});
+  final String environment;
   @override
   State<TransparencyScreen> createState() => _TransparencyScreenState();
 }
@@ -447,9 +448,13 @@ class _TransparencyScreenState extends State<TransparencyScreen> {
         ],
       ),
       const Divider(color: Color(0xffe6e2dd)),
-      const Text(
-        'Los pagos de esta versión funcionan en modo prueba. No utilizan dinero real.',
-        style: TextStyle(fontSize: 12, height: 1.45, color: muted),
+      Text(
+        widget.environment == 'production'
+            ? 'Las aportaciones de esta beta usan dinero real. Se descuenta la comisión Dopmi del 2 % del importe bruto y los costos reales de Stripe.'
+            : widget.environment == 'test'
+            ? 'Los pagos de esta versión funcionan en modo prueba. No utilizan dinero real.'
+            : 'No pudimos confirmar el entorno de pagos. Intenta más tarde.',
+        style: const TextStyle(fontSize: 12, height: 1.45, color: muted),
       ),
     ],
   );

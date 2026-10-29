@@ -11,6 +11,7 @@ import '../rescue/rescue_repository.dart';
 import 'guardian_repository.dart';
 import 'contribution_layout.dart';
 import 'payment_history_row.dart';
+import 'payment_environment.dart';
 
 String _date(Object? value) {
   final parsed = DateTime.tryParse(value?.toString() ?? '')?.toLocal();
@@ -379,9 +380,11 @@ class _HistoryState extends ConsumerState<_GuardianHistory> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         children: [
-          const Text(
-            'GUARDIÁN · PRUEBA',
-            style: TextStyle(
+          Text(
+            ref.watch(paymentEnvironmentProvider).isProduction
+                ? 'GUARDIÁN · APORTACIONES REALES'
+                : 'GUARDIÁN · PRUEBA',
+            style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
               fontWeight: FontWeight.w600,

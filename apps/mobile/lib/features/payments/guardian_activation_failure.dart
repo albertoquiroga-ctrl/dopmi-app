@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import 'contribution_layout.dart';
+import 'payment_environment.dart';
 
 class GuardianActivationFailure extends StatelessWidget {
   const GuardianActivationFailure({
@@ -10,9 +11,11 @@ class GuardianActivationFailure extends StatelessWidget {
     required this.cents,
     required this.onRetry,
     required this.onReturn,
+    this.paymentEnvironment = const PaymentEnvironment.compiled(),
   });
   final int cents;
   final VoidCallback onRetry, onReturn;
+  final PaymentEnvironment paymentEnvironment;
 
   @override
   Widget build(BuildContext context) {
@@ -245,10 +248,12 @@ class GuardianActivationFailure extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Modo de prueba: no uses datos de una tarjeta real.',
+              Text(
+                paymentEnvironment.isProduction
+                    ? 'Guardián usa pagos reales. Revisa el estado antes de continuar.'
+                    : 'Modo de prueba: no uses datos de una tarjeta real.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: muted),
+                style: const TextStyle(fontSize: 12, color: muted),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import 'payment_environment.dart';
 
 class GuardianEnrollmentConfirmation extends StatelessWidget {
   const GuardianEnrollmentConfirmation({
@@ -10,9 +11,11 @@ class GuardianEnrollmentConfirmation extends StatelessWidget {
     required this.consent,
     required this.onConsentChanged,
     this.restored = false,
+    this.paymentEnvironment = const PaymentEnvironment.compiled(),
   });
   final String firstPaymentDate, nextBillingDate;
   final bool consent, restored;
+  final PaymentEnvironment paymentEnvironment;
   final ValueChanged<bool?>? onConsentChanged;
 
   @override
@@ -71,9 +74,11 @@ class GuardianEnrollmentConfirmation extends StatelessWidget {
         style: const TextStyle(fontSize: 12, height: 1.5, color: muted),
       ),
       const SizedBox(height: 12),
-      const Text(
-        'Solo modo de prueba. No uses datos de una tarjeta real.',
-        style: TextStyle(fontSize: 12, height: 1.5, color: muted),
+      Text(
+        paymentEnvironment.isProduction
+            ? 'Aportaciones reales con el método de pago que autorices.'
+            : 'Solo modo de prueba. No uses datos de una tarjeta real.',
+        style: const TextStyle(fontSize: 12, height: 1.5, color: muted),
       ),
       const SizedBox(height: 12),
       const Text(

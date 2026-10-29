@@ -6,10 +6,12 @@ import 'package:flutter_stripe_connect/flutter_stripe_connect.dart';
 
 import 'payment_repository.dart';
 import 'guardian_repository.dart';
+import 'payment_environment.dart';
 
 final connectClientProvider = Provider<ConnectClient>(
   (ref) => ConnectClient(
-    key: const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY_TEST'),
+    key: ref.watch(paymentEnvironmentProvider).publishableKey,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
     enabled: ref.watch(guardianEnabledProvider),
     session: () =>
         ref.read(paymentRepositoryProvider).action('connect_session'),
@@ -21,6 +23,7 @@ class ConnectClient {
     required this.key,
     required this.session,
     this.enabled = false,
+    this.paymentEnvironment = const PaymentEnvironment(),
     bool? web,
     TargetPlatform? platform,
     Future<void> Function(String, Future<String> Function())? initialize,
@@ -32,6 +35,7 @@ class ConnectClient {
        present = present ?? _present,
        logout = logout ?? _logout;
   final String key;
+  final PaymentEnvironment paymentEnvironment;
   final bool enabled, web;
   final TargetPlatform platform;
   final Future<Map<String, dynamic>> Function() session;
@@ -42,7 +46,7 @@ class ConnectClient {
       enabled &&
       !web &&
       [TargetPlatform.android, TargetPlatform.iOS].contains(platform) &&
-      RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(key);
+      paymentEnvironment.acceptsPublishableKey(key);
   Future<void> run(bool Function() current) {
     if (_pending != null) return _pending!;
     final task = _run(current);

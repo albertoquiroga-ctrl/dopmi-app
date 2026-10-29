@@ -142,10 +142,22 @@ workflows:
         - $HOME/.gradle/wrapper
 
     scripts:
-      - name: Create Guardian test configuration
-        script: python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test
-      - name: Create Firebase configuration
-        script: python3 ../../scripts/write-firebase-config.py
+      - name: Create explicit Guardian environment configuration
+        script: |
+          set -euo pipefail
+          case "${DOPMI_ENVIRONMENT:-test}" in
+            test) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          esac
+      - name: Create matching Guardian Firebase configuration
+        script: |
+          set -euo pipefail
+          case "${DOPMI_ENVIRONMENT:-test}" in
+            test) python3 ../../scripts/write-firebase-config.py ;;
+            production) python3 ../../scripts/write-firebase-config.py --production-beta ;;
+            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          esac
       - name: Install dependencies
         script: flutter pub get
       - name: Static analysis
@@ -166,12 +178,31 @@ workflows:
             --dart-define=DOPMI_BUILD_NUMBER="$BUILD_NUMBER" \
             --dart-define-from-file=config.json
           python3 - "$BUILD_NUMBER" <<'PYINFO'
-          import os, subprocess, sys
+          import hashlib, json, os, subprocess, sys
           from pathlib import Path
+          from urllib.parse import urlsplit
           sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+          config = json.loads(Path('config.json').read_text())
+          backend = urlsplit(config['SUPABASE_URL']).hostname
+          project = backend.split('.')[0]
+          firebase_android_bytes = Path('android/app/google-services.json').read_bytes()
+          firebase_ios_bytes = Path('ios/Runner/GoogleService-Info.plist').read_bytes()
+          firebase_android = json.loads(firebase_android_bytes)
+          firebase_client = next(client for client in firebase_android['client']
+              if client['client_info']['android_client_info']['package_name'] == 'com.mycompany.dopmi')
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
-              "Guardian test: true\nDistribution: Google Play internal\n")
+              f"Environment: {config['DOPMI_ENVIRONMENT']}\n"
+              f"Backend: {backend}\nProject: {project}\n"
+              f"Guardian: {config['ENABLE_GUARDIAN']}\n"
+              f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
+              f"Measurement test: {config['ENABLE_MEASUREMENT_TEST']}\n"
+              f"Native wallets test: {config['ENABLE_NATIVE_WALLETS_TEST']}\n"
+              f"Firebase project: {firebase_android['project_info']['project_id']}\n"
+              f"Firebase Android app: {firebase_client['client_info']['mobilesdk_app_id']}\n"
+              f"Firebase Android config SHA256: {hashlib.sha256(firebase_android_bytes).hexdigest()}\n"
+              f"Firebase iOS config SHA256: {hashlib.sha256(firebase_ios_bytes).hexdigest()}\n"
+              "Distribution: Google Play internal\n", encoding='utf-8')
           PYINFO
 
     artifacts:

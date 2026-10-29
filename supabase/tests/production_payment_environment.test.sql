@@ -71,6 +71,15 @@ select ok(not exists(select 1 from historical_environment_evidence h
 select is(public.dopmi_oneoff_native_server('get',
  '{"actor":"e9000000-0000-4000-8000-000000000001","key":"e9200000-0000-4000-8000-000000000001"}')->>'consent_version',
  'oneoff-test-2026-10-15','historical TEST receipt stays TEST after configuration changes');
+-- This PgTAP suite runs against the complete current schema. New financial
+-- instructions additionally require B4 LIVE legal evidence, unlike the isolated
+-- B2 PGlite migration-contract suite.
+set local role authenticated;
+select set_config('request.jwt.claim.sub','e9000000-0000-4000-8000-000000000001',true);
+select lives_ok($$select dopmi_accept_legal('terms-live-2026-10-28','privacy-live-2026-10-28',true)$$,'current donor accepts LIVE legal pair');
+select set_config('request.jwt.claim.sub','e9000000-0000-4000-8000-000000000003',true);
+select lives_ok($$select dopmi_accept_legal('terms-live-2026-10-28','privacy-live-2026-10-28',true)$$,'current Checkout owner accepts LIVE legal pair');
+reset role;
 update environment_attempts set data=data||jsonb_build_object('consent_version','oneoff-live-2026-10-28','key',gen_random_uuid());
 select throws_ok(format('select pg_temp.environment_rpc(%L,%L,%L::jsonb)',name,'prepare',data||'{"consent":false}'::jsonb),
  '22023',null,name||' still requires affirmative consent') from environment_attempts;

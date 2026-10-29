@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
 import 'contribution_layout.dart';
+import 'payment_environment.dart';
 
 /// Shown only after the owning account's matching checkout is active.
 class GuardianActivationSuccess extends StatelessWidget {
@@ -11,10 +12,12 @@ class GuardianActivationSuccess extends StatelessWidget {
     required this.cents,
     required this.nextBilling,
     required this.onReturn,
+    this.paymentEnvironment = const PaymentEnvironment.compiled(),
   });
   final int cents;
   final String? nextBilling;
   final VoidCallback onReturn;
+  final PaymentEnvironment paymentEnvironment;
 
   @override
   Widget build(BuildContext context) {
@@ -186,10 +189,12 @@ class GuardianActivationSuccess extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Modo de prueba: no se mueve dinero real.',
+                Text(
+                  paymentEnvironment.isProduction
+                      ? 'Tus aportaciones se realizan con dinero real.'
+                      : 'Modo de prueba: no se mueve dinero real.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: muted),
+                  style: const TextStyle(fontSize: 12, color: muted),
                 ),
               ],
             ),

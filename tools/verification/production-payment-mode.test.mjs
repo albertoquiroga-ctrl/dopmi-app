@@ -844,3 +844,54 @@ test('preflight rejects crossed credential families before I/O and mismatched or
     assert.equal(result.write_permissions, 'not_verified');
   }
 });
+
+test('new LIVE Connect sessions and onboarding require server legal admission before any account or provider access', async () => {
+  for (const action of ['onboard', 'session']) for (const admission of [null, {}, { allowed: false }, { allowed: 'true' }]) {
+    const calls = [];
+    const service = paymentService({ expectedLivemode: true,
+      rpc: async (name, data) => { calls.push({ name, data }); assert.equal(name, 'connect_admit'); return admission; },
+      stripe: async () => assert.fail('no processor access without LIVE legal admission'),
+    });
+    await assert.rejects(service.connect(owner, action), { code: 'legal_consent_required', status: 403 });
+    assert.deepEqual(calls, [{ name: 'connect_admit', data: { actor: owner } }]);
+  }
+});
+
+test('LIVE Connect admits the authenticated owner before creating a limited embedded session', async () => {
+  const events = [];
+  const service = paymentService({ expectedLivemode: true,
+    rpc: async (name, data) => {
+      events.push(name);
+      assert.equal(data.actor, owner);
+      if (name === 'connect_admit') return { allowed: true };
+      if (name === 'connect_get') return { owner_id: owner, account_id: 'acct_rescuer', verified: true };
+      assert.equal(name, 'connect_save'); return {};
+    },
+    stripe: async (path, input) => {
+      events.push(path);
+      if (path === 'accounts/acct_rescuer') return { object: 'account', id: 'acct_rescuer', type: 'express', country: 'MX', capabilities: { transfers: 'active' }, payouts_enabled: true };
+      assert.equal(path, 'account_sessions');
+      assert.equal(input.account, 'acct_rescuer');
+      assert.equal(input['components[account_onboarding][features][disable_stripe_user_authentication]'], false);
+      return { object: 'account_session', account: 'acct_rescuer', livemode: true,
+        client_secret: 'synthetic-transient-secret', expires_at: Math.floor(Date.now() / 1000) + 300,
+        components: { account_onboarding: { enabled: true, features: { disable_stripe_user_authentication: false } } } };
+    },
+  });
+  const response = await service.connect(owner, 'session');
+  assert.deepEqual(events, ['connect_admit', 'connect_get', 'accounts/acct_rescuer', 'connect_save', 'connect_get', 'account_sessions', 'connect_get']);
+  assert.deepEqual(Object.keys(response).sort(), ['client_secret', 'expires_at']);
+});
+
+test('Connect status remains readable without new consent and invalid actions never access financial dependencies', async () => {
+  for (const expectedLivemode of [false, true]) {
+    const calls = [];
+    const service = paymentService({ expectedLivemode,
+      rpc: async name => { calls.push(name); assert.equal(name, 'connect_status'); return { verified: true }; },
+      stripe: async () => assert.fail('no provider needed for an unconfigured status'),
+    });
+    assert.equal((await service.connect(owner, 'status')).ready, false);
+    for (const action of [undefined, null, '', 'forged']) await assert.rejects(service.connect(owner, action), { code: 'invalid_input', status: 400 });
+    assert.deepEqual(calls, ['connect_status']);
+  }
+});

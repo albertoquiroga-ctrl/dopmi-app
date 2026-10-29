@@ -8,27 +8,37 @@ paridad f693/warm-trust aceptada. Cambios beta aún no publicados como app.
   por cerrado punto jurídico/fiscal; no se atribuye dictamen inspeccionado.
 - B0: restore_project únicoPRODysaoeuidcvgtlmphmeyb aceptado; ACTIVE_HEALTHY.
   SQL23:07UTC:48migraciones/hasta20260928221656, Auth0/Storage0/40tablas; sieteEdgev1.
-  Faltan cotejoSQL/ACL y configuraciónAuth/secretos/cron; DEVohqx no modificado.
+  Cotejo48 cerrado:47hashes normalizados iguales y cleanup sólo comentarios/espacios,
+  dosFKrealesSETNULL. Auth: signup/anonymous/manual-linkOFF, confirmemailON; sin
+  customEdgeSecrets. Faltan SMTP/OAuth/ACLoperativos; DEVohqx no modificado.
   StripeDashboardDopmiLIVE consultado: charges/payouts/transfers activos, sin due.
   ConectorStripe pide reautenticación; navegador legítimo funciona. Ningún pago.
 - B1 fuente35bfbbbd: opt-in --production-beta + entorno/host registrados + clave
   públicaLIVE, TEST separado. Python27PASS/Flutter19PASS/analyze0; revisiones cerradas.
-  CI40785747436: tresjobsSUCCESS/Flutterfallóformato; corregido localmente,0cambios
-  al repetir formatter de los dos Dart propios. No atribuir CIFlutter aprobada.
-- B2 implementado local: contexto servidor+SQL+cuentaStripe, consentimientos por modo,
+  CI40785747436 fallóformato, corregido. B2fuente83e6e6fc/CI40793197789 cuatroSUCCESS.
+- B2 implementado/revisado en83e6e6fc: contexto servidor+SQL+cuentaStripe, consentimientos por modo,
   firmas y objetos ligados, historial/idempotencia preservados. HostednuevoLIVE
   bloqueado; Android usa componentes integrados. Auth precede runtime financiero.
   Regresión1074PASS/8SKIP antes de últimos correctivos; focalfinal64PASS/Deno4checks.
-  Código/SQL y dos hallazgos de seguridad cerrados. PgTAP/CIcandidato pendientes.
+  Código/SQL y dos hallazgos de seguridad cerrados. CIintegrada83 cuatroSUCCESS.
 - Acceso SupabaseDashboard recuperado con inicio habitual. SQLMCP agotó300s y una
-  sonda25s; no repetir ese canal sin diagnóstico. Cotejo48SQL aún no acreditado.
-  SDKmóvil B4 implementado por agente, pendiente validación en única colaFlutter.
+  sonda25s; SQLEditorUI resolviócotejo, sin reintentosMCP. B3delta70fuentes/547687B,
+  SHAba7347dc…5a2af5/revisiónestática cerrada, aún NOaplicado (historia48).
+- B4 local implementado/revisado: tresSDK/copyLIVE, parlegal28oct/17TEST, admisión
+  nuevaSQL/Connect y salidas conservadas; Adminmodo/link, perfilFirebaseaislado y
+  workflowexistente con overrides porbuild. Backend1110PASS/8SKIP; SDK64PASS,
+  Admin63PASS/build; Python27+12PASS. UIregresión100PASS antesfixturecorregida;
+  Connect13PASS/2s después. FullFlutterlocal fue detenido por watchdog8min tras1537
+  sinfallos; NOsuitecompleta. Analyze2infos corregidos ycheckdirigido0; falta CI B4.
+- Intervención pendiente: contrataciónPro; confirmarcreación/guardadoRAKLIVE y
+  FirebasePROD en formulariospreparados. No asumir aprobación por tiempo transcurrido.
+  Vercellista proyectos, detalle/env403scope dop-mi; requieregrantconexión o GUIlegítima.
 - Publicado/instalado: sólo último corte comprobado341TEST. No build beta, migración,
   despliegueEdge, escritura de secretos o flags nuevos en esta preparación.
 - Seguimiento4h reactivado: dopmi-beta-real-y-checkpoint-cada-4-horas. Cola finitaB0–B5
   enbacklog. Ventana5min antes de enviar cada candidatoCodemagic para mensajesQA.
 
-Siguiente: integrador publicar fuenteB2 revisada y completar inventarioPROD; B3.
+Siguiente: integrador commit/CI B4 y preparación B3; titular resuelve tres pasos.
 Recibos privados .tools/beta-prelaunch-20261028. No repetir cámara/P3/paridad cerrada.
 Conservar privacidad, identidad/firma, datosDEV y estados autorizados por entorno.
 

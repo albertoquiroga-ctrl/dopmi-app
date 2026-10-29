@@ -5,11 +5,13 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'guardian_registration.dart';
 import 'guardian_repository.dart';
 import 'native_wallet_sdk.dart';
+import 'payment_environment.dart';
 
 final guardianBankSdkProvider = Provider<GuardianBankSdk>(
   (ref) => GuardianBankSdk(
-    publishableKey: const String.fromEnvironment('STRIPE_PUBLISHABLE_KEY_TEST'),
-    merchantId: const String.fromEnvironment('APPLE_PAY_MERCHANT_ID'),
+    publishableKey: ref.watch(paymentEnvironmentProvider).publishableKey,
+    merchantId: ref.watch(paymentEnvironmentProvider).merchantId,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
     enabled: ref.watch(guardianEnabledProvider),
   ),
 );
@@ -29,17 +31,25 @@ class GuardianBankSdk {
     required this.publishableKey,
     this.merchantId = '',
     this.enabled = false,
+    this.paymentEnvironment = const PaymentEnvironment(),
     TargetPlatform? platform,
     bool? web,
     Future<void> Function(String, String)? initialize,
     Future<void> Function(String)? handle,
   }) : platform = platform ?? defaultTargetPlatform,
        web = web ?? kIsWeb,
-       _initialize = initialize ?? initializeDopmiStripeTest,
+       _initialize =
+           initialize ??
+           ((key, merchant) => initializeDopmiStripe(
+             key,
+             merchant,
+             paymentEnvironment: paymentEnvironment,
+           )),
        _handle = handle ?? _handleStripe;
 
   final String publishableKey;
   final String merchantId;
+  final PaymentEnvironment paymentEnvironment;
   final bool enabled, web;
   final TargetPlatform platform;
   final Future<void> Function(String, String) _initialize;
@@ -50,7 +60,7 @@ class GuardianBankSdk {
       enabled &&
       !web &&
       [TargetPlatform.android, TargetPlatform.iOS].contains(platform) &&
-      RegExp(r'^pk_test_[A-Za-z0-9]+$').hasMatch(publishableKey);
+      paymentEnvironment.acceptsPublishableKey(publishableKey);
 
   Future<void> authenticate(String secret) async {
     if (!available ||
@@ -58,7 +68,10 @@ class GuardianBankSdk {
       throw const FormatException('La acción bancaria no está disponible.');
     }
     try {
-      await (_initialization ??= _initialize(publishableKey, merchantId));
+      await (_initialization ??= _initialize(
+        publishableKey,
+        paymentEnvironment.isTest ? merchantId : '',
+      ));
     } catch (_) {
       _initialization = null;
       rethrow;

@@ -10,6 +10,7 @@ test-results/
 .env.*
 !.env.example
 config.local.json
+apps/mobile/config.json
 *.local.json
 supabase/.temp/
 supabase/.branches/

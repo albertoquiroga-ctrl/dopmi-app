@@ -67,7 +67,6 @@ before(async () => {
   for (const name of [...consentTargets, ...checkoutTargets]) definitions.set(name,
     (await db.query('select pg_get_functiondef($1::regprocedure) definition', [`public.${name}(text,jsonb)`])).rows[0].definition);
   await db.exec(await readFile(new URL(migration, directory), 'utf8'));
-  for (const file of files.filter(v => v > migration)) await db.exec(await readFile(new URL(file, directory), 'utf8'));
 }, { timeout: 120000 });
 after(async () => db?.close());
 beforeEach(async () => db.exec('begin'));

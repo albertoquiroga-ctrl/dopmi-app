@@ -763,6 +763,8 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
     if (busy ||
         loading ||
         !consent ||
+        legalVersionsForEnvironment(ref.read(configProvider).environment) ==
+            null ||
         owner == null ||
         identity.identity?.id != owner) {
       return;
@@ -800,74 +802,84 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => AuthFrame(
-    back: false,
-    sheet: true,
-    intent: ref.watch(experienceProvider).profile?.intent ?? 'adopt',
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const AuthHeading(
-          'Antes de continuar',
-          'Dopmi es exclusivamente para personas mayores de 18 años.',
-          sheet: true,
-          largeTitleFontSize: 24,
-        ),
-        if (loading) const Center(child: CircularProgressIndicator()),
-        if (!loading) ...[
-          const Notice(
-            'Actualización del 17 de octubre de 2026. Lee los Términos y Condiciones y el Aviso de Privacidad de esta fecha antes de confirmar. Aceptar no te registra en Guardián, no guarda una tarjeta y no realiza ningún cobro. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes sin aceptar.',
+  Widget build(BuildContext context) {
+    final versions = legalVersionsForEnvironment(
+      ref.watch(configProvider).environment,
+    );
+    return AuthFrame(
+      back: false,
+      sheet: true,
+      intent: ref.watch(experienceProvider).profile?.intent ?? 'adopt',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const AuthHeading(
+            'Antes de continuar',
+            'Dopmi es exclusivamente para personas mayores de 18 años.',
+            sheet: true,
+            largeTitleFontSize: 24,
           ),
-          const SizedBox(height: 12),
-          AuthConsentRow(
-            value: consent,
-            onChanged: busy ? null : (value) => setState(() => consent = value),
-            onOpenTerms: widget.onTerms ?? () => context.push('/terms'),
-            onOpenPrivacy:
-                widget.onPrivacyNotice ?? () => context.push('/privacy-notice'),
-          ),
-          const SizedBox(height: 16),
-          if (error != null) Notice(error!, isError: true),
-          ActionButton(
-            'Aceptar actualización y continuar',
-            busy: busy,
-            onPressed: consent && !busy ? accept : null,
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: busy
-                ? null
-                : () => ref.read(identityControllerProvider).logout(),
-            child: const Text('Cerrar sesión'),
-          ),
-          TextButton(
-            onPressed:
-                widget.onPrivacy ?? () => context.push('/account-privacy'),
-            child: const Text('Privacidad y eliminación de cuenta'),
-          ),
-          TextButton(
-            onPressed: busy
-                ? null
-                : widget.onPayments ?? () => context.push('/payments'),
-            child: const Text('Ver mis comprobantes'),
-          ),
-          TextButton(
-            onPressed: busy
-                ? null
-                : widget.onReceivedPayments ??
-                      () => context.push('/rescuer/received-payments'),
-            child: const Text('Aportaciones recibidas'),
-          ),
-          TextButton(
-            onPressed: busy
-                ? null
-                : widget.onGuardian ?? () => context.push('/guardian'),
-            child: const Text('Cancelar o consultar Guardián'),
-          ),
+          if (loading) const Center(child: CircularProgressIndicator()),
+          if (!loading) ...[
+            Notice(
+              versions == null
+                  ? 'No pudimos confirmar el entorno de la cuenta. La aceptación no está disponible. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes.'
+                  : 'Actualización del ${versions.date}. Lee los Términos y Condiciones y el Aviso de Privacidad de esta fecha antes de confirmar. Aceptar no te registra en Guardián, no guarda una tarjeta y no realiza ningún cobro. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes sin aceptar.',
+            ),
+            const SizedBox(height: 12),
+            AuthConsentRow(
+              value: consent,
+              onChanged: busy || versions == null
+                  ? null
+                  : (value) => setState(() => consent = value),
+              onOpenTerms: widget.onTerms ?? () => context.push('/terms'),
+              onOpenPrivacy:
+                  widget.onPrivacyNotice ??
+                  () => context.push('/privacy-notice'),
+            ),
+            const SizedBox(height: 16),
+            if (error != null) Notice(error!, isError: true),
+            ActionButton(
+              'Aceptar actualización y continuar',
+              busy: busy,
+              onPressed: consent && !busy && versions != null ? accept : null,
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: busy
+                  ? null
+                  : () => ref.read(identityControllerProvider).logout(),
+              child: const Text('Cerrar sesión'),
+            ),
+            TextButton(
+              onPressed:
+                  widget.onPrivacy ?? () => context.push('/account-privacy'),
+              child: const Text('Privacidad y eliminación de cuenta'),
+            ),
+            TextButton(
+              onPressed: busy
+                  ? null
+                  : widget.onPayments ?? () => context.push('/payments'),
+              child: const Text('Ver mis comprobantes'),
+            ),
+            TextButton(
+              onPressed: busy
+                  ? null
+                  : widget.onReceivedPayments ??
+                        () => context.push('/rescuer/received-payments'),
+              child: const Text('Aportaciones recibidas'),
+            ),
+            TextButton(
+              onPressed: busy
+                  ? null
+                  : widget.onGuardian ?? () => context.push('/guardian'),
+              child: const Text('Cancelar o consultar Guardián'),
+            ),
+          ],
+          if (!loading && error != null)
+            TextButton(onPressed: load, child: const Text('Volver a intentar')),
         ],
-        if (!loading && error != null)
-          TextButton(onPressed: load, child: const Text('Volver a intentar')),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }

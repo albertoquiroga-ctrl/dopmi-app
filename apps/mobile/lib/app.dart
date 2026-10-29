@@ -60,13 +60,6 @@ const accountRouteAliases = <String, String>{
   '/rescuer/settings': '/settings/account',
 };
 
-bool _hasCurrentLegalConsent(Profile? profile, String? ownerId) =>
-    ownerId != null &&
-    profile?.id == ownerId &&
-    profile?.termsVersion == currentTermsVersion &&
-    profile?.privacyVersion == currentPrivacyVersion &&
-    profile?.adultConfirmed == true;
-
 bool _legalConsentExempt(String path, {required bool recovering}) =>
     (recovering && path == '/reset-password') ||
     const {
@@ -81,6 +74,7 @@ bool _legalConsentExempt(String path, {required bool recovering}) =>
     }.contains(path);
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final environment = ref.watch(configProvider).environment;
   final identity = ref.watch(identityControllerProvider);
   final experience = ref.read(experienceProvider);
   final session = ref.watch(navigationSessionProvider);
@@ -111,9 +105,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           identity.identity?.verified == true &&
           experience.profile != null) {
         final profile = experience.profile;
-        final accepted = _hasCurrentLegalConsent(
+        final accepted = hasCurrentLegalConsent(
           profile,
           identity.identity?.id,
+          environment: environment,
         );
         final consentExempt = _legalConsentExempt(
           desired,
@@ -286,9 +281,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               listenable: Listenable.merge([identity, experience]),
               builder: (_, _) => PaymentActivityScreen(
                 received: true,
-                readOnly: !_hasCurrentLegalConsent(
+                readOnly: !hasCurrentLegalConsent(
                   experience.profile,
                   identity.identity?.id,
+                  environment: environment,
                 ),
                 key: ValueKey(identity.identity?.id),
               ),
@@ -302,7 +298,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(path: '/about', builder: (_, _) => const AboutScreen()),
           GoRoute(
             path: '/transparency',
-            builder: (_, _) => const TransparencyScreen(),
+            builder: (_, _) => TransparencyScreen(environment: environment),
           ),
           GoRoute(
             path: '/my-adoptions',
@@ -328,9 +324,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               builder: (_, _) =>
                   identity.identity != null &&
                       (identity.identity?.verified != true ||
-                          _hasCurrentLegalConsent(
+                          hasCurrentLegalConsent(
                             experience.profile,
                             identity.identity?.id,
+                            environment: environment,
                           ))
                   ? GuardianScreen(
                       key: ValueKey(identity.identity?.id),
@@ -347,9 +344,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, _) => ListenableBuilder(
               listenable: Listenable.merge([identity, experience]),
               builder: (_, _) => PaymentActivityScreen(
-                readOnly: !_hasCurrentLegalConsent(
+                readOnly: !hasCurrentLegalConsent(
                   experience.profile,
                   identity.identity?.id,
+                  environment: environment,
                 ),
                 key: ValueKey(identity.identity?.id),
               ),
@@ -607,10 +605,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/auth-error',
             builder: (_, _) => AuthErrorScreen(identity: identity),
           ),
-          GoRoute(path: '/terms', builder: (_, _) => const TermsScreen()),
+          GoRoute(
+            path: '/terms',
+            builder: (_, _) => TermsScreen(environment: environment),
+          ),
           GoRoute(
             path: '/privacy-notice',
-            builder: (_, _) => const PrivacyNoticeScreen(),
+            builder: (_, _) => PrivacyNoticeScreen(environment: environment),
           ),
         ],
       ),
@@ -687,6 +688,7 @@ class _LegalAccessGate extends ConsumerWidget {
   final Widget child;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final environment = ref.watch(configProvider).environment;
     final router = ref.read(routerProvider);
     final experience = ref.watch(experienceProvider);
     final identityController = ref.watch(identityControllerProvider);
@@ -698,7 +700,11 @@ class _LegalAccessGate extends ConsumerWidget {
           return child;
         }
         final profile = experience.profile;
-        final accepted = _hasCurrentLegalConsent(profile, currentIdentity?.id);
+        final accepted = hasCurrentLegalConsent(
+          profile,
+          currentIdentity?.id,
+          environment: environment,
+        );
         final exempt = _legalConsentExempt(
           path,
           recovering: identityController.recovering,

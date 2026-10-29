@@ -3,14 +3,22 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../adoption/community_repository.dart';
+import 'payment_environment.dart';
 
 final paymentRepositoryProvider = Provider<PaymentRepository>(
-  (ref) => PaymentRepository(Supabase.instance.client),
+  (ref) => PaymentRepository(
+    Supabase.instance.client,
+    paymentEnvironment: ref.watch(paymentEnvironmentProvider),
+  ),
 );
 
 class PaymentRepository {
-  PaymentRepository(this.client);
+  PaymentRepository(
+    this.client, {
+    this.paymentEnvironment = const PaymentEnvironment(),
+  });
   final SupabaseClient client;
+  final PaymentEnvironment paymentEnvironment;
   Future<Json> funding(String expense) async => Json.from(
     await client.rpc('dopmi_expense_funding', params: {'record_id': expense}),
   );
@@ -28,7 +36,7 @@ class PaymentRepository {
         'gross_cents': cents,
         'key': key,
         'consent': true,
-        'consent_version': 'oneoff-test-2026-10-15',
+        'consent_version': paymentEnvironment.oneoffConsentVersion,
       });
   Future<Json> caseCheckout(String caseId, int cents, String key) =>
       action('native_case_checkout', {
@@ -36,7 +44,7 @@ class PaymentRepository {
         'gross_cents': cents,
         'key': key,
         'consent': true,
-        'consent_version': 'oneoff-test-2026-10-15',
+        'consent_version': paymentEnvironment.oneoffConsentVersion,
       });
 
   Future<List<Json>> caseAllocations(String donationId) async =>
@@ -198,7 +206,7 @@ String paymentError(Object cause) {
     final code = details is Map ? details['error'] : null;
     return switch (code) {
       'payments_not_configured' =>
-        'Los pagos de prueba todavía no están habilitados. Intenta más tarde.',
+        'Los pagos todavía no están habilitados. Intenta más tarde.',
       'sign_in_required' =>
         'Inicia sesión con tu cuenta confirmada para continuar.',
       'rescuer_verification_required' =>

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dopmi_mobile/features/payments/payment_repository.dart';
+import 'package:dopmi_mobile/features/payments/payment_environment.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -40,26 +41,37 @@ void main() {
     return client;
   }
 
-  test('case checkout sends one case and gross amount without client allocation instructions', () async {
-    final requests = <http.Request>[];
-    final client = await clientFor((request) {
-      requests.add(request);
-      return {
-        'donation_id': donationId,
-        'status': 'pending',
-        'payment_client_secret': 'pi_synthetic_secret_synthetic',
-      };
-    });
-    await PaymentRepository(client).caseCheckout(caseId, 1000, key);
-    expect(jsonDecode(requests.single.body), {
-      'action': 'native_case_checkout',
-      'case_id': caseId,
-      'gross_cents': 1000,
-      'key': key,
-      'consent': true,
-      'consent_version': 'oneoff-test-2026-10-15',
-    });
-  });
+  for (final config in [
+    (mode: 'test', consent: 'oneoff-test-2026-10-15'),
+    (mode: 'production', consent: 'oneoff-live-2026-10-28'),
+  ]) {
+    test(
+      '${config.mode} case checkout sends one case and gross amount without client allocation instructions',
+      () async {
+        final requests = <http.Request>[];
+        final client = await clientFor((request) {
+          requests.add(request);
+          return {
+            'donation_id': donationId,
+            'status': 'pending',
+            'payment_client_secret': 'pi_synthetic_secret_synthetic',
+          };
+        });
+        await PaymentRepository(
+          client,
+          paymentEnvironment: PaymentEnvironment(environment: config.mode),
+        ).caseCheckout(caseId, 1000, key);
+        expect(jsonDecode(requests.single.body), {
+          'action': 'native_case_checkout',
+          'case_id': caseId,
+          'gross_cents': 1000,
+          'key': key,
+          'consent': true,
+          'consent_version': config.consent,
+        });
+      },
+    );
+  }
 
   test('case receipt remains owner-scoped and reads private allocation snapshots without public context', () async {
     final requests = <http.Request>[];
