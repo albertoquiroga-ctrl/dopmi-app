@@ -1,7 +1,8 @@
 # Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
 
-Producto dopmi-app; rama codex/finish-release-20261015. Candidato078f712b2632f014d171e3ae4efce3ab14515ddd;
-CI40822216873 falló en arnésJVM; otros tresjobsSUCCESS. Correctivoharnesslocal en revisión;
+Producto dopmi-app; rama codex/finish-release-20261015. Candidato2201bf9bb791067b7ebf9b595c2c2a99b572f68e;
+CI40833210003 enprogreso. CI078f/40822216873 falló en arnésJVM; otros tresjobsSUCCESS.
+Correctivoharness revisado/sinP1P2; runtime idéntico078f;
 backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
 instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
 
@@ -47,7 +48,7 @@ instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa pa
   fullFlutterlocal. PurgaDartasíncrona descartada trasrevisión; barreranativa reemplaza
   eseensayo. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
 
-Siguiente: cerrar revisiónharness y enviar una CI delcorrectivo (noCodemagic);
+Siguiente: comprobar CI40833210003 delcorrectivo (noCodemagic);
 titular completaStripe/Resend/grantVercel; integrador cierra configuración,
 registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
 no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,

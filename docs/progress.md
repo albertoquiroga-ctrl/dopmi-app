@@ -18,6 +18,11 @@ Publicado/instalado/aceptado sigue341TEST; PROD no alterado por estecheckpoint.
 Bloqueoshumanos previos Stripe2FA/Resend/Vercel siguenpendientes; lecturasStripe
 suspendidas y formulariosconservados. Dueñoroot: revisión agrupada→commit/CI única.
 
+Correctivoharness enviado2201bf9bb791067b7ebf9b595c2c2a99b572f68e;
+CI40833210003 enprogreso, sinCIduplicada. Revisorcódigo contrastó fuentesprimarias
+Config/DefaultManifestFactory/ShadowLinux4.17 ydeltafinal, sinP1/P2; ocho@Test y
+runtimeintactos verificados. Ejecuciónnativa pendiente; no atribuirPASS del arnés.
+
 ## 29/10/2026 05:13UTC — Edge PROD comprobadas y correctivo nativo listo para CI
 
 OchoEdgeprincipales desplegadas una vez desde1c7c4fae; sieteIDs existentes v2,
