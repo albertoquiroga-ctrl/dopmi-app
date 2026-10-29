@@ -1,56 +1,51 @@
-# Continuación — beta real por canales de prueba, 28/oct/2026 CDMX
+# Continuación — beta real por canales de prueba, 29/oct/2026
 
-Producto dopmi-app; rama codex/finish-release-20261015. Candidato2201bf9bb791067b7ebf9b595c2c2a99b572f68e;
-CI40833210003 cuatroSUCCESS comprobados29oct11:00UTC. CI078f/40822216873 falló en
-arnésJVM y queda supersedida. Correctivoharness revisado/sinP1P2; runtime idéntico078f;
-backendEdge1c7c4fae/CI40810594540 cuatroSUCCESS. Último app publicado,
-instalado y aceptado:2.3.3(341)TEST/3cf65d73, f693/warm-trust. No reabrir esa paridad.
+Producto dopmi-app; rama codex/finish-release-20261015. Fuente candidata
+`d5171d9f449ee21276290084728f92b012df72e2`; CI40876640101 en progreso.
+Backend canónico desplegado1c7c4fae/CI40810594540; panelPROD2201bf9b.
+Última app publicada/instalada/aceptada:2.3.3(341)TEST/3cf65d73,
+f693/warm-trust. No reabrir paridad ni fixtures de ese corte.
 
-- **Decisión vigente:** LIVE/producción limpia, reserva20,000MXN declarada/sin tope
-  agregado. Titular retira invitaciones/filtro dentro deDopmi: distribución porPlay
-  internal/alfa yTestFlight; registro normal+confirmacióncorreo+legales/moderación.
-  PrimeradminPROD elegido:correo corporativo elegido por titular (recibo privado), sólo tras identidad nueva
-  confirmada; todavía sin cuenta ni membresía. No copiar Auth/casos/archivos/dineroDEV.
-- **SQLPROD aplicado:** foundation70 registro20261029030514 (49historia/43nuevasRLS/
-  151funciones); Connect20261029034038 (historia50/prior49exactas, mismoOID/ACLdispatcher,
-  helperprivadoinvoker/sinEXECAPI). Auth/perfiles/donaciones/Storage/cola0 alpostflight.
-  SQLmodoTEST, serviciosopcionalesOFF, sincron. No activaciónLIVE/cobros niDEVmodificado.
-- **Firebase/Pro:** organizaciónPRO confirmada; dopmi-production/782231363420,
-  Android+iOS com.mycompany.dopmi registrados. Descargas titular validadas conbuilder
-  estricto, proyecto/pkg/IDs exactos; hashesAndroid4251324a…165938, iOS7d022279…83ae4e.
-  Dosplistdescargadosidénticos. Configoriginalprivada/sinenviar aún aCodemagic.
-  Analytics/Crashlytics consentidosOFF de inicio; sinAuth/FirestoreFirebase.
-- **Stripe:** RAKLIVE «Dopmi Production beta»/17recursos autorizada. Cero claves
-  restringidas conciliadas trasenvíodepuntero sinresultado. Mismoformulario ypermisos
-  restaurados, Workbenchcerrado yEnter→«Verificación obligatoria». Titular completa
-  verificación; lecturasStripe suspendidas. Ningún valor leído/guardado; no reenviar
-  creación sin conciliar estado. Destino EdgeSecretsPROD preparado/STRIPE_SECRET_KEY_LIVE.
-- **B3 aplicado:** ocho Edge principales ACTIVE, fuente1c7c4fae yreadback exacto;
-  ocho sondasHTTP sincredencial conrechazos/retorno esperados. Historia50 yconteos0
-  conservados04:09UTC. AuthSiteURLhttps://dopmi.org, callbackexacto yplantillasES
-  confirmación/recuperación guardados; OTP8/3600s compatible. SignupOFF hastaSMTP/listo.
-  SMTPdraft sinsecreto/no guardado. Integrador: Stripe/SMTP/webhooks/OAuth/admin/worker;
-  Resendlogin, Stripe2FA ygrantVercel pendientes. SchedulerpreparadoPAUSADO/noaplicado.
-- **Privacidad Android:** corregido arranque previo aFirebaseproviders: overridesOFF
-  cadaarranque; cambioGMPpurga síncrona sólo dosraícesCrashlytics antes delsello.
-  Dart exactoalbaseline. Código/seguridad cerrados; arnéscorregido ytaskJVM ejecutada
-  SUCCESS07:14:48UTC enCI2201bf. Fixtureochocasos conservada; XMLJUnit noarchivado.
-  Flutter1596PASS/analyze/capturas/APK yotros3gatesSUCCESS. Python27+12PASS previos.
-  iOSfísico/DataTransport/tráficoSDK no acreditados.
-- **Distribución:** todavía sin buildbeta, instalación o aceptaciónLIVE. Al estar
-  listo el candidato, ventana5min para mensajesQA y un envíoCodemagic/Playinterno,
-  comprobando artefacto/canal/instalación porseparado. No cargos inventados poragente.
-  AdaptadorPROD mínimo preparado/inertoconplaceholders,10pruebaspurasPASS/ASTválido;
-  revisión código/seguridadsinP1/P2 pendientes. Falta runtimepúblico/
-  numeración/preflight ypinconcreto revisado. No usar permisos/fixtures341 comoPROD.
-- **Método:** CI2201bf cerró delta nativo, sin repetir fullFlutterlocal. Logconfirma
-  nuevoorden: APK→JVM07:13:49→SUCCESS07:14:48→analyze07:14:48. Mismosgates; no ahorro
-  cuantificado. Sin cámara/fixture/pago nuevo. Seguimiento4h activo; una colaFlutter.
+- **Alcance vigente:** producción limpia, LIVE solicitado, registro normal sin
+  filtro de invitación; distribución Play internal/alfa/TestFlight. Reserva20mil
+  MXN declarada/sin tope agregado. No copiar usuarios, medios o dinero DEV.
+- **PROD aplicado/verificado:** historia50 (foundation70 y Connect); ochoEdge
+  principales ACTIVE con readback y HTTP8/8. AuthURL/callback/plantillasES/OTP
+  compatibles; confirmaciónON y signupOFF. SQL aúnTEST; no cobros ejecutados.
+- **Accesos configurados:** StripeLIVE RAK17permisos creada UNA y guardada como
+  STRIPE_SECRET_KEY_LIVE; filaEdge comprobada trasreload, vista única cerrada.
+  ResendSMTP sóloSending/dopmi.org creado y guardado en AuthPROD; reload confirma
+  smtp.resend.com:465/no-reply. Sin valores publicados/archivados y sin correo
+  enviado. Credenciales DEV intactas. Login/grant/2FA previos ya resueltos.
+- **Admin publicado:** VercelPROD dpl_8fChBGZEyNWEeinnd9F5hYb79kdM READY,
+  fuente2201bf9b, https://dopmi-app.vercel.app. JS cargado verificado: anonPROD/
+  hostysao/production. EnvPreview conservadas; aliasramaDEV restaurado a Preview
+  dpl_4A8gpVRGRBexkeNbqqpTMerqUswC y amboshosts comprobados independientemente.
+  No identidad/membresíaadmin nueva ni loginPROD atribuidos. Landing intacta.
+- **Cliente implementado/revisado:** privacidadAndroid2201bf9b/CI40833210003
+  cuatroSUCCESS, JVM/analyze/1596Flutter. DeltaGoogle d5171d9f ligaesquema alperfil
+  y plataforma; AndroidWebOnly válido/iOSID exigido en iOS, TESTnúmero fijo.
+  Python27+19+10PASS; código/seguridad cerrados. CI nueva pendiente, sin repetir
+  Flutterlocal. OAuthGoogle/Apple reales y configuración pública runtime faltan; consolaGoogleCloud
+  pide verificaciónhumana (lecturas de esa pestaña suspendidas).
+- **Preparado sin operar:** dos webhooksLIVE SnapshotApril22Dahlia (24propios y
+  account.updatedConnect), destinosPROD/firmas separadas; UI disponibilidad exacta
+  y cero destinosprevios comprobados. Worker tokenVault/Edge + pg_cron/pg_net +
+  jobpausado: paquete ajustado50antecedentes+1historia; UUID/runtimepin pendiente.
+  Ambos requieren autorización puntual de nuevos accesos persistentes. SinON,
+  llamadaHTTP delworker, cargo o sustitución de endpoints.
+- **Pendientes finitos/dueños:** integrador: permisos→webhooks/workerpausado,
+  OAuth/SMTPentrega/admin legítimo→perfilLIVE/operación→pinreal y CI final.
+  Después ventana5min→un envíoCodemagic→Play/install/QA afectada. Titular interviene
+  sólo donde exigen credenciales, confirmación de accesos o aceptación. No plazo
+  final sustentado aún por dependencias externas; beta no distribuida/aceptada.
+- **Método:** una colaFlutter/CI por fuente; no nuevas tomas, fixtures ni pagos.
+  AliasPROD automático fue detectado/corregido mediante get_alias autoritativo;
+  usar postflight de amboshosts, no listasalias ambiguas. Retro independiente
+  cerrada, sin atribuir ahorro. No apagarPROD por hábitos QADEV. Seguimiento4h activo.
 
-Siguiente: titular completaStripe/Resend/grantVercel; integrador cierra configuración,
-registra paquetes/aplicaciones reales y prepara candidato. Bloqueos concretos deacceso,
-no un plazo final sustentado. Recibos .tools/beta-prelaunch-20261028. Preservarprivacidad,
-identidad/firma y estados autorizados porentorno; no apagarPROD por hábitosQADEV.
+Recibos privados: .tools/beta-prelaunch-20261028 (stripe-live-key.resume3,
+resend-production-key, vercel-production, edge-production y worker-production).
 
 ## Corte aceptado previo — 341
 

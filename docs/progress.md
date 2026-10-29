@@ -1,3 +1,38 @@
+## 29/10/2026 12:55UTC — Credenciales PROD guardadas, panel publicado y delta Google
+
+RAKLIVE DopmiProductionbeta creada una vez con17permisos autorizados y trasladada
+sólo enmemoria aEdgeSecretSTRIPE_SECRET_KEY_LIVE/ysaoPROD; filaconfirmada trasreload,
+vistaúnicacerrada. ResendSendingOnly/dopmi.org→SMTPAuthPROD smtp.resend.com465,
+Dopmi/no-reply; persistenciaON trasreload. Ningún valor enGit/archivo/salida;
+sin correo/cargo/transferencia niAuthsignupON. Recibosprivados originales actualizados.
+PrimerSaveSMTP no persistió: comprobaciónfreshOFF→cerrarpromobanner→guardado/reloadON;
+no repetir sinconciliar. StripeavisoTESTprimero inicialmente interpretadoprematuramente:
+TESTkeypreexistente conservada/wizardcancelado, guíaSetupcerrada yformularioLIVE
+correcto17permisos/Enter/2FAhumano→creaciónreal. Sin claveTESTnueva ni releak.
+
+Vercelgrant operativo; sólo3envProduction(URL/anon/production), dosPreviewexactas.
+Un deployPROD dpl_8fChBGZEyNWEeinnd9F5hYb79kdM/2201bf9b READY. Login yJS realmente
+cargado verificados porDOM/scriptobservado:anonrole/refysao yconfiguredAPIproduction;
+no credencialservidor enVercel niAuthusuario/admin creados. Aliasramafueasignado por
+proveedoraldeployPROD; get_aliasautoritativo→asignaciónúnicaaPreview4A8/bec4724d.
+Revisorindependiente confirmóbranch→Preview/canonical→PROD. Sinrollback/buildextra/
+DNS/productionBranch. Retro: revisaramboshosts trasdeploy, no confiar enlistasalias.
+Sin ahorrocuantificado. Reciboúnicovercel-production actualizado; landingintacta.
+
+DeltaGoogle d5171d9f449ee21276290084728f92b012df72e2 enviado: Info.plistsinesquemaTEST
+fijo, builder porperfil/plataforma, seisCMcallsseleccionanAndroid/iOS. DosP2locales
+corregidosagrupados: AndroidnoexigeGIOS yTESTrechazanúmeroajeno coordinado.
+27mobileconfig+19Firebase+10adapterPASS; código/seguridadsinP1P2. CI40876640101
+in_progress, únicaCIporpush; noFlutterlocal/CM/Play/installnuevo. Backend1c7intacto.
+
+Preparados2webhooksLIVE SnapshotApril22Dahlia:24propios+account.updatedConnect,
+UI exacta disponible/GETendpointsdata[]; SDKrequestsAugust/H4Acacia intactos.
+Revisionescerradas/paquete946256e2…120d280; humanpermitfalse/nocreación.
+Workerpreparación ajustaapply_migration a50previos+1=51; VaultUUIDNULLabort,
+jobpausadoantesCOMMIT/noHTTP. Accesospersistentes/ejecución necesitan permiso propio.
+QuedanOAuth/entregacorreo/admin legítimo/worker/webhooks/perfilLIVE/operación y
+candidatoCM5min/Play/install/QA. Últimaapp341TESTaceptada; no plazo final inventado.
+
 ## 29/10/2026 11:00UTC — Checkpoint: candidato2201bf verificado, accesos pendientes
 
 CI40833210003/2201bf9bb791067b7ebf9b595c2c2a99b572f68e comprobada: cuatrojobsSUCCESS.

@@ -7,9 +7,9 @@ B0–B5 enbacklog, decisiones enproduct-decisions; no hay inventario visual nuev
 | Grupo afectado | Hecho actual | Evidencia/criterio pendiente |
 |---|---|---|
 | Entorno | Foundation70 aplicada una vez, registro20261029030514; historia49/prior48exactas,43tablasRLS/151funciones, Auth/Storage/dinero0; Proconfirmado | Configuración/activaciónLIVE aún pendiente; modosSQLTEST/serviciosOFF. DEVintacto. |
-| Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs reales validadas conbuilderestricto. Build/Play/instalación beta no acreditados. |
-| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS/CI4SUCCESS, SQLy8Edgeprincipales aplicados/readback+HTTP8/8 | RAK autorizada/2FApendiente, webhooks/secretos/worker y recorrido legítimoLIVE pendientes. Cero cargos. DeltaAndroidarranqueprivado revisado ytaskJVMnativeSUCCESS en2201bf9b/CI40833210003 cuatroSUCCESS; sinpruebaSDKtráfico/iOSfísico atribuida. |
-| Usuarios/operación | Sin filtro interno/producciónlimpia/reserva20mil/sin tope agregadodecididos | Integrador: registro estándar, Auth/SMTP/OAuth/admin, alertas/operación; Resendlogin/Vercelgrant/Stripeverificación pendientes. |
+| Configuracióncliente | B1/B2/B4en75d5963a/CI40798988780 cuatroSUCCESS | FirebasePROD+2apps reales creados; configs reales validadas conbuilderestricto. DeltaGoogle d5171d9f/27+19+10PASS/revisionescerradas/CI40876640101 enprogreso. Build/Play/instalación beta no acreditados. |
+| Dinero/consentimiento | BackendB4/admisiónSQL/parlegalLIVE28oct revisados, tresSDKpreservados; B3Connect33PASS/CI4SUCCESS, SQLy8Edgeprincipales aplicados/readback+HTTP8/8 | RAK17permisos creada/guardada; webhooks/worker y recorrido legítimoLIVE pendientes. Cero cargos. DeltaAndroidarranqueprivado revisado ytaskJVMnativeSUCCESS en2201bf9b/CI40833210003 cuatroSUCCESS; sinpruebaSDKtráfico/iOSfísico atribuida. |
+| Usuarios/operación | Sin filtro interno/producciónlimpia/reserva20mil/sin tope agregadodecididos | SMTPPRODguardado/sinenvío; adminVercel2201bfREADY/configPRODverificada. Integrador: OAuth/adminlegítimo/entregacorreo/alertas yoperación. |
 | Distribución/aceptación | Última instalación/aceptación341TEST; beta todavía no publicada | NuevoSHA/artefacto/Play/install/QA/aceptación separados; ventana5min preCodemagic. |
 
 ## Paridad aceptada anterior y límites conservados

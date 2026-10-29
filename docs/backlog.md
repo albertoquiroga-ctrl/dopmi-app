@@ -6,16 +6,16 @@ Una cola Flutter; reutilizar paridad. No copiar fixtures ni activar comercio.
 
 | Batch / dueño | Dependencia y objetivo | Estado / salida |
 |---|---|---|
-| B0 / integrador | Descubrir entornos y acuerdos actuales | Cotejo48resuelto/47exactos+cleanupsemántico; Authsignup/anonymousOFF/confirmemailON; customSecrets0, sinDEVmodificado. Falta SMTP/OAuth/operación. |
+| B0 / integrador | Descubrir entornos y acuerdos actuales | Cotejo48resuelto/47exactos+cleanupsemántico; Authsignup/anonymousOFF/confirmemailON; customSecrets0, sinDEVmodificado. SMTPPRODguardado; faltan OAuth/entrega/operación. |
 | B1 / móvil + revisores | B0; configuración estricta TEST/producción | Configuración y fixformato integrados en83e6e6fc/CI40793197789 cuatroSUCCESS. |
 | B2 / backend; integrador SQL | B0; contratos/mode/consentimientos | Fuente83e6e6fc/CI4SUCCESS; revisiones cerradas. Ningún despliegue nuevo; historial y modo protegidos. |
-| B3 / integrador + seguridad | B0/B2; preparar producción | HistoriaPROD50/prior49exactas; ochoEdgeprincipales desplegadas/readback+HTTP8/8. AuthURL/callback/plantillasES guardados; SMTPdraft sinsecreto/no guardado/signupOFF. Pro/Firebase2apps/configsvalidadas. Integrador: secretos/webhooks/SMTP/OAuth/admin/worker/monitoreo. Stripe2FA, Resendlogin yVercelgrant pendientes. Schedulerpausado preparado/noaplicado. Sinfiltrointerno; no copiarDEV. |
-| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | Candidato2201bf9b/CI40833210003 cuatroSUCCESS: taskJVMnativa/analyze/1596Flutter/capturas/APK yotrosgates. Privacidadrevisada/Dartintacto. AdaptadorPRODpreparado/inertesinpinfinal. Faltan configuración real/build: ventana5min y un envíoCodemagic/Playinterno. No repetir fullFlutterlocal/evidencia341. |
+| B3 / integrador + seguridad | B0/B2; preparar producción | HistoriaPROD50 y8Edgeverificadas. RAKLIVE17permisos guardada; ResendSMTP guardado/reloadON/sinenvío. VercelPROD2201bfREADY/configJSverificada/aliasPreviewrestaurado. Webhooks2 yworkerpausado preparados, permiso propio pendiente; OAuth/admin/entrega/activación aún faltan. No copiarDEV. |
+| B4 / móvil + integrador | B1/B2; integrar SDK/copy/admin/distribución | 2201bf/CI40833210003 cuatroSUCCESS; privacidadAndroid cerrada. DeltaGoogle d5171d9f/27+19+10PASS/revisionescerradas; CI40876640101 enprogreso. Runtime/OAuth reales/pin final pendientes. Ventana5min antes de únicoCodemagic; sinbuildbeta. |
 | B5 / integrador + titular | B3/B4; aceptación beta | Pendiente: instalación desdePlay, registro estándar/correo y roles, identidad y recorrido financiero legítimo acordado; conciliación/operación y demo. |
 
 Bloqueos/paquetes nuevos se concretan antes de pedir intervención. Stripe tiene
-sesiónLIVE de navegador; conectorMCP requiere reautenticación. No es falta de sesión
-Dashboard. Todavía no hay betaLIVE publicada/instalada ni pagos reales ejecutados.
+sesiónLIVE de navegador operativa yRAKguardada; conectorMCP no es requisito para
+recrear credenciales. No repetir creación ni verificaciones2FA ya resueltas. Todavía no hay betaLIVE publicada/instalada ni pagos reales ejecutados.
 
 ## Corte aceptado anterior — conservar evidencia, no reejecutar
 
