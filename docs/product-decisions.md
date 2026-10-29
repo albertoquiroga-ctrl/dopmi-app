@@ -1,3 +1,18 @@
+## 29/10/2026 — Soporte Google exacto y publicación legal LIVE
+
+Titular call_a919/item0 elige preparar soporte@dopmi.org en Google; call_31c4/item0
+proporciona huella pública App signing, conservada en recibo privado. Tras crear
+grupo/alias con permiso específico call_58db/item0 y comprobar que OAuth no ofrece
+el alias, call_1a32/item0 insiste en soporte@dopmi.org: no aprobar sustituto corporativo.
+Call_741ef/item0 confirma que no usa Google Sites con ese dominio; item1 da acceso
+legítimo a GoDaddy. Son hechos de preparación, no permiso implícito para retirar el
+dominio ni para aceptar términos Google/crear clientes OAuth. Conversión concreta,
+mapa7direcciones/DNS17/espera y confirmación específica quedan en checkpoint.
+
+Call_8347/item0 autoriza textos EXACTOS y publicación pública: versiones28oct,
+StripeLIVE/dinero real y Cloudflare condicionado a disponibilidad. Aplicación,
+verificación y límites en progress; no dictamen propio ni consentimiento de usuarios.
+
 ## 28/10/2026 CDMX — Beta controlada por tiendas, sin filtro de invitación
 
 Respuesta humana call_dcbeb906608e4370b60c21358748bb17/item0: no añadir invitaciones

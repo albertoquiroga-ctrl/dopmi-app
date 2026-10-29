@@ -1,3 +1,40 @@
+## 29/10/2026 22:28UTC — Legales públicos, PROD cerrado y soporte Google exacto
+
+Fuente móvil f20b27e6/CI40936283326 cuatroSUCCESS sin delta ni otra suite/build.
+Titular aprobó textos/publicación call_8347: GitHub tree→commit→ref con lease una vez,
+main landing052bf→38b9ce38c5cb0b2d69012b1758e72cc37b13a00f, sólo2HTML aprobados.
+Un Vercel automáticoPROD dpl_9oHLaGN9kVWFXwbksEHY8fWiHC9L READY21:52:24;
+revisor GET21:52:52 confirma308→www200/3074B y24397B/hashes exactos. Root comprobó
+vista de Términos/Aportaciones con StripeLIVE/dinero real. Sin redeploy manual ni
+aceptación por usuarios atribuida. Demo real: /terms→Aportaciones→avisoLIVE;
+señal de problema: texto TEST/no dinero real. Privacidad condiciona Stream a habilitación.
+Recibos legal-web-production/publication-{preflight,postflight} y journal cerrado.
+
+F1 técnico ya necesario para beta: preflightSQL22:08 historia51 exacta/SQLTEST/10tablas0,
+job1PAUSADO/HTTP0. Root guardó una vez11variables no secretas con TODO financiero
+FALSE y modo production/plataformaID; DOM22:11:20 muestra15nombres/digests exactos,
+4credenciales conservadas. Un SQLbind→production; postflightRAW22:13:08 historia51/
+hash intactos, mismo jobPAUSADO,10tablas0/HTTP0/admin0/consentimientosLIVE0. Seguridad
+inspeccionó RAW/delta/paquete; límite: EdgeOFF es readbackDOM root, no auditoríaremota
+independiente. No DDL, cronresume, HTTPmanual, cargo, fixtures, secreto nuevo o ONfinanciero.
+
+Google: usuario insiste exactosoporte@dopmi.org y proporciona SHA1 pública de Play.
+Permiso puntual creó1grupo privado/owner1/0managers/0rolesadmin/externosnopuedeleer;
+aliasautomático exactoverificado. Un chequeoOAuth ofreceprincipalnoalias; rootparó
+sin marca/clientes ni sustituto. RenombradoUI sóloenlace. Ruta documentada requiere
+convertiraliasdomain→secondary. Preparación real7direcciones/3usuarios/2grupos y17DNS
+conmxGoDaddy intactos; owner declaraNoSites. DosP2 iniciales (inventario inferido5 y
+DNSnoacreditado) cerrados por revisor independiente tras evidencia real; inventario
+detectó2aliasesextra. Confirmaciónespecífica solicitada, no remoción/registroDNS aún.
+Google advierte reutilización30min–24h y propagación, no prometer reversión inmediata.
+
+Error de método menor: cua.getTab/reload antiguos fallaron browser.user; nuevo
+GoogleAuthtab fue innecesario. Usar browser.tabs.get(ID observado) permitió leer
+la pestaña DNS18 ya abierta sin otro duplicado; efecto acotado, sin ahorro supuesto.
+No otra auditoría/suite para medirlo. Root siguiente: permiso conversión→OAuth→runtime/
+pin→ventana5min→CM/Play únicos→registro/correo/admin/Google físico→ON financiero revisado.
+Última app publicada/instalada/aceptada sigue341TEST. No llamar betaLIVE entregada.
+
 ## 29/10/2026 21:32UTC — Checkpoint4h: CI final verde; entradas humanas pendientes
 
 Frente19:02, avance nuevo comprobado: CI40936283326/f20b27e6 completada SUCCESS

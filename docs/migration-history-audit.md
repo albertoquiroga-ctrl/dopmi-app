@@ -52,6 +52,14 @@ sin grants nuevos, HTTP, extracción token, cobros ni modoLIVE. Postflight18:45:
 y comparación SQL exacta inspeccionados independientemente por seguridad/proceso.
 Recibos worker-production/correction1-*.actual.private.json; no reaplicar.
 
+29oct22:13UTC, preparación cerrada F1: owner actualizó sólo el binding de entorno
+TEST→production, SQL44907632…e30a6c del manifestb985f22c…c12682 revisado. No DDL ni
+schema_migrations: historia51/hashf577674c…16ce1 exactos. Antes se añadieron11variables
+no secretas con masterLIVE/Guardian/native/walletsFALSE,4credenciales previas intactas.
+Postflight22:13:08:job1pausado/comando exacto,10tablas operativas0/HTTP0/admin0/
+aceptacionesLIVE0. No afirmar activación financiera o conciliación. Recibos
+financial-activation/{closed-preparation.execution.reserved,closed-postflight.actual}.private.json.
+
 ## 28/10/2026 — Producción restaurada: cotejo48; delta preparado sin aplicar
 
 PRODysaoeuidcvgtlmphmeyb fue restaurado una vez; healthy. InventarioSQL23:07UTC:

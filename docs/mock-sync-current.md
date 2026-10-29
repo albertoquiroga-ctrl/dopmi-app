@@ -1,55 +1,50 @@
-# Checkpoint — beta real, 29/oct/2026 21:32 UTC (15:32 CDMX)
+# Checkpoint — beta real, 29/oct/2026 22:28 UTC (16:28 CDMX)
 
-Producto dopmi-app; codex/finish-release-20261015; única cola Flutter.
-Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086, CI40936283326 completada/cuatro jobs SUCCESS.
-Backend desplegado1c7c4fae; admin PROD2201bf9b. Última app publicada,
-instalada y aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust; no reabrir su QA.
+Producto dopmi-app; codex/finish-release-20261015; una cola Flutter.
+Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086/CI40936283326 cuatro SUCCESS.
+Backend1c7c4fae/admin2201bf9b conservados. Última app publicada, instalada y
+aceptada:2.3.3(341) TEST/3cf65d73/f693-warm-trust. Beta móvil aún no distribuida.
 
-- Alcance vigente: producción limpia/Stripe LIVE, registro estándar y distribución
-  Play internal/alfa/TestFlight; sin copiar DEV ni inventar cobros. Reserva20mil
-  declarada/sin tope agregado; conservar privacidad y tres componentes Stripe.
-- Implementado: perfiles estrictos/Firebase PROD; TestFlight609c617d ya selecciona
-  perfil por entorno y rechaza desconocidos, Python29 PASS y revisión independiente.
-  Candidato f20b añade sólo copy condicional de Stream, producto/código/seguridad
-  cerrados; sin nueva suite local por texto. CI final SUCCESS19:22:59UTC; sin buildCM.
-- Verificado en PROD: historia51; foundation+Connect+worker. Correctivo autorizado
-  por continuación expresa29oct aplicado UNA vez18:45:15UTC: SQL33f3e03a…3fce98,
-  nueva20261029184515, prefijo50 exacto y cuerpo SQL exacto. pg_cron1.6.4/pg_net0.20.4,
-  único job1 pausado, runs0/HTTP0/finanzas0. Mismo Vault/Edge; sin extraer/recrear token.
-  SQL sigueTEST: instalación pausada no acredita conciliación ni admisión LIVE.
-- Configurado: RAK LIVE, dos webhooks24/1+firmas separadas y SMTP persistidos.
-  Panel https://dopmi-app.vercel.app publicado/config PROD verificada; no administrador
-  nuevo ni entrega real de correo. No pagos/eventos LIVE aceptados atribuidos.
-- Google: proyecto accesible, sin marca/clientes creados. Pendientes ya consultados:
-  correo público de soporte en consentimiento Google y SHA1 pública App signing de
-  Play (no Upload key). Clipboard/descarga no entregaron certificado; no repetirlos.
-  OAuth Apple/iOS se configura aparte y no bloquea la entrega Android.
-- Legales: GET público todavía TEST. Propuesta privada seis cambios, versiones28oct,
-  Stripe LIVE y Cloudflare sólo cuando video habilitado; revisión independiente
-  cerrada. Publicación exacta preguntada; no dictamen ni publicación atribuidos.
-- Retro: mejora anterior comprobada en el trabajo necesario: contrastar contrato
-  pg_cron real antes de reserva resolvió un correctivo único con postflight51/pausa/0HTTP.
-  Sin ahorro cuantificado, suite nueva ni otra mejora por reloj.
+- **Nuevo verificado/publicado:** términos y privacidad LIVE autorizados expresamente,
+  commit atómico38b9ce38c5cb0b2d69012b1758e72cc37b13a00f de landing, sólo2HTML.
+  Único VercelPROD automático dpl_9oHLaGN9kVWFXwbksEHY8fWiHC9L READY21:52:24UTC;
+  GET apex308→www200 y bytes/hashes exactos de ambas páginas21:52:52. Revisión
+  independiente y vista real de términos; no aceptación legal por usuarios atribuida.
+- **Preparación PROD cerrada aplicada:**11variables no secretas guardadas22:11:20UTC:
+  entorno production/IDplataforma y todas las guardas financieras FALSE.15nombres
+  custom exactos,4digests previos intactos por DOM; no extraer credenciales.
+  Único binding SQL TEST→production; postflightRAW22:13:08 confirma historia51/hash
+  exactos, job1PAUSADO,10tablas operativas0/HTTP0/admin0/consentimientosLIVE0.
+  No cargos, conciliación, cronresume, nueva migración ni admisión financiera.
+  Seguridad independiente cerró recibos; EdgeOFF depende del readback DOM root.
+- **Google soporte:** titular exige EXACTO soporte@dopmi.org; no sustituto corporativo.
+  Huella pública App signing recibida y guardada privadamente; no descarga/ADB nueva.
+  Grupo privado creado una vez con propietario único/sin roles admin; alias exacto
+  registrado, pero selector OAuth sólo ofrece su dirección principal de otro dominio.
+  Una comprobación autorizada consumida; ninguna marca o cliente OAuth creados.
+- **Siguiente operación preparada, NO ejecutada:** convertir sólo dopmi.org de alias
+  a secundario en misma organización Google. Inventario real7direcciones→3usuarios/
+  2grupos (incluye2aliases adicionales),17registros DNS GoDaddy y formulario TXT
+  disponibles. Titular confirma no Google Sites; no auditoría de archivos atribuida.
+  Revisor independiente inspeccionó evidencia/propuesta y cerró2P2 de preparación.
+  Confirmación puntual de conversión/restauración/TXT solicitada, pendiente.
+  Diálogo Remove domain alias abierto sin pulsar final. Nada retirado ni DNS modificado.
+  Puede esperar30min–24h para reutilización y propagación posterior; no rollback instantáneo.
 
-Preparación financiera cerrada: manifestb985f22c…c12682, revisión independiente
-sin P1/P2. Orden corregido según bootstrap existente: binding SQLproduction con
-masterLIVE=false/flagsOFF/jobpausado permite legales/registro; una sola build PROD;
-alta humana/correo/bootstrap y Google real; flags preparadas→resume→masterON último.
-Ninguna de esas fases ejecutada. No exigir administrador antes de su propia app.
-Pendientes finitos/root: (1) respuestas Google→OAuth/configuración y publicación
-legal autorizada; (2) binding cerrado/runtime/pin+CI final→ventana5min→un CM→Play;
-(3) registro/correo/admin legítimo y QA de acceso instalada; (4) habilitación financiera
-revisada/conciliación y aceptación, sin cargos inventados ni otra build por etapas.
-Beta móvil LIVE aún no publicada, instalada, probada ni aceptada. Sin estimación
-final sustentada mientras faltan esos accesos/decisiones. Seguimiento4h activo.
-Recibos privados .tools/beta-prelaunch-20261028; no otro tablero ni cola.
+**Orden finito/root:** permiso específico→conversión/aliasmap exacto→OAuth Google/
+SMTP y runtime/pin→ventana5min→UN Codemagic/Play→registro humano/correo/admin/Google
+real→revisión y activación financiera/worker/salud. Misma build sirve bootstrap y
+operación posterior; Apple/TestFlight separados de Android. Sin cargos inventados,
+usuarios/fixtures DEV copiados, nueva toma, suite o build por documentación.
 
-Cotejo4h: frente19:02 sólo hay nuevo cierre automático verificable de CI final;
-sin funcionalidad, despliegue, publicación, instalación ni aceptación nuevos.
-Preguntas Google/SHA1 pública/textos siguen pendientes; no repetir solicitudes,
-preflights de escritura, builds o suites mientras no haya información nueva.
-Dueño root: resolver esas entradas y ejecutar la secuencia finita ya revisada.
-Sin incidente/retrabajo nuevo; se conserva mejora anterior comprobada, sin otra regla.
+Publicado legalweb; servidor configurado cerrado; móvil beta no publicado/instalado/
+probado/aceptado. No confundir binding production con cobros habilitados. Seguimiento4h
+activo; no apagar producción por hábitos QADEV. Sin plazo final sustentado hasta
+resolver Google. Fuentes privadas .tools/beta-prelaunch-20261028: legal-web-production,
+financial-activation, google-*.private.json y godaddy-dns-before.actual.private.json.
+Browser2:12GoogleAdmin(confirmación),14GoogleAuth,18GoDaddyDNS(TXTdraftsinvalor),
+16SupabaseSecrets,13Términos publicados. Para pestañas existentes usar browser.tabs.get
+con ID real; cua.getTab/reload antiguo falló browser.user, sin reset ni nuevas identidades.
 
 ## Corte aceptado previo — 341
 
