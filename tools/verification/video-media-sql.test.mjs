@@ -357,3 +357,166 @@ test('farewell after the real case close preserves its closed snapshot and exist
  assert.deepEqual((await db.query('select to_jsonb(r) v from public.dopmi_rescue_records r where id=$1',[f.parent])).rows[0].v,parentBeforeMedia);
  assert.deepEqual(await financialEvidence(),finances);
 });
+
+// Production admission checks share the real migration chain and video/RPC
+// fixtures above. Each scenario rolls back its environment and synthetic rows.
+async function caseVideoEnvironment(environment, enabled, check) {
+ await db.exec('begin');
+ try {
+  if(environment===null)await db.exec('delete from private.dopmi_payment_environment');
+  else await db.query('update private.dopmi_payment_environment set environment=$1',[environment]);
+  if(enabled===null)await db.exec('delete from private.dopmi_video_settings');
+  else await db.query('update private.dopmi_video_settings set enabled=$1',[enabled]);
+  await check();
+ } finally { await db.exec('rollback'); }
+}
+async function checkedSqlRejection(query, parameters, predicate) {
+ await db.exec('savepoint expected_video_rejection');
+ try { await assert.rejects(db.query(query,parameters),predicate); }
+ finally { await db.exec('rollback to savepoint expected_video_rejection; release savepoint expected_video_rejection'); }
+}
+async function preparedVideoCase() {
+ const f=await fixture(),photo=await uploadSyntheticPhoto(f);
+ const environment=(await db.query('select public.dopmi_payment_environment_server() v')).rows[0].v?.environment;
+ if(environment==='production')for(const id of [f.owner,f.other,f.staff]){
+  await actor(id);await db.query("select public.dopmi_accept_legal('terms-live-2026-10-28','privacy-live-2026-10-28',true)");
+ }
+ const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
+ return {...f,version:saved.version};
+}
+async function videoAdmissionSnapshot(f) {
+ return (await db.query(`select jsonb_build_object(
+  'record',(select to_jsonb(r) from public.dopmi_rescue_records r where id=$1),
+  'history',(select coalesce(jsonb_agg(to_jsonb(h) order by h.id),'[]') from private.dopmi_rescue_history h where record_id=$1),
+  'assets',(select coalesce(jsonb_agg(to_jsonb(a) order by a.id),'[]') from private.dopmi_video_assets a where parent_id=$1),
+  'donations',(select coalesce(jsonb_agg(to_jsonb(d) order by d.id),'[]') from public.dopmi_donations d),
+  'connect',(select to_jsonb(c) from private.dopmi_connect_accounts c where owner_id=$2)) v`,[f.parent,f.owner])).rows[0].v;
+}
+
+for(const stripeReady of [false,true])test(`production video OFF rejects first ${stripeReady?'submitted':'pending Stripe'} send without a permanent exemption`,async()=>{
+ await caseVideoEnvironment('production',false,async()=>{
+  const f=await preparedVideoCase();
+  await db.query('update private.dopmi_connect_accounts set transfers_enabled=$2,payouts_enabled=$2 where owner_id=$1',[f.owner,stripeReady]);
+  const before=await videoAdmissionSnapshot(f);await actor(f.owner);
+  await checkedSqlRejection("select public.dopmi_transition_rescue($1,$2,'submit')",[f.parent,f.version],
+   error=>error.code==='22023'&&/agradecimiento en video aún no está disponible/.test(error.message));
+  assert.deepEqual(await videoAdmissionSnapshot(f),before,'rejection preserves draft, version, history, media and financial state');
+  assert.equal(before.record.status,'draft');assert.equal(before.record.video_thanks_required,true);
+ });
+});
+
+for(const enabled of [false,true])test(`missing environment binding rejects first case send with video ${enabled?'ON':'OFF'}`,async()=>{
+ await caseVideoEnvironment('production',enabled,async()=>{
+  const f=await preparedVideoCase(),before=await videoAdmissionSnapshot(f);await actor(f.owner);
+  await db.exec('delete from private.dopmi_payment_environment');
+  assert.equal((await db.query('select public.dopmi_payment_environment_server() v')).rows[0].v,null);
+  // Exercise the trigger itself: the public RPC also has a separate legal gate
+  // which rejects missing binding before it can reach the video transition.
+  await checkedSqlRejection("update public.dopmi_rescue_records set status='submitted' where id=$1",[f.parent],
+   error=>error.code==='22023'&&/agradecimiento en video/.test(error.message));
+  assert.deepEqual(await videoAdmissionSnapshot(f),before);
+ });
+});
+
+test('production with missing video settings rejects the send instead of recording an exemption',async()=>{
+ await caseVideoEnvironment('production',null,async()=>{
+  const f=await preparedVideoCase(),before=await videoAdmissionSnapshot(f);await actor(f.owner);
+  await checkedSqlRejection("select public.dopmi_transition_rescue($1,$2,'submit')",[f.parent,f.version],error=>error.code==='22023');
+  assert.deepEqual(await videoAdmissionSnapshot(f),before);
+ });
+});
+
+test('production video ON retains ready/current thanks and independent video/case approval gates',async()=>{
+ await caseVideoEnvironment('production',true,async()=>{
+  const f=await preparedVideoCase();await actor(f.owner);
+  await checkedSqlRejection("select public.dopmi_transition_rescue($1,$2,'submit')",[f.parent,f.version],
+   error=>error.code==='23514'&&error.constraint==='dopmi_video_submission_ready');
+  const thanks=await action(f,begin(f,{parent_version:f.version}));await ready(thanks);await actor(f.owner);
+  const submitted=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,f.version])).rows[0].v;
+  assert.equal(submitted.status,'submitted');assert.equal(submitted.video_thanks_required,true);
+  await actor(f.staff);
+  const approve="select public.dopmi_review_rescue($1,$2,'approved','Revisión sintética completa',0,false,'',true) v";
+  await checkedSqlRejection(approve,[f.parent,submitted.version],error=>error.code==='23514'&&error.constraint==='dopmi_video_submission_ready');
+  await action(f,{action:'review',id:thanks.id,parent_version:submitted.version,decision:'approved'},f.staff);
+  const approved=(await db.query(approve,[f.parent,submitted.version])).rows[0].v;
+  assert.equal(approved.status,'approved');assert.equal(approved.video_thanks_required,true);
+ });
+});
+
+test('explicit TEST video OFF keeps its historical exemption after video is enabled',async()=>{
+ await caseVideoEnvironment('test',false,async()=>{
+  const f=await preparedVideoCase();await actor(f.owner);
+  const submitted=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,f.version])).rows[0].v;
+  assert.equal(submitted.status,'submitted');assert.equal(submitted.video_thanks_required,false);
+  await db.exec('update private.dopmi_video_settings set enabled=true');await actor(f.staff);
+  const approved=(await db.query("select public.dopmi_review_rescue($1,$2,'approved','Revisión sintética completa',0,false,'',true) v",[f.parent,submitted.version])).rows[0].v;
+  assert.equal(approved.status,'approved');assert.equal(approved.video_thanks_required,false);
+ });
+});
+
+test('production OFF preserves a grandfathered published case and permits its normal close',async()=>{
+ await caseVideoEnvironment('production',false,async()=>{
+  const f=await preparedVideoCase();
+  // Model an explicit exemption already recorded before this guard, rather
+  // than attempting to waive a new requirement in the publication UPDATE.
+  await db.query('update public.dopmi_rescue_records set video_thanks_required=false where id=$1',[f.parent]);
+  await db.query("update public.dopmi_rescue_records set status='approved',approved_snapshot=public_data,approved_at=now() where id=$1",[f.parent]);
+  const before=await videoAdmissionSnapshot(f);await actor(f.owner);
+  const closed=(await db.query('select public.dopmi_close_support_case($1,$2) v',[f.parent,f.version])).rows[0].v;
+  assert.equal(closed.status,'closed');assert.equal(closed.video_thanks_required,false);
+  assert.deepEqual(closed.approved_snapshot,before.record.approved_snapshot);
+  const after=await videoAdmissionSnapshot(f);assert.deepEqual(after.donations,before.donations);assert.deepEqual(after.connect,before.connect);
+ });
+});
+
+for(const clipAvailable of [false,true])test(`production OFF Connect ${clipAvailable?'promotes ready video':'defers canceled video'} without waiving the recorded requirement`,async()=>{
+ await caseVideoEnvironment('production',true,async()=>{
+  const f=await preparedVideoCase();
+  await db.query('update private.dopmi_connect_accounts set transfers_enabled=false,payouts_enabled=false where owner_id=$1',[f.owner]);
+  const thanks=await action(f,begin(f,{parent_version:f.version}));await ready(thanks);await actor(f.owner);
+  const pending=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,f.version])).rows[0].v;
+  assert.equal(pending.status,'pending_stripe');
+  if(!clipAvailable)await action(f,{action:'cancel',id:thanks.id});
+  await db.exec('update private.dopmi_video_settings set enabled=false');await actor('','service_role');
+  const sync=async()=>(await db.query("select public.dopmi_payment_server('connect_save',$1::jsonb) v",[JSON.stringify({
+   actor:f.owner,account_id:`acct_synthetic_${f.owner.replaceAll('-','')}`,transfers_enabled:true,payouts_enabled:true,details_submitted:true
+  })])).rows[0].v.pending_stripe_sync;
+  const result=await sync(),actual=(await db.query('select status,version,video_thanks_required from public.dopmi_rescue_records where id=$1',[f.parent])).rows[0];
+  assert.equal(result.promoted_count,clipAvailable?1:0);assert.equal(result.deferred_count,clipAvailable?0:1);
+  assert.equal(actual.status,clipAvailable?'submitted':'pending_stripe');assert.equal(actual.video_thanks_required,true);
+  assert.equal(actual.version,pending.version+(clipAvailable?1:0));
+  assert.equal((await db.query('select transfers_enabled and payouts_enabled ready from private.dopmi_connect_accounts where owner_id=$1',[f.owner])).rows[0].ready,true);
+  if(!clipAvailable){
+   assert.equal(result.deferred[0].reason,'thanks_not_ready');
+   const history=(await videoAdmissionSnapshot(f)).history;await sync();assert.deepEqual((await videoAdmissionSnapshot(f)).history,history);
+  }
+ });
+});
+
+test('missing environment binding defers Connect promotion even with a ready clip and preserves readiness',async()=>{
+ await caseVideoEnvironment('production',true,async()=>{
+  const f=await preparedVideoCase();
+  await db.query('update private.dopmi_connect_accounts set transfers_enabled=false,payouts_enabled=false where owner_id=$1',[f.owner]);
+  const thanks=await action(f,begin(f,{parent_version:f.version}));await ready(thanks);await actor(f.owner);
+  const pending=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,f.version])).rows[0].v;
+  await db.exec('delete from private.dopmi_payment_environment');await actor('','service_role');
+  const result=(await db.query("select public.dopmi_payment_server('connect_save',$1::jsonb) v",[JSON.stringify({
+   actor:f.owner,account_id:`acct_synthetic_${f.owner.replaceAll('-','')}`,transfers_enabled:true,payouts_enabled:true,details_submitted:true
+  })])).rows[0].v.pending_stripe_sync;
+  assert.equal(result.promoted_count,0);assert.equal(result.deferred_count,1);assert.equal(result.deferred[0].reason,'thanks_not_ready');
+  const actual=(await db.query('select status,version,video_thanks_required from public.dopmi_rescue_records where id=$1',[f.parent])).rows[0];
+  assert.deepEqual(actual,{status:'pending_stripe',version:pending.version,video_thanks_required:true});
+  assert.equal((await db.query('select transfers_enabled and payouts_enabled ready from private.dopmi_connect_accounts where owner_id=$1',[f.owner])).rows[0].ready,true);
+ });
+});
+
+test('production video OFF guard does not block verification or expense transitions',async()=>{
+ await caseVideoEnvironment('production',false,async()=>{
+  const f=await fixture(),expense=randomUUID();
+  await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,status) values($1,$2,'expense',$3,'draft')",[expense,f.owner,f.parent]);
+  await db.query("update public.dopmi_rescue_records set status='submitted' where id=$1",[expense]);
+  await db.query("update public.dopmi_rescue_records set status='submitted' where owner_id=$1 and kind='verification'",[f.owner]);
+  assert.equal((await db.query('select status from public.dopmi_rescue_records where id=$1',[expense])).rows[0].status,'submitted');
+  assert.equal((await db.query("select status from public.dopmi_rescue_records where owner_id=$1 and kind='verification'",[f.owner])).rows[0].status,'submitted');
+ });
+});
