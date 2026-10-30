@@ -2,7 +2,8 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import App from './App';
-import { type AdminApi, type AdminUser, type Contribution } from './api';
+import { createAdminApi, type AdminApi, type AdminUser, type Contribution, type RescueRecord } from './api';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 const person: AdminUser = { id: 'one', display_name: 'Ana López', email: 'ana@example.test', phone: '', city: 'Monterrey', active_mode: 'donor', account_status: 'active', created_at: '2026-09-13T12:00:00Z', email_confirmed_at: '2026-09-13T12:00:00Z', last_sign_in_at: null };
 const donation = {
   id: 'donation-one',
@@ -48,6 +49,60 @@ function api(overrides: Partial<AdminApi> = {}): AdminApi {
   };
 }
 describe('administración de usuarios', () => {
+  it('preserves the PDF review when refocusing confirms the identical authenticated session', async () => {
+    const record: RescueRecord = {
+      id: 'verification-fixture', owner_id: 'rescuer-fixture', kind: 'verification', parent_id: null,
+      public_data: { public_name: 'Rescatista de prueba local' }, private_data: { legal_name: 'Persona sintética' },
+      files: [{ path: 'synthetic/identity.pdf', role: 'identity' }], status: 'submitted', version: 7,
+      feedback: '', reimbursable_cents: 0, urgent: false, priority_reason: '',
+      submitted_at: '2026-10-30T12:00:00Z', updated_at: '2026-10-30T12:00:00Z',
+    };
+    const session = { access_token: 'synthetic-session-token', user: { id: 'reviewer-fixture' } } as Session;
+    let authChange!: (event: AuthChangeEvent, session: Session | null) => void;
+    let recheck = false;
+    let completeRecheck!: (value: { data: boolean; error: null }) => void;
+    const pendingRecheck = new Promise<{ data: boolean; error: null }>(resolve => { completeRecheck = resolve; });
+    const rpc = vi.fn(async (name: string) => {
+      if (name === 'dopmi_is_admin') return recheck ? pendingRecheck : { data: true, error: null };
+      if (name === 'admin_list_users') return { data: { total: 0, users: [] }, error: null };
+      if (name === 'dopmi_admin_rescue') return { data: { total: 1, items: [record] }, error: null };
+      if (name === 'dopmi_rescue_detail') return { data: { record, verified: false, case_status: null, history: [] }, error: null };
+      throw new Error(`Unexpected synthetic RPC: ${name}`);
+    });
+    const client = {
+      auth: {
+        getSession: async () => ({ data: { session }, error: null }),
+        onAuthStateChange: (callback: typeof authChange) => {
+          authChange = callback;
+          callback('INITIAL_SESSION', session);
+          return { data: { subscription: { unsubscribe: vi.fn() } } };
+        },
+      }, rpc,
+      storage: { from: () => ({ createSignedUrl: async () => ({ data: { signedUrl: 'https://example.test/synthetic.pdf' }, error: null }) }) },
+    } as unknown as Parameters<typeof createAdminApi>[0];
+    render(<App api={createAdminApi(client, 'production')} />);
+    const user = userEvent.setup();
+    await waitFor(() => expect(rpc.mock.calls.filter(([name]) => name === 'dopmi_is_admin')).toHaveLength(2));
+    await user.click(await screen.findByRole('button', { name: 'Rescates y gastos' }));
+    await user.click(await screen.findByRole('button', { name: 'Revisar Rescatista de prueba local' }));
+    const reviewed = await screen.findByRole('checkbox', { name: 'Revisé el archivo 1' });
+    expect(reviewed).toBeDisabled();
+    await user.click(screen.getByRole('link', { name: 'Abrir PDF 1' }));
+    expect(reviewed).toBeEnabled();
+    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'), 'Revisión local en curso');
+    recheck = true;
+    await act(async () => {
+      authChange('SIGNED_IN', session);
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
+    await act(async () => completeRecheck({ data: true, error: null }));
+    expect(screen.getByRole('checkbox', { name: 'Revisé el archivo 1' })).toBeEnabled();
+    expect(screen.getByRole('checkbox', { name: 'Revisé el archivo 1' })).not.toBeChecked();
+    await user.click(screen.getByRole('checkbox', { name: 'Revisé el archivo 1' }));
+    expect(screen.getByRole('checkbox', { name: 'Revisé el archivo 1' })).toBeChecked();
+    expect(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)')).toHaveValue('Revisión local en curso');
+    expect(rpc.mock.calls.some(([name]) => name === 'dopmi_review_rescue')).toBe(false);
+  });
   it('does not query users before the server authorizes the account', async () => {
     const client = api({ isAdmin: vi.fn(async () => false) }); render(<App api={client} />);
     await screen.findByText('Esta cuenta no tiene acceso'); expect(client.listUsers).not.toHaveBeenCalled();

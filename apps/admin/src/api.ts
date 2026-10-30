@@ -135,7 +135,24 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
       }
       const { data, error } = await client.auth.getSession(); if (error) throw error; return !!data.session;
     },
-    watch(onChange) { const { data } = client.auth.onAuthStateChange(() => onChange()); return () => data.subscription.unsubscribe(); },
+    watch(onChange) {
+      let active = true;
+      let previous: { user: string; token: string } | null = null;
+      const { data } = client.auth.onAuthStateChange((event, session) => {
+        if (!active) return;
+        const user = session?.user?.id, token = session?.access_token;
+        const current = event !== 'SIGNED_OUT' && typeof user === 'string' && user.length > 0 &&
+          typeof token === 'string' && token.length > 0 ? { user, token } : null;
+        // The SDK can confirm the identical session when returning from a PDF.
+        // Only that duplicate is redundant; token/account changes and every
+        // other event still recheck server access and clear private views.
+        const duplicate = event === 'SIGNED_IN' && current !== null && previous !== null &&
+          current.user === previous.user && current.token === previous.token;
+        previous = current;
+        if (!duplicate) onChange();
+      });
+      return () => { active = false; previous = null; data.subscription.unsubscribe(); };
+    },
     async login(email, password) { callbackHandled = true; const { error } = await client.auth.signInWithPassword({ email, password }); if (error) throw error; },
     loginWithGoogle: environment === 'production' ? async () => {
       callbackHandled = true;

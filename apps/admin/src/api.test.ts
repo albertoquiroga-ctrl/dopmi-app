@@ -1,8 +1,51 @@
 import { createClient } from '@supabase/supabase-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import { configuredApi, createAdminApi, type RescuerPublicProfile } from './api';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 afterEach(() => { vi.unstubAllEnvs(); window.history.replaceState({}, '', '/'); });
+
+function authWatcher() {
+  let emit!: (event: AuthChangeEvent, session: Session | null) => void;
+  const unsubscribe = vi.fn();
+  const client = { auth: { onAuthStateChange: (callback: typeof emit) => {
+    emit = callback; return { data: { subscription: { unsubscribe } } };
+  } } } as unknown as Parameters<typeof createAdminApi>[0];
+  const onChange = vi.fn();
+  const stop = createAdminApi(client).watch(onChange);
+  const session = { user: { id: 'reviewer-fixture' }, access_token: 'synthetic-session-one' } as Session;
+  return { emit: (event: AuthChangeEvent, value: Session | null = session) => emit(event, value), session, onChange, stop, unsubscribe };
+}
+
+test('only an identical SIGNED_IN confirmation is redundant; missing credentials and a new token or actor recheck access', () => {
+  const watcher = authWatcher();
+  watcher.emit('INITIAL_SESSION');
+  watcher.emit('SIGNED_IN');
+  expect(watcher.onChange).toHaveBeenCalledTimes(1);
+  watcher.emit('SIGNED_IN', { ...watcher.session, access_token: 'synthetic-session-two' });
+  watcher.emit('SIGNED_IN', { ...watcher.session, user: { ...watcher.session.user, id: 'different-reviewer' } });
+  watcher.emit('SIGNED_IN', null);
+  expect(watcher.onChange).toHaveBeenCalledTimes(4);
+  watcher.emit('SIGNED_IN', { ...watcher.session, access_token: '' });
+  watcher.emit('SIGNED_IN');
+  expect(watcher.onChange).toHaveBeenCalledTimes(6);
+  watcher.stop();
+  watcher.emit('SIGNED_IN');
+  expect(watcher.onChange).toHaveBeenCalledTimes(6);
+  expect(watcher.unsubscribe).toHaveBeenCalledTimes(1);
+});
+
+test.each<AuthChangeEvent>(['SIGNED_OUT', 'TOKEN_REFRESHED', 'USER_UPDATED', 'PASSWORD_RECOVERY'])('%s still rechecks access even with the same session data', event => {
+  const watcher = authWatcher();
+  watcher.emit('INITIAL_SESSION');
+  watcher.emit(event, watcher.session);
+  expect(watcher.onChange).toHaveBeenCalledTimes(2);
+  if (event === 'SIGNED_OUT') {
+    watcher.emit('SIGNED_IN');
+    expect(watcher.onChange).toHaveBeenCalledTimes(3);
+  }
+  watcher.stop();
+});
 
 const testProject = 'ohqxranynackjignryep';
 const productionProject = 'ysaoeuidcvgtlmphmeyb';
