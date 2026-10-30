@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import App from './App';
@@ -80,5 +80,70 @@ describe('administración de usuarios', () => {
     await user.click(await screen.findByRole('button', { name: 'Aportes' }));
     expect(await screen.findByRole('heading', { name: 'Aportes' })).toBeInTheDocument();
     await waitFor(() => expect(listContributions).toHaveBeenCalledWith('all', 1));
+  });
+  it('starts Google without password fields, blocks duplicate clicks and recovers from a safe error', async () => {
+    let rejectGoogle!: (cause: unknown) => void;
+    const loginWithGoogle = vi.fn(() => new Promise<void>((_resolve, reject) => { rejectGoogle = reject; }));
+    const client = api({ session: vi.fn(async () => false), loginWithGoogle });
+    render(<App api={client} />); const user = userEvent.setup();
+    await user.dblClick(await screen.findByRole('button', { name: 'Continuar con Google' }));
+    expect(loginWithGoogle).toHaveBeenCalledTimes(1);
+    expect(client.login).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Iniciar sesión' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Conectando con Google…' })).toBeDisabled();
+    await act(async () => rejectGoogle(new Error('provider_token=private-fixture')));
+    expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos completar el acceso con Google.');
+    expect(screen.queryByText(/private-fixture/)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Continuar con Google' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Iniciar sesión' })).toBeEnabled();
+    loginWithGoogle.mockResolvedValueOnce(undefined);
+    await user.click(screen.getByRole('button', { name: 'Continuar con Google' }));
+    expect(loginWithGoogle).toHaveBeenCalledTimes(2);
+  });
+  it('keeps the Google latch after success while navigation is still pending', async () => {
+    const loginWithGoogle = vi.fn(async () => {});
+    render(<App api={api({ session: vi.fn(async () => false), loginWithGoogle })} />); const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Continuar con Google' }));
+    const pending = screen.getByRole('button', { name: 'Conectando con Google…' });
+    expect(pending).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Iniciar sesión' })).toBeDisabled();
+    await user.click(pending);
+    expect(loginWithGoogle).toHaveBeenCalledTimes(1);
+  });
+  it('recovers the login on a real Back return without automatically starting OAuth again', async () => {
+    const loginWithGoogle = vi.fn(async () => {});
+    render(<App api={api({ session: vi.fn(async () => false), loginWithGoogle })} />); const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Continuar con Google' }));
+    await act(async () => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: false })));
+    expect(screen.getByRole('button', { name: 'Conectando con Google…' })).toBeDisabled();
+    await act(async () => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+    expect(screen.getByRole('button', { name: 'Continuar con Google' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Iniciar sesión' })).toBeEnabled();
+    expect(loginWithGoogle).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole('button', { name: 'Continuar con Google' }));
+    expect(loginWithGoogle).toHaveBeenCalledTimes(2);
+  });
+  it.each([true, false])('rechecks the server after a Google auth event (membership %s)', async allowed => {
+    let onAuthChange!: () => void;
+    const session = vi.fn().mockResolvedValueOnce(false).mockResolvedValue(true);
+    const client = api({ session, watch: callback => { onAuthChange = callback; return () => {}; }, loginWithGoogle: vi.fn(async () => {}), isAdmin: vi.fn(async () => allowed) });
+    render(<App api={client} />); const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Continuar con Google' }));
+    expect(client.isAdmin).not.toHaveBeenCalled();
+    expect(client.listUsers).not.toHaveBeenCalled();
+    await act(async () => onAuthChange());
+    if (allowed) await screen.findByRole('heading', { name: 'Usuarios' });
+    else await screen.findByText('Esta cuenta no tiene acceso');
+    expect(client.isAdmin).toHaveBeenCalledTimes(1);
+    if (allowed) expect(client.listUsers).toHaveBeenCalledTimes(1);
+    else expect(client.listUsers).not.toHaveBeenCalled();
+  });
+  it('shows a failed callback on the login form instead of trapping the user on verification', async () => {
+    const client = api({ session: vi.fn().mockRejectedValue({ code: 'google_sign_in_failed', message: 'private-fixture' }), loginWithGoogle: vi.fn(async () => {}) });
+    render(<App api={client} />);
+    expect(await screen.findByRole('alert')).toHaveTextContent('No pudimos completar el acceso con Google.');
+    expect(screen.getByRole('button', { name: 'Continuar con Google' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Iniciar sesión' })).toBeEnabled();
+    expect(client.isAdmin).not.toHaveBeenCalled(); expect(client.listUsers).not.toHaveBeenCalled();
   });
 });

@@ -24,7 +24,10 @@ export default function App({ api }: { api: AdminApi | null }) {
       const allowed = loggedIn && await api.isAdmin();
       if (current === generation.current) setAccess(loggedIn ? (allowed ? 'admin' : 'denied') : 'guest');
     } catch (cause) {
-      if (current === generation.current) { setError(errorMessage(cause)); setAccess('error'); }
+      if (current === generation.current) {
+        setError(errorMessage(cause));
+        setAccess(typeof cause === 'object' && cause !== null && 'code' in cause && cause.code === 'google_sign_in_failed' ? 'guest' : 'error');
+      }
     }
   }, [api]);
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function App({ api }: { api: AdminApi | null }) {
     try { await api?.logout(); await refresh(); } catch (cause) { setError(errorMessage(cause)); }
   }
   if (!api) return <main className="access-page"><Brand /><section className="access-card"><p className="eyebrow">Entorno de desarrollo</p><h1>Conecta el panel a Dopmi</h1><p>Falta configurar la conexión con Supabase. Encontrarás los pasos en la guía de desarrollo del proyecto.</p><p className="muted">Este panel solo consulta usuarios reales del entorno configurado.</p></section></main>;
-  if (access === 'guest') return <Login api={api} onLogin={refresh} />;
+  if (access === 'guest') return <Login api={api} onLogin={refresh} initialError={error} />;
   if (access !== 'admin') return <main className="access-page"><Brand /><section className="access-card">
     <p className="eyebrow">Acceso del equipo</p><h1>{access === 'loading' ? 'Comprobando tu acceso…' : access === 'denied' ? 'Esta cuenta no tiene acceso' : 'No pudimos verificar tu acceso'}</h1>
     {access === 'denied' && <p>El panel está disponible para integrantes autorizados del equipo Dopmi. Puedes usar esta cuenta en la app móvil.</p>}
@@ -50,19 +53,46 @@ export default function App({ api }: { api: AdminApi | null }) {
   return <div className="admin-shell"><aside className="sidebar"><Brand /><p className="nav-label">OPERACIÓN</p><nav className="admin-navigation"><button className="nav-item" aria-current={section === 'users' ? 'page' : undefined} onClick={() => setSection('users')}>Usuarios</button><button className="nav-item" aria-current={section === 'adoptions' ? 'page' : undefined} onClick={() => setSection('adoptions')}>Adopciones</button><button className="nav-item" aria-current={section === 'rescues' ? 'page' : undefined} onClick={() => setSection('rescues')}>Rescates y gastos</button><button className="nav-item" aria-current={section === 'contributions' ? 'page' : undefined} onClick={() => setSection('contributions')}>Aportes</button><button className="nav-item" aria-current={section === 'moderation' ? 'page' : undefined} onClick={() => setSection('moderation')}>Moderación</button>{api.storeCatalog && <button className="nav-item" aria-current={section === 'store' ? 'page' : undefined} onClick={() => setSection('store')}>Tienda</button>}{api.videoModeration && <button className="nav-item" aria-current={section === 'videos' ? 'page' : undefined} onClick={() => setSection('videos')}>Videos</button>}</nav><div className="sidebar-bottom"><span className="status-dot" /> Conexión activa<button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div></aside><main className="workspace">{error && <Notice text={error} />}{section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues api={api} /> : section === 'contributions' ? <Contributions api={api} /> : section === 'store' && api.storeCatalog ? <StoreCatalog api={api.storeCatalog} /> : section === 'videos' && api.videoModeration ? <VideoModeration api={api.videoModeration} /> : <ModerationQueues api={api}/>}</main></div>;
 }
 
-function Login({ api, onLogin }: { api: AdminApi; onLogin: () => Promise<void> }) {
-  const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+function Login({ api, onLogin, initialError }: { api: AdminApi; onLogin: () => Promise<void>; initialError: string }) {
+  const [busy, setBusy] = useState<'password' | 'google' | null>(null); const [error, setError] = useState(initialError);
+  const googleAttempt = useRef<symbol | null>(null);
+  useEffect(() => {
+    function returned(event: PageTransitionEvent) {
+      if (!event.persisted || !googleAttempt.current) return;
+      googleAttempt.current = null;
+      setBusy(current => current === 'google' ? null : current);
+    }
+    window.addEventListener('pageshow', returned);
+    return () => { googleAttempt.current = null; window.removeEventListener('pageshow', returned); };
+  }, []);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (busy) return;
     const fields = new FormData(event.currentTarget);
-    setBusy(true); setError('');
+    setBusy('password'); setError('');
     try { await api.login(String(fields.get('email')).trim(), String(fields.get('password'))); await onLogin(); }
-    catch (cause) { setError(errorMessage(cause)); } finally { setBusy(false); }
+    catch (cause) { setError(errorMessage(cause)); } finally { setBusy(null); }
+  }
+  async function googleLogin() {
+    if (busy || googleAttempt.current || !api.loginWithGoogle) return;
+    const attempt = Symbol();
+    googleAttempt.current = attempt;
+    setBusy('google'); setError('');
+    try { await api.loginWithGoogle(); }
+    catch {
+      if (googleAttempt.current === attempt) {
+        googleAttempt.current = null;
+        setError(errorMessage({ code: 'google_sign_in_failed' }));
+        setBusy(null);
+      }
+    }
+    // A resolved OAuth request only starts navigation. Keep the latch until this
+    // page unloads, or pageshow confirms a browser Back return from the provider.
   }
   return <main className="access-page"><Brand /><section className="access-card"><p className="eyebrow">Equipo Dopmi</p><h1>Cuidamos cada paso.</h1><p>Ingresa para consultar las cuentas de la comunidad.</p><form onSubmit={submit}>
     <label>Correo electrónico<input name="email" type="email" autoComplete="username" required maxLength={254} /></label>
     <label>Contraseña<input name="password" type="password" autoComplete="current-password" required /></label>
-    {error && <Notice text={error} />}<button disabled={busy}>{busy ? 'Ingresando…' : 'Iniciar sesión'}</button>
+    {error && <Notice text={error} />}<button disabled={busy !== null}>{busy === 'password' ? 'Ingresando…' : 'Iniciar sesión'}</button>
+    {api.loginWithGoogle && <button type="button" className="secondary" disabled={busy !== null} onClick={() => void googleLogin()}>{busy === 'google' ? 'Conectando con Google…' : 'Continuar con Google'}</button>}
   </form><p className="access-note">Acceso exclusivo para cuentas autorizadas. Puedes recuperar tu contraseña desde la app Dopmi.</p></section></main>;
 }
 

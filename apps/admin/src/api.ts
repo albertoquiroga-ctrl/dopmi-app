@@ -63,6 +63,7 @@ export type AdminApi = {
   session: () => Promise<boolean>;
   watch: (onChange: () => void) => () => void;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle?: () => Promise<void>;
   logout: () => Promise<void>;
   isAdmin: () => Promise<boolean>;
   listUsers: (search: string, page: number) => Promise<UserPage>;
@@ -86,6 +87,27 @@ export type AdminApi = {
 };
 
 export function createAdminApi(client: SupabaseClient, environment: AdminEnvironment = 'test'): AdminApi {
+  const callbackKeys = ['code', 'flow_id', 'error', 'error_code', 'error_description', 'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token'];
+  const arrivedFromAuth = typeof window !== 'undefined' && (() => {
+    const url = new URL(window.location.href);
+    const fragment = new URLSearchParams(url.hash.slice(1));
+    return callbackKeys.some(key => url.searchParams.has(key) || fragment.has(key));
+  })();
+  let callbackHandled = !arrivedFromAuth;
+  let callbackSession: Promise<boolean> | undefined;
+  function callbackFailure() { return Object.assign(new Error('Google sign-in failed'), { code: 'google_sign_in_failed' }); }
+  async function restoreCallbackSession(): Promise<boolean> {
+    // Share initialization across React/auth refreshes. The SDK consumes the PKCE
+    // code before we remove callback parameters, including failed callback URLs.
+    return callbackSession ??= (async () => {
+      try {
+        await client.auth.initialize();
+        const { data, error } = await client.auth.getSession();
+        return !error && !!data.session;
+      } catch { return false; }
+      finally { window.history.replaceState(window.history.state, '', new URL('/', window.location.origin)); }
+    })();
+  }
   return {
     environment,
     storeCatalog: createStoreCatalogApi(client),
@@ -105,10 +127,24 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     async listRescuerProfiles(status,page) { const {data,error}=await client.rpc('dopmi_admin_rescuer_profiles',{status_filter:status,page_number:page}); if(error) throw error; return data; },
     async reviewRescuerProfile(profile,decision,feedback,fieldFeedback = {}) { validateProfileFieldFeedback(fieldFeedback); const {data,error}=await client.rpc('dopmi_review_rescuer_profile_v2',{profile_owner:profile.owner_id,expected_version:profile.version,decision,feedback,field_feedback:fieldFeedback}); if(error) throw error; return data; },
     async profileAvatarUrl(path) { const {data,error}=await client.storage.from('dopmi-rescuer-profile-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
-    async session() { const { data, error } = await client.auth.getSession(); if (error) throw error; return !!data.session; },
+    async session() {
+      if (!callbackHandled) {
+        if (!await restoreCallbackSession()) throw callbackFailure();
+        callbackHandled = true;
+        return true;
+      }
+      const { data, error } = await client.auth.getSession(); if (error) throw error; return !!data.session;
+    },
     watch(onChange) { const { data } = client.auth.onAuthStateChange(() => onChange()); return () => data.subscription.unsubscribe(); },
-    async login(email, password) { const { error } = await client.auth.signInWithPassword({ email, password }); if (error) throw error; },
-    async logout() { const { error } = await client.auth.signOut({ scope: 'local' }); if (error) throw error; },
+    async login(email, password) { callbackHandled = true; const { error } = await client.auth.signInWithPassword({ email, password }); if (error) throw error; },
+    loginWithGoogle: environment === 'production' ? async () => {
+      callbackHandled = true;
+      try {
+        const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: new URL('/', window.location.origin).href } });
+        if (error) throw callbackFailure();
+      } catch { throw callbackFailure(); }
+    } : undefined,
+    async logout() { callbackHandled = true; const { error } = await client.auth.signOut({ scope: 'local' }); if (error) throw error; },
     async isAdmin() { const { data, error } = await client.rpc('dopmi_is_admin'); if (error) throw error; return data === true; },
     async listUsers(search, page) {
       const { data, error } = await client.rpc('admin_list_users', { search_text: search, page_number: page, page_size: 20 });
@@ -157,7 +193,7 @@ export function configuredApi(): AdminApi | null {
       const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
       if (payload.role !== 'anon' || (local ? payload.ref != null : payload.ref !== project)) return null;
     }
-    return createAdminApi(createClient(parsed.origin, key), environment);
+    return createAdminApi(createClient(parsed.origin, key, { auth: { flowType: 'pkce', detectSessionInUrl: true } }), environment);
   } catch { return null; }
 }
 
@@ -166,6 +202,7 @@ export function errorMessage(error: unknown): string {
   if (code === 'profile_field_feedback_limit') return 'Reduce los comentarios por campo a un total de 5000 caracteres.';
   if (code === 'invalid_credentials') return 'Revisa tu correo y contraseña.';
   if (code === 'email_not_confirmed') return 'Confirma tu correo antes de iniciar sesión.';
+  if (code === 'google_sign_in_failed') return 'No pudimos completar el acceso con Google. Puedes intentarlo de nuevo o usar tu correo y contraseña.';
   if (code === '42501') return 'Tu cuenta no tiene acceso administrativo. Vuelve a iniciar sesión o contacta al responsable.';
   if (code === '40001') return 'La publicación cambió. Cierra el detalle y actualiza la lista antes de revisarla otra vez.';
   if (code === '22023') return 'La decisión no está disponible. Revisa el estado y escribe un motivo de 5 a 2000 caracteres.';

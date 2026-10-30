@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import { configuredApi, createAdminApi, type RescuerPublicProfile } from './api';
 
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => { vi.unstubAllEnvs(); window.history.replaceState({}, '', '/'); });
 
 const testProject = 'ohqxranynackjignryep';
 const productionProject = 'ysaoeuidcvgtlmphmeyb';
@@ -16,7 +16,9 @@ function configure(environment: string | undefined, url: string, key = 'sb_publi
 
 test('configuration defaults to TEST and requires explicit production with its registered host', () => {
   expect(configure(undefined, `https://${testProject}.supabase.co`)?.environment).toBe('test');
+  expect(configure('test', `https://${testProject}.supabase.co`)?.loginWithGoogle).toBeUndefined();
   expect(configure('production', `https://${productionProject}.supabase.co`, anonKey(productionProject))?.environment).toBe('production');
+  expect(configure('production', `https://${productionProject}.supabase.co`, anonKey(productionProject))?.loginWithGoogle).toBeTypeOf('function');
   expect(createAdminApi({} as Parameters<typeof createAdminApi>[0]).environment).toBe('test');
 });
 
@@ -85,4 +87,61 @@ test('profile field feedback checks PostgreSQL aggregate escaped JSON size befor
   expect(rpc).not.toHaveBeenCalled();
   await api.reviewRescuerProfile!(profile, 'changes_requested', 'Revisa', { bio: '"'.repeat(500) });
   expect(rpc).toHaveBeenCalledTimes(1);
+});
+
+test('Google sign-in always returns to this origin root, never an input redirect', async () => {
+  window.history.replaceState({}, '', '/?next=https://untrusted.example/path#users');
+  const signInWithOAuth = vi.fn().mockResolvedValue({ data: {}, error: null });
+  const api = createAdminApi({ auth: { signInWithOAuth } } as unknown as Parameters<typeof createAdminApi>[0], 'production');
+  await api.loginWithGoogle!();
+  expect(signInWithOAuth).toHaveBeenCalledWith({ provider: 'google', options: { redirectTo: `${window.location.origin}/` } });
+});
+
+test('Google initiation errors are safe application errors, not provider details', async () => {
+  const signInWithOAuth = vi.fn().mockResolvedValue({ error: { message: 'provider_token=private-fixture', code: 'provider_disabled' } });
+  const api = createAdminApi({ auth: { signInWithOAuth } } as unknown as Parameters<typeof createAdminApi>[0], 'production');
+  await expect(api.loginWithGoogle!()).rejects.toMatchObject({ code: 'google_sign_in_failed', message: 'Google sign-in failed' });
+});
+
+test('TEST and default admin clients cannot initiate Google OAuth', () => {
+  const signInWithOAuth = vi.fn();
+  const client = { auth: { signInWithOAuth } } as unknown as Parameters<typeof createAdminApi>[0];
+  expect(createAdminApi(client).loginWithGoogle).toBeUndefined();
+  expect(createAdminApi(client, 'test').loginWithGoogle).toBeUndefined();
+  expect(signInWithOAuth).not.toHaveBeenCalled();
+});
+
+test('real SDK PKCE callback exchanges once, clears the URL and still asks the server for membership', async () => {
+  window.history.replaceState({}, '', '/?code=fixture-code&next=https://untrusted.example/#users');
+  const storageValues = new Map([['admin-callback-fixture-code-verifier', JSON.stringify('fixture-verifier')]]);
+  const storage = { getItem: (key: string) => storageValues.get(key) ?? null, setItem: (key: string, value: string) => { storageValues.set(key, value); }, removeItem: (key: string) => { storageValues.delete(key); } };
+  const accessToken = `e30.${btoa(JSON.stringify({ sub: 'fixture-user', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + 3600 }))}.fixture`;
+  const fetcher = vi.fn(async (input: RequestInfo | URL) => {
+    const url = String(input);
+    if (url.includes('/auth/v1/token')) return new Response(JSON.stringify({ access_token: accessToken, refresh_token: 'fixture-refresh', expires_in: 3600, token_type: 'bearer', user: { id: 'fixture-user', aud: 'authenticated', created_at: '2026-10-29T00:00:00Z', app_metadata: { provider: 'google' }, user_metadata: { is_admin: true } } }), { headers: { 'Content-Type': 'application/json' } });
+    if (url.includes('/rest/v1/rpc/dopmi_is_admin')) return new Response('false', { headers: { 'Content-Type': 'application/json' } });
+    throw new Error('Unexpected test request');
+  });
+  const client = createClient('http://127.0.0.1:54321', 'test-key', { global: { fetch: fetcher }, auth: { flowType: 'pkce', storage, storageKey: 'admin-callback-fixture', autoRefreshToken: false, detectSessionInUrl: true } });
+  const api = createAdminApi(client, 'production');
+  expect(await api.session()).toBe(true);
+  expect(await api.isAdmin()).toBe(false);
+  const tokenCalls = fetcher.mock.calls.filter(([url]) => String(url).includes('/auth/v1/token'));
+  expect(tokenCalls).toHaveLength(1);
+  const [, request] = tokenCalls[0] as unknown as [string, RequestInit];
+  expect(JSON.parse(request.body as string)).toMatchObject({ auth_code: 'fixture-code', code_verifier: 'fixture-verifier' });
+  expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rest/v1/rpc/dopmi_is_admin'))).toBe(true);
+  expect(window.location.href).toBe(`${window.location.origin}/`);
+});
+
+test('failed OAuth callback clears secrets and remains retryable without accepting URL claims', async () => {
+  window.history.replaceState({}, '', '/?error=access_denied&error_description=private-fixture#provider_token=private-fixture');
+  const client = createClient('http://127.0.0.1:54321', 'test-key', { auth: { flowType: 'pkce', storageKey: 'admin-error-fixture', persistSession: false, autoRefreshToken: false } });
+  const api = createAdminApi(client, 'production');
+  await expect(api.session()).rejects.toMatchObject({ code: 'google_sign_in_failed' });
+  expect(window.location.href).toBe(`${window.location.origin}/`);
+  const passwordLogin = vi.spyOn(client.auth, 'signInWithPassword').mockRejectedValue({ code: 'invalid_credentials' });
+  await expect(api.login('fixture@example.test', 'private-fixture')).rejects.toMatchObject({ code: 'invalid_credentials' });
+  expect(passwordLogin).toHaveBeenCalledTimes(1);
+  expect(await api.session()).toBe(false);
 });
