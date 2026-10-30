@@ -66,6 +66,15 @@ export async function verifySignature(body, header, secret, now = Date.now(), { 
 function withinRetryWindow(created) {
   if (!Number.isFinite(Date.parse(created)) || Date.now() - Date.parse(created) > 23 * 3600000) throw new PaymentError('manual_reconciliation_required');
 }
+function connectCreationKey(account, actor) {
+  const legacy = `dopmi-account-${actor}`;
+  if (account.create_idempotency_key == null) return legacy;
+  const prefix = `${legacy}-retry-`, key = account.create_idempotency_key;
+  if (account.owner_id !== actor || typeof key !== 'string' || !key.startsWith(prefix) ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(key.slice(prefix.length)))
+    throw new PaymentError('connect_creation_recovery_invalid');
+  return key;
+}
 function requireConnectEventIdentity(eventId, accountId) {
   if (typeof eventId !== 'string' || eventId.length > 160 || !/^evt_[A-Za-z0-9]+$/.test(eventId) ||
       typeof accountId !== 'string' || accountId.length > 160 || !/^acct_[A-Za-z0-9]+$/.test(accountId))
@@ -95,9 +104,10 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
       if (action === 'status') return { ready: false, verified: account.verified, transfers_enabled: false, payouts_enabled: false, payouts: [] };
       account = await rpc('connect_begin', { actor });
       withinRetryWindow(account.create_started_at);
+      const creationKey = connectCreationKey(account, actor);
       const created = await stripe('accounts', { type: 'express', country: 'MX',
         'capabilities[transfers][requested]': true, 'metadata[dopmi_owner]': actor,
-        'business_profile[product_description]': 'Reembolso de gastos de rescate animal revisados por Dopmi' }, `dopmi-account-${actor}`);
+        'business_profile[product_description]': 'Reembolso de gastos de rescate animal revisados por Dopmi' }, creationKey);
       account = await rpc('connect_save', { actor, account_id: created.id, transfers_enabled: false, payouts_enabled: false, details_submitted: false });
     }
     const current = await refreshAccount(account);
