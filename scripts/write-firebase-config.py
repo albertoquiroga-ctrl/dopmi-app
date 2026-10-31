@@ -13,9 +13,12 @@ PACKAGE = "com.mycompany.dopmi"
 TEST_PROJECT = "dopmi-e3b6a"
 TEST_PROJECT_NUMBER = "623928073757"
 TEST_ANDROID_APP = "1:623928073757:android:d2022415cbf2751e41b0f4"
-# Android package/signature identity is shared; this Web client is dedicated to PROD.
+# Google registrations are shared; this Web client is dedicated to PROD.
 PRODUCTION_ANDROID_GOOGLE_WEB_CLIENT_ID = (
     "623928073757-t777q7q3nn8fkc40e6hnsqdsb31foq7c.apps.googleusercontent.com"
+)
+PRODUCTION_GOOGLE_IOS_CLIENT_ID = (
+    "623928073757-439do5al810qu3vd717rgdmphtnrsclh.apps.googleusercontent.com"
 )
 
 
@@ -74,11 +77,18 @@ def google_ios_scheme(env, ios_value, production_beta=False, platform="both"):
         if env.get("GOOGLE_SERVER_CLIENT_ID", "").strip() != PRODUCTION_ANDROID_GOOGLE_WEB_CLIENT_ID:
             raise ValueError("Production Android Google sign-in requires its registered production Web client ID.")
         return None
+    # Only the registered PROD pair may use shared Google identity while the
+    # Firebase measurement number and app pins above remain on their own project.
+    oauth_number = number
+    if (production_beta and platform in ("ios", "both")
+            and env.get("GOOGLE_SERVER_CLIENT_ID", "").strip() == PRODUCTION_ANDROID_GOOGLE_WEB_CLIENT_ID
+            and env.get("GOOGLE_IOS_CLIENT_ID", "").strip() == PRODUCTION_GOOGLE_IOS_CLIENT_ID):
+        oauth_number = TEST_PROJECT_NUMBER
     clients = []
     names = ("GOOGLE_SERVER_CLIENT_ID",) if platform == "android" else ("GOOGLE_SERVER_CLIENT_ID", "GOOGLE_IOS_CLIENT_ID")
     for name in names:
         value = env.get(name, "").strip()
-        if not re.fullmatch(rf"{re.escape(number)}-[A-Za-z0-9_-]+\.apps\.googleusercontent\.com", value):
+        if not re.fullmatch(rf"{re.escape(oauth_number)}-[A-Za-z0-9_-]+\.apps\.googleusercontent\.com", value):
             raise ValueError("Google sign-in requires Web and iOS client IDs for the selected profile.")
         clients.append(value)
     if platform == "android":

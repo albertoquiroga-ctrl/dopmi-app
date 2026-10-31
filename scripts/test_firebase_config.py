@@ -45,6 +45,18 @@ class FirebaseConfigTests(unittest.TestCase):
                 "GOOGLE_SERVER_CLIENT_ID": "623928073757-t777q7q3nn8fkc40e6hnsqdsb31foq7c.apps.googleusercontent.com",
                 "GOOGLE_IOS_CLIENT_ID": ""}
 
+    def production_ios_google_env(self, declared_identity=False):
+        env = self.production_android_google_env()
+        ios = plistlib.loads(base64.b64decode(env["FIREBASE_PRODUCTION_IOS_CONFIG_BASE64"]))
+        ios["GOOGLE_APP_ID"] = "1:782231363420:ios:fe262c3231816d5e376b99"
+        client = "623928073757-439do5al810qu3vd717rgdmphtnrsclh.apps.googleusercontent.com"
+        if declared_identity:
+            ios["CLIENT_ID"] = client
+            ios["REVERSED_CLIENT_ID"] = "com.googleusercontent.apps.623928073757-439do5al810qu3vd717rgdmphtnrsclh"
+        return {**env, "GOOGLE_IOS_CLIENT_ID": client,
+                "FIREBASE_PRODUCTION_IOS_APP_ID": ios["GOOGLE_APP_ID"],
+                "FIREBASE_PRODUCTION_IOS_CONFIG_BASE64": base64.b64encode(plistlib.dumps(ios)).decode()}
+
     def files(self, production=False):
         project = "dopmi-production" if production else config.TEST_PROJECT
         number = "934560123456" if production else config.TEST_PROJECT_NUMBER
@@ -307,6 +319,104 @@ class FirebaseConfigTests(unittest.TestCase):
         for platform in ("ios", "both"):
             with self.subTest(platform=platform), self.assertRaises(ValueError):
                 config.build_config(env, production_beta=True, platform=platform)
+
+    def test_production_ios_google_preserves_measurement_and_derives_registered_callback(self):
+        for platform in ("ios", "both"):
+            for declared_identity in (False, True):
+                env = self.production_ios_google_env(declared_identity)
+                with self.subTest(platform=platform, declared_identity=declared_identity):
+                    android, ios = config.build_config(env, production_beta=True, platform=platform)
+                    self.assertEqual(android, base64.b64decode(env["FIREBASE_PRODUCTION_ANDROID_CONFIG_BASE64"]))
+                    self.assertEqual(ios, base64.b64decode(env["FIREBASE_PRODUCTION_IOS_CONFIG_BASE64"]))
+                    measurement = plistlib.loads(ios)
+                    self.assertEqual(measurement["PROJECT_ID"], "dopmi-production")
+                    self.assertEqual(measurement["GCM_SENDER_ID"], "782231363420")
+                    self.assertEqual(measurement["GOOGLE_APP_ID"], "1:782231363420:ios:fe262c3231816d5e376b99")
+                    self.assertEqual("CLIENT_ID" in measurement, declared_identity)
+                    original = self.info()
+                    original["CFBundleURLTypes"].append({"CFBundleURLSchemes": [
+                        "com.googleusercontent.apps.623928073757-old", "unrelated-preserved-callback"]})
+                    result = plistlib.loads(config.build_ios_info(env, plistlib.dumps(original), ios, True))
+                    expected = self.info()
+                    expected["CFBundleURLTypes"].extend([
+                        {"CFBundleURLSchemes": ["unrelated-preserved-callback"]},
+                        {"CFBundleURLSchemes": ["com.googleusercontent.apps.623928073757-439do5al810qu3vd717rgdmphtnrsclh"]},
+                    ])
+                    self.assertEqual(result, expected)
+
+    def test_production_ios_google_rejects_unregistered_client_pairs(self):
+        bad = {
+            "GOOGLE_SERVER_CLIENT_ID": ["", "not-a-client-id",
+                "623928073757-sdrj0np47q7gj8rvnh2tvhltnb0oubje.apps.googleusercontent.com",
+                "623928073757-anotherweb.apps.googleusercontent.com", "782231363420-web.apps.googleusercontent.com"],
+            "GOOGLE_IOS_CLIENT_ID": ["", "not-a-client-id",
+                "623928073757-anotherios.apps.googleusercontent.com", "782231363420-ios.apps.googleusercontent.com"],
+        }
+        for platform in ("ios", "both"):
+            for name, values in bad.items():
+                for value in values:
+                    env = {**self.production_ios_google_env(), name: value}
+                    with self.subTest(platform=platform, name=name, value=value), self.assertRaises(ValueError):
+                        config.build_config(env, production_beta=True, platform=platform)
+
+    def test_production_ios_google_rejects_crossed_measurement_pins_and_metadata(self):
+        env = self.production_ios_google_env(declared_identity=True)
+        bad_ios = {
+            "PROJECT_ID": "another-production", "BUNDLE_ID": "com.example.other",
+            "GCM_SENDER_ID": "623928073757", "GOOGLE_APP_ID": "1:623928073757:ios:fe262c3231816d5e376b99",
+            "CLIENT_ID": "623928073757-anotherios.apps.googleusercontent.com",
+            "REVERSED_CLIENT_ID": "com.googleusercontent.apps.782231363420-ios",
+        }
+        bad_envs = {}
+        for key, value in bad_ios.items():
+            ios = plistlib.loads(base64.b64decode(env["FIREBASE_PRODUCTION_IOS_CONFIG_BASE64"]))
+            ios[key] = value
+            bad_envs[key] = {**env, "FIREBASE_PRODUCTION_IOS_CONFIG_BASE64": base64.b64encode(plistlib.dumps(ios)).decode()}
+        for name, value in (("FIREBASE_PRODUCTION_PROJECT_ID", "another-production"),
+                            ("FIREBASE_PRODUCTION_IOS_APP_ID", "1:782231363420:ios:0123456789abcdef012345"),
+                            ("FIREBASE_PRODUCTION_ANDROID_APP_ID", "1:782231363420:android:0123456789abcdef012345")):
+            bad_envs[name] = {**env, name: value}
+        android = json.loads(base64.b64decode(env["FIREBASE_PRODUCTION_ANDROID_CONFIG_BASE64"]))
+        android["project_info"]["project_number"] = "623928073757"
+        bad_envs["android_number"] = {**env, "FIREBASE_PRODUCTION_ANDROID_CONFIG_BASE64": base64.b64encode(json.dumps(android).encode()).decode()}
+        for platform in ("ios", "both"):
+            for target, bad in bad_envs.items():
+                with self.subTest(platform=platform, target=target), self.assertRaises(ValueError):
+                    config.build_config(bad, production_beta=True, platform=platform)
+
+    def test_main_shared_google_ios_validates_before_writing_unchanged_firebase_configs(self):
+        for platform in ("ios", "both"):
+            for invalid in (False, True):
+                with self.subTest(platform=platform, invalid=invalid), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    info = root / "ios/Runner/Info.plist"
+                    info.parent.mkdir(parents=True)
+                    original = plistlib.dumps(self.info())
+                    info.write_bytes(original)
+                    paths = (root / "android/app/google-services.json", root / "ios/Runner/GoogleService-Info.plist")
+                    for path in paths:
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_text("stale")
+                    env = self.production_ios_google_env()
+                    if invalid:
+                        env["GOOGLE_IOS_CLIENT_ID"] = "623928073757-anotherios.apps.googleusercontent.com"
+                    output = io.StringIO()
+                    with patch.object(config, "ROOT", root), patch.dict(os.environ, env, clear=True), contextlib.redirect_stdout(output):
+                        if invalid:
+                            with self.assertRaises(SystemExit):
+                                config.main(["--production-beta", "--platform", platform])
+                        else:
+                            config.main(["--production-beta", "--platform", platform])
+                    if invalid:
+                        self.assertTrue(all(not path.exists() for path in paths))
+                        self.assertEqual(info.read_bytes(), original)
+                    else:
+                        self.assertEqual(tuple(path.read_bytes() for path in paths), tuple(
+                            base64.b64decode(env[f"FIREBASE_PRODUCTION_{name}_CONFIG_BASE64"])
+                            for name in ("ANDROID", "IOS")))
+                        self.assertEqual(plistlib.loads(info.read_bytes())["CFBundleURLTypes"][-1], {
+                            "CFBundleURLSchemes": ["com.googleusercontent.apps.623928073757-439do5al810qu3vd717rgdmphtnrsclh"]})
+                        self.assertNotIn("synthetic-client-value", output.getvalue())
 
     def test_google_test_profile_rejects_coordinated_foreign_project_metadata(self):
         android, ios = self.files()
