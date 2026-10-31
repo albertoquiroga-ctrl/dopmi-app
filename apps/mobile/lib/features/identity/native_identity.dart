@@ -24,10 +24,42 @@ abstract interface class NativeIdentity {
   Future<NativeIdentityCredential?> authenticate(String provider);
 }
 
+typedef _GoogleConfiguration = ({
+  TargetPlatform platform,
+  String serverClientId,
+  String? clientId,
+});
+
+class _GoogleSession {
+  _GoogleSession(this.configuration)
+    : rawNonce = configuration.platform == TargetPlatform.iOS
+          ? _newNonce()
+          : null {
+    initialized = GoogleSignIn.instance.initialize(
+      serverClientId: configuration.serverClientId,
+      clientId: configuration.clientId,
+      nonce: rawNonce == null
+          ? null
+          : sha256.convert(utf8.encode(rawNonce!)).toString(),
+    );
+  }
+
+  final _GoogleConfiguration configuration;
+  // google_sign_in 7 initializes exactly once. This pair lasts for that SDK
+  // cycle (including cancellations/retries), rather than one login attempt.
+  final String? rawNonce;
+  late final Future<void> initialized;
+
+  static String _newNonce() {
+    final random = Random.secure();
+    return base64Url.encode(List.generate(32, (_) => random.nextInt(256)));
+  }
+}
+
 class PlatformNativeIdentity implements NativeIdentity {
   PlatformNativeIdentity(this.config);
   final AppConfig config;
-  Future<void>? _googleInitialization;
+  static _GoogleSession? _googleSession;
   static const _googleScopes = <String>[
     'openid',
     'https://www.googleapis.com/auth/userinfo.email',
@@ -49,18 +81,27 @@ class PlatformNativeIdentity implements NativeIdentity {
   Future<NativeIdentityCredential?> authenticate(String provider) async {
     if (!supports(provider)) throw StateError('provider_not_configured');
     if (provider == 'google') {
+      final platform = defaultTargetPlatform;
       if (config.googleServerClientId.isEmpty ||
-          (defaultTargetPlatform == TargetPlatform.iOS &&
+          (platform == TargetPlatform.iOS &&
               config.googleIosClientId.isEmpty)) {
         throw StateError('provider_not_configured');
       }
+      final configuration = (
+        platform: platform,
+        serverClientId: config.googleServerClientId,
+        clientId: platform == TargetPlatform.iOS
+            ? config.googleIosClientId
+            : null,
+      );
+      final session = _googleSession ??= _GoogleSession(configuration);
+      if (session.configuration != configuration) {
+        throw StateError('provider_configuration_changed');
+      }
+      // Keep initialization failures sticky; retrying initialize is undefined
+      // in the singleton SDK. Authentication must never bypass this barrier.
+      await session.initialized;
       try {
-        await (_googleInitialization ??= GoogleSignIn.instance.initialize(
-          serverClientId: config.googleServerClientId,
-          clientId: defaultTargetPlatform == TargetPlatform.iOS
-              ? config.googleIosClientId
-              : null,
-        ));
         final user = await GoogleSignIn.instance.authenticate(
           scopeHint: _googleScopes,
         );
@@ -74,6 +115,7 @@ class PlatformNativeIdentity implements NativeIdentity {
         return NativeIdentityCredential(
           idToken: token,
           accessToken: authorization.accessToken,
+          nonce: session.rawNonce,
         );
       } on GoogleSignInException catch (error) {
         if (error.code == GoogleSignInExceptionCode.canceled) return null;
