@@ -96,6 +96,9 @@ Deno.serve(async request => {
     // A previous attempt may have completed the database work but failed while
     // removing Auth. Retry that cleanup instead of treating the durable status
     // as proof that every session and identity has already been removed.
+    // Durable database evidence is required even for a legacy completed job.
+    // PostgreSQL repeats this guard on the actual Auth DELETE to close races.
+    await call('auth_cleanup');
     await db.auth.admin.signOut(token, 'global');
     const removed = await db.auth.admin.deleteUser(user.id, false);
     if (removed.error && !/not found/i.test(removed.error.message)) {
@@ -106,8 +109,6 @@ Deno.serve(async request => {
 
   try {
     let state = await call('request', { request_key: input.request_key });
-    if (state?.status === 'completado') return await removeAuthAccess(state);
-
     const credential = await db.rpc('dopmi_apple_credential_server', {
       operation: 'get', owner: user.id, apple_subject: null,
       request_hash: null, envelope: null,
@@ -123,6 +124,8 @@ Deno.serve(async request => {
       }
     }
 
+    if (state?.status === 'completado') return await removeAuthAccess(state);
+
     // Public presentation media and private drafts are dispensable. Rescue
     // evidence is intentionally excluded because it may substantiate payments.
     await removePrivateMedia(db, user.id);
@@ -132,7 +135,15 @@ Deno.serve(async request => {
     // Database authorization is already blocked. Global revocation closes all
     // refresh sessions before Auth is removed; the operation remains safe to retry.
     return await removeAuthAccess(state);
-  } catch {
+  } catch (error) {
+    const message = typeof error === 'object' && error !== null && 'message' in error
+      ? String(error.message) : '';
+    if (message === 'apple_reauthentication_required' || message === 'apple_revocation_required') {
+      return reply({ error: 'apple_reauthentication_required' }, 409);
+    }
+    if (message === 'apple_registration_pending') {
+      return reply({ error: 'apple_registration_pending' }, 409);
+    }
     try { await call('attention', { attention_code: 'procesamiento_incompleto' }); } catch { /* keep original failure */ }
     return reply({ error: 'deletion_unavailable' }, 503);
   }

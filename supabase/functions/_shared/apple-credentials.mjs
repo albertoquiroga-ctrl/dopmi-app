@@ -47,7 +47,13 @@ export function appleTokenApi({ clientId, clientSecret, fetcher = fetch }) {
         body: new URLSearchParams({ client_id: clientId, client_secret: await clientSecret(), ...parameters }),
       });
     } catch { throw new AppleCredentialError('apple_unavailable'); }
-    if (!response.ok) throw new AppleCredentialError('apple_unavailable');
+    if (!response.ok) {
+      const error = new AppleCredentialError('apple_unavailable');
+      // A definitive token rejection issued no grant. Network failures, 5xx
+      // and malformed successful responses leave issuance uncertain.
+      if (path === 'token' && [400, 401].includes(response.status)) error.noGrant = true;
+      throw error;
+    }
     return response;
   }
   return {
@@ -69,11 +75,18 @@ export function appleCredentialService({ store, api, cipher, verifyToken, hash }
       if (!actor?.id || !actor.appleSubject) throw new AppleCredentialError('apple_identity_required', 403);
       if (typeof code !== 'string' || !code || code.length > 4096 || typeof nonce !== 'string' || nonce.length < 32 || nonce.length > 256) throw new AppleCredentialError('invalid_request', 400);
       const requestHash = await hash(code);
-      await store.requireActive(actor.id, actor.appleSubject);
+      const intent = await store.requireActive(actor.id, actor.appleSubject, requestHash);
+      if (intent?.pending) throw new AppleCredentialError('apple_registration_pending', 409);
+      if (intent?.registered) return { registered: true };
       const previous = await store.get(actor.id);
-      if (previous?.request_hash === requestHash && previous.subject === actor.appleSubject) return { registered: true };
-      // Never overwrite a credential needed for deletion after account suspension.
-      const tokens = await api.exchange(code);
+      if (!previous?.pending_request_hash && previous?.request_hash === requestHash && previous.subject === actor.appleSubject) return { registered: true };
+      const cancel = () => store.cancelRegistration(actor.id, requestHash);
+      let tokens;
+      try { tokens = await api.exchange(code); }
+      catch (error) {
+        if (error?.noGrant === true) { try { await cancel(); } catch { /* Intent remains blocked. */ } }
+        throw new AppleCredentialError('apple_registration_incomplete');
+      }
       let envelope;
       try {
         await verifyToken(tokens.idToken, { subject: actor.appleSubject, nonce: await hash(nonce) });
@@ -81,7 +94,7 @@ export function appleCredentialService({ store, api, cipher, verifyToken, hash }
       } catch {
         // A consumed code cannot be exchanged again. Revoke the unpersisted grant;
         // tell the client to authenticate again instead of reporting false success.
-        try { await api.revoke(tokens.refreshToken); } catch { /* No secret logging. */ }
+        try { await api.revoke(tokens.refreshToken); await cancel(); } catch { /* Intent remains blocked. */ }
         throw new AppleCredentialError('apple_registration_incomplete');
       }
       try {
@@ -91,8 +104,8 @@ export function appleCredentialService({ store, api, cipher, verifyToken, hash }
         let persisted;
         try { persisted = await store.get(actor.id); }
         catch { throw new AppleCredentialError('apple_registration_incomplete'); }
-        if (persisted?.request_hash !== requestHash) {
-          try { await api.revoke(tokens.refreshToken); } catch { /* No secret logging. */ }
+        if (persisted?.request_hash !== requestHash || persisted?.pending_request_hash) {
+          try { await api.revoke(tokens.refreshToken); await cancel(); } catch { /* Intent remains blocked. */ }
           throw new AppleCredentialError('apple_registration_incomplete');
         }
       }
@@ -100,7 +113,8 @@ export function appleCredentialService({ store, api, cipher, verifyToken, hash }
     },
     async revoke(owner) {
       const current = await store.get(owner);
-      if (!current) return { revoked: true };
+      if (current?.pending_request_hash) throw new AppleCredentialError('apple_registration_pending', 409);
+      if (!current) return { revoked: false };
       const token = await cipher.open(owner, current.envelope);
       await api.revoke(token);
       // Compare-and-delete avoids removing a credential registered concurrently.

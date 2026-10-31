@@ -4,7 +4,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { PGlite } from '@electric-sql/pglite';
 
-let db, preserved;
+let db, preserved, preservedAfter;
 const rescuer = randomUUID(), caseId = randomUUID(), expense = randomUUID();
 const returnUrl = 'https://example.test/functions/v1/payment-return';
 const livePair = ['terms-live-2026-10-28', 'privacy-live-2026-10-28', true];
@@ -45,6 +45,7 @@ before(async () => {
   db = new PGlite();
   await db.exec(`create role anon; create role authenticated; create role service_role;
     create schema auth; create schema storage;
+    create table auth.identities(user_id uuid,provider text,provider_id text);
     create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',email_confirmed_at timestamptz,last_sign_in_at timestamptz,phone text,phone_confirmed_at timestamptz);
     create table auth.sessions(id uuid primary key,user_id uuid not null references auth.users(id) on delete cascade,not_after timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
@@ -65,6 +66,11 @@ before(async () => {
     }
     try { await db.exec(await readFile(new URL(file, directory), 'utf8')); }
     catch (error) { throw new Error(`Migration ${file}: ${error.code}: ${error.message}`); }
+    if (file === '20261029002921_production_financial_legal_admission.sql') {
+      preservedAfter = new Map();
+      for (const name of unchangedFunctions) preservedAfter.set(name,
+        (await db.query('select pg_get_functiondef($1::regprocedure) value', [name])).rows[0].value);
+    }
   }
   await db.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values($1,'financial-rescuer@example.test',now(),
     '{"display_name":"Refugio","terms_version":"terms-2026-10-17","privacy_version":"privacy-2026-10-17","adult_confirmed":true}')`, [rescuer]);
@@ -79,9 +85,11 @@ beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
 
 test('integrated finance patch retains shared identity, native receipt, cancellation, deletion and recurring collection definitions', async () => {
-  assert.ok(preserved);
+  assert.ok(preserved); assert.ok(preservedAfter);
+  // Compare the financial patch at its own boundary. Later additive migrations
+  // can deliberately strengthen account-deletion authorization.
   for (const [name, before] of preserved) assert.equal(
-    (await db.query('select pg_get_functiondef($1::regprocedure) value', [name])).rows[0].value, before, name);
+    preservedAfter.get(name), before, name);
 });
 
 async function seedPlan(id, gross = 2000) {

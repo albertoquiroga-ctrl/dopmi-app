@@ -15,7 +15,12 @@ export async function appleRuntime() {
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {auth:{persistSession:false}});
   const rpc = async (operation: string, owner: string, data: Record<string, unknown> = {}) => {
     const result = await db.rpc('dopmi_apple_credential_server', {operation, owner, ...data});
-    if (result.error) throw new AppleCredentialError('credential_unavailable');
+    if (result.error) {
+      const code = result.error.message;
+      if (code === 'apple_registration_pending') throw new AppleCredentialError(code,409);
+      if (code === 'apple_identity_required') throw new AppleCredentialError(code,403);
+      throw new AppleCredentialError('credential_unavailable');
+    }
     return result.data;
   };
   const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))), b => b.toString(16).padStart(2,'0')).join('');
@@ -28,9 +33,10 @@ export async function appleRuntime() {
     verifyToken: appleIdentityVerifier({jwtVerify, keys:jwks, audience:clientId}),
     store: {
       get: (owner: string) => rpc('get',owner),
-      requireActive: (owner: string, subject: string) => rpc('require_active',owner,{apple_subject:subject}),
+      requireActive: (owner: string, subject: string, requestHash: string) => rpc('require_active',owner,{apple_subject:subject,request_hash:requestHash}),
       save: (owner: string, row: {subject: string; request_hash: string; envelope: unknown}) => rpc('save',owner,{apple_subject:row.subject,request_hash:row.request_hash,envelope:row.envelope}),
       remove: (owner: string, requestHash: string) => rpc('remove',owner,{request_hash:requestHash}),
+      cancelRegistration: (owner: string, requestHash: string) => rpc('cancel_registration',owner,{request_hash:requestHash}),
     },
   });
   return {

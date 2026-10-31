@@ -563,7 +563,11 @@ class SupabaseIdentityRepository implements IdentityRepository {
 
 String identityError(Object error) {
   final code = error is AuthException
-      ? error.code
+      ? error.code ?? error.message
+      : error is FunctionException &&
+            error.details is Map &&
+            (error.details as Map)['error'] is String
+      ? (error.details as Map)['error'] as String
       : error is PostgrestException
       ? error.code
       : null;
@@ -585,6 +589,9 @@ String identityError(Object error) {
     'confirmation_required' => 'Escribe ELIMINAR para confirmar.',
     'deletion_unavailable' => 'No pudimos completar la eliminación. Tu acceso quedó bloqueado de forma segura; soporte puede revisar el proceso.',
     'apple_registration_incomplete' => 'Apple autorizó el acceso, pero no pudimos preparar su revocación segura. Inténtalo otra vez.',
+    'apple_reauthentication_required' =>
+      'Vuelve a iniciar sesión con Apple antes de eliminar tu cuenta.',
+    'apple_registration_pending' => 'La confirmación con Apple aún está pendiente. Espera a que termine; si continúa, contacta a soporte.',
     'reauthentication_canceled' => 'Cancelaste la confirmación de identidad.',
     'identity_mismatch' => 'El proveedor devolvió otra cuenta. Inicia sesión nuevamente con la cuenta vinculada.',
     _ => 'No pudimos completar la solicitud. Comprueba tu conexión e inténtalo de nuevo.',

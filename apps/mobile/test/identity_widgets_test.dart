@@ -20,6 +20,21 @@ import 'fake_account_photo_repository.dart';
 
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
 
+class DeletionCleanupIdentity extends FakeIdentityRepository {
+  DeletionCleanupIdentity({required this.cleanupPending});
+  final bool cleanupPending;
+  int deletionRequests = 0;
+
+  @override
+  Future<Map<String, dynamic>> requestAccountDeletion(String requestKey) async {
+    deletionRequests++;
+    return {
+      'status': 'completado',
+      if (cleanupPending) 'auth_cleanup': 'pending',
+    };
+  }
+}
+
 void main() {
   Future<ProviderContainer> start(
     WidgetTester tester,
@@ -504,6 +519,45 @@ void main() {
     expect(find.text('Eliminar mi cuenta'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  for (final cleanupPending in [true, false]) {
+    testWidgets(
+      'account deletion ${cleanupPending ? 'pending' : 'completed'} Auth cleanup reports its actual result',
+      (tester) async {
+        final repo = DeletionCleanupIdentity(cleanupPending: cleanupPending)
+          ..user = const Identity('one', 'ana@example.test', verified: true);
+        final container = await start(
+          tester,
+          repo,
+          initialLocation: '/account-privacy',
+        );
+        await tap(tester, 'Eliminar mi cuenta');
+        await tester.enterText(find.byType(TextField).at(0), 'Example1234');
+        await tester.enterText(find.byType(TextField).at(1), 'ELIMINAR');
+        await tap(tester, 'Eliminar cuenta');
+
+        expect(repo.deletionRequests, 1);
+        if (cleanupPending) {
+          expect(repo.current?.id, 'one');
+          expect(
+            container.read(routerProvider).state.uri.path,
+            '/account-privacy',
+          );
+          expect(
+            find.text(
+              'Tu cuenta quedó bloqueada y la eliminación requiere atención de soporte.',
+            ),
+            findsOneWidget,
+          );
+          expect(find.text('Tu cuenta fue eliminada.'), findsNothing);
+        } else {
+          expect(repo.current, isNull);
+          expect(container.read(routerProvider).state.uri.path, '/login');
+          expect(find.text('Tu cuenta fue eliminada.'), findsOneWidget);
+        }
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
   testWidgets('an outdated social profile must accept age and current terms', (
     tester,
   ) async {

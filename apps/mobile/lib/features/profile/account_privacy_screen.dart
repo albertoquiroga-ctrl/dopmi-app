@@ -49,8 +49,9 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
         : null;
     final password = TextEditingController();
     final confirmation = TextEditingController();
-    final approved = await showDialog<bool>(
+    final route = DialogRoute<bool>(
       context: context,
+      traversalEdgeBehavior: TraversalEdgeBehavior.closedLoop,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Eliminar mi cuenta'),
         content: SingleChildScrollView(
@@ -100,6 +101,18 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
         ],
       ),
     );
+    final approved = await Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(route);
+    // Keep the field controllers alive until the dialog's exit animation and
+    // overlay disposal complete, including an immediate confirmation/cancel.
+    await route.completed;
+    if (!mounted) {
+      password.dispose();
+      confirmation.dispose();
+      return;
+    }
     if (approved != true) {
       password.dispose();
       confirmation.dispose();
@@ -114,7 +127,8 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
         throw const AuthException('recent_sign_in_required');
       }
       final state = await repo.requestAccountDeletion(const Uuid().v4());
-      if (state['status'] == 'completado') {
+      if (state['status'] == 'completado' &&
+          state['auth_cleanup'] != 'pending') {
         await ref.read(identityControllerProvider).logout();
         if (mounted) context.go('/login', extra: 'Tu cuenta fue eliminada.');
       } else if (mounted) {

@@ -49,6 +49,49 @@ void main() {
   });
   tearDown(() async => client.dispose());
 
+  test('Apple deletion errors from Edge give a safe recovery action', () {
+    expect(
+      identityError(
+        FunctionException(
+          status: 409,
+          details: {'error': 'apple_reauthentication_required'},
+        ),
+      ),
+      'Vuelve a iniciar sesión con Apple antes de eliminar tu cuenta.',
+    );
+    expect(
+      identityError(
+        FunctionException(
+          status: 409,
+          details: {'error': 'apple_registration_pending'},
+        ),
+      ),
+      'La confirmación con Apple aún está pendiente. Espera a que termine; si continúa, contacta a soporte.',
+    );
+  });
+
+  test('Apple registration message survives an AuthException without code', () {
+    expect(
+      identityError(const AuthException('apple_registration_incomplete')),
+      'Apple autorizó el acceso, pero no pudimos preparar su revocación segura. Inténtalo otra vez.',
+    );
+  });
+
+  test('unknown Edge payloads never become visible authentication errors', () {
+    for (final details in [
+      {'error': 'sensitive-grant-value'},
+      {
+        'error': {'token': 'sensitive-grant-value'},
+      },
+      'sensitive-grant-value',
+    ]) {
+      expect(
+        identityError(FunctionException(status: 503, details: details)),
+        'No pudimos completar la solicitud. Comprueba tu conexión e inténtalo de nuevo.',
+      );
+    }
+  });
+
   test('unknown and disabled providers never launch authentication', () async {
     await expectLater(repository.oauth('facebook'), throwsStateError);
     await expectLater(repository.oauth('apple'), throwsStateError);
