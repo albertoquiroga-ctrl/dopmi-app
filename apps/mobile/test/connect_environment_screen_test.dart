@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -14,8 +16,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'fake_identity_repository.dart';
 import 'community_test.dart' show FakeCommunity;
 
+enum _SessionFlow { ready, rejected, leave }
+
 class _ConnectPayments extends PaymentRepository {
-  _ConnectPayments()
+  _ConnectPayments({this.sessionRejected = false, this.sessionGate})
     : super(
         SupabaseClient(
           'http://127.0.0.1:54321',
@@ -25,6 +29,8 @@ class _ConnectPayments extends PaymentRepository {
       );
   final actions = <String>[];
   final opened = <String>[];
+  final bool sessionRejected;
+  final Completer<Map<String, dynamic>>? sessionGate;
 
   @override
   Future<Map<String, dynamic>> action(
@@ -32,6 +38,10 @@ class _ConnectPayments extends PaymentRepository {
     Map<String, dynamic> fields = const {},
   ]) async {
     actions.add(action);
+    if (action == 'connect_session') {
+      if (sessionRejected) throw StateError('private_processor_detail');
+      if (sessionGate != null) return sessionGate!.future;
+    }
     return switch (action) {
       'connect_status' => {
         'verified': true,
@@ -65,6 +75,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 1,
       hosted: 0,
     ),
@@ -76,6 +87,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -87,6 +99,7 @@ void main() {
       web: true,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -98,6 +111,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -109,6 +123,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -120,6 +135,7 @@ void main() {
       web: false,
       enabled: false,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -131,6 +147,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -142,6 +159,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 1,
     ),
@@ -153,6 +171,7 @@ void main() {
       web: true,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 1,
     ),
@@ -164,6 +183,7 @@ void main() {
       web: false,
       enabled: true,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -175,6 +195,7 @@ void main() {
       web: false,
       enabled: false,
       fails: false,
+      sessionFlow: _SessionFlow.ready,
       native: 0,
       hosted: 0,
     ),
@@ -186,6 +207,7 @@ void main() {
       web: false,
       enabled: true,
       fails: true,
+      sessionFlow: _SessionFlow.ready,
       native: 1,
       hosted: 0,
     ),
@@ -197,7 +219,32 @@ void main() {
       web: false,
       enabled: true,
       fails: true,
+      sessionFlow: _SessionFlow.ready,
       native: 1,
+      hosted: 0,
+    ),
+    (
+      name: 'LIVE initial session rejected',
+      mode: 'production',
+      key: 'pk_live_synthetic',
+      platform: TargetPlatform.android,
+      web: false,
+      enabled: true,
+      fails: false,
+      sessionFlow: _SessionFlow.rejected,
+      native: 0,
+      hosted: 0,
+    ),
+    (
+      name: 'LIVE user leaves during initial request',
+      mode: 'production',
+      key: 'pk_live_synthetic',
+      platform: TargetPlatform.android,
+      web: false,
+      enabled: true,
+      fails: false,
+      sessionFlow: _SessionFlow.leave,
+      native: 0,
       hosted: 0,
     ),
   ];
@@ -209,7 +256,14 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       // The placeholder client starts a JSON isolate; keep its lifecycle in
       // real async rather than creating it in the widget test's FakeAsync zone.
-      final payments = (await tester.runAsync(() async => _ConnectPayments()))!;
+      final leaving = scenario.sessionFlow == _SessionFlow.leave;
+      final gate = leaving ? Completer<Map<String, dynamic>>() : null;
+      final payments = (await tester.runAsync(
+        () async => _ConnectPayments(
+          sessionRejected: scenario.sessionFlow == _SessionFlow.rejected,
+          sessionGate: gate,
+        ),
+      ))!;
       final identity = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
       final mode = PaymentEnvironment(
@@ -235,7 +289,13 @@ void main() {
         logout: () async {},
       );
       final router = GoRouter(
-        routes: [GoRoute(path: '/', builder: (_, _) => const ConnectScreen())],
+        routes: [
+          GoRoute(path: '/', builder: (_, _) => const ConnectScreen()),
+          GoRoute(
+            path: '/elsewhere',
+            builder: (_, _) => const Scaffold(body: Text('Otra pantalla')),
+          ),
+        ],
       );
       final container = ProviderContainer(
         overrides: [
@@ -271,20 +331,39 @@ void main() {
       );
       await tester.ensureVisible(find.text('Completar datos en Stripe'));
       await tester.tap(find.text('Completar datos en Stripe'));
+      if (leaving) {
+        await tester.pump();
+        router.go('/elsewhere');
+        await tester.pumpAndSettle();
+        gate!.complete({
+          'client_secret': 'synthetic_session_secret',
+          'expires_at': DateTime.now().millisecondsSinceEpoch ~/ 1000 + 300,
+        });
+      }
       await tester.pumpAndSettle();
       expect(nativePresentations, scenario.native);
       expect(
         payments.actions.where((value) => value == 'connect_session'),
-        hasLength(scenario.native),
+        hasLength(
+          scenario.sessionFlow != _SessionFlow.ready || scenario.native > 0
+              ? 1
+              : 0,
+        ),
       );
       expect(
         payments.actions.where((value) => value == 'connect_onboard'),
         hasLength(scenario.hosted),
       );
       expect(payments.opened, hasLength(scenario.hosted));
-      if (scenario.native == 0 && scenario.hosted == 0) {
+      if (scenario.native == 0 && scenario.hosted == 0 && !leaving) {
         expect(find.textContaining('no está disponible'), findsOneWidget);
       }
+      if (scenario.sessionFlow == _SessionFlow.rejected) {
+        expect(find.textContaining('contacta a soporte'), findsOneWidget);
+        expect(find.textContaining('private_processor_detail'), findsNothing);
+        expect(find.textContaining('autenticación'), findsNothing);
+      }
+      if (leaving) expect(find.text('Otra pantalla'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }
