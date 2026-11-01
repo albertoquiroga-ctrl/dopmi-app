@@ -46,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             (
               'Tú lo cuidas. Te ayudamos a cubrir lo que necesita.',
-              'Verifica tu cuenta y solicita apoyo para reembolsar gastos ya pagados, con evidencia revisada y aprobada por DopMi.',
+              'Confirma tu correo y solicita apoyo para reembolsar gastos ya pagados, con evidencia revisada y aprobada por DopMi. Para recibir aportaciones, completa Stripe.',
               'Empezar',
             ),
           ]
@@ -226,7 +226,7 @@ class AccountStartScreen extends StatelessWidget {
     final copy = intent == 'rescue'
         ? (
             'Crea tu espacio para publicar',
-            'Verifica tu cuenta, publica casos y comparte evidencia con transparencia.',
+            'Confirma tu correo, envía casos para revisión y comparte evidencia con transparencia. La verificación Dopmi es opcional.',
           )
         : intent == 'donate'
         ? (

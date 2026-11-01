@@ -313,7 +313,7 @@ class _RescuerPublicProfileEditState
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           children: [
             const Text(
-              'Tus cambios públicos se revisan antes de publicarse. Tu identidad verificada se conserva. Elige por separado los contactos que quieres compartir.',
+              'Tus cambios públicos se revisan antes de publicarse. El estado de tu verificación Dopmi se conserva. Elige por separado los contactos que quieres compartir.',
               style: TextStyle(fontSize: 14, height: 1.55, color: ink),
             ),
             const SizedBox(height: 16),

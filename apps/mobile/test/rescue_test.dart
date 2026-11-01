@@ -464,6 +464,12 @@ class StripePendingCaseRescue extends FakeRescue {
   int detailReads = 0;
   int? submittedVersion;
   @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'verification_status': 'not_started',
+  };
+
+  @override
   Future<Json> detail(String id) async {
     detailReads++;
     expect(id, current.id);
@@ -648,7 +654,7 @@ Future<void> tapStripeCase(WidgetTester tester, Finder target) async {
 void main() {
   for (final large in [false, true]) {
     testWidgets(
-      'new support submission waits privately for Stripe without a review success; large=$large',
+      'support submission without Dopmi verification waits privately for Stripe without a review success; large=$large',
       (tester) async {
         final rescue = StripePendingCaseRescue();
         final payments = StripeCasePayments(rescue);

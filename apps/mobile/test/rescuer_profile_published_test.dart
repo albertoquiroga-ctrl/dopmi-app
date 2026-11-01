@@ -51,6 +51,14 @@ class PublishedOwnerProfile extends FakeRescuerProfile {
   String? get userId => 'one';
 }
 
+class PublishedUnverifiedDashboard extends FakeRescue {
+  @override
+  Future<Json> dashboard() async => {
+    ...await super.dashboard(),
+    'verification_status': 'not_started',
+  };
+}
+
 FakeIdentityRepository publishedOwnerIdentity() {
   final identity = FakeIdentityRepository()
     ..user = const Identity('one', 'owner@example.test', verified: true);
@@ -70,6 +78,40 @@ class PublishedAvatar extends PublishedOwnerProfile {
 }
 
 void main() {
+  testWidgets('owner reads the approved public profile without a Dopmi badge', (
+    tester,
+  ) async {
+    final community = PublishedCommunity();
+    final identity = publishedOwnerIdentity();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(community),
+          rescueRepositoryProvider.overrideWithValue(
+            PublishedUnverifiedDashboard(),
+          ),
+          rescuerProfileRepositoryProvider.overrideWithValue(
+            PublishedOwnerProfile(),
+          ),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: RescuerProfileHero(identity.profile),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(community.requested, ['one']);
+    expect(find.text('Nombre público aprobado'), findsOneWidget);
+    expect(find.text('Descripción aprobada.'), findsOneWidget);
+    expect(find.text('Cuenta verificada'), findsNothing);
+    expect(find.text('private-fixture@example.test'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
   testWidgets(
     'owner contacts come from the current account and disappear on logout',
     (tester) async {

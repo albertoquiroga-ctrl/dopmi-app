@@ -44,7 +44,7 @@ class _ConnectPayments extends PaymentRepository {
     }
     return switch (action) {
       'connect_status' => {
-        'verified': true,
+        'verified': false,
         'ready': true,
         'transfers_enabled': true,
         'payouts_enabled': true,
@@ -249,122 +249,138 @@ void main() {
     ),
   ];
   for (final scenario in scenarios) {
-    testWidgets('${scenario.name} uses only its permitted Connect channel', (
-      tester,
-    ) async {
-      await tester.binding.setSurfaceSize(const Size(480, 1000));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      // The placeholder client starts a JSON isolate; keep its lifecycle in
-      // real async rather than creating it in the widget test's FakeAsync zone.
-      final leaving = scenario.sessionFlow == _SessionFlow.leave;
-      final gate = leaving ? Completer<Map<String, dynamic>>() : null;
-      final payments = (await tester.runAsync(
-        () async => _ConnectPayments(
-          sessionRejected: scenario.sessionFlow == _SessionFlow.rejected,
-          sessionGate: gate,
-        ),
-      ))!;
-      final identity = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final mode = PaymentEnvironment(
-        environment: scenario.mode,
-        testPublishableKey: scenario.key,
-        productionPublishableKey: scenario.key,
-      );
-      var nativePresentations = 0;
-      final client = ConnectClient(
-        key: scenario.key,
-        paymentEnvironment: mode,
-        enabled: scenario.enabled,
-        platform: scenario.platform,
-        web: scenario.web,
-        session: () => payments.action('connect_session'),
-        initialize: (_, fetch) async {
-          await fetch();
-        },
-        present: () async {
-          nativePresentations++;
-          if (scenario.fails) throw StateError('synthetic native interruption');
-        },
-        logout: () async {},
-      );
-      final router = GoRouter(
-        routes: [
-          GoRoute(path: '/', builder: (_, _) => const ConnectScreen()),
-          GoRoute(
-            path: '/elsewhere',
-            builder: (_, _) => const Scaffold(body: Text('Otra pantalla')),
+    testWidgets(
+      '${scenario.name} without a Dopmi badge uses only its permitted Connect channel',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(480, 1000));
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        // The placeholder client starts a JSON isolate; keep its lifecycle in
+        // real async rather than creating it in the widget test's FakeAsync zone.
+        final leaving = scenario.sessionFlow == _SessionFlow.leave;
+        final gate = leaving ? Completer<Map<String, dynamic>>() : null;
+        final payments = (await tester.runAsync(
+          () async => _ConnectPayments(
+            sessionRejected: scenario.sessionFlow == _SessionFlow.rejected,
+            sessionGate: gate,
           ),
-        ],
-      );
-      final container = ProviderContainer(
-        overrides: [
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          paymentEnvironmentProvider.overrideWithValue(mode),
-          connectClientProvider.overrideWithValue(client),
-          paymentRepositoryProvider.overrideWithValue(payments),
-          identityRepositoryProvider.overrideWithValue(identity),
-        ],
-      );
-      addTearDown(() async {
-        await tester.pumpWidget(const SizedBox.shrink());
-        container.dispose();
-        router.dispose();
-        // Supabase disposal can wait for real async events outside FakeAsync.
-        await tester.runAsync(() => payments.client.dispose());
-        await identity.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        find.text(
-          scenario.mode == 'production'
-              ? 'STRIPE CONNECT · PAGOS REALES'
-              : 'STRIPE CONNECT · PRUEBA',
-        ),
-        findsOneWidget,
-      );
-      await tester.ensureVisible(find.text('Completar datos en Stripe'));
-      await tester.tap(find.text('Completar datos en Stripe'));
-      if (leaving) {
-        await tester.pump();
-        router.go('/elsewhere');
-        await tester.pumpAndSettle();
-        gate!.complete({
-          'client_secret': 'synthetic_session_secret',
-          'expires_at': DateTime.now().millisecondsSinceEpoch ~/ 1000 + 300,
+        ))!;
+        final identity = FakeIdentityRepository()
+          ..user = const Identity(
+            'one',
+            'fixture@example.test',
+            verified: true,
+          );
+        final mode = PaymentEnvironment(
+          environment: scenario.mode,
+          testPublishableKey: scenario.key,
+          productionPublishableKey: scenario.key,
+        );
+        var nativePresentations = 0;
+        final client = ConnectClient(
+          key: scenario.key,
+          paymentEnvironment: mode,
+          enabled: scenario.enabled,
+          platform: scenario.platform,
+          web: scenario.web,
+          session: () => payments.action('connect_session'),
+          initialize: (_, fetch) async {
+            await fetch();
+          },
+          present: () async {
+            nativePresentations++;
+            if (scenario.fails) {
+              throw StateError('synthetic native interruption');
+            }
+          },
+          logout: () async {},
+        );
+        final router = GoRouter(
+          routes: [
+            GoRoute(path: '/', builder: (_, _) => const ConnectScreen()),
+            GoRoute(
+              path: '/elsewhere',
+              builder: (_, _) => const Scaffold(body: Text('Otra pantalla')),
+            ),
+          ],
+        );
+        final container = ProviderContainer(
+          overrides: [
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            paymentEnvironmentProvider.overrideWithValue(mode),
+            connectClientProvider.overrideWithValue(client),
+            paymentRepositoryProvider.overrideWithValue(payments),
+            identityRepositoryProvider.overrideWithValue(identity),
+          ],
+        );
+        addTearDown(() async {
+          await tester.pumpWidget(const SizedBox.shrink());
+          container.dispose();
+          router.dispose();
+          // Supabase disposal can wait for real async events outside FakeAsync.
+          await tester.runAsync(() => payments.client.dispose());
+          await identity.changes.close();
         });
-      }
-      await tester.pumpAndSettle();
-      expect(nativePresentations, scenario.native);
-      expect(
-        payments.actions.where((value) => value == 'connect_session'),
-        hasLength(
-          scenario.sessionFlow != _SessionFlow.ready || scenario.native > 0
-              ? 1
-              : 0,
-        ),
-      );
-      expect(
-        payments.actions.where((value) => value == 'connect_onboard'),
-        hasLength(scenario.hosted),
-      );
-      expect(payments.opened, hasLength(scenario.hosted));
-      if (scenario.native == 0 && scenario.hosted == 0 && !leaving) {
-        expect(find.textContaining('no está disponible'), findsOneWidget);
-      }
-      if (scenario.sessionFlow == _SessionFlow.rejected) {
-        expect(find.textContaining('contacta a soporte'), findsOneWidget);
-        expect(find.textContaining('private_processor_detail'), findsNothing);
-        expect(find.textContaining('autenticación'), findsNothing);
-      }
-      if (leaving) expect(find.text('Otra pantalla'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          find.textContaining('Esto no impide configurar Stripe'),
+          findsOneWidget,
+        );
+        expect(find.textContaining('no iniciar nuevos cobros'), findsNothing);
+        expect(
+          find.textContaining('Cuenta habilitada para recibir aportaciones'),
+          findsOneWidget,
+        );
+        expect(
+          find.text(
+            scenario.mode == 'production'
+                ? 'STRIPE CONNECT · PAGOS REALES'
+                : 'STRIPE CONNECT · PRUEBA',
+          ),
+          findsOneWidget,
+        );
+        await tester.ensureVisible(find.text('Completar datos en Stripe'));
+        await tester.tap(find.text('Completar datos en Stripe'));
+        if (leaving) {
+          await tester.pump();
+          router.go('/elsewhere');
+          await tester.pumpAndSettle();
+          gate!.complete({
+            'client_secret': 'synthetic_session_secret',
+            'expires_at': DateTime.now().millisecondsSinceEpoch ~/ 1000 + 300,
+          });
+        }
+        await tester.pumpAndSettle();
+        expect(nativePresentations, scenario.native);
+        expect(
+          payments.actions.where((value) => value == 'connect_session'),
+          hasLength(
+            scenario.sessionFlow != _SessionFlow.ready || scenario.native > 0
+                ? 1
+                : 0,
+          ),
+        );
+        expect(
+          payments.actions.where((value) => value == 'connect_onboard'),
+          hasLength(scenario.hosted),
+        );
+        expect(payments.opened, hasLength(scenario.hosted));
+        if (scenario.native == 0 && scenario.hosted == 0 && !leaving) {
+          expect(find.textContaining('no está disponible'), findsOneWidget);
+        }
+        if (scenario.sessionFlow == _SessionFlow.rejected) {
+          expect(find.textContaining('contacta a soporte'), findsOneWidget);
+          expect(find.textContaining('private_processor_detail'), findsNothing);
+          expect(find.textContaining('autenticación'), findsNothing);
+        }
+        if (leaving) expect(find.text('Otra pantalla'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
   }
 }

@@ -243,7 +243,7 @@ class AboutScreen extends ConsumerWidget {
             'No te pedimos que confíes. Te mostramos por qué puedes hacerlo.',
           ),
           InformationParagraph(
-            'Personas verificadas. Los casos que reciben apoyo pertenecen a rescatistas con verificación aprobada.',
+            'Casos revisados. Cada caso y sus gastos requieren aprobación. Stripe verifica los datos para recibir aportaciones. El sello Dopmi es opcional para refugios establecidos y sólo se muestra si está aprobado.',
           ),
           InformationParagraph(
             'Mascotas reales. Revisamos cada publicación antes de mostrarla, y también cada cambio.',

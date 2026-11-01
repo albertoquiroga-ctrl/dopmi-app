@@ -2,11 +2,64 @@ import 'package:dopmi_mobile/features/rescue/case_detail_layout.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'rescue_test.dart' show PhotoPublicCaseRescue;
 
 void main() {
+  for (final verified in [true, false, null]) {
+    testWidgets('case verification badge uses the server flag: $verified', (
+      tester,
+    ) async {
+      for (final preview in [false, true]) {
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              home: Scaffold(
+                body: CaseDetailLayout(
+                  record: RescueRecord({
+                    'id': 'case-one',
+                    'kind': 'case',
+                    'status': 'approved',
+                    'rescuer_name': 'Refugio Luna',
+                    'rescuer_verified': ?verified,
+                    'public_data': {'pet_name': 'Luna'},
+                  }),
+                  expenses: const [],
+                  needs: const SizedBox(),
+                  saved: false,
+                  busy: false,
+                  preview: preview,
+                  favorite: () {},
+                  share: () {},
+                  report: () {},
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final badge = find.byWidgetPredicate(
+          (widget) =>
+              widget is SvgPicture &&
+              widget.bytesLoader is SvgAssetLoader &&
+              (widget.bytesLoader as SvgAssetLoader).assetName ==
+                  'assets/profile/icon-verified.svg',
+        );
+        expect(badge, verified == true ? findsOneWidget : findsNothing);
+        expect(
+          find.text('Rescatista verificado'),
+          verified == true ? findsOneWidget : findsNothing,
+        );
+        expect(
+          find.text('Rescatista'),
+          verified == true ? findsNothing : findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      }
+    });
+  }
   testWidgets(
     'case gallery preserves refresh and resets on another case or photos',
     (tester) async {

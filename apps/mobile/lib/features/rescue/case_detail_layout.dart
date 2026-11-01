@@ -160,6 +160,7 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
         ? '${rescuerParts.first} ${rescuerParts.last.characters.first}.'
         : rescuer;
     final owner = record.data['owner_id'] as String?;
+    final rescuerVerified = record.data['rescuer_verified'] == true;
     final location = [
       record.publicData['city'],
       record.publicData['state'],
@@ -448,25 +449,24 @@ class _CaseDetailLayoutState extends ConsumerState<CaseDetailLayout> {
                                           ],
                                         ),
                                       ],
-                                      // The public catalog is gated by private.dopmi_rescuer_verified on the server.
                                       const SizedBox(height: 8),
                                       Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          svg(
-                                            'icon-verified',
-                                            16,
-                                            color: const Color(0xff66add4),
-                                          ),
-                                          const SizedBox(width: 6),
+                                          if (rescuerVerified) ...[
+                                            svg(
+                                              'icon-verified',
+                                              16,
+                                              color: const Color(0xff66add4),
+                                            ),
+                                            const SizedBox(width: 6),
+                                          ],
                                           Expanded(
                                             child: Text(
-                                              widget.preview &&
-                                                      record.data['rescuer_verified'] !=
-                                                          true
-                                                  ? 'Vista previa'
-                                                  : 'Rescatista verificado',
+                                              rescuerVerified
+                                                  ? 'Rescatista verificado'
+                                                  : 'Rescatista',
                                               style: TextStyle(
                                                 fontFamily: 'Inter',
                                                 letterSpacing: 0,

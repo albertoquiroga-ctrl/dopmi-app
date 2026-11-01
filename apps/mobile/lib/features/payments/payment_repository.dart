@@ -209,8 +209,7 @@ String paymentError(Object cause) {
         'Los pagos todavía no están habilitados. Intenta más tarde.',
       'sign_in_required' =>
         'Inicia sesión con tu cuenta confirmada para continuar.',
-      'rescuer_verification_required' =>
-        'Completa tu verificación de rescatista para configurar los cobros.',
+      'rescuer_verification_required' => 'No pudimos habilitar los cobros. Revisa que tu cuenta esté activa y tu correo confirmado. La verificación Dopmi es opcional.',
       'access_denied' => 'Tu cuenta no tiene acceso a esta operación.',
       'stripe_permission_denied' || 'stripe_authentication_failed' => 'La conexión de Dopmi con Stripe necesita revisión del equipo. No vuelvas a pagar.',
       'processor_busy' => 'La aportación sigue en proceso. Actualiza el historial en un momento; no vuelvas a pagar.',

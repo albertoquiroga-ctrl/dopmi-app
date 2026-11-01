@@ -919,15 +919,18 @@ test('unsupported currency, amount mismatch and unknown fee never settle',async 
   await rejected(() => settle(d.id,{stripe_fee_cents:null}),/pendiente/);
   assert.equal((await rpc('get',{donation_id:d.id})).payment_status,'pending');
 });
-test('suspended and unverified rescuers and disabled Connect accounts cannot receive payments',async () => {
+test('suspended or unconfirmed rescuers and disabled Connect cannot receive; the optional shelter badge is independent',async () => {
   await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
   await rejected(() => prepare(),/disponible/);
   await db.query("update public.profiles set account_status='active' where id=$1",[rescuer]);
   await db.exec("update private.dopmi_connect_accounts set transfers_enabled=false");
   await rejected(() => prepare(),/disponible/);
   await db.exec("update private.dopmi_connect_accounts set transfers_enabled=true");
-  await db.exec("update public.dopmi_rescue_records set status='changes_requested' where kind='verification'");
+  await db.query('update auth.users set email_confirmed_at=null where id=$1',[rescuer]);
   await rejected(() => prepare(),/disponible/);
+  await db.query('update auth.users set email_confirmed_at=now() where id=$1',[rescuer]);
+  await db.exec("update public.dopmi_rescue_records set status='changes_requested' where kind='verification'");
+  assert.equal((await prepare()).expense_id,expense);
 });
 test('financial history remains private and funded approvals cannot be erased',async () => {
   const d=await prepare(); await settle(d.id);
@@ -1172,18 +1175,24 @@ test('unexpected destination or transfer response never records a completed tran
   assert.equal(fixture.calls.filter(call => call.path === 'transfers').length,1);
 });
 
-test('confirmed active users can inspect Connect status but only verified rescuers may onboard',async () => {
-  const fixture=stripeFixture({id:key});
+test('confirmed active users can configure Connect without a shelter badge; readiness depends on Stripe',async () => {
+  const fixture=stripeFixture({id:key},{account_links:async()=>({url:'https://connect.stripe.com/setup/s/synthetic'})});
   const service=serviceFor(fixture.stripe);
   assert.equal((await service.connect(other,'status')).ready,false);
   assert.equal(fixture.calls.length,0);
-  await rejected(() => service.connect(other,'onboard'),/verificación de rescatista/);
+  assert.equal((await rpc('connect_get',{actor:other})).owner_id,other);
+  assert.equal((await rpc('connect_begin',{actor:other})).account_id,null);
+  assert.equal(fixture.calls.length,0,'local onboarding reservation does not create a Stripe account in this test');
   await db.exec("update public.dopmi_rescue_records set status='changes_requested' where kind='verification'");
   const status=await service.connect(rescuer,'status');
   assert.equal(status.verified,false);
-  assert.equal(status.ready,false);
+  assert.equal(status.ready,true);
+  assert.equal(status.transfers_enabled,true);
+  assert.equal(status.payouts_enabled,true);
   assert.deepEqual(status.payouts,[]);
-  await rejected(() => service.connect(rescuer,'onboard'),/verificación de rescatista/);
+  assert.equal((await service.connect(rescuer,'onboard')).url,'https://connect.stripe.com/setup/s/synthetic');
+  const disabled=stripeFixture({id:key},{'accounts/acct_test':async()=>({id:'acct_test',payouts_enabled:false,capabilities:{transfers:'active'}})});
+  assert.equal((await serviceFor(disabled.stripe).connect(rescuer,'status')).ready,false);
   await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
   await rejected(() => service.connect(rescuer,'status'),/activa/);
 });
@@ -1196,9 +1205,11 @@ test('rescuer history survives pending review without granting access to another
   assert.equal((await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v.funded_cents,9200);
   await role(other);
   assert.equal((await db.query('select id from public.dopmi_donations')).rows.length,0);
-  await rejected(() => db.query('select public.dopmi_expense_funding($1)',[expense]),/no disponible/);
+  const publicFunding=(await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v;
+  assert.equal(publicFunding.funded_cents,9200); assert.equal(publicFunding.donor_id,undefined);
   await role('', 'anon');
-  await rejected(() => db.query('select public.dopmi_expense_funding($1)',[expense]),/no disponible/);
+  assert.equal((await db.query('select public.dopmi_expense_funding($1) v',[expense])).rows[0].v.funded_cents,9200);
+  await rejected(() => db.query('select id from public.dopmi_donations'),/permission denied/);
   await db.exec('reset role');
   await db.query("update public.profiles set account_status='suspended' where id=$1",[rescuer]);
   await role(rescuer);
@@ -3654,16 +3665,17 @@ test('pending Stripe initial ready goes directly to submitted and historical sub
   assert.deepEqual(await pendingStripeRead(r.id),submitted);
   assert.deepEqual(await pendingStripeRead(historical.id),historical);
 });
-test('pending Stripe rescuer identity is checked at submit and rechecked at future readiness',async()=>{
+test('pending Stripe promotion and resubmission do not depend on the optional shelter badge',async()=>{
   const {r}=await pendingStripeCase();
   await db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,r.version]);
   await db.exec('reset role');
   await db.query("update dopmi_rescue_records set status='changes_requested' where owner_id=$1 and kind='verification'",[rescuer]);
-  await pendingStripeSave();assert.equal((await pendingStripeRead(r.id)).status,'pending_stripe');
-  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows[0].n,0);
+  await pendingStripeSave();
+  const submitted=await pendingStripeRead(r.id);assert.equal(submitted.status,'submitted');
+  assert.equal((await db.query("select count(*)::int n from private.dopmi_rescue_history where record_id=$1 and action='stripe_ready'",[r.id])).rows[0].n,1);
   await role(rescuer);
-  const draft=(await db.query("select dopmi_transition_rescue($1,$2,'withdraw') v",[r.id,r.version+1])).rows[0].v;
-  await rejected(()=>db.query("select dopmi_transition_rescue($1,$2,'submit')",[r.id,draft.version]),/verificación/);
+  const draft=(await db.query("select dopmi_transition_rescue($1,$2,'withdraw') v",[r.id,submitted.version])).rows[0].v;
+  assert.equal((await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[r.id,draft.version])).rows[0].v.status,'submitted');
 });
 test('pending Stripe withdrawal and ready preserve optimistic versions in either serialization order',async()=>{
   for(const readyFirst of [false,true]) {

@@ -618,7 +618,7 @@ class _GuardianSupportCardState extends State<GuardianSupportCard> {
                                               ),
                                               const SizedBox(height: 14),
                                               for (final label in [
-                                                'Rescatistas y casos verificados',
+                                                'Casos y gastos aprobados',
                                                 'Sigue tu huella',
                                                 'Cancela cuando quieras',
                                               ])

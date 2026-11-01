@@ -151,7 +151,7 @@ export function paymentService({ rpc, stripe, returnUrl, logger = console, looku
     const payouts = await stripe('payouts?limit=10', undefined, undefined, account.account_id);
     if (payouts.data.some(payout => payout.livemode !== expectedLivemode))
       throw new PaymentError('payout_mismatch');
-    return { ready: account.verified === true && current.capabilities?.transfers === 'active' && current.payouts_enabled === true,
+    return { ready: current.capabilities?.transfers === 'active' && current.payouts_enabled === true,
       verified: account.verified === true,
       transfers_enabled: current.capabilities?.transfers === 'active', payouts_enabled: current.payouts_enabled === true,
       details_submitted: current.details_submitted === true,

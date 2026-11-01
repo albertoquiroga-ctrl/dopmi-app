@@ -50,7 +50,7 @@ select is((dopmi_rescuer_dashboard()->'case_counts'->>'draft')::int,1,'dashboard
 select throws_ok($$update dopmi_rescue_records set status='approved',reimbursable_cents=99999$$,'42501',null,'direct state and money updates blocked');
 select throws_ok($$select dopmi_save_rescue('case','{"is_admin":"true"}','{}','[]','61000000-0000-4000-8000-000000000002',1)$$,'22023',null,'unknown client fields rejected');
 select throws_ok($$select dopmi_save_rescue('case','{}','{}','[{"path":"forged/path.jpg","role":"public"}]','61000000-0000-4000-8000-000000000002',1)$$,'22023',null,'foreign attachment paths rejected');
-select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')$$,'22023',null,'verification required to submit a case');
+select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')$$,'22023',null,'missing uploaded evidence still blocks an ordinary account case');
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000001',1,'submit')$$,'22023',null,'missing Storage object blocks submission');
 reset role;
 insert into storage.objects(bucket_id,name) select 'dopmi-rescue-evidence',f->>'path' from dopmi_rescue_records r,jsonb_array_elements(r.files) f
@@ -169,8 +169,8 @@ select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000001',5,'changes_
 reset role;
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
-select is((dopmi_rescue_public()->>'total')::int,0,'revoked identity hides public case');
-select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000002/62000000-0000-4000-8000-000000000003.jpg'),false,'revocation removes fresh public file access');
+select ok(exists(select 1 from jsonb_array_elements(dopmi_rescue_public('61000000-0000-4000-8000-000000000002')->'items') i where i->>'id'='61000000-0000-4000-8000-000000000002' and i->>'rescuer_verified'='false'),'optional shelter verification corrections remove the badge while preserving the independently approved case');
+select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000002/62000000-0000-4000-8000-000000000003.jpg'),true,'approved case photo remains public independently of the shelter badge');
 reset role;
 select * from finish();
 rollback;

@@ -144,7 +144,7 @@ class VerificationIntroScreen extends StatelessWidget {
                             Semantics(
                               header: true,
                               child: const Text(
-                                'Verifícate para recibir donaciones',
+                                'Verificación Dopmi opcional',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Inter',
@@ -157,8 +157,8 @@ class VerificationIntroScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 16),
                             card(
-                              'Protege a donadores y mascotas',
-                              'La verificación ayuda a Dopmi a garantizar que las donaciones lleguen a rescatistas reales.',
+                              'Un sello para refugios establecidos',
+                              'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes solicitar apoyo sin este sello; cada caso y sus gastos requieren aprobación y debes completar Stripe.',
                             ),
                             const SizedBox(height: 20),
                             const Text(

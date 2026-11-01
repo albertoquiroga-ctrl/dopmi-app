@@ -1342,7 +1342,7 @@ class _ConnectState extends ConsumerState<ConnectScreen>
         ),
         const SizedBox(height: 20),
         const Notice(
-          'Primero necesitas la verificación de rescatista aprobada por Dopmi. Completar el formulario de Stripe no garantiza que tu cuenta ya pueda recibir transferencias.',
+          'Necesitas una cuenta activa, correo confirmado y completar la configuración de Stripe. La verificación Dopmi es opcional y no sustituye los requisitos de Stripe.',
         ),
         LiveSection<Json>(
           key: ValueKey(revision),
@@ -1354,7 +1354,7 @@ class _ConnectState extends ConsumerState<ConnectScreen>
             children: [
               if (data['verified'] == false)
                 const Notice(
-                  'Tu verificación de rescatista está pendiente. Puedes consultar tu historial, pero no iniciar nuevos cobros.',
+                  'Aún no tienes el sello Dopmi. Esto no impide configurar Stripe ni enviar casos para revisión.',
                 ),
               Text(
                 data['ready'] == true

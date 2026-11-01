@@ -30,17 +30,17 @@ void main() {
         router.push<void>('/rescue/new?kind=verification').ignore();
         await tester.pumpAndSettle();
         expect(find.byType(VerificationIntroScreen), findsOneWidget);
-        const title = 'Verifícate para recibir donaciones';
+        const title = 'Verificación Dopmi opcional';
         final paragraph = tester.renderObject<RenderParagraph>(
           find.text(title),
         );
-        final start = title.indexOf('donaciones');
+        final start = title.indexOf('opcional');
         expect(
           paragraph.getBoxesForSelection(
             TextSelection(baseOffset: start, extentOffset: title.length),
           ),
           hasLength(1),
-          reason: 'Text enlargement must keep donaciones on one line',
+          reason: 'Text enlargement must keep opcional on one line',
         );
         if (dismiss == 'Después') {
           final button = find.text('Después');

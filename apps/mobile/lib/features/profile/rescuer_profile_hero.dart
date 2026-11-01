@@ -130,20 +130,18 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
         }
         Json? published;
         var publicFailed = false;
-        if (data['verification_status'] == 'approved') {
-          try {
-            published = await ref
-                .read(communityRepositoryProvider)
-                .publicProfile(profile.id);
-            if (published != null && published['id'] != profile.id) {
-              throw const FormatException(
-                'El perfil público no corresponde a tu cuenta.',
-              );
-            }
-          } catch (_) {
-            published = null;
-            publicFailed = true;
+        try {
+          published = await ref
+              .read(communityRepositoryProvider)
+              .publicProfile(profile.id);
+          if (published != null && published['id'] != profile.id) {
+            throw const FormatException(
+              'El perfil público no corresponde a tu cuenta.',
+            );
           }
+        } catch (_) {
+          published = null;
+          publicFailed = true;
         }
         if (!current()) {
           throw const FormatException(

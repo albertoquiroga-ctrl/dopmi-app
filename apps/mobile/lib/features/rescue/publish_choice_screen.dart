@@ -27,8 +27,8 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
       error = null;
     });
     try {
-      // The server requires an active, confirmed account. Rescuer approval is
-      // required to submit a case, while preparing a private draft is allowed.
+      // The server requires an active account with confirmed email. Dopmi
+      // verification is optional; case approval and Stripe requirements remain.
       await ref.read(rescueRepositoryProvider).dashboard();
       if (!mounted ||
           GoRouter.of(context).routeInformationProvider.value.uri.path !=
