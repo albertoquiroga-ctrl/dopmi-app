@@ -54,6 +54,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'fixture_photo_client.dart';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/public_profile_layout.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -2161,6 +2162,16 @@ void main() {
       }
       final container = ProviderContainer(
         overrides: [
+          if (spec.$1 == 'publish-information-location' ||
+              spec.$1 == 'case-publication-information-location')
+            configProvider.overrideWithValue(
+              const AppConfig(
+                url: '',
+                key: '',
+                redirect: 'io.dopmi.app://auth/callback',
+                mapsEnabled: true,
+              ),
+            ),
           if (spec.$1.startsWith('payment-history') ||
               spec.$1.startsWith('contribution'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
