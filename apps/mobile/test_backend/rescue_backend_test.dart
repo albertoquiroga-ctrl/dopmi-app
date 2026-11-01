@@ -567,6 +567,49 @@ void main() {
     identity = RescueRecord(
       await review(identity, decision: 'changes_requested'),
     );
+    // The optional shelter badge is independent of already approved cases,
+    // public snapshots and paid expense evidence.
+    final ordinaryCatalog = await anonymous.catalog(1);
+    expect(ordinaryCatalog.total, 1);
+    expect(ordinaryCatalog.items.single.data['rescuer_verified'], false);
+    expect((await reader.savedCases(1)).items.single.available, true);
+    expect(
+      (await publicUpdates.publicFor(rescue.id)).single.body,
+      'Avance público corregido',
+    );
+    final ordinaryProfile = await publicReader.publicProfile(
+      owner.auth.currentUser!.id,
+    );
+    expect(ordinaryProfile!['verified'], false);
+    expect(ordinaryProfile['name'], 'Refugio H9');
+    for (final asset in [
+      ('dopmi-rescuer-profile-media', avatar),
+      ('dopmi-case-update-media', updatePath),
+      (rescueBucket, publicPath),
+    ]) {
+      expect(
+        await anonymous.client.storage.from(asset.$1).download(asset.$2),
+        isNotEmpty,
+      );
+    }
+    // Suspension still removes fresh public access. This command can target
+    // only the disposable loopback backend validated at suite startup.
+    final ownerId = owner.auth.currentUser!.id;
+    expect(RegExp(r'^[0-9a-f-]{36}$').hasMatch(ownerId), true);
+    final suspension = await Process.run('docker', [
+      'exec',
+      databaseContainer,
+      'psql',
+      '-U',
+      'postgres',
+      '-d',
+      'postgres',
+      '-v',
+      'ON_ERROR_STOP=1',
+      '-c',
+      "update public.profiles set account_status='suspended' where id='$ownerId';",
+    ]);
+    expect(suspension.exitCode, 0);
     expect((await anonymous.catalog(1)).total, 0);
     expect((await reader.savedCases(1)).items.single.available, false);
     await reader.favoriteCase(rescue.id, false);
