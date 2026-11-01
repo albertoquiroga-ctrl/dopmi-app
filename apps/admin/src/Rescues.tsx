@@ -19,7 +19,7 @@ export default function Rescues({api}:{api:AdminApi}) {
   useEffect(()=>{let alive=true;setLoading(true);setData({total:0,items:[]});setSelected(null);setError('');
     api.listRescue(kind,status,page).then(r=>{if(alive)setData(r);}).catch(e=>{if(alive)setError(message(e));}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};
   },[api,kind,status,page,revision]);
-  return <><header className="page-heading"><div><p className="eyebrow">Confianza y transparencia</p><h1>Rescates y gastos</h1><p>Verifica a la persona, revisa el caso y comprueba cada gasto realizado.</p></div><span className="read-only">Sin cobros activos</span></header>
+  return <><header className="page-heading"><div><p className="eyebrow">Confianza y transparencia</p><h1>Rescates y gastos</h1><p>Revisa cada caso y gasto. La verificación Dopmi es un sello opcional para refugios.</p></div><span className="read-only">Sin cobros activos</span></header>
     <section className="users-card"><div className="table-toolbar"><div><h2>Solicitudes del equipo rescatista</h2><p aria-live="polite">{loading?'Consultando…':`${data.total} solicitudes`}</p></div><div className="moderation-filters">
       <label>Tipo<select value={kind} onChange={e=>{setKind(e.target.value);setPage(1);}}>{Object.entries(kinds).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <label>Estado<select value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>{Object.entries(rescueStatus).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
@@ -48,7 +48,7 @@ function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[api,id,retry]);
   const r=detail?.record;
-  const canApprove=!!r&&r.status==='submitted'&&published&&r.files.every(f=>seen.includes(f.path))&&(r.kind==='verification'||detail.verified)&&(r.kind!=='expense'||detail.case_status==='approved');
+  const canApprove=!!r&&r.status==='submitted'&&published&&r.files.every(f=>seen.includes(f.path))&&(r.kind!=='expense'||detail.case_status==='approved');
   async function decide(decision:string) {
     if(!r||busy)return;
     if(note.trim().length<5){setError('Escribe un motivo de al menos 5 caracteres.');return;}
@@ -66,7 +66,7 @@ function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:
     <button className="secondary" disabled={busy} onClick={()=>setRetry(v=>v+1)}>Recargar expediente y archivos</button>
     {loading?<p role="status">Cargando documentos privados…</p>:r&&<>
       <p className="muted">Versión {r.version} · {rescueStatus[r.status]||r.status} · Enviado {date(r.submitted_at)}</p>
-      <div className="notice">{detail.verified?'Rescatista con verificación vigente.':'Identidad todavía sin verificación vigente.'}{r.parent_id&&<> Caso: {detail.case_status==='approved'?'aprobado y abierto':detail.case_status==='closed'?'cerrado':'requiere revisión'}. <button className="text-button" disabled={busy} onClick={()=>openParent(r.parent_id!)}>Ver expediente del caso</button></>}</div>
+      <div className="notice">{detail.verified?'Sello Dopmi aprobado.':'Sin sello Dopmi. Esto no impide revisar esta solicitud.'}{r.parent_id&&<> Caso: {detail.case_status==='approved'?'aprobado y abierto':detail.case_status==='closed'?'cerrado':'requiere revisión'}. <button className="text-button" disabled={busy} onClick={()=>openParent(r.parent_id!)}>Ver expediente del caso</button></>}</div>
       {r.feedback&&<p className="notice">Respuesta anterior: {r.feedback}</p>}
       <h3>Contenido para publicación</h3><p>Comprueba que los textos y fotos no expongan documentos, domicilios particulares ni otros datos privados.</p><Fields data={r.public_data}/>
       {Object.keys(r.private_data).length>0&&<><h3>Solo para revisión privada</h3><Fields data={r.private_data}/></>}
@@ -85,7 +85,7 @@ function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:
         {r.status==='submitted'&&<label className="check-label"><input type="checkbox" checked={published} disabled={busy} onChange={e=>setPublished(e.target.checked)}/>Autorizo los textos y las fotos marcadas para publicación</label>}
         <div className="review-actions">{r.status==='submitted'&&<><button disabled={busy||!canApprove} onClick={()=>void decide('approved')}>Aprobar solicitud</button><button className="secondary" disabled={busy} onClick={()=>void decide('rejected')}>No aprobar</button></>}
           <button className="secondary" disabled={busy} onClick={()=>void decide('changes_requested')}>{r.status==='approved'?'Retirar aprobación y pedir correcciones':'Pedir correcciones'}</button></div>
-        {r.status==='approved'&&<p className="muted">Pedir correcciones retira la aprobación y oculta el contenido correspondiente hasta una nueva revisión.</p>}
+        {r.status==='approved'&&<p className="muted">{r.kind==='verification'?'Pedir correcciones retira el sello Dopmi; los casos y gastos conservan sus aprobaciones independientes.':'Pedir correcciones retira la aprobación y oculta el contenido correspondiente hasta una nueva revisión.'}</p>}
       </div>}
       <h3>Historial (últimos 100 movimientos)</h3>{detail.history.length?detail.history.map(event=><article key={event.id} className="review-event"><strong>{rescueStatus[event.action]||({submit:'Enviado',withdraw:'Retirado a borrador',close:'Caso cerrado'} as Record<string,string>)[event.action]||'Actualización'}</strong><small>{date(event.created_at)} · Versión {event.version}</small><p>{event.feedback}</p>{event.reimbursable_cents>0&&<p>{money(event.reimbursable_cents)} · {event.urgent?'Urgente':'Por antigüedad'}</p>}</article>):<p>Sin decisiones anteriores.</p>}
       <p className="muted">La consulta de expedientes y las decisiones quedan registradas en el servidor. Los enlaces a archivos vencen en un minuto.</p>

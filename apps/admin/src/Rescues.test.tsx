@@ -7,6 +7,25 @@ const record: RescueRecord={id:'expense',owner_id:'owner',kind:'expense',parent_
 function api(overrides:Partial<AdminApi>={}):AdminApi { return {session:async()=>true,watch:()=>()=>{},login:async()=>{},logout:async()=>{},isAdmin:async()=>true,listUsers:async()=>({total:0,users:[]}),listAdoptions:async()=>({total:0,items:[]}),reviews:async()=>[],reviewAdoption:async p=>p,photoUrl:async()=>'',listContributions:async()=>({total:0,items:[]}),listRescue:vi.fn(async()=>({total:1,items:[record]})),rescueDetail:vi.fn(async()=>({record,verified:true,case_status:'approved',history:[]})),rescueFileUrl:vi.fn(async()=> 'https://example.test/signed'),reviewRescue:vi.fn(async r=>({...r,status:'approved'})),...overrides}; }
 async function open(client:AdminApi) { render(<Rescues api={client}/>);const user=userEvent.setup();await user.click(await screen.findByRole('button',{name:'Revisar Comida de Luna'}));await screen.findByText('Solo para revisión privada');return user; }
 describe('rescue review',()=>{
+  for(const kind of ['case','expense'] as const) it(`reviews an ordinary account ${kind} without a Dopmi badge while retaining evidence and public approval`,async()=>{
+    const ordinary={...record,kind,parent_id:kind==='case'?null:'case'};
+    const client=api({rescueDetail:vi.fn(async()=>({record:ordinary,verified:false,case_status:kind==='expense'?'approved':null,history:[]}))});
+    const user=await open(client), button=screen.getByRole('button',{name:'Aprobar solicitud'});
+    expect(button).toBeDisabled();
+    fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
+    await user.click(screen.getByLabelText('Revisé el archivo 1'));expect(button).toBeDisabled();
+    await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
+    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Expediente revisado');
+    expect(button).toBeEnabled();await user.click(button);
+    await waitFor(()=>expect(client.reviewRescue).toHaveBeenCalledWith(ordinary,expect.objectContaining({decision:'approved',publish_content:true})));
+  });
+  it('still refuses an ordinary account expense whose parent case is closed',async()=>{
+    const client=api({rescueDetail:vi.fn(async()=>({record,verified:false,case_status:'closed',history:[]}))}),user=await open(client);
+    fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
+    await user.click(screen.getByLabelText('Revisé el archivo 1'));
+    await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
+    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
   it('converts pesos exactly and rejects malformed money',()=>{expect(amount('250.50')).toBe(25050);expect(amount('0.01')).toBe(1);for(const v of ['-1','1.001','1e3','NaN','0','1000000.01'])expect(amount(v)).toBeNull();});
   it('requires loaded evidence and explicit public approval, then sends the exact version',async()=>{
     const client=api(),user=await open(client);
