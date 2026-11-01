@@ -77,6 +77,19 @@ void main() {
     );
   });
 
+  test('linked identity collision gives safe guidance instead of a connection error', () {
+    expect(
+      identityError(
+        const AuthApiException(
+          'sensitive-provider-identity',
+          statusCode: '422',
+          code: 'identity_already_exists',
+        ),
+      ),
+      'Este acceso ya está vinculado a una cuenta de Dopmi. Conserva tu sesión actual y contacta a soporte para revisar la vinculación.',
+    );
+  });
+
   test('unknown Edge payloads never become visible authentication errors', () {
     for (final details in [
       {'error': 'sensitive-grant-value'},

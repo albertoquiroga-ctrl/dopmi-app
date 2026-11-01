@@ -573,6 +573,7 @@ String identityError(Object error) {
       : null;
   return switch (code) {
     'invalid_credentials' => 'Revisa tu correo y contraseña.',
+    'identity_already_exists' => 'Este acceso ya está vinculado a una cuenta de Dopmi. Conserva tu sesión actual y contacta a soporte para revisar la vinculación.',
     'email_not_confirmed' => 'Primero confirma tu correo. Puedes solicitar otro enlace desde la pantalla de confirmación.',
     'otp_expired' || 'flow_state_expired' || 'flow_state_not_found' => 'El enlace o código venció. Solicita uno nuevo y ábrelo en este dispositivo.',
     'over_email_send_rate_limit' || 'over_request_rate_limit' =>
