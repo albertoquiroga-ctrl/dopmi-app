@@ -15,6 +15,10 @@ spec = importlib.util.spec_from_file_location("mobile_config", Path(__file__).wi
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
+maps_spec = importlib.util.spec_from_file_location("maps_config", Path(__file__).with_name("write-maps-config.py"))
+maps_config = importlib.util.module_from_spec(maps_spec)
+maps_spec.loader.exec_module(maps_config)
+
 
 class MobileConfigTests(unittest.TestCase):
     def setUp(self):
@@ -61,7 +65,7 @@ class MobileConfigTests(unittest.TestCase):
 
     def test_invalid_or_missing_options_fail_early(self):
         for name, value in (("SUPABASE_URL", ""), ("SUPABASE_PUBLISHABLE_KEY", ""),
-                            ("ENABLE_APPLE_AUTH", "yes"), ("SUPABASE_URL", "https://example.com")):
+                            ("ENABLE_APPLE_AUTH", "yes"), ("ENABLE_GOOGLE_MAPS", "yes"), ("SUPABASE_URL", "https://example.com")):
             with self.subTest(name=name, value=value), self.assertRaises(ValueError):
                 config.build_config({**self.env, name: value})
 
@@ -335,6 +339,50 @@ class MobileConfigTests(unittest.TestCase):
             claims["ref"] = project
         payload = base64.urlsafe_b64encode(json.dumps(claims).encode()).decode().rstrip("=")
         return f"e30.{payload}.test_signature"
+
+
+class MapsConfigTests(unittest.TestCase):
+    def test_disabled_maps_does_not_reuse_old_ios_key(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "ios/Flutter/DopmiMaps.local.xcconfig"
+            target.parent.mkdir(parents=True)
+            target.write_text("DOPMI_MAPS_IOS_KEY=stale", encoding="utf-8")
+            self.assertFalse(maps_config.write_config({}, "ios", root))
+            self.assertEqual(target.read_text(encoding="utf-8"), "DOPMI_MAPS_IOS_KEY=\n")
+
+    def test_failed_maps_validation_removes_stale_native_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "ios/Flutter/DopmiMaps.local.xcconfig"
+            target.parent.mkdir(parents=True)
+            target.write_text("stale", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                maps_config.write_config({"ENABLE_GOOGLE_MAPS": "true"}, "ios", root)
+            self.assertFalse(target.exists())
+
+    def test_maps_keys_are_platform_specific(self):
+        key = "AIza" + "A" * 35
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            env = {"ENABLE_GOOGLE_MAPS": "true", "GOOGLE_MAPS_ANDROID_API_KEY": key}
+            self.assertTrue(maps_config.write_config(env, "android", root))
+            with self.assertRaises(ValueError):
+                maps_config.write_config(env, "ios", root)
+            env = {"ENABLE_GOOGLE_MAPS": "true", "GOOGLE_MAPS_IOS_API_KEY": key}
+            self.assertTrue(maps_config.write_config(env, "ios", root))
+            with self.assertRaises(ValueError):
+                maps_config.write_config(env, "android", root)
+
+    def test_maps_cli_never_prints_native_key(self):
+        key = "AIza" + "A" * 35
+        script = Path(__file__).with_name("write-maps-config.py")
+        with tempfile.TemporaryDirectory() as directory:
+            result = subprocess.run([sys.executable, str(script), "--platform", "ios"],
+                cwd=directory, env={**os.environ, "ENABLE_GOOGLE_MAPS": "true",
+                    "GOOGLE_MAPS_IOS_API_KEY": key}, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertNotIn(key, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

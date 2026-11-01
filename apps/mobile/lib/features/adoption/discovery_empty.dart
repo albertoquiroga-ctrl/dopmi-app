@@ -15,10 +15,14 @@ class DiscoveryEmpty extends StatelessWidget {
     required this.species,
     required this.clear,
     required this.switchSpecies,
+    this.nearbyRadiusKm,
+    this.changeLocation,
   });
   final bool filtered, global;
   final String species;
   final VoidCallback clear, switchSpecies;
+  final int? nearbyRadiusKm;
+  final VoidCallback? changeLocation;
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(4, 8, 4, 16),
@@ -43,7 +47,9 @@ class DiscoveryEmpty extends StatelessWidget {
                   width:
                       264.961 * MediaQuery.textScalerOf(context).scale(14) / 14,
                   child: _EmptyCopy(
-                    filtered
+                    nearbyRadiusKm != null
+                        ? 'No encontramos ${species == 'dog' ? 'perros' : 'gatos'} con estos filtros en un radio de $nearbyRadiusKm km. Puedes cambiar la zona o ajustar tus filtros.'
+                        : filtered
                         ? 'Prueba otros filtros o limpia la selección para ver más opciones.'
                         : global
                         ? 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
@@ -54,7 +60,9 @@ class DiscoveryEmpty extends StatelessWidget {
               // Source paragraph margin16 + grid gap8 + button margin4.
               const SizedBox(height: 28),
               FilledButton(
-                onPressed: filtered
+                onPressed: nearbyRadiusKm != null
+                    ? changeLocation
+                    : filtered
                     ? clear
                     : global
                     ? () => context.go('/rescue-cases')
@@ -76,7 +84,9 @@ class DiscoveryEmpty extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  filtered
+                  nearbyRadiusKm != null
+                      ? 'Cambiar ubicación'
+                      : filtered
                       ? 'Limpiar filtros'
                       : global
                       ? 'Ir a Apoyar'

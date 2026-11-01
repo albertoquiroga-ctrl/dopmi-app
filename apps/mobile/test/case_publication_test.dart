@@ -25,6 +25,7 @@ import 'rescue_test.dart' show FakeRescue;
 
 class DraftCaseRescue extends FakeRescue {
   Json? publicSaved;
+  List<Json>? caseFiles;
   List<RescueRecord> expenses = [];
   List<Json> privateSaves = [];
   final caseSaves = <RescueRecord>[];
@@ -51,9 +52,11 @@ class DraftCaseRescue extends FakeRescue {
             'state': 'Nuevo León',
             'need': 'Cuidados y seguimiento',
           },
-      'files': <Json>[
-        {'role': 'public', 'path': 'one/case-one/photo.jpg'},
-      ],
+      'files':
+          caseFiles ??
+          <Json>[
+            {'role': 'public', 'path': 'one/case-one/photo.jpg'},
+          ],
     },
     'history': <Json>[],
   };
@@ -1053,7 +1056,7 @@ void main() {
       expect(find.byType(CaseDraftNeeds), findsNothing);
       expect(find.byType(RescueVideoSection), findsOneWidget);
       expect(find.byType(UrgencyComplement), findsOneWidget);
-      expect(find.text('Fotos adicionales (opcional)'), findsOneWidget);
+      expect(find.text('Fotos adicionales (opcional)'), findsNothing);
 
       await tapPublication(tester, find.text('Continuar'));
       expectStep(3, 2);
@@ -1082,9 +1085,29 @@ void main() {
   );
 
   testWidgets(
-    'dirty case needs are saved before media and submission keeps the saved values',
+    'hidden historical planned needs and photos survive media and submission',
     (tester) async {
       final repo = DraftCaseRescue()..reject = true;
+      final stored = (await repo.detail('case-one'))['record'] as Json;
+      const planned = <Json>[
+        {
+          'id': '00000000-0000-4000-8000-000000000001',
+          'type': 'medicine',
+          'title': 'Tratamiento previsto conservado',
+          'amount_cents': 12345,
+          'detail': 'Seguimiento ya registrado',
+          'urgent': false,
+        },
+      ];
+      repo.publicSaved = {
+        ...(stored['public_data'] as Json),
+        'need': 'Cuidados conservados y seguimiento',
+        'need_items': planned,
+      };
+      repo.caseFiles = [
+        {'role': 'public', 'path': 'one/case-one/photo.jpg'},
+        {'role': 'public', 'path': 'one/case-one/extra.jpg'},
+      ];
       await startPublication(
         tester,
         FakeCommunity(),
@@ -1093,14 +1116,8 @@ void main() {
         videos: WizardVideos(repo),
       );
       await tapPublication(tester, find.text('Continuar'));
-      await tapPublication(
-        tester,
-        find.text('Cuidados y necesidades previstas'),
-      );
-      final need = find.byKey(const ValueKey('case-field-need'));
-      await tester.ensureVisible(need);
-      await tester.enterText(need, 'Cuidados corregidos y seguimiento');
-      FocusManager.instance.primaryFocus?.unfocus();
+      expect(find.text('Cuidados y necesidades previstas'), findsNothing);
+      expect(find.byKey(const ValueKey('case-field-need')), findsNothing);
       expect(repo.caseSaves.length, 1);
       await tapPublication(tester, find.text('Continuar'));
       final saved = repo.caseSaves.last;
@@ -1108,7 +1125,10 @@ void main() {
         find.byType(RescueVideoSection),
       );
       expect(saved.version, 5);
-      expect(saved.publicData['need'], 'Cuidados corregidos y seguimiento');
+      expect(saved.publicData['need'], 'Cuidados conservados y seguimiento');
+      expect(saved.publicData['need_items'], planned);
+      expect(saved.files, repo.caseFiles);
+      expect(find.text('Fotos adicionales (opcional)'), findsNothing);
       expect(media.record!.id, saved.id);
       expect(media.record!.version, saved.version);
       expect(media.needsSave, isFalse);
@@ -1121,7 +1141,7 @@ void main() {
       expect(repo.caseSaves.last.version, 6);
       expect(
         repo.caseSaves.last.publicData['need'],
-        'Cuidados corregidos y seguimiento',
+        'Cuidados conservados y seguimiento',
       );
       expect(find.text('Enviado a revisión'), findsNothing);
       expect(find.textContaining('No se pudo enviar'), findsOneWidget);
@@ -1348,6 +1368,15 @@ void main() {
       final footer = tester.widget<PublicationFooter>(
         find.byType(PublicationFooter),
       );
+      for (final label in ['Especie', 'Sexo', 'Tamaño', 'Edad']) {
+        final choice = tester.widget<PublicationChoiceRow>(
+          find.byWidgetPredicate(
+            (widget) => widget is PublicationChoiceRow && widget.label == label,
+          ),
+        );
+        expect(choice.value, isEmpty);
+      }
+      expect(find.text('Por determinar'), findsNothing);
       expect(footer.onContinue, isNull);
       expect(footer.onSave, isNotNull);
       expect(tester.takeException(), isNull);

@@ -75,7 +75,9 @@ void main() {
     (tester) async {
       final testPrivacy = await document(tester, const PrivacyNoticeScreen());
       expect(
-        find.textContaining('privacy-2026-11-01 · 1 de noviembre de 2026'),
+        find.textContaining(
+          'privacy-2026-11-01-ubicacion · 1 de noviembre de 2026',
+        ),
         findsWidgets,
       );
       final livePrivacy = await document(
@@ -83,7 +85,9 @@ void main() {
         const PrivacyNoticeScreen(environment: 'production'),
       );
       expect(
-        find.textContaining('privacy-live-2026-11-01 · 1 de noviembre de 2026'),
+        find.textContaining(
+          'privacy-live-2026-11-01-ubicacion · 1 de noviembre de 2026',
+        ),
         findsWidgets,
       );
       expect(livePrivacy.keys, testPrivacy.keys);

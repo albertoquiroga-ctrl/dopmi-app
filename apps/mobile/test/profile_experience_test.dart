@@ -612,6 +612,7 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       await tester.ensureVisible(link);
+      expect(find.text('Mis mascotas'), findsNothing);
       await tester.tap(link);
       await tester.pumpAndSettle();
       expect(find.byType(RescuerAccountOptionsScreen), findsOneWidget);

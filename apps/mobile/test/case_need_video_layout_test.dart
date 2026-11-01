@@ -76,7 +76,7 @@ void main() {
         await tester.pumpAndSettle();
         if (keyboard) {
           await tester.tap(
-            find.byKey(const ValueKey('publication-need-title')),
+            find.byKey(const ValueKey('publication-need-amount')),
           );
           await tester.pumpAndSettle();
         }

@@ -6,6 +6,7 @@
         android:allowBackup="false"
         android:name="com.mycompany.dopmi.DopmiApplication"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="${dopmiGoogleMapsKey}" />
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
         <activity

@@ -295,8 +295,10 @@ void main() {
         1,
       );
       expect(find.text('Complementa sus fotos').hitTestable(), findsOneWidget);
-      final breed = find.byKey(const ValueKey('publication-field-breed'));
-      await tester.ensureVisible(breed);
+      final personality = find.byKey(
+        const ValueKey('publication-personality-timido'),
+      );
+      await tester.ensureVisible(personality);
       await tester.pumpAndSettle();
       expect(find.text('Complementa sus fotos').hitTestable(), findsNothing);
       await tapPublication(
@@ -367,28 +369,41 @@ void main() {
   );
 
   testWidgets(
-    'precise age remains valid and an invalid edit preserves the saved draft',
+    'hidden historical identity, age and compatibility survive the simplified form',
     (tester) async {
       final repo = PhotoDraftCommunity();
+      repo.post = Adoption({
+        ...repo.post.data,
+        'age_months': 18,
+        'breed': 'Mestiza',
+        'publisher_bio': 'Historia del refugio conservada',
+        'social_dogs': true,
+        'social_cats': false,
+        'social_children': null,
+      });
       await startPublication(tester, repo, '/my-adoptions/post');
-      await tapPublication(
-        tester,
-        find.text('Presentación pública y edad precisa'),
-      );
-      final age = find.byKey(const ValueKey('publication-field-age_months'));
-      await tester.ensureVisible(age);
-      await tester.enterText(age, '1 año y 6 meses');
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tapPublication(tester, find.text('Guardar borrador'));
-      expect(repo.savedPayload?['age_months'], 18);
-      await tester.enterText(age, 'edad desconocida');
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tapPublication(tester, find.text('Guardar borrador'));
-      expect(repo.savedPayload?['age_months'], 18);
+      expect(find.text('Presentación pública y edad precisa'), findsNothing);
       expect(
-        tester.widget<TextFormField>(age).controller!.text,
-        'edad desconocida',
+        find.byKey(const ValueKey('publication-field-age_months')),
+        findsNothing,
       );
+      await tapPublication(tester, find.text('Continuar'));
+      expect(
+        find.byKey(const ValueKey('publication-field-breed')),
+        findsNothing,
+      );
+      expect(find.text('Compatibilidad registrada'), findsNothing);
+      expect(find.text('Características de la mascota'), findsOneWidget);
+      await tapPublication(tester, find.text('Guardar borrador'));
+      expect(repo.savedPayload?['age_months'], 18);
+      expect(repo.savedPayload?['breed'], 'Mestiza');
+      expect(
+        repo.savedPayload?['publisher_bio'],
+        'Historia del refugio conservada',
+      );
+      expect(repo.savedPayload?['social_dogs'], isTrue);
+      expect(repo.savedPayload?['social_cats'], isFalse);
+      expect(repo.savedPayload?['social_children'], isNull);
       expect(tester.takeException(), isNull);
     },
   );

@@ -129,13 +129,15 @@ void main() {
 
   for (final document in [const TermsScreen(), const PrivacyNoticeScreen()]) {
     testWidgets(
-      'native legal document exposes its exact October version: ${document.runtimeType}',
+      'native legal document exposes its exact current version: ${document.runtimeType}',
       (tester) async {
         await tester.pumpWidget(MaterialApp(home: document));
         await tester.pumpAndSettle();
         expect(
           find.textContaining(
-            document is TermsScreen ? 'terms-2026-11-01' : 'privacy-2026-11-01',
+            document is TermsScreen
+                ? 'terms-2026-11-01'
+                : 'privacy-2026-11-01-ubicacion',
           ),
           findsWidgets,
         );

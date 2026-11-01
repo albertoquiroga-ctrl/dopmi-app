@@ -7,7 +7,6 @@ import '../identity/identity_controller.dart';
 import 'rescuer_profile_repository.dart';
 import 'rescuer_settings_details.dart';
 import 'rescuer_social_dialog.dart';
-import 'social_verification_screen.dart';
 
 class RescuerSocialSection extends ConsumerWidget {
   const RescuerSocialSection({super.key});
@@ -17,14 +16,6 @@ class RescuerSocialSection extends ConsumerWidget {
     children: [
       const SizedBox(height: 12),
       const SettingsSectionHeading('Redes sociales'),
-      OutlinedButton.icon(
-        onPressed: () => Navigator.of(context).push<void>(
-          MaterialPageRoute(builder: (_) => const SocialVerificationScreen()),
-        ),
-        icon: const Icon(Icons.link),
-        label: const Text('Verificar mis redes sociales'),
-      ),
-      const SizedBox(height: 10),
       LiveSection<Json?>(
         key: ValueKey(ref.watch(identityControllerProvider).identity?.id),
         tables: const ['dopmi_rescuer_profiles'],

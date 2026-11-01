@@ -125,6 +125,15 @@ Future<void> mountNeed(
   await tester.pumpAndSettle();
 }
 
+Future<void> chooseNeedService(WidgetTester tester, String service) async {
+  final selector = find.byKey(const ValueKey('publication-need-title'));
+  await tester.ensureVisible(selector);
+  await tester.tap(selector);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(service).last);
+  await tester.pumpAndSettle();
+}
+
 Future<void> saveVideoDraft(WidgetTester tester) async {
   final save = find.text('Guardar borrador para añadir videos');
   await tester.ensureVisible(save);
@@ -166,7 +175,48 @@ void main() {
       final session = NeedSession(), rescue = NeedRescue();
       final videos = NeedVideos(session);
       await mountNeed(tester, session, rescue, videos);
-      expect(videos.policies, isEmpty);
+      final semantics = tester.ensureSemantics();
+      try {
+        expect(
+          tester
+              .getSemantics(
+                find.byKey(
+                  const ValueKey('publication-need-service-semantics'),
+                ),
+              )
+              .getSemanticsData()
+              .label,
+          contains('Servicio veterinario, obligatorio'),
+        );
+        expect(videos.policies, isEmpty);
+        final services = tester.widget<DropdownButton<String>>(
+          find.descendant(
+            of: find.byKey(const ValueKey('publication-need-title')),
+            matching: find.byType(DropdownButton<String>),
+          ),
+        );
+        expect(services.items!.map((item) => item.value), [
+          'Consulta y diagnóstico',
+          'Cirugía',
+          'Estudios',
+          'Vacunas y desparasitación',
+          'Otro',
+        ]);
+        await chooseNeedService(tester, 'Consulta y diagnóstico');
+        expect(
+          tester
+              .getSemantics(
+                find.byKey(
+                  const ValueKey('publication-need-service-semantics'),
+                ),
+              )
+              .getSemanticsData()
+              .label,
+          contains('Servicio veterinario, obligatorio'),
+        );
+      } finally {
+        semantics.dispose();
+      }
       expect(find.byType(VideoUpload), findsNothing);
       await saveVideoDraft(tester);
       final upload = tester.widget<VideoUpload>(find.byType(VideoUpload));
@@ -191,10 +241,7 @@ void main() {
         tester.widget<VideoUpload>(find.byType(VideoUpload)).parentVersion,
         4,
       );
-      await tester.enterText(
-        find.byKey(const ValueKey('publication-need-title')),
-        'Consulta corregida',
-      );
+      await chooseNeedService(tester, 'Cirugía');
       await tester.pump();
       expect(find.byType(VideoUpload), findsNothing);
       await saveVideoDraft(tester);
@@ -202,10 +249,7 @@ void main() {
       expect(upload.parentId, 'expense-existing');
       expect(upload.parentVersion, 5);
       expect(rescue.writes.single['id'], 'expense-existing');
-      expect(
-        (rescue.writes.single['public'] as Json)['title'],
-        'Consulta corregida',
-      );
+      expect((rescue.writes.single['public'] as Json)['title'], 'Cirugía');
       expect(rescue.transitions, 0);
     },
   );
@@ -233,6 +277,10 @@ void main() {
       expect(
         rescue.writes.map((item) => item['id']),
         everyElement('expense-existing'),
+      );
+      expect(
+        rescue.writes.map((item) => (item['public'] as Json)['title']),
+        everyElement('Consulta'),
       );
       expect(
         tester.widget<VideoUpload>(find.byType(VideoUpload)).parentVersion,
@@ -309,10 +357,7 @@ void main() {
         videos,
         record: privateNeedRecord(),
       );
-      await tester.enterText(
-        find.byKey(const ValueKey('publication-need-title')),
-        'Consulta modificada',
-      );
+      await chooseNeedService(tester, 'Estudios');
       await tester.pump();
       session.actor = 'other';
       await saveVideoDraft(tester);
@@ -335,10 +380,7 @@ void main() {
         videos,
         record: privateNeedRecord(),
       );
-      await tester.enterText(
-        find.byKey(const ValueKey('publication-need-title')),
-        'Consulta modificada',
-      );
+      await chooseNeedService(tester, 'Estudios');
       await tester.pump();
       final save = find.text('Guardar borrador para añadir videos');
       await tester.ensureVisible(save);

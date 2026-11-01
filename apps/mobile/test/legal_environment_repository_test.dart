@@ -28,13 +28,13 @@ void main() {
     (
       environment: 'test',
       terms: 'terms-2026-11-01',
-      privacy: 'privacy-2026-11-01',
+      privacy: 'privacy-2026-11-01-ubicacion',
       date: '1 de noviembre de 2026',
     ),
     (
       environment: 'production',
       terms: 'terms-live-2026-11-01',
-      privacy: 'privacy-live-2026-11-01',
+      privacy: 'privacy-live-2026-11-01-ubicacion',
       date: '1 de noviembre de 2026',
     ),
   ];

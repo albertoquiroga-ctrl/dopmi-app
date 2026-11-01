@@ -769,12 +769,6 @@ class DonorProfileView extends ConsumerWidget {
               onPressed: () => context.push('/settings/account'),
             ),
             const SizedBox(height: 12),
-            ProfileRow(
-              title: 'Mis mascotas',
-              icon: Icons.favorite_border,
-              path: '/messages',
-            ),
-            const SizedBox(height: 12),
             DonorLogoutRow(
               onPressed: () async {
                 try {

@@ -1,5 +1,6 @@
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,65 @@ import 'fake_identity_repository.dart';
 import 'publication_frame_test.dart' show startPublication, tapPublication;
 
 void main() {
+  testWidgets(
+    'new adoption saves explicit unselected categories and restores them unchanged',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/new');
+      void expectUnselected() {
+        for (final label in ['Especie', 'Sexo', 'Tamaño', 'Edad']) {
+          final row = tester.widget<PublicationChoiceRow>(
+            find.byWidgetPredicate(
+              (widget) =>
+                  widget is PublicationChoiceRow && widget.label == label,
+            ),
+          );
+          expect(row.value, isNull);
+        }
+      }
+
+      expectUnselected();
+      await tapPublication(tester, find.text('Guardar borrador'));
+      for (final key in ['species', 'sex', 'size', 'age_band']) {
+        expect(repo.savedPayload!.containsKey(key), isTrue);
+        expect(repo.savedPayload![key], isNull);
+      }
+      await tapPublication(
+        tester,
+        find.text('Descartar cambios y cargar versión guardada'),
+      );
+      expectUnselected();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'adoption cannot advance a story shorter than the server requirement',
+    (tester) async {
+      final repo = PhotoDraftCommunity();
+      await startPublication(tester, repo, '/my-adoptions/post');
+      final story = find.byKey(const ValueKey('publication-field-story'));
+      await tester.ensureVisible(story);
+      await tester.enterText(story, 'Historia corta');
+      await tester.pump();
+      expect(
+        tester
+            .widget<PublicationFooter>(find.byType(PublicationFooter))
+            .onContinue,
+        isNull,
+      );
+      await tester.enterText(story, 'Historia de rescate completa y veraz.');
+      await tester.pump();
+      expect(
+        tester
+            .widget<PublicationFooter>(find.byType(PublicationFooter))
+            .onContinue,
+        isNotNull,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets(
     'new personality choices cap at three without clearing legacy traits',
     (tester) async {

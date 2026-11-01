@@ -379,11 +379,17 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                                           Expanded(
                                             child: Text(
                                               [
-                                                    post.text('city'),
-                                                    post.text('region'),
-                                                  ]
-                                                  .where((s) => s.isNotEmpty)
-                                                  .join(', '),
+                                                        post.text('city'),
+                                                        post.text('region'),
+                                                      ]
+                                                      .where(
+                                                        (s) => s.isNotEmpty,
+                                                      )
+                                                      .join(', ') +
+                                                  (post.data['distance_km']
+                                                          is num
+                                                      ? ' · ${(post.data['distance_km'] as num).toStringAsFixed(1)} km'
+                                                      : ''),
                                               style: TextStyle(
                                                 fontFamily: 'Inter',
                                                 letterSpacing: 0,
@@ -485,9 +491,11 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                                 children: [
                                   for (final stat in [
                                     (
-                                      post.text('sex') == 'female'
-                                          ? 'Hembra'
-                                          : 'Macho',
+                                      const {
+                                            'female': 'Hembra',
+                                            'male': 'Macho',
+                                          }[post.text('sex')] ??
+                                          'Sin definir',
                                       'Sexo',
                                     ),
                                     (
@@ -592,88 +600,11 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                                 color: muted,
                               ),
                             ),
-                            if (post.data['distance_km'] is num) ...[
-                              const SizedBox(height: 12),
-                              Text(
-                                'Distancia: ${(post.data['distance_km'] as num).toStringAsFixed(1)} km',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 12,
-                                  color: muted,
-                                ),
-                              ),
-                            ],
                             Semantics(
                               container: true,
                               label: 'Características de la mascota',
                               child: _AdoptionCharacteristics(post),
                             ),
-                            if (post.text('special_care').isNotEmpty) ...[
-                              const SizedBox(height: 20),
-                              const Text(
-                                'Cuidados especiales',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  letterSpacing: 0,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: ink,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                post.text('special_care'),
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  letterSpacing: 0,
-                                  fontSize: 14,
-                                  height: 1.55,
-                                  color: muted,
-                                ),
-                              ),
-                            ],
-                            if (!widget.preview) const SizedBox(height: 40),
-                            if (!widget.preview)
-                              Material(
-                                color: Colors.white,
-                                child: ExpansionTile(
-                                  tilePadding: EdgeInsets.zero,
-                                  title: const Text(
-                                    'Más sobre su salud y cuidados',
-                                  ),
-                                  children: [
-                                    for (final entry in {
-                                      'age': 'Edad',
-                                      'breed': 'Raza',
-                                      'vaccinated': 'Vacunas al día',
-                                      'sterilized': 'Esterilización',
-                                      'social_dogs': 'Convive con perros',
-                                      'social_cats': 'Convive con gatos',
-                                      'social_children':
-                                          'Convive con niñas y niños',
-                                    }.entries)
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 8,
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            '${entry.value}: ${entry.key == 'age'
-                                                ? post.age
-                                                : entry.key == 'breed'
-                                                ? (post.text('breed').isEmpty ? 'Sin especificar' : post.text('breed'))
-                                                : post.data[entry.key] == null
-                                                ? 'Por confirmar'
-                                                : post.data[entry.key] == true
-                                                ? 'Sí'
-                                                : 'No'}',
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
                             const SizedBox(height: 20),
                             if (!widget.preview)
                               Align(
@@ -1005,39 +936,61 @@ class _AdoptionCharacteristics extends StatelessWidget {
         if (health.isNotEmpty)
           section(
             'Salud',
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (final tag in health)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: DopmiTokens.sky, width: 1.5),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0a15110d),
-                          offset: Offset(0, 2),
-                          blurRadius: 8,
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final tag in health)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
                         ),
-                      ],
-                    ),
-                    child: Text(
-                      tag,
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        height: 1.25,
-                        fontWeight: FontWeight.w600,
-                        color: ink,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: DopmiTokens.sky,
+                            width: 1.5,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x0a15110d),
+                              offset: Offset(0, 2),
+                              blurRadius: 8,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          tag,
+                          style: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 13,
+                            height: 1.25,
+                            fontWeight: FontWeight.w600,
+                            color: ink,
+                          ),
+                        ),
                       ),
+                  ],
+                ),
+                if (post.text('special_care').trim().isNotEmpty &&
+                    post.text('special_care').trim() !=
+                        'Requiere cuidados especiales') ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    post.text('special_care'),
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      height: 1.55,
+                      color: muted,
                     ),
                   ),
+                ],
               ],
             ),
           ),

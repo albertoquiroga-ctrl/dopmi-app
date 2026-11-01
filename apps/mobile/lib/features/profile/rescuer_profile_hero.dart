@@ -21,7 +21,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/design_tokens.dart';
 import '../community/content_actions.dart';
 import 'rescuer_profile_repository.dart';
-import 'social_verification_screen.dart';
 import 'rescuer_verification_card.dart';
 import 'rescuer_profile_preview.dart';
 import 'rescuer_social_dialog.dart' show rescuerSocialDisplayValue;
@@ -288,17 +287,6 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
                     ? '/settings'
                     : '/rescue/new?kind=verification',
               ),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              key: const ValueKey('owner-social-verification'),
-              onPressed: () => Navigator.of(context).push<void>(
-                MaterialPageRoute(
-                  builder: (_) => const SocialVerificationScreen(),
-                ),
-              ),
-              icon: const Icon(Icons.link),
-              label: const Text('Verificar mis redes sociales'),
             ),
             const SizedBox(height: 12),
             ReferenceFocusOutline(

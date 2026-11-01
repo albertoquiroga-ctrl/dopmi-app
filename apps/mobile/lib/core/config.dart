@@ -12,6 +12,7 @@ class AppConfig {
     required this.redirect,
     this.googleEnabled = false,
     this.appleEnabled = false,
+    this.mapsEnabled = false,
     this.environment = 'test',
     this.googleServerClientId = '',
     this.googleIosClientId = '',
@@ -28,6 +29,7 @@ class AppConfig {
     ),
     googleEnabled: bool.fromEnvironment('ENABLE_GOOGLE_AUTH'),
     appleEnabled: bool.fromEnvironment('ENABLE_APPLE_AUTH'),
+    mapsEnabled: bool.fromEnvironment('ENABLE_GOOGLE_MAPS'),
     googleServerClientId: String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
     googleIosClientId: String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
     measurementTestEnabled: bool.fromEnvironment('ENABLE_MEASUREMENT_TEST'),
@@ -45,7 +47,7 @@ class AppConfig {
     ),
   );
   final String url, key, redirect;
-  final bool googleEnabled, appleEnabled;
+  final bool googleEnabled, appleEnabled, mapsEnabled;
   final String environment;
   final String googleServerClientId, googleIosClientId;
   final bool measurementTestEnabled;

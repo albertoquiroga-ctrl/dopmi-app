@@ -23,6 +23,10 @@ import 'community_ui.dart';
 import '../rescue/rescue_repository.dart';
 import '../rescue/rescue_public_photo.dart';
 import 'location_service.dart';
+import 'location_selection.dart';
+import 'location_map_picker.dart';
+import 'nearby_location_controller.dart';
+import '../identity/identity_controller.dart';
 import 'discovery_filters.dart';
 import 'discovery_empty.dart';
 import 'discovery_card_motion.dart';
@@ -83,6 +87,52 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   final pendingFavorites = <String>{};
   final failedFavorites = <String, Adoption>{};
   final reportedViews = <String>{};
+  NearbyLocationController? nearby;
+  String? nearbyScope, nearbyQueryKey;
+
+  Json get effectiveFilters {
+    final value = Json.from(filters);
+    if (nearby != null) {
+      value.removeWhere(
+        (key, _) => ['latitude', 'longitude', 'radius_km'].contains(key),
+      );
+      if (nearby!.selection != null) {
+        value.remove('city');
+        value.remove('region');
+        value.addAll(nearby!.discoveryFilters);
+      }
+    }
+    return value;
+  }
+
+  String nearbyKey() =>
+      '${nearby!.scope}:${nearby!.selection?.latitude}:${nearby!.selection?.longitude}:${nearby!.radiusKm}';
+
+  void nearbyChanged() {
+    if (!mounted) return;
+    final key = nearbyKey();
+    if (key == nearbyQueryKey) {
+      setState(() {});
+      return;
+    }
+    if (nearbyScope != nearby!.scope) {
+      filters.removeWhere(
+        (key, _) => [
+          'city',
+          'region',
+          'latitude',
+          'longitude',
+          'radius_km',
+        ].contains(key),
+      );
+      failedFavorites.clear();
+      pendingFavorites.clear();
+      reportedViews.clear();
+    }
+    nearbyScope = nearby!.scope;
+    nearbyQueryKey = key;
+    load(reset: true);
+  }
 
   Future<void> reportFrontView(Adoption post) async {
     final items = deck;
@@ -163,12 +213,35 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   @override
   void initState() {
     super.initState();
+    if (ref.read(configProvider).mapsEnabled) {
+      nearby = ref.read(nearbyLocationControllerProvider);
+      nearbyScope = nearby!.scope;
+      nearbyQueryKey = nearbyKey();
+      nearby!.addListener(nearbyChanged);
+    }
     load(reset: true);
+  }
+
+  @override
+  void dispose() {
+    loadVersion++;
+    nearby?.removeListener(nearbyChanged);
+    super.dispose();
   }
 
   Future<void> load({required bool reset}) async {
     if (loading && !reset && cards.isNotEmpty) return;
     final version = ++loadVersion;
+    final source = ref.read(communityRepositoryProvider);
+    final actor = source.userId,
+        identity = ref.read(identityControllerProvider).identity?.id;
+    final requestedFilters = effectiveFilters;
+    bool current() =>
+        mounted &&
+        version == loadVersion &&
+        identical(source, ref.read(communityRepositoryProvider)) &&
+        source.userId == actor &&
+        ref.read(identityControllerProvider).identity?.id == identity;
     setState(() {
       loading = true;
       error = null;
@@ -190,29 +263,25 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       }
     });
     try {
-      final result = await ref
-          .read(communityRepositoryProvider)
-          .discovery(Map<String, dynamic>.from(filters), page);
-      if (!mounted || version != loadVersion) return;
-      if (reset && result.total == 0 && filters.length == 1) {
+      final result = await source.discovery(requestedFilters, page);
+      if (!current()) return;
+      if (reset && result.total == 0 && requestedFilters.length == 1) {
         try {
-          final other = await ref.read(communityRepositoryProvider).discovery({
-            'species': filters['species'] == 'dog' ? 'cat' : 'dog',
+          final other = await source.discovery({
+            'species': requestedFilters['species'] == 'dog' ? 'cat' : 'dog',
           }, 1);
-          if (!mounted || version != loadVersion) return;
+          if (!current()) return;
           allSpeciesEmpty = other.total == 0;
         } catch (_) {
           // A failed alternate-category lookup cannot prove the entire catalog empty.
         }
       }
       if (reset) {
-        final opportunities = await ref
-            .read(communityRepositoryProvider)
-            .discoverySupport();
-        if (!mounted || version != loadVersion) return;
+        final opportunities = await source.discoverySupport();
+        if (!current()) return;
         support.addAll(opportunities);
       }
-      if (!mounted) return;
+      if (!current()) return;
       final known = cards.map((item) => item.id).toSet();
       cards.addAll(result.items.where((item) => known.add(item.id)));
       total = result.total;
@@ -426,23 +495,40 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   Future<void> openLocation() async {
-    final result = await showModalBottomSheet<Json>(
+    final actor = ref.read(identityControllerProvider).identity?.id;
+    final result = await showModalBottomSheet<_DiscoveryLocationResult>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (_) => DiscoveryLocation(filters),
+      builder: (_) => DiscoveryLocation(effectiveFilters),
     );
-    if (result != null && mounted) {
-      filters.removeWhere(
-        (key, _) => [
-          'city',
-          'region',
-          'latitude',
-          'longitude',
-          'radius_km',
-        ].contains(key),
-      );
-      filters.addAll(result);
+    if (result == null ||
+        !mounted ||
+        ref.read(identityControllerProvider).identity?.id != actor) {
+      return;
+    }
+    filters.removeWhere(
+      (key, _) => [
+        'city',
+        'region',
+        'latitude',
+        'longitude',
+        'radius_km',
+      ].contains(key),
+    );
+    filters.addAll(result.filters);
+    if (nearby != null) {
+      final previous = nearbyQueryKey;
+      if (!nearby!.replace(
+        result.selection,
+        expectedOwner: actor,
+        radius: result.radiusKm,
+      )) {
+        return;
+      }
+      // A manual city change can keep the same null coordinate query key.
+      if (previous == nearbyQueryKey) await load(reset: true);
+    } else {
       await load(reset: true);
     }
   }
@@ -504,7 +590,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                             splashFactory: NoSplash.splashFactory,
                           ),
                           child: Semantics(
-                            label: filters['city'] == null
+                            label: nearby?.selection != null
+                                ? 'Dopmi. Zona aproximada, radio de ${nearby!.radiusKm} km. Cambiar ubicación'
+                                : filters['city'] == null
                                 ? 'Dopmi. Elegir ubicación'
                                 : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
                             child: ExcludeSemantics(
@@ -523,6 +611,14 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     ],
                   ),
                 ),
+                if (nearby?.selection != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'Mascotas en adopción a ${nearby!.radiusKm} km${nearby!.selection!.label.isEmpty ? '' : ' de ${nearby!.selection!.label}'}',
+                      style: const TextStyle(fontSize: 12, color: muted),
+                    ),
+                  ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -615,7 +711,13 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                 else if (current == null)
                   cards.isEmpty
                       ? DiscoveryEmpty(
-                          filtered: filters.keys.any((key) => key != 'species'),
+                          filtered: effectiveFilters.keys.any(
+                            (key) => key != 'species',
+                          ),
+                          nearbyRadiusKm: nearby?.selection == null
+                              ? null
+                              : nearby!.radiusKm,
+                          changeLocation: openLocation,
                           global: allSpeciesEmpty,
                           species: filters['species'] as String,
                           clear: () {
@@ -1458,34 +1560,114 @@ class DiscoveryLocation extends ConsumerStatefulWidget {
   ConsumerState<DiscoveryLocation> createState() => _DiscoveryLocationState();
 }
 
+class _DiscoveryLocationResult {
+  const _DiscoveryLocationResult(this.filters, this.selection, this.radiusKm);
+  final Json filters;
+  final SelectedLocation? selection;
+  final int radiusKm;
+}
+
 class _DiscoveryLocationState extends ConsumerState<DiscoveryLocation> {
   late final city = TextEditingController(
     text: widget.current['city'] as String? ?? '',
   );
-  late double radius = (widget.current['radius_km'] as num?)?.toDouble() ?? 10;
-  ApproximateLocation? location;
+  late double radius =
+      ((widget.current['radius_km'] as num?)?.toDouble() ??
+              nearbyDefaultRadiusKm.toDouble())
+          .clamp(1, 30)
+          .toDouble();
+  SelectedLocation? selection;
+  late final owner = ref.read(identityControllerProvider).identity?.id;
+  int revision = 0;
   String? error;
   bool busy = false;
+  bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
+  @override
+  void initState() {
+    super.initState();
+    if (mapsEnabled) {
+      selection = ref.read(nearbyLocationControllerProvider).selection;
+    }
+    if (selection == null &&
+        widget.current['latitude'] is num &&
+        widget.current['longitude'] is num) {
+      selection = SelectedLocation(
+        latitude: (widget.current['latitude'] as num).toDouble(),
+        longitude: (widget.current['longitude'] as num).toDouble(),
+      );
+    }
+  }
+
   @override
   void dispose() {
+    revision++;
     city.dispose();
     super.dispose();
   }
 
+  bool current(int version) =>
+      mounted &&
+      revision == version &&
+      ref.read(identityControllerProvider).identity?.id == owner;
+
+  Future<void> chooseMap() async {
+    final version = ++revision;
+    final result = await chooseLocationOnMap(
+      context,
+      initial: selection,
+      city: city.text,
+      requireAddress: false,
+    );
+    if (!current(version) || result == null) return;
+    setState(() {
+      selection = result;
+      error = null;
+    });
+  }
+
   Future<void> locate() async {
+    final version = ++revision;
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      location = await ref.read(locationServiceProvider).current();
+      final result = await ref.read(locationServiceProvider).current();
+      if (!current(version)) return;
+      selection = SelectedLocation(
+        latitude: result.roundedLatitude,
+        longitude: result.roundedLongitude,
+      );
     } catch (cause) {
-      error = cause is LocationException
-          ? cause.message
-          : 'No pudimos obtener tu ubicación. Escribe tu ciudad.';
+      if (current(version)) {
+        error = cause is LocationException
+            ? cause.message
+            : 'No pudimos obtener tu ubicación. Escribe tu ciudad.';
+      }
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (current(version)) setState(() => busy = false);
     }
+  }
+
+  void apply({bool withoutLocation = false}) {
+    if (ref.read(identityControllerProvider).identity?.id != owner) {
+      Navigator.pop(context);
+      return;
+    }
+    final selected = withoutLocation ? null : selection;
+    final filter = <String, dynamic>{
+      if (!withoutLocation && selected == null && city.text.trim().isNotEmpty)
+        'city': city.text.trim(),
+      if (selected != null) ...{
+        'latitude': selected.latitude,
+        'longitude': selected.longitude,
+        'radius_km': radius.round(),
+      },
+    };
+    Navigator.pop(
+      context,
+      _DiscoveryLocationResult(filter, selected, radius.round()),
+    );
   }
 
   @override
@@ -1502,20 +1684,40 @@ class _DiscoveryLocationState extends ConsumerState<DiscoveryLocation> {
         children: [
           Text('Ubicación', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 16),
-          TextField(
-            controller: city,
-            decoration: const InputDecoration(labelText: 'Ciudad o zona'),
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: busy ? null : locate,
-            icon: const Icon(Icons.my_location),
-            label: const Text('Usar mi ubicación aproximada'),
-          ),
+          if (!mapsEnabled || selection == null)
+            TextField(
+              controller: city,
+              decoration: const InputDecoration(labelText: 'Ciudad o zona'),
+            ),
+          if (mapsEnabled) ...[
+            if (selection != null)
+              Text(
+                selection!.label.isEmpty
+                    ? 'Zona aproximada seleccionada'
+                    : selection!.label,
+              ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: busy ? null : chooseMap,
+              icon: const Icon(Icons.map_outlined),
+              label: const Text('Elegir en mapa'),
+            ),
+          ] else ...[
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: busy ? null : locate,
+              icon: const Icon(Icons.my_location),
+              label: const Text('Usar mi ubicación aproximada'),
+            ),
+          ],
           if (busy) const LinearProgressIndicator(),
-          if (location != null)
+          if (selection != null)
             const Text(
               'Ubicación aproximada lista. No publicaremos tus coordenadas.',
+            ),
+          if (selection == null)
+            const Text(
+              'Sin una zona seleccionada puedes buscar por ciudad; no se aplica un radio.',
             ),
           if (error != null) Notice(error!, isError: true),
           const SizedBox(height: 16),
@@ -1525,23 +1727,26 @@ class _DiscoveryLocationState extends ConsumerState<DiscoveryLocation> {
             min: 1,
             max: 30,
             divisions: 29,
-            onChanged: location == null
+            onChanged: selection == null
                 ? null
                 : (value) => setState(() => radius = value),
           ),
           FilledButton(
-            onPressed: () => context.pop(<String, dynamic>{
-              if (city.text.trim().isNotEmpty) 'city': city.text.trim(),
-              if (location != null) ...{
-                'latitude': location!.roundedLatitude,
-                'longitude': location!.roundedLongitude,
-                'radius_km': radius.round(),
-              },
-            }),
+            onPressed: busy ? null : apply,
             child: const Text('Aplicar cambios'),
           ),
+          if (selection != null)
+            TextButton(
+              onPressed: busy
+                  ? null
+                  : () => setState(() {
+                      selection = null;
+                      city.clear();
+                    }),
+              child: const Text('Buscar por ciudad'),
+            ),
           TextButton(
-            onPressed: () => context.pop(<String, dynamic>{}),
+            onPressed: () => apply(withoutLocation: true),
             child: const Text('Buscar sin ubicación'),
           ),
         ],

@@ -1,4 +1,6 @@
 import 'publication_age.dart';
+import 'location_map_picker.dart';
+import 'location_selection.dart';
 
 import 'package:flutter/material.dart';
 
@@ -168,13 +170,15 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     ])
       key: TextEditingController(),
   };
-  Json choices = {'species': 'dog', 'sex': 'female', 'size': 'medium'};
+  Json choices = {'species': null, 'sex': null, 'size': null, 'age_band': null};
   List<String> photos = [];
   Adoption? post;
+  SelectedLocation? selectedLocation;
+  bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   bool loading = false, busy = false;
   String? error, message;
   int loaded = 0, step = 0;
-  bool requiresSpecialCare = false, careEditorOpen = false;
+  bool requiresSpecialCare = false, needsPublisherName = true;
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
   @override
   void initState() {
@@ -195,21 +199,23 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           fields['publisher_name']!.text = profile.name;
         }
         if (fields['city']!.text.isEmpty) fields['city']!.text = profile.city;
+        needsPublisherName = fields['publisher_name']!.text.trim().isEmpty;
       });
     } catch (_) {
-      // Manual public identity and location remain available when profile loading fails.
+      if (mounted) setState(() => needsPublisherName = true);
     }
   }
 
   bool get basicComplete =>
       photos.isNotEmpty &&
       fields['pet_name']!.text.trim().isNotEmpty &&
-      fields['story']!.text.trim().length >= 10 &&
+      fields['story']!.text.trim().length >= 20 &&
       choices['species'] != null &&
       choices['sex'] != null &&
       choices['size'] != null &&
       (choices['age_band'] != null ||
           (publicationAgeMonths(fields['age_months']!.text) ?? 0) > 0) &&
+      (!mapsEnabled || selectedLocation != null) &&
       fields['city']!.text.trim().isNotEmpty &&
       fields['region']!.text.trim().isNotEmpty &&
       fields['publisher_name']!.text.trim().isNotEmpty;
@@ -279,10 +285,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             entry.value.text = '${result.data[entry.key] ?? ''}';
           }
           requiresSpecialCare = fields['special_care']!.text.trim().isNotEmpty;
-          careEditorOpen =
-              requiresSpecialCare &&
-              fields['special_care']!.text.trim() !=
-                  'Requiere cuidados especiales';
+          needsPublisherName = fields['publisher_name']!.text.trim().isEmpty;
           choices = {
             for (final key in [
               'species',
@@ -300,6 +303,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               key: result.data[key],
           };
           photos = result.photos;
+          selectedLocation = SelectedLocation.fromData(
+            result.data,
+            city: fields['city']!.text,
+            region: fields['region']!.text,
+          );
           if (result.status == 'submitted') step = 2;
         });
       }
@@ -326,11 +334,36 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     }
   }
 
+  Future<void> choosePetLocation() async {
+    final repository = repo;
+    final actor = repository.userId;
+    final identity = ref.read(identityControllerProvider).identity?.id;
+    final result = await chooseLocationOnMap(
+      context,
+      initial: selectedLocation,
+      city: fields['city']!.text,
+      region: fields['region']!.text,
+    );
+    if (!mounted ||
+        result == null ||
+        !identical(repository, repo) ||
+        repository.userId != actor ||
+        ref.read(identityControllerProvider).identity?.id != identity) {
+      return;
+    }
+    setState(() {
+      selectedLocation = result;
+      fields['city']!.text = result.city;
+      fields['region']!.text = result.region;
+    });
+  }
+
   Future<void> save() async {
     final payload = <String, dynamic>{
       ...choices,
       for (final entry in fields.entries) entry.key: entry.value.text.trim(),
       'photos': photos,
+      if (selectedLocation != null) ...selectedLocation!.payload,
       if (widget.rescueCaseId != null || post?.data['rescue_case_id'] != null)
         'rescue_case_id': widget.rescueCaseId ?? post?.data['rescue_case_id'],
     };
@@ -666,6 +699,12 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           ),
         ],
         const SizedBox(height: 24),
+        sectionTitle('Características de la mascota'),
+        const Text(
+          'Selecciona las que apliquen. Ninguna es obligatoria pero ayudará al adoptante a motivarse más rápido.',
+          style: TextStyle(fontSize: 14, height: 1.5, color: muted),
+        ),
+        const SizedBox(height: 20),
         sectionTitle('Salud'),
         Container(
           padding: const EdgeInsets.all(12),
@@ -693,20 +732,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             ],
           ),
         ),
-        if (requiresSpecialCare && !careEditorOpen)
-          TextButton(
-            onPressed: enabled
-                ? () => setState(() => careEditorOpen = true)
-                : null,
-            child: const Text('Describir cuidados'),
-          ),
-        if (requiresSpecialCare && careEditorOpen)
-          field(
-            'special_care',
-            'Cuidados especiales (opcional)',
-            1000,
-            lines: 3,
-          ),
         const SizedBox(height: 24),
         const Text(
           'Convivencia y hogar',
@@ -772,19 +797,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             );
           },
         ),
-        if (choices['social_dogs'] != null ||
-            choices['social_cats'] != null ||
-            choices['social_children'] != null)
-          ExpansionTile(
-            key: const PageStorageKey('publication-legacy-compatibility'),
-            title: const Text('Compatibilidad registrada'),
-            tilePadding: EdgeInsets.zero,
-            children: [
-              trait('social_dogs', 'Social con perros'),
-              trait('social_cats', 'Social con gatos'),
-              trait('social_children', 'Social con niñas y niños'),
-            ],
-          ),
         const SizedBox(height: 24),
         const Row(
           children: [
@@ -868,8 +880,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
               ),
           ],
         ),
-        const SizedBox(height: 24),
-        field('breed', 'Raza o mestizo (opcional)', 80),
       ],
     );
   }
@@ -964,29 +974,28 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                     lines: 4,
                     required: true,
                   ),
-                  field('city', 'Ciudad', 100, required: true),
-                  field('region', 'Estado', 100, required: true),
-                  ExpansionTile(
-                    key: const PageStorageKey('publication-public-identity'),
-                    tilePadding: EdgeInsets.zero,
-                    title: const Text('Presentación pública y edad precisa'),
-                    initiallyExpanded: fields['publisher_name']!.text.isEmpty,
-                    children: [
-                      field(
-                        'publisher_name',
-                        'Nombre público o del refugio',
-                        80,
-                        required: true,
-                      ),
-                      field(
-                        'publisher_bio',
-                        'Sobre ti y tu labor (opcional)',
-                        1000,
-                        lines: 3,
-                      ),
-                      field('age_months', 'Edad precisa (opcional)', 40),
-                    ],
-                  ),
+                  if (mapsEnabled)
+                    PublicationLocationField(
+                      city: fields['city']!.text,
+                      region: fields['region']!.text,
+                      selection: selectedLocation,
+                      onChoose: busy ? null : choosePetLocation,
+                    )
+                  else ...[
+                    field('city', 'Ciudad', 100, required: true),
+                    field('region', 'Estado', 100, required: true),
+                  ],
+                  if (needsPublisherName) ...[
+                    const Notice(
+                      'Falta tu nombre público. Complétalo para identificar quién publica este caso.',
+                    ),
+                    field(
+                      'publisher_name',
+                      'Nombre público o del refugio',
+                      80,
+                      required: true,
+                    ),
+                  ],
                 ],
                 if (step == 1) extras(),
                 if (step == 2) ...[

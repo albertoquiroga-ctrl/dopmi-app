@@ -38,7 +38,7 @@ void main() {
   });
   for (final scale in [1.0, 2.0]) {
     testWidgets(
-      'owner profile opens real social verification at scale $scale',
+      'owner profile omits duplicate social verification at scale $scale',
       (tester) async {
         tester.view.physicalSize = const Size(320, 640);
         tester.view.devicePixelRatio = 1;
@@ -93,15 +93,12 @@ void main() {
         );
         await tester.pumpAndSettle();
         final entry = find.byKey(const ValueKey('owner-social-verification'));
-        await tester.ensureVisible(entry);
-        await tester.pumpAndSettle();
-        expect(entry.hitTestable(), findsOneWidget);
-        await tester.tap(entry);
-        await tester.pumpAndSettle();
-        expect(find.byType(SocialVerificationScreen), findsOneWidget);
+        expect(entry, findsNothing);
+        expect(find.text('Verificar mis redes sociales'), findsNothing);
+        expect(find.byType(SocialVerificationScreen), findsNothing);
         expect(
           social.calls.where((call) => call['operation'] == 'list'),
-          hasLength(1),
+          isEmpty,
         );
         expect(
           social.calls.where((call) => call['operation'] == 'start'),

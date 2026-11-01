@@ -7,9 +7,9 @@
   <key>FirebaseCrashlyticsCollectionEnabled</key>
   <false/>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Dopmi usa tu ubicación aproximada sólo cuando eliges buscar mascotas cercanas.</string>
-  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-  <string>Dopmi usa tu ubicación aproximada sólo cuando eliges buscar mascotas cercanas mientras usas la app.</string>
+  <string>Dopmi usa tu ubicación aproximada mientras usas la app para encontrar mascotas cercanas o elegir la zona de una publicación.</string>
+  <key>DopmiGoogleMapsApiKey</key>
+  <string>$(DOPMI_MAPS_IOS_KEY)</string>
   <key>NSCameraUsageDescription</key>
   <string>Dopmi usa la cámara cuando eliges tomar fotos o grabar videos de mascotas para tus publicaciones y casos de rescate.</string>
   <key>NSPhotoLibraryUsageDescription</key>

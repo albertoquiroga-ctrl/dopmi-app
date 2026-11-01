@@ -335,19 +335,16 @@ void main() {
   );
 
   testWidgets(
-    'badge requires server verification and care remains accessible',
+    'badge requires server verification and health is visible without accordions',
     (tester) async {
       await open(tester, verified: false);
       expect(find.text('Rescatista verificado'), findsNothing);
       expect(find.text('Necesita su medicamento cada mañana.'), findsOneWidget);
-      await Scrollable.ensureVisible(
-        tester.element(find.text('Más sobre su salud y cuidados')),
-        alignment: .25,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Más sobre su salud y cuidados'));
-      await tester.pumpAndSettle();
-      expect(find.text('Vacunas al día: Sí'), findsOneWidget);
+      expect(find.byType(ExpansionTile), findsNothing);
+      expect(find.text('Más sobre su salud y cuidados'), findsNothing);
+      expect(find.text('Vacunado'), findsOneWidget);
+      expect(find.text('Requiere cuidados especiales'), findsOneWidget);
+      expect(find.text('Raza'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );

@@ -60,7 +60,7 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         "ENABLE_GUARDIAN": str(production_beta).lower(),
         "STRIPE_PUBLISHABLE_KEY": "",
     }
-    for name in ("ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH"):
+    for name in ("ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "ENABLE_GOOGLE_MAPS"):
         value = env.get(name, "false").strip().lower() or "false"
         if value not in ("true", "false"):
             raise ValueError(f"{name} must be true or false.")

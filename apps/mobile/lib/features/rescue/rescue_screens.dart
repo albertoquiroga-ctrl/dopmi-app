@@ -23,6 +23,8 @@ import '../../core/measurement.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../adoption/publication_frame.dart';
+import '../adoption/location_map_picker.dart';
+import '../adoption/location_selection.dart';
 import '../adoption/photo_recovery.dart';
 import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
@@ -735,6 +737,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     with WidgetsBindingObserver {
   final controllers = <String, TextEditingController>{};
   RescueRecord? record;
+  SelectedLocation? selectedLocation;
+  bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   List<Json> files = [], history = [];
   int step = 0;
   bool verificationIntroDismissed = false;
@@ -767,8 +771,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   final caseInformationKey = GlobalKey(debugLabel: 'case-information');
-  final caseNeedsKey = GlobalKey(debugLabel: 'case-needs');
-  final caseNeedsScrollStorage = PageStorageBucket();
   List<Json> needItems = [];
   List<RescueRecord> expenseDrafts = [];
   String? previewRescuerName;
@@ -807,12 +809,25 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       final raw = (f.private ? r?.privateData : r?.publicData)?[f.key];
       var value = f.key == 'amount_cents' && raw is int
           ? raw.toString()
-          : raw as String? ?? f.initial;
+          : raw as String? ??
+                (kind == 'case' &&
+                        ['species', 'sex', 'size', 'age'].contains(f.key)
+                    ? ''
+                    : f.initial);
       if (f.key == 'amount_cents' && int.tryParse(value) != null) {
         final cents = int.parse(value);
         value = '${cents ~/ 100}.${(cents % 100).toString().padLeft(2, '0')}';
       }
       (controllers[f.key] ??= TextEditingController()).text = value;
+    }
+    if (kind == 'case') {
+      selectedLocation = r == null
+          ? null
+          : SelectedLocation.fromData(
+              r.data,
+              city: controllers['city']!.text,
+              region: controllers['state']!.text,
+            );
     }
   }
 
@@ -885,6 +900,29 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     }
   }
 
+  Future<void> choosePetLocation() async {
+    final actor = ref.read(identityControllerProvider).identity?.id;
+    final source = repository;
+    final result = await chooseLocationOnMap(
+      context,
+      initial: selectedLocation,
+      city: controllers['city']!.text,
+      region: controllers['state']!.text,
+    );
+    if (!mounted ||
+        result == null ||
+        !identical(source, repository) ||
+        ref.read(identityControllerProvider).identity?.id != actor) {
+      return;
+    }
+    setState(() {
+      selectedLocation = result;
+      controllers['city']!.text = result.city;
+      controllers['state']!.text = result.region;
+      dirty = true;
+    });
+  }
+
   Future<void> save() async {
     final pub = <String, dynamic>{}, priv = <String, dynamic>{};
     for (final f in rescueFields[kind]!) {
@@ -906,6 +944,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       pub['need_items'] = needItems;
     }
     if (kind == 'case') {
+      if (selectedLocation != null) pub.addAll(selectedLocation!.payload);
       urgencyPhotoPath = urgencyComplementEligible
           ? validUrgencyPhoto(urgencyPhotoPath, files)
           : null;
@@ -943,7 +982,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         'story',
         'city',
         'state',
-      ].every((key) => controllers[key]?.text.trim().isNotEmpty == true);
+      ].every((key) => controllers[key]?.text.trim().isNotEmpty == true) &&
+      (controllers['story']?.text.trim().length ?? 0) >= 20 &&
+      (!mapsEnabled || selectedLocation != null);
 
   Future<void> loadPreviewActor() async {
     final community = ref.read(communityRepositoryProvider);
@@ -1159,81 +1200,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     });
     await save();
   }
-
-  Widget casePhotos() => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      const Text(
-        'Complementa sus fotos',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 18,
-          height: 28 / 18,
-          fontWeight: FontWeight.w600,
-          color: Color(0xff151423),
-        ),
-      ),
-      const SizedBox(height: 16),
-      PublicationPhotoPicker(
-        supplementary: true,
-        onCamera:
-            editable &&
-                !busy &&
-                !caseMediaActive &&
-                files.where((f) => f['role'] == 'public').length < 6
-            ? () => run(() => pickCasePhoto(ImageSource.camera))
-            : null,
-        onGallery:
-            editable &&
-                !busy &&
-                !caseMediaActive &&
-                files.where((f) => f['role'] == 'public').length < 6
-            ? () => run(() => pickCasePhoto(ImageSource.gallery))
-            : null,
-      ),
-      const SizedBox(height: 16),
-      Wrap(
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-          for (var i = 0; i < files.length; i++)
-            if (files[i]['role'] == 'public' &&
-                i != files.indexWhere((f) => f['role'] == 'public'))
-              PublicationPhotoThumbnail(
-                size: 110,
-                photo: Semantics(
-                  button: true,
-                  label: 'Ver foto ${i + 1}',
-                  child: InkWell(
-                    splashFactory: NoSplash.splashFactory,
-                    highlightColor: Colors.transparent,
-                    onTap: () =>
-                        context.push('/rescue-file', extra: files[i]['path']),
-                    child: RescuePublicPhoto(
-                      files[i]['path'] as String,
-                      height: 110,
-                      radius: 0,
-                      compact: true,
-                    ),
-                  ),
-                ),
-                principal:
-                    i == files.indexWhere((file) => file['role'] == 'public'),
-                onRemove: editable && !busy && !caseMediaActive
-                    ? () => setState(() {
-                        files.removeAt(i);
-                        urgencyPhotoPath = validUrgencyPhoto(
-                          urgencyPhotoPath,
-                          files,
-                        );
-                        dirty = true;
-                      })
-                    : null,
-              ),
-        ],
-      ),
-    ],
-  );
 
   Future<void> attach(String role) async {
     await save();
@@ -2074,6 +2040,16 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       controllers: controllers,
                       enabled: editable && !busy,
                       onChanged: () => setState(() => dirty = true),
+                      locationField: mapsEnabled
+                          ? PublicationLocationField(
+                              city: controllers['city']!.text,
+                              region: controllers['state']!.text,
+                              selection: selectedLocation,
+                              onChoose: editable && !busy
+                                  ? choosePetLocation
+                                  : null,
+                            )
+                          : null,
                     ),
                   ],
                   if (step == 1 && kind == 'expense') ...[
@@ -2287,29 +2263,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       onRemove: (expense) =>
                           run(() => removeCaseExpense(expense)),
                     ),
-                    const SizedBox(height: 12),
-                    ExpansionTile(
-                      key: const PageStorageKey(
-                        'case-publication-planned-needs',
-                      ),
-                      title: const Text('Cuidados y necesidades previstas'),
-                      children: [
-                        PageStorage(
-                          bucket: caseNeedsScrollStorage,
-                          child: CaseNeeds(
-                            key: caseNeedsKey,
-                            items: needItems,
-                            onItemsChanged: (items) => setState(() {
-                              needItems = items;
-                              dirty = true;
-                            }),
-                            controller: controllers['need']!,
-                            enabled: !busy,
-                            onChanged: () => setState(() => dirty = true),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                   if (step == 2 && kind == 'case' && editable) ...[
                     RescueVideoSection(
@@ -2333,18 +2286,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       enabled: !busy,
                       photoMutationsEnabled: !caseMediaActive,
                       onActivityChanged: caseUrgencyActivityChanged,
-                    ),
-                    const SizedBox(height: 24),
-                    ExpansionTile(
-                      key: const PageStorageKey(
-                        'case-publication-additional-photos',
-                      ),
-                      tilePadding: EdgeInsets.zero,
-                      title: const Text(
-                        'Fotos adicionales (opcional)',
-                        style: TextStyle(fontFamily: 'Inter', fontSize: 16),
-                      ),
-                      children: [casePhotos()],
                     ),
                   ],
                   if (step == 3 && kind == 'case' && editable) ...[

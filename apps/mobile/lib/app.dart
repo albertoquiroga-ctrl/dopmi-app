@@ -1,6 +1,7 @@
 import 'features/rescue/publish_choice_screen.dart';
 import 'features/store/store_screen.dart';
 import 'features/adoption/community_ui.dart';
+import 'features/adoption/nearby_location_gate.dart';
 import 'features/payments/guardian_repository.dart';
 import 'features/payments/guardian_promotion_screen.dart';
 import 'features/payments/payment_activity_screen.dart';
@@ -764,6 +765,14 @@ class _LegalAccessGate extends ConsumerWidget {
             );
           }
           if (experience.loading) return const DopmiSplash();
+        }
+        if (ref.read(configProvider).mapsEnabled &&
+            currentIdentity?.verified == true &&
+            const {'/home', '/adoptions', '/rescuer'}.contains(path)) {
+          return NearbyLocationGate(
+            key: ValueKey('nearby:${currentIdentity!.id}'),
+            child: child,
+          );
         }
         return child;
       },

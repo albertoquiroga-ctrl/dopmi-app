@@ -13,6 +13,14 @@ import 'rescue_public_photo.dart';
 import 'rescue_repository.dart';
 import 'rescue_videos.dart';
 
+const veterinaryPublicationServices = [
+  'Consulta y diagnóstico',
+  'Cirugía',
+  'Estudios',
+  'Vacunas y desparasitación',
+  'Otro',
+];
+
 /// Every attachment belongs to a real private expense draft. Nothing here submits,
 /// publishes or sets reimbursable capacity before independent moderation.
 class CasePublicationNeedEditor extends ConsumerStatefulWidget {
@@ -302,6 +310,63 @@ class _CasePublicationNeedEditorState
     );
   }
 
+  Widget veterinaryService() {
+    final current = fields['title']!.text;
+    final options = [
+      ...veterinaryPublicationServices,
+      // Editing a historical title must not silently replace its saved value.
+      if (current.isNotEmpty &&
+          !veterinaryPublicationServices.contains(current))
+        current,
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const PublicationFieldLabel(
+            'Servicio veterinario',
+            required: true,
+            style: TextStyle(
+              fontSize: 14,
+              height: 1.4,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Semantics(
+            key: const ValueKey('publication-need-service-semantics'),
+            label: 'Servicio veterinario, obligatorio',
+            child: DropdownButtonFormField<String>(
+              key: const ValueKey('publication-need-title'),
+              initialValue: current.isEmpty ? null : current,
+              isExpanded: true,
+              decoration: InputDecoration(
+                hintText: 'Selecciona un servicio',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              items: [
+                for (final option in options)
+                  DropdownMenuItem(value: option, child: Text(option)),
+              ],
+              onChanged: busy || !sameSession
+                  ? null
+                  : (value) {
+                      if (value == null) return;
+                      setState(() {
+                        fields['title']!.text = value;
+                        dirty = true;
+                      });
+                    },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(rescueVideoIdentityProvider);
@@ -360,19 +425,22 @@ class _CasePublicationNeedEditorState
                   color: Color(0xff616174),
                 ),
               ),
-              field(
-                'title',
-                widget.type == 'medicine'
-                    ? 'Nombre de la medicina'
-                    : widget.type == 'food'
-                    ? 'Alimento comprado'
-                    : 'Descripción del servicio',
-              ),
+              if (widget.type == 'veterinary')
+                veterinaryService()
+              else
+                field(
+                  'title',
+                  widget.type == 'medicine'
+                      ? 'Nombre de la medicina'
+                      : 'Alimento comprado',
+                ),
               field('amount', 'Monto pagado en MXN'),
               field(
                 'description',
                 widget.type == 'medicine'
                     ? 'Tratamiento relacionado'
+                    : widget.type == 'veterinary'
+                    ? 'Descripción del servicio'
                     : 'Cómo ayudó a la mascota',
                 lines: 3,
               ),

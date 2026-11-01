@@ -41,6 +41,10 @@ class PrivacyNoticeScreen extends StatelessWidget {
           'Firebase (Google) incluye Analytics para eventos de uso y Crashlytics para errores y trazas técnicas. Son dos elecciones independientes en Cuenta y privacidad: ambas permanecen apagadas hasta que elijas activarlas. Aceptar este aviso no activa estas opciones. Estos servicios no sustituyen a Supabase como autenticación o base de datos del producto. Los permisos de fotos, cámara y ubicación se solicitan para la función que los necesita; puedes negarlos o cambiarlos en los ajustes del dispositivo. Puedes seleccionar tu ciudad manualmente. Aceptar este aviso no autoriza un cobro ni activa Guardián.',
         ),
         const LegalDocumentSection(
+          'Ubicación y mapas',
+          'Puedes elegir la zona de una mascota en Google Maps y autorizar tu ubicación aproximada para encontrar adopciones cercanas. El radio inicial es de 20 km. Dopmi guarda la zona de la mascota redondeada a dos decimales; la ubicación de búsqueda permanece sólo en la sesión. No publicamos un domicilio exacto ni hacemos seguimiento en segundo plano. Al abrir el mapa, Google puede procesar la vista, tu consulta, dirección IP y datos técnicos conforme a sus políticas; la geocodificación del dispositivo usa servicios de Google o Apple para identificar ciudad y estado. Puedes negar el GPS y elegir una zona manualmente o continuar sin cercanía.',
+        ),
+        const LegalDocumentSection(
           'Conservación',
           'La eliminación de la cuenta no equivale al borrado inmediato de toda evidencia. Los registros que deban conservarse para pagos, disputas, seguridad u obligaciones aplicables requieren revisión. Los intentos sociales, recibos operativos y marcas temporales de revocación tienen una retención operativa específica. No prometemos un plazo general de eliminación de respaldos o registros que no esté acreditado.',
         ),

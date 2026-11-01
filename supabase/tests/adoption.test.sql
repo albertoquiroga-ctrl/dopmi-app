@@ -125,5 +125,28 @@ select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000001'
 select throws_ok($$select dopmi_save_adoption('{}')$$,'42501',null,'suspended cannot create drafts');
 select is((select count(*) from dopmi_messages),0::bigint,'suspended cannot read messages');
 reset role;
+-- New map drafts preserve real missing selections and coarse coordinates; the
+-- existing publication/moderation and public projection contracts remain intact.
+set local role authenticated;
+select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000003',true);
+select set_config('dopmi.test.coarse_post',dopmi_save_adoption('{"species":null,"sex":null,"size":null,"age_band":null}')->>'id',true);
+select is((select species is null and sex is null and size is null and age_band is null
+  from dopmi_adoptions where id=current_setting('dopmi.test.coarse_post')::uuid),true,'unselected adoption draft reopens without manufactured categories');
+select throws_ok($$select dopmi_transition_adoption(current_setting('dopmi.test.coarse_post')::uuid,1,'submit')$$,
+  '22023',null,'unselected draft cannot enter review');
+select is(dopmi_save_adoption('{"approximate_latitude":25.686614,"approximate_longitude":-100.316113}',
+  current_setting('dopmi.test.coarse_post')::uuid,1)->>'approximate_latitude','25.69','pet coordinates rounded before save');
+select is(dopmi_save_adoption('{}',current_setting('dopmi.test.coarse_post')::uuid,2)->>'approximate_longitude',
+  '-100.32','old client omission preserves saved map location');
+select throws_ok($$select dopmi_save_adoption('{"approximate_latitude":"25.69","approximate_longitude":-100.32}',
+  current_setting('dopmi.test.coarse_post')::uuid,3)$$,'22023',null,'new map saves reject numeric strings');
+select throws_ok($$select dopmi_save_adoption('{"approximate_latitude":25.69}',
+  current_setting('dopmi.test.coarse_post')::uuid,3)$$,'22023',null,'map saves require both coordinates');
+select is(dopmi_save_adoption('{"approximate_latitude":null,"approximate_longitude":null}',
+  current_setting('dopmi.test.coarse_post')::uuid,3)->>'approximate_latitude',null::text,'explicit null pair clears map location');
+select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002',true);
+select is((select count(*) from dopmi_adoptions where id=current_setting('dopmi.test.coarse_post')::uuid),0::bigint,
+  'other account cannot read private coordinates');
+reset role;
 select * from finish();
 rollback;

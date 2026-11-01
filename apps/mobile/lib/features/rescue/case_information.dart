@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/ui.dart' show muted;
 import '../adoption/publication_frame.dart';
 import 'rescue_fields.dart';
 
@@ -11,10 +12,12 @@ class CaseInformation extends StatelessWidget {
     required this.enabled,
     required this.onChanged,
     this.showTitle = true,
+    this.locationField,
   });
   final Map<String, TextEditingController> controllers;
   final bool enabled, showTitle;
   final VoidCallback onChanged;
+  final Widget? locationField;
 
   void choose(String key, String value) {
     controllers[key]!.text = value;
@@ -155,23 +158,11 @@ class CaseInformation extends StatelessWidget {
         onChanged: enabled ? (value) => choose('sex', value) : null,
       ),
       if (controllers['sex']!.text == 'unknown')
-        Semantics(
-          selected: controllers['sex']!.text == 'unknown',
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: enabled ? () => choose('sex', 'unknown') : null,
-              icon: Icon(
-                controllers['sex']!.text == 'unknown'
-                    ? Icons.check
-                    : Icons.help_outline,
-                size: 16,
-              ),
-              label: const Text(
-                'Por determinar',
-                style: TextStyle(fontFamily: 'Inter', fontSize: 14),
-              ),
-            ),
+        const Padding(
+          padding: EdgeInsets.only(bottom: 12),
+          child: Text(
+            'Sexo sin confirmar en este borrador.',
+            style: TextStyle(fontSize: 12, color: muted),
           ),
         ),
       PublicationChoiceRow(
@@ -207,7 +198,13 @@ class CaseInformation extends StatelessWidget {
       ),
       if (controllers['age']!.text.isNotEmpty &&
           !['Cachorro', 'Adulto', 'Senior'].contains(controllers['age']!.text))
-        field(rescueFields['case']!.firstWhere((field) => field.key == 'age')),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Text(
+            'Edad registrada: ${controllers['age']!.text}',
+            style: const TextStyle(fontSize: 12, color: muted),
+          ),
+        ),
       const SizedBox(height: 16),
       const Text(
         'Su Historia',
@@ -219,16 +216,19 @@ class CaseInformation extends StatelessWidget {
       ),
       const SizedBox(height: 16),
       for (final entry in rescueFields['case']!.where(
-        (f) => ![
-          'pet_name',
-          'sex',
-          'species',
-          'size',
-          'age',
-          'need',
-        ].contains(f.key),
+        (f) =>
+            ![
+              'pet_name',
+              'sex',
+              'species',
+              'size',
+              'age',
+              'need',
+            ].contains(f.key) &&
+            (locationField == null || !['city', 'state'].contains(f.key)),
       ))
         field(entry),
+      ?locationField,
       const Text(
         'Publica sólo ciudad y estado. No incluyas domicilios particulares ni teléfonos en la historia.',
         style: TextStyle(

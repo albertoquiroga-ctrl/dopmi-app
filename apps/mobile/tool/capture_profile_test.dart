@@ -292,6 +292,8 @@ class CasePublicationCaptureRescue extends DraftCaseRescue {
   Future<Json> detail(String id) async {
     final data = await super.detail(id);
     final record = Json.from(data['record'] as Map);
+    record['approximate_latitude'] = 25.69;
+    record['approximate_longitude'] = -100.32;
     record['public_data'] = {
       ...Json.from(record['public_data'] as Map),
       'sex': 'female',
@@ -1604,6 +1606,7 @@ void main() {
       ('publish-photo-grid-large', '/my-adoptions/post'),
       ('publish-information', '/my-adoptions/post'),
       ('publish-information-large', '/my-adoptions/post'),
+      ('publish-information-location', '/my-adoptions/post'),
       ('publish-review', '/my-adoptions/post'),
       ('publish-review-large', '/my-adoptions/post'),
       ('publish-review-social', '/my-adoptions/post'),
@@ -1639,6 +1642,7 @@ void main() {
       ('case-publication-review-large', '/rescue/case-one'),
       ('case-publication-information', '/rescue/case-one'),
       ('case-publication-information-large', '/rescue/case-one'),
+      ('case-publication-information-location', '/rescue/case-one'),
       ('case-publication-grid', '/rescue/case-one'),
       ('case-publication-grid-large', '/rescue/case-one'),
       ('case-publication-grid-help', '/rescue/case-one'),
@@ -2003,6 +2007,8 @@ void main() {
           'status': 'draft',
           'photos': ['fixture/one', 'fixture/two', 'fixture/three'],
           'publisher_name': 'María Rescatista',
+          'approximate_latitude': 25.69,
+          'approximate_longitude': -100.32,
           'age_band': 'adult',
           'personality': ['alegre', 'affectionate', 'obediente'],
           'coexistence': ['children', 'pets', 'apartment'],
@@ -4297,6 +4303,13 @@ void main() {
         await publicationNext();
         await publicationNext();
       }
+      if (spec.$1 == 'publish-information-location' ||
+          spec.$1 == 'case-publication-information-location') {
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('publication-location-map')),
+        );
+        await tester.pumpAndSettle();
+      }
       for (final entry in {
         'medicine': 'Medicina',
         'food': 'Alimento',
@@ -4325,11 +4338,6 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('case-publication-grid')) {
-        final extraPhotos = find.text('Fotos adicionales (opcional)');
-        await tester.ensureVisible(extraPhotos);
-        await tester.pumpAndSettle();
-        await tester.tap(extraPhotos);
-        await tester.pumpAndSettle();
         await tester.ensureVisible(
           find.byKey(const ValueKey('publication-thanks-video-title')),
         );
@@ -5577,7 +5585,11 @@ void main() {
             '/settings/account',
           );
           final privacy = find.text('Privacidad y eliminación');
-          await tester.ensureVisible(privacy);
+          await tester.scrollUntilVisible(
+            privacy,
+            240,
+            scrollable: find.byType(Scrollable).first,
+          );
           await tester.pumpAndSettle();
           await tester.tap(privacy);
           await tester.pumpAndSettle();

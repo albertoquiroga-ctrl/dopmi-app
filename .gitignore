@@ -15,3 +15,5 @@ apps/mobile/config.json
 supabase/.temp/
 supabase/.branches/
 *.tsbuildinfo
+# Generated native Maps configuration; never commit API credentials.
+apps/mobile/ios/Flutter/DopmiMaps.local.xcconfig

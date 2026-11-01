@@ -158,6 +158,10 @@ workflows:
             production) python3 ../../scripts/write-firebase-config.py --production-beta --platform android ;;
             *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
           esac
+      - name: Configure native Google Maps
+        script: |
+          set -euo pipefail
+          python3 ../../scripts/write-maps-config.py --platform android
       - name: Install dependencies
         script: flutter pub get
       - name: Static analysis
@@ -329,6 +333,10 @@ workflows:
             *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
           esac
 
+      - name: Configure native Google Maps
+        script: |
+          set -euo pipefail
+          python3 ../../scripts/write-maps-config.py --platform ios
       - name: Install dependencies
         script: flutter pub get
 

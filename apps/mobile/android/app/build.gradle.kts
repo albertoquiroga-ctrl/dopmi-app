@@ -24,6 +24,12 @@ android {
         if (guardianAcceptance) applicationIdSuffix = ".guardian_test"
         manifestPlaceholders["dopmiAppLabel"] =
             if (guardianAcceptance) "Dopmi Guardián (prueba)" else "Dopmi"
+        val mapsEnabled = System.getenv("ENABLE_GOOGLE_MAPS")?.trim()?.lowercase() == "true"
+        val mapsKey = if (mapsEnabled) System.getenv("GOOGLE_MAPS_ANDROID_API_KEY")?.trim() ?: "" else ""
+        require(!mapsEnabled || Regex("AIza[A-Za-z0-9_-]{35}").matches(mapsKey)) {
+            "Enabled Maps requires the restricted Android API key."
+        }
+        manifestPlaceholders["dopmiGoogleMapsKey"] = mapsKey
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

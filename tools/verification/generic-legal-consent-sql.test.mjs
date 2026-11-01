@@ -13,6 +13,15 @@ const oldPairs = {
   test: ['terms-2026-10-17', 'privacy-2026-10-17'],
   production: ['terms-live-2026-10-28', 'privacy-live-2026-10-28'],
 };
+const locationPairs = {
+  test: ['terms-2026-11-01', 'privacy-2026-11-01-ubicacion'],
+  production: ['terms-live-2026-11-01', 'privacy-live-2026-11-01-ubicacion'],
+};
+async function locationContract() {
+  const sql = await readFile(new URL('../../supabase/migrations/20261101220718_coarse_pet_location_discovery.sql', import.meta.url), 'utf8');
+  // Keep this existing test's disposable transaction; no remote operation.
+  await db.exec(sql.replace(/^begin;\s*/i, '').replace(/commit;\s*$/i, ''));
+}
 const owner = randomUUID(), other = randomUUID();
 const retained = [
   'public.accept_current_terms()', 'public.dopmi_accept_legal(text,text,boolean)',
@@ -83,6 +92,38 @@ before(async () => {
 after(async () => db?.close());
 beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
+
+for (const environment of ['test', 'production']) {
+  test(`location disclosure: exact ${environment} proof preserves historical adult evidence and forbids rollback`, async () => {
+    await locationContract();
+    await configure(environment);
+    const beforeProofs = await proofs();
+    const beforeProfile = await profile();
+    await actor();
+    await accept(locationPairs[environment]);
+    await accept(locationPairs[environment]);
+    await rejected(() => db.query('select public.dopmi_accept_legal($1,$2,true)', oldPairs[environment]), { code: '22023' });
+    await rejected(() => accept(pairs[environment]), { code: '22023' });
+    await reset();
+    const current = await profile();
+    assert.equal(current.privacy_version, locationPairs[environment][1]);
+    assert.deepEqual(current.adult_confirmed_at, beforeProfile.adult_confirmed_at);
+    const allProofs = await proofs();
+    assert.equal(allProofs.length, beforeProofs.length + 1);
+    assert.deepEqual(allProofs.filter(p => p.privacy_version !== locationPairs[environment][1]), beforeProofs);
+    assert.equal(allProofs.find(p => p.privacy_version === locationPairs[environment][1]).adult_confirmed, false);
+    await db.query('select private.dopmi_require_current_legal($1)', [owner]);
+  });
+  test(`location disclosure: ${environment} signup requires genuine consent without asserting adulthood`, async () => {
+    await locationContract();
+    await configure(environment);
+    const id = await signup(randomUUID(), generalMetadata(locationPairs[environment]));
+    assert.equal((await profile(id)).privacy_version, locationPairs[environment][1]);
+    assert.equal((await profile(id)).adult_confirmed_at, null);
+    const invalid = await signup(randomUUID(), { ...generalMetadata(locationPairs[environment]), privacy_accepted: 'true' });
+    assert.equal((await profile(invalid)).terms_accepted_at, null);
+  });
+}
 
 test('additive migration preserves old RPCs, adult history, financial functions and environment without data rewrites', async () => {
   assert.deepEqual({ profile: await profile(), proofs: await proofs() }, historical);

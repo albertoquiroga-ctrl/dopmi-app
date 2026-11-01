@@ -17,14 +17,14 @@ final locationServiceProvider = Provider<LocationService>(
 class LocationService {
   const LocationService();
 
-  Future<ApproximateLocation> current() async {
+  Future<ApproximateLocation> current({bool requestPermission = true}) async {
     if (!await Geolocator.isLocationServiceEnabled()) {
       throw const LocationException(
         'Activa la ubicación del dispositivo o escribe tu ciudad.',
       );
     }
     var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
+    if (requestPermission && permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }
     if (permission == LocationPermission.denied ||
@@ -39,7 +39,10 @@ class LocationService {
         timeLimit: Duration(seconds: 12),
       ),
     );
-    return ApproximateLocation(position.latitude, position.longitude);
+    return ApproximateLocation(
+      (position.latitude * 100).round() / 100,
+      (position.longitude * 100).round() / 100,
+    );
   }
 }
 
