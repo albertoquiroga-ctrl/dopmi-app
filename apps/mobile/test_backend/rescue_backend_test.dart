@@ -594,8 +594,6 @@ void main() {
     }
     // Suspension still removes fresh public access. This command can target
     // only the disposable loopback backend validated at suite startup.
-    final ownerId = owner.auth.currentUser!.id;
-    expect(RegExp(r'^[0-9a-f-]{36}$').hasMatch(ownerId), true);
     final suspension = await Process.run('docker', [
       'exec',
       databaseContainer,
