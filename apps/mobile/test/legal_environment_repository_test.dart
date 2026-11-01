@@ -27,15 +27,15 @@ void main() {
   const pairs = [
     (
       environment: 'test',
-      terms: 'terms-2026-10-17',
-      privacy: 'privacy-2026-10-17',
-      date: '17 de octubre de 2026',
+      terms: 'terms-2026-11-01',
+      privacy: 'privacy-2026-11-01',
+      date: '1 de noviembre de 2026',
     ),
     (
       environment: 'production',
-      terms: 'terms-live-2026-10-28',
-      privacy: 'privacy-live-2026-10-28',
-      date: '28 de octubre de 2026',
+      terms: 'terms-live-2026-11-01',
+      privacy: 'privacy-live-2026-11-01',
+      date: '1 de noviembre de 2026',
     ),
   ];
 
@@ -60,7 +60,7 @@ void main() {
             requests.add(request);
             final signup = request.url.path == '/auth/v1/signup';
             expect(
-              signup || request.url.path == '/rest/v1/rpc/dopmi_accept_legal',
+              signup || request.url.path == '/rest/v1/rpc/accept_current_legal',
               true,
             );
             return http.Response(
@@ -110,18 +110,17 @@ void main() {
           'terms_version': pair.terms,
           'terms_accepted': true,
           'privacy_version': pair.privacy,
-          'adult_confirmed': true,
+          'privacy_accepted': true,
         });
         expect(jsonDecode(requests.last.body), {
           'accepted_terms': pair.terms,
           'accepted_privacy': pair.privacy,
-          'confirms_adult': true,
         });
       },
     );
 
     test(
-      '${pair.environment} legal gate requires its exact pair, adult confirmation and owner',
+      '${pair.environment} legal gate requires its exact general pair and owner',
       () {
         final matching = profile(pair.terms, pair.privacy);
         expect(
@@ -150,7 +149,7 @@ void main() {
             'one',
             environment: pair.environment,
           ),
-          false,
+          true,
         );
         for (final other in pairs.where(
           (value) => value.environment != pair.environment,

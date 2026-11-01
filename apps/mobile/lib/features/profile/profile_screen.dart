@@ -815,7 +815,7 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
         children: [
           const AuthHeading(
             'Antes de continuar',
-            'Dopmi es exclusivamente para personas mayores de 18 años.',
+            'Lee los Términos y Condiciones y el Aviso de Privacidad antes de continuar.',
             sheet: true,
             largeTitleFontSize: 24,
           ),

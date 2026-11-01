@@ -12,11 +12,17 @@ import '../../core/heading_layout.dart';
 import 'auth_ui.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
+import 'experience_controller.dart';
 import 'onboarding_art.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key, required this.intent});
+  const OnboardingScreen({
+    super.key,
+    required this.intent,
+    this.experienceIntent,
+  });
   final String intent;
+  final String? experienceIntent;
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
@@ -83,6 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (!didPop) back();
         },
         child: RescuerIntroduction(
+          experienceIntent: widget.experienceIntent,
           step: step,
           title: slide.$1,
           description: slide.$2,
@@ -90,7 +97,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           onBack: back,
           onNext: () {
             if (step == slides.length - 1) {
-              context.push('/start?intent=${widget.intent}');
+              context.push('/start?intent=${widget.experienceIntent ?? ''}');
             } else {
               setState(() => step++);
             }
@@ -105,6 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (!didPop) back();
         },
         child: AdoptionIntroduction(
+          experienceIntent: widget.experienceIntent,
           step: step,
           title: slide.$1,
           description: slide.$2,
@@ -112,7 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           onBack: back,
           onNext: () {
             if (step == slides.length - 1) {
-              context.push('/start?intent=${widget.intent}');
+              context.push('/start?intent=${widget.experienceIntent ?? ''}');
             } else {
               setState(() => step++);
             }
@@ -128,6 +136,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: AuthFrame(
         onBack: back,
         accountLink: true,
+        onAccountLink: () =>
+            context.push('/login?intent=${widget.experienceIntent ?? ''}'),
         footer: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -135,7 +145,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               slide.$3,
               onPressed: () {
                 if (step == slides.length - 1) {
-                  context.push('/start?intent=${widget.intent}');
+                  context.push(
+                    '/start?intent=${widget.experienceIntent ?? ''}',
+                  );
                 } else {
                   setState(() => step++);
                 }
@@ -219,8 +231,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class AccountStartScreen extends StatelessWidget {
-  const AccountStartScreen({super.key, required this.intent});
+  const AccountStartScreen({
+    super.key,
+    required this.intent,
+    this.experienceIntent,
+  });
   final String intent;
+  final String? experienceIntent;
   @override
   Widget build(BuildContext context) {
     final copy = intent == 'rescue'
@@ -442,11 +459,14 @@ class AccountStartScreen extends StatelessWidget {
                                                   ),
                                             ),
                                         onPressed: () => context.push(
-                                          '/signup?intent=$intent',
+                                          '/signup?intent=${experienceIntent ?? ''}',
                                         ),
                                         child: const Text('Crea una cuenta'),
                                       ),
-                                      AccountSocialActions(intent: intent),
+                                      AccountSocialActions(
+                                        intent: intent,
+                                        experienceIntent: experienceIntent,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -495,6 +515,7 @@ class AdoptionIntroduction extends StatelessWidget {
   const AdoptionIntroduction({
     super.key,
     this.intent = 'adopt',
+    this.experienceIntent,
     required this.step,
     required this.title,
     required this.description,
@@ -503,6 +524,7 @@ class AdoptionIntroduction extends StatelessWidget {
     required this.onNext,
   });
   final String intent;
+  final String? experienceIntent;
   final int step;
   final String title, description, cta;
   final VoidCallback onBack, onNext;
@@ -603,7 +625,10 @@ class AdoptionIntroduction extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        _IntroductionHeader(onBack: onBack, intent: intent),
+                        _IntroductionHeader(
+                          onBack: onBack,
+                          experienceIntent: experienceIntent,
+                        ),
                         const SizedBox(height: 4),
                         OnboardingEntrance(
                           key: ValueKey('$intent:$step'),
@@ -714,8 +739,11 @@ class AdoptionIntroduction extends StatelessWidget {
 }
 
 class _IntroductionHeader extends StatelessWidget {
-  const _IntroductionHeader({required this.onBack, required this.intent});
-  final String intent;
+  const _IntroductionHeader({
+    required this.onBack,
+    required this.experienceIntent,
+  });
+  final String? experienceIntent;
   final VoidCallback onBack;
   static const double headerHeight = 44;
   @override
@@ -754,7 +782,8 @@ class _IntroductionHeader extends StatelessWidget {
         ),
       ),
       TextButton(
-        onPressed: () => context.push('/login?intent=$intent'),
+        onPressed: () =>
+            context.push('/login?intent=${experienceIntent ?? ''}'),
         style: TextButton.styleFrom(
           foregroundColor: ink,
           minimumSize: Size(0, headerHeight),
@@ -783,6 +812,7 @@ class _IntroductionHeader extends StatelessWidget {
 class RescuerIntroduction extends StatelessWidget {
   const RescuerIntroduction({
     super.key,
+    this.experienceIntent,
     required this.step,
     required this.title,
     required this.description,
@@ -791,12 +821,14 @@ class RescuerIntroduction extends StatelessWidget {
     required this.onNext,
   });
   final int step;
+  final String? experienceIntent;
   final String title, description, cta;
   final VoidCallback onBack, onNext;
 
   @override
   Widget build(BuildContext context) => AdoptionIntroduction(
     intent: 'rescue',
+    experienceIntent: experienceIntent,
     step: step,
     title: title,
     description: description,
@@ -809,8 +841,13 @@ class RescuerIntroduction extends StatelessWidget {
 /// Configured providers use the same repository and session listener as login.
 /// Cancellation never opens the authenticated app or fabricates an identity.
 class AccountSocialActions extends ConsumerStatefulWidget {
-  const AccountSocialActions({super.key, this.intent = 'adopt'});
+  const AccountSocialActions({
+    super.key,
+    this.intent = 'adopt',
+    this.experienceIntent,
+  });
   final String intent;
+  final String? experienceIntent;
   @override
   ConsumerState<AccountSocialActions> createState() =>
       _AccountSocialActionsState();
@@ -819,6 +856,20 @@ class AccountSocialActions extends ConsumerStatefulWidget {
 class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
   bool busy = false;
   String? error;
+  ExperienceController? authenticationExperience;
+  int? authenticationRequest;
+
+  @override
+  void dispose() {
+    final request = authenticationRequest;
+    if (request != null) {
+      authenticationExperience?.cancelAuthentication(
+        request,
+        onlyUnbound: true,
+      );
+    }
+    super.dispose();
+  }
 
   Future<void> social(String provider) async {
     if (busy) return;
@@ -826,9 +877,14 @@ class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
       busy = true;
       error = null;
     });
+    final experience = ref.read(experienceProvider);
+    authenticationExperience = experience;
+    final request = experience.prepareAuthentication(widget.experienceIntent);
+    authenticationRequest = request;
     try {
       await ref.read(identityRepositoryProvider).oauth(provider);
     } catch (cause) {
+      experience.cancelAuthentication(request);
       if (mounted) setState(() => error = identityError(cause));
     } finally {
       if (mounted) setState(() => busy = false);
@@ -854,7 +910,8 @@ class _AccountSocialActionsState extends ConsumerState<AccountSocialActions> {
           fontFamily: 'Inter',
         ),
       ),
-      onPressed: () => context.push('/login?intent=${widget.intent}'),
+      onPressed: () =>
+          context.push('/login?intent=${widget.experienceIntent ?? ''}'),
       child: const Text('Inicia sesión'),
     );
     if (!hasSocial) {

@@ -7,6 +7,8 @@ class FakeIdentityRepository implements IdentityRepository {
   Identity? user;
   Future<Identity?>? restoreResult;
   Future<Profile>? profileResult;
+  Future<Profile>? experienceResult;
+  final experienceRequests = <String>[];
   bool pending = false;
   String? recoveryPresentationIntent;
   bool failSave = false;
@@ -138,7 +140,9 @@ class FakeIdentityRepository implements IdentityRepository {
 
   @override
   Future<Profile> setExperience(String mode) async {
+    experienceRequests.add(mode);
     if (failSave) throw StateError('network_unavailable');
+    if (experienceResult != null) return experienceResult!;
     return profile = Profile(
       id: profile.id,
       name: profile.name,
@@ -211,7 +215,7 @@ class FakeIdentityRepository implements IdentityRepository {
       status: profile.status,
       termsVersion: currentTermsVersion,
       privacyVersion: currentPrivacyVersion,
-      adultConfirmed: true,
+      adultConfirmed: profile.adultConfirmed,
     );
   }
 

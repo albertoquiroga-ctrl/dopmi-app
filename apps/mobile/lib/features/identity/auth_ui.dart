@@ -18,6 +18,7 @@ class AuthFrame extends StatelessWidget {
     this.footer,
     this.back = true,
     this.onBack,
+    this.onAccountLink,
     this.accountLink = false,
     this.sheet = false,
     this.intent = 'adopt',
@@ -28,7 +29,7 @@ class AuthFrame extends StatelessWidget {
   final bool back, accountLink, sheet;
   final String intent;
   final double sheetBottomPadding;
-  final VoidCallback? onBack;
+  final VoidCallback? onBack, onAccountLink;
 
   @override
   Widget build(BuildContext context) {
@@ -140,8 +141,9 @@ class AuthFrame extends StatelessWidget {
                                       const Brand(),
                                       if (accountLink)
                                         TextButton(
-                                          onPressed: () =>
-                                              context.push('/login'),
+                                          onPressed:
+                                              onAccountLink ??
+                                              () => context.push('/login'),
                                           child: const Text('Ya tengo cuenta'),
                                         ),
                                     ],
@@ -180,7 +182,7 @@ class AuthConsentRow extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
   final VoidCallback onOpenTerms, onOpenPrivacy;
   static const label =
-      'Confirmo que tengo 18 años o más y acepto los Términos y Condiciones y el Aviso de Privacidad.';
+      'Acepto los Términos y Condiciones y el Aviso de Privacidad.';
 
   @override
   Widget build(BuildContext context) {
@@ -227,10 +229,7 @@ class AuthConsentRow extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     children: [
-                      const TextSpan(
-                        text: 'Confirmo que tengo 18 años o más y acepto los ',
-                        semanticsLabel: '',
-                      ),
+                      const TextSpan(text: 'Acepto los ', semanticsLabel: ''),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.baseline,
                         baseline: TextBaseline.alphabetic,

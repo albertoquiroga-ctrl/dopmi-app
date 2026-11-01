@@ -517,12 +517,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/onboarding',
             builder: (_, state) => OnboardingScreen(
               intent: safeIntent(state.uri.queryParameters['intent']),
+              experienceIntent: authenticationExperienceIntent(
+                state.uri.queryParameters['intent'],
+              ),
             ),
           ),
           GoRoute(
             path: '/start',
             builder: (_, state) => AccountStartScreen(
               intent: safeIntent(state.uri.queryParameters['intent']),
+              experienceIntent: authenticationExperienceIntent(
+                state.uri.queryParameters['intent'],
+              ),
             ),
           ),
           GoRoute(
@@ -530,6 +536,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => AuthFormScreen(
               mode: AuthFormMode.signup,
               intent: safeIntent(state.uri.queryParameters['intent']),
+              experienceIntent: authenticationExperienceIntent(
+                state.uri.queryParameters['intent'],
+              ),
             ),
           ),
           GoRoute(
@@ -537,6 +546,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => AuthFormScreen(
               mode: AuthFormMode.login,
               intent: safeIntent(state.uri.queryParameters['intent']),
+              experienceIntent:
+                  state.extra is AuthNavigationData &&
+                      (state.extra! as AuthNavigationData)
+                              .applyExperienceIntent ==
+                          false
+                  ? null
+                  : authenticationExperienceIntent(
+                      state.uri.queryParameters['intent'],
+                    ),
               initialEmail: state.extra is AuthNavigationData
                   ? (state.extra! as AuthNavigationData).email
                   : null,
@@ -729,6 +747,23 @@ class _LegalAccessGate extends ConsumerWidget {
             onReceivedPayments: () => router.go('/rescuer/received-payments'),
             onGuardian: () => router.go('/guardian'),
           );
+        }
+        if (currentIdentity?.verified == true && !exempt) {
+          if (experience.authenticationError != null) {
+            return PageFrame(
+              children: [
+                Notice(
+                  identityError(experience.authenticationError!),
+                  isError: true,
+                ),
+                ActionButton(
+                  'Reintentar',
+                  onPressed: experience.retryAuthenticationExperience,
+                ),
+              ],
+            );
+          }
+          if (experience.loading) return const DopmiSplash();
         }
         return child;
       },

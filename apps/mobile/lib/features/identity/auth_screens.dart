@@ -9,6 +9,7 @@ import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import 'identity_controller.dart';
 import 'identity_repository.dart';
+import 'experience_controller.dart';
 import 'auth_ui.dart';
 import 'legal_document_frame.dart';
 
@@ -16,8 +17,13 @@ enum AuthFormMode { login, signup, forgot, reset }
 
 /// Private form data stays in navigation memory, never in a URL or preferences.
 class AuthNavigationData {
-  const AuthNavigationData({this.email, this.message});
+  const AuthNavigationData({
+    this.email,
+    this.message,
+    this.applyExperienceIntent,
+  });
   final String? email, message;
+  final bool? applyExperienceIntent;
 }
 
 class AuthFormScreen extends ConsumerStatefulWidget {
@@ -25,11 +31,13 @@ class AuthFormScreen extends ConsumerStatefulWidget {
     super.key,
     required this.mode,
     this.intent = 'adopt',
+    this.experienceIntent,
     this.initialEmail,
     this.initialMessage,
   });
   final AuthFormMode mode;
   final String intent;
+  final String? experienceIntent;
   final String? initialEmail;
   final String? initialMessage;
   @override
@@ -46,6 +54,8 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
   bool busy = false, consent = false, needsEmailConfirmation = false;
   String? error;
   int operation = 0;
+  ExperienceController? authenticationExperience;
+  int? authenticationRequest;
   @override
   void initState() {
     super.initState();
@@ -55,6 +65,13 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
   @override
   void dispose() {
     operation++;
+    final request = authenticationRequest;
+    if (request != null) {
+      authenticationExperience?.cancelAuthentication(
+        request,
+        onlyUnbound: true,
+      );
+    }
     for (final item in [email, password, confirmation, name, phone]) {
       item.dispose();
     }
@@ -64,9 +81,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
   Future<void> submit() async {
     if (busy || !form.currentState!.validate()) return;
     if (widget.mode == AuthFormMode.signup && !consent) {
-      setState(
-        () => error = 'Confirma que eres mayor de edad y acepta los términos y el aviso de privacidad.',
-      );
+      setState(() => error = 'Acepta los términos y el aviso de privacidad.');
       return;
     }
     setState(() {
@@ -89,6 +104,9 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
     try {
       switch (widget.mode) {
         case AuthFormMode.login:
+          authenticationExperience = ref.read(experienceProvider);
+          authenticationRequest = authenticationExperience!
+              .prepareAuthentication(widget.experienceIntent);
           await repo.login(email.text, password.text);
         case AuthFormMode.signup:
           await repo.signup(
@@ -126,6 +144,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
               '/login?intent=$intent',
               extra: AuthNavigationData(
                 email: targetEmail,
+                applyExperienceIntent: false,
                 message:
                     'Tu contraseña se actualizó. Inicia sesión con la nueva.',
               ),
@@ -133,6 +152,10 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
           }
       }
     } catch (cause) {
+      final authentication = authenticationRequest;
+      if (authentication != null) {
+        authenticationExperience?.cancelAuthentication(authentication);
+      }
       if (currentRequest()) {
         setState(() {
           error = identityError(cause);
@@ -160,7 +183,10 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
           navigation.routeInformationProvider.value.uri.toString() == origin) {
         navigation.go(
           '/login?intent=$intent',
-          extra: AuthNavigationData(email: targetEmail),
+          extra: AuthNavigationData(
+            email: targetEmail,
+            applyExperienceIntent: false,
+          ),
         );
       }
     } catch (cause) {
@@ -175,9 +201,14 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
       error = null;
       needsEmailConfirmation = false;
     });
+    final experience = ref.read(experienceProvider);
+    authenticationExperience = experience;
+    final request = experience.prepareAuthentication(widget.experienceIntent);
+    authenticationRequest = request;
     try {
       await ref.read(identityRepositoryProvider).oauth(provider);
     } catch (cause) {
+      experience.cancelAuthentication(request);
       if (mounted) {
         setState(() {
           error = identityError(cause);
@@ -422,7 +453,7 @@ class _AuthFormScreenState extends ConsumerState<AuthFormScreen> {
                     AuthSwitchFooter(
                       signup: signup,
                       busy: busy,
-                      intent: widget.intent,
+                      intent: widget.experienceIntent ?? '',
                     ),
                   if (forgot)
                     Padding(
@@ -602,7 +633,10 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           navigation.routeInformationProvider.value.uri.toString() == origin) {
         navigation.go(
           '/login?intent=$intent',
-          extra: AuthNavigationData(email: targetEmail),
+          extra: AuthNavigationData(
+            email: targetEmail,
+            applyExperienceIntent: !widget.recovery,
+          ),
         );
       }
     } catch (cause) {
@@ -777,7 +811,7 @@ class TermsScreen extends StatelessWidget {
       children: [
         const LegalDocumentSection(
           'Quién puede usar Dopmi',
-          'Debes tener 18 años o más, proporcionar información veraz y cuidar la privacidad y seguridad de otras personas.',
+          'El uso de Dopmi está sujeto a estos términos. Proporciona información veraz y cuida la privacidad y seguridad de otras personas.',
         ),
         const LegalDocumentSection(
           'Adopciones, casos y moderación',

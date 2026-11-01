@@ -45,7 +45,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(
-        find.textContaining('Actualización del 17 de octubre de 2026'),
+        find.textContaining('Actualización del 1 de noviembre de 2026'),
         findsOneWidget,
       );
       expect(find.textContaining('no realiza ningún cobro'), findsOneWidget);
@@ -135,7 +135,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(
           find.textContaining(
-            document is TermsScreen ? 'terms-2026-10-17' : 'privacy-2026-10-17',
+            document is TermsScreen ? 'terms-2026-11-01' : 'privacy-2026-11-01',
           ),
           findsWidgets,
         );

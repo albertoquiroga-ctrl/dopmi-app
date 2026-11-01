@@ -49,8 +49,8 @@ class PrivacyNoticeScreen extends StatelessWidget {
           'Puedes solicitar acceso, rectificación, cancelación u oposición, revocar consentimiento cuando proceda y pedir limitación de uso o divulgación. Usa Cuenta y privacidad o escribe a soporte@dopmi.org. El responsable del buzón coordina la comprobación privada de titularidad antes de consultar o borrar datos. Un correo, nombre o ID escrito por sí solo no basta. Para cuentas antiguas o sin acceso, si no puedes recuperar ningún acceso asociado, la solicitud queda pendiente de revisión por caso; recibirla no confirma un borrado. Los datos de la aplicación antigua se revisan por separado.',
         ),
         const LegalDocumentSection(
-          'Seguridad, menores y cambios',
-          'Dopmi está dirigido a mayores de 18 años. Aplicamos controles de acceso, separación de datos públicos y privados y autorización en el servidor. Ningún sistema es infalible. Si consideras que se trataron indebidamente datos de una persona menor de edad o necesitas ayuda, escribe a soporte@dopmi.org. Las actualizaciones indican su versión y requieren la aceptación que corresponda; puedes seguir consultando privacidad, cancelación y comprobantes propios mientras decides.',
+          'Seguridad y cambios',
+          'Aplicamos controles de acceso, separación de datos públicos y privados y autorización en el servidor. Ningún sistema es infalible. Si consideras que tus datos se trataron indebidamente o necesitas ayuda, escribe a soporte@dopmi.org. Las actualizaciones indican su versión y requieren la aceptación que corresponda; puedes seguir consultando privacidad, cancelación y comprobantes propios mientras decides.',
         ),
         Text('Versión ${versions.privacy} · ${versions.date}'),
       ],

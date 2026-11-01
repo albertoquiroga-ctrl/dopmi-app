@@ -35,7 +35,7 @@ void main() {
     (tester) async {
       final testTerms = await document(tester, const TermsScreen());
       expect(
-        find.textContaining('terms-2026-10-17 · 17 de octubre de 2026'),
+        find.textContaining('terms-2026-11-01 · 1 de noviembre de 2026'),
         findsWidgets,
       );
       final liveTerms = await document(
@@ -43,7 +43,7 @@ void main() {
         const TermsScreen(environment: 'production'),
       );
       expect(
-        find.textContaining('terms-live-2026-10-28 · 28 de octubre de 2026'),
+        find.textContaining('terms-live-2026-11-01 · 1 de noviembre de 2026'),
         findsWidgets,
       );
       expect(liveTerms.keys, testTerms.keys);
@@ -75,7 +75,7 @@ void main() {
     (tester) async {
       final testPrivacy = await document(tester, const PrivacyNoticeScreen());
       expect(
-        find.textContaining('privacy-2026-10-17 · 17 de octubre de 2026'),
+        find.textContaining('privacy-2026-11-01 · 1 de noviembre de 2026'),
         findsWidgets,
       );
       final livePrivacy = await document(
@@ -83,7 +83,7 @@ void main() {
         const PrivacyNoticeScreen(environment: 'production'),
       );
       expect(
-        find.textContaining('privacy-live-2026-10-28 · 28 de octubre de 2026'),
+        find.textContaining('privacy-live-2026-11-01 · 1 de noviembre de 2026'),
         findsWidgets,
       );
       expect(livePrivacy.keys, testPrivacy.keys);

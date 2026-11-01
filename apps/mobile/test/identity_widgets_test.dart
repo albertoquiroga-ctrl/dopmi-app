@@ -558,46 +558,51 @@ void main() {
       },
     );
   }
-  testWidgets('an outdated social profile must accept age and current terms', (
-    tester,
-  ) async {
-    final repo = FakeIdentityRepository()
-      ..user = const Identity('one', 'ana@example.test', verified: true)
-      ..profile = const Profile(
-        id: 'one',
-        name: 'Ana',
-        phone: '',
-        city: '',
-        mode: 'donor',
-        intent: 'adopt',
-        status: 'active',
-        termsVersion: developmentTermsVersion,
+  testWidgets(
+    'an outdated social profile must accept current legal documents',
+    (tester) async {
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'ana@example.test', verified: true)
+        ..profile = const Profile(
+          id: 'one',
+          name: 'Ana',
+          phone: '',
+          city: '',
+          mode: 'donor',
+          intent: 'adopt',
+          status: 'active',
+          termsVersion: developmentTermsVersion,
+        );
+      final container = await start(
+        tester,
+        repo,
+        initialLocation: '/adoptions',
       );
-    final container = await start(tester, repo, initialLocation: '/adoptions');
-    expect(find.text('Antes de continuar'), findsOneWidget);
-    expect(find.bySemanticsLabel('Adoptar'), findsNothing);
-    final row = find.byType(AuthConsentRow);
-    await tester.ensureVisible(row);
-    await tester.pumpAndSettle();
-    final bounds = tester.getRect(row);
-    await tester.tapAt(Offset(bounds.left + 9, bounds.top + 11));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, true);
-    await tap(tester, 'Términos y Condiciones');
-    expect(container.read(routerProvider).state.uri.path, '/terms');
-    await tester.tap(find.byTooltip('Volver'));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, true);
-    await tap(tester, 'Aviso de Privacidad');
-    expect(container.read(routerProvider).state.uri.path, '/privacy-notice');
-    await tester.tap(find.byTooltip('Volver'));
-    await tester.pumpAndSettle();
-    expect(tester.widget<AuthConsentRow>(row).value, true);
-    expect(repo.consentCount, 0);
-    await tap(tester, 'Aceptar actualización y continuar');
-    expect(repo.consentCount, 1);
-    expect(find.text('Antes de continuar'), findsNothing);
-  });
+      expect(find.text('Antes de continuar'), findsOneWidget);
+      expect(find.bySemanticsLabel('Adoptar'), findsNothing);
+      final row = find.byType(AuthConsentRow);
+      await tester.ensureVisible(row);
+      await tester.pumpAndSettle();
+      final bounds = tester.getRect(row);
+      await tester.tapAt(Offset(bounds.left + 9, bounds.top + 11));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, true);
+      await tap(tester, 'Términos y Condiciones');
+      expect(container.read(routerProvider).state.uri.path, '/terms');
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, true);
+      await tap(tester, 'Aviso de Privacidad');
+      expect(container.read(routerProvider).state.uri.path, '/privacy-notice');
+      await tester.tap(find.byTooltip('Volver'));
+      await tester.pumpAndSettle();
+      expect(tester.widget<AuthConsentRow>(row).value, true);
+      expect(repo.consentCount, 0);
+      await tap(tester, 'Aceptar actualización y continuar');
+      expect(repo.consentCount, 1);
+      expect(find.text('Antes de continuar'), findsNothing);
+    },
+  );
 
   testWidgets('restoring accepted consent never flashes the consent screen', (
     tester,

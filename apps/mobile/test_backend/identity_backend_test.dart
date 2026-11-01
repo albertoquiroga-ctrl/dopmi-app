@@ -192,6 +192,8 @@ void main() {
         final profile = await repository.loadProfile();
         expect(profile.name, 'Prueba de aceptación');
         expect(profile.termsVersion, currentTermsVersion);
+        expect(profile.privacyVersion, currentPrivacyVersion);
+        expect(profile.adultConfirmed, isFalse);
         expect(profile.intent, 'rescue');
         await repository.saveProfile(
           name: 'Perfil actualizado',

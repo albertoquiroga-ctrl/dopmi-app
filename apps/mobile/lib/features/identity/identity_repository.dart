@@ -4,10 +4,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/config.dart';
 import 'native_identity.dart';
 
-const currentTermsVersion = 'terms-2026-10-17';
-const currentPrivacyVersion = 'privacy-2026-10-17';
-const productionTermsVersion = 'terms-live-2026-10-28';
-const productionPrivacyVersion = 'privacy-live-2026-10-28';
+const currentTermsVersion = 'terms-2026-11-01';
+const currentPrivacyVersion = 'privacy-2026-11-01';
+const productionTermsVersion = 'terms-live-2026-11-01';
+const productionPrivacyVersion = 'privacy-live-2026-11-01';
 
 typedef LegalVersions = ({String terms, String privacy, String date});
 
@@ -16,12 +16,12 @@ LegalVersions? legalVersionsForEnvironment(String environment) =>
       'test' => (
         terms: currentTermsVersion,
         privacy: currentPrivacyVersion,
-        date: '17 de octubre de 2026',
+        date: '1 de noviembre de 2026',
       ),
       'production' => (
         terms: productionTermsVersion,
         privacy: productionPrivacyVersion,
-        date: '28 de octubre de 2026',
+        date: '1 de noviembre de 2026',
       ),
       _ => null,
     };
@@ -32,12 +32,13 @@ bool hasCurrentLegalConsent(
   required String environment,
 }) {
   final versions = legalVersionsForEnvironment(environment);
+  // These version fields are written by the server only after legal acceptance.
+  // Adulthood is historical evidence, not part of the new general consent.
   return versions != null &&
       ownerId != null &&
       profile?.id == ownerId &&
       profile?.termsVersion == versions.terms &&
-      profile?.privacyVersion == versions.privacy &&
-      profile?.adultConfirmed == true;
+      profile?.privacyVersion == versions.privacy;
 }
 
 // Kept for build-253 test fixtures and migration compatibility only.
@@ -255,7 +256,7 @@ class SupabaseIdentityRepository implements IdentityRepository {
         'terms_version': versions.terms,
         'terms_accepted': true,
         'privacy_version': versions.privacy,
-        'adult_confirmed': true,
+        'privacy_accepted': true,
       },
     );
   }
@@ -504,11 +505,10 @@ class SupabaseIdentityRepository implements IdentityRepository {
   Future<void> acceptTerms() async {
     final versions = _legalVersions;
     await client.rpc(
-      'dopmi_accept_legal',
+      'accept_current_legal',
       params: {
         'accepted_terms': versions.terms,
         'accepted_privacy': versions.privacy,
-        'confirms_adult': true,
       },
     );
   }
