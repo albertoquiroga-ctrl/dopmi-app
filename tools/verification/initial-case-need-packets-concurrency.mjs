@@ -129,6 +129,9 @@ try {
     if (seeded) {
       await control.query('begin');
       try {
+        // Local fixture cleanup follows the Storage API transaction protocol;
+        // this control connection never changes the authenticated RLS scenarios.
+        await control.query("select set_config('storage.allow_delete_query','true',true)");
         await control.query("delete from storage.objects where bucket_id='dopmi-rescue-evidence' and name=any($1::text[])", [paths]);
         await control.query('delete from public.dopmi_rescue_records where id=any($1::uuid[])', [expenseIds]);
         await control.query('delete from private.dopmi_urgent_coverage_state where case_id=any($1::uuid[])', [caseIds]);

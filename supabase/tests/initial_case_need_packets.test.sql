@@ -30,8 +30,12 @@ set local role authenticated;
 select set_config('request.jwt.claim.sub','b8000000-0000-4000-8000-000000000001',true);
 select is(dopmi_transition_rescue('b8100000-0000-4000-8000-000000000001',1,'submit')->>'status','submitted','one case submission shares initial draft');
 select throws_ok($$select dopmi_remove_draft_expense('b8200000-0000-4000-8000-000000000001',1)$$,'22023',null,'owner cannot erase unread initial membership through draft-removal RPC');
+-- Emulate the Storage API's transaction switch, as in rescue.test.sql. The
+-- authenticated owner and the actual Storage RLS policies still decide access.
+select set_config('storage.allow_delete_query','true',true);
 with deleted as(delete from storage.objects where name='b8000000-0000-4000-8000-000000000001/b8200000-0000-4000-8000-000000000001/b8300000-0000-4000-8000-000000000002.pdf' returning id)
 select is(count(*),0::bigint,'Storage RLS prevents deletion of captured receipt') from deleted;
+select set_config('storage.allow_delete_query','false',true);
 select throws_ok($$insert into storage.objects(bucket_id,name) values('dopmi-rescue-evidence','b8000000-0000-4000-8000-000000000001/b8200000-0000-4000-8000-000000000001/b8300000-0000-4000-8000-000000000002.pdf')$$,'42501',null,'Storage RLS prevents reinsertion of captured path');
 reset role;
 select is((select count(*) from private.dopmi_case_need_submissions where case_id='b8100000-0000-4000-8000-000000000001'),1::bigint,'exactly one new explicit manifest');
