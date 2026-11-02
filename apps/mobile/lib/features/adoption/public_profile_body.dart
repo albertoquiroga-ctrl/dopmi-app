@@ -115,7 +115,9 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
             },
           ),
         if (tab == 1) ...[
-          if (adoptions.isNotEmpty || filters.isNotEmpty || species != null) ...[
+          if (adoptions.isNotEmpty ||
+              filters.isNotEmpty ||
+              species != null) ...[
             Wrap(
               spacing: 8,
               runSpacing: 8,

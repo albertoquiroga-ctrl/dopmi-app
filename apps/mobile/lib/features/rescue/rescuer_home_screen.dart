@@ -320,11 +320,7 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
           ],
           statusFrame: (content) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _pendingFilters(),
-              const SizedBox(height: 12),
-              content,
-            ],
+            children: [_pendingFilters(), const SizedBox(height: 12), content],
           ),
           load: () async {
             final result = await ref
@@ -382,16 +378,12 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             child: Row(
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: constraints.maxWidth,
-                  ),
+                  constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                   child: _programTab('adoption', 'En adopción'),
                 ),
                 const SizedBox(width: 20),
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: constraints.maxWidth,
-                  ),
+                  constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                   child: _programTab('support', 'Recibiendo apoyo'),
                 ),
               ],
