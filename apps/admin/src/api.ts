@@ -17,7 +17,10 @@ export type Adoption = {
 };
 export type Review = { id: string; decision: string; feedback: string; version: number; created_at: string };
 export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string };
-export type RescueDetail = { record: RescueRecord; verified: boolean; case_status: string | null; history: { id: string; action: string; feedback: string; version: number; created_at: string; reimbursable_cents: number; urgent: boolean }[] };
+export type NeedCommentInput = { target_kind: 'planned' | 'expense'; target_id: string; target_version: number; body: string };
+export type NeedComment = NeedCommentInput & { id: string; request_id: string; case_id: string; case_version: number; target_title: string; created_at: string };
+export type NeedCommentResult = { request_id: string; record_id: string; case_version: number; comments: NeedComment[] };
+export type RescueDetail = { record: RescueRecord; verified: boolean; case_status: string | null; history: { id: string; action: string; feedback: string; version: number; created_at: string; reimbursable_cents: number; urgent: boolean }[]; expenses?: { total: number; page: number; items: RescueRecord[] }; need_comments?: NeedComment[] };
 export type RescueDecision = { decision: string; note: string; amount_cents: number; is_urgent: boolean; urgency_note: string; publish_content: boolean };
 export type Contribution = {
   id: string;
@@ -72,7 +75,8 @@ export type AdminApi = {
   reviewAdoption: (post: Adoption, decision: string, feedback: string) => Promise<Adoption>;
   photoUrl: (path: string) => Promise<string>;
   listRescue: (kind: string, status: string, page: number) => Promise<{ total: number; items: RescueRecord[] }>;
-  rescueDetail: (id: string) => Promise<RescueDetail>;
+  rescueDetail: (id: string, expensePage?: number) => Promise<RescueDetail>;
+  saveNeedComments?: (record: Pick<RescueRecord, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<NeedCommentResult>;
   reviewRescue: (record: RescueRecord, decision: RescueDecision) => Promise<RescueRecord>;
   rescueFileUrl: (path: string) => Promise<string>;
   listContributions: (status: string, page: number) => Promise<{ total: number; items: Contribution[] }>;
@@ -115,7 +119,19 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     listSupportRequests: supportRequests(client),
     async supportAttachmentUrl(path) { const {data,error}=await client.storage.from('dopmi-support-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listRescue(kind, status, page) { const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },
-    async rescueDetail(id) { const {data,error}=await client.rpc('dopmi_rescue_detail',{record_id:id}); if(error) throw error; return data; },
+    async rescueDetail(id, expensePage = 1) {
+      const packet = await client.rpc('dopmi_admin_rescue_packet', { record_id: id, expense_page: expensePage });
+      if (!packet.error) return packet.data;
+      // Only an older deployment lacking the RPC may use the legacy detail.
+      // Authorization and operational failures must never widen the read.
+      if (!['PGRST202', '42883'].includes(packet.error.code)) throw packet.error;
+      const { data, error } = await client.rpc('dopmi_rescue_detail', { record_id: id });
+      if (error) throw error; return data;
+    },
+    async saveNeedComments(record, comments, requestId) {
+      const { data, error } = await client.rpc('dopmi_comment_case_needs', { record_id: record.id, expected_version: record.version, comments, request_id: requestId });
+      if (error) throw error; return data;
+    },
     async reviewRescue(record, decision) { const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data; },
     async rescueFileUrl(path) { const {data,error}=await client.storage.from('dopmi-rescue-evidence').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listContributions(status, page) { const {data,error}=await client.rpc('dopmi_admin_donations',{status_filter:status,page_number:page}); if(error) throw error; if (!data || !Array.isArray(data.items) || typeof data.total !== 'number') throw new Error('invalid_response'); return data; },

@@ -3,6 +3,30 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { configuredApi, createAdminApi, type RescuerPublicProfile } from './api';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
+test('case packets use server pagination and need comments retain destination versions and request ID', async()=>{
+  const rpc=vi.fn().mockResolvedValue({data:{record:{id:'case'}},error:null});
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  await api.rescueDetail('case',2);
+  expect(rpc).toHaveBeenCalledWith('dopmi_admin_rescue_packet',{record_id:'case',expense_page:2});
+  const comments=[{target_kind:'expense' as const,target_id:'expense',target_version:8,body:'Confirma el importe'}];
+  await api.saveNeedComments!({id:'case',version:4},comments,'request-fixture');
+  expect(rpc).toHaveBeenLastCalledWith('dopmi_comment_case_needs',{record_id:'case',expected_version:4,comments,request_id:'request-fixture'});
+});
+
+test.each(['PGRST202','42883'])('only a missing packet RPC (%s) falls back to the legacy detail',async code=>{
+  const rpc=vi.fn().mockResolvedValueOnce({data:null,error:{code}}).mockResolvedValueOnce({data:{record:{id:'case'}},error:null});
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  expect(await api.rescueDetail('case')).toEqual({record:{id:'case'}});
+  expect(rpc).toHaveBeenLastCalledWith('dopmi_rescue_detail',{record_id:'case'});
+});
+
+test.each(['42501','40001','XX000'])('packet failure %s never retries through the legacy read',async code=>{
+  const rpc=vi.fn().mockResolvedValue({data:null,error:{code}});
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  await expect(api.rescueDetail('case')).rejects.toEqual({code});
+  expect(rpc).toHaveBeenCalledTimes(1);
+});
+
 afterEach(() => { vi.unstubAllEnvs(); window.history.replaceState({}, '', '/'); });
 
 function authWatcher() {

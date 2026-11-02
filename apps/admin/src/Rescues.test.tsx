@@ -1,8 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import Rescues, { amount } from './Rescues';
-import type { AdminApi, RescueRecord } from './api';
+import type { AdminApi, NeedCommentInput, NeedCommentResult, RescueDetail, RescueRecord } from './api';
 const record: RescueRecord={id:'expense',owner_id:'owner',kind:'expense',parent_id:'case',public_data:{title:'Comida de Luna',category:'food',round_label:'Primera ronda'},private_data:{amount_cents:'25050',vendor:'Veterinaria'},files:[{path:'private/receipt.jpg',role:'receipt'}],status:'submitted',version:9,feedback:'',reimbursable_cents:0,urgent:false,priority_reason:'',submitted_at:'2026-09-13T12:00:00Z',updated_at:'2026-09-13T12:00:00Z'};
 function api(overrides:Partial<AdminApi>={}):AdminApi { return {session:async()=>true,watch:()=>()=>{},login:async()=>{},logout:async()=>{},isAdmin:async()=>true,listUsers:async()=>({total:0,users:[]}),listAdoptions:async()=>({total:0,items:[]}),reviews:async()=>[],reviewAdoption:async p=>p,photoUrl:async()=>'',listContributions:async()=>({total:0,items:[]}),listRescue:vi.fn(async()=>({total:1,items:[record]})),rescueDetail:vi.fn(async()=>({record,verified:true,case_status:'approved',history:[]})),rescueFileUrl:vi.fn(async()=> 'https://example.test/signed'),reviewRescue:vi.fn(async r=>({...r,status:'approved'})),...overrides}; }
 async function open(client:AdminApi) { render(<Rescues api={client}/>);const user=userEvent.setup();await user.click(await screen.findByRole('button',{name:'Revisar Comida de Luna'}));await screen.findByText('Solo para revisión privada');return user; }
@@ -66,5 +66,166 @@ describe('rescue review',()=>{
   });
   it('discards the private record when the server denies access',async()=>{
     const client=api({rescueDetail:vi.fn(async()=>{throw {code:'42501'};})});render(<Rescues api={client}/>);const user=userEvent.setup();await user.click(await screen.findByRole('button',{name:'Revisar Comida de Luna'}));await screen.findByText('El acceso cambió. Actualiza la lista para volver a comprobarlo.');expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});
+
+const plannedId='00000000-0000-4000-8000-000000000001';
+const caseRecord:RescueRecord={...record,id:'case-packet',kind:'case',parent_id:null,version:12,public_data:{pet_name:'Luna',need_items:[{id:plannedId,type:'veterinary',title:'Consulta veterinaria',amount_cents:25000,detail:'Valoración inicial'}]},private_data:{},files:[]};
+const packetExpense:RescueRecord={...record,id:'00000000-0000-4000-8000-000000000002',parent_id:caseRecord.id,files:[{path:'private/receipt.PDF',role:'receipt'}]};
+const packet:RescueDetail={record:caseRecord,verified:false,case_status:null,history:[],expenses:{total:21,page:1,items:[packetExpense]},need_comments:[]};
+function savedResult(record:{id:string;version:number},comments:NeedCommentInput[],requestId:string):NeedCommentResult {
+  return {request_id:requestId,record_id:record.id,case_version:record.version,comments:comments.map(comment=>({...comment,id:`${requestId}:${comment.target_kind}:${comment.target_id}`,request_id:requestId,case_id:record.id,case_version:record.version,target_title:comment.target_kind==='planned'?'Consulta veterinaria':'Comida de Luna',created_at:'2026-11-02T10:00:00Z'}))};
+}
+function packetApi(overrides:Partial<AdminApi>={}):AdminApi {
+  return api({listRescue:vi.fn(async()=>({total:1,items:[caseRecord]})),rescueDetail:vi.fn(async(_id,page=1)=>({...packet,expenses:{...packet.expenses!,page}})),saveNeedComments:vi.fn<NonNullable<AdminApi['saveNeedComments']>>(async(record,comments,requestId)=>savedResult(record,comments,requestId)),...overrides});
+}
+async function openPacket(client:AdminApi) {
+  const view=render(<Rescues api={client}/>), user=userEvent.setup();
+  await user.click(await screen.findByRole('button',{name:'Revisar Luna'}));
+  await screen.findByRole('region',{name:'Gastos del caso'});
+  return {user,...view};
+}
+
+describe('case needs packet',()=>{
+  it('saves one batch with destination versions, shows the private PDF, and leaves financial review independent',async()=>{
+    const client=packetApi(),{user}=await openPacket(client);
+    expect(client.rescueDetail).toHaveBeenCalledWith(caseRecord.id,1);
+    expect(client.rescueFileUrl).toHaveBeenCalledWith('private/receipt.PDF');
+    expect(screen.getByRole('link',{name:'Abrir PDF de Comida de Luna · Archivo 1'})).toHaveAttribute('href','https://example.test/signed');
+    expect(screen.getByText('21 gastos accesibles · Página 1 de 2')).toBeInTheDocument();
+    expect(screen.getByRole('button',{name:'Abrir revisión individual de Comida de Luna'})).toBeEnabled();
+    await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'  Aclara la valoración  ');
+    await user.type(screen.getByLabelText('Comentario para Comida de Luna'),'Confirma el proveedor');
+    expect(screen.getByRole('button',{name:'Pedir correcciones'})).toBeDisabled();
+    await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
+    await screen.findByText('Comentarios guardados. El estado y los montos conservan su revisión independiente.');
+    expect(client.saveNeedComments).toHaveBeenCalledWith({id:caseRecord.id,version:12},[
+      {target_kind:'planned',target_id:plannedId,target_version:12,body:'Aclara la valoración'},
+      {target_kind:'expense',target_id:packetExpense.id,target_version:9,body:'Confirma el proveedor'},
+    ],expect.any(String));
+    expect(screen.getByLabelText('Comentario para Consulta veterinaria')).toHaveValue('');
+    expect(screen.getByText('Aclara la valoración')).toBeInTheDocument();
+    expect(screen.getByText(/Versión 12 · En revisión/)).toBeInTheDocument();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+    // Viewing child files never grants the legacy case publication checkbox.
+    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();
+  });
+
+  it('protects unsaved comments when closing, reloading or changing expense page and pages only through the server',async()=>{
+    const client=packetApi(),{user}=await openPacket(client);
+    await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'Pendiente de guardar');
+    for(const name of ['Cerrar','Recargar expediente y archivos','Gastos siguientes'])await user.click(screen.getByRole('button',{name}));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByLabelText('Comentario para Consulta veterinaria')).toHaveValue('Pendiente de guardar');
+    expect(client.rescueDetail).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('alert')).toHaveTextContent('Guarda los comentarios o descártalos');
+    await user.click(screen.getByRole('button',{name:'Descartar comentarios'}));
+    await user.click(screen.getByRole('button',{name:'Gastos siguientes'}));
+    await waitFor(()=>expect(client.rescueDetail).toHaveBeenLastCalledWith(caseRecord.id,2));
+    expect(await screen.findByText('21 gastos accesibles · Página 2 de 2')).toBeInTheDocument();
+  });
+
+  it('retries an uncertain write with the exact payload and request ID while blocking edits and decisions',async()=>{
+    const save=vi.fn<NonNullable<AdminApi['saveNeedComments']>>().mockRejectedValueOnce(new TypeError('network')).mockImplementationOnce(async(...args)=>savedResult(...args));
+    const client=packetApi({saveNeedComments:save}),{user}=await openPacket(client);
+    await user.type(screen.getByLabelText('Comentario para Comida de Luna'),'Confirma la fecha');
+    await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
+    await screen.findByText(/No pudimos confirmar el guardado/);
+    expect(screen.getByLabelText('Comentario para Comida de Luna')).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Cerrar'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Revisar Luna'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Pedir correcciones'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Gastos siguientes'})).toBeDisabled();
+    await user.click(screen.getByRole('button',{name:'Reintentar el mismo guardado'}));
+    await screen.findByText('Comentarios guardados. El estado y los montos conservan su revisión independiente.');
+    expect(save).toHaveBeenCalledTimes(2);
+    expect(save.mock.calls[1]).toEqual(save.mock.calls[0]);
+    expect(screen.getAllByText('Confirma la fecha')).toHaveLength(1);
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+
+  it('requires fresh details after a version conflict and never replays the old notes',async()=>{
+    const save=vi.fn().mockRejectedValue({code:'40001'});
+    const client=packetApi({saveNeedComments:save}),{user}=await openPacket(client);
+    await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'Comentario viejo');
+    await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
+    await screen.findByText(/El expediente o una necesidad cambió/);
+    expect(screen.queryByLabelText('Comentario para Consulta veterinaria')).not.toBeInTheDocument();
+    expect(screen.queryByRole('region',{name:'Gastos del caso'})).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button',{name:'Recargar expediente y archivos'}));
+    expect(await screen.findByLabelText('Comentario para Consulta veterinaria')).toHaveValue('');
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+
+  it('purges the packet and drafts if comment permission was revoked',async()=>{
+    const client=packetApi({saveNeedComments:vi.fn().mockRejectedValue({code:'42501'})}),{user}=await openPacket(client);
+    await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'Texto privado');
+    await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
+    await screen.findByText('El acceso cambió. Actualiza la lista para volver a comprobarlo.');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByText('Texto privado')).not.toBeInTheDocument();
+    expect(screen.queryByText('Comida de Luna')).not.toBeInTheDocument();
+  });
+
+  it('keeps the packet and working files available when one expense PDF is missing',async()=>{
+    const second={...packetExpense,id:'second-expense',public_data:{title:'Medicinas'},files:[{path:'private/medicine.PDF',role:'receipt'}]};
+    const value={...packet,expenses:{total:2,page:1,items:[packetExpense,second]}};
+    const detail=vi.fn(async()=>value);
+    const client=packetApi({rescueDetail:detail,rescueFileUrl:vi.fn(async path=>{
+      if(path==='private/receipt.PDF')throw {status:404};
+      return 'https://example.test/working-file';
+    })});
+    await openPacket(client);
+    expect(detail).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole('region',{name:'Necesidades previstas'})).toHaveTextContent('Consulta veterinaria');
+    expect(screen.getByRole('link',{name:'Abrir PDF de Medicinas · Archivo 1'})).toHaveAttribute('href','https://example.test/working-file');
+    expect(screen.getByRole('alert')).toHaveTextContent('Archivo no disponible');
+    expect(screen.getByRole('button',{name:'Reintentar archivo'})).toBeEnabled();
+    expect(screen.getByLabelText('Comentario para Comida de Luna')).toBeEnabled();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+
+  it('purges partial file results if revalidation reveals lost packet access',async()=>{
+    const detail=vi.fn().mockResolvedValueOnce(packet).mockRejectedValueOnce({code:'42501'});
+    const client=packetApi({rescueDetail:detail,rescueFileUrl:vi.fn().mockRejectedValue({status:404})});
+    render(<Rescues api={client}/>);
+    await userEvent.setup().click(await screen.findByRole('button',{name:'Revisar Luna'}));
+    await screen.findByText('El acceso cambió. Actualiza la lista para volver a comprobarlo.');
+    expect(detail).toHaveBeenCalledTimes(2);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByText('Comida de Luna')).not.toBeInTheDocument();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+
+  it('cannot approve the case when its own publication file is unavailable',async()=>{
+    const value={...packet,record:{...caseRecord,files:[{path:'private/case-photo.jpg',role:'public'}]}};
+    const client=packetApi({rescueDetail:vi.fn(async()=>value),rescueFileUrl:vi.fn(async path=>{
+      if(path==='private/case-photo.jpg')throw {status:404};
+      return 'https://example.test/working-file';
+    })});
+    const {user}=await openPacket(client);
+    await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
+    expect(screen.getByLabelText('Revisé el archivo 1')).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+
+  it('ignores a late A response after the actor/API changes and B has been opened',async()=>{
+    let finish!:(result:NeedCommentResult)=>void;
+    const save=vi.fn<NonNullable<AdminApi['saveNeedComments']>>(()=>new Promise(resolve=>{finish=resolve;}));
+    const clientA=packetApi({saveNeedComments:save}),{user,rerender}=await openPacket(clientA);
+    await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'Texto privado de A');
+    await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
+    const b={...caseRecord,id:'case-b',public_data:{pet_name:'Sol'}};
+    const clientB=packetApi({listRescue:vi.fn(async()=>({total:1,items:[b]})),rescueDetail:vi.fn(async()=>({...packet,record:b,expenses:{total:0,page:1,items:[]}}))});
+    rerender(<Rescues api={clientB}/>);
+    await user.click(await screen.findByRole('button',{name:'Revisar Sol'}));
+    await screen.findByRole('region',{name:'Gastos del caso'});
+    await act(async()=>finish(savedResult(...save.mock.calls[0])));
+    expect(within(screen.getByRole('dialog')).getByRole('heading',{name:'Sol'})).toBeInTheDocument();
+    expect(screen.queryByText('Texto privado de A')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Comentarios guardados\. El estado/)).not.toBeInTheDocument();
+    expect(clientB.saveNeedComments).not.toHaveBeenCalled();
   });
 });

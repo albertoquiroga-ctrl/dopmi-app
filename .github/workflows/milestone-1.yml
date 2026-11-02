@@ -44,6 +44,10 @@ jobs:
         run: tools/verification/node_modules/.bin/supabase db start
       - name: Supabase permissions tests
         run: tools/verification/node_modules/.bin/supabase test db
+      - name: Concurrent need comments and administrative revocation
+        env:
+          PGPASSWORD: postgres
+        run: node tools/verification/need-feedback-concurrency.mjs
       - name: Apple registration and deletion races against PostgreSQL
         env:
           DOPMI_APPLE_DELETION_POSTGRES_TEST: 'true'

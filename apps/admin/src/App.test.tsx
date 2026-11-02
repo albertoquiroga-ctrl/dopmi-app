@@ -66,7 +66,7 @@ describe('administración de usuarios', () => {
       if (name === 'dopmi_is_admin') return recheck ? pendingRecheck : { data: true, error: null };
       if (name === 'admin_list_users') return { data: { total: 0, users: [] }, error: null };
       if (name === 'dopmi_admin_rescue') return { data: { total: 1, items: [record] }, error: null };
-      if (name === 'dopmi_rescue_detail') return { data: { record, verified: false, case_status: null, history: [] }, error: null };
+      if (name === 'dopmi_admin_rescue_packet') return { data: { record, verified: false, case_status: null, history: [], expenses: { total: 0, page: 1, items: [] }, need_comments: [] }, error: null };
       throw new Error(`Unexpected synthetic RPC: ${name}`);
     });
     const client = {
