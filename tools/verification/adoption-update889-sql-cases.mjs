@@ -117,7 +117,7 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     "select dopmi_save_rescue('case',$1::jsonb,'{}','[]',$2,$3) value",[JSON.stringify(payload),id,version]);
   const coarseDiscovery = (db,filters,page=1,size=12) => value(db,
     'select dopmi_discovery($1::jsonb,$2,$3) value',[JSON.stringify(filters),page,size]);
-  const noPublicCoordinates = value => assert.doesNotMatch(JSON.stringify(value),/approximate_latitude|approximate_longitude/);
+  const noPublicCoordinates = value => assert.doesNotMatch(JSON.stringify(value),/approximate_latitude|approximate_longitude|location_precision_version/);
 
   test('coarse draft choices survive save/reopen without defaults and block submission while legacy age zero stays valid',async()=>{
     const db=getDb(); await actor(db,rescuer);
@@ -150,7 +150,7 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     const incomplete=await saveCoarseAdoption(db,{species:null,sex:null,size:null});
     assert.equal((await value(db,"select dopmi_transition_adoption($1,$2,'archive') value",[incomplete.id,incomplete.version])).status,'archived');
   });
-  test('coarse adoption location rounds before persistence, preserves omission, and explicitly clears both coordinates',async()=>{
+  test('coarse legacy adoption location keeps its rounding, omission, and explicit clear contract',async()=>{
     const db=getDb(); await actor(db,rescuer);
     let saved=await saveCoarseAdoption(db,{approximate_latitude:25.686614,approximate_longitude:-100.316113});
     assert.equal(Number(saved.approximate_latitude),25.69); assert.equal(Number(saved.approximate_longitude),-100.32);
@@ -162,6 +162,38 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     saved=await saveCoarseAdoption(db,{approximate_latitude:-90,approximate_longitude:180},saved.id,saved.version);
     assert.equal(Number(saved.approximate_latitude),-90); assert.equal(Number(saved.approximate_longitude),180);
   });
+  test('coarse precise adoption contract persists raw coordinates and protects them from legacy saves',async()=>{
+    const db=getDb(); await actor(db,rescuer);
+    const precise={location_precision_version:1,approximate_latitude:25.686614,approximate_longitude:-100.316113};
+    let saved=await saveCoarseAdoption(db,precise);
+    assert.equal(Number(saved.approximate_latitude),precise.approximate_latitude);
+    assert.equal(Number(saved.approximate_longitude),precise.approximate_longitude);
+    assert.equal(saved.location_precision_version,undefined);
+    saved=await saveCoarseAdoption(db,{},saved.id,saved.version);
+    saved=await saveCoarseAdoption(db,{pet_name:'Nombre actualizado',approximate_latitude:25.69,approximate_longitude:-100.32},saved.id,saved.version);
+    assert.equal(saved.pet_name,'Nombre actualizado');
+    const reopened=(await db.query('select approximate_latitude,approximate_longitude from dopmi_adoptions where id=$1',[saved.id])).rows[0];
+    assert.equal(Number(reopened.approximate_latitude),precise.approximate_latitude);
+    assert.equal(Number(reopened.approximate_longitude),precise.approximate_longitude);
+    for(const payload of [
+      {approximate_latitude:26,approximate_longitude:-101},
+      {approximate_latitude:null,approximate_longitude:null},
+    ]) {
+      await db.exec('savepoint legacy_precise_change');
+      await assert.rejects(saveCoarseAdoption(db,payload,saved.id,saved.version),
+        error=>error.code==='22023' && /Actualiza Dopmi/.test(error.message));
+      await db.exec('rollback to savepoint legacy_precise_change; release savepoint legacy_precise_change');
+    }
+    const unchanged=(await db.query('select version,approximate_latitude from dopmi_adoptions where id=$1',[saved.id])).rows[0];
+    assert.equal(unchanged.version,saved.version); assert.equal(Number(unchanged.approximate_latitude),precise.approximate_latitude);
+    saved=await saveCoarseAdoption(db,{...precise,approximate_latitude:26.1234567},saved.id,saved.version);
+    assert.equal(Number(saved.approximate_latitude),26.1234567);
+    saved=await saveCoarseAdoption(db,{location_precision_version:1,approximate_latitude:null,approximate_longitude:null},saved.id,saved.version);
+    assert.equal(saved.approximate_latitude,null); assert.equal(saved.approximate_longitude,null);
+    const historical=await saveCoarseAdoption(db,{approximate_latitude:25.686614,approximate_longitude:-100.316113});
+    const kept=await saveCoarseAdoption(db,{location_precision_version:1},historical.id,historical.version);
+    assert.equal(Number(kept.approximate_latitude),25.69); assert.equal(Number(kept.approximate_longitude),-100.32);
+  });
   test('coarse save rejects partial, nonnumeric, out-of-range locations and invalid category values without changing a draft',async()=>{
     const db=getDb(); await actor(db,rescuer);
     const saved=await saveCoarseAdoption(db,{species:null,sex:null,size:null});
@@ -172,6 +204,9 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
       {approximate_latitude:true,approximate_longitude:0},{approximate_latitude:[],approximate_longitude:{}},
       {approximate_latitude:90.001,approximate_longitude:0},{approximate_latitude:0,approximate_longitude:-180.001},
       {species:''},{species:'rabbit'},{sex:'unknown'},{sex:1},{size:'tiny'},{size:false},{age_band:'juvenile'},
+      ...['1',0,2,true,null,{},[]].map(location_precision_version=>({
+        location_precision_version,approximate_latitude:25.686614,approximate_longitude:-100.316113,
+      })),
     ]) await rejectedCoarse(db,()=>saveCoarseAdoption(db,payload,saved.id,saved.version));
     const unchanged=(await db.query('select * from dopmi_adoptions where id=$1',[saved.id])).rows[0];
     assert.equal(unchanged.version,saved.version); assert.equal(unchanged.approximate_latitude,null); assert.equal(unchanged.species,null);
@@ -181,18 +216,19 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     let saved=await saveCoarseCase(db,{pet_name:'Luna'});
     const photo=`${rescuer}/${saved.id}/00000000-0000-4000-8000-000000000002.jpg`;
     const need={id:'00000000-0000-4000-8000-000000000003',type:'veterinary',title:'Tratamiento histórico',amount_cents:1,detail:'Detalle conservado',urgent:false};
-    const fields={pet_name:'Luna',size:'small',need_items:[need],approximate_latitude:25.686614,approximate_longitude:-100.316113};
+    const fields={pet_name:'Luna',size:'small',need_items:[need],location_precision_version:1,approximate_latitude:25.686614,approximate_longitude:-100.316113};
     saved=await value(db,"select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",
       [JSON.stringify(fields),JSON.stringify([{path:photo,role:'public'}]),saved.id,saved.version]);
-    assert.equal(Number(saved.approximate_latitude),25.69); assert.equal(Number(saved.approximate_longitude),-100.32);
+    assert.equal(Number(saved.approximate_latitude),25.686614); assert.equal(Number(saved.approximate_longitude),-100.316113);
+    assert.equal(saved.location_precision_version,undefined);
     noPublicCoordinates(saved.public_data); noPublicCoordinates(saved.private_data);
     assert.deepEqual(saved.public_data.need_items,[need]); assert.equal(saved.public_data.size,'small');
     const preserved=await value(db,"select dopmi_save_rescue('case',$1::jsonb,'{}',$2::jsonb,$3,$4) value",
       [JSON.stringify(saved.public_data),JSON.stringify(saved.files),saved.id,saved.version]);
-    assert.equal(Number(preserved.approximate_latitude),25.69); assert.deepEqual(preserved.files,saved.files);
+    assert.equal(Number(preserved.approximate_latitude),25.686614); assert.deepEqual(preserved.files,saved.files);
     assert.deepEqual(preserved.public_data.need_items,[need]);
     const detail=await value(db,'select dopmi_rescue_detail($1) value',[saved.id]);
-    assert.equal(Number(detail.record.approximate_longitude),-100.32);
+    assert.equal(Number(detail.record.approximate_longitude),-100.316113);
     const expense=await value(db,"select dopmi_save_rescue('expense','{\"title\":\"Consulta\"}','{\"amount_cents\":\"1\",\"vendor\":\"Vet\",\"paid_on\":\"2026-11-01\",\"receipt_reference\":\"A1\"}','[]',null,null,$1) value",[saved.id]);
     assert.equal(expense.private_data.amount_cents,'1'); assert.equal(expense.private_data.receipt_reference,'A1');
     for(const kind of ['expense','verification']) await rejectedCoarse(db,()=>db.query(
@@ -203,18 +239,46 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     await rejectedCoarse(db,()=>db.query('select dopmi_rescue_detail($1)',[saved.id]),'42501');
     await rejectedCoarse(db,()=>saveCoarseCase(db,fields,saved.id,preserved.version),'42501');
     await actor(db,rescuer);
-    const cleared=await saveCoarseCase(db,{...preserved.public_data,approximate_latitude:null,approximate_longitude:null},saved.id,preserved.version);
+    const cleared=await saveCoarseCase(db,{...preserved.public_data,location_precision_version:1,approximate_latitude:null,approximate_longitude:null},saved.id,preserved.version);
     assert.equal(cleared.approximate_latitude,null); assert.equal(cleared.approximate_longitude,null);
+  });
+  test('coarse precise case contract preserves a fine pair through legacy edits and strips its marker',async()=>{
+    const db=getDb(); await actor(db,rescuer);
+    const precise={pet_name:'Luna',location_precision_version:1,approximate_latitude:25.686614,approximate_longitude:-100.316113};
+    let saved=await saveCoarseCase(db,precise);
+    saved=await saveCoarseCase(db,{pet_name:'Nombre actualizado',approximate_latitude:25.69,approximate_longitude:-100.32},saved.id,saved.version);
+    assert.equal(saved.public_data.pet_name,'Nombre actualizado');
+    assert.equal(Number(saved.approximate_latitude),25.686614); assert.equal(Number(saved.approximate_longitude),-100.316113);
+    noPublicCoordinates(saved.public_data); noPublicCoordinates(saved.private_data);
+    for(const payload of [
+      {approximate_latitude:26,approximate_longitude:-101},
+      {approximate_latitude:null,approximate_longitude:null},
+    ]) {
+      await db.exec('savepoint legacy_precise_case');
+      await assert.rejects(saveCoarseCase(db,payload,saved.id,saved.version),
+        error=>error.code==='22023' && /Actualiza Dopmi/.test(error.message));
+      await db.exec('rollback to savepoint legacy_precise_case; release savepoint legacy_precise_case');
+    }
+    for(const location_precision_version of ['1',2,true,null])
+      await rejectedCoarse(db,()=>saveCoarseCase(db,{...precise,location_precision_version},saved.id,saved.version));
+    for(const kind of ['expense','verification']) await rejectedCoarse(db,()=>db.query(
+      "select dopmi_save_rescue($1,'{\"location_precision_version\":1}','{}','[]',null,null,$2)",
+      [kind,kind==='expense'?saved.id:null]));
+    saved=await saveCoarseCase(db,{...precise,approximate_longitude:-101.1234567},saved.id,saved.version);
+    assert.equal(Number(saved.approximate_longitude),-101.1234567);
+    const reopened=await value(db,'select dopmi_rescue_detail($1) value',[saved.id]);
+    assert.equal(Number(reopened.record.approximate_longitude),-101.1234567);
+    assert.equal(reopened.record.version,saved.version);
   });
   test('coarse case save rejects malformed pairs and public views expose neither case nor adoption coordinates',async()=>{
     const db=getDb(); await actor(db,rescuer);
     for(const payload of [{approximate_latitude:1},{approximate_latitude:'1',approximate_longitude:1},
       {approximate_latitude:91,approximate_longitude:0},{approximate_latitude:0,approximate_longitude:null}])
       await rejectedCoarse(db,()=>saveCoarseCase(db,payload));
-    const saved=await saveCoarseCase(db,{pet_name:'Luna',approximate_latitude:25.69,approximate_longitude:-100.32});
+    const saved=await saveCoarseCase(db,{pet_name:'Luna',location_precision_version:1,approximate_latitude:25.686614,approximate_longitude:-100.316113});
     await db.exec('reset role');
     await db.query("update dopmi_rescue_records set status='approved',approved_snapshot=public_data where id=$1",[saved.id]);
-    await db.query("insert into dopmi_adoptions(id,owner_id,pet_name,status,approximate_latitude,approximate_longitude) values($1,$2,'Luna','published',25.69,-100.32)",[post,rescuer]);
+    await db.query("insert into dopmi_adoptions(id,owner_id,pet_name,status,approximate_latitude,approximate_longitude) values($1,$2,'Luna','published',25.686614,-100.316113)",[post,rescuer]);
     await actor(db,other);
     assert.equal((await db.query('select approximate_latitude from dopmi_adoptions where id=$1',[post])).rows.length,0);
     await rejectedCoarse(db,()=>saveCoarseAdoption(db,{approximate_latitude:0,approximate_longitude:0},post,1),'42501');
@@ -227,7 +291,7 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     await rejectedCoarse(db,()=>db.query('select approximate_latitude from dopmi_adoptions'),'42501');
     await rejectedCoarse(db,()=>db.query('select approximate_latitude from dopmi_rescue_records'),'42501');
   });
-  test('coarse discovery orders nearest first with deterministic pagination and rounds the origin before measuring',async()=>{
+  test('coarse discovery uses the original precise origin with deterministic nearest-first pagination',async()=>{
     const db=getDb();
     const ids=[1,2,3,4].map(n=>`89200000-0000-4000-8000-${String(n).padStart(12,'0')}`);
     for(const [i,id] of ids.entries()) await db.query(`insert into dopmi_adoptions(id,owner_id,pet_name,status,published_at,
@@ -236,11 +300,11 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     await db.exec('set local role anon');
     const filters={latitude:0.0049,longitude:0.0049,radius_km:20};
     const all=await coarseDiscovery(db,filters);
-    assert.equal(all.total,3); assert.deepEqual(all.items.map(x=>x.id),ids.slice(0,3));
-    assert.equal(all.items[0].distance_km,1.1); assert.equal(all.items[2].distance_km,18.9);
+    assert.equal(all.total,4); assert.deepEqual(all.items.map(x=>x.id),ids);
+    assert.equal(all.items[0].distance_km,0.8); assert.equal(all.items[2].distance_km,18.4);
     const pages=await Promise.all([1,2,3,4].map(n=>coarseDiscovery(db,filters,n,1)));
-    assert.deepEqual(pages.flatMap(p=>p.items.map(x=>x.id)),ids.slice(0,3));
-    assert.ok(pages.every(p=>p.total===3)); noPublicCoordinates(all);
+    assert.deepEqual(pages.flatMap(p=>p.items.map(x=>x.id)),ids);
+    assert.ok(pages.every(p=>p.total===4)); noPublicCoordinates(all);
     // No origin preserves the existing newest-first order and includes all rows.
     const old=await coarseDiscovery(db,{});
     assert.deepEqual(old.items.map(x=>x.id),[ids[2],ids[3],ids[0],ids[1]]);
@@ -263,6 +327,10 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     await db.query('update dopmi_adoptions set approximate_latitude=0.18 where id=$1',[target]);
     await db.exec('set local role anon');
     assert.equal((await coarseDiscovery(db,{latitude:0,longitude:0,radius_km:20})).total,0); // 20.015 km displays 20.0
+    await db.exec('reset role');
+    await db.query('update dopmi_adoptions set approximate_latitude=0.17985 where id=$1',[target]);
+    await db.exec('set local role anon');
+    assert.equal((await coarseDiscovery(db,{latitude:0,longitude:0,radius_km:20})).total,1); // Precise point is inside; rounding to 0.18 would exclude it.
     await db.exec('reset role');
     await db.query('update dopmi_adoptions set approximate_latitude=null,approximate_longitude=null where id=$1',[target]);
     await db.exec('set local role anon');
@@ -287,8 +355,10 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
       {latitude:0,longitude:0,radius_km:20,personality:['invented']},
     ]) await rejectedCoarse(db,()=>coarseDiscovery(db,filters));
     await db.exec('reset role');
-    for(const role of ['anon','authenticated','service_role']) assert.equal(
-      (await db.query("select has_function_privilege($1,'private.dopmi_coarse_pet_location(jsonb)','EXECUTE') permitted",[role])).rows[0].permitted,false);
+    for(const role of ['anon','authenticated','service_role']) for(const helper of [
+      'private.dopmi_coarse_pet_location(jsonb)',
+      'private.dopmi_preserve_fine_pet_location(numeric[],numeric,numeric,boolean)',
+    ]) assert.equal((await db.query("select has_function_privilege($1,$2,'EXECUTE') permitted",[role,helper])).rows[0].permitted,false);
     await rejectedCoarse(db,()=>db.query('insert into dopmi_adoptions(owner_id,approximate_latitude) values($1,0)',[rescuer]),'23514');
     await rejectedCoarse(db,()=>db.query("insert into dopmi_rescue_records(owner_id,kind,approximate_longitude) values($1,'case',0)",[rescuer]),'23514');
     await rejectedCoarse(db,()=>db.query("insert into dopmi_rescue_records(owner_id,kind,approximate_latitude,approximate_longitude) values($1,'expense',0,0)",[rescuer]),'23514');

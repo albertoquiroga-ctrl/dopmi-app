@@ -16,7 +16,7 @@ export type Adoption = {
   photos: string[]; status: string; version: number; review_feedback: string; submitted_at: string | null; updated_at: string;
 };
 export type Review = { id: string; decision: string; feedback: string; version: number; created_at: string };
-export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,string>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string };
+export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string };
 export type RescueDetail = { record: RescueRecord; verified: boolean; case_status: string | null; history: { id: string; action: string; feedback: string; version: number; created_at: string; reimbursable_cents: number; urgent: boolean }[] };
 export type RescueDecision = { decision: string; note: string; amount_cents: number; is_urgent: boolean; urgency_note: string; publish_content: boolean };
 export type Contribution = {

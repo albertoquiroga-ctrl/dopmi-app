@@ -86,7 +86,7 @@ void main() {
       );
       expect(
         find.textContaining(
-          'privacy-live-2026-11-01-ubicacion · 1 de noviembre de 2026',
+          'privacy-live-2026-11-01-ubicacion-precisa · 1 de noviembre de 2026',
         ),
         findsWidgets,
       );

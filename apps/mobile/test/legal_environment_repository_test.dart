@@ -34,7 +34,7 @@ void main() {
     (
       environment: 'production',
       terms: 'terms-live-2026-11-01',
-      privacy: 'privacy-live-2026-11-01-ubicacion',
+      privacy: 'privacy-live-2026-11-01-ubicacion-precisa',
       date: '1 de noviembre de 2026',
     ),
   ];

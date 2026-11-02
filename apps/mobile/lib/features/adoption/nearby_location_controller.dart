@@ -243,8 +243,8 @@ class NearbyLocationController extends ChangeNotifier {
       );
       if (!_current(revision, actor)) return;
       _selection = SelectedLocation(
-        latitude: result.roundedLatitude,
-        longitude: result.roundedLongitude,
+        latitude: result.latitude,
+        longitude: result.longitude,
         followDevice: true,
       );
       _settingsTarget = null;

@@ -309,42 +309,6 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
         const SizedBox(height: 20),
         const _HomePhotoTips(),
         const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) => SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: constraints.maxWidth,
-                        ),
-                        child: _programTab('adoption', 'En adopción'),
-                      ),
-                      const SizedBox(width: 20),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: constraints.maxWidth,
-                        ),
-                        child: _programTab('support', 'Recibiendo apoyo'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            IconButton(
-              key: const ValueKey('home-period-filter'),
-              tooltip: 'Filtrar pendientes',
-              color: period == 'month' ? ink : purple,
-              onPressed: _filterPeriod,
-              icon: const Icon(Icons.tune_rounded, size: 22),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
         LiveSection<RescuerFunnelMetrics>(
           key: ValueKey('home-funnel-${widget.actor}-$period'),
           tables: const [
@@ -354,6 +318,14 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             'dopmi_messages',
             'dopmi_donations',
           ],
+          statusFrame: (content) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _pendingFilters(),
+              const SizedBox(height: 12),
+              content,
+            ],
+          ),
           load: () async {
             final result = await ref
                 .read(rescueRepositoryProvider)
@@ -375,12 +347,23 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
               metrics.completedCases,
               metrics.raisedCents,
             ].any((value) => value > 0);
-            return empty && !hasResults
-                ? const _HomeEmpty()
-                : _HomeFunnelGrid(
+            final showEmpty = empty && !hasResults;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!showEmpty || period != 'month') ...[
+                  _pendingFilters(),
+                  const SizedBox(height: 12),
+                ],
+                if (showEmpty)
+                  const _HomeEmpty()
+                else
+                  _HomeFunnelGrid(
                     metrics: metrics,
                     adoption: pendingProgram == 'adoption',
-                  );
+                  ),
+              ],
+            );
           },
         ),
         const SizedBox(height: 20),
@@ -389,6 +372,42 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
       ],
     );
   }
+
+  Widget _pendingFilters() => Row(
+    children: [
+      Expanded(
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: constraints.maxWidth,
+                  ),
+                  child: _programTab('adoption', 'En adopción'),
+                ),
+                const SizedBox(width: 20),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: constraints.maxWidth,
+                  ),
+                  child: _programTab('support', 'Recibiendo apoyo'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      IconButton(
+        key: const ValueKey('home-period-filter'),
+        tooltip: 'Filtrar pendientes',
+        color: period == 'month' ? ink : purple,
+        onPressed: _filterPeriod,
+        icon: const Icon(Icons.tune_rounded, size: 22),
+      ),
+    ],
+  );
 
   Widget _programTab(String program, String label) => ReferenceFocusOutline(
     radius: 6,

@@ -9,29 +9,39 @@ const choices: Record<string,string> = {dog:'Perro',cat:'Gato',female:'Hembra',m
 export function money(cents: number) { return new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(cents/100); }
 export function amount(text: string): number | null { if(!/^\d{1,7}(\.\d{1,2})?$/.test(text)) return null; const [whole,decimal='']=text.split('.'); const value=Number(whole)*100+Number(decimal.padEnd(2,'0')); return value>0&&value<=100000000?value:null; }
 function message(cause: unknown) { if(typeof cause==='object'&&cause&&'code' in cause&&'message' in cause&&['22023','40001'].includes(String(cause.code))) return String(cause.message); return errorMessage(cause); }
-function title(r: RescueRecord) { return r.public_data.public_name||r.public_data.pet_name||r.public_data.title||'Sin título'; }
+function text(value: unknown): string { return typeof value === 'string' || typeof value === 'number' ? String(value) : typeof value === 'boolean' ? (value ? 'Sí' : 'No') : 'Sin dato'; }
+function title(r: RescueRecord) { return text(r.public_data.public_name||r.public_data.pet_name||r.public_data.title||'Sin título'); }
 function date(value: string | null) { return value?new Date(value).toLocaleString('es-MX'):'Sin enviar'; }
 
-export default function Rescues({api}:{api:AdminApi}) {
-  const [kind,setKind]=useState('verification'),[status,setStatus]=useState('submitted'),[page,setPage]=useState(1),[revision,setRevision]=useState(0);
+export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKind?:'case'|'verification'|'expense'}) {
+  const [kind,setKind]=useState<string>(initialKind),[status,setStatus]=useState('submitted'),[page,setPage]=useState(1),[revision,setRevision]=useState(0);
   const [data,setData]=useState<{total:number;items:RescueRecord[]}>({total:0,items:[]}),[selected,setSelected]=useState<string|null>(null);
   const [loading,setLoading]=useState(true),[error,setError]=useState('');
+  useEffect(()=>{setKind(initialKind);setPage(1);},[initialKind]);
   useEffect(()=>{let alive=true;setLoading(true);setData({total:0,items:[]});setSelected(null);setError('');
     api.listRescue(kind,status,page).then(r=>{if(alive)setData(r);}).catch(e=>{if(alive)setError(message(e));}).finally(()=>{if(alive)setLoading(false);});return()=>{alive=false;};
   },[api,kind,status,page,revision]);
-  return <><header className="page-heading"><div><p className="eyebrow">Confianza y transparencia</p><h1>Rescates y gastos</h1><p>Revisa cada caso y gasto. La verificación Dopmi es un sello opcional para refugios.</p></div><span className="read-only">Sin cobros activos</span></header>
+  return <><header className="page-heading"><div><p className="eyebrow">Confianza y transparencia</p><h1>Casos y necesidades</h1><p>Consulta el expediente, sus necesidades y la evidencia. El sello Dopmi es opcional.</p></div><span className="read-only">Revisión privada</span></header>
     <section className="users-card"><div className="table-toolbar"><div><h2>Solicitudes del equipo rescatista</h2><p aria-live="polite">{loading?'Consultando…':`${data.total} solicitudes`}</p></div><div className="moderation-filters">
       <label>Tipo<select value={kind} onChange={e=>{setKind(e.target.value);setPage(1);}}>{Object.entries(kinds).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <label>Estado<select value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>{Object.entries(rescueStatus).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <button className="secondary" onClick={()=>setRevision(v=>v+1)}>Actualizar</button></div></div>
-      {error?<div className="empty-state"><div role="alert" className="notice">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>:loading?<div className="empty-state" role="status">Cargando solicitudes…</div>:!data.items.length?<div className="empty-state"><span className="empty-icon" aria-hidden="true">♡</span><h2>Todo al día por aquí</h2><p>No hay solicitudes con estos filtros.</p></div>:<div className="table-scroll"><table><thead><tr><th>Solicitud</th><th>Envío</th><th>Versión</th><th>Revisión</th></tr></thead><tbody>{data.items.map(r=><tr key={r.id}><td><strong>{title(r)}</strong><small>{r.public_data.city}</small></td><td>{date(r.submitted_at)}</td><td>{r.version}</td><td><button className="text-button" onClick={()=>setSelected(r.id)}>Revisar {title(r)}</button></td></tr>)}</tbody></table></div>}
+      {error?<div className="empty-state"><div role="alert" className="notice">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>:loading?<div className="empty-state" role="status">Cargando solicitudes…</div>:!data.items.length?<div className="empty-state"><span className="empty-icon" aria-hidden="true">♡</span><h2>Todo al día por aquí</h2><p>No hay solicitudes con estos filtros.</p></div>:<div className="table-scroll"><table className="rescue-table"><thead><tr><th>Solicitud</th><th>Envío</th><th>Versión</th><th>Revisión</th></tr></thead><tbody>{data.items.map(r=><tr key={r.id}><td data-label="Solicitud"><strong>{title(r)}</strong><small>{text(r.public_data.city)}</small></td><td data-label="Envío">{date(r.submitted_at)}</td><td data-label="Versión">{r.version}</td><td data-label="Revisión"><button className="text-button" onClick={()=>setSelected(r.id)}>Revisar {title(r)}</button></td></tr>)}</tbody></table></div>}
       <footer className="pagination"><span>Página {page} de {Math.max(1,Math.ceil(data.total/20))}</span><div><button className="secondary" disabled={loading||page===1} onClick={()=>setPage(p=>p-1)}>Anterior</button><button className="secondary" disabled={loading||page*20>=data.total} onClick={()=>setPage(p=>p+1)}>Siguiente</button></div></footer>
     </section>
     {selected&&<RescueReview key={selected} api={api} id={selected} close={()=>setSelected(null)} updated={()=>setRevision(v=>v+1)} openParent={setSelected} denied={()=>{setSelected(null);setData({total:0,items:[]});setError('El acceso cambió. Actualiza la lista para volver a comprobarlo.');}}/>}
   </>;
 }
 
-function Fields({data}:{data:Record<string,string>}) { return <dl className="rescue-fields">{Object.entries(data).map(([key,value])=><div key={key}><dt>{labels[key]||key}</dt><dd>{key==='amount_cents'?money(Number(value)):choices[value]||value||'Sin dato'}</dd></div>)}</dl>; }
+function Fields({data}:{data:Record<string,unknown>}) {
+  return <><dl className="rescue-fields">{Object.entries(data).filter(([key])=>key!=='need_items').map(([key,value])=><div key={key}><dt>{labels[key]||key}</dt><dd>{key==='amount_cents'?money(Number(value)):choices[text(value)]||text(value)}</dd></div>)}</dl>
+    {Array.isArray(data.need_items)&&data.need_items.length>0&&<section aria-label="Necesidades previstas"><h3>Necesidades previstas</h3><p>Estos importes son estimaciones y no sustituyen los comprobantes de los gastos ya pagados.</p><div className="rescue-needs">{data.need_items.map((raw:unknown,index:number)=>{
+      if(typeof raw!=='object'||raw===null||Array.isArray(raw))return null;
+      const item=raw as Record<string,unknown>;
+      return <article className="rescue-need" key={typeof item.id==='string'?item.id:index}><div className="need-heading"><h4>{text(item.title)}</h4>{item.urgent===true&&<span className="badge">Urgente</span>}</div><p>{choices[text(item.type)]||text(item.type)} · {money(Number(item.amount_cents))}</p><p className="authored-text">{text(item.detail)}</p></article>;
+    })}</div></section>}
+  </>;
+}
 
 function RescueReview({api,id,close,updated,openParent,denied}:{api:AdminApi;id:string;close:()=>void;updated:()=>void;openParent:(id:string)=>void;denied:()=>void}) {
   const dialog=useRef<HTMLDialogElement>(null);

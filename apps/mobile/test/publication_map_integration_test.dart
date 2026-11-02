@@ -92,7 +92,7 @@ Future<void> selectFixtureMap(WidgetTester tester) async {
 
 void main() {
   testWidgets(
-    'adoption draft saves before a map choice, then saves only the selected coarse pair',
+    'adoption draft saves before a map choice, then saves the selected precise private pair',
     (tester) async {
       final repo = PhotoDraftCommunity();
       await mapPublication(tester, '/my-adoptions/post', repo);
@@ -116,8 +116,9 @@ void main() {
         isNotNull,
       );
       await tapPublication(tester, find.text('Guardar borrador'));
-      expect(repo.savedPayload!['approximate_latitude'], 25.69);
-      expect(repo.savedPayload!['approximate_longitude'], -100.32);
+      expect(repo.savedPayload!['approximate_latitude'], 25.686614);
+      expect(repo.savedPayload!['location_precision_version'], 1);
+      expect(repo.savedPayload!['approximate_longitude'], -100.316113);
       expect(repo.savedPayload!['city'], 'Monterrey');
       expect(repo.savedPayload!['region'], 'Nuevo León');
       expect(repo.savedPayload!['publisher_bio'], 'Ayudamos a adoptar.');
@@ -147,7 +148,7 @@ void main() {
     },
   );
   testWidgets(
-    'support case requires its map choice for continuing and sends coarse values through the save request',
+    'support case requires its map choice for continuing and sends precise private values through the save request',
     (tester) async {
       final rescue = DraftCaseRescue();
       await mapPublication(
@@ -171,8 +172,9 @@ void main() {
         isNotNull,
       );
       await tapPublication(tester, find.text('Guardar borrador'));
-      expect(rescue.publicSaved!['approximate_latitude'], 25.69);
-      expect(rescue.publicSaved!['approximate_longitude'], -100.32);
+      expect(rescue.publicSaved!['approximate_latitude'], 25.686614);
+      expect(rescue.publicSaved!['location_precision_version'], 1);
+      expect(rescue.publicSaved!['approximate_longitude'], -100.316113);
       expect(rescue.publicSaved!['city'], 'Monterrey');
       expect(rescue.publicSaved!['state'], 'Nuevo León');
       expect(

@@ -148,5 +148,35 @@ select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002'
 select is((select count(*) from dopmi_adoptions where id=current_setting('dopmi.test.coarse_post')::uuid),0::bigint,
   'other account cannot read private coordinates');
 reset role;
+-- A versioned client can keep its private exact point. A legacy reopening can
+-- update other fields without replacing that point with its coarse rendering.
+set local role authenticated;
+select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000003',true);
+select set_config('dopmi.test.precise_post',dopmi_save_adoption(
+  '{"location_precision_version":1,"approximate_latitude":25.686614,"approximate_longitude":-100.316113}')->>'id',true);
+select is((select approximate_latitude from dopmi_adoptions where id=current_setting('dopmi.test.precise_post')::uuid),
+  25.686614::numeric,'versioned private location retains its original latitude');
+select is((select approximate_longitude from dopmi_adoptions where id=current_setting('dopmi.test.precise_post')::uuid),
+  (-100.316113)::numeric,'versioned private location retains its original longitude');
+select is(dopmi_save_adoption('{}',current_setting('dopmi.test.precise_post')::uuid,1)->>'approximate_longitude',
+  '-100.316113','omitting coordinates preserves the fine pair');
+select is(dopmi_save_adoption('{"pet_name":"Nombre actualizado","approximate_latitude":25.69,"approximate_longitude":-100.32}',
+  current_setting('dopmi.test.precise_post')::uuid,2)->>'approximate_latitude','25.686614','legacy coarse echo preserves the stored fine latitude');
+select throws_ok($$select dopmi_save_adoption('{"approximate_latitude":26,"approximate_longitude":-101}',
+  current_setting('dopmi.test.precise_post')::uuid,3)$$,'22023',null,'legacy client cannot relocate a fine point');
+select throws_ok($$select dopmi_save_adoption('{"approximate_latitude":null,"approximate_longitude":null}',
+  current_setting('dopmi.test.precise_post')::uuid,3)$$,'22023',null,'legacy client cannot clear a fine point');
+select throws_ok($$select dopmi_save_adoption('{"location_precision_version":"1","approximate_latitude":26,"approximate_longitude":-101}',
+  current_setting('dopmi.test.precise_post')::uuid,3)$$,'22023',null,'precision contract marker must be numeric version one');
+select is(dopmi_save_adoption('{"location_precision_version":1,"approximate_latitude":26.1234567,"approximate_longitude":-101.1234567}',
+  current_setting('dopmi.test.precise_post')::uuid,3)->>'approximate_latitude','26.1234567','versioned client can change its fine point');
+select is(dopmi_save_adoption('{"location_precision_version":1,"approximate_latitude":null,"approximate_longitude":null}',
+  current_setting('dopmi.test.precise_post')::uuid,4)->>'approximate_latitude',null::text,'versioned client can explicitly clear its point');
+select ok(not has_function_privilege('authenticated','private.dopmi_preserve_fine_pet_location(numeric[],numeric,numeric,boolean)','EXECUTE'),
+  'compatibility helper has no direct client execution permission');
+select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002',true);
+select is((select count(*) from dopmi_adoptions where id=current_setting('dopmi.test.precise_post')::uuid),0::bigint,
+  'another account cannot read private versioned coordinates');
+reset role;
 select * from finish();
 rollback;

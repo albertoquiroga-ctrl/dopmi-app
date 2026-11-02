@@ -83,7 +83,7 @@ describe('administración de usuarios', () => {
     render(<App api={createAdminApi(client, 'production')} />);
     const user = userEvent.setup();
     await waitFor(() => expect(rpc.mock.calls.filter(([name]) => name === 'dopmi_is_admin')).toHaveLength(2));
-    await user.click(await screen.findByRole('button', { name: 'Rescates y gastos' }));
+    await user.click(await screen.findByRole('button', { name: 'Casos y necesidades' }));
     await user.click(await screen.findByRole('button', { name: 'Revisar Rescatista de prueba local' }));
     const reviewed = await screen.findByRole('checkbox', { name: 'Revisé el archivo 1' });
     expect(reviewed).toBeDisabled();
@@ -116,6 +116,7 @@ describe('administración de usuarios', () => {
   });
   it('searches through the protected API and opens an accessible profile', async () => {
     const client = api(); render(<App api={client} />); const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Usuarios' }));
     await user.click(await screen.findByRole('button', { name: 'Ver perfil de Ana López' }));
     expect(screen.getByRole('dialog')).toBeInTheDocument(); await user.click(screen.getByRole('button', { name: 'Cerrar' }));
     await user.type(screen.getByLabelText('Buscar por nombre o correo'), 'Ana'); await user.click(screen.getByRole('button', { name: 'Buscar' }));
@@ -124,6 +125,7 @@ describe('administración de usuarios', () => {
   it('clears user data when the next request is denied', async () => {
     const list = vi.fn().mockResolvedValueOnce({ total: 1, users: [person] }).mockRejectedValue({ code: '42501' });
     render(<App api={api({ listUsers: list })} />); const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: 'Usuarios' }));
     await screen.findByText('Ana López'); await user.click(screen.getByRole('button', { name: 'Buscar' }));
     await screen.findByRole('alert'); expect(screen.queryByText('ana@example.test')).not.toBeInTheDocument();
   });
@@ -187,11 +189,24 @@ describe('administración de usuarios', () => {
     expect(client.isAdmin).not.toHaveBeenCalled();
     expect(client.listUsers).not.toHaveBeenCalled();
     await act(async () => onAuthChange());
-    if (allowed) await screen.findByRole('heading', { name: 'Usuarios' });
+    if (allowed) await screen.findByRole('heading', { name: 'Pendientes de revisión' });
     else await screen.findByText('Esta cuenta no tiene acceso');
     expect(client.isAdmin).toHaveBeenCalledTimes(1);
-    if (allowed) expect(client.listUsers).toHaveBeenCalledTimes(1);
-    else expect(client.listUsers).not.toHaveBeenCalled();
+    expect(client.listUsers).not.toHaveBeenCalled();
+  });
+  it('opens on pending reviews and provides a collapsible menu with every available section', async () => {
+    const client = api(); render(<App api={client} />); const user = userEvent.setup();
+    await screen.findByRole('heading', { name: 'Pendientes de revisión' });
+    expect(client.listUsers).not.toHaveBeenCalled();
+    const menu = screen.getByRole('button', { name: 'Menú' });
+    expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await user.click(menu);
+    expect(screen.getByRole('button', { name: 'Cerrar menú' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('navigation', { name: 'Administración' })).toHaveTextContent('Casos y necesidades');
+    await user.click(screen.getByRole('button', { name: 'Usuarios' }));
+    await screen.findByRole('heading', { name: 'Usuarios' });
+    expect(screen.getByRole('button', { name: 'Menú' })).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => expect(screen.getByRole('main')).toHaveFocus());
   });
   it('shows a failed callback on the login form instead of trapping the user on verification', async () => {
     const client = api({ session: vi.fn().mockRejectedValue({ code: 'google_sign_in_failed', message: 'private-fixture' }), loginWithGoogle: vi.fn(async () => {}) });

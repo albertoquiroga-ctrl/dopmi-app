@@ -115,36 +115,38 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
             },
           ),
         if (tab == 1) ...[
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              OutlinedButton.icon(
-                icon: const Icon(Icons.tune),
-                label: const Text('Filtrar'),
-                onPressed: () async {
-                  final id = widget.profile['id'];
-                  final selected = await showDialog<Json>(
-                    context: context,
-                    barrierColor: const Color(0x29000000),
-                    builder: (_) => DiscoveryFilters({
-                      ...filters,
-                      if (species != null) 'species': species,
-                    }, includeSpecies: true),
-                  );
-                  if (selected != null &&
-                      mounted &&
-                      widget.profile['id'] == id) {
-                    setState(() {
-                      filters = selected;
-                      species = selected['species'] as String?;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
+          if (adoptions.isNotEmpty || filters.isNotEmpty || species != null) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.tune),
+                  label: const Text('Filtrar'),
+                  onPressed: () async {
+                    final id = widget.profile['id'];
+                    final selected = await showDialog<Json>(
+                      context: context,
+                      barrierColor: const Color(0x29000000),
+                      builder: (_) => DiscoveryFilters({
+                        ...filters,
+                        if (species != null) 'species': species,
+                      }, includeSpecies: true),
+                    );
+                    if (selected != null &&
+                        mounted &&
+                        widget.profile['id'] == id) {
+                      setState(() {
+                        filters = selected;
+                        species = selected['species'] as String?;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+          ],
           if (adoptions.isEmpty)
             const Notice('No hay mascotas disponibles en este momento.')
           else

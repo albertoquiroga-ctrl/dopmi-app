@@ -80,6 +80,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
   int revision = 0;
   bool busy = false, ownerChanged = false;
   String? error;
+  LocationSettingsTarget? settingsTarget;
 
   bool get sameEnvironment =>
       ref.read(configProvider).environment == environment &&
@@ -114,26 +115,31 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
   }
 
   Future<void> resolve(
-    Future<SelectedLocation> Function(int version) action,
-  ) async {
+    Future<SelectedLocation> Function(int version) action, {
+    bool preservePoint = false,
+  }) async {
     final version = ++revision;
     setState(() {
       busy = true;
       error = null;
+      settingsTarget = null;
     });
     try {
       final result = await action(version);
       if (!current(version)) return;
       setState(() {
-        point = result.coordinates;
+        if (!preservePoint) point = result.coordinates;
         city.text = result.city;
         region.text = result.region;
       });
     } catch (cause) {
       if (!current(version)) return;
-      setState(
-        () => error = cause is LocationException ? cause.message : 'No pudimos identificar la zona. Puedes elegirla en el mapa y escribir ciudad y estado.',
-      );
+      setState(() {
+        error = cause is LocationException ? cause.message : 'No pudimos identificar la zona. Puedes elegirla en el mapa y escribir ciudad y estado.';
+        settingsTarget = cause is LocationException
+            ? cause.settingsTarget
+            : null;
+      });
     } finally {
       if (current(version)) setState(() => busy = false);
     }
@@ -141,17 +147,16 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
 
   void select(ApproximateLocation value) {
     if (ownerChanged) return;
-    final coarse = ApproximateLocation(
-      value.roundedLatitude,
-      value.roundedLongitude,
-    );
     setState(() {
-      point = coarse;
+      point = value;
       followDevice = false;
       city.clear();
       region.clear();
     });
-    resolve((_) => ref.read(placeLookupProvider).describe(coarse));
+    resolve(
+      (_) => ref.read(placeLookupProvider).describe(value),
+      preservePoint: true,
+    );
   }
 
   Future<void> search() {
@@ -164,25 +169,30 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
     return resolve((_) => ref.read(placeLookupProvider).search(query.text));
   }
 
-  Future<void> locate() => resolve((version) async {
-    final value = await ref.read(locationServiceProvider).current();
-    // Keep a usable selected zone even if the native address lookup fails.
-    if (!current(version)) {
-      throw const LocationException('La selección cambió.');
-    }
-    if (current(version)) {
-      setState(() {
-        point = ApproximateLocation(
-          value.roundedLatitude,
-          value.roundedLongitude,
-        );
-        followDevice = true;
-        city.clear();
-        region.clear();
-      });
-    }
-    return ref.read(placeLookupProvider).describe(value);
-  });
+  Future<void> locate() {
+    setState(() {
+      point = null;
+      followDevice = false;
+      city.clear();
+      region.clear();
+    });
+    return resolve((version) async {
+      final value = await ref.read(locationServiceProvider).current();
+      // Keep a usable selected zone even if the native address lookup fails.
+      if (!current(version)) {
+        throw const LocationException('La selección cambió.');
+      }
+      if (current(version)) {
+        setState(() {
+          point = value;
+          followDevice = true;
+          city.clear();
+          region.clear();
+        });
+      }
+      return ref.read(placeLookupProvider).describe(value);
+    }, preservePoint: true);
+  }
 
   @override
   void dispose() {
@@ -250,7 +260,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
               children: [
                 const Expanded(
                   child: Text(
-                    'Elige una zona',
+                    'Ubicación de la mascota',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -263,7 +273,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
             ),
             Text(
               widget.requireAddress
-                  ? 'Selecciona dónde se encuentra la mascota. Sólo compartimos una zona aproximada.'
+                  ? 'Selecciona el punto de la mascota. Se guarda de forma privada; públicamente mostramos sólo la zona.'
                   : 'Encuentra mascotas en adopción cercanas. Puedes elegir una zona sin activar el GPS.',
             ),
             const SizedBox(height: 12),
@@ -313,7 +323,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
             ),
             const SizedBox(height: 10),
             const Text(
-              'Toca el mapa para seleccionar la zona. No se guarda un domicilio exacto.',
+              'Toca el mapa para ajustar el punto. Su ubicación exacta no se muestra públicamente.',
             ),
             if (widget.requireAddress || point != null) ...[
               const SizedBox(height: 12),
@@ -340,6 +350,15 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
               ),
             ],
             if (error != null) Notice(error!, isError: true),
+            if (settingsTarget != null)
+              TextButton(
+                onPressed: busy
+                    ? null
+                    : () => ref
+                          .read(locationServiceProvider)
+                          .openSettings(settingsTarget!),
+                child: const Text('Abrir ajustes de ubicación'),
+              ),
             const SizedBox(height: 16),
             FilledButton(
               key: const ValueKey('location-map-confirm'),
@@ -354,15 +373,15 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
                       Navigator.pop(
                         context,
                         SelectedLocation(
-                          latitude: point!.roundedLatitude,
-                          longitude: point!.roundedLongitude,
+                          latitude: point!.latitude,
+                          longitude: point!.longitude,
                           city: city.text.trim(),
                           region: region.text.trim(),
                           followDevice: followDevice,
                         ),
                       );
                     },
-              child: const Text('Usar esta zona'),
+              child: const Text('Usar esta ubicación'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -426,8 +445,8 @@ class PublicationLocationField extends StatelessWidget {
             ),
             Text(
               selection == null
-                  ? 'Selecciona una zona en el mapa para continuar.'
-                  : 'Se mostrará sólo la ciudad y el estado; la zona se guarda aproximada.',
+                  ? 'Selecciona la ubicación de la mascota en el mapa para continuar.'
+                  : 'El punto se guarda de forma privada para calcular cercanía. Públicamente se muestran ciudad y estado.',
               style: const TextStyle(fontSize: 12, color: muted),
             ),
           ],
@@ -449,14 +468,11 @@ class _NativeLocationMapState extends State<_NativeLocationMap> {
   GoogleMapController? controller;
   LatLng get center => widget.point == null
       ? const LatLng(23.6, -102.5)
-      : LatLng(widget.point!.roundedLatitude, widget.point!.roundedLongitude);
+      : LatLng(widget.point!.latitude, widget.point!.longitude);
   @override
   void didUpdateWidget(_NativeLocationMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.point != null &&
-        (oldWidget.point?.roundedLatitude != widget.point!.roundedLatitude ||
-            oldWidget.point?.roundedLongitude !=
-                widget.point!.roundedLongitude)) {
+    if (widget.point != null && !identical(oldWidget.point, widget.point)) {
       controller?.animateCamera(CameraUpdate.newLatLngZoom(center, 12));
     }
   }
@@ -476,6 +492,11 @@ class _NativeLocationMapState extends State<_NativeLocationMap> {
     onMapCreated: (value) {
       if (mounted) {
         controller = value;
+        // A GPS result may arrive while the native view is still initializing.
+        // initialCameraPosition is not reapplied when the widget updates.
+        if (widget.point != null) {
+          value.moveCamera(CameraUpdate.newLatLngZoom(center, 12));
+        }
       } else {
         value.dispose();
       }
@@ -490,11 +511,11 @@ class _NativeLocationMapState extends State<_NativeLocationMap> {
         Marker(markerId: const MarkerId('selected-zone'), position: center),
     },
     circles: {
-      if (widget.point != null)
+      if (widget.point?.accuracyMeters != null)
         Circle(
-          circleId: const CircleId('approximate-zone'),
+          circleId: const CircleId('gps-accuracy'),
           center: center,
-          radius: 1000,
+          radius: widget.point!.accuracyMeters!,
           fillColor: const Color(0x22eb6425),
           strokeWidth: 1,
           strokeColor: const Color(0xffeb6425),

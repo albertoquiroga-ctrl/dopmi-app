@@ -7,6 +7,19 @@ const record: RescueRecord={id:'expense',owner_id:'owner',kind:'expense',parent_
 function api(overrides:Partial<AdminApi>={}):AdminApi { return {session:async()=>true,watch:()=>()=>{},login:async()=>{},logout:async()=>{},isAdmin:async()=>true,listUsers:async()=>({total:0,users:[]}),listAdoptions:async()=>({total:0,items:[]}),reviews:async()=>[],reviewAdoption:async p=>p,photoUrl:async()=>'',listContributions:async()=>({total:0,items:[]}),listRescue:vi.fn(async()=>({total:1,items:[record]})),rescueDetail:vi.fn(async()=>({record,verified:true,case_status:'approved',history:[]})),rescueFileUrl:vi.fn(async()=> 'https://example.test/signed'),reviewRescue:vi.fn(async r=>({...r,status:'approved'})),...overrides}; }
 async function open(client:AdminApi) { render(<Rescues api={client}/>);const user=userEvent.setup();await user.click(await screen.findByRole('button',{name:'Revisar Comida de Luna'}));await screen.findByText('Solo para revisión privada');return user; }
 describe('rescue review',()=>{
+  it('opens cases first and renders structured planned needs without exposing raw JSON',async()=>{
+    const planned={...record,kind:'case',parent_id:null,public_data:{pet_name:'Luna',city:'Monterrey',need_items:[{id:'need-one',type:'veterinary',title:'Consulta veterinaria',amount_cents:25000,detail:'Valoración inicial',urgent:true}]}};
+    const client=api({listRescue:vi.fn(async()=>({total:1,items:[planned]})),rescueDetail:vi.fn(async()=>({record:planned,verified:false,case_status:null,history:[]}))});
+    render(<Rescues api={client}/>);const user=userEvent.setup();
+    await user.click(await screen.findByRole('button',{name:'Revisar Luna'}));
+    expect(client.listRescue).toHaveBeenCalledWith('case','submitted',1);
+    expect(await screen.findByRole('region',{name:'Necesidades previstas'})).toHaveTextContent('Consulta veterinaria');
+    expect(screen.getByText('Valoración inicial')).toBeInTheDocument();
+    expect(screen.getByText(/Atención veterinaria ·/)).toHaveTextContent('$250.00');
+    expect(screen.queryByText('need_items')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sin cobros activos')).not.toBeInTheDocument();
+  });
+
   for(const kind of ['case','expense'] as const) it(`reviews an ordinary account ${kind} without a Dopmi badge while retaining evidence and public approval`,async()=>{
     const ordinary={...record,kind,parent_id:kind==='case'?null:'case'};
     const client=api({rescueDetail:vi.fn(async()=>({record:ordinary,verified:false,case_status:kind==='expense'?'approved':null,history:[]}))});

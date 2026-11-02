@@ -31,7 +31,7 @@ Future<void> requestNearbyLocation(BuildContext context, WidgetRef ref) async {
       builder: (context) => AlertDialog(
         title: const Text('Mascotas cerca de ti'),
         content: const Text(
-          'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación aproximada mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
+          'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
         ),
         actions: [
           TextButton(

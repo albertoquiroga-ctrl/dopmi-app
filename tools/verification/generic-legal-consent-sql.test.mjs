@@ -17,9 +17,15 @@ const locationPairs = {
   test: ['terms-2026-11-01', 'privacy-2026-11-01-ubicacion'],
   production: ['terms-live-2026-11-01', 'privacy-live-2026-11-01-ubicacion'],
 };
+const preciseLocationPair = ['terms-live-2026-11-01', 'privacy-live-2026-11-01-ubicacion-precisa'];
 async function locationContract() {
   const sql = await readFile(new URL('../../supabase/migrations/20261101220718_coarse_pet_location_discovery.sql', import.meta.url), 'utf8');
   // Keep this existing test's disposable transaction; no remote operation.
+  await db.exec(sql.replace(/^begin;\s*/i, '').replace(/commit;\s*$/i, ''));
+}
+async function preciseLocationContract() {
+  await locationContract();
+  const sql = await readFile(new URL('../../supabase/migrations/20261102032910_precise_private_pet_location.sql', import.meta.url), 'utf8');
   await db.exec(sql.replace(/^begin;\s*/i, '').replace(/commit;\s*$/i, ''));
 }
 const owner = randomUUID(), other = randomUUID();
@@ -124,6 +130,71 @@ for (const environment of ['test', 'production']) {
     assert.equal((await profile(invalid)).terms_accepted_at, null);
   });
 }
+
+test('precise location PROD acceptance upgrades once and blocks every prior notice even after projection repair', async () => {
+  await preciseLocationContract();
+  await configure('production'); await actor();
+  await accept(locationPairs.production); await reset();
+  const beforeProfile = await profile(), beforeProofs = await proofs();
+  await actor();
+  const accepted = await accept(preciseLocationPair);
+  assert.deepEqual(await accept(preciseLocationPair), accepted);
+  for (const pair of [pairs.production, locationPairs.production])
+    await rejected(() => accept(pair), { code: '22023' });
+  await rejected(() => db.query('select public.dopmi_accept_legal($1,$2,true)', oldPairs.production), { code: '22023' });
+  await reset();
+  const current = await profile(), evidence = await proofs();
+  assert.equal(current.terms_version, preciseLocationPair[0]);
+  assert.equal(current.privacy_version, preciseLocationPair[1]);
+  assert.deepEqual(current.adult_confirmed_at, beforeProfile.adult_confirmed_at);
+  assert.equal(evidence.length, beforeProofs.length + 1);
+  assert.deepEqual(evidence.filter(proof => proof.privacy_version !== preciseLocationPair[1]), beforeProofs);
+  assert.equal(evidence.find(proof => proof.privacy_version === preciseLocationPair[1]).adult_confirmed, false);
+  await db.query('select private.dopmi_require_current_legal($1)', [owner]);
+  // A stale/repaired projection must not erase the higher immutable proof.
+  await db.query('update public.profiles set terms_version=$2,privacy_version=$3 where id=$1', [owner, ...locationPairs.production]);
+  await actor();
+  await rejected(() => accept(locationPairs.production), { code: '22023' });
+  assert.deepEqual(await accept(preciseLocationPair), accepted);
+  await configure('test'); await actor();
+  await rejected(() => accept(locationPairs.test), { code: '22023' });
+  await rejected(() => db.query('select public.dopmi_accept_legal($1,$2,true)', oldPairs.test), { code: '22023' });
+  await reset();
+  assert.equal((await profile()).privacy_version, preciseLocationPair[1]);
+  assert.deepEqual(await proofs(), evidence);
+});
+
+test('precise location signup accepts genuine PROD consent only and never asserts adulthood', async () => {
+  await preciseLocationContract();
+  await configure('production');
+  const id = await signup(randomUUID(), generalMetadata(preciseLocationPair));
+  const row = await profile(id), evidence = await proofs(id);
+  assert.equal(row.terms_version, preciseLocationPair[0]);
+  assert.equal(row.privacy_version, preciseLocationPair[1]);
+  assert.equal(row.adult_confirmed_at, null);
+  assert.equal(evidence.length, 1); assert.equal(evidence[0].adult_confirmed, false);
+  await actor(id); assert.equal((await accept(preciseLocationPair)).privacy_version, preciseLocationPair[1]); await reset();
+  const invalid = await signup(randomUUID(), { ...generalMetadata(preciseLocationPair), privacy_accepted: 'true' });
+  assert.equal((await profile(invalid)).privacy_accepted_at, null);
+  await configure('test');
+  const crossed = await signup(randomUUID(), generalMetadata(preciseLocationPair));
+  assert.equal((await profile(crossed)).terms_version, null); assert.deepEqual(await proofs(crossed), []);
+  await actor(crossed); await rejected(() => accept(preciseLocationPair), { code: '22023' }); await reset();
+});
+
+test('precise location migration preserves historical proofs and financial/runtime definitions without data rewrites', async () => {
+  await locationContract();
+  const beforeData = { profile: await profile(), proofs: await proofs() };
+  const beforeEnvironment = (await db.query('select to_jsonb(e) value from private.dopmi_payment_environment e')).rows;
+  const kept = retained.filter(name => name !== 'public.dopmi_accept_legal(text,text,boolean)');
+  const beforeDefinitions = new Map();
+  for (const name of kept) beforeDefinitions.set(name, await definition(name));
+  const sql = await readFile(new URL('../../supabase/migrations/20261102032910_precise_private_pet_location.sql', import.meta.url), 'utf8');
+  await db.exec(sql.replace(/^begin;\s*/i, '').replace(/commit;\s*$/i, ''));
+  assert.deepEqual({ profile: await profile(), proofs: await proofs() }, beforeData);
+  assert.deepEqual((await db.query('select to_jsonb(e) value from private.dopmi_payment_environment e')).rows, beforeEnvironment);
+  for (const name of kept) assert.equal(await definition(name), beforeDefinitions.get(name), name);
+});
 
 test('additive migration preserves old RPCs, adult history, financial functions and environment without data rewrites', async () => {
   assert.deepEqual({ profile: await profile(), proofs: await proofs() }, historical);

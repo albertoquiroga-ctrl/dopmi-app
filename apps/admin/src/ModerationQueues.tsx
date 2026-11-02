@@ -4,8 +4,9 @@ import SupportInbox from './SupportInbox';
 
 type Page<T> = { items: T[]; total: number };
 
-export default function ModerationQueues({ api }: { api: AdminApi }) {
-  const [view, setView] = useState<'updates' | 'reports' | 'profiles' | 'support'>('updates');
+export type ModerationView = 'updates' | 'reports' | 'profiles' | 'support';
+export default function ModerationQueues({ api, initialView = 'updates' }: { api: AdminApi; initialView?: ModerationView }) {
+  const [view, setView] = useState<ModerationView>(initialView);
   return <><header className="page-heading"><div><p className="eyebrow">Moderación</p><h1>Contenido y reportes</h1><p>Revisa textos y fotografías antes de publicar; registra el motivo de cada decisión.</p></div></header>
     <div className="moderation-filters"><button onClick={() => setView('updates')}>Avances</button><button onClick={() => setView('profiles')}>Perfiles</button><button onClick={() => setView('reports')}>Reportes</button><button onClick={() => setView('support')}>Soporte</button></div>
     {view === 'support' ? <SupportInbox api={api} /> : view === 'updates' ? <Updates api={api} /> : view === 'profiles' ? <Profiles api={api} /> : <Reports api={api} />}</>;

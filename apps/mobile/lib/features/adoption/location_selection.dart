@@ -13,9 +13,9 @@ class SelectedLocation {
     this.city = '',
     this.region = '',
     this.followDevice = false,
-  }) : coordinates = _coarse(latitude, longitude);
+  }) : coordinates = _validated(latitude, longitude);
 
-  static ApproximateLocation _coarse(double latitude, double longitude) {
+  static ApproximateLocation _validated(double latitude, double longitude) {
     if (!latitude.isFinite ||
         !longitude.isFinite ||
         latitude < -90 ||
@@ -24,22 +24,20 @@ class SelectedLocation {
         longitude > 180) {
       throw const LocationException('Elige una ubicación válida.');
     }
-    return ApproximateLocation(
-      (latitude * 100).round() / 100,
-      (longitude * 100).round() / 100,
-    );
+    return ApproximateLocation(latitude, longitude);
   }
 
   final ApproximateLocation coordinates;
   final String city, region;
   final bool followDevice;
-  double get latitude => coordinates.roundedLatitude;
-  double get longitude => coordinates.roundedLongitude;
+  double get latitude => coordinates.latitude;
+  double get longitude => coordinates.longitude;
   String get label => [
     city.trim(),
     region.trim(),
   ].where((value) => value.isNotEmpty).join(', ');
   Map<String, dynamic> get payload => {
+    'location_precision_version': 1,
     'approximate_latitude': latitude,
     'approximate_longitude': longitude,
   };
@@ -99,7 +97,7 @@ class NativePlaceLookup implements PlaceLookup {
 
   @override
   Future<SelectedLocation> describe(ApproximateLocation location) async {
-    final lat = location.roundedLatitude, lon = location.roundedLongitude;
+    final lat = location.latitude, lon = location.longitude;
     final results = await _geocoder.placemarkFromCoordinates(lat, lon);
     if (results.isEmpty) return SelectedLocation(latitude: lat, longitude: lon);
     final place = results.first;

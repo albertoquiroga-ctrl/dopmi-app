@@ -102,7 +102,7 @@ void expectNoManualOrigin() {
 
 void main() {
   testWidgets(
-    'only explanatory approval requests GPS and discovery uses its coarse fixed twenty km origin',
+    'only explanatory approval requests GPS and discovery uses its precise fixed twenty km origin',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final repo = PendingNearbyCommunity();
@@ -142,8 +142,8 @@ void main() {
       expect(repo.requests, [
         {
           'species': 'dog',
-          'latitude': 25.69,
-          'longitude': -100.32,
+          'latitude': 25.686614,
+          'longitude': -100.316113,
           'radius_km': 20,
         },
       ]);

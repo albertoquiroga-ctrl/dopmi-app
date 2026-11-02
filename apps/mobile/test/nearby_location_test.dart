@@ -107,12 +107,18 @@ locationFixture({String mode = 'donor', FakeNearbyService? service}) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test('selected location stores only coarse coordinates and rejects an absent pair', () {
+  test('selected location retains precise private coordinates and rejects an absent pair', () {
     final point = SelectedLocation(latitude: 25.686614, longitude: -100.316113);
     expect(point.payload, {
-      'approximate_latitude': 25.69,
-      'approximate_longitude': -100.32,
+      'location_precision_version': 1,
+      'approximate_latitude': 25.686614,
+      'approximate_longitude': -100.316113,
     });
+    expect(SelectedLocation.fromData(point.payload)?.latitude, point.latitude);
+    expect(
+      SelectedLocation.fromData(point.payload)?.longitude,
+      point.longitude,
+    );
     expect(SelectedLocation.fromData({'approximate_latitude': 25.69}), isNull);
     expect(
       () => SelectedLocation(latitude: 90.001, longitude: 0),
@@ -137,7 +143,7 @@ void main() {
       expect(f.controller.discoveryFilters, isEmpty);
     },
   );
-  test('adopter uses only coarse device position at twenty km and stores only booleans', () async {
+  test('adopter uses precise device position at twenty km and stores only booleans', () async {
     SharedPreferences.setMockInitialValues({});
     final f = await locationFixture(
       service: FakeNearbyService()
@@ -148,8 +154,8 @@ void main() {
     await f.controller.markPromptSeen(expectedOwner: 'one');
     await f.controller.requestCurrentLocation(expectedOwner: 'one');
     expect(f.controller.discoveryFilters, {
-      'latitude': 25.69,
-      'longitude': -100.32,
+      'latitude': 25.686614,
+      'longitude': -100.316113,
       'radius_km': 20,
     });
     expect(f.service.permissionRequests, [true]);
@@ -397,15 +403,21 @@ void main() {
       final gps = Completer<ApproximateLocation>();
       final service = FakeNearbyService()..pending = gps.future;
       final lookup = PendingPlaceLookup();
+      ApproximateLocation? shownPoint;
       final container = ProviderContainer(
         overrides: [
           identityRepositoryProvider.overrideWithValue(repo),
           configProvider.overrideWithValue(mapConfig),
           locationServiceProvider.overrideWithValue(service),
           placeLookupProvider.overrideWithValue(lookup),
-          locationMapBuilderProvider.overrideWithValue(
-            (context, point, select) => const Text('Mapa de mascota'),
-          ),
+          locationMapBuilderProvider.overrideWithValue((
+            context,
+            point,
+            select,
+          ) {
+            shownPoint = point;
+            return const Text('Mapa de mascota');
+          }),
         ],
       );
       addTearDown(container.dispose);
@@ -434,6 +446,9 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
       expect(service.permissionRequests, [true]);
+      // Reverse geocoding supplies address metadata, never a substitute point.
+      expect(shownPoint?.latitude, 25.686614);
+      expect(shownPoint?.longitude, -100.316113);
       expect(
         tester
             .widget<TextField>(find.byKey(const ValueKey('location-map-city')))
@@ -446,7 +461,7 @@ void main() {
     },
   );
   testWidgets(
-    'map selection ignores an earlier lookup and returns the latest coarse point',
+    'map selection ignores an earlier lookup and returns the latest precise point',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final lookup = PendingPlaceLookup();
@@ -530,14 +545,14 @@ void main() {
       );
       await tester.tap(find.byKey(const ValueKey('location-map-confirm')));
       await tester.pumpAndSettle();
-      expect(result?.latitude, 26.22);
-      expect(result?.longitude, -101.12);
+      expect(result?.latitude, 26.224);
+      expect(result?.longitude, -101.115);
       expect(result?.city, 'Zona reciente');
       expect(tester.takeException(), isNull);
     },
   );
   testWidgets(
-    'geocoding failure keeps a coarse map point usable with manual city and state',
+    'geocoding failure keeps a precise map point usable with manual city and state',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final lookup = PendingPlaceLookup();
@@ -597,8 +612,9 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('location-map-confirm')));
       await tester.pumpAndSettle();
       expect(result?.payload, {
-        'approximate_latitude': 25.69,
-        'approximate_longitude': -100.32,
+        'location_precision_version': 1,
+        'approximate_latitude': 25.686614,
+        'approximate_longitude': -100.316113,
       });
       expect(result?.city, 'Monterrey');
       expect(tester.takeException(), isNull);

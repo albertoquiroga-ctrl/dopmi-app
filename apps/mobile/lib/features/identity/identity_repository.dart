@@ -7,7 +7,7 @@ import 'native_identity.dart';
 const currentTermsVersion = 'terms-2026-11-01';
 const currentPrivacyVersion = 'privacy-2026-11-01-ubicacion';
 const productionTermsVersion = 'terms-live-2026-11-01';
-const productionPrivacyVersion = 'privacy-live-2026-11-01-ubicacion';
+const productionPrivacyVersion = 'privacy-live-2026-11-01-ubicacion-precisa';
 
 typedef LegalVersions = ({String terms, String privacy, String date});
 
