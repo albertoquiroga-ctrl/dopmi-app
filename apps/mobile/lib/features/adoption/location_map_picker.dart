@@ -197,7 +197,8 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) {
+    if (state != AppLifecycleState.resumed &&
+        state != AppLifecycleState.inactive) {
       revision++;
       if (mounted) setState(() => busy = false);
     }
@@ -293,7 +294,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
                 OutlinedButton.icon(
                   onPressed: busy ? null : locate,
                   icon: const Icon(Icons.my_location),
-                  label: const Text('Usar mi ubicación actual'),
+                  label: const Text('Cerca de mi ubicación actual'),
                 ),
               ],
             ),

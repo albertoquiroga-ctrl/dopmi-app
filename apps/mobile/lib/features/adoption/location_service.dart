@@ -20,17 +20,23 @@ class LocationService {
   Future<ApproximateLocation> current({bool requestPermission = true}) async {
     if (!await Geolocator.isLocationServiceEnabled()) {
       throw const LocationException(
-        'Activa la ubicación del dispositivo o escribe tu ciudad.',
+        'Activa la ubicación del dispositivo para usar tu ubicación actual.',
+        settingsTarget: LocationSettingsTarget.device,
       );
     }
     var permission = await Geolocator.checkPermission();
     if (requestPermission && permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
+    if (permission == LocationPermission.deniedForever) {
       throw const LocationException(
-        'No diste permiso. Puedes buscar manualmente por ciudad.',
+        'Activa el permiso de ubicación de Dopmi en los ajustes del dispositivo.',
+        settingsTarget: LocationSettingsTarget.app,
+      );
+    }
+    if (permission == LocationPermission.denied) {
+      throw const LocationException(
+        'Permite el acceso a tu ubicación para usar tu ubicación actual.',
       );
     }
     final position = await Geolocator.getCurrentPosition(
@@ -44,11 +50,19 @@ class LocationService {
       (position.longitude * 100).round() / 100,
     );
   }
+
+  Future<bool> openSettings(LocationSettingsTarget target) =>
+      target == LocationSettingsTarget.app
+      ? Geolocator.openAppSettings()
+      : Geolocator.openLocationSettings();
 }
 
+enum LocationSettingsTarget { app, device }
+
 class LocationException implements Exception {
-  const LocationException(this.message);
+  const LocationException(this.message, {this.settingsTarget});
   final String message;
+  final LocationSettingsTarget? settingsTarget;
   @override
   String toString() => message;
 }

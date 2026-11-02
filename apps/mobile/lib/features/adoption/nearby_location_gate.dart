@@ -4,10 +4,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../identity/identity_controller.dart';
-import 'location_map_picker.dart';
 import 'nearby_location_controller.dart';
 
-/// Wrap an authenticated home after legal consent, in either account mode.
+/// Explain first; only the affirmative action can request native permission.
+Future<void> requestNearbyLocation(BuildContext context, WidgetRef ref) async {
+  final controller = ref.read(nearbyLocationControllerProvider);
+  if (!controller.beginExplanation()) return;
+  final actor = controller.ownerId;
+  final navigator = Navigator.of(context, rootNavigator: true);
+  DialogRoute<bool>? route;
+  void changed() {
+    if ((!controller.isAdopter || controller.ownerId != actor) &&
+        route?.isActive == true) {
+      navigator.removeRoute(route!);
+    }
+  }
+
+  controller.addListener(changed);
+  try {
+    if (!await controller.markPromptSeen(expectedOwner: actor) ||
+        !context.mounted) {
+      return;
+    }
+    route = DialogRoute<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Mascotas cerca de ti'),
+        content: const Text(
+          'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación aproximada mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
+        ),
+        actions: [
+          TextButton(
+            key: const ValueKey('nearby-location-dismiss'),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Ahora no'),
+          ),
+          FilledButton(
+            key: const ValueKey('nearby-location-allow'),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Permitir ubicación'),
+          ),
+        ],
+      ),
+    );
+    final accepted = await navigator.push(route);
+    if (accepted == true && context.mounted && controller.isAdopter) {
+      await controller.requestCurrentLocation(expectedOwner: actor);
+    }
+  } finally {
+    controller.removeListener(changed);
+    controller.endExplanation();
+  }
+}
+
+/// Wrap the authenticated adopter home after legal consent, never Rescatista.
 class NearbyLocationGate extends ConsumerStatefulWidget {
   const NearbyLocationGate({super.key, required this.child});
   final Widget child;
@@ -17,11 +67,17 @@ class NearbyLocationGate extends ConsumerStatefulWidget {
 
 class _NearbyLocationGateState extends ConsumerState<NearbyLocationGate>
     with WidgetsBindingObserver {
-  bool _opening = false;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && ref.read(configProvider).mapsEnabled) {
+        unawaited(
+          ref.read(nearbyLocationControllerProvider).refreshIfAllowed(),
+        );
+      }
+    });
   }
 
   @override
@@ -36,29 +92,10 @@ class _NearbyLocationGateState extends ConsumerState<NearbyLocationGate>
     final controller = ref.read(nearbyLocationControllerProvider);
     if (state == AppLifecycleState.resumed) {
       unawaited(controller.refreshIfAllowed());
-    } else {
+      if (mounted && !controller.promptSeen) setState(() {});
+    } else if (state != AppLifecycleState.inactive) {
+      // A system permission sheet can make iOS inactive. It is not background use.
       controller.cancelForegroundRefresh();
-    }
-  }
-
-  Future<void> offer(NearbyLocationController controller) async {
-    final actor = controller.ownerId;
-    try {
-      if (!mounted ||
-          !await controller.markPromptSeen(expectedOwner: actor) ||
-          !mounted) {
-        return;
-      }
-      final result = await chooseLocationOnMap(
-        context,
-        initial: controller.selection,
-        requireAddress: false,
-      );
-      if (!mounted) return;
-      controller.replace(result, expectedOwner: actor);
-    } finally {
-      _opening = false;
-      if (mounted) setState(() {});
     }
   }
 
@@ -69,13 +106,14 @@ class _NearbyLocationGateState extends ConsumerState<NearbyLocationGate>
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        if (!_opening &&
-            controller.ready &&
+        if (controller.ready &&
+            controller.isAdopter &&
             !controller.promptSeen &&
-            controller.ownerId != null) {
-          _opening = true;
+            !controller.explaining) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) unawaited(offer(controller));
+            if (mounted && !controller.promptSeen) {
+              unawaited(requestNearbyLocation(context, ref));
+            }
           });
         }
         return widget.child;

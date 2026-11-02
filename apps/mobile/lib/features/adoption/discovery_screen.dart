@@ -22,10 +22,8 @@ import 'community_repository.dart';
 import 'community_ui.dart';
 import '../rescue/rescue_repository.dart';
 import '../rescue/rescue_public_photo.dart';
-import 'location_service.dart';
-import 'location_selection.dart';
-import 'location_map_picker.dart';
 import 'nearby_location_controller.dart';
+import 'nearby_location_gate.dart';
 import '../identity/identity_controller.dart';
 import 'discovery_filters.dart';
 import 'discovery_empty.dart';
@@ -90,15 +88,22 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   NearbyLocationController? nearby;
   String? nearbyScope, nearbyQueryKey;
 
+  bool get needsNearbyLocation =>
+      nearby != null && (!nearby!.isAdopter || nearby!.selection == null);
+
   Json get effectiveFilters {
     final value = Json.from(filters);
     if (nearby != null) {
       value.removeWhere(
-        (key, _) => ['latitude', 'longitude', 'radius_km'].contains(key),
+        (key, _) => [
+          'city',
+          'region',
+          'latitude',
+          'longitude',
+          'radius_km',
+        ].contains(key),
       );
-      if (nearby!.selection != null) {
-        value.remove('city');
-        value.remove('region');
+      if (!needsNearbyLocation) {
         value.addAll(nearby!.discoveryFilters);
       }
     }
@@ -106,7 +111,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   }
 
   String nearbyKey() =>
-      '${nearby!.scope}:${nearby!.selection?.latitude}:${nearby!.selection?.longitude}:${nearby!.radiusKm}';
+      '${nearby!.scope}:${nearby!.isAdopter}:${nearby!.selection?.latitude}:${nearby!.selection?.longitude}';
 
   void nearbyChanged() {
     if (!mounted) return;
@@ -236,9 +241,11 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final actor = source.userId,
         identity = ref.read(identityControllerProvider).identity?.id;
     final requestedFilters = effectiveFilters;
+    final origin = nearby == null ? null : nearbyKey();
     bool current() =>
         mounted &&
         version == loadVersion &&
+        (nearby == null || (!needsNearbyLocation && nearbyKey() == origin)) &&
         identical(source, ref.read(communityRepositoryProvider)) &&
         source.userId == actor &&
         ref.read(identityControllerProvider).identity?.id == identity;
@@ -263,9 +270,19 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       }
     });
     try {
+      // Without a device origin, adoption discovery stays empty. Supporting
+      // cases remain available through their separate, global catalog.
+      if (needsNearbyLocation) {
+        total = 0;
+        exhausted = true;
+        return;
+      }
       final result = await source.discovery(requestedFilters, page);
       if (!current()) return;
-      if (reset && result.total == 0 && requestedFilters.length == 1) {
+      if (nearby == null &&
+          reset &&
+          result.total == 0 &&
+          requestedFilters.length == 1) {
         try {
           final other = await source.discovery({
             'species': requestedFilters['species'] == 'dog' ? 'cat' : 'dog',
@@ -494,45 +511,6 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     }
   }
 
-  Future<void> openLocation() async {
-    final actor = ref.read(identityControllerProvider).identity?.id;
-    final result = await showModalBottomSheet<_DiscoveryLocationResult>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (_) => DiscoveryLocation(effectiveFilters),
-    );
-    if (result == null ||
-        !mounted ||
-        ref.read(identityControllerProvider).identity?.id != actor) {
-      return;
-    }
-    filters.removeWhere(
-      (key, _) => [
-        'city',
-        'region',
-        'latitude',
-        'longitude',
-        'radius_km',
-      ].contains(key),
-    );
-    filters.addAll(result.filters);
-    if (nearby != null) {
-      final previous = nearbyQueryKey;
-      if (!nearby!.replace(
-        result.selection,
-        expectedOwner: actor,
-        radius: result.radiusKm,
-      )) {
-        return;
-      }
-      // A manual city change can keep the same null coordinate query key.
-      if (previous == nearbyQueryKey) await load(reset: true);
-    } else {
-      await load(reset: true);
-    }
-  }
-
   void chooseSpecies(String species) {
     if (acting) return;
     if (filters['species'] == species) return;
@@ -578,44 +556,23 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   height: 42,
                   child: Row(
                     children: [
-                      Tooltip(
-                        message: 'Elegir ubicación',
-                        child: TextButton(
-                          onPressed: acting ? null : openLocation,
-                          style: TextButton.styleFrom(
-                            alignment: Alignment.centerLeft,
-                            foregroundColor: ink,
-                            padding: EdgeInsets.zero,
-                            overlayColor: Colors.transparent,
-                            splashFactory: NoSplash.splashFactory,
-                          ),
-                          child: Semantics(
-                            label: nearby?.selection != null
-                                ? 'Dopmi. Zona aproximada, radio de ${nearby!.radiusKm} km. Cambiar ubicación'
-                                : filters['city'] == null
-                                ? 'Dopmi. Elegir ubicación'
-                                : 'Dopmi. Ubicación: ${filters['city']}. Cambiar ubicación',
-                            child: ExcludeSemantics(
-                              child: Image.asset(
-                                'assets/dopmi-wordmark.png',
-                                width: 108,
-                                height: 36,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                        ),
+                      Image.asset(
+                        'assets/dopmi-wordmark.png',
+                        semanticLabel: 'Dopmi',
+                        width: 108,
+                        height: 36,
+                        fit: BoxFit.contain,
                       ),
                       const Spacer(),
                       const DonorNotificationButton(),
                     ],
                   ),
                 ),
-                if (nearby?.selection != null)
+                if (nearby != null && !needsNearbyLocation)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      'Mascotas en adopción a ${nearby!.radiusKm} km${nearby!.selection!.label.isEmpty ? '' : ' de ${nearby!.selection!.label}'}',
+                      'Mascotas en adopción a 20 km de tu ubicación actual',
                       style: const TextStyle(fontSize: 12, color: muted),
                     ),
                   ),
@@ -709,15 +666,17 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else if (current == null)
-                  cards.isEmpty
+                  needsNearbyLocation
+                      ? _NearbyLocationRequired(
+                          busy: nearby!.busy,
+                          error: nearby!.error,
+                          onActivate: nearby!.isAdopter && !nearby!.busy
+                              ? () => requestNearbyLocation(context, ref)
+                              : null,
+                        )
+                      : cards.isEmpty
                       ? DiscoveryEmpty(
-                          filtered: effectiveFilters.keys.any(
-                            (key) => key != 'species',
-                          ),
-                          nearbyRadiusKm: nearby?.selection == null
-                              ? null
-                              : nearby!.radiusKm,
-                          changeLocation: openLocation,
+                          filtered: filters.keys.any((key) => key != 'species'),
                           global: allSpeciesEmpty,
                           species: filters['species'] as String,
                           clear: () {
@@ -1553,204 +1512,48 @@ class DiscoveryControl extends StatelessWidget {
   }
 }
 
-class DiscoveryLocation extends ConsumerStatefulWidget {
-  const DiscoveryLocation(this.current, {super.key});
-  final Json current;
-  @override
-  ConsumerState<DiscoveryLocation> createState() => _DiscoveryLocationState();
-}
-
-class _DiscoveryLocationResult {
-  const _DiscoveryLocationResult(this.filters, this.selection, this.radiusKm);
-  final Json filters;
-  final SelectedLocation? selection;
-  final int radiusKm;
-}
-
-class _DiscoveryLocationState extends ConsumerState<DiscoveryLocation> {
-  late final city = TextEditingController(
-    text: widget.current['city'] as String? ?? '',
-  );
-  late double radius =
-      ((widget.current['radius_km'] as num?)?.toDouble() ??
-              nearbyDefaultRadiusKm.toDouble())
-          .clamp(1, 30)
-          .toDouble();
-  SelectedLocation? selection;
-  late final owner = ref.read(identityControllerProvider).identity?.id;
-  int revision = 0;
-  String? error;
-  bool busy = false;
-  bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
-  @override
-  void initState() {
-    super.initState();
-    if (mapsEnabled) {
-      selection = ref.read(nearbyLocationControllerProvider).selection;
-    }
-    if (selection == null &&
-        widget.current['latitude'] is num &&
-        widget.current['longitude'] is num) {
-      selection = SelectedLocation(
-        latitude: (widget.current['latitude'] as num).toDouble(),
-        longitude: (widget.current['longitude'] as num).toDouble(),
-      );
-    }
-  }
+class _NearbyLocationRequired extends StatelessWidget {
+  const _NearbyLocationRequired({
+    required this.busy,
+    required this.error,
+    required this.onActivate,
+  });
+  final bool busy;
+  final String? error;
+  final VoidCallback? onActivate;
 
   @override
-  void dispose() {
-    revision++;
-    city.dispose();
-    super.dispose();
-  }
-
-  bool current(int version) =>
-      mounted &&
-      revision == version &&
-      ref.read(identityControllerProvider).identity?.id == owner;
-
-  Future<void> chooseMap() async {
-    final version = ++revision;
-    final result = await chooseLocationOnMap(
-      context,
-      initial: selection,
-      city: city.text,
-      requireAddress: false,
-    );
-    if (!current(version) || result == null) return;
-    setState(() {
-      selection = result;
-      error = null;
-    });
-  }
-
-  Future<void> locate() async {
-    final version = ++revision;
-    setState(() {
-      busy = true;
-      error = null;
-    });
-    try {
-      final result = await ref.read(locationServiceProvider).current();
-      if (!current(version)) return;
-      selection = SelectedLocation(
-        latitude: result.roundedLatitude,
-        longitude: result.roundedLongitude,
-      );
-    } catch (cause) {
-      if (current(version)) {
-        error = cause is LocationException
-            ? cause.message
-            : 'No pudimos obtener tu ubicación. Escribe tu ciudad.';
-      }
-    } finally {
-      if (current(version)) setState(() => busy = false);
-    }
-  }
-
-  void apply({bool withoutLocation = false}) {
-    if (ref.read(identityControllerProvider).identity?.id != owner) {
-      Navigator.pop(context);
-      return;
-    }
-    final selected = withoutLocation ? null : selection;
-    final filter = <String, dynamic>{
-      if (!withoutLocation && selected == null && city.text.trim().isNotEmpty)
-        'city': city.text.trim(),
-      if (selected != null) ...{
-        'latitude': selected.latitude,
-        'longitude': selected.longitude,
-        'radius_km': radius.round(),
-      },
-    };
-    Navigator.pop(
-      context,
-      _DiscoveryLocationResult(filter, selected, radius.round()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.fromLTRB(
-      24,
-      24,
-      24,
-      MediaQuery.viewInsetsOf(context).bottom + 24,
+  Widget build(BuildContext context) => Container(
+    key: const ValueKey('discovery-location-required'),
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: DopmiTokens.line),
+      borderRadius: BorderRadius.circular(24),
     ),
-    child: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('Ubicación', style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 16),
-          if (!mapsEnabled || selection == null)
-            TextField(
-              controller: city,
-              decoration: const InputDecoration(labelText: 'Ciudad o zona'),
-            ),
-          if (mapsEnabled) ...[
-            if (selection != null)
-              Text(
-                selection!.label.isEmpty
-                    ? 'Zona aproximada seleccionada'
-                    : selection!.label,
-              ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: busy ? null : chooseMap,
-              icon: const Icon(Icons.map_outlined),
-              label: const Text('Elegir en mapa'),
-            ),
-          ] else ...[
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: busy ? null : locate,
-              icon: const Icon(Icons.my_location),
-              label: const Text('Usar mi ubicación aproximada'),
-            ),
-          ],
-          if (busy) const LinearProgressIndicator(),
-          if (selection != null)
-            const Text(
-              'Ubicación aproximada lista. No publicaremos tus coordenadas.',
-            ),
-          if (selection == null)
-            const Text(
-              'Sin una zona seleccionada puedes buscar por ciudad; no se aplica un radio.',
-            ),
-          if (error != null) Notice(error!, isError: true),
-          const SizedBox(height: 16),
-          Text('Radio aproximado: ${radius.round()} km'),
-          Slider(
-            value: radius,
-            min: 1,
-            max: 30,
-            divisions: 29,
-            onChanged: selection == null
-                ? null
-                : (value) => setState(() => radius = value),
-          ),
-          FilledButton(
-            onPressed: busy ? null : apply,
-            child: const Text('Aplicar cambios'),
-          ),
-          if (selection != null)
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : () => setState(() {
-                      selection = null;
-                      city.clear();
-                    }),
-              child: const Text('Buscar por ciudad'),
-            ),
-          TextButton(
-            onPressed: () => apply(withoutLocation: true),
-            child: const Text('Buscar sin ubicación'),
-          ),
-        ],
-      ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Encuentra mascotas cerca de ti',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 12),
+        const Text(
+          'Activa tu ubicación para ver mascotas en adopción a 20 km de ti. Puedes seguir usando el resto de Dopmi.',
+        ),
+        if (error != null) Notice(error!, isError: true),
+        const SizedBox(height: 16),
+        FilledButton(
+          key: const ValueKey('discovery-location-activate'),
+          onPressed: onActivate,
+          child: Text(busy ? 'Obteniendo ubicación…' : 'Activar ubicación'),
+        ),
+        TextButton(
+          onPressed: () => context.go('/rescue-cases'),
+          child: const Text('Ver casos para apoyar'),
+        ),
+      ],
     ),
   );
 }
