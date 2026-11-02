@@ -104,7 +104,11 @@ Future<void> selectFixtureMap(WidgetTester tester) async {
     tester,
     find.byKey(const ValueKey('publication-location-map')),
   );
-  await tester.tap(find.text('Punto de prueba'));
+  final point = find.text('Punto de prueba');
+  await tester.ensureVisible(point);
+  await tester.pumpAndSettle();
+  expect(point.hitTestable(), findsOneWidget);
+  await tester.tap(point);
   await tester.pumpAndSettle();
   await tapPublication(
     tester,
@@ -233,6 +237,12 @@ void main() {
         region: 'Estado anterior',
       ),
     );
+    // The map's initial reverse lookup was superseded by the manual choice.
+    for (final request in lookup.requests.where(
+      (request) => !request.isCompleted,
+    )) {
+      request.complete(SelectedLocation(latitude: 0, longitude: 0));
+    }
     await tester.pumpAndSettle();
     await tapPublication(tester, find.text('Guardar borrador'));
     expect(community.savedPayload!['approximate_latitude'], 25.686614);

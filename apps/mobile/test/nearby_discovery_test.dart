@@ -129,9 +129,7 @@ void main() {
         find.byKey(const ValueKey('discovery-location-activate')),
       );
       await tester.pumpAndSettle();
-      expect(service.permissionRequests, isEmpty);
-      await tester.tap(find.byKey(const ValueKey('nearby-location-allow')));
-      await tester.pump();
+      expect(find.byType(AlertDialog), findsNothing);
       expect(service.permissionRequests, [true]);
       expect(repo.requests, isEmpty);
 
@@ -186,8 +184,8 @@ void main() {
     expect(repo.requests, isEmpty);
     await tester.tap(find.byKey(const ValueKey('discovery-location-activate')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('nearby-location-allow')));
-    await tester.pump();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(service.permissionRequests, [true]);
     service.pending.single.completeError(
       const LocationException('No diste permiso para usar tu ubicación.'),
     );

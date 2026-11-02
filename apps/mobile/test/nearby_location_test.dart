@@ -414,14 +414,14 @@ void main() {
       expect(service.permissionRequests, isEmpty);
       container.read(experienceProvider).applyProfile(locationProfile('donor'));
       await tester.pumpAndSettle();
-      // Explanation already seen; the later CTA can show it without a repeated startup interruption.
+      // The purpose was already shown; only an explicit CTA may request GPS now.
       expect(find.text('Mascotas cerca de ti'), findsNothing);
       expect(service.permissionRequests, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );
   testWidgets(
-    'rescuer explanation precedes GPS and dismissal keeps the rest of the app usable',
+    'rescuer dismissal stays usable and explicit recovery does not repeat the purpose',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final repo = FakeIdentityRepository()
@@ -439,9 +439,21 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(
+          child: MaterialApp(
             home: Scaffold(
-              body: NearbyLocationGate(child: Text('Publicar mascota')),
+              body: NearbyLocationGate(
+                child: Consumer(
+                  builder: (context, ref, _) => Column(
+                    children: [
+                      const Text('Publicar mascota'),
+                      TextButton(
+                        onPressed: () => requestNearbyLocation(context, ref),
+                        child: const Text('Activar ubicación'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -462,6 +474,33 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
       expect(service.permissionRequests, isEmpty);
+      final failed = Completer<ApproximateLocation>();
+      service.pending = failed.future;
+      await tester.tap(find.text('Activar ubicación'));
+      await tester.pump();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(service.permissionRequests, [true]);
+      failed.completeError(
+        const LocationException('No pudimos obtener tu ubicación.'),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Reintentar'), findsOneWidget);
+      final recovered = Completer<ApproximateLocation>();
+      service.pending = recovered.future;
+      await tester.tap(find.text('Reintentar'));
+      await tester.pump();
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(service.permissionRequests, [true, true]);
+      recovered.complete(const ApproximateLocation(25.686614, -100.316113));
+      await tester.pumpAndSettle();
+      expect(
+        container
+            .read(nearbyLocationControllerProvider)
+            .publicationDefault
+            ?.latitude,
+        25.686614,
+      );
+      expect(service.permissionRequests, [true, true]);
       expect(tester.takeException(), isNull);
     },
   );
@@ -891,6 +930,8 @@ void main() {
       );
       await tester.tap(find.text('Abrir mapa'));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Elegir punto'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Elegir punto'));
       await tester.pump();
       lookup.requests.single.completeError(StateError('lookup failed'));
@@ -946,6 +987,8 @@ void main() {
           child: const MaterialApp(home: Scaffold(body: LocationMapPicker())),
         ),
       );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Elegir punto'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Elegir punto'));
       await tester.pump();

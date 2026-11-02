@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show Factory;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -80,6 +82,7 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
   int revision = 0;
   bool busy = false, ownerChanged = false;
   String? error;
+  String progress = 'Identificando la zona…';
   LocationSettingsTarget? settingsTarget;
 
   bool get sameEnvironment =>
@@ -131,24 +134,33 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
   Future<void> resolve(
     Future<SelectedLocation> Function(int version) action, {
     bool preservePoint = false,
+    String progressMessage = 'Identificando la zona…',
   }) async {
     final version = ++revision;
     setState(() {
       busy = true;
       error = null;
       settingsTarget = null;
+      progress = progressMessage;
     });
     try {
-      final result = await action(version);
+      final result = await action(version).timeout(const Duration(seconds: 20));
       if (!current(version)) return;
       setState(() {
-        if (!preservePoint) point = result.coordinates;
+        if (!preservePoint) {
+          point = result.coordinates;
+          followDevice = false;
+        }
         city.text = result.city;
         region.text = result.region;
       });
     } catch (cause) {
       if (!current(version)) return;
+      // A timeout does not cancel the native Future. Its eventual result must
+      // not change this selection after the user has already seen an error.
+      revision++;
       setState(() {
+        busy = false;
         error = cause is LocationException ? cause.message : 'No pudimos identificar la zona. Puedes elegirla en el mapa y escribir ciudad y estado.';
         settingsTarget = cause is LocationException
             ? cause.settingsTarget
@@ -173,39 +185,42 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
     );
   }
 
-  Future<void> search() {
-    setState(() {
-      point = null;
-      followDevice = false;
-      city.clear();
-      region.clear();
-    });
-    return resolve((_) => ref.read(placeLookupProvider).search(query.text));
-  }
+  Future<void> search() => resolve(
+    (_) => ref.read(placeLookupProvider).search(query.text),
+    progressMessage: 'Buscando la zona…',
+  );
 
   Future<void> locate() {
-    setState(() {
-      point = null;
-      followDevice = false;
-      city.clear();
-      region.clear();
-    });
-    return resolve((version) async {
-      final value = await ref.read(locationServiceProvider).current();
-      // Keep a usable selected zone even if the native address lookup fails.
-      if (!current(version)) {
-        throw const LocationException('La selección cambió.');
-      }
-      if (current(version)) {
-        setState(() {
-          point = value;
-          followDevice = true;
-          city.clear();
-          region.clear();
-        });
-      }
-      return ref.read(placeLookupProvider).describe(value);
-    }, preservePoint: true);
+    return resolve(
+      (version) async {
+        final value = await ref.read(locationServiceProvider).current();
+        // Keep a usable selected zone even if the native address lookup fails.
+        if (!current(version)) {
+          throw const LocationException('La selección cambió.');
+        }
+        if (current(version)) {
+          setState(() {
+            progress = 'Identificando la zona…';
+            if (point == null) {
+              point = value;
+              followDevice = true;
+              city.clear();
+              region.clear();
+            }
+          });
+        }
+        final address = await ref.read(placeLookupProvider).describe(value);
+        if (current(version)) {
+          setState(() {
+            point = value;
+            followDevice = true;
+          });
+        }
+        return address;
+      },
+      preservePoint: true,
+      progressMessage: 'Obteniendo tu ubicación…',
+    );
   }
 
   @override
@@ -260,146 +275,174 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
         (city.text.trim().isNotEmpty && region.text.trim().isNotEmpty);
     return SizedBox(
       height: MediaQuery.sizeOf(context).height * .9,
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(
-          20,
-          16,
-          20,
-          MediaQuery.viewInsetsOf(context).bottom + 24,
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Ubicación de la mascota',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 12, 0),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Ubicación',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-                IconButton(
-                  tooltip: 'Cerrar mapa',
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            Text(
-              widget.requireAddress
-                  ? 'Selecciona el punto de la mascota. Se guarda de forma privada; públicamente mostramos sólo la zona.'
-                  : 'Encuentra mascotas en adopción cercanas. Puedes elegir una zona sin activar el GPS.',
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              key: const ValueKey('location-map-query'),
-              controller: query,
-              decoration: const InputDecoration(
-                labelText: 'Buscar ciudad o zona',
-              ),
-              onChanged: (_) => setState(() {
-                revision++;
-                busy = false;
-                point = null;
-                city.clear();
-                region.clear();
-              }),
-              onSubmitted: busy ? null : (_) => search(),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                OutlinedButton(
-                  onPressed: busy || query.text.trim().isEmpty ? null : search,
-                  child: const Text('Buscar zona'),
-                ),
-                OutlinedButton.icon(
-                  onPressed: busy ? null : locate,
-                  icon: const Icon(Icons.my_location),
-                  label: const Text('Cerca de mi ubicación actual'),
-                ),
-              ],
-            ),
-            if (busy) const LinearProgressIndicator(),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 260,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: ref.read(locationMapBuilderProvider)(
-                  context,
-                  point,
-                  select,
-                ),
+                  IconButton(
+                    tooltip: 'Cerrar mapa',
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Toca el mapa para ajustar el punto. Su ubicación exacta no se muestra públicamente.',
-            ),
-            if (widget.requireAddress || point != null) ...[
-              const SizedBox(height: 12),
-              TextField(
-                key: const ValueKey('location-map-city'),
-                controller: city,
-                onChanged: (_) => setState(() {
-                  revision++;
-                  busy = false;
-                }),
-                decoration: const InputDecoration(
-                  labelText: 'Ciudad o municipio',
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                key: const ValueKey('location-map-region'),
-                controller: region,
-                onChanged: (_) => setState(() {
-                  revision++;
-                  busy = false;
-                }),
-                decoration: const InputDecoration(labelText: 'Estado'),
-              ),
-            ],
-            if (error != null) Notice(error!, isError: true),
-            if (settingsTarget != null)
-              TextButton(
-                onPressed: busy
-                    ? null
-                    : () => ref
-                          .read(locationServiceProvider)
-                          .openSettings(settingsTarget!),
-                child: const Text('Abrir ajustes de ubicación'),
-              ),
-            const SizedBox(height: 16),
-            FilledButton(
-              key: const ValueKey('location-map-confirm'),
-              onPressed: busy || point == null || !addressReady
-                  ? null
-                  : () {
-                      if (!sameEnvironment ||
-                          ref.read(identityControllerProvider).identity?.id !=
-                              owner) {
-                        return;
-                      }
-                      Navigator.pop(
-                        context,
-                        SelectedLocation(
-                          latitude: point!.latitude,
-                          longitude: point!.longitude,
-                          city: city.text.trim(),
-                          region: region.text.trim(),
-                          followDevice: followDevice,
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      widget.requireAddress
+                          ? 'Selecciona el punto de la mascota. Se guarda de forma privada; públicamente mostramos sólo la zona.'
+                          : 'Encuentra mascotas en adopción cercanas. Puedes elegir una zona sin activar el GPS.',
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      key: const ValueKey('location-map-query'),
+                      controller: query,
+                      decoration: const InputDecoration(
+                        labelText: 'Buscar ciudad o zona',
+                      ),
+                      onChanged: (_) => setState(() {
+                        revision++;
+                        busy = false;
+                        error = null;
+                        settingsTarget = null;
+                      }),
+                      onSubmitted: busy ? null : (_) => search(),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        OutlinedButton(
+                          onPressed: busy || query.text.trim().isEmpty
+                              ? null
+                              : search,
+                          child: const Text('Buscar zona'),
                         ),
-                      );
-                    },
-              child: const Text('Usar esta ubicación'),
+                        OutlinedButton.icon(
+                          onPressed: busy ? null : locate,
+                          icon: const Icon(Icons.my_location),
+                          label: const Text('Cerca de mi ubicación actual'),
+                        ),
+                      ],
+                    ),
+                    if (busy) ...[
+                      const LinearProgressIndicator(),
+                      const SizedBox(height: 8),
+                      Semantics(liveRegion: true, child: Text(progress)),
+                    ],
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 260,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: ref.read(locationMapBuilderProvider)(
+                          context,
+                          point,
+                          select,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Toca el mapa para ajustar el punto. Su ubicación exacta no se muestra públicamente.',
+                    ),
+                    if (widget.requireAddress || point != null) ...[
+                      const SizedBox(height: 12),
+                      TextField(
+                        key: const ValueKey('location-map-city'),
+                        controller: city,
+                        onChanged: (_) => setState(() {
+                          revision++;
+                          busy = false;
+                        }),
+                        decoration: const InputDecoration(
+                          labelText: 'Ciudad o municipio',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        key: const ValueKey('location-map-region'),
+                        controller: region,
+                        onChanged: (_) => setState(() {
+                          revision++;
+                          busy = false;
+                        }),
+                        decoration: const InputDecoration(labelText: 'Estado'),
+                      ),
+                    ],
+                    if (error != null) Notice(error!, isError: true),
+                    if (settingsTarget != null)
+                      TextButton(
+                        onPressed: busy
+                            ? null
+                            : () => ref
+                                  .read(locationServiceProvider)
+                                  .openSettings(settingsTarget!),
+                        child: const Text('Abrir ajustes de ubicación'),
+                      ),
+                  ],
+                ),
+              ),
             ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Ahora no'),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      key: const ValueKey('location-map-confirm'),
+                      onPressed: busy || point == null || !addressReady
+                          ? null
+                          : () {
+                              if (!sameEnvironment ||
+                                  ref
+                                          .read(identityControllerProvider)
+                                          .identity
+                                          ?.id !=
+                                      owner) {
+                                return;
+                              }
+                              Navigator.pop(
+                                context,
+                                SelectedLocation(
+                                  latitude: point!.latitude,
+                                  longitude: point!.longitude,
+                                  city: city.text.trim(),
+                                  region: region.text.trim(),
+                                  followDevice: followDevice,
+                                ),
+                              );
+                            },
+                      child: const Text('Usar esta ubicación'),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -454,7 +497,9 @@ class PublicationLocationField extends StatelessWidget {
                 key: const ValueKey('publication-location-map'),
                 onPressed: onChoose,
                 icon: const Icon(Icons.map_outlined),
-                label: const Text('Elegir en mapa'),
+                label: Text(
+                  selection == null ? 'Elegir en mapa' : 'Cambiar ubicación',
+                ),
               ),
             ),
             Text(
@@ -499,6 +544,9 @@ class _NativeLocationMapState extends State<_NativeLocationMap> {
 
   @override
   Widget build(BuildContext context) => GoogleMap(
+    gestureRecognizers: {
+      Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+    },
     initialCameraPosition: CameraPosition(
       target: center,
       zoom: widget.point == null ? 4 : 12,

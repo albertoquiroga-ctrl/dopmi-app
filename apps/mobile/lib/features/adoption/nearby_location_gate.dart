@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../identity/identity_controller.dart';
 import 'nearby_location_controller.dart';
 
-/// Explain first; only the affirmative action can request native permission.
+/// Explain once; only an affirmative action can request native permission.
 Future<void> requestNearbyLocation(
   BuildContext context,
   WidgetRef ref, {
@@ -55,37 +55,39 @@ Future<void> requestNearbyLocation(
     if (!sameScope() || !context.mounted || promptAllowed?.value == false) {
       return;
     }
-    route = DialogRoute<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          rescuer ? 'Encuentra adoptantes cercanos' : 'Mascotas cerca de ti',
-        ),
-        content: Text(
-          rescuer
-              ? 'Para encontrar adoptantes cercanos para tus mascotas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Será el punto inicial de cada mascota y podrás cambiarlo en el mapa. Su ubicación exacta no se muestra públicamente.'
-              : 'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
-        ),
-        actions: [
-          TextButton(
-            key: const ValueKey('nearby-location-dismiss'),
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Ahora no'),
+    var accepted = true;
+    if (!controller.promptSeen) {
+      route = DialogRoute<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(
+            rescuer ? 'Encuentra adoptantes cercanos' : 'Mascotas cerca de ti',
           ),
-          FilledButton(
-            key: const ValueKey('nearby-location-allow'),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Permitir ubicación'),
+          content: Text(
+            rescuer
+                ? 'Para encontrar adoptantes cercanos para tus mascotas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Será el punto inicial de cada mascota y podrás cambiarlo en el mapa. Su ubicación exacta no se muestra públicamente.'
+                : 'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
           ),
-        ],
-      ),
-    );
-    final answer = navigator.push(route);
-    final marked = controller.markPromptSeen(expectedOwner: actor);
-    final accepted = await answer;
+          actions: [
+            TextButton(
+              key: const ValueKey('nearby-location-dismiss'),
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Ahora no'),
+            ),
+            FilledButton(
+              key: const ValueKey('nearby-location-allow'),
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Permitir ubicación'),
+            ),
+          ],
+        ),
+      );
+      final answer = navigator.push(route);
+      final marked = controller.markPromptSeen(expectedOwner: actor);
+      accepted = await answer == true && await marked;
+    }
     endOwnExplanation();
-    if (accepted == true &&
-        await marked &&
+    if (accepted &&
         context.mounted &&
         sameScope() &&
         promptAllowed?.value != false) {

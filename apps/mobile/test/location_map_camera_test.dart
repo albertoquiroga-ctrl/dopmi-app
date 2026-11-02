@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dopmi_mobile/features/adoption/location_map_picker.dart';
 import 'package:dopmi_mobile/features/adoption/location_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -118,6 +119,13 @@ void main() {
       point.value = const ApproximateLocation(25.686614, -100.316113);
       await tester.pump();
       const expected = LatLng(25.686614, -100.316113);
+      final mapGesture = tester
+          .widget<GoogleMap>(find.byType(GoogleMap))
+          .gestureRecognizers
+          .single
+          .constructor();
+      expect(mapGesture, isA<EagerGestureRecognizer>());
+      mapGesture.dispose();
       expect(
         tester
             .widget<GoogleMap>(find.byType(GoogleMap))
