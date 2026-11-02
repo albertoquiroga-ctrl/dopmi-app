@@ -30,6 +30,10 @@ update dopmi_rescue_records r set files=case kind
   when 'case' then jsonb_build_array(jsonb_build_object('role','public','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000003.jpg'))
   else jsonb_build_array(jsonb_build_object('role','receipt','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000004.pdf'),jsonb_build_object('role','proof','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000005.jpg')) end
   where owner_id='60000000-0000-4000-8000-000000000001';
+-- Preserve the explicit post-publication expense fixture for this legacy-route
+-- suite. The initial shared-package route has its own exact-membership suite.
+create temporary table dopmi_postpublication_expense_fixture as
+  select * from dopmi_rescue_records where id='61000000-0000-4000-8000-000000000003';
 
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
@@ -84,10 +88,14 @@ select is(dopmi_save_rescuer_profile('{"display_name":"Nombre en revisión","bio
 select is(dopmi_rescuer_public('60000000-0000-4000-8000-000000000001')->>'name','Refugio Uno','draft edit does not replace approved public profile');
 select is(dopmi_rescuer_profile_file_access('60000000-0000-4000-8000-000000000001/60000000-0000-4000-8000-000000000001/62000000-0000-4000-8000-000000000007.jpg'),true,'approved avatar remains readable while next draft is reviewed');
 select throws_ok($$select dopmi_save_rescue('verification','{}','{}','[]','61000000-0000-4000-8000-000000000001',5)$$,'22023',null,'approved identity immutable to owner');
-select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')->>'status','submitted','verified rescuer submits case');
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',1,'submit')$$,'22023',null,'expense requires approved case');
+select lives_ok($$select dopmi_remove_draft_expense('61000000-0000-4000-8000-000000000003',1)$$,'owner removes unused draft before case submission');
+select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')->>'status','submitted','verified rescuer submits case');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
-select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000002',2,'approved','Caso comprobado',0,false,'',true)->>'status','approved','case approved separately');
+select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000002',2,'approved','Caso comprobado',0,false,'',true)->>'status','approved','case without initial expenses keeps its existing review route');
+reset role;
+insert into dopmi_rescue_records select * from dopmi_postpublication_expense_fixture;
+set local role authenticated;
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
 select is(dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))->>'rescue_case_id','61000000-0000-4000-8000-000000000002','approved case creates an independently moderated adoption draft');
 select throws_ok($$select dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))$$,'23505',null,'case cannot create duplicate linked adoption drafts');

@@ -48,6 +48,10 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: node tools/verification/need-feedback-concurrency.mjs
+      - name: Atomic initial case packets against concurrent changes
+        env:
+          PGPASSWORD: postgres
+        run: node tools/verification/initial-case-need-packets-concurrency.mjs
       - name: Apple registration and deletion races against PostgreSQL
         env:
           DOPMI_APPLE_DELETION_POSTGRES_TEST: 'true'

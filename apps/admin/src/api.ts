@@ -16,12 +16,16 @@ export type Adoption = {
   photos: string[]; status: string; version: number; review_feedback: string; submitted_at: string | null; updated_at: string;
 };
 export type Review = { id: string; decision: string; feedback: string; version: number; created_at: string };
-export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string };
+export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string; submission_id?: string };
 export type NeedCommentInput = { target_kind: 'planned' | 'expense'; target_id: string; target_version: number; body: string };
 export type NeedComment = NeedCommentInput & { id: string; request_id: string; case_id: string; case_version: number; target_title: string; created_at: string };
 export type NeedCommentResult = { request_id: string; record_id: string; case_version: number; comments: NeedComment[] };
-export type RescueDetail = { record: RescueRecord; verified: boolean; case_status: string | null; history: { id: string; action: string; feedback: string; version: number; created_at: string; reimbursable_cents: number; urgent: boolean }[]; expenses?: { total: number; page: number; items: RescueRecord[] }; need_comments?: NeedComment[] };
+export type InitialCasePacket = { id: string; case_version: number; source_case_version: number; expense_ids: string[] };
+export type RescueDetail = { record: RescueRecord; verified: boolean; case_status: string | null; history: { id: string; action: string; feedback: string; version: number; created_at: string; reimbursable_cents: number; urgent: boolean }[]; expenses?: { total: number; page: number; items: RescueRecord[] }; need_comments?: NeedComment[]; initial_packet?: InitialCasePacket | null };
 export type RescueDecision = { decision: string; note: string; amount_cents: number; is_urgent: boolean; urgency_note: string; publish_content: boolean };
+export type InitialExpenseReview = { expense_id: string; expense_version: number; amount_cents: number; is_urgent: boolean; urgency_note: string; publish_content: boolean };
+export type InitialCaseDecision = { submission_id: string; decision: string; note: string; publish_content: boolean; expense_reviews: InitialExpenseReview[]; request_id: string };
+export type InitialCaseDecisionResult = { request_id: string; submission_id: string; record_id: string; case_version: number; decision: string; record: RescueRecord; expenses: RescueRecord[] };
 export type Contribution = {
   id: string;
   donor_id: string;
@@ -78,6 +82,7 @@ export type AdminApi = {
   rescueDetail: (id: string, expensePage?: number) => Promise<RescueDetail>;
   saveNeedComments?: (record: Pick<RescueRecord, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<NeedCommentResult>;
   reviewRescue: (record: RescueRecord, decision: RescueDecision) => Promise<RescueRecord>;
+  reviewInitialCasePacket?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: InitialCaseDecision) => Promise<InitialCaseDecisionResult>;
   rescueFileUrl: (path: string) => Promise<string>;
   listContributions: (status: string, page: number) => Promise<{ total: number; items: Contribution[] }>;
   listReports?: (status: string, page: number) => Promise<{ total:number; items:ContentReport[] }>;
@@ -91,6 +96,10 @@ export type AdminApi = {
 };
 
 export function createAdminApi(client: SupabaseClient, environment: AdminEnvironment = 'test'): AdminApi {
+  // A retained request can only be reconciled by the same authenticated actor.
+  // This is local SDK state, not a new private record read. PostgreSQL still
+  // rechecks membership and ownership on every initial decision and replay.
+  const initialReviewActors=new Map<string,string>();
   const callbackKeys = ['code', 'flow_id', 'error', 'error_code', 'error_description', 'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token'];
   const arrivedFromAuth = typeof window !== 'undefined' && (() => {
     const url = new URL(window.location.href);
@@ -133,6 +142,16 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
       if (error) throw error; return data;
     },
     async reviewRescue(record, decision) { const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data; },
+    async reviewInitialCasePacket(record, decision) {
+      const session=await client.auth.getSession();
+      if(session.error)throw session.error;
+      const user=session.data.session?.user.id;
+      const previous=initialReviewActors.get(decision.request_id);
+      if(!user||previous&&previous!==user)throw {code:'42501'};
+      initialReviewActors.set(decision.request_id,user);
+      const {data,error}=await client.rpc('dopmi_review_initial_case_packet',{record_id:record.id,expected_version:record.version,...decision});
+      if(error)throw error;return data;
+    },
     async rescueFileUrl(path) { const {data,error}=await client.storage.from('dopmi-rescue-evidence').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listContributions(status, page) { const {data,error}=await client.rpc('dopmi_admin_donations',{status_filter:status,page_number:page}); if(error) throw error; if (!data || !Array.isArray(data.items) || typeof data.total !== 'number') throw new Error('invalid_response'); return data; },
     async listReports(status,page) { const {data,error}=await client.rpc('dopmi_admin_reports',{status_filter:status,page_number:page}); if(error) throw error; return data; },

@@ -20,6 +20,43 @@ test.each(['PGRST202','42883'])('only a missing packet RPC (%s) falls back to th
   expect(rpc).toHaveBeenLastCalledWith('dopmi_rescue_detail',{record_id:'case'});
 });
 
+test('the initial case decision sends one atomic RPC with the frozen submission and idempotency key',async()=>{
+  const rpc=vi.fn().mockResolvedValue({data:{request_id:'request'},error:null});
+  const auth={getSession:vi.fn(async()=>({data:{session:{user:{id:'reviewer'},access_token:'synthetic-token'}},error:null}))};
+  const api=createAdminApi({rpc,auth} as unknown as Parameters<typeof createAdminApi>[0]);
+  const decision={submission_id:'submission',request_id:'request',decision:'approved',note:'Revisado completo',publish_content:true,expense_reviews:[{expense_id:'expense',expense_version:7,amount_cents:12500,is_urgent:false,urgency_note:'',publish_content:true}]};
+  await api.reviewInitialCasePacket!({id:'case',version:12},decision);
+  expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_initial_case_packet',{record_id:'case',expected_version:12,...decision});
+});
+
+test('a missing initial decision RPC never falls back to separate approvals',async()=>{
+  const rpc=vi.fn().mockResolvedValue({data:null,error:{code:'PGRST202'}});
+  const auth={getSession:vi.fn(async()=>({data:{session:{user:{id:'reviewer'},access_token:'synthetic-token'}},error:null}))};
+  const api=createAdminApi({rpc,auth} as unknown as Parameters<typeof createAdminApi>[0]);
+  await expect(api.reviewInitialCasePacket!({id:'case',version:12},{submission_id:'submission',request_id:'request',decision:'rejected',note:'Falta evidencia',publish_content:false,expense_reviews:[]})).rejects.toEqual({code:'PGRST202'});
+  expect(rpc).toHaveBeenCalledTimes(1);
+});
+
+test.each([{user:{id:'other-reviewer'},access_token:'synthetic-token'},null])('an uncertain initial decision cannot be replayed by a different actor (%j)',async session=>{
+  const rpc=vi.fn().mockResolvedValue({data:null,error:{code:'network'}});
+  const getSession=vi.fn().mockResolvedValueOnce({data:{session:{user:{id:'reviewer'},access_token:'synthetic-token'}},error:null}).mockResolvedValueOnce({data:{session},error:null});
+  const api=createAdminApi({rpc,auth:{getSession}} as unknown as Parameters<typeof createAdminApi>[0]);
+  const decision={submission_id:'submission',request_id:'request',decision:'rejected',note:'Falta evidencia',publish_content:false,expense_reviews:[]};
+  await expect(api.reviewInitialCasePacket!({id:'case',version:12},decision)).rejects.toEqual({code:'network'});
+  await expect(api.reviewInitialCasePacket!({id:'case',version:12},decision)).rejects.toEqual({code:'42501'});
+  expect(rpc).toHaveBeenCalledTimes(1);
+});
+
+test('the same actor may reconcile an initial decision after normal token refresh',async()=>{
+  const rpc=vi.fn().mockResolvedValueOnce({data:null,error:{code:'network'}}).mockResolvedValueOnce({data:{request_id:'request'},error:null});
+  const getSession=vi.fn().mockResolvedValueOnce({data:{session:{user:{id:'reviewer'},access_token:'old-token'}},error:null}).mockResolvedValueOnce({data:{session:{user:{id:'reviewer'},access_token:'refreshed-token'}},error:null});
+  const api=createAdminApi({rpc,auth:{getSession}} as unknown as Parameters<typeof createAdminApi>[0]);
+  const decision={submission_id:'submission',request_id:'request',decision:'rejected',note:'Falta evidencia',publish_content:false,expense_reviews:[]};
+  await expect(api.reviewInitialCasePacket!({id:'case',version:12},decision)).rejects.toEqual({code:'network'});
+  expect(await api.reviewInitialCasePacket!({id:'case',version:12},decision)).toEqual({request_id:'request'});
+  expect(rpc.mock.calls[1]).toEqual(rpc.mock.calls[0]);
+});
+
 test.each(['42501','40001','XX000'])('packet failure %s never retries through the legacy read',async code=>{
   const rpc=vi.fn().mockResolvedValue({data:null,error:{code}});
   const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);

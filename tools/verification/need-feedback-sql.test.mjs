@@ -6,7 +6,7 @@ import { PGlite } from '@electric-sql/pglite';
 
 // The repository's disposable PostgreSQL/Auth/Storage bootstrap. No Supabase
 // service, Docker daemon, remote URL, live identity or financial API is used.
-let db, priorDefinitions;
+let db, priorDefinitions, definitionsAfterComments;
 const migration = '20261102061534_admin_case_need_comments.sql';
 const owner = randomUUID(), reviewer = randomUUID(), secondReviewer = randomUUID(), other = randomUUID();
 const keptFunctions = ['public.dopmi_rescue_detail(uuid)',
@@ -76,6 +76,7 @@ before(async () => {
     if (file === migration) priorDefinitions = await definitions();
     try { await db.exec(await readFile(new URL(file, directory), 'utf8')); }
     catch (error) { throw new Error(`Migration ${file}: ${error.code}: ${error.message}`); }
+    if (file === migration) definitionsAfterComments = await definitions();
   }
   for (const id of [owner, reviewer, secondReviewer, other]) {
     await db.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data)
@@ -88,7 +89,9 @@ beforeEach(async () => db.exec('begin'));
 afterEach(async () => db.exec('rollback'));
 
 test('additive migration preserves existing review, save, transition, detail and private ACLs', async () => {
-  assert.deepEqual(await definitions(), priorDefinitions);
+  // Check the additive comments migration at its own boundary. Later delivery
+  // migrations can intentionally extend the initial-case submission contract.
+  assert.deepEqual(definitionsAfterComments, priorDefinitions);
   for (const name of ['public.dopmi_admin_rescue_packet(uuid,integer)', 'public.dopmi_comment_case_needs(uuid,integer,jsonb,uuid)']) {
     for (const role of ['anon', 'service_role']) assert.equal(await value('select has_function_privilege($1,$2,\'execute\') value', [role, name]), false);
     assert.equal(await value('select has_function_privilege(\'authenticated\',$1,\'execute\') value', [name]), true);
