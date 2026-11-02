@@ -172,8 +172,12 @@ select is(dopmi_save_adoption('{"location_precision_version":1,"approximate_lati
   current_setting('dopmi.test.precise_post')::uuid,3)->>'approximate_latitude','26.1234567','versioned client can change its fine point');
 select is(dopmi_save_adoption('{"location_precision_version":1,"approximate_latitude":null,"approximate_longitude":null}',
   current_setting('dopmi.test.precise_post')::uuid,4)->>'approximate_latitude',null::text,'versioned client can explicitly clear its point');
+-- Resolve the private function as the test owner, then inspect the client ACL.
+-- An authenticated caller cannot resolve this schema, which is intentional.
+reset role;
 select ok(not has_function_privilege('authenticated','private.dopmi_preserve_fine_pet_location(numeric[],numeric,numeric,boolean)','EXECUTE'),
   'compatibility helper has no direct client execution permission');
+set local role authenticated;
 select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002',true);
 select is((select count(*) from dopmi_adoptions where id=current_setting('dopmi.test.precise_post')::uuid),0::bigint,
   'another account cannot read private versioned coordinates');
