@@ -15,8 +15,6 @@ import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeCaseUpdates;
 
 class PendingEvidenceRescue extends DraftExpenseRescue {
-  final transitions = <String>[];
-
   @override
   Future<Json> detail(String id) async {
     if (id == 'case-one') {
@@ -88,7 +86,7 @@ class PendingEvidenceRescue extends DraftExpenseRescue {
 void main() {
   for (final large in [false, true]) {
     testWidgets(
-      'pending evidence is informational and its draft route returns without saving: $large',
+      'pending evidence is informational and its consultation returns without saving: $large',
       (tester) async {
         tester.view.physicalSize = large
             ? const Size(320, 640)
@@ -180,7 +178,7 @@ void main() {
               matching: find.byType(Scrollable),
             )
             .first;
-        final continueExpense = find.text('Continuar gasto');
+        final continueExpense = find.text('Consultar necesidad y comprobantes');
         await tester.scrollUntilVisible(
           continueExpense,
           240,
@@ -194,7 +192,10 @@ void main() {
           container.read(routerProvider).state.uri.path,
           '/rescue/expense-one',
         );
-        expect(find.text('Sube tu evidencia'), findsOneWidget);
+        expect(find.text('Evidencia del gasto'), findsOneWidget);
+        expect(find.text('Enviar a revisión'), findsNothing);
+        expect(find.text('Guardar progreso'), findsNothing);
+        expect(find.byType(TextField), findsNothing);
         expect(rescue.transitions, isEmpty);
         await tester.tap(find.byTooltip('Cerrar formulario'));
         await tester.pumpAndSettle();

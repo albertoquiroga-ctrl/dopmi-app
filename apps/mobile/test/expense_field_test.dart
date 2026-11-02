@@ -1,41 +1,62 @@
 import 'dart:async';
 
-import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
-import 'package:dopmi_mobile/features/rescue/expense_frame.dart';
+import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/case_publication_need_editor.dart';
+import 'package:dopmi_mobile/features/rescue/expense_evidence_card.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_videos.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'publication_frame_test.dart' show startPublication;
 import 'rescue_test.dart' show FakeRescue;
 
+const completeExpenseFiles = <Json>[
+  {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
+  {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
+];
+
 class DraftExpenseRescue extends FakeRescue {
   DraftExpenseRescue({
     this.initialDescription = 'Recibió su consulta veterinaria.',
-    this.initialFiles = const [
-      {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
-    ],
+    this.initialFiles = completeExpenseFiles,
   });
   final List<Json> initialFiles;
   final String initialDescription;
   List<Json>? savedFiles;
   Json? publicSaved;
+  String? savedParent;
+  RescueRecord? editorResult;
+  bool failSave = false;
+  final transitions = <String>[];
+
+  RescueRecord get draftRecord => RescueRecord({
+    ...expenseRecord.data,
+    'owner_id': 'one',
+    'status': 'draft',
+    'target_cents': 0,
+    'funded_cents': 0,
+    'reimbursable_cents': 0,
+    'private_data': {
+      'amount_cents': 12345,
+      'vendor': 'Clínica',
+      'paid_on': '2026-10-01',
+      'receipt_reference': 'PRIVADO-123',
+    },
+    'public_data': {
+      'title': 'Consulta',
+      'category': 'medicine',
+      'description': initialDescription,
+    },
+    'files': initialFiles,
+  });
+
   @override
   Future<Json> detail(String id) async => {
-    'record': {
-      ...expenseRecord.data,
-      'owner_id': 'one',
-      'status': 'draft',
-      'private_data': {'amount_cents': 12345, 'vendor': 'Clínica'},
-      'public_data': {
-        'title': 'Consulta',
-        'category': 'medicine',
-        'description': initialDescription,
-      },
-      'files': initialFiles,
-    },
+    'record': draftRecord.data,
     'history': <Json>[],
   };
 
@@ -48,9 +69,14 @@ class DraftExpenseRescue extends FakeRescue {
     RescueRecord? record,
     String? parent,
   }) async {
+    saveCalls++;
+    if (failSave) {
+      throw const FormatException('No pudimos guardar el gasto privado.');
+    }
     savedFiles = files.map((file) => Json.from(file)).toList();
     saved = privateData;
     publicSaved = publicData;
+    savedParent = parent;
     return RescueRecord({
       ...record!.data,
       'public_data': publicData,
@@ -58,6 +84,12 @@ class DraftExpenseRescue extends FakeRescue {
       'files': files,
       'version': record.version + 1,
     });
+  }
+
+  @override
+  Future<RescueRecord> transition(RescueRecord record, String action) async {
+    transitions.add(action);
+    throw StateError('Las necesidades se envían junto con su caso.');
   }
 }
 
@@ -85,10 +117,9 @@ class DelayedExpenseRescue extends DraftExpenseRescue {
 }
 
 class SubmittedExpenseRescue extends DraftExpenseRescue {
-  bool failSubmit = false, failDetail = false;
+  bool failDetail = false;
   int detailReads = 0;
   String remoteStatus = 'draft';
-  Completer<RescueRecord>? pending;
   @override
   Future<Json> detail(String id) async {
     detailReads++;
@@ -99,18 +130,19 @@ class SubmittedExpenseRescue extends DraftExpenseRescue {
     (data['record'] as Json)['status'] = remoteStatus;
     return data;
   }
+}
+
+class ExpenseDraftVideos extends VideoRepository {
+  ExpenseDraftVideos()
+    : super(
+        identity: () => 'one:fixture',
+        invoke: (_) async =>
+            throw StateError('No se cargan videos en esta prueba'),
+      );
 
   @override
-  Future<RescueRecord> transition(RescueRecord record, String action) async {
-    if (failSubmit) {
-      throw const FormatException('Faltan comprobantes para enviar.');
-    }
-    final result = pending == null
-        ? RescueRecord({...record.data, 'status': 'submitted'})
-        : await pending!.future;
-    remoteStatus = result.status;
-    return result;
-  }
+  Future<VideoPolicy> policy(String parentId) async =>
+      const VideoPolicy(enabled: true, thanksRequired: false, assets: []);
 }
 
 void resumeExpense(WidgetTester tester) {
@@ -126,257 +158,210 @@ void resumeExpense(WidgetTester tester) {
   }
 }
 
+void expenseViewport(WidgetTester tester, double scale) {
+  tester.view.physicalSize = const Size(320, 640);
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.textScaleFactorTestValue = scale;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+}
+
+Future<void> mountPrivateNeed(
+  WidgetTester tester,
+  DraftExpenseRescue repo, {
+  bool videos = false,
+}) async {
+  final videoRepo = videos ? ExpenseDraftVideos() : null;
+  if (videoRepo != null) addTearDown(videoRepo.dispose);
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(repo),
+        rescueVideosRepositoryProvider.overrideWithValue(videoRepo),
+      ],
+      child: MaterialApp(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () async {
+                final result = await showDialog<RescueRecord>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => CasePublicationNeedEditor(
+                    caseId: 'case-one',
+                    type: 'medicine',
+                    record: repo.editorResult ?? repo.draftRecord,
+                  ),
+                );
+                if (result != null) repo.editorResult = result;
+              },
+              child: const Text('Editar necesidad del caso'),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+  await tester.tap(find.text('Editar necesidad del caso'));
+  await tester.pumpAndSettle();
+}
+
+Future<void> revealNeed(WidgetTester tester, Finder target) async {
+  FocusManager.instance.primaryFocus?.unfocus();
+  tester.testTextInput.hide();
+  await tester.pumpAndSettle();
+  await Scrollable.ensureVisible(tester.element(target), alignment: .5);
+  await tester.pumpAndSettle();
+  expect(target.hitTestable(), findsOneWidget);
+}
+
+Future<void> tapNeed(WidgetTester tester, Finder target) async {
+  await revealNeed(tester, target);
+  await tester.tap(target);
+  await tester.pumpAndSettle();
+}
+
+Future<void> enterNeed(WidgetTester tester, String key, String text) async {
+  final field = find.byKey(ValueKey('publication-need-$key'));
+  await revealNeed(tester, field);
+  await tester.enterText(field, text);
+  FocusManager.instance.primaryFocus?.unfocus();
+  tester.testTextInput.hide();
+  await tester.pumpAndSettle();
+}
+
+Finder needSave() => find.widgetWithText(FilledButton, 'Guardar medicina');
+
+void expectPrivateNeed(DraftExpenseRescue repo) {
+  expect(repo.savedParent, 'case-one');
+  expect(repo.editorResult?.id, 'expense-one');
+  expect(repo.editorResult?.status, 'draft');
+  expect(repo.editorResult?.data['target_cents'], 0);
+  expect(repo.editorResult?.data['reimbursable_cents'], 0);
+  expect(repo.transitions, isEmpty);
+  for (final key in [
+    'vendor',
+    'amount_cents',
+    'paid_on',
+    'receipt_reference',
+    'urgency_reason',
+  ]) {
+    expect(repo.publicSaved!.containsKey(key), isFalse);
+  }
+  expect(repo.publicSaved.toString(), isNot(contains('receipt.pdf')));
+}
+
 void main() {
   for (final scale in [1.0, 2.0]) {
     testWidgets(
-      'review edits public description and receipt without losing private data at $scale',
+      'case need edits description and files without losing private data at $scale',
       (tester) async {
-        tester.view.physicalSize = const Size(320, 640);
-        tester.view.devicePixelRatio = 1;
-        tester.platformDispatcher.textScaleFactorTestValue = scale;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        expenseViewport(tester, scale);
         final files = <Json>[
-          {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
-          {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
-          {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+          ...completeExpenseFiles,
+          {'role': 'public', 'path': 'one/expense-one/photo.pdf'},
         ];
         final repo = DraftExpenseRescue(initialFiles: files);
-        await startPublication(
+        await mountPrivateNeed(tester, repo);
+        await enterNeed(
           tester,
-          FakeCommunity(),
-          '/rescue/expense-one',
-          rescue: repo,
-        );
-        final scroll = find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first;
-        Future<void> show(Finder target) async {
-          tester.state<ScrollableState>(scroll).position.jumpTo(0);
-          await tester.pumpAndSettle();
-          await tester.scrollUntilVisible(
-            target,
-            300,
-            maxScrolls: 100,
-            scrollable: scroll,
-          );
-          await tester.pumpAndSettle();
-        }
-
-        Future<void> advance() async {
-          await show(find.text('Siguiente'));
-          await tester.tap(find.text('Siguiente'));
-          await tester.pumpAndSettle();
-        }
-
-        for (var i = 0; i < 3; i++) {
-          await advance();
-        }
-        final editPublic = find.byTooltip(
-          'Editar Información para publicación',
-        );
-        await show(editPublic);
-        await tester.tap(editPublic);
-        await tester.pumpAndSettle();
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 2);
-        expect(
-          find.byKey(const ValueKey('expense-field-vendor')),
-          findsNothing,
-        );
-        final description = find.byKey(
-          const ValueKey('expense-field-description'),
-        );
-        await show(description);
-        await tester.enterText(
-          description,
+          'description',
           'Consulta y tratamiento completados.',
         );
-        FocusManager.instance.primaryFocus?.unfocus();
-        tester.testTextInput.hide();
-        await tester.pumpAndSettle();
-        await advance();
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 3);
+        await tapNeed(tester, needSave());
+        expect(find.byType(CasePublicationNeedEditor), findsNothing);
         expect(
           repo.publicSaved!['description'],
           'Consulta y tratamiento completados.',
         );
         expect(repo.saved!['vendor'], 'Clínica');
         expect(repo.saved!['amount_cents'], '12345');
-        final editFiles = find.byTooltip('Editar Comprobantes y fotos');
-        await show(editFiles);
-        await tester.tap(editFiles);
-        await tester.pumpAndSettle();
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
-        await show(find.text('Comprobante del gasto'));
-        expect(find.text('Comprobante del gasto'), findsOneWidget);
-        for (var i = 0; i < 3; i++) {
-          await advance();
-        }
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 3);
+        expect(repo.saved!['paid_on'], '2026-10-01');
+        expect(repo.saved!['receipt_reference'], 'PRIVADO-123');
         expect(repo.savedFiles, files);
+        expectPrivateNeed(repo);
+        await tester.tap(find.text('Editar necesidad del caso'));
+        await tester.pumpAndSettle();
+        final description = find.byKey(
+          const ValueKey('publication-need-description'),
+        );
+        await revealNeed(tester, description);
         expect(
-          repo.publicSaved!['description'],
+          tester.widget<TextField>(description).controller!.text,
           'Consulta y tratamiento completados.',
         );
-        expect(repo.publicSaved!.containsKey('vendor'), isFalse);
-        expect(repo.publicSaved!.containsKey('amount_cents'), isFalse);
-        expect(repo.saved!['vendor'], 'Clínica');
-        expect(repo.saved!['amount_cents'], '12345');
+        await tapNeed(tester, needSave());
+        expect(repo.savedFiles, files);
+        expect(repo.editorResult!.version, repo.draftRecord.version + 2);
+        expectPrivateNeed(repo);
         expect(tester.takeException(), isNull);
       },
     );
   }
 
   for (final scale in [1.0, 2.0]) {
-    testWidgets(
-      'expense changes step immediately after save response at $scale',
-      (tester) async {
-        tester.view.physicalSize = const Size(320, 640);
-        tester.view.devicePixelRatio = 1;
-        tester.platformDispatcher.textScaleFactorTestValue = scale;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-        final repo = DelayedExpenseRescue();
-        await startPublication(
-          tester,
-          FakeCommunity(),
-          '/rescue/expense-one',
-          rescue: repo,
-        );
-        final body = find.byKey(const ValueKey('expense-form-body'));
-        final scroll = find
-            .descendant(of: body, matching: find.byType(Scrollable))
-            .first;
-        final next = find.text('Siguiente');
-        await tester.scrollUntilVisible(
-          next,
-          300,
-          maxScrolls: 100,
-          scrollable: scroll,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(next);
-        await tester.pump(const Duration(milliseconds: 200));
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
-        expect(repo.savedFiles, isNull);
-        expect(
-          tester
-              .widget<FilledButton>(
-                find.ancestor(of: next, matching: find.byType(FilledButton)),
-              )
-              .onPressed,
-          isNull,
-        );
-        repo.response.complete();
-        await tester.pump();
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 1);
-        expect(repo.savedFiles, repo.initialFiles);
-        final firstRect = tester.getRect(body);
-        await tester.pump(const Duration(milliseconds: 16));
-        expect(tester.getRect(body), firstRect);
-        await tester.pumpAndSettle();
-        expect(tester.getRect(body), firstRect);
-        tester.state<ScrollableState>(scroll).position.jumpTo(0);
-        await tester.pumpAndSettle();
-        final back = find.byTooltip('Paso anterior');
-        await tester.ensureVisible(back);
-        await tester.pumpAndSettle();
-        await tester.tap(back);
-        await tester.pump();
-        expect(tester.widget<ExpenseFrame>(find.byType(ExpenseFrame)).step, 0);
-        await tester.pumpAndSettle();
-        expect(repo.savedFiles, repo.initialFiles);
-        expect(tester.takeException(), isNull);
-      },
-    );
-  }
-
-  for (final scale in [1.0, 2.0]) {
-    testWidgets(
-      'description requires content and incomplete save remains available at $scale',
-      (tester) async {
-        tester.view.physicalSize = const Size(320, 640);
-        tester.view.devicePixelRatio = 1;
-        tester.platformDispatcher.textScaleFactorTestValue = scale;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-        final repo = DraftExpenseRescue(initialDescription: '   ');
-        await startPublication(
-          tester,
-          FakeCommunity(),
-          '/rescue/expense-one',
-          rescue: repo,
-        );
-        final scroll = find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
+    testWidgets('private need stays busy until its save response at $scale', (
+      tester,
+    ) async {
+      expenseViewport(tester, scale);
+      final repo = DelayedExpenseRescue();
+      await mountPrivateNeed(tester, repo);
+      await revealNeed(tester, needSave());
+      await tester.tap(needSave());
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
+      expect(repo.editorResult, isNull);
+      expect(repo.savedFiles, isNull);
+      final busySave = find.widgetWithText(FilledButton, 'Guardando...');
+      expect(tester.widget<FilledButton>(busySave).onPressed, isNull);
+      for (final field in tester.widgetList<TextField>(
+        find.byType(TextField),
+      )) {
+        expect(field.enabled, isFalse);
+      }
+      expect(
+        tester
+            .widget<IconButton>(
+              find.byWidgetPredicate(
+                (widget) => widget is IconButton && widget.tooltip == 'Cerrar',
+              ),
             )
-            .first;
-        Future<void> showAction(String text) async {
-          await tester.scrollUntilVisible(
-            find.text(text),
-            300,
-            maxScrolls: 100,
-            scrollable: scroll,
-          );
-          await tester.pumpAndSettle();
-        }
+            .onPressed,
+        isNull,
+      );
+      expect(repo.transitions, isEmpty);
+      repo.response.complete();
+      await tester.pumpAndSettle();
+      expect(find.byType(CasePublicationNeedEditor), findsNothing);
+      expect(repo.savedFiles, repo.initialFiles);
+      expectPrivateNeed(repo);
+      expect(tester.takeException(), isNull);
+    });
+  }
 
-        for (var i = 0; i < 2; i++) {
-          await showAction('Siguiente');
-          await tester.tap(find.text('Siguiente'));
-          await tester.pumpAndSettle();
-        }
-        FilledButton nextButton() => tester.widget<FilledButton>(
-          find.ancestor(
-            of: find.text('Siguiente'),
-            matching: find.byType(FilledButton),
-          ),
-        );
-        await showAction('Siguiente');
-        expect(nextButton().onPressed, isNull);
-        await tester.tap(find.text('Siguiente'));
-        await tester.pumpAndSettle();
-        expect(find.text('Revisa antes de enviar'), findsNothing);
-        final field = find.byKey(const ValueKey('expense-field-description'));
-        await tester.scrollUntilVisible(
-          field,
-          -300,
-          maxScrolls: 100,
-          scrollable: scroll,
-        );
-        await tester.pumpAndSettle();
-        await tester.enterText(field, 'Recibió su tratamiento.');
-        FocusManager.instance.primaryFocus?.unfocus();
-        tester.testTextInput.hide();
-        await tester.pumpAndSettle();
-        await showAction('Siguiente');
-        expect(nextButton().onPressed, isNotNull);
-        await tester.scrollUntilVisible(
-          field,
-          -300,
-          maxScrolls: 100,
-          scrollable: scroll,
-        );
-        await tester.pumpAndSettle();
-        await tester.enterText(field, '');
-        FocusManager.instance.primaryFocus?.unfocus();
-        tester.testTextInput.hide();
-        await tester.pumpAndSettle();
-        await showAction('Siguiente');
-        expect(nextButton().onPressed, isNull);
-        await showAction('Guardar progreso');
-        await tester.tap(find.text('Guardar progreso'));
-        await tester.pumpAndSettle();
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'description gates complete need while incomplete draft remains private at $scale',
+      (tester) async {
+        expenseViewport(tester, scale);
+        final repo = DraftExpenseRescue(initialDescription: '   ');
+        await mountPrivateNeed(tester, repo, videos: true);
+        expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
+        await enterNeed(tester, 'description', 'Recibió su tratamiento.');
+        expect(tester.widget<FilledButton>(needSave()).onPressed, isNotNull);
+        await enterNeed(tester, 'description', '');
+        expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
+        await tapNeed(tester, find.text('Guardar borrador para añadir videos'));
+        expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
         expect(repo.publicSaved!['description'], '');
         expect(repo.savedFiles, repo.initialFiles);
+        expect(repo.saved!['amount_cents'], '12345');
+        expect(repo.savedParent, 'case-one');
+        expect(repo.editorResult, isNull);
+        expect(repo.transitions, isEmpty);
+        expect(find.text('Enviar a revisión'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
@@ -384,121 +369,61 @@ void main() {
 
   for (final scale in [1.0, 2.0]) {
     testWidgets(
-      'receipt step blocks advance but saves incomplete draft at $scale',
+      'missing receipt gates complete need but permits private draft save at $scale',
       (tester) async {
-        tester.view.physicalSize = const Size(320, 640);
-        tester.view.devicePixelRatio = 1;
-        tester.platformDispatcher.textScaleFactorTestValue = scale;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        expenseViewport(tester, scale);
         final repo = DraftExpenseRescue(
           initialFiles: const [
-            {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
-            {'role': 'receipt', 'path': ''},
+            {'role': 'public', 'path': 'one/expense-one/photo.pdf'},
+            {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
           ],
         );
-        await startPublication(
-          tester,
-          FakeCommunity(),
-          '/rescue/expense-one',
-          rescue: repo,
-        );
-        final scroll = find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first;
-        final next = find.text('Siguiente');
-        await tester.scrollUntilVisible(next, 300, scrollable: scroll);
-        await tester.pumpAndSettle();
-        expect(
-          tester
-              .widget<FilledButton>(
-                find.ancestor(of: next, matching: find.byType(FilledButton)),
-              )
-              .onPressed,
-          isNull,
-        );
-        await tester.tap(next);
-        await tester.pumpAndSettle();
+        await mountPrivateNeed(tester, repo, videos: true);
+        await enterNeed(tester, 'title', 'Consulta parcial');
+        await revealNeed(tester, needSave());
+        expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
         expect(repo.savedFiles, isNull);
-        expect(find.text('Enviar a revisión'), findsNothing);
-        final save = find.text('Guardar progreso');
-        await tester.ensureVisible(save);
-        await tester.pumpAndSettle();
-        await tester.tap(save);
-        await tester.pumpAndSettle();
+        await tapNeed(tester, find.text('Guardar borrador para añadir videos'));
         expect(repo.savedFiles, repo.initialFiles);
+        expect(repo.savedParent, 'case-one');
+        expect(repo.transitions, isEmpty);
+        expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
+        expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
+        expect(find.text('Enviar a revisión'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
   }
 
   testWidgets(
-    'receipt and later evidence stay separate and retain files on back',
+    'receipt and proof are separate private controls and retain other file roles',
     (tester) async {
       final files = <Json>[
-        {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
-        {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
-        {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+        ...completeExpenseFiles,
+        {'role': 'public', 'path': 'one/expense-one/photo.pdf'},
       ];
       final repo = DraftExpenseRescue(initialFiles: files);
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/expense-one',
-        rescue: repo,
-      );
-      expect(find.text('Comprobante del gasto'), findsOneWidget);
-      expect(find.text('Foto de evidencia'), findsNothing);
-      expect(find.text('Evidencia del gasto realizado'), findsNothing);
-      final next = find.text('Siguiente');
-      await tester.ensureVisible(next);
-      await tester.pumpAndSettle();
-      await tester.tap(next);
-      await tester.pumpAndSettle();
+      await mountPrivateNeed(tester, repo);
+      final cards = tester
+          .widgetList<ExpenseEvidenceCard>(find.byType(ExpenseEvidenceCard))
+          .toList();
+      expect(cards, hasLength(2));
+      expect(cards[0].title, 'Foto de Recibo *');
+      expect(cards[0].fileIndexes, [0]);
+      expect(cards[1].title, 'Foto de Evidencia *');
+      expect(cards[1].fileIndexes, [1]);
+      expect(cards.every((card) => !card.public), isTrue);
+      expect(cards.every((card) => card.onRemove != null), isTrue);
+      expect(cards.every((card) => card.onAttach != null), isTrue);
+      await tapNeed(tester, needSave());
       expect(repo.savedFiles, files);
-      expect(find.text('Comprobante del gasto'), findsNothing);
-      expect(find.text('Foto de evidencia'), findsOneWidget);
-      expect(
-        tester.getTopLeft(find.text('Foto de evidencia')).dy,
-        lessThan(
-          tester.getTopLeft(find.text('Evidencia del gasto realizado')).dy,
-        ),
-      );
-      expect(find.text('Evidencia del gasto realizado'), findsOneWidget);
-      tester
-          .state<ScrollableState>(
-            find
-                .descendant(
-                  of: find.byKey(const ValueKey('expense-form-body')),
-                  matching: find.byType(Scrollable),
-                )
-                .first,
-          )
-          .position
-          .jumpTo(0);
-      await tester.pumpAndSettle();
-      final back = find.byTooltip('Paso anterior');
-      await tester.ensureVisible(back);
-      await tester.pumpAndSettle();
-      await tester.tap(back);
-      await tester.pumpAndSettle();
-      expect(find.text('Comprobante del gasto'), findsOneWidget);
-      expect(find.text('Foto de evidencia'), findsNothing);
-      await tester.ensureVisible(next);
-      await tester.pumpAndSettle();
-      await tester.tap(next);
-      await tester.pumpAndSettle();
-      expect(repo.savedFiles, files);
+      expectPrivateNeed(repo);
       expect(tester.takeException(), isNull);
     },
   );
 
   testWidgets(
-    'expense resume discards stale record data on failure and reads corrections from the server',
+    'expense resume discards stale data and returned need stays consultation only',
     (tester) async {
       final repo = SubmittedExpenseRescue()..remoteStatus = 'submitted';
       await startPublication(
@@ -534,24 +459,21 @@ void main() {
       await tester.tap(retry);
       await tester.pumpAndSettle();
       expect(repo.detailReads, 3);
-      final edit = find.byTooltip('Editar Información para publicación');
-      await tester.scrollUntilVisible(
-        edit,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
+      expect(
+        find.byTooltip('Editar Información para publicación'),
+        findsNothing,
       );
-      await tester.pumpAndSettle();
-      expect(edit, findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      expect(find.text('Guardar progreso'), findsNothing);
+      expect(find.text('Enviar a revisión'), findsNothing);
+      expect(repo.saveCalls, 0);
+      expect(repo.transitions, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );
+
   testWidgets(
-    'a submitted expense shows its private record without edit actions or a fresh success notice',
+    'a submitted expense shows its private record without edit actions or success notice',
     (tester) async {
       final repo = SubmittedExpenseRescue()..remoteStatus = 'submitted';
       await startPublication(
@@ -573,390 +495,130 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(tester.widget<Text>(review).data, '123.45');
+      expect(find.byType(TextField), findsNothing);
       expect(find.text('Editar'), findsNothing);
       expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
       expect(find.text('Guardar progreso'), findsNothing);
       expect(find.text('Enviar a revisión'), findsNothing);
+      expect(repo.saveCalls, 0);
+      expect(repo.transitions, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );
+
   testWidgets(
-    'evidence confirmation waits for the actual submitted result and never follows a failed request',
+    'failed need save preserves editor and retry only saves the private case draft',
     (tester) async {
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      final repo = SubmittedExpenseRescue()..failSubmit = true;
-      await startPublication(tester, FakeCommunity(), '/publish', rescue: repo);
-      GoRouter.of(tester.element(find.byType(Scaffold).first))
-          .push('/rescue/expense-one')
-          .ignore();
-      await tester.pumpAndSettle();
-      final outer = find
-          .descendant(
-            of: find.byKey(const ValueKey('expense-form-body')),
-            matching: find.byType(Scrollable),
-          )
-          .first;
-      for (var i = 0; i < 3; i++) {
-        final next = find.text('Siguiente');
-        await tester.scrollUntilVisible(next, 300, scrollable: outer);
-        await tester.pumpAndSettle();
-        await tester.tap(next);
-        await tester.pumpAndSettle();
-      }
-      final submit = find.text('Enviar a revisión');
-      await tester.scrollUntilVisible(submit, 300, scrollable: outer);
-      await tester.pumpAndSettle();
-      await tester.tap(submit);
-      await tester.pumpAndSettle();
-      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
-      expect(find.text('Faltan comprobantes para enviar.'), findsOneWidget);
-      repo.failSubmit = false;
-      repo.pending = Completer<RescueRecord>();
-      await tester.scrollUntilVisible(submit, 300, scrollable: outer);
-      await tester.pumpAndSettle();
-      await tester.tap(submit);
-      await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
-      repo.pending!.complete(
-        RescueRecord({
-          ...repo.expenseRecord.data,
-          'status': 'submitted',
-          'owner_id': 'one',
-        }),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        find.text('Has subido tu evidencia para revisión.'),
-        findsOneWidget,
-      );
+      expenseViewport(tester, 2);
+      final repo = DraftExpenseRescue()..failSave = true;
+      await mountPrivateNeed(tester, repo);
       expect(find.text('Enviar a revisión'), findsNothing);
-      await tester.scrollUntilVisible(
-        find.text('Entendido'),
-        300,
-        scrollable: outer,
+      await tapNeed(tester, needSave());
+      expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
+      expect(repo.editorResult, isNull);
+      expect(repo.savedFiles, isNull);
+      expect(repo.saveCalls, 1);
+      await revealNeed(
+        tester,
+        find.text('No pudimos guardar el gasto privado.'),
       );
-      await tester.pumpAndSettle();
-      expect(find.text('Entendido'), findsOneWidget);
-      await tester.tap(find.text('Entendido'));
-      await tester.pumpAndSettle();
       expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
-      expect(repo.remoteStatus, 'submitted');
+      expect(repo.transitions, isEmpty);
+      repo.failSave = false;
+      await tapNeed(tester, needSave());
+      expect(repo.saveCalls, 2);
+      expect(find.byType(CasePublicationNeedEditor), findsNothing);
+      expectPrivateNeed(repo);
+      expect(find.text('Has subido tu evidencia para revisión.'), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
+
   testWidgets(
-    'expense close keeps an unsaved draft and save progress persists before leaving',
+    'closing need leaves persisted draft intact until a successful private save',
     (tester) async {
       final repo = DraftExpenseRescue();
-      await startPublication(tester, FakeCommunity(), '/publish', rescue: repo);
-      GoRouter.of(tester.element(find.byType(Scaffold).first))
-          .push('/rescue/expense-one')
-          .ignore();
+      await mountPrivateNeed(tester, repo);
+      await enterNeed(tester, 'title', 'Consulta sin guardar');
+      await tapNeed(tester, find.byTooltip('Cerrar'));
+      expect(find.byType(CasePublicationNeedEditor), findsNothing);
+      expect(repo.saveCalls, 0);
+      expect(repo.editorResult, isNull);
+      await tester.tap(find.text('Editar necesidad del caso'));
       await tester.pumpAndSettle();
-      final next = find.text('Siguiente');
-      await tester.scrollUntilVisible(
-        next,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(next);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        next,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(next);
-      await tester.pumpAndSettle();
-      tester
-          .state<ScrollableState>(
-            find
-                .descendant(
-                  of: find.byKey(const ValueKey('expense-form-body')),
-                  matching: find.byType(Scrollable),
-                )
-                .first,
-          )
-          .position
-          .jumpTo(0);
-      await tester.pumpAndSettle();
-      final title = find.byKey(const ValueKey('expense-field-title'));
-      await tester.scrollUntilVisible(
-        title,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.enterText(title, 'Consulta corregida');
-      FocusManager.instance.primaryFocus?.unfocus();
-      tester.testTextInput.hide();
-      tester
-          .state<ScrollableState>(
-            find
-                .descendant(
-                  of: find.byKey(const ValueKey('expense-form-body')),
-                  matching: find.byType(Scrollable),
-                )
-                .first,
-          )
-          .position
-          .jumpTo(0);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.byTooltip('Cerrar formulario'),
-        -300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Cerrar formulario'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Seguir editando'));
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<TextField>(title).controller!.text,
-        'Consulta corregida',
-      );
-      final save = find.text('Guardar progreso');
-      await tester.scrollUntilVisible(
-        save,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(save);
-      await tester.pumpAndSettle();
+      final title = find.byKey(const ValueKey('publication-need-title'));
+      expect(tester.widget<TextField>(title).controller!.text, 'Consulta');
+      await enterNeed(tester, 'title', 'Consulta corregida');
+      await tapNeed(tester, needSave());
       expect(repo.publicSaved!['title'], 'Consulta corregida');
-      expect(find.byKey(const ValueKey('expense-form-body')), findsNothing);
+      expect(repo.savedFiles, repo.initialFiles);
+      expect(repo.saveCalls, 1);
+      expectPrivateNeed(repo);
       expect(tester.takeException(), isNull);
     },
   );
+
   testWidgets(
-    'removing a private receipt preserves the public photo role when saved',
+    'removing private receipt preserves proof and public role in the saved draft',
     (tester) async {
       final repo = DraftExpenseRescue(
         initialFiles: [
-          {'role': 'receipt', 'path': 'one/expense-one/receipt.pdf'},
-          {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+          ...completeExpenseFiles,
+          {'role': 'public', 'path': 'one/expense-one/photo.pdf'},
         ],
       );
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/expense-one',
-        rescue: repo,
-      );
-      final remove = find.byTooltip('Quitar archivo 1');
-      await tester.scrollUntilVisible(
-        remove,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(remove);
-      await tester.pumpAndSettle();
-      final next = find.text('Guardar progreso');
-      await tester.scrollUntilVisible(
-        next,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(next);
-      await tester.pumpAndSettle();
+      await mountPrivateNeed(tester, repo, videos: true);
+      await tapNeed(tester, find.byTooltip('Quitar archivo 1'));
+      expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
+      await tapNeed(tester, find.text('Guardar borrador para añadir videos'));
       expect(repo.savedFiles, [
-        {'role': 'public', 'path': 'one/expense-one/photo.jpg'},
+        {'role': 'proof', 'path': 'one/expense-one/proof.pdf'},
+        {'role': 'public', 'path': 'one/expense-one/photo.pdf'},
       ]);
+      expect(repo.publicSaved.toString(), isNot(contains('photo.pdf')));
+      expect(repo.savedParent, 'case-one');
+      expect(repo.transitions, isEmpty);
+      expect(find.byType(CasePublicationNeedEditor), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets(
-    'expense inputs retain private exact cents through review at large text',
-    (tester) async {
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      final repo = DraftExpenseRescue();
-      await startPublication(
-        tester,
-        FakeCommunity(),
-        '/rescue/expense-one',
-        rescue: repo,
-      );
-      Future<void> tapNext() async {
-        final next = find.text('Siguiente');
-        await tester.scrollUntilVisible(
-          next,
-          300,
-          maxScrolls: 100,
-          scrollable: find
-              .descendant(
-                of: find.byKey(const ValueKey('expense-form-body')),
-                matching: find.byType(Scrollable),
-              )
-              .first,
-        );
-        await tester.pumpAndSettle();
-        await tester.tap(next);
-        await tester.pumpAndSettle();
-      }
 
-      await tapNext();
-      expect(find.byKey(const ValueKey('expense-field-title')), findsNothing);
-      final amount = find.byKey(const ValueKey('expense-field-amount_cents'));
-      tester
-          .state<ScrollableState>(
-            find
-                .descendant(
-                  of: find.byKey(const ValueKey('expense-form-body')),
-                  matching: find.byType(Scrollable),
-                )
-                .first,
-          )
-          .position
-          .jumpTo(0);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        amount,
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+  testWidgets(
+    'case need retains private exact cents through resume and reopening at large text',
+    (tester) async {
+      expenseViewport(tester, 2);
+      final repo = DraftExpenseRescue();
+      await mountPrivateNeed(tester, repo);
+      final amount = find.byKey(const ValueKey('publication-need-amount'));
+      await revealNeed(tester, amount);
       expect(tester.widget<TextField>(amount).controller!.text, '123.45');
-      await Scrollable.ensureVisible(tester.element(amount));
-      await tester.pumpAndSettle();
-      await tester.enterText(amount, '87.09');
+      await enterNeed(tester, 'amount', '87.09');
       resumeExpense(tester);
-      await tester.pump();
+      await tester.pumpAndSettle();
       expect(tester.widget<TextField>(amount).controller!.text, '87.09');
-      tester.testTextInput.hide();
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pumpAndSettle();
-      await tapNext();
-      expect(
-        find.byKey(const ValueKey('expense-field-amount_cents')),
-        findsNothing,
+      await enterNeed(
+        tester,
+        'description',
+        'Recibió su consulta y tratamiento.',
       );
-      final description = find.byKey(
-        const ValueKey('expense-field-description'),
-      );
-      await tester.scrollUntilVisible(
-        description,
-        -300,
-        maxScrolls: 100,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      await tester.enterText(description, 'Recibió su consulta y tratamiento.');
-      FocusManager.instance.primaryFocus?.unfocus();
-      tester.testTextInput.hide();
-      await tester.pumpAndSettle();
-      await tapNext();
+      await tapNeed(tester, needSave());
+      expect(repo.saved!['amount_cents'], '8709');
+      expect(repo.saved!['vendor'], 'Clínica');
       expect(
         repo.publicSaved!['description'],
         'Recibió su consulta y tratamiento.',
       );
-      expect(repo.saved!['amount_cents'], '8709');
-      expect(repo.saved!['vendor'], 'Clínica');
-      expect(repo.publicSaved!.containsKey('amount_cents'), isFalse);
-      expect(repo.publicSaved!.containsKey('vendor'), isFalse);
       expect(repo.publicSaved!['category'], 'medicine');
-      expect(
-        tester
-            .widget<Text>(
-              find.byKey(const ValueKey('expense-review-amount_cents')),
-            )
-            .data,
-        '87.09',
-      );
-      final edit = find.byTooltip('Editar Solo para revisión privada');
-      await tester.scrollUntilVisible(
-        edit,
-        -300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+      expectPrivateNeed(repo);
+      await tester.tap(find.text('Editar necesidad del caso'));
       await tester.pumpAndSettle();
-      await tester.tap(edit);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey('expense-field-amount_cents')),
-        300,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('expense-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<TextField>(
-              find.byKey(const ValueKey('expense-field-amount_cents')),
-            )
-            .controller!
-            .text,
-        '87.09',
-      );
+      await revealNeed(tester, amount);
+      expect(tester.widget<TextField>(amount).controller!.text, '87.09');
+      await enterNeed(tester, 'amount', '87.099');
+      expect(tester.widget<FilledButton>(needSave()).onPressed, isNull);
+      expect(repo.saveCalls, 1);
       expect(find.text('Enviar a revisión'), findsNothing);
+      expect(repo.transitions, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );

@@ -786,7 +786,9 @@ void main() {
           // Returning preserves the read-only list's scroll position. Bring the
           // private-state notice above the CTA back into the lazy viewport.
           await tester.scrollUntilVisible(
-            find.textContaining('Tu caso sigue privado'),
+            find.textContaining(
+              'Tu caso y todas sus necesidades siguen privados',
+            ),
             -200,
             scrollable: find
                 .descendant(
@@ -803,7 +805,9 @@ void main() {
           promoted ? findsOneWidget : findsNothing,
         );
         expect(
-          find.textContaining('Tu caso sigue privado'),
+          find.textContaining(
+            'Tu caso y todas sus necesidades siguen privados',
+          ),
           promoted ? findsNothing : findsOneWidget,
         );
         expect(tester.takeException(), isNull);
@@ -816,7 +820,7 @@ void main() {
       final rescue = StripePendingCaseRescue(status: 'pending_stripe');
       await mountStripeCase(tester, rescue, StripeCasePayments(rescue));
       final files = rescue.current.files;
-      await tapStripeCase(tester, find.text('Retirar a borrador'));
+      await tapStripeCase(tester, find.text('Retirar caso completo'));
       expect(rescue.actions, ['withdraw']);
       expect(rescue.current.editable, isTrue);
       expect(rescue.current.id, 'case-one');
