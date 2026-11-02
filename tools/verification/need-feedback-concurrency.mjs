@@ -140,6 +140,7 @@ try {
       await control.query('begin');
       try {
         await control.query('delete from public.dopmi_rescue_records where id=any($1::uuid[])', [expenseIds]);
+        await control.query('delete from private.dopmi_urgent_coverage_state where case_id=any($1::uuid[])', [caseIds]);
         await control.query('delete from public.dopmi_rescue_records where id=any($1::uuid[])', [caseIds]);
         await control.query('delete from auth.users where id=any($1::uuid[])', [[owner, reviewer]]);
         await control.query('commit');
