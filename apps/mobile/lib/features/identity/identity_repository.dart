@@ -200,7 +200,9 @@ class SupabaseIdentityRepository implements IdentityRepository {
   );
   @override
   Future<Identity?> restore() async {
-    if (client.auth.currentSession == null) return null;
+    // Loading secure storage starts SDK recovery in the background. Wait for
+    // its shared refresh before validating the user with the current token.
+    if (await client.auth.getSession() == null) return null;
     return _identity((await client.auth.getUser()).user);
   }
 
