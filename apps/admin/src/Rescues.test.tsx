@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import Rescues, { amount } from './Rescues';
+import Rescues from './Rescues';
 import type { AdminApi, InitialCaseDecision, InitialCaseDecisionResult, NeedCommentInput, NeedCommentResult, RescueDetail, RescueRecord } from './api';
 const record: RescueRecord={id:'expense',owner_id:'owner',kind:'expense',parent_id:'case',public_data:{title:'Comida de Luna',category:'food',round_label:'Primera ronda'},private_data:{amount_cents:'25050',vendor:'Veterinaria'},files:[{path:'private/receipt.jpg',role:'receipt'}],status:'submitted',version:9,feedback:'',reimbursable_cents:0,urgent:false,priority_reason:'',submitted_at:'2026-09-13T12:00:00Z',updated_at:'2026-09-13T12:00:00Z'};
 function api(overrides:Partial<AdminApi>={}):AdminApi { return {session:async()=>true,watch:()=>()=>{},login:async()=>{},logout:async()=>{},isAdmin:async()=>true,listUsers:async()=>({total:0,users:[]}),listAdoptions:async()=>({total:0,items:[]}),reviews:async()=>[],reviewAdoption:async p=>p,photoUrl:async()=>'',listContributions:async()=>({total:0,items:[]}),listRescue:vi.fn(async()=>({total:1,items:[record]})),rescueDetail:vi.fn(async()=>({record,verified:true,case_status:'approved',history:[]})),rescueFileUrl:vi.fn(async()=> 'https://example.test/signed'),reviewRescue:vi.fn(async r=>({...r,status:'approved'})),...overrides}; }
@@ -20,9 +20,9 @@ describe('rescue review',()=>{
     expect(screen.queryByText('Sin cobros activos')).not.toBeInTheDocument();
   });
 
-  for(const kind of ['case','expense'] as const) it(`reviews an ordinary account ${kind} without a Dopmi badge while retaining evidence and public approval`,async()=>{
-    const ordinary={...record,kind,parent_id:kind==='case'?null:'case'};
-    const client=api({rescueDetail:vi.fn(async()=>({record:ordinary,verified:false,case_status:kind==='expense'?'approved':null,history:[]}))});
+  it('keeps optional verification review available with loaded evidence and explicit public approval',async()=>{
+    const ordinary={...record,kind:'verification',parent_id:null};
+    const client=api({rescueDetail:vi.fn(async()=>({record:ordinary,verified:false,case_status:null,history:[]}))});
     const user=await open(client), button=screen.getByRole('button',{name:'Aprobar solicitud'});
     expect(button).toBeDisabled();
     fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
@@ -32,35 +32,28 @@ describe('rescue review',()=>{
     expect(button).toBeEnabled();await user.click(button);
     await waitFor(()=>expect(client.reviewRescue).toHaveBeenCalledWith(ordinary,expect.objectContaining({decision:'approved',publish_content:true})));
   });
-  it('still refuses an ordinary account expense whose parent case is closed',async()=>{
-    const client=api({rescueDetail:vi.fn(async()=>({record,verified:false,case_status:'closed',history:[]}))}),user=await open(client);
+  it.each(['submitted','approved','changes_requested'])('keeps a historical expense read only without any individual decision (%s)',async status=>{
+    const client=api({rescueDetail:vi.fn(async()=>({record:{...record,status},verified:false,case_status:'approved',history:[]}))});
+    await open(client);
+    expect(screen.getByText(/Las decisiones se registran para el caso completo/)).toBeInTheDocument();
+    expect(screen.queryByRole('button',{name:/Aprobar|No aprobar|Pedir correcciones/})).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Monto reembolsable en pesos MXN')).not.toBeInTheDocument();
+    expect(screen.queryByRole('option',{name:'Gastos'})).not.toBeInTheDocument();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+  it('requires a future complete submission before approving a legacy case without a frozen manifest',async()=>{
+    const legacy={...record,kind:'case',parent_id:null};
+    const client=api({rescueDetail:vi.fn(async()=>({record:legacy,verified:false,case_status:null,history:[]}))}),user=await open(client);
     fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
     await user.click(screen.getByLabelText('Revisé el archivo 1'));
     await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
-    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();expect(client.reviewRescue).not.toHaveBeenCalled();
-  });
-  it('converts pesos exactly and rejects malformed money',()=>{expect(amount('250.50')).toBe(25050);expect(amount('0.01')).toBe(1);for(const v of ['-1','1.001','1e3','NaN','0','1000000.01'])expect(amount(v)).toBeNull();});
-  it('requires loaded evidence and explicit public approval, then sends the exact version',async()=>{
-    const client=api(),user=await open(client);
-    const button=screen.getByRole('button',{name:'Aprobar solicitud'});
-    expect(button).toBeDisabled();expect(screen.getByLabelText('Revisé el archivo 1')).toBeDisabled();
-    fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
-    await user.click(screen.getByLabelText('Revisé el archivo 1'));
-    expect(button).toBeDisabled();
-    await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
-    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Comprobante validado');
-    await user.click(button);
-    await waitFor(()=>expect(client.reviewRescue).toHaveBeenCalledWith(record,expect.objectContaining({amount_cents:25050,publish_content:true,decision:'approved'})));
-  });
-  it('does not approve over the paid expense and preserves the review form',async()=>{
-    const client=api(),user=await open(client);fireEvent.load(screen.getByAltText('Comprobante · privado 1'));
-    await user.click(screen.getByLabelText('Revisé el archivo 1'));await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
-    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Comprobante validado');
-    const input=screen.getByLabelText('Monto reembolsable en pesos MXN');await user.clear(input);await user.type(input,'251');
-    await user.click(screen.getByRole('button',{name:'Aprobar solicitud'}));expect(await screen.findByRole('alert')).toHaveTextContent('no exceder');expect(client.reviewRescue).not.toHaveBeenCalled();expect(input).toHaveValue('251');
+    expect(screen.getByRole('button',{name:'Aprobar caso'})).toBeDisabled();
+    expect(screen.getByText(/Este envío anterior no tiene un conjunto capturado/)).toBeInTheDocument();
+    expect(screen.getByRole('button',{name:'Pedir correcciones'})).toBeEnabled();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
   });
   it('clears private details when a review conflicts and requires a fresh load',async()=>{
-    const client=api({reviewRescue:vi.fn(async()=>{throw {code:'40001',message:'La solicitud cambió'};})}),user=await open(client);
+    const client=api({rescueDetail:vi.fn(async()=>({record:{...record,kind:'case',parent_id:null},verified:false,case_status:null,history:[]})),reviewRescue:vi.fn(async()=>{throw {code:'40001',message:'La solicitud cambió'};})}),user=await open(client);
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Adjunta una foto legible');await user.click(screen.getByRole('button',{name:'Pedir correcciones'}));
     await screen.findByText('La solicitud cambió');expect(screen.queryByText('Solo para revisión privada')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Aprobar solicitud'})).not.toBeInTheDocument();
   });
@@ -74,24 +67,25 @@ function initialPacketApi(expenses:RescueRecord[],overrides:Partial<AdminApi>={}
   return packetApi({rescueDetail:vi.fn(async(_id,page=1)=>({...packet,initial_packet:initial,expenses:{total:expenses.length,page,items:expenses.slice((page-1)*20,page*20)}})),reviewInitialCasePacket:vi.fn(async(record,decision)=>packetResult(record,decision)),...overrides});
 }
 function packetResult(record:{id:string;version:number},decision:InitialCaseDecision):InitialCaseDecisionResult {
-  return {request_id:decision.request_id,submission_id:decision.submission_id,record_id:record.id,case_version:record.version,decision:decision.decision,record:{...caseRecord,status:decision.decision,version:record.version+1},expenses:decision.expense_reviews.map(review=>({...packetExpense,id:review.expense_id,version:review.expense_version+2,status:'approved'}))};
+  return {request_id:decision.request_id,submission_id:decision.submission_id,record_id:record.id,case_version:record.version,decision:decision.decision,record:{...caseRecord,status:decision.decision,version:record.version+1},expenses:decision.expense_reviews.map(review=>({...packetExpense,id:review.expense_id,version:review.expense_version+2,status:'approved',reimbursable_cents:review.amount_cents,urgent:review.is_urgent,priority_reason:review.urgency_note}))};
 }
 function initialExpense(index:number,files:RescueRecord['files']=[]):RescueRecord {
   return {...packetExpense,id:`expense-${String(index).padStart(3,'0')}`,public_data:{title:`Necesidad ${index}`},submission_id:'initial-submission',status:'draft',urgent:true,priority_reason:'Urgencia del autor',files};
 }
 
 describe('one decision for the initial packet',()=>{
-  it('preserves explicit money and reviewed evidence through 21 items and sends one complete atomic approval',async()=>{
+  it('preserves paid snapshot amounts and reviewed evidence through 21 items and sends one complete atomic case approval without a badge',async()=>{
     const expenses=Array.from({length:21},(_,index)=>initialExpense(index+1,index===0?[{path:'private/first.PDF',role:'receipt'},{path:'private/first.jpg',role:'proof'}]:[]));
     const client=initialPacketApi(expenses),{user}=await openPacket(client);
-    const approve=()=>screen.getByRole('button',{name:'Aprobar caso y necesidades'});
+    const approve=()=>screen.getByRole('button',{name:'Aprobar caso'});
     expect(screen.queryByRole('button',{name:/Abrir revisión individual/})).not.toBeInTheDocument();
-    expect(screen.getByLabelText('Monto autorizado para Necesidad 1 en pesos MXN')).toHaveValue('');
-    expect(screen.getByLabelText('Aprobar urgencia de Necesidad 1')).not.toBeChecked();
+    expect(screen.getByLabelText('Importe pagado de Necesidad 1')).toHaveTextContent('$250.50');
+    expect(screen.queryByLabelText(/Monto autorizado/)).not.toBeInTheDocument();
+    expect(screen.getByText('Sin sello Dopmi. Esto no impide revisar esta solicitud.')).toBeInTheDocument();
+    expect(screen.getByLabelText('Prioridad urgente para Necesidad 1')).not.toBeChecked();
     expect(screen.getByLabelText('Revisé el archivo 1 de Necesidad 1')).toBeDisabled();
     await user.click(screen.getByRole('link',{name:'Abrir PDF de Necesidad 1 · Archivo 1'}));
     await user.click(screen.getByLabelText('Revisé el archivo 1 de Necesidad 1'));
-    for(let index=1;index<=20;index++)fireEvent.change(screen.getByLabelText(`Monto autorizado para Necesidad ${index} en pesos MXN`),{target:{value:'100.25'}});
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Expediente completo revisado');
     await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete'));
     expect(approve()).toBeDisabled();
@@ -99,12 +93,11 @@ describe('one decision for the initial packet',()=>{
     await user.click(screen.getByLabelText('Revisé el archivo 2 de Necesidad 1'));
     expect(approve()).toBeDisabled();
     await user.click(screen.getByRole('button',{name:'Gastos siguientes'}));
-    const last=await screen.findByLabelText('Monto autorizado para Necesidad 21 en pesos MXN');
-    expect(screen.getByText('21 de 21 necesidades consultadas. Los montos y archivos revisados se conservan al cambiar de página.')).toBeInTheDocument();
-    expect(approve()).toBeDisabled();fireEvent.change(last,{target:{value:'90'}});
+    expect(await screen.findByLabelText('Importe pagado de Necesidad 21')).toHaveTextContent('$250.50');
+    expect(screen.getByText('21 de 21 necesidades consultadas. Los archivos revisados y la prioridad se conservan al cambiar de página.')).toBeInTheDocument();
     expect(approve()).toBeEnabled();
     await user.click(screen.getByRole('button',{name:'Gastos anteriores'}));
-    expect(await screen.findByLabelText('Monto autorizado para Necesidad 1 en pesos MXN')).toHaveValue('100.25');
+    expect(await screen.findByLabelText('Importe pagado de Necesidad 1')).toHaveTextContent('$250.50');
     expect(screen.getByLabelText('Revisé el archivo 1 de Necesidad 1')).toBeChecked();
     expect(screen.getByLabelText('Revisé el archivo 2 de Necesidad 1')).toBeChecked();
     expect(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)')).toHaveValue('Expediente completo revisado');
@@ -113,7 +106,7 @@ describe('one decision for the initial packet',()=>{
     const [reviewed,decision]=vi.mocked(client.reviewInitialCasePacket!).mock.calls[0];
     expect(reviewed).toEqual({id:caseRecord.id,version:12});
     expect(decision).toMatchObject({submission_id:'initial-submission',decision:'approved',publish_content:true});
-    expect(decision.expense_reviews).toEqual(expenses.map((expense,index)=>({expense_id:expense.id,expense_version:expense.version,amount_cents:index===20?9000:10025,is_urgent:false,urgency_note:'',publish_content:true})));
+    expect(decision.expense_reviews).toEqual(expenses.map(expense=>({expense_id:expense.id,expense_version:expense.version,amount_cents:25050,is_urgent:false,urgency_note:'',publish_content:true})));
     expect(client.reviewRescue).not.toHaveBeenCalled();
   });
 
@@ -124,7 +117,7 @@ describe('one decision for the initial packet',()=>{
     await user.click(screen.getByRole('button',{name:'No aprobar'}));
     await screen.findByText(/No pudimos confirmar la decisión del paquete/);
     for(const name of ['Cerrar','Recargar expediente y archivos','No aprobar','Pedir correcciones','Revisar Luna'])expect(screen.getByRole('button',{name})).toBeDisabled();
-    expect(screen.getByLabelText('Monto autorizado para Necesidad 1 en pesos MXN')).toBeDisabled();
+    expect(screen.getByLabelText('Prioridad urgente para Necesidad 1')).toBeDisabled();
     expect(screen.getByLabelText('Comentario para Necesidad 1')).toBeDisabled();
     expect(review.mock.calls[0][1]).toMatchObject({decision:'rejected',expense_reviews:[]});
     await user.click(screen.getByRole('button',{name:'Reintentar la misma decisión del paquete'}));
@@ -137,26 +130,41 @@ describe('one decision for the initial packet',()=>{
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Requiere correcciones');
     await user.click(screen.getByRole('button',{name:'Pedir correcciones'}));
     await screen.findByRole('alert');
-    expect(screen.queryByLabelText('Monto autorizado para Necesidad 1 en pesos MXN')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Importe pagado de Necesidad 1')).not.toBeInTheDocument();
     expect(screen.queryByRole('button',{name:'Reintentar la misma decisión del paquete'})).not.toBeInTheDocument();
   });
 
   it('retains the entire approved financial payload when a response cannot be reconciled',async()=>{
     const review=vi.fn<NonNullable<AdminApi['reviewInitialCasePacket']>>().mockImplementationOnce(async(record,decision)=>({...packetResult(record,decision),request_id:'wrong-request'})).mockImplementationOnce(async(record,decision)=>packetResult(record,decision));
     const client=initialPacketApi([initialExpense(1)],{reviewInitialCasePacket:review}),{user}=await openPacket(client);
-    const input=screen.getByLabelText('Monto autorizado para Necesidad 1 en pesos MXN');fireEvent.change(input,{target:{value:'150'}});
-    await user.click(screen.getByLabelText('Aprobar urgencia de Necesidad 1'));
+    const paid=screen.getByLabelText('Importe pagado de Necesidad 1');
+    await user.click(screen.getByLabelText('Prioridad urgente para Necesidad 1'));
     await user.type(screen.getByLabelText('Motivo de prioridad para Necesidad 1'),'Atención inmediata');
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Contenido y monto revisados');
     await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete'));
-    await user.click(screen.getByRole('button',{name:'Aprobar caso y necesidades'}));
+    await user.click(screen.getByRole('button',{name:'Aprobar caso'}));
     await screen.findByText(/No pudimos confirmar la decisión del paquete/);
-    expect(input).toHaveValue('150');expect(input).toBeDisabled();
+    expect(paid).toHaveTextContent('$250.50');
     expect(screen.getByLabelText('Motivo de prioridad para Necesidad 1')).toBeDisabled();
     await user.click(screen.getByRole('button',{name:'Reintentar la misma decisión del paquete'}));
     await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(review.mock.calls[1]).toEqual(review.mock.calls[0]);
-    expect(review.mock.calls[0][1].expense_reviews).toEqual([{expense_id:'expense-001',expense_version:9,amount_cents:15000,is_urgent:true,urgency_note:'Atención inmediata',publish_content:true}]);
+    expect(review.mock.calls[0][1].expense_reviews).toEqual([{expense_id:'expense-001',expense_version:9,amount_cents:25050,is_urgent:true,urgency_note:'Atención inmediata',publish_content:true}]);
+  });
+
+  it('keeps the same approval pending when its receipt confirms a different reimbursable amount',async()=>{
+    const review=vi.fn<NonNullable<AdminApi['reviewInitialCasePacket']>>().mockImplementation(async(record,decision)=>{
+      const result=packetResult(record,decision);
+      return {...result,expenses:result.expenses.map(expense=>({...expense,reimbursable_cents:expense.reimbursable_cents-1}))};
+    });
+    const client=initialPacketApi([initialExpense(1)],{reviewInitialCasePacket:review}),{user}=await openPacket(client);
+    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Contenido e importe revisados');
+    await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete'));
+    await user.click(screen.getByRole('button',{name:'Aprobar caso'}));
+    await screen.findByText(/No pudimos confirmar la decisión del paquete/);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('button',{name:'Reintentar la misma decisión del paquete'})).toBeEnabled();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
   });
 
   it('ignores a late initial decision after the authenticated API changes',async()=>{
@@ -166,7 +174,7 @@ describe('one decision for the initial packet',()=>{
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Privado de otra cuenta');
     await user.click(screen.getByRole('button',{name:'Pedir correcciones'}));
     const clientB=initialPacketApi([initialExpense(2)]);rerender(<Rescues api={clientB}/>);
-    await user.click(await screen.findByRole('button',{name:'Revisar Luna'}));await screen.findByLabelText('Monto autorizado para Necesidad 2 en pesos MXN');
+    await user.click(await screen.findByRole('button',{name:'Revisar Luna'}));await screen.findByLabelText('Importe pagado de Necesidad 2');
     await act(async()=>finish(packetResult(...review.mock.calls[0])));
     expect(screen.getByRole('dialog')).toBeInTheDocument();expect(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)')).toHaveValue('');
     expect(clientB.reviewInitialCasePacket).not.toHaveBeenCalled();
@@ -191,18 +199,18 @@ async function openPacket(client:AdminApi) {
 }
 
 describe('case needs packet',()=>{
-  it('saves one batch with destination versions, shows the private PDF, and leaves financial review independent',async()=>{
+  it('saves comments with destination versions and shows legacy evidence without any individual expense action',async()=>{
     const client=packetApi(),{user}=await openPacket(client);
     expect(client.rescueDetail).toHaveBeenCalledWith(caseRecord.id,1);
     expect(client.rescueFileUrl).toHaveBeenCalledWith('private/receipt.PDF');
     expect(screen.getByRole('link',{name:'Abrir PDF de Comida de Luna · Archivo 1'})).toHaveAttribute('href','https://example.test/signed');
     expect(screen.getByText('21 gastos accesibles · Página 1 de 2')).toBeInTheDocument();
-    expect(screen.getByRole('button',{name:'Abrir revisión individual de Comida de Luna'})).toBeEnabled();
+    expect(screen.queryByRole('button',{name:'Abrir revisión individual de Comida de Luna'})).not.toBeInTheDocument();
     await user.type(screen.getByLabelText('Comentario para Consulta veterinaria'),'  Aclara la valoración  ');
     await user.type(screen.getByLabelText('Comentario para Comida de Luna'),'Confirma el proveedor');
     expect(screen.getByRole('button',{name:'Pedir correcciones'})).toBeDisabled();
     await user.click(screen.getByRole('button',{name:'Guardar comentarios'}));
-    await screen.findByText('Comentarios guardados. El estado y los montos conservan su revisión independiente.');
+    await screen.findByText('Comentarios guardados. La decisión del caso sigue pendiente.');
     expect(client.saveNeedComments).toHaveBeenCalledWith({id:caseRecord.id,version:12},[
       {target_kind:'planned',target_id:plannedId,target_version:12,body:'Aclara la valoración'},
       {target_kind:'expense',target_id:packetExpense.id,target_version:9,body:'Confirma el proveedor'},
@@ -212,7 +220,7 @@ describe('case needs packet',()=>{
     expect(screen.getByText(/Versión 12 · En revisión/)).toBeInTheDocument();
     expect(client.reviewRescue).not.toHaveBeenCalled();
     // Viewing child files never grants the legacy case publication checkbox.
-    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Aprobar caso'})).toBeDisabled();
   });
 
   it('protects unsaved comments when closing, reloading or changing expense page and pages only through the server',async()=>{
@@ -241,7 +249,7 @@ describe('case needs packet',()=>{
     expect(screen.getByRole('button',{name:'Pedir correcciones'})).toBeDisabled();
     expect(screen.getByRole('button',{name:'Gastos siguientes'})).toBeDisabled();
     await user.click(screen.getByRole('button',{name:'Reintentar el mismo guardado'}));
-    await screen.findByText('Comentarios guardados. El estado y los montos conservan su revisión independiente.');
+    await screen.findByText('Comentarios guardados. La decisión del caso sigue pendiente.');
     expect(save).toHaveBeenCalledTimes(2);
     expect(save.mock.calls[1]).toEqual(save.mock.calls[0]);
     expect(screen.getAllByText('Confirma la fecha')).toHaveLength(1);
@@ -311,7 +319,7 @@ describe('case needs packet',()=>{
     const {user}=await openPacket(client);
     await user.click(screen.getByLabelText('Autorizo los textos y las fotos marcadas para publicación'));
     expect(screen.getByLabelText('Revisé el archivo 1')).toBeDisabled();
-    expect(screen.getByRole('button',{name:'Aprobar solicitud'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Aprobar caso'})).toBeDisabled();
     expect(client.reviewRescue).not.toHaveBeenCalled();
   });
 

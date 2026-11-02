@@ -293,6 +293,15 @@ test('pending Stripe cancellation during the UPDATE guard isolates one case, sav
 
 test('farewell after the real case close preserves its closed snapshot and existing contributions',async()=>{
  const f=await fixture(),photo=await uploadSyntheticPhoto(f);
+ // The fixed need exists before the one initial case review. It must not be
+ // introduced after publication just to build a financial fixture.
+ const expense=randomUUID(),key=randomUUID(),suffix=randomUUID().replaceAll('-','');
+ await db.exec('reset role');
+ const expenseFiles=['receipt','proof'].map(role=>({role,path:`${f.owner}/${expense}/${randomUUID()}.${role==='receipt'?'pdf':'jpg'}`}));
+ await db.query(`insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,public_data,private_data,files)
+   values($1,$2,'expense',$3,'{"title":"Synthetic paid expense","description":"Consulta pagada sintética","category":"veterinary"}',
+   $4::jsonb,$5::jsonb)`,[expense,f.owner,f.parent,JSON.stringify({paid_on:'2026-09-01',vendor:'Proveedor sintético',amount_cents:'12000',receipt_reference:expense}),JSON.stringify(expenseFiles)]);
+ for(const file of expenseFiles) await db.query("insert into storage.objects(bucket_id,name) values('dopmi-rescue-evidence',$1)",[file.path]);
  const saved=await saveCase(f,urgentFields(),[{path:photo,role:'public'}],1);
  const thanks=await action(f,begin(f,{parent_version:saved.version}));
  await ready(thanks); // Provider processing is simulated; all lifecycle RPCs below are real SQL.
@@ -300,13 +309,13 @@ test('farewell after the real case close preserves its closed snapshot and exist
  const submitted=(await db.query("select public.dopmi_transition_rescue($1,$2,'submit') v",[f.parent,saved.version])).rows[0].v;
  await action(f,{action:'review',id:thanks.id,parent_version:submitted.version,decision:'approved'},f.staff);
  await actor(f.staff);
- const approved=(await db.query("select public.dopmi_review_rescue($1,$2,'approved','Revision sintetica completa',0,false,'',true) v",[f.parent,submitted.version])).rows[0].v;
+ const packet=(await db.query('select public.dopmi_admin_rescue_packet($1) v',[f.parent])).rows[0].v;
+ const approved=(await db.query("select public.dopmi_review_initial_case_packet($1,$2,$3,'approved','Revision sintetica completa',true,$4::jsonb,$5) v",
+   [f.parent,submitted.version,packet.initial_packet.id,JSON.stringify([{expense_id:expense,expense_version:1,amount_cents:12000,is_urgent:false,urgency_note:'',publish_content:true}]),randomUUID()])).rows[0].v.record;
  assert.equal(approved.status,'approved');
 
  // A nonzero, entirely local financial fixture makes conservation observable.
  // No payment provider is called, and the child expense is already approved.
- const expense=randomUUID(),key=randomUUID(),suffix=randomUUID().replaceAll('-','');
- await db.query("insert into public.dopmi_rescue_records(id,owner_id,kind,parent_id,status,approved_snapshot,reimbursable_cents) values($1,$2,'expense',$3,'approved','{\"title\":\"Synthetic paid expense\"}',12000)",[expense,f.owner,f.parent]);
  await db.query('update private.dopmi_connect_accounts set account_id=$2 where owner_id=$1',[f.owner,'acct_'+suffix]);
  await actor('','service_role');
  const donation=(await db.query("select public.dopmi_oneoff_case_server('prepare',$1::jsonb) v",[JSON.stringify({actor:f.other,key,case_id:f.parent,gross_cents:10000,consent:true,consent_version:'oneoff-test-2026-10-15'})])).rows[0].v;

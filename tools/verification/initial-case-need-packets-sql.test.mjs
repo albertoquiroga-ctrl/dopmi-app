@@ -50,7 +50,7 @@ async function fixture(count = 2, stripeReady = true) {
   await actor(owner); const submitted = await transition(f.id); f.version = submitted.version;
   await db.exec('reset role');
   f.submission = await value('select id value from private.dopmi_case_need_submissions where case_id=$1', [f.id]);
-  f.reviews = f.children.map(c => ({ expense_id: c.id, expense_version: 1, amount_cents: 7000, is_urgent: false, urgency_note: '', publish_content: true }));
+  f.reviews = f.children.map(c => ({ expense_id: c.id, expense_version: 1, amount_cents: 10000, is_urgent: false, urgency_note: '', publish_content: true }));
   await actor(); return f;
 }
 async function inventory(f) {
@@ -135,8 +135,8 @@ test('real Storage RLS pins shared paths against deletion/reinsertion and freeze
     ['expense', JSON.stringify({ ...child.publicData, title: 'Cambio privado' }), JSON.stringify(child.privateData), JSON.stringify(child.files), child.id, f.id]), '22023');
   await rejected(() => value('select public.dopmi_save_rescue($1,$2::jsonb,$3::jsonb,$4::jsonb,$5,1,$6) value',
     ['expense', JSON.stringify(child.publicData), JSON.stringify(child.privateData), JSON.stringify(child.files), child.id, f.id]), '22023');
-  assert.equal((await value('select public.dopmi_save_rescue($1,$2::jsonb,$3::jsonb,$4::jsonb,$5,1,$6) value',
-    ['expense', JSON.stringify({ ...late.publicData, title: 'Borrador posterior' }), JSON.stringify(late.privateData), JSON.stringify(late.files), late.id, f.id])).version, 2);
+  await rejected(() => value('select public.dopmi_save_rescue($1,$2::jsonb,$3::jsonb,$4::jsonb,$5,1,$6) value',
+    ['expense', JSON.stringify({ ...late.publicData, title: 'Borrador posterior' }), JSON.stringify(late.privateData), JSON.stringify(late.files), late.id, f.id]), '22023');
   await transition(f.id, f.version, 'withdraw');
   assert.equal((await db.query('delete from storage.objects where name=$1 returning name', [path])).rows.length, 1);
   await actor(); await rejected(() => packet(f.id), '42501');
@@ -170,7 +170,7 @@ test('one explicit financial review atomically approves case and exact children;
   const f = await fixture(), request = randomUUID();
   const result = await decide(f, f.reviews, request);
   assert.equal(result.record.status, 'approved'); assert.equal(result.expenses.length, 2);
-  assert.ok(result.expenses.every(e => e.status === 'approved' && e.reimbursable_cents === 7000 && e.urgent === false && e.version === 3));
+  assert.ok(result.expenses.every(e => e.status === 'approved' && e.reimbursable_cents === 10000 && e.urgent === false && e.version === 3));
   const before = await inventory(f); await actor();
   assert.deepEqual(await decide(f, [...f.reviews].reverse(), request), result);
   assert.deepEqual(await inventory(f), before); await actor();
@@ -178,10 +178,8 @@ test('one explicit financial review atomically approves case and exact children;
   await db.exec('reset role');
   assert.equal(await value("select count(*)::int value from private.dopmi_rescue_history where record_id=$1 and action='approved'", [f.id]), 1);
   assert.equal(await value("select count(*)::int value from private.dopmi_rescue_history where record_id=any($1::uuid[]) and action='initial_packet_submit' and actor_id=$2 and actor_type='user'", [f.children.map(c => c.id), reviewer]), 2);
-  // A new expense on a published case retains its established independent route.
-  const late = await draft('expense', f.id); await actor(owner); await transition(late.id);
-  await actor();
-  assert.equal((await value("select public.dopmi_review_rescue($1,2,'approved','Gasto posterior revisado',6000,false,'',true) value", [late.id])).status, 'approved');
+  // New needs require a new case; this remains closed after first publication.
+  await rejected(() => draft('expense', f.id), '22023');
 });
 
 test('missing/extra/stale/malformed choices and a failure on the last child roll back every approval', async () => {

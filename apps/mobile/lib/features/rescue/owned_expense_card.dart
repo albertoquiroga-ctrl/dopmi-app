@@ -66,12 +66,9 @@ class OwnedExpenseSummary extends StatelessWidget {
     final transferred = funding?['transferred_cents'] as int? ?? 0;
     final remaining = (target - funded).clamp(0, target);
     final ratio = target > 0 ? (funded / target).clamp(0.0, 1.0) : 0.0;
-    final action = switch (record.status) {
-      'draft' => 'Continuar gasto',
-      'changes_requested' || 'rejected' => 'Corregir gasto',
-      'submitted' => 'Ver envío',
-      _ => 'Consultar gasto y comprobantes',
-    };
+    final action = record.parent != null
+        ? 'Consultar necesidad y comprobantes'
+        : 'Consultar gasto y comprobantes';
     final large = MediaQuery.textScalerOf(context).scale(16) > 20;
     final heading = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,9 +169,17 @@ class OwnedExpenseSummary extends StatelessWidget {
           if (funding != null && large) ...[const SizedBox(height: 10), amount],
           const SizedBox(height: 10),
           Text(
-            rescueStatuses[record.status] ?? record.status,
+            record.parent != null && record.status == 'draft'
+                ? 'Incluida en el caso'
+                : rescueStatuses[record.status] ?? record.status,
             style: const TextStyle(fontSize: 12, height: 1.4, color: muted),
           ),
+          if (record.data['financial_inactive'] == true) ...[
+            const SizedBox(height: 8),
+            const Text(
+              'Necesidad retirada previamente; sin importe disponible',
+            ),
+          ],
           if (funding != null) ...[
             const SizedBox(height: 10),
             Wrap(

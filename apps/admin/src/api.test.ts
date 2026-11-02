@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { afterEach, expect, test, vi } from 'vitest';
-import { configuredApi, createAdminApi, type RescuerPublicProfile } from './api';
+import { configuredApi, createAdminApi, type RescueRecord, type RescuerPublicProfile } from './api';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 test('case packets use server pagination and need comments retain destination versions and request ID', async()=>{
@@ -27,6 +27,17 @@ test('the initial case decision sends one atomic RPC with the frozen submission 
   const decision={submission_id:'submission',request_id:'request',decision:'approved',note:'Revisado completo',publish_content:true,expense_reviews:[{expense_id:'expense',expense_version:7,amount_cents:12500,is_urgent:false,urgency_note:'',publish_content:true}]};
   await api.reviewInitialCasePacket!({id:'case',version:12},decision);
   expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_initial_case_packet',{record_id:'case',expected_version:12,...decision});
+});
+
+test('the adapter refuses separate expense queues and all individual expense decisions, including historical ones',async()=>{
+  const rpc=vi.fn();
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  await expect(api.listRescue('expense','submitted',1)).rejects.toMatchObject({code:'22023'});
+  for(const decision of ['approved','rejected','changes_requested']){
+    await expect(api.reviewRescue({id:'expense',kind:'expense',version:4,status:'approved'} as RescueRecord,{decision,note:'Revisión privada',amount_cents:10000,is_urgent:false,urgency_note:'',publish_content:true})).rejects.toMatchObject({code:'22023'});
+  }
+  await expect(api.reviewRescue({id:'case',kind:'case',version:4} as RescueRecord,{decision:'approved',note:'Revisado completo',amount_cents:0,is_urgent:false,urgency_note:'',publish_content:true})).rejects.toMatchObject({code:'22023'});
+  expect(rpc).not.toHaveBeenCalled();
 });
 
 test('a missing initial decision RPC never falls back to separate approvals',async()=>{

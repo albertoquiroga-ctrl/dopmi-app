@@ -20,15 +20,18 @@ class OwnedCaseDetail extends StatelessWidget {
     required this.onBack,
     required this.onRecord,
     required this.onRefresh,
-    required this.onExpense,
     required this.onUpdates,
     required this.onClose,
+    this.onEdit,
+    this.editLabel = 'Editar caso',
     this.error,
   });
   final RescueRecord record;
   final Widget needs, updates;
   final bool busy;
-  final VoidCallback onBack, onRecord, onRefresh, onExpense, onUpdates, onClose;
+  final VoidCallback onBack, onRecord, onRefresh, onUpdates, onClose;
+  final VoidCallback? onEdit;
+  final String editLabel;
   final String? error;
   @override
   Widget build(BuildContext context) {
@@ -173,8 +176,17 @@ class OwnedCaseDetail extends StatelessWidget {
                       ),
                     ],
                     const SizedBox(height: 16),
+                    if (onEdit != null) ...[
+                      OutlinedButton.icon(
+                        onPressed: busy ? null : onEdit,
+                        style: OutlinedButton.styleFrom(padding: actionPadding),
+                        icon: const Icon(Icons.edit_outlined, size: 16),
+                        label: Text(editLabel, textAlign: TextAlign.center),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                     const Text(
-                      'Gastos del caso',
+                      'Necesidades del caso',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 19,
@@ -185,18 +197,15 @@ class OwnedCaseDetail extends StatelessWidget {
                     ),
                     const SizedBox(height: 31.77),
                     needs,
-                    if (record.status != 'closed') ...[
-                      const SizedBox(height: 16),
-                      FilledButton.icon(
-                        onPressed: busy ? null : onExpense,
-                        style: FilledButton.styleFrom(padding: actionPadding),
-                        icon: const Icon(Icons.add, size: 18),
-                        label: const Text(
-                          'Registrar gasto realizado',
-                          textAlign: TextAlign.center,
-                        ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Las necesidades forman parte de este caso. Si surge otra necesidad, publica un nuevo caso, aunque sea para la misma mascota.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.5,
+                        color: DopmiTokens.muted,
                       ),
-                    ],
+                    ),
                     PublicRescueVideos(record.id),
                     RescueVideoSection(
                       record: record,

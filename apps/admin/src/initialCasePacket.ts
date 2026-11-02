@@ -1,6 +1,6 @@
 import type { InitialCasePacket, InitialExpenseReview, RescueDetail, RescueRecord } from './api';
 
-export type ExpenseReviewDraft = { pesos: string; urgent: boolean; urgency: string };
+export type ExpenseReviewDraft = { urgent: boolean; urgency: string };
 export type InitialPacketCache = { identity: string; records: Record<string, RescueRecord> };
 export function initialPacketIdentity(record: RescueRecord, packet: InitialCasePacket) {
   return JSON.stringify([record.id, record.version, record.status, record.owner_id, packet]);
@@ -28,16 +28,16 @@ export function mergeInitialPacketPage(cache: InitialPacketCache | null, detail:
   return { identity, records };
 }
 
-export function packetExpenseReviews(packet: InitialCasePacket, records: Record<string, RescueRecord>, drafts: Record<string, ExpenseReviewDraft>, ready: (path: string) => boolean, parseAmount: (text: string) => number | null): InitialExpenseReview[] | null {
+export function packetExpenseReviews(packet: InitialCasePacket, records: Record<string, RescueRecord>, drafts: Record<string, ExpenseReviewDraft>, ready: (path: string) => boolean): InitialExpenseReview[] | null {
   if (Object.keys(records).length !== packet.expense_ids.length) return null;
   const reviews: InitialExpenseReview[] = [];
   for (const id of packet.expense_ids) {
-    const record = records[id], draft = drafts[id];
-    if (!record || !draft || record.submission_id !== packet.id) return null;
-    const cents = parseAmount(draft.pesos), paid = Number(record.private_data.amount_cents);
-    if (cents === null || !Number.isSafeInteger(paid) || cents > paid ||
+    const record = records[id], draft = drafts[id] ?? { urgent: false, urgency: '' };
+    if (!record || record.submission_id !== packet.id) return null;
+    const paid = Number(record.private_data.amount_cents);
+    if (!Number.isSafeInteger(paid) || paid <= 0 || paid > 100000000 ||
       (draft.urgent && draft.urgency.trim().length < 5) || !record.files.every(file => ready(file.path))) return null;
-    reviews.push({ expense_id: id, expense_version: record.version, amount_cents: cents, is_urgent: draft.urgent,
+    reviews.push({ expense_id: id, expense_version: record.version, amount_cents: paid, is_urgent: draft.urgent,
       urgency_note: draft.urgent ? draft.urgency.trim() : '', publish_content: true });
   }
   return reviews;

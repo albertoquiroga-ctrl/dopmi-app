@@ -72,7 +72,6 @@ void main() {
             onBack: () {},
             onRecord: () {},
             onRefresh: () {},
-            onExpense: () {},
             onUpdates: () {},
             onClose: () {},
           ),
@@ -198,10 +197,7 @@ void main() {
             hasTapAction: true,
           ),
         );
-        expect(
-          find.text('Registrar gasto realizado'),
-          closed ? findsNothing : findsOneWidget,
-        );
+        expect(find.text('Registrar gasto realizado'), findsNothing);
         expect(
           find.text('Cerrar caso'),
           closed ? findsNothing : findsOneWidget,

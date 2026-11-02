@@ -1,23 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { errorMessage, type AdminApi, type InitialCaseDecision, type NeedCommentInput, type RescueDetail, type RescueRecord } from './api';
 import NeedFeedback, { CommentHistory, needKey, validateNeedComments } from './NeedFeedback';
 import { mergeInitialPacketPage, packetExpenseReviews, type ExpenseReviewDraft, type InitialPacketCache } from './initialCasePacket';
+import { Fields, roles, money, text, title, date } from './rescuePresentation';
+import CaseRevisionReview from './CaseRevisionReview';
 
 export const rescueStatus: Record<string,string> = {submitted:'En revisión',changes_requested:'Con correcciones',approved:'Aprobados',rejected:'No aprobados',closed:'Casos cerrados'};
-const kinds: Record<string,string> = {verification:'Verificaciones',case:'Casos',expense:'Gastos'};
-const roles: Record<string,string> = {identity:'Identificación oficial · privada',address:'Domicilio · privado',receipt:'Comprobante · privado',proof:'Evidencia del gasto · privada',public:'Foto para publicación'};
-const labels: Record<string,string> = {public_name:'Nombre público',bio:'Presentación pública',city:'Ciudad',state:'Estado',legal_name:'Nombre legal',phone:'Teléfono',experience:'Experiencia',social_url:'Perfil social',identity_type:'Identificación',pet_name:'Mascota',species:'Especie',sex:'Sexo',age:'Edad aproximada',size:'Tamaño',story:'Historia',need:'Necesidad',title:'Título',description:'Descripción',category:'Necesidad cubierta',round_label:'Ronda de comida',paid_on:'Fecha de pago',vendor:'Proveedor',amount_cents:'Importe pagado',receipt_reference:'Folio o referencia',urgency_reason:'Urgencia solicitada'};
-const choices: Record<string,string> = {dog:'Perro',cat:'Gato',female:'Hembra',male:'Macho',unknown:'Por determinar',small:'Pequeño',medium:'Mediano',large:'Grande',food:'Comida',veterinary:'Atención veterinaria',medicine:'Medicamentos',other:'Otro gasto',ine:'INE',passport:'Pasaporte',license:'Licencia'};
-export function money(cents: number) { return new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(cents/100); }
-export function amount(text: string): number | null { if(!/^\d{1,7}(\.\d{1,2})?$/.test(text)) return null; const [whole,decimal='']=text.split('.'); const value=Number(whole)*100+Number(decimal.padEnd(2,'0')); return value>0&&value<=100000000?value:null; }
+const kinds: Record<string,string> = {verification:'Verificaciones',case:'Casos'};
 function message(cause: unknown) { if(typeof cause==='object'&&cause&&'code' in cause&&'message' in cause&&['22023','40001'].includes(String(cause.code))) return String(cause.message); return errorMessage(cause); }
-function text(value: unknown): string { return typeof value === 'string' || typeof value === 'number' ? String(value) : typeof value === 'boolean' ? (value ? 'Sí' : 'No') : 'Sin dato'; }
-function title(r: RescueRecord) { return text(r.public_data.public_name||r.public_data.pet_name||r.public_data.title||'Sin título'); }
-function date(value: string | null) { return value?new Date(value).toLocaleString('es-MX'):'Sin enviar'; }
-
-export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKind?:'case'|'verification'|'expense'}) {
+type ReviewSelection = { id: string; revisionId?: string };
+export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKind?:'case'|'verification'}) {
   const [kind,setKind]=useState<string>(initialKind),[status,setStatus]=useState('submitted'),[page,setPage]=useState(1),[revision,setRevision]=useState(0);
-  const [data,setData]=useState<{total:number;items:RescueRecord[]}>({total:0,items:[]}),[selected,setSelected]=useState<string|null>(null);
+  const [data,setData]=useState<{total:number;items:RescueRecord[]}>({total:0,items:[]}),[selected,setSelected]=useState<ReviewSelection|null>(null);
   const [loading,setLoading]=useState(true),[error,setError]=useState('');
   const [reviewLocked,setReviewLocked]=useState(false);
   useEffect(()=>{setKind(initialKind);setPage(1);},[initialKind]);
@@ -29,20 +23,10 @@ export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKi
       <label>Tipo<select disabled={reviewLocked} value={kind} onChange={e=>{setKind(e.target.value);setPage(1);}}>{Object.entries(kinds).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <label>Estado<select disabled={reviewLocked} value={status} onChange={e=>{setStatus(e.target.value);setPage(1);}}>{Object.entries(rescueStatus).map(([v,l])=><option key={v} value={v}>{l}</option>)}</select></label>
       <button className="secondary" disabled={reviewLocked} onClick={()=>setRevision(v=>v+1)}>Actualizar</button></div></div>
-      {error?<div className="empty-state"><div role="alert" className="notice">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>:loading?<div className="empty-state" role="status">Cargando solicitudes…</div>:!data.items.length?<div className="empty-state"><span className="empty-icon" aria-hidden="true">♡</span><h2>Todo al día por aquí</h2><p>No hay solicitudes con estos filtros.</p></div>:<div className="table-scroll"><table className="rescue-table"><thead><tr><th>Solicitud</th><th>Envío</th><th>Versión</th><th>Revisión</th></tr></thead><tbody>{data.items.map(r=><tr key={r.id}><td data-label="Solicitud"><strong>{title(r)}</strong><small>{text(r.public_data.city)}</small></td><td data-label="Envío">{date(r.submitted_at)}</td><td data-label="Versión">{r.version}</td><td data-label="Revisión"><button className="text-button" disabled={reviewLocked} onClick={()=>setSelected(r.id)}>Revisar {title(r)}</button></td></tr>)}</tbody></table></div>}
+      {error?<div className="empty-state"><div role="alert" className="notice">{error}</div><button onClick={()=>setRevision(v=>v+1)}>Volver a intentar</button></div>:loading?<div className="empty-state" role="status">Cargando solicitudes…</div>:!data.items.length?<div className="empty-state"><span className="empty-icon" aria-hidden="true">♡</span><h2>Todo al día por aquí</h2><p>No hay solicitudes con estos filtros.</p></div>:<div className="table-scroll"><table className="rescue-table"><thead><tr><th>Solicitud</th><th>Envío</th><th>Versión</th><th>Revisión</th></tr></thead><tbody>{data.items.map(r=><tr key={r.revision_id??r.id}><td data-label="Solicitud"><strong>{title(r)}</strong><small>{r.review_kind==='revision'?'Edición del caso':text(r.public_data.city)}</small>{r.review_kind==='revision'&&<small className="authored-text">Motivo: {r.reason}</small>}</td><td data-label="Envío">{date(r.submitted_at)}</td><td data-label="Versión">{r.review_kind==='revision'?r.revision_version:r.version}</td><td data-label="Revisión"><button className="text-button" disabled={reviewLocked||r.review_kind==='revision'&&!r.revision_id} onClick={()=>setSelected({id:r.id,revisionId:r.review_kind==='revision'?r.revision_id:undefined})}>{r.review_kind==='revision'?`Revisar edición de ${title(r)}`:`Revisar ${title(r)}`}</button></td></tr>)}</tbody></table></div>}
       <footer className="pagination"><span>Página {page} de {Math.max(1,Math.ceil(data.total/20))}</span><div><button className="secondary" disabled={reviewLocked||loading||page===1} onClick={()=>setPage(p=>p-1)}>Anterior</button><button className="secondary" disabled={reviewLocked||loading||page*20>=data.total} onClick={()=>setPage(p=>p+1)}>Siguiente</button></div></footer>
     </section>
-    {selected&&<RescueReview key={selected} api={api} id={selected} close={()=>{setSelected(null);setReviewLocked(false);}} updated={()=>setRevision(v=>v+1)} openParent={setSelected} lock={setReviewLocked} denied={()=>{setSelected(null);setReviewLocked(false);setData({total:0,items:[]});setError('El acceso cambió. Actualiza la lista para volver a comprobarlo.');}}/>}
-  </>;
-}
-
-function Fields({data,needFeedback}:{data:Record<string,unknown>;needFeedback?:(item:Record<string,unknown>)=>ReactNode}) {
-  return <><dl className="rescue-fields">{Object.entries(data).filter(([key])=>key!=='need_items').map(([key,value])=><div key={key}><dt>{labels[key]||key}</dt><dd>{key==='amount_cents'?money(Number(value)):choices[text(value)]||text(value)}</dd></div>)}</dl>
-    {Array.isArray(data.need_items)&&data.need_items.length>0&&<section aria-label="Necesidades previstas"><h3>Necesidades previstas</h3><p>Estos importes son estimaciones y no sustituyen los comprobantes de los gastos ya pagados.</p><div className="rescue-needs">{data.need_items.map((raw:unknown,index:number)=>{
-      if(typeof raw!=='object'||raw===null||Array.isArray(raw))return null;
-      const item=raw as Record<string,unknown>;
-      return <article className="rescue-need" key={typeof item.id==='string'?item.id:index}><div className="need-heading"><h4>{text(item.title)}</h4>{item.urgent===true&&<span className="badge">Urgente</span>}</div><p>{choices[text(item.type)]||text(item.type)} · {money(Number(item.amount_cents))}</p><p className="authored-text">{text(item.detail)}</p>{needFeedback?.(item)}</article>;
-    })}</div></section>}
+    {selected&&(selected.revisionId?<CaseRevisionReview key={selected.revisionId} api={api} caseId={selected.id} revisionId={selected.revisionId} close={()=>{setSelected(null);setReviewLocked(false);}} updated={()=>setRevision(v=>v+1)} lock={setReviewLocked} denied={()=>{setSelected(null);setReviewLocked(false);setData({total:0,items:[]});setError('El acceso cambió. Actualiza la lista para volver a comprobarlo.');}}/>:<RescueReview key={selected.id} api={api} id={selected.id} close={()=>{setSelected(null);setReviewLocked(false);}} updated={()=>setRevision(v=>v+1)} openParent={id=>setSelected({id})} lock={setReviewLocked} denied={()=>{setSelected(null);setReviewLocked(false);setData({total:0,items:[]});setError('El acceso cambió. Actualiza la lista para volver a comprobarlo.');}}/>)}
   </>;
 }
 
@@ -69,7 +53,7 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
   const [fileErrors,setFileErrors]=useState<Record<string,string>>({});
   const [seen,setSeen]=useState<string[]>([]),[loaded,setLoaded]=useState<string[]>([]),[published,setPublished]=useState(false);
   const [retry,setRetry]=useState(0),[expensePage,setExpensePage]=useState(1),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[commentBusy,setCommentBusy]=useState(false),[error,setError]=useState('');
-  const [note,setNote]=useState(''),[pesos,setPesos]=useState(''),[urgent,setUrgent]=useState(false),[urgency,setUrgency]=useState('');
+  const [note,setNote]=useState('');
   const [drafts,setDrafts]=useState<Record<string,NeedCommentInput>>({}),[attempt,setAttempt]=useState<CommentAttempt|null>(null),[saved,setSaved]=useState(false);
   const dirty=Object.values(drafts).some(comment=>comment.body.length>0), protectedComments=dirty||attempt!==null;
   const blocked=busy||commentBusy||attempt!==null||packetAttempt!==null;
@@ -111,7 +95,6 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
       setFileErrors(Object.fromEntries(signed.flatMap((result,index)=>result.status==='rejected'?[[paths[index],'Archivo no disponible. Puedes volver a intentarlo.']]:[])));
       const failed=paths.filter((_,index)=>signed[index].status==='rejected');
       setSeen(value=>value.filter(path=>!failed.includes(path)));setLoaded(value=>value.filter(path=>!failed.includes(path)));
-      if(!verified.initial_packet){setPesos((Number(verified.record.private_data.amount_cents||0)/100).toFixed(2));setUrgent(verified.record.urgent);setUrgency(verified.record.priority_reason);}
     }).catch(cause=>{if(current===generation.current){if(deniedFile(cause)&&cause?.message!=='Otra persona del equipo debe revisar tu solicitud'){purgePrivate();denied();}else{if(cause?.code==='40001')purgePrivate();setError(message(cause));}}}).finally(()=>{if(current===generation.current)setLoading(false);});
     // Any actor/API change or unmount invalidates reads AND writes in flight.
     return()=>{generation.current++;};
@@ -121,13 +104,13 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
   const initial=detail?.initial_packet;
   const commentsEnabled=!!r&&r.kind==='case'&&!!detail?.expenses&&Array.isArray(detail.need_comments)&&!!api.saveNeedComments;
   const fileReady=(path:string)=>loaded.includes(path)&&seen.includes(path)&&!fileErrors[path];
-  const expenseReviews=initial?packetExpenseReviews(initial,packetRecords,expenseDrafts,fileReady,amount):null;
-  const canApprove=!!r&&r.status==='submitted'&&published&&r.files.every(file=>!!urls[file.path]&&fileReady(file.path))&&(r.kind!=='expense'||detail.case_status==='approved')&&(!initial||!!api.reviewInitialCasePacket&&expenseReviews!==null);
+  const expenseReviews=initial?packetExpenseReviews(initial,packetRecords,expenseDrafts,fileReady):null;
+  const canApprove=!!r&&r.kind!=='expense'&&r.status==='submitted'&&published&&r.files.every(file=>!!urls[file.path]&&fileReady(file.path))&&(r.kind!=='case'||!!initial)&&(!initial||!!api.reviewInitialCasePacket&&expenseReviews!==null);
   function purgePrivate() {
     packetCache.current=null;setPacketRecords({});setExpenseDrafts({});setPacketAttempt(null);setDrafts({});setAttempt(null);setDetail(null);setUrls({});setFileErrors({});setSeen([]);setLoaded([]);setNote('');setPublished(false);
   }
   function updateExpense(id:string,patch:Partial<ExpenseReviewDraft>) {
-    setExpenseDrafts(value=>({...value,[id]:{...(value[id]??{pesos:'',urgent:false,urgency:''}),...patch}}));
+    setExpenseDrafts(value=>({...value,[id]:{...(value[id]??{urgent:false,urgency:''}),...patch}}));
   }
   function leave(action:()=>void) {
     if(blocked||saving.current)return;
@@ -169,21 +152,18 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
     }
   }
   async function decide(decision:string) {
-    if(!r||blocked||saving.current)return;
+    if(!r||r.kind==='expense'||blocked||saving.current)return;
     if(protectedComments){setError('Guarda los comentarios antes de registrar la decisión.');return;}
     if(note.trim().length<5){setError('Escribe un motivo de al menos 5 caracteres.');return;}
+    if(decision==='approved'&&!canApprove)return;
     if(initial){
       if(!api.reviewInitialCasePacket)return;
-      if(decision==='approved'&&!canApprove)return;
       await sendPacket({record:{id:r.id,version:r.version},decision:{submission_id:initial.id,request_id:crypto.randomUUID(),decision,note:note.trim(),publish_content:published,expense_reviews:decision==='approved'?expenseReviews!:[]}});
       return;
     }
-    const cents=r.kind==='expense'?amount(pesos):0;
-    if(decision==='approved'&&r.kind==='expense'&&(cents===null||cents>Number(r.private_data.amount_cents))){setError('El monto debe ser positivo y no exceder el gasto comprobado.');return;}
-    if(decision==='approved'&&urgent&&urgency.trim().length<5){setError('Escribe el motivo de la urgencia.');return;}
     const current=generation.current;
     setBusy(true);setError('');
-    try{await api.reviewRescue(r,{decision,note:note.trim(),amount_cents:cents??0,is_urgent:urgent,urgency_note:urgency,publish_content:published});if(current===generation.current){updated();close();}}
+    try{await api.reviewRescue(r,{decision,note:note.trim(),amount_cents:0,is_urgent:false,urgency_note:'',publish_content:published});if(current===generation.current){updated();close();}}
     catch(cause){if(current===generation.current){if((cause as {code?:string;message?:string})?.code==='42501'&&(cause as {message?:string})?.message!=='Otra persona del equipo debe revisar tu solicitud')denied();else{setError(message(cause));if((cause as {code?:string})?.code==='40001'){setDetail(null);setUrls({});}}}}
     finally{if(current===generation.current)setBusy(false);}
   }
@@ -195,7 +175,7 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
       const result=await api.reviewInitialCasePacket(batch.record,batch.decision);
       if(current!==generation.current)return;
       if(result.request_id!==batch.decision.request_id||result.submission_id!==batch.decision.submission_id||result.record_id!==batch.record.id||result.case_version!==batch.record.version||result.decision!==batch.decision.decision||result.record?.id!==batch.record.id||result.record.status!==batch.decision.decision||result.record.version<=batch.record.version||!Array.isArray(result.expenses))throw new Error('invalid_response');
-      if(batch.decision.decision==='approved'&&(result.expenses.length!==batch.decision.expense_reviews.length||batch.decision.expense_reviews.some(review=>!result.expenses.some(expense=>expense.id===review.expense_id&&expense.version>review.expense_version&&expense.status==='approved'))))throw new Error('invalid_response');
+      if(batch.decision.decision==='approved'&&(result.expenses.length!==batch.decision.expense_reviews.length||batch.decision.expense_reviews.some(review=>!result.expenses.some(expense=>expense.id===review.expense_id&&expense.version>review.expense_version&&expense.status==='approved'&&expense.reimbursable_cents===review.amount_cents&&expense.urgent===review.is_urgent&&expense.priority_reason===review.urgency_note))))throw new Error('invalid_response');
       updated();close();
     } catch(cause) {
       if(current!==generation.current)return;
@@ -224,25 +204,25 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
         <label className="check-label"><input type="checkbox" disabled={blocked||!loaded.includes(file.path)} checked={seen.includes(file.path)} onChange={event=>setSeen(value=>event.target.checked?[...value,file.path]:value.filter(path=>path!==file.path))}/>Revisé el archivo {index+1}</label>
       </section>)}</div>
       {(commentsEnabled||initial)&&<section className="case-expenses" aria-label="Gastos del caso">
-        <h3>{initial?'Necesidades pagadas del paquete inicial':'Gastos enviados con este caso'}</h3><p>{initial?'Revisa todas las necesidades y sus archivos. Escribe el monto que autorizas para cada una; la decisión final se guarda junto con el caso.':'Consulta los gastos y sus comprobantes aquí. Cada gasto conserva su revisión y su monto independientes.'}</p>
+        <h3>{initial?'Necesidades pagadas del caso':'Gastos enviados con este caso'}</h3><p>{initial?'Revisa todas las necesidades y sus archivos. Aprobar el caso autoriza los importes pagados completos que aparecen en esta versión. Si algo requiere corrección, devuelve el caso completo con tus comentarios.':'Consulta las necesidades, sus comprobantes y el historial del caso. La revisión se registra para el caso completo.'}</p>
         <p className="muted">{detail.expenses!.total} gastos accesibles · Página {detail.expenses!.page} de {Math.max(1,Math.ceil(detail.expenses!.total/20))}</p>
-        {initial&&<p role="status">{Object.keys(packetRecords).length} de {initial.expense_ids.length} necesidades consultadas. Los montos y archivos revisados se conservan al cambiar de página.</p>}
+        {initial&&<p role="status">{Object.keys(packetRecords).length} de {initial.expense_ids.length} necesidades consultadas. Los archivos revisados y la prioridad se conservan al cambiar de página.</p>}
         {!expenseRecords.length&&<p>No hay gastos enviados accesibles en esta página.</p>}
         {expenseRecords.map(expense=><article className="rescue-need case-expense" key={expense.id}>
           <div className="need-heading"><h4>{title(expense)}</h4><span className="badge">{initial?'Incluida en esta revisión':rescueStatus[expense.status]||expense.status}</span></div>
           <p className="muted">{initial?`Versión capturada ${expense.version}`:<>Gasto versión {expense.version} · Enviado {date(expense.submitted_at)}</>}</p>
           <Fields data={expense.public_data}/><Fields data={expense.private_data}/>
+          {!initial&&expense.reimbursable_cents>0&&<p>Importe autorizado en el historial: {money(expense.reimbursable_cents)} · {expense.urgent?'Urgente':'Prioridad por antigüedad'}</p>}
           <div className="rescue-documents">{expense.files.map((file,index)=><section className="rescue-document" key={file.path}><h5>{roles[file.role]||'Evidencia privada'} · Archivo {index+1}</h5>
             {fileErrors[file.path]?unavailableFile(file.path):/\.pdf$/i.test(file.path)?<a href={urls[file.path]} target="_blank" rel="noreferrer" onClick={()=>{if(initial)setLoaded(value=>[...new Set([...value,file.path])]);}}>Abrir PDF de {title(expense)} · Archivo {index+1}</a>:<a href={urls[file.path]} target="_blank" rel="noreferrer"><img alt={`${roles[file.role]||'Evidencia privada'} de ${title(expense)} ${index+1}`} src={urls[file.path]} onLoad={()=>{if(initial)setLoaded(value=>[...new Set([...value,file.path])]);}} onError={()=>{if(initial){setSeen(value=>value.filter(path=>path!==file.path));setLoaded(value=>value.filter(path=>path!==file.path));setError('Un archivo no pudo cargarse. Recarga los archivos antes de aprobar.');}}}/></a>}
             {initial&&<label className="check-label"><input type="checkbox" disabled={blocked||!loaded.includes(file.path)} checked={seen.includes(file.path)} onChange={event=>setSeen(value=>event.target.checked?[...new Set([...value,file.path])]:value.filter(path=>path!==file.path))}/>Revisé el archivo {index+1} de {title(expense)}</label>}
           </section>)}</div>
           {feedback('expense',expense.id,expense.version,title(expense))}
-          {initial?<div className="initial-expense-review">
-            <label>Monto autorizado para {title(expense)} en pesos MXN<input inputMode="decimal" value={expenseDrafts[expense.id]?.pesos??''} maxLength={11} disabled={blocked} onChange={event=>updateExpense(expense.id,{pesos:event.target.value})}/></label>
-            <p className="muted">Importe pagado declarado: {money(Number(expense.private_data.amount_cents))}. Autoriza un monto mayor a cero que no lo exceda.</p>
-            <label className="check-label"><input type="checkbox" checked={expenseDrafts[expense.id]?.urgent??false} disabled={blocked} onChange={event=>updateExpense(expense.id,{urgent:event.target.checked})}/>Aprobar urgencia de {title(expense)}</label>
+          {initial&&<div className="initial-expense-review">
+            <p aria-label={`Importe pagado de ${title(expense)}`}>Importe pagado: <strong>{money(Number(expense.private_data.amount_cents))}</strong>. Se autoriza completo al aprobar el caso.</p>
+            <label className="check-label"><input type="checkbox" checked={expenseDrafts[expense.id]?.urgent??false} disabled={blocked} onChange={event=>updateExpense(expense.id,{urgent:event.target.checked})}/>Prioridad urgente para {title(expense)}</label>
             {expenseDrafts[expense.id]?.urgent&&<label>Motivo de prioridad para {title(expense)}<textarea value={expenseDrafts[expense.id]?.urgency??''} maxLength={1000} disabled={blocked} onChange={event=>updateExpense(expense.id,{urgency:event.target.value})}/></label>}
-          </div>:<button className="secondary" disabled={blocked} onClick={()=>leave(()=>openParent(expense.id))}>Abrir revisión individual de {title(expense)}</button>}
+          </div>}
         </article>)}
         <nav className="pagination expense-pagination" aria-label="Páginas de gastos"><span>20 gastos por página</span><div>
           <button className="secondary" disabled={blocked||expensePage<=1} onClick={()=>leave(()=>setExpensePage(value=>value-1))}>Gastos anteriores</button>
@@ -252,26 +232,22 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
       {commentsEnabled&&<section className="need-comment-save" aria-label="Guardar comentarios por necesidad">
         <h3>Comentarios por necesidad</h3><p>Se guardan como observaciones privadas de esta versión. Para registrar una decisión, guarda primero tus comentarios.</p>
         {outsideComments.length>0&&<details><summary>Comentarios de necesidades anteriores o de otra página</summary><CommentHistory comments={outsideComments}/></details>}
-        {saved&&<p role="status">{initial?'Comentarios guardados. La decisión del paquete sigue pendiente.':'Comentarios guardados. El estado y los montos conservan su revisión independiente.'}</p>}
+        {saved&&<p role="status">Comentarios guardados. La decisión del caso sigue pendiente.</p>}
         {r.status==='submitted'&&<div className="review-actions"><button disabled={busy||commentBusy||(!dirty&&!attempt)} onClick={()=>void saveComments()}>{commentBusy?'Guardando comentarios…':attempt?'Reintentar el mismo guardado':'Guardar comentarios'}</button>
           {dirty&&!attempt&&<button className="secondary" disabled={blocked} onClick={()=>{setDrafts({});setError('');}}>Descartar comentarios</button>}
         </div>}
         {protectedComments&&<p className="muted">{attempt?'Este envío debe confirmarse antes de editar, cerrar o registrar una decisión.':'Tienes comentarios sin guardar. Guárdalos o descártalos antes de salir o cambiar de página.'}</p>}
       </section>}
-      {r.kind==='expense'&&<><h3>Reembolso y prioridad</h3><p>La referencia es el gasto ya pagado. La aprobación no genera cobros ni depósitos.</p>
-        <label>Monto reembolsable en pesos MXN<input inputMode="decimal" value={pesos} maxLength={11} disabled={blocked||r.status!=='submitted'} onChange={event=>setPesos(event.target.value)}/></label>
-        <label className="check-label"><input type="checkbox" checked={urgent} disabled={blocked||r.status!=='submitted'} onChange={event=>setUrgent(event.target.checked)}/>Aprobar urgencia</label>
-        {urgent&&<label>Motivo de prioridad<textarea value={urgency} maxLength={1000} disabled={blocked||r.status!=='submitted'} onChange={event=>setUrgency(event.target.value)}/></label>}
-        {r.status==='approved'&&<p>Monto aprobado: {money(r.reimbursable_cents)} · {r.urgent?'Urgente':'Prioridad por antigüedad'}</p>}
-      </>}
-      {['submitted','approved'].includes(r.status)&&<div className="rescue-decision">
+      {r.kind==='expense'&&<><p className="notice">Esta necesidad se consulta dentro del expediente de su caso. Las decisiones se registran para el caso completo.</p>{r.reimbursable_cents>0&&<p>Importe autorizado en el historial: {money(r.reimbursable_cents)} · {r.urgent?'Urgente':'Prioridad por antigüedad'}</p>}</>}
+      {r.kind==='case'&&r.status==='submitted'&&!initial&&<p className="notice">Este envío anterior no tiene un conjunto capturado de necesidades. Devuelve el caso para que el rescatista lo reenvíe completo antes de aprobarlo.</p>}
+      {r.kind!=='expense'&&['submitted','approved'].includes(r.status)&&<div className="rescue-decision">
         <label>Motivo de la decisión (visible para el rescatista)<textarea value={note} maxLength={2000} rows={3} disabled={blocked} onChange={event=>setNote(event.target.value)}/></label>
         {r.status==='submitted'&&<label className="check-label"><input type="checkbox" checked={published} disabled={blocked} onChange={event=>setPublished(event.target.checked)}/>{initial?'Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete':'Autorizo los textos y las fotos marcadas para publicación'}</label>}
-        {initial&&<p className="muted">Para aprobar, consulta todas las páginas, revisa cada archivo y captura el monto de cada necesidad. La urgencia es opcional y requiere un motivo.</p>}
-        <div className="review-actions">{r.status==='submitted'&&<><button disabled={blocked||protectedComments||!canApprove} onClick={()=>void decide('approved')}>{initial?'Aprobar caso y necesidades':'Aprobar solicitud'}</button><button className="secondary" disabled={blocked||protectedComments||!!initial&&!api.reviewInitialCasePacket} onClick={()=>void decide('rejected')}>No aprobar</button></>}
+        {initial&&<p className="muted">Para aprobar el caso, consulta todas las páginas y revisa cada archivo. Los importes pagados se autorizan completos. La prioridad urgente es opcional y requiere un motivo.</p>}
+        <div className="review-actions">{r.status==='submitted'&&<><button disabled={blocked||protectedComments||!canApprove} onClick={()=>void decide('approved')}>{r.kind==='case'?'Aprobar caso':'Aprobar solicitud'}</button><button className="secondary" disabled={blocked||protectedComments||!!initial&&!api.reviewInitialCasePacket} onClick={()=>void decide('rejected')}>No aprobar</button></>}
           <button className="secondary" disabled={blocked||protectedComments||!!initial&&!api.reviewInitialCasePacket} onClick={()=>void decide('changes_requested')}>{r.status==='approved'?'Retirar aprobación y pedir correcciones':'Pedir correcciones'}</button>
           {packetAttempt&&<button disabled={busy} onClick={()=>void sendPacket(packetAttempt)}>{busy?'Confirmando decisión…':'Reintentar la misma decisión del paquete'}</button>}</div>
-        {r.status==='approved'&&<p className="muted">{r.kind==='verification'?'Pedir correcciones retira el sello Dopmi; los casos y gastos conservan sus aprobaciones independientes.':'Pedir correcciones retira la aprobación y oculta el contenido correspondiente hasta una nueva revisión.'}</p>}
+        {r.status==='approved'&&<p className="muted">{r.kind==='verification'?'Pedir correcciones retira el sello Dopmi; los casos conservan su aprobación.':'Pedir correcciones retira la aprobación y oculta el caso hasta una nueva revisión.'}</p>}
       </div>}
       <h3>Historial (últimos 100 movimientos)</h3>{detail.history.length?detail.history.map(event=><article key={event.id} className="review-event"><strong>{rescueStatus[event.action]||({submit:'Enviado',withdraw:'Retirado a borrador',close:'Caso cerrado',need_comments:'Comentarios por necesidad'} as Record<string,string>)[event.action]||'Actualización'}</strong><small>{date(event.created_at)} · Versión revisada {event.version}</small><p className="authored-text">{event.feedback}</p>{event.reimbursable_cents>0&&<p>{money(event.reimbursable_cents)} · {event.urgent?'Urgente':'Por antigüedad'}</p>}</article>):<p>Sin decisiones anteriores.</p>}
       <p className="muted">La consulta de expedientes y las decisiones quedan registradas en el servidor. Los enlaces a archivos vencen en un minuto.</p>

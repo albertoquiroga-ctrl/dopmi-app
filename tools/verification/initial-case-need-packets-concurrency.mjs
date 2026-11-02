@@ -12,6 +12,7 @@ const suffix = randomUUID().slice(0, 8);
 const clients = ['control', 'first', 'second'].map(name => new pg.Client({ ...config, application_name: `initial_packet_${name}_${suffix}` }));
 const [control, first, second] = clients, connected = new Set();
 const owner = randomUUID(), reviewer = randomUUID();
+const ownerSession = randomUUID(), reviewerSession = randomUUID();
 const caseIds = [randomUUID(), randomUUID(), randomUUID()], expenseIds = [randomUUID(), randomUUID(), randomUUID()];
 const submissions = [], requests = [randomUUID(), randomUUID()], paths = [];
 let seeded = false, pending;
@@ -19,11 +20,12 @@ const settled = promise => promise.then(result => ({ status: 'fulfilled', result
 async function beginReviewer(client) {
   await client.query('begin');
   await client.query("select set_config('request.jwt.claim.sub',$1,true)", [reviewer]);
+  await client.query("select set_config('request.jwt.claim.session_id',$1,true)", [reviewerSession]);
   await client.query('set local role authenticated');
 }
 const approve = (client, index) => client.query(`select public.dopmi_review_initial_case_packet($1,2,$2,'approved',
   'Revisión concurrente sintética',true,$3::jsonb,$4) value`, [caseIds[index], submissions[index], JSON.stringify([{
-  expense_id: expenseIds[index], expense_version: 1, amount_cents: 7000,
+  expense_id: expenseIds[index], expense_version: 1, amount_cents: 10000,
   is_urgent: false, urgency_note: '', publish_content: true,
 }]), requests[index]]);
 async function blockedBy(firstPid, secondPid) {
@@ -47,6 +49,7 @@ try {
   await control.query(`insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data)
     select id::uuid,id||'@example.test',now(),'{"display_name":"Paquete CI","terms_accepted":true,"terms_version":"development-2026-09-13"}'::jsonb from unnest($1::text[]) id`, [[owner, reviewer]]);
   await control.query('insert into private.admin_memberships(user_id) values($1)', [reviewer]);
+  await control.query('insert into auth.sessions(id,user_id) values($1,$2),($3,$4)',[ownerSession,owner,reviewerSession,reviewer]);
   await control.query('select private.dopmi_rescue_lock($1)', [owner]);
   for (let index = 0; index < 3; index++) {
     const casePath = `${owner}/${caseIds[index]}/${randomUUID()}.jpg`;
@@ -76,7 +79,7 @@ try {
   await first.query('commit'); const replay = await pending; pending = undefined;
   assert.equal(replay.status, 'fulfilled'); assert.deepEqual(replay.result.rows[0].value, result);
   await second.query('commit'); assert.equal(await approvals(0), 1);
-  assert.equal(result.expenses[0].reimbursable_cents, 7000);
+  assert.equal(result.expenses[0].reimbursable_cents, 10000);
   console.log('Initial packet: observed overlapping PostgreSQL sessions replay one exact case/expense approval');
 
   await first.query('begin'); await first.query('select private.dopmi_rescue_lock($1)', [owner]);
@@ -122,6 +125,33 @@ try {
   assert.equal(Number((await control.query(`select count(*) total from private.dopmi_case_need_submission_expenses e
     join private.dopmi_case_need_submissions s on s.id=e.submission_id where s.case_id=$1 and e.expense_id=$2`, [caseIds[2], expenseIds[2]])).rows[0].total), 1);
   console.log('Initial packet: draft removal waits on actual submission, then cannot erase consented manifest membership');
+
+  // Exercise the new private-revision publication seam on actual independent
+  // PostgreSQL sessions. No network/media provider or financial API is called.
+  await first.query('begin');
+  await first.query("select set_config('request.jwt.claim.sub',$1,true)",[owner]);
+  await first.query("select set_config('request.jwt.claim.session_id',$1,true)",[ownerSession]);
+  await first.query('set local role authenticated');
+  let revision=(await first.query('select public.dopmi_start_case_revision($1,3,$2) value',[caseIds[0],randomUUID()])).rows[0].value;
+  const caseFields={public_data:{...revision.record.public_data,story:'Historia nueva revisada conjuntamente'},private_data:revision.record.private_data,files:revision.record.files};
+  const expenseFields=revision.expenses.items.map(e=>({id:e.id,public_data:e.public_data,private_data:e.private_data,files:e.files}));
+  revision=(await first.query('select public.dopmi_save_case_revision($1,$2,$3,$4::jsonb,$5::jsonb,$6) value',
+    [revision.revision.id,revision.revision.version,'Corrijo el texto del caso completo',JSON.stringify(caseFields),JSON.stringify(expenseFields),randomUUID()])).rows[0].value;
+  revision=(await first.query("select public.dopmi_transition_case_revision($1,$2,'submit',$3) value",[revision.revision.id,revision.revision.version,randomUUID()])).rows[0].value;
+  await first.query('commit');
+  const revisionRequest=randomUUID(), choices=revision.expenses.items.map(e=>({expense_id:e.id,expense_version:e.version,
+    amount_cents:e.review_amount_cents,is_urgent:e.urgent,urgency_note:e.priority_reason,publish_content:true}));
+  const approveRevision=client=>client.query("select public.dopmi_review_case_revision($1,$2,'approved','Revisión concurrente de todo el caso',true,$3::jsonb,$4) value",
+    [revision.revision.id,revision.revision.version,JSON.stringify(choices),revisionRequest]);
+  await beginReviewer(first); const revised=(await approveRevision(first)).rows[0].value;
+  await beginReviewer(second); pending=settled(approveRevision(second));
+  await blockedBy(firstPid,secondPid); await first.query('commit');
+  const revisedReplay=await pending; pending=undefined;
+  assert.equal(revisedReplay.status,'fulfilled'); assert.deepEqual(revisedReplay.result.rows[0].value,revised);
+  await second.query('commit');
+  assert.equal(revised.record.version,4); assert.equal(revised.expenses.items[0].version,4);
+  assert.equal(Number((await control.query("select count(*) total from private.dopmi_rescue_history where record_id=$1 and action='case_revision_approved'",[caseIds[0]])).rows[0].total),1);
+  console.log('Case revision: observed overlapping real PostgreSQL sessions publish one whole edit and replay its exact receipt');
 } finally {
   try {
     await Promise.allSettled([...connected].map(client => client.query('rollback')));

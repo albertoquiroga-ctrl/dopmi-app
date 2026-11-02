@@ -184,11 +184,12 @@ class CaseDraftNeeds extends StatelessWidget {
     required this.onEdit,
     required this.onRemove,
     required this.enabled,
+    this.allowAdd = true,
   });
   final List<RescueRecord> expenses;
   final ValueChanged<String> onAdd;
   final ValueChanged<RescueRecord> onEdit, onRemove;
-  final bool enabled;
+  final bool enabled, allowAdd;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -217,79 +218,80 @@ class CaseDraftNeeds extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 16),
-      for (final entry in const {
-        'veterinary': (
-          'Veterinario',
-          'Agrega consulta o tratamiento veterinario.',
-          '🩺',
-        ),
-        'medicine': (
-          'Medicina',
-          'Agrega una medicina, costo y tratamiento relacionado.',
-          '💊',
-        ),
-        'food': ('Alimento', 'Agrega croquetas y el costo a cubrir.', '🥣'),
-      }.entries) ...[
-        OutlinedButton(
-          onPressed: enabled ? () => onAdd(entry.key) : null,
-          style: OutlinedButton.styleFrom(
-            padding: const EdgeInsets.all(16),
-            side: const BorderSide(color: Color(0xffe3e4ed)),
-            foregroundColor: const Color(0xff151423),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+      if (allowAdd)
+        for (final entry in const {
+          'veterinary': (
+            'Veterinario',
+            'Agrega consulta o tratamiento veterinario.',
+            '🩺',
           ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 32,
-                height: 32,
-                child: ExcludeSemantics(
-                  child: Text(
-                    entry.value.$3,
-                    textScaler: TextScaler.noScaling,
-                    style: const TextStyle(
-                      fontSize: 32,
-                      height: 1,
-                      fontFamilyFallback: [
-                        'Noto Color Emoji',
-                        'Apple Color Emoji',
-                        'Segoe UI Emoji',
-                      ],
+          'medicine': (
+            'Medicina',
+            'Agrega una medicina, costo y tratamiento relacionado.',
+            '💊',
+          ),
+          'food': ('Alimento', 'Agrega croquetas y el costo a cubrir.', '🥣'),
+        }.entries) ...[
+          OutlinedButton(
+            onPressed: enabled ? () => onAdd(entry.key) : null,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.all(16),
+              side: const BorderSide(color: Color(0xffe3e4ed)),
+              foregroundColor: const Color(0xff151423),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 32,
+                  height: 32,
+                  child: ExcludeSemantics(
+                    child: Text(
+                      entry.value.$3,
+                      textScaler: TextScaler.noScaling,
+                      style: const TextStyle(
+                        fontSize: 32,
+                        height: 1,
+                        fontFamilyFallback: [
+                          'Noto Color Emoji',
+                          'Apple Color Emoji',
+                          'Segoe UI Emoji',
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      entry.value.$1,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                        fontWeight: FontWeight.w600,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.value.$1,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    Text(
-                      entry.value.$2,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
-                        color: Color(0xff616174),
+                      Text(
+                        entry.value.$2,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: Color(0xff616174),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-      ],
+          const SizedBox(height: 16),
+        ],
       if (expenses.isNotEmpty) ...[
         Text(
           'Necesidades agregadas (${expenses.length})',
@@ -395,7 +397,7 @@ class CaseDraftNeeds extends StatelessWidget {
           ),
       ],
       const Text(
-        'Los gastos quedan como borradores privados. Podrás enviarlos a revisión cuando el caso esté aprobado.',
+        'Las necesidades y sus comprobantes se guardan en privado. Al enviar el caso, el equipo revisará el conjunto completo.',
         style: TextStyle(fontSize: 12, height: 1.5, color: Color(0xff616174)),
       ),
     ],

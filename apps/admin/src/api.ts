@@ -16,7 +16,7 @@ export type Adoption = {
   photos: string[]; status: string; version: number; review_feedback: string; submitted_at: string | null; updated_at: string;
 };
 export type Review = { id: string; decision: string; feedback: string; version: number; created_at: string };
-export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string; submission_id?: string };
+export type RescueRecord = { id: string; owner_id: string; kind: string; parent_id: string | null; public_data: Record<string,unknown>; private_data: Record<string,string>; files: { path: string; role: string }[]; status: string; version: number; feedback: string; reimbursable_cents: number; urgent: boolean; priority_reason: string; submitted_at: string | null; updated_at: string; approved_snapshot?: Record<string,unknown> | null; approved_at?: string | null; submission_id?: string; review_kind?: 'initial' | 'revision'; revision_id?: string; revision_version?: number; reason?: string };
 export type NeedCommentInput = { target_kind: 'planned' | 'expense'; target_id: string; target_version: number; body: string };
 export type NeedComment = NeedCommentInput & { id: string; request_id: string; case_id: string; case_version: number; target_title: string; created_at: string };
 export type NeedCommentResult = { request_id: string; record_id: string; case_version: number; comments: NeedComment[] };
@@ -26,6 +26,12 @@ export type RescueDecision = { decision: string; note: string; amount_cents: num
 export type InitialExpenseReview = { expense_id: string; expense_version: number; amount_cents: number; is_urgent: boolean; urgency_note: string; publish_content: boolean };
 export type InitialCaseDecision = { submission_id: string; decision: string; note: string; publish_content: boolean; expense_reviews: InitialExpenseReview[]; request_id: string };
 export type InitialCaseDecisionResult = { request_id: string; submission_id: string; record_id: string; case_version: number; decision: string; record: RescueRecord; expenses: RescueRecord[] };
+export type CaseRevision = { id: string; case_id: string; owner_id: string; base_case_version: number; version: number; status: string; reason: string; submitted_at: string | null; updated_at: string };
+export type CaseRevisionExpense = RescueRecord & { financial_locked: boolean; financial_inactive: boolean; locked_fields: string[]; review_amount_cents: number };
+export type CaseRevisionPacket = { revision: CaseRevision; record: RescueRecord; base_record: RescueRecord; public_version_visible: boolean; publication_blockers: string[]; expenses: { total: number; page: number; items: CaseRevisionExpense[] }; expense_ids: string[]; expense_versions: Record<string, number>; need_comments: NeedComment[]; preserved_media: { id: string; parent_id: string; purpose: string }[] };
+export type CaseRevisionDecision = Omit<InitialCaseDecision, 'submission_id'>;
+export type CaseRevisionDecisionResult = CaseRevisionPacket & { request_id: string; decision: string; revision_id: string; revision_version: number };
+export type CaseRevisionCommentResult = NeedCommentResult & { revision_id: string; revision_version: number };
 export type Contribution = {
   id: string;
   donor_id: string;
@@ -83,6 +89,9 @@ export type AdminApi = {
   saveNeedComments?: (record: Pick<RescueRecord, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<NeedCommentResult>;
   reviewRescue: (record: RescueRecord, decision: RescueDecision) => Promise<RescueRecord>;
   reviewInitialCasePacket?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: InitialCaseDecision) => Promise<InitialCaseDecisionResult>;
+  caseRevisionDetail?: (revisionId: string, expensePage?: number) => Promise<CaseRevisionPacket>;
+  reviewCaseRevision?: (revision: Pick<CaseRevision, 'id' | 'version'>, decision: CaseRevisionDecision) => Promise<CaseRevisionDecisionResult>;
+  saveCaseRevisionComments?: (revision: Pick<CaseRevision, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<CaseRevisionCommentResult>;
   rescueFileUrl: (path: string) => Promise<string>;
   listContributions: (status: string, page: number) => Promise<{ total: number; items: Contribution[] }>;
   listReports?: (status: string, page: number) => Promise<{ total:number; items:ContentReport[] }>;
@@ -100,6 +109,14 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
   // This is local SDK state, not a new private record read. PostgreSQL still
   // rechecks membership and ownership on every initial decision and replay.
   const initialReviewActors=new Map<string,string>();
+  const revisionActors=new Map<string,string>();
+  async function bindRevisionActor(requestId:string) {
+    const session=await client.auth.getSession();
+    if(session.error)throw session.error;
+    const actor=session.data.session?.user.id,previous=revisionActors.get(requestId);
+    if(!actor||previous&&previous!==actor)throw {code:'42501'};
+    revisionActors.set(requestId,actor);
+  }
   const callbackKeys = ['code', 'flow_id', 'error', 'error_code', 'error_description', 'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token'];
   const arrivedFromAuth = typeof window !== 'undefined' && (() => {
     const url = new URL(window.location.href);
@@ -127,7 +144,7 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     videoModeration: createVideoModerationApi(client),
     listSupportRequests: supportRequests(client),
     async supportAttachmentUrl(path) { const {data,error}=await client.storage.from('dopmi-support-media').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
-    async listRescue(kind, status, page) { const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },
+    async listRescue(kind, status, page) { if(kind==='expense')throw {code:'22023',message:'Las necesidades se revisan dentro de su caso.'}; const {data,error}=await client.rpc('dopmi_admin_rescue',{kind_filter:kind,status_filter:status,page_number:page}); if(error) throw error; return data; },
     async rescueDetail(id, expensePage = 1) {
       const packet = await client.rpc('dopmi_admin_rescue_packet', { record_id: id, expense_page: expensePage });
       if (!packet.error) return packet.data;
@@ -141,7 +158,10 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
       const { data, error } = await client.rpc('dopmi_comment_case_needs', { record_id: record.id, expected_version: record.version, comments, request_id: requestId });
       if (error) throw error; return data;
     },
-    async reviewRescue(record, decision) { const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data; },
+    async reviewRescue(record, decision) {
+      if(record.kind==='expense'||record.review_kind==='revision'||record.kind==='case'&&decision.decision==='approved')throw {code:'22023',message:'La aprobación requiere la revisión conjunta del caso.'};
+      const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data;
+    },
     async reviewInitialCasePacket(record, decision) {
       const session=await client.auth.getSession();
       if(session.error)throw session.error;
@@ -150,6 +170,20 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
       if(!user||previous&&previous!==user)throw {code:'42501'};
       initialReviewActors.set(decision.request_id,user);
       const {data,error}=await client.rpc('dopmi_review_initial_case_packet',{record_id:record.id,expected_version:record.version,...decision});
+      if(error)throw error;return data;
+    },
+    async caseRevisionDetail(revisionId,expensePage=1) {
+      const {data,error}=await client.rpc('dopmi_admin_case_revision_packet',{revision_id:revisionId,expense_page:expensePage});
+      if(error)throw error;return data;
+    },
+    async reviewCaseRevision(revision,decision) {
+      await bindRevisionActor(decision.request_id);
+      const {data,error}=await client.rpc('dopmi_review_case_revision',{revision_id:revision.id,expected_version:revision.version,...decision});
+      if(error)throw error;return data;
+    },
+    async saveCaseRevisionComments(revision,comments,requestId) {
+      await bindRevisionActor(requestId);
+      const {data,error}=await client.rpc('dopmi_comment_case_revision_needs',{revision_id:revision.id,expected_version:revision.version,comments,request_id:requestId});
       if(error)throw error;return data;
     },
     async rescueFileUrl(path) { const {data,error}=await client.storage.from('dopmi-rescue-evidence').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },

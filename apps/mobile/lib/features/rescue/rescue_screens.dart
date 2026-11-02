@@ -739,6 +739,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     with WidgetsBindingObserver {
   final controllers = <String, TextEditingController>{};
   RescueRecord? record;
+  Json? caseUnit;
   SelectedLocation? selectedLocation;
   PublicationLocationDefault? locationDefault;
   bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
@@ -783,7 +784,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool get urgencyComplementEligible =>
       hasUrgentCaseNeed(needItems, expenseDrafts);
   String get kind => record?.kind ?? widget.kind;
-  bool get editable => record?.editable ?? true;
+  bool get editable =>
+      kind != 'expense' &&
+      (record?.editable ?? true) &&
+      !(kind == 'case' &&
+          (caseUnit?['ever_approved'] == true ||
+              record?.data['approved_at'] != null));
   RescueRepository get repository => ref.read(rescueRepositoryProvider);
   @override
   void initState() {
@@ -856,9 +862,12 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         final data = await repository.detail(record?.id ?? widget.id);
         if (!mounted) return;
         record = RescueRecord(Json.from(data['record']));
+        caseUnit = data['case_unit'] is Map
+            ? Json.from(data['case_unit'] as Map)
+            : null;
         history = (data['history'] as List).map((e) => Json.from(e)).toList();
         files = record!.files;
-        if (!record!.editable) step = kind == 'expense' ? 3 : 2;
+        if (!editable) step = kind == 'expense' ? 3 : 2;
       }
       fields(record);
       if (kind == 'case') {
@@ -1067,7 +1076,30 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       if (result.items.isEmpty || page * 20 >= result.total) break;
       page++;
     }
-    expenseDrafts = found;
+    final included = caseUnit?['expense_ids'];
+    final versions = caseUnit?['expense_versions'];
+    if (!editable && included != null) {
+      if (included is! List ||
+          versions is! Map ||
+          included.any((id) => id is! String)) {
+        throw const FormatException(
+          'No se pudo consultar el envío completo. Recarga el caso.',
+        );
+      }
+      final ids = included.whereType<String>().toSet();
+      final packet = found
+          .where((expense) => ids.contains(expense.id))
+          .toList();
+      if (packet.length != ids.length ||
+          packet.any((expense) => versions[expense.id] != expense.version)) {
+        throw StateError(
+          'El caso cambió durante la carga. Recarga para consultar el envío completo.',
+        );
+      }
+      expenseDrafts = packet;
+    } else {
+      expenseDrafts = found;
+    }
   }
 
   Future<void> editCaseExpense(String type, [RescueRecord? expense]) async {
@@ -1328,7 +1360,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                 ),
                 title: const Text('Enviado a revisión'),
                 content: const Text(
-                  'El equipo revisará tu caso antes de publicarlo. Tus gastos siguen como borradores privados y podrás enviarlos a revisión cuando el caso esté aprobado.',
+                  'El equipo revisará tu caso, todas sus necesidades y sus comprobantes juntos antes de publicarlo.',
                 ),
                 actions: [
                   TextButton(
@@ -1855,6 +1887,25 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (kind == 'expense' && widget.id == 'new') {
+      return CommunityFrame(
+        children: [
+          const Heading(
+            'Las necesidades van con el caso.',
+            'Captura todas las necesidades y sus comprobantes en el borrador del caso. Después de publicarlo, una nueva necesidad requiere un nuevo caso, aunque sea para la misma mascota.',
+          ),
+          if (widget.parent != null)
+            ActionButton(
+              'Consultar caso completo',
+              onPressed: () => context.go('/rescue/${widget.parent}'),
+            ),
+          TextButton(
+            onPressed: () => context.go('/my-cases'),
+            child: const Text('Ver mis casos'),
+          ),
+        ],
+      );
+    }
     if (expenseSubmitted) {
       return ExpenseSubmitted(onClose: closeExpenseEditor);
     }
@@ -1914,8 +1965,21 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           if (mounted) await load();
         },
         onRefresh: load,
-        onExpense: () =>
-            context.push('/rescue/new?kind=expense&case=${record!.id}'),
+        editLabel: switch ((caseUnit?['revision'] as Map?)?['status']) {
+          'submitted' => 'Consultar edición en revisión',
+          'draft' ||
+          'changes_requested' ||
+          'rejected' => 'Continuar edición del caso',
+          _ => 'Editar caso',
+        },
+        onEdit:
+            record!.status == 'approved' &&
+                caseUnit?['can_start_revision'] != false
+            ? () async {
+                await context.push('/rescue-cases/${record!.id}/edit');
+                if (mounted) await load();
+              }
+            : null,
         onUpdates: () => context.push('/rescue-cases/${record!.id}/updates'),
         onClose: () => run(() async {
           final close = await showDialog<bool>(
@@ -1923,7 +1987,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             builder: (ctx) => AlertDialog(
               title: const Text('¿Cerrar este caso?'),
               content: const Text(
-                'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+                'El caso dejará de recibir aportaciones. El seguimiento aprobado seguirá disponible.',
               ),
               actions: [
                 TextButton(
@@ -2022,12 +2086,44 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       ),
                   if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
                     Notice('Respuesta del equipo: ${record!.data['feedback']}'),
+                  if (kind == 'case')
+                    for (final item in history.where(
+                      (item) =>
+                          item['action'] == 'need_comments' &&
+                          (item['feedback'] as String? ?? '').trim().isNotEmpty,
+                    ))
+                      Notice(
+                        'Comentarios por necesidad · Versión ${item['version']}\n${item['feedback']}',
+                      ),
+                  if (kind == 'case' &&
+                      caseUnit?['revision_recovery'] == true &&
+                      caseUnit?['can_start_revision'] == true &&
+                      record?.data['owner_id'] ==
+                          ref
+                              .read(identityControllerProvider)
+                              .identity
+                              ?.id) ...[
+                    if (caseUnit?['public_version_visible'] == false)
+                      const Notice(
+                        'La publicación está retirada. Corrige el caso completo con un motivo; seguirá oculta hasta que el equipo apruebe la edición.',
+                      ),
+                    ActionButton(
+                      (caseUnit?['revision'] as Map?)?['status'] == 'submitted'
+                          ? 'Consultar edición en revisión'
+                          : 'Corregir caso completo',
+                      busy: busy,
+                      onPressed: () async {
+                        await context.push('/rescue-cases/${record!.id}/edit');
+                        if (mounted) await load();
+                      },
+                    ),
+                  ],
                   if (!editable)
                     if (kind == 'expense')
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
                         child: Text(
-                          'Los datos enviados están protegidos. Recarga para consultar la respuesta del equipo.',
+                          'Consulta los datos y comprobantes de esta necesidad. Cualquier corrección se revisa junto con el caso completo.',
                           style: TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 12,
@@ -2040,7 +2136,17 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       const Notice(
                         'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
                       ),
-                  if (kind != 'expense' && !(kind == 'case' && editable))
+                  if (kind == 'expense' && record?.parent != null) ...[
+                    const Notice(
+                      'Las necesidades se corrigen y envían desde el caso completo. Consulta allí los comentarios del equipo.',
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          context.push('/rescue/${record!.parent}'),
+                      child: const Text('Consultar caso completo'),
+                    ),
+                  ],
+                  if (kind != 'expense' && kind != 'case')
                     _RescueSteps(step: step),
                   if (busy)
                     const LinearProgressIndicator(
@@ -2293,7 +2399,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                   if (step == 1 && kind == 'case' && editable) ...[
                     CaseDraftNeeds(
                       expenses: expenseDrafts,
-                      enabled: !busy,
+                      enabled: !busy && caseUnit?['needs_editable'] != false,
+                      allowAdd: caseUnit?['can_add_needs'] != false,
                       onAdd: (type) => run(() => editCaseExpense(type)),
                       onEdit: (expense) => run(
                         () => editCaseExpense(
@@ -2370,9 +2477,25 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       ),
                     ),
                   ],
-                  if (step == 2 &&
-                      kind != 'expense' &&
-                      !(kind == 'case' && editable)) ...[
+                  if (step == 2 && kind == 'case' && !editable) ...[
+                    CaseReview(
+                      values: {
+                        for (final entry in controllers.entries)
+                          entry.key: entry.value.text.trim(),
+                      },
+                      files: files,
+                      items: needItems,
+                      expenseDrafts: expenseDrafts,
+                      onOpen: (path) =>
+                          context.push('/rescue-file', extra: path),
+                    ),
+                    Notice(
+                      record?.pendingStripe == true
+                          ? 'Tu caso y todas sus necesidades siguen privados. Completa tu registro Stripe para enviar el conjunto a revisión del equipo Dopmi.'
+                          : 'El equipo revisa el caso completo con todas sus necesidades y comprobantes.',
+                    ),
+                  ],
+                  if (step == 2 && kind == 'verification') ...[
                     Text(
                       'Revisa antes de enviar',
                       style: Theme.of(context).textTheme.titleLarge,
@@ -2486,13 +2609,21 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       busy: busy,
                       onPressed: () => run(openStripe),
                     ),
-                  if (record?.status == 'submitted' ||
-                      record?.pendingStripe == true)
+                  if ((record?.status == 'submitted' ||
+                          record?.pendingStripe == true) &&
+                      (kind == 'verification' ||
+                          (kind == 'case' &&
+                              caseUnit?['ever_approved'] != true &&
+                              record?.data['approved_at'] == null)))
                     OutlinedButton(
                       onPressed: busy
                           ? null
                           : () => run(() => transition('withdraw')),
-                      child: const Text('Retirar a borrador'),
+                      child: Text(
+                        kind == 'case'
+                            ? 'Retirar caso completo'
+                            : 'Retirar a borrador',
+                      ),
                     ),
                   if (!(kind == 'case' && editable))
                     TextButton(
@@ -2509,23 +2640,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                             },
                       child: const Text('Recargar estado'),
                     ),
-                  if (record?.kind == 'case' && !editable) ...[
+                  if (record?.kind == 'case' &&
+                      !editable &&
+                      record!.status == 'approved') ...[
                     const SizedBox(height: 24),
-                    Text(
-                      'Gastos de este caso',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    if (record!.status != 'closed')
-                      ActionButton(
-                        'Registrar gasto realizado',
-                        sunny: true,
-                        onPressed: busy
-                            ? null
-                            : () => context.push(
-                                '/rescue/new?kind=expense&case=${record!.id}',
-                              ),
-                      ),
-                    RescueList(kind: 'expense', parent: record!.id),
                     if (record!.status == 'approved')
                       OutlinedButton(
                         onPressed: busy
@@ -2536,7 +2654,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                   builder: (ctx) => AlertDialog(
                                     title: const Text('¿Cerrar este caso?'),
                                     content: const Text(
-                                      'Ya no podrás agregar gastos. El seguimiento aprobado seguirá disponible.',
+                                      'El caso dejará de recibir aportaciones. El seguimiento aprobado seguirá disponible.',
                                     ),
                                     actions: [
                                       TextButton(
@@ -2571,6 +2689,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                                 'submit': 'Enviado',
                                 'withdraw': 'Retirado a borrador',
                                 'close': 'Caso cerrado',
+                                'need_comments': 'Comentarios por necesidad',
                               }[item['action']] ??
                               'Actualización',
                         ),

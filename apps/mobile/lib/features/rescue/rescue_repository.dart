@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -7,6 +8,7 @@ import '../../core/media/media_store.dart';
 
 import '../adoption/community_repository.dart';
 import 'rescuer_funnel.dart';
+import 'case_revision.dart';
 
 const rescueBucket = 'dopmi-rescue-evidence';
 const rescueStatuses = {
@@ -175,6 +177,135 @@ class RescueRepository {
   Future<Json> detail(String id) async => Json.from(
     await client.rpc('dopmi_rescue_detail', params: {'record_id': id}),
   );
+  Future<CaseRevisionPacket?> caseRevision(String id) async {
+    final data = await client.rpc(
+      'dopmi_case_revision',
+      params: {'record_id': id},
+    );
+    return data == null ? null : CaseRevisionPacket(Json.from(data as Map));
+  }
+
+  Future<CaseRevisionPacket> startCaseRevision(
+    RescueRecord record,
+    String requestId,
+  ) async => CaseRevisionPacket(
+    Json.from(
+      await client.rpc(
+        'dopmi_start_case_revision',
+        params: {
+          'record_id': record.id,
+          'expected_version': record.version,
+          'request_id': requestId,
+        },
+      ),
+    ),
+  );
+
+  Future<CaseRevisionPacket> saveCaseRevision({
+    required String id,
+    required int version,
+    required String reason,
+    required Json caseFields,
+    required List<Json> expenseFields,
+    required String requestId,
+  }) async => CaseRevisionPacket(
+    Json.from(
+      await client.rpc(
+        'dopmi_save_case_revision',
+        params: {
+          'revision_id': id,
+          'expected_version': version,
+          'reason': reason,
+          'case_fields': caseFields,
+          'expense_fields': expenseFields,
+          'request_id': requestId,
+        },
+      ),
+    ),
+  );
+
+  Future<CaseRevisionPacket> transitionCaseRevision(
+    CaseRevisionPacket packet,
+    String action,
+    String requestId,
+  ) async => CaseRevisionPacket(
+    Json.from(
+      await client.rpc(
+        'dopmi_transition_case_revision',
+        params: {
+          'revision_id': packet.id,
+          'expected_version': packet.version,
+          'action': action,
+          'request_id': requestId,
+        },
+      ),
+    ),
+  );
+
+  Future<String> uploadCaseRevision({
+    required CaseRevisionPacket packet,
+    required String recordId,
+    required String role,
+    required Uint8List bytes,
+    required bool pdf,
+    required String requestId,
+  }) async {
+    final actor = client.auth.currentUser?.id;
+    if (actor == null) {
+      throw const FormatException('Inicia sesión para adjuntar archivos.');
+    }
+    final prepared = await compute(prepareMedia, (
+      pdf ? MediaPurpose.rescueDocument : MediaPurpose.rescuePhoto,
+      bytes,
+    ));
+    if (client.auth.currentUser?.id != actor) {
+      throw const FormatException(
+        'La sesión cambió. Retoma la edición con su cuenta.',
+      );
+    }
+    final intent = Json.from(
+      await client.rpc(
+        'dopmi_case_revision_file',
+        params: {
+          'revision_id': packet.id,
+          'expected_version': packet.version,
+          'record_id': recordId,
+          'file_role': role,
+          'extension': prepared.extension,
+          'request_id': requestId,
+        },
+      ),
+    );
+    final path = intent['path'];
+    if (intent['revision_id'] != packet.id ||
+        intent['record_id'] != recordId ||
+        intent['role'] != role ||
+        path is! String ||
+        !path.startsWith('$actor/') ||
+        client.auth.currentUser?.id != actor) {
+      throw const FormatException(
+        'No se pudo preparar el archivo privado. Vuelve a intentarlo.',
+      );
+    }
+    await client.storage
+        .from(rescueBucket)
+        .uploadBinary(
+          path,
+          prepared.bytes,
+          fileOptions: FileOptions(
+            contentType: prepared.contentType,
+            cacheControl: '0',
+            upsert: false,
+          ),
+        );
+    if (client.auth.currentUser?.id != actor) {
+      throw const FormatException(
+        'La sesión cambió. Retoma la edición con su cuenta.',
+      );
+    }
+    return path;
+  }
+
   Future<void> removeDraftExpense(String id, int version) async {
     await client.rpc(
       'dopmi_remove_draft_expense',

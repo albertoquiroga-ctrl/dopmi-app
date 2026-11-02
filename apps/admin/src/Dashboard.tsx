@@ -3,18 +3,17 @@ import type { AdminApi } from './api';
 import type { ModerationView } from './ModerationQueues';
 
 export type DashboardDestination =
-  | { section: 'rescues'; kind: 'case' | 'verification' | 'expense' }
+  | { section: 'rescues'; kind: 'case' | 'verification' }
   | { section: 'moderation'; view?: ModerationView }
   | { section: 'adoptions' | 'videos' };
 
-type QueueId = 'cases' | 'expenses' | 'adoptions' | 'verification' | 'reports' | 'updates' | 'profiles';
+type QueueId = 'cases' | 'adoptions' | 'verification' | 'reports' | 'updates' | 'profiles';
 type QueueCount = { id: QueueId; label: string; count: number | null };
 type QueueLoader = { id: QueueId; label: string; load: () => Promise<{ total: number }> };
 
 function loaders(api: AdminApi): QueueLoader[] {
   return [
     { id: 'cases', label: 'Casos para apoyo', load: () => api.listRescue('case', 'submitted', 1) },
-    { id: 'expenses', label: 'Necesidades con comprobante', load: () => api.listRescue('expense', 'submitted', 1) },
     { id: 'adoptions', label: 'Mascotas en adopción', load: () => api.listAdoptions('submitted', 1) },
     { id: 'verification', label: 'Sellos de refugio', load: () => api.listRescue('verification', 'submitted', 1) },
     ...(api.listReports ? [{ id: 'reports' as const, label: 'Reportes', load: () => api.listReports!('open', 1) }] : []),
@@ -57,8 +56,7 @@ export default function Dashboard({ api, onOpen }: {
   const moderationUnavailable = moderation.some(item => item.count === null);
   const moderationTotal = moderation.reduce((sum, item) => sum + (item.count ?? 0), 0);
   const cards: { title: string; description: string; entries: QueueCount[]; destination: DashboardDestination; tone: string }[] = [
-    { title: 'Casos para apoyo', description: 'Consulta la información y las necesidades del caso.', entries: counts.filter(item => item.id === 'cases'), destination: { section: 'rescues', kind: 'case' }, tone: 'saffron' },
-    { title: 'Necesidades con comprobante', description: 'Gastos pagados pendientes de revisión con sus documentos.', entries: counts.filter(item => item.id === 'expenses'), destination: { section: 'rescues', kind: 'expense' }, tone: 'neutral' },
+    { title: 'Casos para apoyo', description: 'Revisa casos nuevos y ediciones completas con sus necesidades.', entries: counts.filter(item => item.id === 'cases'), destination: { section: 'rescues', kind: 'case' }, tone: 'saffron' },
     { title: 'Mascotas en adopción', description: 'Revisa la información y las fotos antes de publicarlas.', entries: counts.filter(item => item.id === 'adoptions'), destination: { section: 'adoptions' }, tone: 'sky' },
     { title: 'Sellos de refugio', description: 'La verificación del refugio es opcional para solicitar apoyo.', entries: counts.filter(item => item.id === 'verification'), destination: { section: 'rescues', kind: 'verification' }, tone: 'orange' },
   ];

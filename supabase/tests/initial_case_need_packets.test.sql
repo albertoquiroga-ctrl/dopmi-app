@@ -40,7 +40,7 @@ select throws_ok($$insert into storage.objects(bucket_id,name) values('dopmi-res
 reset role;
 select is((select count(*) from private.dopmi_case_need_submissions where case_id='b8100000-0000-4000-8000-000000000001'),1::bigint,'exactly one new explicit manifest');
 select set_config('dopmi.test.initial_submission',(select id::text from private.dopmi_case_need_submissions where case_id='b8100000-0000-4000-8000-000000000001'),true);
-select set_config('dopmi.test.initial_choices','[{"expense_id":"b8200000-0000-4000-8000-000000000001","expense_version":1,"amount_cents":7000,"is_urgent":false,"urgency_note":"","publish_content":true}]',true);
+select set_config('dopmi.test.initial_choices','[{"expense_id":"b8200000-0000-4000-8000-000000000001","expense_version":1,"amount_cents":10000,"is_urgent":false,"urgency_note":"","publish_content":true}]',true);
 select is((select status from dopmi_rescue_records where id='b8200000-0000-4000-8000-000000000001'),'draft','sharing does not grant financial submission or approval');
 
 -- A newly created draft has never been shared by this case submission.
@@ -72,7 +72,7 @@ insert into initial_packet_response select dopmi_review_initial_case_packet('b81
  'b8400000-0000-4000-8000-000000000002');
 select is((select result->'record'->>'status' from initial_packet_response),'approved','one review approves case');
 select is((select result->'expenses'->0->>'status' from initial_packet_response),'approved','same transaction approves expense');
-select is((select (result->'expenses'->0->>'reimbursable_cents')::bigint from initial_packet_response),7000::bigint,'only explicitly entered reimbursement is approved');
+select is((select (result->'expenses'->0->>'reimbursable_cents')::bigint from initial_packet_response),10000::bigint,'the complete paid amount is approved');
 select is(dopmi_review_initial_case_packet('b8100000-0000-4000-8000-000000000001',2,current_setting('dopmi.test.initial_submission')::uuid,
  'approved','Revisión sintética',true,current_setting('dopmi.test.initial_choices')::jsonb,'b8400000-0000-4000-8000-000000000002'),
  (select result from initial_packet_response),'lost response retries return the original exact response');

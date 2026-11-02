@@ -25,10 +25,10 @@ describe('pending review dashboard', () => {
     render(<Dashboard api={client} onOpen={open}/>);
     const cases = await screen.findByRole('button', { name: /Casos para apoyo.*24 pendientes/ });
     expect(within(cases).getByLabelText('24 pendientes')).toHaveTextContent('24');
-    expect(client.listRescue).toHaveBeenCalledTimes(3);
+    expect(client.listRescue).toHaveBeenCalledTimes(2);
     expect(client.listRescue).toHaveBeenCalledWith('case', 'submitted', 1);
     expect(client.listRescue).toHaveBeenCalledWith('verification', 'submitted', 1);
-    expect(client.listRescue).toHaveBeenCalledWith('expense', 'submitted', 1);
+    expect(client.listRescue).not.toHaveBeenCalledWith('expense', 'submitted', 1);
     expect(client.listAdoptions).toHaveBeenCalledOnce();
     expect(client.listAdoptions).toHaveBeenCalledWith('submitted', 1);
     expect(client.rescueDetail).not.toHaveBeenCalled();
@@ -119,18 +119,18 @@ describe('pending review dashboard', () => {
     expect(open).toHaveBeenLastCalledWith({ section: 'moderation', view: 'profiles' });
   });
 
-  it('includes submitted paid expenses in the total and opens that queue when cases are clear', async () => {
+  it('counts cases as the review unit and never queries or opens a separate expense queue', async () => {
     const client = api({
       listRescue: vi.fn(async kind => ({ total: kind === 'expense' ? 5 : 0, items: [] })),
       listAdoptions: vi.fn(async () => ({ total: 0, items: [] })),
     });
     const open = vi.fn();
     render(<Dashboard api={client} onOpen={open}/>);
-    await screen.findByRole('heading', { name: '5 pendientes por revisar' });
-    expect(screen.queryByRole('heading', { name: 'Estas colas están al día' })).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole('button', { name: /Necesidades con comprobante.*5 pendientes/ }));
-    expect(open).toHaveBeenLastCalledWith({ section: 'rescues', kind: 'expense' });
-    expect(client.listRescue).toHaveBeenCalledWith('expense', 'submitted', 1);
+    await screen.findByRole('heading', { name: 'Estas colas están al día' });
+    expect(screen.queryByRole('button', { name: /Necesidades con comprobante/ })).not.toBeInTheDocument();
+    expect(client.listRescue).not.toHaveBeenCalledWith('expense', 'submitted', 1);
+    await userEvent.click(screen.getByRole('button', { name: /Casos para apoyo/ }));
+    expect(open).toHaveBeenLastCalledWith({ section: 'rescues', kind: 'case' });
   });
 
 });

@@ -102,7 +102,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('Borrador'), findsOneWidget);
-      expect(find.text('Continuar gasto'), findsOneWidget);
+      expect(find.text('Consultar gasto y comprobantes'), findsOneWidget);
       expect(find.textContaining('restantes'), findsNothing);
       expect(payments.fundingCalls, 0);
       expect(tester.takeException(), isNull);

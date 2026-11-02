@@ -24,14 +24,13 @@ describe('initial packet membership',()=>{
     expect(()=>mergeInitialPacketPage(cache,{...detail,initial_packet:{...detail.initial_packet!,id:'another'}})).toThrow(expect.objectContaining({code:'40001'}));
     expect(()=>mergeInitialPacketPage(cache,{...detail,expenses:{...detail.expenses!,items:[{...child,version:9}]}})).toThrow(expect.objectContaining({code:'40001'}));
   });
-  it('requires explicit money, all evidence and justified urgency; never inherits the author request',()=>{
-    const packet=detail.initial_packet!,records={expense:child},parse=(value:string)=>value==='150'?15000:null;
-    const draft={expense:{pesos:'150',urgent:false,urgency:'Unused author request'}};
-    expect(packetExpenseReviews(packet,records,{},()=>true,parse)).toBeNull();
-    expect(packetExpenseReviews(packet,{},draft,()=>true,parse)).toBeNull();
-    expect(packetExpenseReviews(packet,records,draft,()=>false,parse)).toBeNull();
-    expect(packetExpenseReviews(packet,records,{expense:{...draft.expense,urgent:true,urgency:'bad'}},()=>true,parse)).toBeNull();
-    expect(packetExpenseReviews(packet,records,draft,()=>true,()=>20001)).toBeNull();
-    expect(packetExpenseReviews(packet,records,draft,()=>true,parse)).toEqual([{expense_id:'expense',expense_version:8,amount_cents:15000,is_urgent:false,urgency_note:'',publish_content:true}]);
+  it('uses the full paid snapshot, requires all evidence and only assigns explicitly justified urgency',()=>{
+    const packet=detail.initial_packet!,records={expense:{...child,urgent:true,priority_reason:'Author urgency'}};
+    expect(packetExpenseReviews(packet,records,{},()=>true)).toEqual([{expense_id:'expense',expense_version:8,amount_cents:20000,is_urgent:false,urgency_note:'',publish_content:true}]);
+    expect(packetExpenseReviews(packet,{}, {},()=>true)).toBeNull();
+    expect(packetExpenseReviews(packet,records,{},()=>false)).toBeNull();
+    expect(packetExpenseReviews(packet,records,{expense:{urgent:true,urgency:'bad'}},()=>true)).toBeNull();
+    expect(packetExpenseReviews(packet,records,{expense:{urgent:true,urgency:'  Atención inmediata  '}},()=>true)).toEqual([{expense_id:'expense',expense_version:8,amount_cents:20000,is_urgent:true,urgency_note:'Atención inmediata',publish_content:true}]);
+    for(const amount_cents of ['0','-1','1.2','NaN','100000001','9007199254740992'])expect(packetExpenseReviews(packet,{expense:{...child,private_data:{amount_cents}}},{},()=>true)).toBeNull();
   });
 });

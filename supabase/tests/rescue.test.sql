@@ -30,8 +30,8 @@ update dopmi_rescue_records r set files=case kind
   when 'case' then jsonb_build_array(jsonb_build_object('role','public','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000003.jpg'))
   else jsonb_build_array(jsonb_build_object('role','receipt','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000004.pdf'),jsonb_build_object('role','proof','path',owner_id||'/'||id||'/62000000-0000-4000-8000-000000000005.jpg')) end
   where owner_id='60000000-0000-4000-8000-000000000001';
--- Preserve the explicit post-publication expense fixture for this legacy-route
--- suite. The initial shared-package route has its own exact-membership suite.
+-- Exercise removal first, then restore this need BEFORE the case submission.
+-- Current publication always reviews the complete fixed case in one decision.
 create temporary table dopmi_postpublication_expense_fixture as
   select * from dopmi_rescue_records where id='61000000-0000-4000-8000-000000000003';
 
@@ -90,42 +90,54 @@ select is(dopmi_rescuer_profile_file_access('60000000-0000-4000-8000-00000000000
 select throws_ok($$select dopmi_save_rescue('verification','{}','{}','[]','61000000-0000-4000-8000-000000000001',5)$$,'22023',null,'approved identity immutable to owner');
 select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',1,'submit')$$,'22023',null,'expense requires approved case');
 select lives_ok($$select dopmi_remove_draft_expense('61000000-0000-4000-8000-000000000003',1)$$,'owner removes unused draft before case submission');
-select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')->>'status','submitted','verified rescuer submits case');
-select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
-select is(dopmi_review_rescue('61000000-0000-4000-8000-000000000002',2,'approved','Caso comprobado',0,false,'',true)->>'status','approved','case without initial expenses keeps its existing review route');
 reset role;
 insert into dopmi_rescue_records select * from dopmi_postpublication_expense_fixture;
 set local role authenticated;
+select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',1,'submit')->>'status','submitted','verified rescuer submits case');
+select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
+select throws_ok($$select dopmi_review_rescue('61000000-0000-4000-8000-000000000002',2,'approved','Caso comprobado',0,false,'',true)$$,'22023',null,'case with a need requires joint review');
+select set_config('test.case_manifest',dopmi_admin_rescue_packet('61000000-0000-4000-8000-000000000002')->'initial_packet'->>'id',true);
+reset role;
+create function pg_temp.review_fixed_case(amount bigint,urgent boolean,reason text) returns jsonb language sql as $$
+  select public.dopmi_review_initial_case_packet('61000000-0000-4000-8000-000000000002',2,current_setting('test.case_manifest')::uuid,
+    'approved','Caso y necesidades comprobados',true,jsonb_build_array(jsonb_build_object('expense_id','61000000-0000-4000-8000-000000000003',
+    'expense_version',1,'amount_cents',amount,'is_urgent',urgent,'urgency_note',reason,'publish_content',true)),gen_random_uuid());
+$$;
+set local role authenticated;
+select throws_ok($$select pg_temp.review_fixed_case(25051,false,'')$$,'22023',null,'cannot approve beyond paid amount');
+select throws_ok($$select pg_temp.review_fixed_case(24000,false,'')$$,'22023',null,'cannot partially approve a need');
+select throws_ok($$select pg_temp.review_fixed_case(25050,true,'')$$,'22023',null,'urgency requires human reason');
+select is((pg_temp.review_fixed_case(25050,true,'Continuidad del cuidado')->'expenses'->0->>'reimbursable_cents')::bigint,25050::bigint,'server approves the complete paid amount');
+select throws_ok($$select pg_temp.review_fixed_case(25050,true,'Continuidad del cuidado')$$,'40001',null,'another review cannot generate another approval');
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
 select is(dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))->>'rescue_case_id','61000000-0000-4000-8000-000000000002','approved case creates an independently moderated adoption draft');
 select throws_ok($$select dopmi_save_adoption(jsonb_build_object('rescue_case_id','61000000-0000-4000-8000-000000000002'))$$,'23505',null,'case cannot create duplicate linked adoption drafts');
-select is(dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',1,'submit')->>'status','submitted','paid food expense submitted');
-select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000002',3,'close')$$,'22023',null,'pending expense blocks case closure');
-select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000004',true);
-select throws_ok($$select dopmi_review_rescue('61000000-0000-4000-8000-000000000003',2,'approved','Gasto comprobado',25051,false,'',true)$$,'22023',null,'cannot approve beyond paid amount');
-select throws_ok($$select dopmi_review_rescue('61000000-0000-4000-8000-000000000003',2,'approved','Gasto comprobado',25050,true,'',true)$$,'22023',null,'urgency requires reason');
-select is((dopmi_review_rescue('61000000-0000-4000-8000-000000000003',2,'approved','Gasto comprobado',24000,true,'Continuidad del cuidado',true)->>'reimbursable_cents')::bigint,24000::bigint,'server sets reimbursable cents');
-select throws_ok($$select dopmi_review_rescue('61000000-0000-4000-8000-000000000003',2,'approved','Gasto comprobado',24000,true,'Continuidad del cuidado',true)$$,'40001',null,'duplicate review cannot generate another approval');
+select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000003',3,'submit')$$,'22023',null,'an individual need cannot be resubmitted');
 reset role;
 select ok(exists(select 1 from private.dopmi_rescue_history where action='read'),'private reads audited');
 select ok(exists(select 1 from dopmi_rescue_records where kind='expense' and urgent and approved_at is not null),'priority and approval timestamp recorded');
--- A second round starts from a fresh draft and must supply its own proof.
+-- A second round requires a new case and its own proof.
+insert into dopmi_rescue_records(id,owner_id,kind,public_data,files,video_thanks_required)
+select '61000000-0000-4000-8000-000000000005',owner_id,'case',public_data,
+  jsonb_build_array(jsonb_build_object('role','public','path',owner_id||'/61000000-0000-4000-8000-000000000005/62000000-0000-4000-8000-000000000008.jpg')),false
+  from dopmi_rescue_records where id='61000000-0000-4000-8000-000000000002';
+insert into storage.objects(bucket_id,name) values('dopmi-rescue-evidence','60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000005/62000000-0000-4000-8000-000000000008.jpg');
 insert into dopmi_rescue_records(id,owner_id,kind,parent_id,public_data,private_data,files)
-select '61000000-0000-4000-8000-000000000004',owner_id,kind,parent_id,public_data||'{"round_label":"Ronda 2"}',private_data,'[]'
+select '61000000-0000-4000-8000-000000000004',owner_id,kind,'61000000-0000-4000-8000-000000000005',public_data||'{"round_label":"Ronda 2"}',private_data,'[]'
 from dopmi_rescue_records where id='61000000-0000-4000-8000-000000000003';
 set local role authenticated;
 select set_config('request.jwt.claim.sub','60000000-0000-4000-8000-000000000001',true);
-select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000004',1,'submit')$$,'22023',null,'same receipt cannot fund another food round');
+select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000005',1,'submit')$$,'22023',null,'same receipt cannot fund another food round');
 reset role;
 update dopmi_rescue_records set private_data=private_data||'{"receipt_reference":"F-124"}' where id='61000000-0000-4000-8000-000000000004';
 set local role authenticated;
-select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000004',1,'submit')$$,'22023',null,'new food round still requires new evidence');
+select throws_ok($$select dopmi_transition_rescue('61000000-0000-4000-8000-000000000005',1,'submit')$$,'22023',null,'new food round still requires new evidence');
 reset role;
 set local role anon;
 select set_config('request.jwt.claim.sub','',true);
 select is((dopmi_rescue_public()->>'total')::int,1,'only approved case in public catalog');
 select is((dopmi_rescue_public('61000000-0000-4000-8000-000000000002')->>'total')::int,2,'case detail includes approved expense');
-select is((dopmi_rescue_public()->'items'->0->>'target_cents')::bigint,24000::bigint,'case goal totals approved expenses');
+select is((dopmi_rescue_public()->'items'->0->>'target_cents')::bigint,25050::bigint,'case goal totals complete approved needs');
 select is((dopmi_rescue_public()->'items'->0->>'funded_cents')::bigint,0::bigint,'case progress totals allocated contributions');
 select ok(dopmi_rescue_public('61000000-0000-4000-8000-000000000002')::text !~ 'Nombre legal|8188888888|F-123|receipt_reference|private_data|62000000-0000-4000-8000-000000000004','public response omits PII and receipts');
 select is(dopmi_rescue_file_access('60000000-0000-4000-8000-000000000001/61000000-0000-4000-8000-000000000002/62000000-0000-4000-8000-000000000003.jpg'),true,'approved case photo publicly readable');

@@ -43,6 +43,13 @@ async function approvedCase() {
   await row("select public.dopmi_review_rescue($1,2,'approved','Caso revisado',0,false,'',true) value",[id]);
   return id;
 }
+async function approvedUnit() {
+  const id=await draft(),expense=await draft('expense',id); await connect(); await actor(owner); await transition(id); await actor(reviewer);
+  const packet=await row('select public.dopmi_admin_rescue_packet($1) value',[id]);
+  await row("select public.dopmi_review_initial_case_packet($1,2,$2,'approved','Caso y necesidad revisados',true,$3::jsonb,$4) value",
+    [id,packet.initial_packet.id,JSON.stringify([{expense_id:expense,expense_version:1,amount_cents:10000,is_urgent:false,urgency_note:'',publish_content:true}]),randomUUID()]);
+  return {id,expense};
+}
 async function inventory() {
   const result={};
   for(const name of ['public.dopmi_rescue_records','private.dopmi_rescue_history','private.dopmi_connect_accounts',
@@ -106,11 +113,8 @@ test('ordinary owner submits privately, waits for Stripe, and reaches review wit
   await rejected(()=>row('select public.dopmi_rescue_detail($1) value',[id]),/Solicitud no disponible/);
 });
 
-test('case and paid expense receive independent review; payment eligibility does not grant the verification badge',async()=>{
-  const id=await approvedCase(); await db.exec('reset role');
-  const expense=await draft('expense',id); await actor(owner); await transition(expense);
-  await actor(reviewer);
-  await row("select public.dopmi_review_rescue($1,2,'approved','Gasto revisado',10000,false,'',true) value",[expense]);
+test('case and paid needs receive one complete review; payment eligibility does not grant the verification badge',async()=>{
+  const {id,expense}=await approvedUnit();
   await db.exec('reset role');
   assert.equal(await row('select private.dopmi_expense_payable(r) value from public.dopmi_rescue_records r where id=$1',[expense]),true);
   await actor(other,'anon');
@@ -127,9 +131,7 @@ test('case and paid expense receive independent review; payment eligibility does
 });
 
 test('suspended or unconfirmed owners cannot expose cases or start Connect; financial readiness remains required',async()=>{
-  const id=await approvedCase(); await db.exec('reset role');
-  const expense=await draft('expense',id);
-  await db.query("update public.dopmi_rescue_records set status='approved',approved_snapshot=public_data,reimbursable_cents=10000 where id=$1",[expense]);
+  const {id,expense}=await approvedUnit(); await db.exec('reset role');
   await db.query('update private.dopmi_connect_accounts set payouts_enabled=false where owner_id=$1',[owner]);
   assert.equal(await row('select private.dopmi_expense_payable(r) value from public.dopmi_rescue_records r where id=$1',[expense]),false);
   await db.query("update public.profiles set account_status='suspended' where id=$1",[owner]);

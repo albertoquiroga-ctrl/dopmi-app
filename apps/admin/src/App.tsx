@@ -17,7 +17,7 @@ export default function App({ api }: { api: AdminApi | null }) {
   const [section, setSection] = useState<'dashboard' | 'users' | 'adoptions' | 'rescues' | 'contributions' | 'moderation' | 'store' | 'videos'>('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
   const [moderationView, setModerationView] = useState<ModerationView>('updates');
-  const [rescueKind, setRescueKind] = useState<'case' | 'verification' | 'expense'>('case');
+  const [rescueKind, setRescueKind] = useState<'case' | 'verification'>('case');
   const main = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   function navigate(next: typeof section, kind: typeof rescueKind = 'case', view: ModerationView = 'updates') {

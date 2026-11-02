@@ -157,23 +157,34 @@ class CaseReview extends StatelessWidget {
                     for (final expense in orderedNeeds(expenseDrafts))
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
-                        child: CaseNeedRow(
-                          item: {
-                            'title': expense.title.isEmpty
-                                ? 'Borrador sin título'
-                                : expense.title,
-                            'type':
-                                expense.publicData['category'] ?? 'veterinary',
-                            'amount_cents':
-                                int.tryParse(
-                                  expense.privateData['amount_cents']
-                                          ?.toString() ??
-                                      '',
-                                ) ??
-                                0,
-                            'detail': expense.publicData['description'] ?? '',
-                            'urgent': false,
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CaseNeedRow(
+                              item: {
+                                'title': expense.title.isEmpty
+                                    ? 'Borrador sin título'
+                                    : expense.title,
+                                'type':
+                                    expense.publicData['category'] ??
+                                    'veterinary',
+                                'amount_cents':
+                                    int.tryParse(
+                                      expense.privateData['amount_cents']
+                                              ?.toString() ??
+                                          '',
+                                    ) ??
+                                    0,
+                                'detail':
+                                    expense.publicData['description'] ?? '',
+                                'urgent': false,
+                              },
+                            ),
+                            if (expense.data['financial_inactive'] == true)
+                              const Text(
+                                'Necesidad retirada previamente; sin importe disponible',
+                              ),
+                          ],
                         ),
                       ),
                     for (final item in orderedNeedItems(items))
@@ -187,7 +198,7 @@ class CaseReview extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'La publicación y los gastos se revisan por separado. Esta vista previa no habilita aportaciones.',
+              'El caso, todas sus necesidades y sus comprobantes se envían juntos a revisión. Esta vista previa no habilita aportaciones.',
               style: TextStyle(
                 fontSize: 12,
                 height: 1.5,
@@ -277,17 +288,73 @@ class CaseReview extends StatelessWidget {
               ),
               ('Ciudad', values['city'] ?? ''),
               ('Estado', values['state'] ?? ''),
+              (
+                'Tamaño',
+                const {
+                      'small': 'Pequeño',
+                      'medium': 'Mediano',
+                      'large': 'Grande',
+                    }[values['size']] ??
+                    'Sin capturar',
+              ),
             ]),
             const SizedBox(height: 24),
             heading('Necesidades', onEditNeeds),
             const SizedBox(height: 12),
+            for (final expense in orderedNeeds(expenseDrafts)) ...[
+              card([
+                ('Necesidad', expense.title),
+                if (expense.data['financial_inactive'] == true)
+                  (
+                    'Estado de la necesidad',
+                    'Necesidad retirada previamente; sin importe disponible',
+                  ),
+                (
+                  'Descripción',
+                  expense.publicData['description'] as String? ?? '',
+                ),
+                (
+                  'Importe presentado',
+                  pesos(
+                    int.tryParse(
+                          expense.privateData['amount_cents']?.toString() ?? '',
+                        ) ??
+                        0,
+                  ),
+                ),
+                (
+                  'Fecha de pago',
+                  expense.privateData['paid_on'] as String? ?? '',
+                ),
+                ('Proveedor', expense.privateData['vendor'] as String? ?? ''),
+                (
+                  'Referencia del comprobante',
+                  expense.privateData['receipt_reference'] as String? ?? '',
+                ),
+                if ((expense.data['feedback'] as String? ?? '').isNotEmpty)
+                  ('Respuesta del equipo', expense.data['feedback'] as String),
+              ]),
+              for (final file in expense.files.where(
+                (file) => file['path'] is String,
+              ))
+                TextButton.icon(
+                  onPressed: () => onOpen(file['path'] as String),
+                  icon: const Icon(Icons.description_outlined),
+                  label: Text(
+                    '${evidenceRoles[file['role']] ?? 'Archivo'} · ${expense.title}',
+                  ),
+                ),
+              const SizedBox(height: 12),
+            ],
             for (final item in orderedNeedItems(items)) ...[
               CaseNeedRow(item: item),
               const SizedBox(height: 8),
             ],
             if ((values['need'] ?? '').isNotEmpty)
               card([('Necesidad y cuidados', values['need']!)]),
-            if (items.isEmpty && (values['need'] ?? '').isEmpty)
+            if (expenseDrafts.isEmpty &&
+                items.isEmpty &&
+                (values['need'] ?? '').isEmpty)
               const Text(
                 'Sin necesidades agregadas.',
                 style: TextStyle(
