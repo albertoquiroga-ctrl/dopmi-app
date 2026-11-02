@@ -136,6 +136,8 @@ jobs:
   ios:
     if: ${{ inputs.scope != 'mobile' }}
     runs-on: macos-latest
+    env:
+      BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -152,6 +154,8 @@ jobs:
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
+      - name: Verify foreground-only iOS location permissions
+        run: python3 scripts/verify-ios-foreground-location.py --app apps/mobile/build/ios/iphonesimulator/Runner.app
   identity-and-adoption-backend:
     if: ${{ inputs.scope != 'mobile' }}
     runs-on: ubuntu-latest

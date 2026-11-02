@@ -241,6 +241,7 @@ workflows:
       vars:
         BUNDLE_ID: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
+        BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
 
     cache:
       cache_paths:
@@ -267,6 +268,7 @@ workflows:
 
       - name: Build signed IPA
         script: |
+          set -euo pipefail
           BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build ipa \
             --release \
@@ -282,6 +284,7 @@ workflows:
             find "$CM_BUILD_DIR/apps/mobile/build/ios" -maxdepth 4 -type f -print
             exit 1
           fi
+          python3 ../../scripts/verify-ios-foreground-location.py --app "$CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app"
           echo "IPA ready for publishing: $IPA_PATH"
 
     artifacts:
@@ -309,6 +312,7 @@ workflows:
       vars:
         BUNDLE_ID: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
+        BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
 
     cache:
       cache_paths:
@@ -368,6 +372,7 @@ workflows:
             find "$CM_BUILD_DIR/apps/mobile/build/ios" -maxdepth 4 -type f -print
             exit 1
           fi
+          python3 ../../scripts/verify-ios-foreground-location.py --ipa "$IPA_PATH"
           echo "IPA ready for publishing: $IPA_PATH"
           python3 - "$BUILD_NUMBER" <<'PYINFO'
           import json, os, subprocess, sys

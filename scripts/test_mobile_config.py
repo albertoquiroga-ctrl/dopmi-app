@@ -332,6 +332,26 @@ class MobileConfigTests(unittest.TestCase):
                 self.assertIn("Guardian test: false\n" if production else "Guardian test: true\n", artifact)
                 self.assertIn("Commit: fixture-source\nVersion: 2.3.3 (999)\n", artifact)
 
+    def test_ios_builds_enforce_foreground_only_location_before_publication(self):
+        root = Path(__file__).resolve().parents[1]
+        codemagic = (root / "codemagic.yaml").read_text(encoding="utf-8")
+        for name, argument in (("ios-verify", '--app "$CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app"'),
+                               ("ios-testflight", '--ipa "$IPA_PATH"')):
+            with self.subTest(workflow=name):
+                workflow = codemagic.split(f"\n  {name}:\n", 1)[1].split("\n  ios-", 1)[0]
+                environment, scripts = workflow.split("    scripts:\n", 1)
+                self.assertIn("BYPASS_PERMISSION_LOCATION_ALWAYS: '1'", environment)
+                guard = f"python3 ../../scripts/verify-ios-foreground-location.py {argument}"
+                self.assertLess(scripts.index('if [ -z "$IPA_PATH" ]'), scripts.index(guard))
+                self.assertLess(scripts.index(guard), scripts.index('echo "IPA ready for publishing:'))
+                self.assertIn("set -euo pipefail", scripts.split("      - name: Build signed IPA\n", 1)[1])
+        ci = (root / ".github/workflows/milestone-1.yml").read_text(encoding="utf-8")
+        ios = ci.split("\n  ios:\n", 1)[1].split("\n  identity-and-adoption-backend:", 1)[0]
+        self.assertIn("BYPASS_PERMISSION_LOCATION_ALWAYS: '1'", ios.split("    steps:\n", 1)[0])
+        self.assertLess(ios.index("flutter build ios --simulator"),
+                        ios.index("python3 scripts/verify-ios-foreground-location.py --app apps/mobile/build/ios/iphonesimulator/Runner.app"))
+        self.assertIn("\n  geolocator_apple: 2.3.15\n", (root / "apps/mobile/pubspec.yaml").read_text(encoding="utf-8"))
+
     @staticmethod
     def jwt(role, project=None):
         claims = {"role": role}
