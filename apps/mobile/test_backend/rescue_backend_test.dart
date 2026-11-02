@@ -277,9 +277,154 @@ void main() {
       [],
     );
     rescue = await files(rescue, ['public']);
+    // A case owns its complete set before the first submission. Food rounds
+    // keep separate receipts and caps, but share one review of the whole case.
+    var expense = await repo.save(
+      'expense',
+      {
+        'title': 'Alimento primera ronda',
+        'description': 'Compra realizada para Luna',
+        'category': 'food',
+        'round_label': 'Ronda 1',
+      },
+      {
+        'paid_on': '2026-09-01',
+        'vendor': 'Veterinaria de prueba',
+        'amount_cents': '25050',
+        'receipt_reference': 'H3-F001',
+        'urgency_reason': 'Cuidados continuos',
+      },
+      [],
+      parent: rescue.id,
+    );
+    expense = await files(expense, ['receipt', 'proof']);
+    var round2 = await repo.save(
+      'expense',
+      expense.publicData,
+      expense.privateData,
+      [],
+      parent: rescue.id,
+    );
+    round2 = await files(round2, ['receipt', 'proof']);
+    expect(round2.data['reimbursable_cents'], 0);
+    expect(round2.data['approved_at'], null);
     expect((await anonymous.catalog(1)).total, 0);
     rescue = await repo.transition(rescue, 'submit');
-    rescue = RescueRecord(await review(rescue));
+    await expectLater(
+      repo.transition(expense, 'submit'),
+      throwsA(isA<PostgrestException>().having((e) => e.code, 'code', '22023')),
+    );
+    await expectLater(
+      repo.transition(rescue, 'close'),
+      throwsA(isA<PostgrestException>()),
+    );
+    Future<Json> packet() async => Json.from(
+      await moderator.rpc(
+        'dopmi_admin_rescue_packet',
+        params: {'record_id': rescue.id, 'expense_page': 1},
+      ),
+    );
+    List<Json> completeReviews(Json snapshot) => [
+      for (final item in (snapshot['expenses'] as Map)['items'] as List)
+        {
+          'expense_id': item['id'],
+          'expense_version': item['version'],
+          'amount_cents': int.parse(
+            item['private_data']['amount_cents'].toString(),
+          ),
+          'is_urgent': item['id'] == expense.id,
+          'urgency_note': item['id'] == expense.id
+              ? 'Atención prioritaria comprobada'
+              : '',
+          'publish_content': true,
+        },
+    ];
+    Future<Json> reviewPacket(Json snapshot, {List<Json>? reviews}) async =>
+        Json.from(
+          await moderator.rpc(
+            'dopmi_review_initial_case_packet',
+            params: {
+              'record_id': rescue.id,
+              'expected_version': rescue.version,
+              'submission_id': (snapshot['initial_packet'] as Map)['id'],
+              'decision': 'approved',
+              'note': 'Caso y comprobantes completos en aceptación',
+              'publish_content': true,
+              'expense_reviews': reviews ?? completeReviews(snapshot),
+              'request_id': const Uuid().v4(),
+            },
+          ),
+        );
+    // Duplicate receipts are rejected atomically even when both were private
+    // drafts at submission; neither the parent nor a sibling becomes public.
+    await expectLater(
+      reviewPacket(await packet()),
+      throwsA(isA<PostgrestException>().having((e) => e.code, 'code', '22023')),
+    );
+    expect((await repo.detail(rescue.id))['record']['status'], 'submitted');
+    final unapproved = await repo.mine('expense', 1, parent: rescue.id);
+    expect(unapproved.total, 2);
+    expect(
+      unapproved.items.every(
+        (item) =>
+            item.status == 'draft' && item.data['reimbursable_cents'] == 0,
+      ),
+      true,
+    );
+    expect((await anonymous.catalog(1)).total, 0);
+    rescue = await repo.transition(rescue, 'withdraw');
+    round2 = await repo.save(
+      'expense',
+      {...round2.publicData, 'round_label': 'Ronda 2'},
+      {...round2.privateData, 'receipt_reference': 'H3-F002'},
+      round2.files,
+      record: round2,
+    );
+    rescue = await repo.transition(rescue, 'submit');
+    final completePacket = await packet();
+    expect(
+      (completePacket['initial_packet'] as Map)['expense_ids'],
+      unorderedEquals([expense.id, round2.id]),
+    );
+    final reviews = completeReviews(completePacket);
+    for (final invalidAmount in [25051, 24000]) {
+      await expectLater(
+        reviewPacket(
+          completePacket,
+          reviews: [
+            for (final item in reviews)
+              item['expense_id'] == expense.id
+                  ? {...item, 'amount_cents': invalidAmount}
+                  : item,
+          ],
+        ),
+        throwsA(
+          isA<PostgrestException>().having((e) => e.code, 'code', '22023'),
+        ),
+      );
+    }
+    final concurrent = await Future.wait([
+      for (var i = 0; i < 2; i++)
+        reviewPacket(completePacket)
+            .then<Object>((v) => v)
+            .catchError((Object e) => e),
+    ]);
+    expect(concurrent.whereType<Json>().length, 1);
+    expect(concurrent.whereType<PostgrestException>().single.code, '40001');
+    final accepted = concurrent.whereType<Json>().single;
+    rescue = RescueRecord(Json.from(accepted['record'] as Map));
+    final acceptedExpenses = (accepted['expenses'] as List)
+        .map((item) => RescueRecord(Json.from(item as Map)))
+        .toList();
+    expense = acceptedExpenses.singleWhere((item) => item.id == expense.id);
+    round2 = acceptedExpenses.singleWhere((item) => item.id == round2.id);
+    expect(expense.data['reimbursable_cents'], 25050);
+    expect(expense.data['urgent'], true);
+    expect(expense.publicData['round_label'], 'Ronda 1');
+    expect(round2.status, 'approved');
+    expect(round2.publicData['round_label'], 'Ronda 2');
+    expect(round2.data['reimbursable_cents'], 25050);
+    expect(round2.data['approved_at'], isNotNull);
     expect(
       (await anonymous.catalog(1)).items.single.title,
       'Luna aceptación H3',
@@ -473,56 +618,33 @@ void main() {
     );
     expect(await reader.personalImpact(), isEmpty);
 
-    var expense = await repo.save(
-      'expense',
-      {
-        'title': 'Alimento primera ronda',
-        'description': 'Compra realizada para Luna',
-        'category': 'food',
-        'round_label': 'Ronda 1',
-      },
-      {
-        'paid_on': '2026-09-01',
-        'vendor': 'Veterinaria de prueba',
-        'amount_cents': '25050',
-        'receipt_reference': 'H3-F001',
-        'urgency_reason': 'Cuidados continuos',
-      },
-      [],
-      parent: rescue.id,
-    );
-    expense = await files(expense, ['receipt', 'proof']);
-    expense = await repo.transition(expense, 'submit');
-    await expectLater(
-      repo.transition(rescue, 'close'),
-      throwsA(isA<PostgrestException>()),
-    );
-    await expectLater(
-      review(expense, cents: 25051),
-      throwsA(isA<PostgrestException>()),
-    );
-    final concurrent = await Future.wait([
-      for (var i = 0; i < 2; i++)
-        review(
-          expense,
-          cents: 24000,
-          urgent: true,
-        ).then<Object>((v) => v).catchError((Object e) => e),
-    ]);
-    expect(concurrent.whereType<Json>().length, 1);
-    expect(concurrent.whereType<PostgrestException>().single.code, '40001');
-    expense = RescueRecord(concurrent.whereType<Json>().single);
-    expect(expense.data['reimbursable_cents'], 24000);
-    expect(expense.data['urgent'], true);
     final publicData = await anonymous.catalog(1, caseId: rescue.id);
-    expect(publicData.total, 2);
+    expect(publicData.total, 3);
+    expect(
+      publicData.items.singleWhere((item) => item.kind == 'case').targetCents,
+      50100,
+    );
+    expect(
+      publicData.items
+          .where((item) => item.kind == 'expense')
+          .map((item) => item.id),
+      unorderedEquals([expense.id, round2.id]),
+    );
+    expect(
+      publicData.items
+          .where((item) => item.kind == 'expense')
+          .every((item) => item.data['reimbursable_cents'] == 25050),
+      true,
+    );
     final json = jsonEncode(publicData.items.map((r) => r.data).toList());
     for (final secret in [
       'legal_name',
       '8188888888',
       'H3-F001',
+      'H3-F002',
       'private_data',
       expense.files.first['path'] as String,
+      round2.files.first['path'] as String,
     ]) {
       expect(json.contains(secret), false);
     }
@@ -531,29 +653,17 @@ void main() {
       throwsA(isA<StorageException>()),
     );
 
-    var round2 = await repo.save(
-      'expense',
-      expense.publicData,
-      expense.privateData,
-      [],
-      parent: rescue.id,
-    );
-    round2 = await files(round2, ['receipt', 'proof']);
     await expectLater(
-      repo.transition(round2, 'submit'),
-      throwsA(isA<PostgrestException>()),
+      repo.save(
+        'expense',
+        {...expense.publicData, 'round_label': 'Ronda 3'},
+        {...expense.privateData, 'receipt_reference': 'H3-F003'},
+        [],
+        parent: rescue.id,
+      ),
+      throwsA(isA<PostgrestException>().having((e) => e.code, 'code', '22023')),
     );
-    round2 = await repo.save(
-      'expense',
-      {...round2.publicData, 'round_label': 'Ronda 2'},
-      {...round2.privateData, 'receipt_reference': 'H3-F002'},
-      round2.files,
-      record: round2,
-    );
-    round2 = await repo.transition(round2, 'submit');
-    expect(round2.data['reimbursable_cents'], 0);
-    expect(round2.data['approved_at'], null);
-    round2 = await repo.transition(round2, 'withdraw');
+    expect((await repo.mine('expense', 1, parent: rescue.id)).total, 2);
     rescue = await repo.transition(rescue, 'close');
     expect(rescue.status, 'closed');
     await expectLater(

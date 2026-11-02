@@ -3704,7 +3704,10 @@ test('pending Stripe does not extend to expenses or verification and system audi
   await db.exec('reset role');for(const path of paths) await db.query("insert into storage.objects(bucket_id,name) values('dopmi-rescue-evidence',$1)",[path]);
   await role(rescuer);
   e=(await db.query("select dopmi_save_rescue('expense',$1::jsonb,$2::jsonb,$3::jsonb,$4,$5,$6) v",[JSON.stringify(expenseData),JSON.stringify(privateData),JSON.stringify([{path:paths[0],role:'receipt'},{path:paths[1],role:'proof'}]),e.id,e.version,e.parent_id])).rows[0].v;
-  assert.equal((await db.query("select dopmi_transition_rescue($1,$2,'submit') v",[e.id,e.version])).rows[0].v.status,'submitted');
+  await rejected(()=>db.query("select dopmi_transition_rescue($1,$2,'submit') v",[e.id,e.version]),
+    error=>error.code==='22023' && /junto con su caso/.test(error.message));
+  const unchanged=(await db.query('select to_jsonb(r) v from dopmi_rescue_records r where id=$1',[e.id])).rows[0].v;
+  assert.equal(unchanged.status,'draft');assert.equal(unchanged.version,e.version);
 });
 
 test('planned case needs persist privately and do not create expenses or funding', async () => {
