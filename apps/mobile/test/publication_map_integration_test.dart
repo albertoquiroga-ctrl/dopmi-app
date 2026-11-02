@@ -15,7 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'case_publication_test.dart' show DraftCaseRescue;
 import 'community_test.dart' show PhotoDraftCommunity;
 import 'fake_identity_repository.dart';
-import 'nearby_location_test.dart' show mapConfig;
+import 'nearby_location_test.dart'
+    show mapConfig, FakeNearbyService, PendingPlaceLookup;
 import 'publication_frame_test.dart' show tapPublication;
 
 class FixturePlaceLookup implements PlaceLookup {
@@ -32,13 +33,32 @@ class FixturePlaceLookup implements PlaceLookup {
       describe(const ApproximateLocation(25.686614, -100.316113));
 }
 
-Future<void> mapPublication(
+class CentroidAddressLookup extends FixturePlaceLookup {
+  @override
+  Future<SelectedLocation> describe(ApproximateLocation location) async =>
+      SelectedLocation(
+        latitude: 0,
+        longitude: 0,
+        city: 'Monterrey',
+        region: 'Nuevo León',
+      );
+}
+
+Future<ProviderContainer> mapPublication(
   WidgetTester tester,
   String path,
   PhotoDraftCommunity community, {
   DraftCaseRescue? rescue,
+  bool defaultAllowed = false,
+  FakeNearbyService? gps,
+  PlaceLookup? lookup,
 }) async {
-  SharedPreferences.setMockInitialValues({});
+  SharedPreferences.setMockInitialValues({
+    if (defaultAllowed)
+      'dopmi.rescuer-location.prompt.v1:test:example.test:one': true,
+    if (defaultAllowed)
+      'dopmi.rescuer-location.follow-device.v1:test:example.test:one': true,
+  });
   final identity = FakeIdentityRepository()
     ..user = const Identity('one', 'fixture@example.test', verified: true);
   identity.profile = const Profile(
@@ -60,7 +80,8 @@ Future<void> mapPublication(
       communityRepositoryProvider.overrideWithValue(community),
       if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
       routerInitialLocationProvider.overrideWithValue(path),
-      placeLookupProvider.overrideWithValue(FixturePlaceLookup()),
+      if (gps != null) locationServiceProvider.overrideWithValue(gps),
+      placeLookupProvider.overrideWithValue(lookup ?? FixturePlaceLookup()),
       locationMapBuilderProvider.overrideWithValue(
         (context, point, select) => TextButton(
           onPressed: () =>
@@ -75,6 +96,7 @@ Future<void> mapPublication(
     UncontrolledProviderScope(container: container, child: const DopmiApp()),
   );
   await tester.pumpAndSettle();
+  return container;
 }
 
 Future<void> selectFixtureMap(WidgetTester tester) async {
@@ -91,6 +113,133 @@ Future<void> selectFixtureMap(WidgetTester tester) async {
 }
 
 void main() {
+  for (final kind in ['adoption', 'case']) {
+    testWidgets(
+      'new $kind uses the authorized device point as an editable initial location',
+      (tester) async {
+        final community = PhotoDraftCommunity();
+        final rescue = DraftCaseRescue();
+        final gps = FakeNearbyService()
+          ..pending = Future.value(
+            const ApproximateLocation(26.123456, -101.234567),
+          );
+        await mapPublication(
+          tester,
+          kind == 'adoption' ? '/my-adoptions/new' : '/rescue/new?kind=case',
+          community,
+          rescue: rescue,
+          defaultAllowed: true,
+          gps: gps,
+          lookup: CentroidAddressLookup(),
+        );
+        expect(gps.permissionRequests, [false]);
+        await tapPublication(tester, find.text('Guardar borrador'));
+        final initial = kind == 'adoption'
+            ? community.savedPayload!
+            : rescue.publicSaved!;
+        expect(initial['approximate_latitude'], 26.123456);
+        expect(initial['approximate_longitude'], -101.234567);
+        expect(initial['city'], 'Monterrey');
+        expect(initial[kind == 'adoption' ? 'region' : 'state'], 'Nuevo León');
+        await selectFixtureMap(tester);
+        await tapPublication(tester, find.text('Guardar borrador'));
+        final changed = kind == 'adoption'
+            ? community.savedPayload!
+            : rescue.publicSaved!;
+        expect(changed['approximate_latitude'], 25.686614);
+        expect(changed['approximate_longitude'], -100.316113);
+        expect(gps.permissionRequests, [false]);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+  testWidgets(
+    'a stored adoption point takes priority over a different current device point',
+    (tester) async {
+      final community = PhotoDraftCommunity();
+      community.post = Adoption({
+        ...community.post.data,
+        'approximate_latitude': 25.69,
+        'approximate_longitude': -100.32,
+      });
+      final gps = FakeNearbyService()
+        ..pending = Future.value(
+          const ApproximateLocation(26.123456, -101.234567),
+        );
+      await mapPublication(
+        tester,
+        '/my-adoptions/post',
+        community,
+        defaultAllowed: true,
+        gps: gps,
+      );
+      await tapPublication(tester, find.text('Guardar borrador'));
+      expect(community.savedPayload!['approximate_latitude'], 25.69);
+      expect(community.savedPayload!['approximate_longitude'], -100.32);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets('a late default lookup cannot replace a manual selection', (
+    tester,
+  ) async {
+    final lookup = PendingPlaceLookup();
+    final community = PhotoDraftCommunity();
+    final gps = FakeNearbyService()
+      ..pending = Future.value(
+        const ApproximateLocation(26.123456, -101.234567),
+      );
+    await mapPublication(
+      tester,
+      '/my-adoptions/new',
+      community,
+      defaultAllowed: true,
+      gps: gps,
+      lookup: lookup,
+    );
+    expect(lookup.requests.length, 1);
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('publication-location-map')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('publication-location-map')));
+    // The reverse lookup is deliberately pending; the map remains editable.
+    await tester.pump(const Duration(milliseconds: 300));
+    final mapPoint = find.text('Punto de prueba');
+    await tester.ensureVisible(mapPoint);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(mapPoint.hitTestable(), findsOneWidget);
+    final lookupsBeforeManualChoice = lookup.requests.length;
+    await tester.tap(mapPoint);
+    await tester.pump();
+    expect(lookup.requests.length, lookupsBeforeManualChoice + 1);
+    lookup.requests.last.complete(
+      SelectedLocation(
+        latitude: 25.686614,
+        longitude: -100.316113,
+        city: 'Zona elegida',
+        region: 'Estado elegido',
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tapPublication(
+      tester,
+      find.byKey(const ValueKey('location-map-confirm')),
+    );
+    lookup.requests.first.complete(
+      SelectedLocation(
+        latitude: 26.123456,
+        longitude: -101.234567,
+        city: 'Sugerencia anterior',
+        region: 'Estado anterior',
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tapPublication(tester, find.text('Guardar borrador'));
+    expect(community.savedPayload!['approximate_latitude'], 25.686614);
+    expect(community.savedPayload!['city'], 'Zona elegida');
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'adoption draft saves before a map choice, then saves the selected precise private pair',
     (tester) async {

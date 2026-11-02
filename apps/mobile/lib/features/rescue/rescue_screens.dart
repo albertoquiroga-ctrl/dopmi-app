@@ -25,6 +25,8 @@ import '../adoption/community_ui.dart';
 import '../adoption/publication_frame.dart';
 import '../adoption/location_map_picker.dart';
 import '../adoption/location_selection.dart';
+import '../adoption/nearby_location_controller.dart';
+import '../adoption/publication_location_default.dart';
 import '../adoption/photo_recovery.dart';
 import '../community/content_actions.dart';
 import '../identity/identity_controller.dart';
@@ -738,6 +740,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   final controllers = <String, TextEditingController>{};
   RescueRecord? record;
   SelectedLocation? selectedLocation;
+  PublicationLocationDefault? locationDefault;
   bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   List<Json> files = [], history = [];
   int step = 0;
@@ -791,6 +794,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   @override
   void dispose() {
+    locationDefault?.dispose();
     WidgetsBinding.instance.removeObserver(this);
     for (final c in controllers.values) {
       c.dispose();
@@ -871,7 +875,10 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         loadFailed = true;
       }
     } finally {
-      if (mounted) setState(() => loading = false);
+      if (mounted) {
+        setState(() => loading = false);
+        if (!loadFailed) startLocationDefault();
+      }
     }
   }
 
@@ -900,12 +907,47 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     }
   }
 
+  void startLocationDefault() {
+    if (!mapsEnabled ||
+        kind != 'case' ||
+        widget.id != 'new' ||
+        record != null ||
+        locationDefault != null) {
+      return;
+    }
+    final actor = ref.read(identityControllerProvider).identity?.id;
+    final source = repository;
+    final config = ref.read(configProvider);
+    locationDefault = PublicationLocationDefault(
+      source: ref.read(nearbyLocationControllerProvider),
+      lookup: ref.read(placeLookupProvider),
+      mayApply: () =>
+          mounted &&
+          mapsEnabled &&
+          selectedLocation == null &&
+          editable &&
+          identical(source, repository) &&
+          ref.read(identityControllerProvider).identity?.id == actor &&
+          ref.read(configProvider).environment == config.environment &&
+          ref.read(configProvider).url == config.url,
+      apply: (selection) => setState(() {
+        selectedLocation = selection;
+        controllers['city']!.text = selection.city;
+        controllers['state']!.text = selection.region;
+        dirty = true;
+      }),
+    )..start();
+  }
+
   Future<void> choosePetLocation() async {
+    locationDefault?.dispose();
     final actor = ref.read(identityControllerProvider).identity?.id;
     final source = repository;
     final result = await chooseLocationOnMap(
       context,
-      initial: selectedLocation,
+      initial:
+          selectedLocation ??
+          ref.read(nearbyLocationControllerProvider).publicationDefault,
       city: controllers['city']!.text,
       region: controllers['state']!.text,
     );

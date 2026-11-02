@@ -29,7 +29,7 @@ final nearbyLocationControllerProvider = Provider<NearbyLocationController>((
   return controller;
 });
 
-/// The adopter's device position stays in RAM. Pet publication has a separate map.
+/// Role-scoped device positions stay in RAM; pet selections remain editable.
 class NearbyLocationController extends ChangeNotifier {
   NearbyLocationController({
     required this.identity,
@@ -38,10 +38,12 @@ class NearbyLocationController extends ChangeNotifier {
     required this.environment,
     Future<SharedPreferences> Function()? preferences,
     bool Function()? isForeground,
+    DateTime Function()? now,
   }) : _preferences = preferences ?? SharedPreferences.getInstance,
        _isForeground = isForeground ?? (() => true),
+       _now = now ?? DateTime.now,
        ownerId = identity.identity?.id {
-    _adopter = _adopterMode;
+    _role = _currentRole;
     identity.addListener(_identityChanged);
     experience.addListener(_experienceChanged);
     unawaited(_restore());
@@ -53,28 +55,52 @@ class NearbyLocationController extends ChangeNotifier {
   final String environment;
   final Future<SharedPreferences> Function() _preferences;
   final bool Function() _isForeground;
+  final DateTime Function() _now;
   String? ownerId;
   SelectedLocation? _selection;
-  SelectedLocation? get selection => isAdopter ? _selection : null;
+  DateTime? _selectionObtainedAt;
+  SelectedLocation? get selection =>
+      isAdopter && _isForeground() ? _selection : null;
+  SelectedLocation? get publicationDefault =>
+      isRescuer && _isForeground() && _hasFreshPublicationFix
+      ? _selection
+      : null;
+  bool get _hasFreshPublicationFix {
+    final obtained = _selectionObtainedAt;
+    if (obtained == null) return false;
+    final age = _now().difference(obtained);
+    return age >= Duration.zero && age <= const Duration(seconds: 30);
+  }
+
   int get radiusKm => nearbyDefaultRadiusKm;
   bool ready = false, promptSeen = false, busy = false, explaining = false;
   String? error;
   LocationSettingsTarget? _settingsTarget;
-  bool _disposed = false, _automatic = false, _adopter = false;
-  int _revision = 0, _ownerRevision = 0, _choiceRevision = 0;
+  bool _disposed = false, _automatic = false;
+  AccountExperience? _role;
+  int _revision = 0, _scopeRevision = 0, _choiceRevision = 0;
 
-  bool get _adopterMode =>
+  AccountExperience? get _currentRole =>
       ownerId != null &&
-      identity.identity?.verified == true &&
-      !identity.recovering &&
-      !experience.loading &&
-      experience.profile?.id == ownerId &&
-      experience.value == AccountExperience.donor;
-  bool get isAdopter => !_disposed && _adopter && _adopterMode;
+          identity.identity?.verified == true &&
+          !identity.recovering &&
+          !experience.loading &&
+          experience.profile?.id == ownerId
+      ? experience.value
+      : null;
+  AccountExperience? get locationRole =>
+      !_disposed && _role == _currentRole ? _role : null;
+  bool get canUseLocation => locationRole != null;
+  bool get isAdopter => locationRole == AccountExperience.donor;
+  bool get isRescuer => locationRole == AccountExperience.rescuer;
   String get scope => '$environment:${ownerId ?? 'guest'}';
-  // The previous v1 offer allowed a manual origin and was not this consent.
-  String get _promptKey => 'dopmi.nearby.prompt.v2:$scope';
-  String get _followKey => 'dopmi.nearby.follow-device.v2:$scope';
+  // Preserve the adopter consent; the rescuer purpose has its own first offer.
+  String get _promptKey => isRescuer
+      ? 'dopmi.rescuer-location.prompt.v1:$scope'
+      : 'dopmi.nearby.prompt.v2:$scope';
+  String get _followKey => isRescuer
+      ? 'dopmi.rescuer-location.follow-device.v1:$scope'
+      : 'dopmi.nearby.follow-device.v2:$scope';
   Map<String, dynamic> get discoveryFilters => selection == null
       ? {}
       : {
@@ -89,44 +115,49 @@ class NearbyLocationController extends ChangeNotifier {
       ownerId == actor &&
       identity.identity?.id == actor;
   bool _current(int revision, String? actor) =>
-      _sameRequest(revision, actor) && isAdopter && _isForeground();
+      _sameRequest(revision, actor) && canUseLocation && _isForeground();
   void _notify() {
     if (!_disposed) notifyListeners();
   }
 
-  void _experienceChanged() {
-    final next = _adopterMode;
-    if (_disposed || _adopter == next) return;
-    _adopter = next;
-    cancelForegroundRefresh();
-    _selection = null;
-    error = null;
-    _settingsTarget = null;
-    _notify();
-    if (next) unawaited(refreshIfAllowed());
-  }
-
-  void _identityChanged() {
-    final actor = identity.identity?.id;
-    if (actor == ownerId || _disposed) return;
+  void _resetScope() {
     _revision++;
-    _ownerRevision++;
+    _scopeRevision++;
     _choiceRevision++;
-    ownerId = actor;
     _selection = null;
+    _selectionObtainedAt = null;
     ready = false;
     promptSeen = false;
     busy = false;
     _automatic = false;
-    _adopter = _adopterMode;
     error = null;
     _settingsTarget = null;
     _notify();
     unawaited(_restore());
   }
 
+  void _experienceChanged() {
+    final next = _currentRole;
+    if (_disposed || _role == next) return;
+    _role = next;
+    _resetScope();
+  }
+
+  void _identityChanged() {
+    if (_disposed) return;
+    final actor = identity.identity?.id;
+    if (actor == ownerId) {
+      _experienceChanged();
+      return;
+    }
+    ownerId = actor;
+    _role = _currentRole;
+    _resetScope();
+  }
+
   Future<void> _restore() async {
-    final ownerRevision = _ownerRevision, actor = ownerId;
+    final scopeRevision = _scopeRevision, actor = ownerId, role = locationRole;
+    if (role == null) return;
     final promptKey = _promptKey, followKey = _followKey;
     var seen = false, follow = false;
     try {
@@ -136,7 +167,10 @@ class NearbyLocationController extends ChangeNotifier {
     } catch (_) {
       // In-memory consent still works when local preferences are unavailable.
     }
-    if (_disposed || ownerRevision != _ownerRevision || ownerId != actor) {
+    if (_disposed ||
+        scopeRevision != _scopeRevision ||
+        ownerId != actor ||
+        locationRole != role) {
       return;
     }
     promptSeen = seen;
@@ -147,7 +181,7 @@ class NearbyLocationController extends ChangeNotifier {
   }
 
   bool beginExplanation() {
-    if (!ready || !isAdopter || !_isForeground() || explaining || busy) {
+    if (!ready || !canUseLocation || !_isForeground() || explaining || busy) {
       return false;
     }
     explaining = true;
@@ -160,8 +194,8 @@ class NearbyLocationController extends ChangeNotifier {
   }
 
   Future<bool> markPromptSeen({required String? expectedOwner}) async {
-    if (!isAdopter || ownerId != expectedOwner) return false;
-    final revision = _revision, key = _promptKey;
+    if (!canUseLocation || ownerId != expectedOwner) return false;
+    final scopeRevision = _scopeRevision, role = locationRole, key = _promptKey;
     promptSeen = true;
     _notify();
     try {
@@ -169,22 +203,25 @@ class NearbyLocationController extends ChangeNotifier {
     } catch (_) {
       // Do not repeatedly interrupt the current session if storage fails.
     }
-    return _current(revision, expectedOwner);
+    return !_disposed &&
+        scopeRevision == _scopeRevision &&
+        ownerId == expectedOwner &&
+        locationRole == role;
   }
 
   Future<void> _rememberFollowChoice() async {
-    final key = _followKey, choice = ++_choiceRevision;
+    final key = _followKey, choice = ++_choiceRevision, follow = _automatic;
     try {
       final preferences = await _preferences();
       if (_disposed || choice != _choiceRevision || key != _followKey) return;
-      await preferences.setBool(key, _automatic);
+      await preferences.setBool(key, follow);
     } catch (_) {
       // No coordinate is persisted, even when storage is unavailable.
     }
   }
 
   Future<void> requestCurrentLocation({required String? expectedOwner}) async {
-    if (!isAdopter ||
+    if (!canUseLocation ||
         !_isForeground() ||
         !ready ||
         !promptSeen ||
@@ -195,15 +232,20 @@ class NearbyLocationController extends ChangeNotifier {
     _automatic = true;
     unawaited(_rememberFollowChoice());
     if (_settingsTarget != null) {
+      final scopeRevision = _scopeRevision;
       try {
         if (!await service.openSettings(_settingsTarget!)) {
-          if (isAdopter && ownerId == expectedOwner) {
+          if (canUseLocation &&
+              ownerId == expectedOwner &&
+              scopeRevision == _scopeRevision) {
             error = 'Abre los ajustes del dispositivo y activa la ubicación para Dopmi.';
             _notify();
           }
         }
       } catch (_) {
-        if (isAdopter && ownerId == expectedOwner) {
+        if (canUseLocation &&
+            ownerId == expectedOwner &&
+            scopeRevision == _scopeRevision) {
           error = 'Abre los ajustes del dispositivo y activa la ubicación para Dopmi.';
           _notify();
         }
@@ -216,11 +258,14 @@ class NearbyLocationController extends ChangeNotifier {
   void cancelForegroundRefresh() {
     _revision++;
     busy = false;
+    _selection = null;
+    _selectionObtainedAt = null;
+    _notify();
   }
 
-  /// A foreground refresh never opens an OS prompt, and never runs in Rescatista.
+  /// Refresh only after this role opted in; never open an OS permission prompt.
   Future<void> refreshIfAllowed() async {
-    if (!isAdopter ||
+    if (!canUseLocation ||
         !_isForeground() ||
         !ready ||
         !promptSeen ||
@@ -236,6 +281,7 @@ class NearbyLocationController extends ChangeNotifier {
     busy = true;
     error = null;
     _selection = null;
+    _selectionObtainedAt = null;
     _notify();
     try {
       final result = await service.current(
@@ -247,6 +293,7 @@ class NearbyLocationController extends ChangeNotifier {
         longitude: result.longitude,
         followDevice: true,
       );
+      _selectionObtainedAt = _now();
       _settingsTarget = null;
     } catch (cause) {
       if (!_current(revision, actor)) return;
@@ -271,6 +318,7 @@ class NearbyLocationController extends ChangeNotifier {
     identity.removeListener(_identityChanged);
     experience.removeListener(_experienceChanged);
     _selection = null;
+    _selectionObtainedAt = null;
     super.dispose();
   }
 }

@@ -768,10 +768,15 @@ class _LegalAccessGate extends ConsumerWidget {
         }
         if (ref.read(configProvider).mapsEnabled &&
             currentIdentity?.verified == true &&
-            experience.value == AccountExperience.donor &&
-            const {'/home', '/adoptions'}.contains(path)) {
+            accepted) {
+          final entry = experience.value == AccountExperience.rescuer
+              ? const {'/home', '/rescuer'}.contains(path)
+              : const {'/home', '/adoptions'}.contains(path);
           return NearbyLocationGate(
-            key: ValueKey('nearby:${currentIdentity!.id}'),
+            key: ValueKey(
+              'nearby:${currentIdentity!.id}:${experience.value.name}',
+            ),
+            promptAllowed: entry,
             child: child,
           );
         }

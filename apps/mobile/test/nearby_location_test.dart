@@ -77,7 +77,12 @@ Future<
     FakeNearbyService service,
   })
 >
-locationFixture({String mode = 'donor', FakeNearbyService? service}) async {
+locationFixture({
+  String mode = 'donor',
+  FakeNearbyService? service,
+  DateTime Function()? now,
+  bool Function()? isForeground,
+}) async {
   final repo = FakeIdentityRepository()
     ..user = const Identity('one', 'one@example.test', verified: true)
     ..profile = locationProfile(mode);
@@ -90,6 +95,8 @@ locationFixture({String mode = 'donor', FakeNearbyService? service}) async {
     experience: experience,
     service: gps,
     environment: 'test:example.test',
+    now: now,
+    isForeground: isForeground,
   );
   addTearDown(() {
     controller.dispose();
@@ -164,7 +171,7 @@ void main() {
     expect(prefs.getKeys().length, 2);
     expect(prefs.getKeys().every((key) => prefs.get(key) is bool), isTrue);
   });
-  test('rescuer startup and foreground never read GPS even with saved adopter consent', () async {
+  test('rescuer opt-in stays separate from adopter consent and seeds only publication', () async {
     SharedPreferences.setMockInitialValues({
       'dopmi.nearby.prompt.v2:test:example.test:one': true,
       'dopmi.nearby.follow-device.v2:test:example.test:one': true,
@@ -172,20 +179,102 @@ void main() {
     final f = await locationFixture(
       mode: 'rescuer',
       service: FakeNearbyService()
-        ..pending = Future.value(const ApproximateLocation(25.69, -100.32)),
+        ..pending = Future.value(
+          const ApproximateLocation(25.686614, -100.316113),
+        ),
     );
+    expect(f.controller.promptSeen, isFalse);
+    expect(f.controller.publicationDefault, isNull);
     await f.controller.refreshIfAllowed();
     await f.controller.requestCurrentLocation(expectedOwner: 'one');
     expect(f.service.permissionRequests, isEmpty);
-    expect(f.controller.beginExplanation(), isFalse);
-    f.experience.applyProfile(locationProfile('donor'));
-    await Future<void>.delayed(Duration.zero);
-    expect(f.service.permissionRequests, [false]);
-    expect(f.controller.selection, isNotNull);
-    f.experience.applyProfile(locationProfile('rescuer'));
+    expect(f.controller.beginExplanation(), isTrue);
+    f.controller.endExplanation();
+    await f.controller.markPromptSeen(expectedOwner: 'one');
+    await f.controller.requestCurrentLocation(expectedOwner: 'one');
+    expect(f.controller.publicationDefault?.latitude, 25.686614);
+    expect(f.controller.publicationDefault?.longitude, -100.316113);
     expect(f.controller.selection, isNull);
+    expect(f.controller.discoveryFilters, isEmpty);
+    expect(f.service.permissionRequests, [true]);
+    f.experience.applyProfile(locationProfile('donor'));
+    expect(f.controller.publicationDefault, isNull);
+    await Future<void>.delayed(Duration.zero);
+    expect(f.controller.selection?.latitude, 25.686614);
+    expect(f.service.permissionRequests, [true, false]);
+    f.experience.applyProfile(locationProfile('rescuer'));
+    await Future<void>.delayed(Duration.zero);
+    expect(f.controller.promptSeen, isTrue);
+    expect(f.controller.selection, isNull);
+    expect(f.controller.publicationDefault?.latitude, 25.686614);
+    expect(f.service.permissionRequests, [true, false, false]);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getKeys().length, 4);
+    expect(prefs.getKeys().every((key) => prefs.get(key) is bool), isTrue);
+  });
+  test('a publication default expires and cannot survive background or another owner', () async {
+    SharedPreferences.setMockInitialValues({});
+    var now = DateTime(2026, 11, 2);
+    var foreground = true;
+    final f = await locationFixture(
+      mode: 'rescuer',
+      now: () => now,
+      isForeground: () => foreground,
+      service: FakeNearbyService()
+        ..pending = Future.value(
+          const ApproximateLocation(25.686614, -100.316113),
+        ),
+    );
+    await f.controller.markPromptSeen(expectedOwner: 'one');
+    await f.controller.requestCurrentLocation(expectedOwner: 'one');
+    expect(f.controller.publicationDefault, isNotNull);
+    now = now.add(const Duration(seconds: 31));
+    expect(f.controller.publicationDefault, isNull);
     await f.controller.refreshIfAllowed();
-    expect(f.service.permissionRequests, [false]);
+    expect(f.controller.publicationDefault, isNotNull);
+    foreground = false;
+    f.controller.cancelForegroundRefresh();
+    expect(f.controller.publicationDefault, isNull);
+    foreground = true;
+    expect(f.controller.publicationDefault, isNull);
+    await f.controller.refreshIfAllowed();
+    expect(f.controller.publicationDefault, isNotNull);
+    f.repo.profile = locationProfile('rescuer', owner: 'two');
+    f.repo.emit(
+      const IdentityEvent(Identity('two', 'two@example.test', verified: true)),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(f.controller.publicationDefault, isNull);
+    expect(f.controller.promptSeen, isFalse);
+    expect(f.service.permissionRequests, [true, false, false]);
+  });
+  test('rescuer denied location leaves no default and settings recovery remains explicit', () async {
+    SharedPreferences.setMockInitialValues({});
+    final gps = Completer<ApproximateLocation>();
+    final f = await locationFixture(
+      mode: 'rescuer',
+      service: FakeNearbyService()..pending = gps.future,
+    );
+    await f.controller.markPromptSeen(expectedOwner: 'one');
+    final request = f.controller.requestCurrentLocation(expectedOwner: 'one');
+    gps.completeError(
+      const LocationException(
+        'Activa ubicación precisa.',
+        settingsTarget: LocationSettingsTarget.app,
+      ),
+    );
+    await request;
+    expect(f.controller.publicationDefault, isNull);
+    expect(f.controller.error, 'Activa ubicación precisa.');
+    await f.controller.requestCurrentLocation(expectedOwner: 'one');
+    expect(f.service.settings, [LocationSettingsTarget.app]);
+    expect(f.service.permissionRequests, [true]);
+    f.service.pending = Future.value(
+      const ApproximateLocation(25.686614, -100.316113),
+    );
+    await f.controller.refreshIfAllowed();
+    expect(f.controller.publicationDefault?.latitude, 25.686614);
+    expect(f.service.permissionRequests, [true, false]);
   });
   test('same-owner mode change invalidates an in-flight permission and its coordinates', () async {
     SharedPreferences.setMockInitialValues({});
@@ -199,6 +288,7 @@ void main() {
     gps.complete(const ApproximateLocation(25.69, -100.32));
     await request;
     expect(f.controller.isAdopter, isFalse);
+    expect(f.controller.publicationDefault, isNull);
     expect(f.controller.discoveryFilters, isEmpty);
     expect(f.controller.busy, isFalse);
   });
@@ -292,7 +382,7 @@ void main() {
     },
   );
   testWidgets(
-    'dismissal never requests GPS and same-owner rescuer closes an open explanation',
+    'mode changes close the old purpose and offer the separate rescuer explanation',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final repo = FakeIdentityRepository()
@@ -320,12 +410,220 @@ void main() {
           .applyProfile(locationProfile('rescuer'));
       await tester.pumpAndSettle();
       expect(find.text('Mascotas cerca de ti'), findsNothing);
+      expect(find.text('Encuentra adoptantes cercanos'), findsOneWidget);
       expect(service.permissionRequests, isEmpty);
       container.read(experienceProvider).applyProfile(locationProfile('donor'));
       await tester.pumpAndSettle();
       // Explanation already seen; the later CTA can show it without a repeated startup interruption.
       expect(find.text('Mascotas cerca de ti'), findsNothing);
       expect(service.permissionRequests, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'rescuer explanation precedes GPS and dismissal keeps the rest of the app usable',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'one@example.test', verified: true)
+        ..profile = locationProfile('rescuer');
+      final service = FakeNearbyService();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(repo),
+          configProvider.overrideWithValue(mapConfig),
+          locationServiceProvider.overrideWithValue(service),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(
+              body: NearbyLocationGate(child: Text('Publicar mascota')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Encuentra adoptantes cercanos'), findsOneWidget);
+      expect(service.permissionRequests, isEmpty);
+      await tester.tap(find.byKey(const ValueKey('nearby-location-dismiss')));
+      await tester.pumpAndSettle();
+      expect(find.text('Publicar mascota'), findsOneWidget);
+      expect(
+        container.read(nearbyLocationControllerProvider).publicationDefault,
+        isNull,
+      );
+      expect(service.permissionRequests, isEmpty);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pumpAndSettle();
+      expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
+      expect(service.permissionRequests, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'rescuer approval requests permission once and keeps a precise RAM default',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'one@example.test', verified: true)
+        ..profile = locationProfile('rescuer');
+      final gps = Completer<ApproximateLocation>();
+      final service = FakeNearbyService()..pending = gps.future;
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(repo),
+          configProvider.overrideWithValue(mapConfig),
+          locationServiceProvider.overrideWithValue(service),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(
+              body: NearbyLocationGate(child: Text('Inicio Rescatista')),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(service.permissionRequests, isEmpty);
+      await tester.tap(find.byKey(const ValueKey('nearby-location-allow')));
+      await tester.pumpAndSettle();
+      expect(service.permissionRequests, [true]);
+      gps.complete(const ApproximateLocation(25.686614, -100.316113));
+      await tester.pumpAndSettle();
+      final controller = container.read(nearbyLocationControllerProvider);
+      expect(controller.publicationDefault?.latitude, 25.686614);
+      expect(controller.selection, isNull);
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getBool('dopmi.rescuer-location.prompt.v1:test:example.test:one'),
+        isTrue,
+      );
+      expect(
+        prefs.getBool('dopmi.nearby.prompt.v2:test:example.test:one'),
+        isNull,
+      );
+      expect(prefs.getKeys().every((key) => prefs.get(key) is bool), isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'ineligible routes neither consume the offer nor keep its popup over a form',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'one@example.test', verified: true)
+        ..profile = locationProfile('rescuer');
+      final allowed = ValueNotifier(false);
+      final service = FakeNearbyService();
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(repo),
+          configProvider.overrideWithValue(mapConfig),
+          locationServiceProvider.overrideWithValue(service),
+        ],
+      );
+      addTearDown(container.dispose);
+      addTearDown(allowed.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            home: Scaffold(
+              body: ValueListenableBuilder<bool>(
+                valueListenable: allowed,
+                builder: (_, value, _) => NearbyLocationGate(
+                  promptAllowed: value,
+                  child: const Text('Formulario'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
+      expect(
+        container.read(nearbyLocationControllerProvider).promptSeen,
+        isFalse,
+      );
+      allowed.value = true;
+      await tester.pumpAndSettle();
+      expect(find.text('Encuentra adoptantes cercanos'), findsOneWidget);
+      allowed.value = false;
+      await tester.pumpAndSettle();
+      expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
+      expect(find.text('Formulario'), findsOneWidget);
+      expect(service.permissionRequests, isEmpty);
+      expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'prompt-disabled routes still clear the rescuer default on background',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.rescuer-location.prompt.v1:test:example.test:one': true,
+        'dopmi.rescuer-location.follow-device.v1:test:example.test:one': true,
+      });
+      final repo = FakeIdentityRepository()
+        ..user = const Identity('one', 'one@example.test', verified: true)
+        ..profile = locationProfile('rescuer');
+      final service = FakeNearbyService()
+        ..pending = Future.value(
+          const ApproximateLocation(25.686614, -100.316113),
+        );
+      final container = ProviderContainer(
+        overrides: [
+          identityRepositoryProvider.overrideWithValue(repo),
+          configProvider.overrideWithValue(mapConfig),
+          locationServiceProvider.overrideWithValue(service),
+        ],
+      );
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(
+              body: NearbyLocationGate(
+                promptAllowed: false,
+                child: Text('Cuenta y privacidad'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final controller = container.read(nearbyLocationControllerProvider);
+      expect(controller.publicationDefault, isNotNull);
+      expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
+      expect(service.permissionRequests, [false]);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      expect(controller.publicationDefault, isNull);
+      expect(service.permissionRequests, [false]);
+      final refreshed = Completer<ApproximateLocation>();
+      service.pending = refreshed.future;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+      // The opted-in foreground refresh stays pending instead of reusing the
+      // old point; this route still cannot open a purpose or OS prompt.
+      expect(controller.publicationDefault, isNull);
+      expect(service.permissionRequests, [false, false]);
+      expect(find.text('Encuentra adoptantes cercanos'), findsNothing);
+      refreshed.complete(const ApproximateLocation(26.1234567, -101.1234567));
+      await tester.pumpAndSettle();
+      expect(controller.publicationDefault?.latitude, 26.1234567);
+      expect(controller.publicationDefault?.longitude, -101.1234567);
+      expect(service.permissionRequests, [false, false]);
       expect(tester.takeException(), isNull);
     },
   );

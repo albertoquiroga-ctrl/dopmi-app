@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,31 +8,63 @@ import '../identity/identity_controller.dart';
 import 'nearby_location_controller.dart';
 
 /// Explain first; only the affirmative action can request native permission.
-Future<void> requestNearbyLocation(BuildContext context, WidgetRef ref) async {
+Future<void> requestNearbyLocation(
+  BuildContext context,
+  WidgetRef ref, {
+  foundation.ValueListenable<bool>? promptAllowed,
+}) async {
+  if (promptAllowed?.value == false) return;
   final controller = ref.read(nearbyLocationControllerProvider);
   if (!controller.beginExplanation()) return;
-  final actor = controller.ownerId;
+  final actor = controller.ownerId, role = controller.locationRole;
+  final rescuer = controller.isRescuer;
   final navigator = Navigator.of(context, rootNavigator: true);
   DialogRoute<bool>? route;
+  bool sameScope() =>
+      controller.canUseLocation &&
+      controller.ownerId == actor &&
+      controller.locationRole == role;
+  bool closeQueued = false;
   void changed() {
-    if ((!controller.isAdopter || controller.ownerId != actor) &&
-        route?.isActive == true) {
-      navigator.removeRoute(route!);
+    if ((!sameScope() || promptAllowed?.value == false) &&
+        route?.isActive == true &&
+        !closeQueued) {
+      closeQueued = true;
+      // Route eligibility may change while the authenticated shell is building.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        closeQueued = false;
+        if ((!sameScope() || promptAllowed?.value == false) &&
+            route?.isActive == true &&
+            navigator.mounted) {
+          navigator.removeRoute(route!);
+        }
+      });
     }
   }
 
+  bool ownsExplanation = true;
+  void endOwnExplanation() {
+    if (!ownsExplanation) return;
+    ownsExplanation = false;
+    controller.endExplanation();
+  }
+
   controller.addListener(changed);
+  promptAllowed?.addListener(changed);
   try {
-    if (!await controller.markPromptSeen(expectedOwner: actor) ||
-        !context.mounted) {
+    if (!sameScope() || !context.mounted || promptAllowed?.value == false) {
       return;
     }
     route = DialogRoute<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Mascotas cerca de ti'),
-        content: const Text(
-          'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
+        title: Text(
+          rescuer ? 'Encuentra adoptantes cercanos' : 'Mascotas cerca de ti',
+        ),
+        content: Text(
+          rescuer
+              ? 'Para encontrar adoptantes cercanos para tus mascotas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Será el punto inicial de cada mascota y podrás cambiarlo en el mapa. Su ubicación exacta no se muestra públicamente.'
+              : 'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
         ),
         actions: [
           TextButton(
@@ -47,41 +80,92 @@ Future<void> requestNearbyLocation(BuildContext context, WidgetRef ref) async {
         ],
       ),
     );
-    final accepted = await navigator.push(route);
-    if (accepted == true && context.mounted && controller.isAdopter) {
+    final answer = navigator.push(route);
+    final marked = controller.markPromptSeen(expectedOwner: actor);
+    final accepted = await answer;
+    endOwnExplanation();
+    if (accepted == true &&
+        await marked &&
+        context.mounted &&
+        sameScope() &&
+        promptAllowed?.value != false) {
       await controller.requestCurrentLocation(expectedOwner: actor);
+      if (rescuer &&
+          context.mounted &&
+          sameScope() &&
+          controller.error != null) {
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: Text(controller.error!),
+            action: SnackBarAction(
+              label: 'Reintentar',
+              onPressed: () {
+                if (sameScope() && promptAllowed?.value != false) {
+                  unawaited(
+                    requestNearbyLocation(
+                      context,
+                      ref,
+                      promptAllowed: promptAllowed,
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        );
+      }
     }
   } finally {
     controller.removeListener(changed);
-    controller.endExplanation();
+    promptAllowed?.removeListener(changed);
+    endOwnExplanation();
   }
 }
 
-/// Wrap the authenticated adopter home after legal consent, never Rescatista.
+/// Observe the authenticated shell; route eligibility only controls the popup.
 class NearbyLocationGate extends ConsumerStatefulWidget {
-  const NearbyLocationGate({super.key, required this.child});
+  const NearbyLocationGate({
+    super.key,
+    required this.child,
+    this.promptAllowed = true,
+  });
   final Widget child;
+  final bool promptAllowed;
   @override
   ConsumerState<NearbyLocationGate> createState() => _NearbyLocationGateState();
 }
 
 class _NearbyLocationGateState extends ConsumerState<NearbyLocationGate>
     with WidgetsBindingObserver {
+  late final _promptAllowance = foundation.ValueNotifier(widget.promptAllowed);
+
+  @override
+  void didUpdateWidget(NearbyLocationGate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _promptAllowance.value = widget.promptAllowed;
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && ref.read(configProvider).mapsEnabled) {
-        unawaited(
-          ref.read(nearbyLocationControllerProvider).refreshIfAllowed(),
-        );
+        final controller = ref.read(nearbyLocationControllerProvider);
+        final point = controller.isRescuer
+            ? controller.publicationDefault
+            : controller.selection;
+        if (controller.ready && point == null && controller.error == null) {
+          unawaited(controller.refreshIfAllowed());
+        }
       }
     });
   }
 
   @override
   void dispose() {
+    _promptAllowance.value = false;
+    _promptAllowance.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -106,13 +190,20 @@ class _NearbyLocationGateState extends ConsumerState<NearbyLocationGate>
     return ListenableBuilder(
       listenable: controller,
       builder: (context, _) {
-        if (controller.ready &&
-            controller.isAdopter &&
+        if (widget.promptAllowed &&
+            controller.ready &&
+            controller.canUseLocation &&
             !controller.promptSeen &&
             !controller.explaining) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && !controller.promptSeen) {
-              unawaited(requestNearbyLocation(context, ref));
+            if (mounted && widget.promptAllowed && !controller.promptSeen) {
+              unawaited(
+                requestNearbyLocation(
+                  context,
+                  ref,
+                  promptAllowed: _promptAllowance,
+                ),
+              );
             }
           });
         }

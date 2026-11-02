@@ -1,6 +1,8 @@
 import 'publication_age.dart';
 import 'location_map_picker.dart';
 import 'location_selection.dart';
+import 'nearby_location_controller.dart';
+import 'publication_location_default.dart';
 
 import 'package:flutter/material.dart';
 
@@ -174,6 +176,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   List<String> photos = [];
   Adoption? post;
   SelectedLocation? selectedLocation;
+  PublicationLocationDefault? locationDefault;
   bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   bool loading = false, busy = false;
   String? error, message;
@@ -187,7 +190,33 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       load();
     } else {
       prefillPublisher();
+      startLocationDefault();
     }
+  }
+
+  void startLocationDefault() {
+    if (!mapsEnabled || widget.id != 'new') return;
+    final actor = ref.read(identityControllerProvider).identity?.id;
+    final source = repo;
+    final config = ref.read(configProvider);
+    locationDefault = PublicationLocationDefault(
+      source: ref.read(nearbyLocationControllerProvider),
+      lookup: ref.read(placeLookupProvider),
+      mayApply: () =>
+          mounted &&
+          mapsEnabled &&
+          selectedLocation == null &&
+          identical(source, repo) &&
+          repo.userId == actor &&
+          ref.read(identityControllerProvider).identity?.id == actor &&
+          ref.read(configProvider).environment == config.environment &&
+          ref.read(configProvider).url == config.url,
+      apply: (selection) => setState(() {
+        selectedLocation = selection;
+        fields['city']!.text = selection.city;
+        fields['region']!.text = selection.region;
+      }),
+    )..start();
   }
 
   Future<void> prefillPublisher() async {
@@ -198,7 +227,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         if (fields['publisher_name']!.text.isEmpty) {
           fields['publisher_name']!.text = profile.name;
         }
-        if (fields['city']!.text.isEmpty) fields['city']!.text = profile.city;
+        if (selectedLocation == null && fields['city']!.text.isEmpty) {
+          fields['city']!.text = profile.city;
+        }
         needsPublisherName = fields['publisher_name']!.text.trim().isEmpty;
       });
     } catch (_) {
@@ -259,6 +290,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
 
   @override
   void dispose() {
+    locationDefault?.dispose();
     for (final field in fields.values) {
       field.dispose();
     }
@@ -335,12 +367,15 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   }
 
   Future<void> choosePetLocation() async {
+    locationDefault?.dispose();
     final repository = repo;
     final actor = repository.userId;
     final identity = ref.read(identityControllerProvider).identity?.id;
     final result = await chooseLocationOnMap(
       context,
-      initial: selectedLocation,
+      initial:
+          selectedLocation ??
+          ref.read(nearbyLocationControllerProvider).publicationDefault,
       city: fields['city']!.text,
       region: fields['region']!.text,
     );

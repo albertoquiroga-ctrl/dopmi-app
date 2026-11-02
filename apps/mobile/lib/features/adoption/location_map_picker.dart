@@ -98,6 +98,20 @@ class _LocationMapPickerState extends ConsumerState<LocationMapPicker>
     super.initState();
     identity.addListener(identityChanged);
     WidgetsBinding.instance.addObserver(this);
+    if (widget.initial != null &&
+        widget.requireAddress &&
+        (city.text.trim().isEmpty || region.text.trim().isEmpty)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          resolve(
+            (_) => ref
+                .read(placeLookupProvider)
+                .describe(widget.initial!.coordinates),
+            preservePoint: true,
+          );
+        }
+      });
+    }
   }
 
   void identityChanged() {
