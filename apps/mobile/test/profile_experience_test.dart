@@ -200,7 +200,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final access = find.text('Cuenta y privacidad');
+      expect(find.text('Cuenta y privacidad'), findsNothing);
+      final access = find.text('Mi cuenta');
       await tester.scrollUntilVisible(
         access,
         240,

@@ -29,6 +29,7 @@ import 'discovery_filters.dart';
 import 'discovery_empty.dart';
 import 'discovery_card_motion.dart';
 import 'discovery_drag_surface.dart';
+import 'discovery_history.dart';
 
 double discoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
@@ -85,6 +86,10 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   final pendingFavorites = <String>{};
   final failedFavorites = <String, Adoption>{};
   final reportedViews = <String>{};
+  int catalogRows = 0;
+  DiscoveryHistory? history;
+  CommunityRepository? historyRepository;
+  String? historyIdentity;
   NearbyLocationController? nearby;
   String? nearbyScope, nearbyQueryKey;
 
@@ -112,6 +117,83 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 
   String nearbyKey() =>
       '${nearby!.scope}:${nearby!.isAdopter}:${nearby!.selection?.latitude}:${nearby!.selection?.longitude}';
+
+  String get historyEnvironment {
+    final config = ref.read(configProvider);
+    return '${config.environment}:${Uri.tryParse(config.url)?.host ?? ''}';
+  }
+
+  DiscoveryHistory historyFor(CommunityRepository repository) {
+    final actor = repository.userId;
+    final identity = ref.read(identityControllerProvider).identity?.id;
+    final environment = historyEnvironment;
+    final scope = '$environment:${actor ?? 'guest'}';
+    if (history?.scope == scope &&
+        identical(historyRepository, repository) &&
+        historyIdentity == identity) {
+      return history!;
+    }
+    history?.dispose();
+    late final DiscoveryHistory created;
+    created = DiscoveryHistory(
+      scope: scope,
+      isCurrent: () =>
+          mounted &&
+          identical(history, created) &&
+          identical(ref.read(communityRepositoryProvider), repository) &&
+          repository.userId == actor &&
+          ref.read(identityControllerProvider).identity?.id == identity &&
+          historyEnvironment == environment,
+      read: actor == null ? null : repository.seenAdoptions,
+      mark: actor == null ? null : repository.markAdoptionSeen,
+      reset: actor == null ? null : repository.resetSeenAdoptions,
+    );
+    historyRepository = repository;
+    historyIdentity = identity;
+    return history = created;
+  }
+
+  Future<void> reportFrontSeen(Adoption post) async {
+    final items = deck;
+    final front =
+        outgoingSnapshot ?? (index < items.length ? items[index] : null);
+    if (front is! Adoption || front.id != post.id || exiting != 0) return;
+    final cycle = history;
+    if (cycle == null || !cycle.isCurrent()) return;
+    try {
+      await cycle.remember(post.id);
+    } catch (_) {
+      if (mounted && identical(history, cycle) && cycle.isCurrent()) {
+        setState(() {
+          error = 'No pudimos guardar tu recorrido. Intenta de nuevo.';
+        });
+      }
+    }
+  }
+
+  Future<void> restartDiscovery() async {
+    if (acting) return;
+    final cycle = history;
+    if (cycle == null || !cycle.isCurrent()) return;
+    setState(() {
+      acting = true;
+      error = null;
+    });
+    try {
+      await cycle.restart();
+      if (mounted && identical(history, cycle) && cycle.isCurrent()) {
+        await load(reset: true);
+      }
+    } catch (_) {
+      if (mounted && identical(history, cycle) && cycle.isCurrent()) {
+        setState(
+          () => error = 'No pudimos reiniciar tu recorrido. Intenta de nuevo.',
+        );
+      }
+    } finally {
+      if (mounted && identical(history, cycle)) setState(() => acting = false);
+    }
+  }
 
   void nearbyChanged() {
     if (!mounted) return;
@@ -230,6 +312,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   @override
   void dispose() {
     loadVersion++;
+    history?.dispose();
     nearby?.removeListener(nearbyChanged);
     super.dispose();
   }
@@ -238,6 +321,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     if (loading && !reset && cards.isNotEmpty) return;
     final version = ++loadVersion;
     final source = ref.read(communityRepositoryProvider);
+    final cycle = historyFor(source);
     final actor = source.userId,
         identity = ref.read(identityControllerProvider).identity?.id;
     final requestedFilters = effectiveFilters;
@@ -245,6 +329,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     bool current() =>
         mounted &&
         version == loadVersion &&
+        cycle.isCurrent() &&
         (nearby == null || (!needsNearbyLocation && nearbyKey() == origin)) &&
         identical(source, ref.read(communityRepositoryProvider)) &&
         source.userId == actor &&
@@ -256,6 +341,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         hintRevision++;
         allSpeciesEmpty = false;
         cards.clear();
+        catalogRows = 0;
         support.clear();
         index = 0;
         page = 1;
@@ -277,7 +363,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         exhausted = true;
         return;
       }
-      final result = await source.discovery(requestedFilters, page);
+      await cycle.restore();
+      if (!current()) return;
+      var result = await source.discovery(requestedFilters, page);
       if (!current()) return;
       if (nearby == null &&
           reset &&
@@ -300,9 +388,21 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       }
       if (!current()) return;
       final known = cards.map((item) => item.id).toSet();
-      cards.addAll(result.items.where((item) => known.add(item.id)));
-      total = result.total;
-      exhausted = cards.length >= total || result.items.isEmpty;
+      while (true) {
+        catalogRows += result.items.length;
+        cards.addAll(
+          result.items.where(
+            (item) => !cycle.seen.contains(item.id) && known.add(item.id),
+          ),
+        );
+        total = result.total;
+        exhausted = catalogRows >= total || result.items.isEmpty;
+        // A page made entirely of seen cards must not hide later unseen pages.
+        if (exhausted || deck.length > index) break;
+        page++;
+        result = await source.discovery(requestedFilters, page);
+        if (!current()) return;
+      }
     } catch (cause) {
       if (mounted && version == loadVersion) error = communityError(cause);
     } finally {
@@ -395,7 +495,12 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     if (item is Adoption) {
       return _SwipeCard(
         item,
-        onDisplayed: preview ? null : () => unawaited(reportFrontView(item)),
+        onDisplayed: preview
+            ? null
+            : () {
+                unawaited(reportFrontSeen(item));
+                unawaited(reportFrontView(item));
+              },
         preview: preview,
         dragX: preview ? 0 : dragX,
         dragging: !preview && dragging,
@@ -521,6 +626,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
   @override
   Widget build(BuildContext context) {
     final items = deck;
+    final locating = nearby != null && (!nearby!.ready || nearby!.busy);
     final current =
         outgoingSnapshot ?? (index < items.length ? items[index] : null);
     final next = outgoingSnapshot != null
@@ -568,14 +674,6 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     ],
                   ),
                 ),
-                if (nearby != null && !needsNearbyLocation)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      'Mascotas en adopción a 25 km de tu ubicación actual',
-                      style: const TextStyle(fontSize: 12, color: muted),
-                    ),
-                  ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -660,11 +758,17 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                     child: const Text('Volver a intentar'),
                   ),
                 ],
-                if (loading && current == null)
-                  const SizedBox(
+                if ((loading || locating) && current == null)
+                  SizedBox(
                     height: 420,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: nearby != null
+                          ? const Text('Cargando…')
+                          : const CircularProgressIndicator(),
+                    ),
                   )
+                else if (current == null && error != null)
+                  const SizedBox.shrink()
                 else if (current == null)
                   needsNearbyLocation
                       ? _NearbyLocationRequired(
@@ -674,7 +778,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                               ? () => requestNearbyLocation(context, ref)
                               : null,
                         )
-                      : cards.isEmpty
+                      : cards.isEmpty && total == 0
                       ? DiscoveryEmpty(
                           filtered: filters.keys.any((key) => key != 'species'),
                           global: allSpeciesEmpty,
@@ -691,7 +795,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                           },
                         )
                       : DiscoveryEnd(
-                          restart: () => load(reset: true),
+                          restart: restartDiscovery,
                           minimumHeight:
                               MediaQuery.textScalerOf(context).scale(28) > 40
                               ? 0

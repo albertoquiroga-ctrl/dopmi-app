@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,6 +7,46 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../../core/heading_layout.dart';
+
+Future<void> showPublicationSubmittedDialog(BuildContext context) =>
+    showDialog<void>(
+      context: context,
+      barrierColor: Colors.white.withValues(alpha: .65),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: const BorderSide(color: Color(0xffeae6e1)),
+          ),
+          icon: const Icon(
+            Icons.check_circle_outline,
+            color: DopmiTokens.orange,
+            size: 48,
+          ),
+          title: const Text('Enviado a revisión'),
+          content: const Text(
+            'Gracias por compartir su historia. Dopmi revisará el caso antes de publicarlo.',
+          ),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: DopmiTokens.orangeButton,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(0, 48),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Entendido'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
 
 class PublicationFrame extends StatefulWidget {
   const PublicationFrame({
@@ -246,8 +288,9 @@ class PublicationFooter extends StatelessWidget {
     this.compact = false,
     this.saveEnabled = true,
     this.review = false,
+    this.saveLabel = 'Guardar borrador',
   });
-  final String label;
+  final String label, saveLabel;
   final VoidCallback? onContinue, onSave;
   final bool busy, compact, saveEnabled, review;
   @override
@@ -346,9 +389,9 @@ class PublicationFooter extends StatelessWidget {
                     Colors.transparent,
                   ),
                 ),
-            child: const Text(
-              'Guardar borrador',
-              style: TextStyle(
+            child: Text(
+              saveLabel,
+              style: const TextStyle(
                 fontSize: 14,
                 height: 1.2,
                 fontWeight: FontWeight.w500,
@@ -796,13 +839,7 @@ class PublicationTraitCheck extends StatelessWidget {
   final String label;
   final bool? value;
   final ValueChanged<bool?>? onChanged;
-  void advance() => onChanged?.call(
-    value == null
-        ? true
-        : value == true
-        ? false
-        : null,
-  );
+  void advance() => onChanged?.call(value != true);
   @override
   Widget build(BuildContext context) => MergeSemantics(
     child: InkWell(
@@ -821,15 +858,14 @@ class PublicationTraitCheck extends StatelessWidget {
                 child: Transform.scale(
                   scale: 16 / 18,
                   child: Checkbox(
-                    value: value,
-                    tristate: true,
+                    value: value == true,
                     onChanged: onChanged == null ? null : (_) => advance(),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
                     activeColor: DopmiTokens.orangeButton,
                     checkColor: Colors.white,
                     fillColor: WidgetStatePropertyAll(
-                      value == false ? Colors.white : DopmiTokens.orangeButton,
+                      value == true ? DopmiTokens.orangeButton : Colors.white,
                     ),
                     side: const BorderSide(color: Color(0xffe3e4ed)),
                     shape: RoundedRectangleBorder(
@@ -852,15 +888,6 @@ class PublicationTraitCheck extends StatelessWidget {
                     color: Color(0xff151423),
                   ),
                 ),
-                if (value == null)
-                  const Text(
-                    'Por confirmar',
-                    style: TextStyle(
-                      fontSize: 12,
-                      height: 15 / 12,
-                      color: Color(0xff616174),
-                    ),
-                  ),
               ],
             ),
           ),

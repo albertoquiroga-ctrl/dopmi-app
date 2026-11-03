@@ -129,8 +129,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('@updated_profile'), findsOneWidget);
     expect(find.textContaining('vinculada'), findsNothing);
-    await reveal9ced(tester, find.text('Cuenta y privacidad'));
-    await tester.tap(find.text('Cuenta y privacidad'));
+    expect(find.text('Cuenta y privacidad'), findsNothing);
+    await reveal9ced(tester, find.text('Mi cuenta'));
+    await tester.tap(find.text('Mi cuenta'));
     await tester.pumpAndSettle();
     expect(container.read(routerProvider).state.uri.path, '/settings');
     expect(find.byType(RescuerSocialSection), findsNothing);
@@ -195,16 +196,40 @@ void main() {
           status: status,
         );
         expect(find.byType(RescuerSocialSection), findsNothing);
+        expect(find.text('Cuenta y privacidad'), findsNothing);
         for (final destination in [
           ('Sobre Nosotros', '/about'),
           ('Centro de ayuda', '/help'),
-          ('Cuenta y privacidad', '/settings'),
+          ('Mi cuenta', '/settings'),
         ]) {
           final link = find.text(destination.$1);
           await reveal9ced(tester, link);
           await tester.tap(link);
           await tester.pumpAndSettle();
           expect(container.read(routerProvider).state.uri.path, destination.$2);
+          if (destination.$2 == '/settings') {
+            expect(find.text('Configurar pagos con Stripe'), findsOneWidget);
+            final account = find.text('Cuenta y privacidad');
+            await reveal9ced(tester, account);
+            await tester.tap(account);
+            await tester.pumpAndSettle();
+            expect(find.byType(RescuerAccountOptionsScreen), findsOneWidget);
+            for (final entry in [
+              ('Privacidad y eliminación', '/account-privacy'),
+              ('Configurar pagos con Stripe', '/connect'),
+            ]) {
+              await reveal9ced(tester, find.text(entry.$1));
+              final row = tester.widget<ProfileRow>(
+                find.ancestor(
+                  of: find.text(entry.$1),
+                  matching: find.byType(ProfileRow),
+                ),
+              );
+              expect(row.path, entry.$2);
+            }
+            container.read(routerProvider).pop();
+            await tester.pumpAndSettle();
+          }
           container.read(routerProvider).pop();
           await tester.pumpAndSettle();
         }

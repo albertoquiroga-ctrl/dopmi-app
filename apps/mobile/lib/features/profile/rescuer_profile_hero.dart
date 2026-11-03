@@ -69,33 +69,6 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
     super.dispose();
   }
 
-  Widget accessIcon(String asset) => Container(
-    width: 56,
-    height: 56,
-    alignment: Alignment.center,
-    decoration: const BoxDecoration(
-      color: Color(0xfff0eeea),
-      shape: BoxShape.circle,
-    ),
-    child: SvgPicture.asset(
-      'assets/profile/$asset',
-      width: 22,
-      height: 22,
-      colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
-    ),
-  );
-  Widget accessLabel(String label) => Text(
-    label,
-    textAlign: TextAlign.center,
-    style: const TextStyle(
-      fontFamily: 'Inter',
-      fontSize: 12,
-      fontWeight: FontWeight.w500,
-      height: 1.2,
-      color: Color(0xff5c5650),
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
     if (actor != profile.id) {
@@ -169,6 +142,8 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
           ),
           const SizedBox(height: 18),
           content,
+          const SizedBox(height: 18),
+          const RescuerPaymentAccess(),
         ],
       ),
       builder: (data, refresh) {
@@ -378,108 +353,145 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
               ),
             ),
             const SizedBox(height: 18),
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(28),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x1415110d),
-                    offset: Offset(0, 10),
-                    blurRadius: 28,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Pagos y transacciones',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: ink,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  LayoutBuilder(
-                    builder: (context, bounds) {
-                      final stacked =
-                          MediaQuery.textScalerOf(context).scale(12) > 20;
-                      Widget access(String label, String asset, String route) =>
-                          ReferenceFocusOutline(
-                            radius: 14,
-                            child: TextButton(
-                              onPressed: () => context.push(route),
-                              style: TextButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 2,
-                                  vertical: 4,
-                                ),
-                                foregroundColor: ink,
-                                minimumSize: const Size(48, 48),
-                              ),
-                              child: stacked
-                                  ? Row(
-                                      children: [
-                                        accessIcon(asset),
-                                        const SizedBox(width: 12),
-                                        Expanded(child: accessLabel(label)),
-                                      ],
-                                    )
-                                  : Column(
-                                      children: [
-                                        accessIcon(asset),
-                                        const SizedBox(height: 10),
-                                        accessLabel(label),
-                                      ],
-                                    ),
-                            ),
-                          );
-                      final entries = [
-                        ('Mi cuenta', 'icon-card.svg', '/connect'),
-                        (
-                          'Mi historial',
-                          'icon-billing.svg',
-                          '/rescuer/received-payments',
-                        ),
-                        ('¿Dudas?', 'icon-help.svg', '/help'),
-                      ];
-                      return stacked
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                for (final e in entries)
-                                  access(e.$1, e.$2, e.$3),
-                              ],
-                            )
-                          : Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (var i = 0; i < entries.length; i++) ...[
-                                  if (i > 0) const SizedBox(width: 8),
-                                  Expanded(
-                                    child: access(
-                                      entries[i].$1,
-                                      entries[i].$2,
-                                      entries[i].$3,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            );
-                    },
-                  ),
-                ],
-              ),
-            ),
+            const RescuerPaymentAccess(),
           ],
         );
       },
     );
   }
+}
+
+/// Account tools stay reachable while public profile data is loading or offline.
+class RescuerPaymentAccess extends StatelessWidget {
+  const RescuerPaymentAccess({super.key});
+  Widget accessIcon(String asset) => Container(
+    width: 56,
+    height: 56,
+    alignment: Alignment.center,
+    decoration: const BoxDecoration(
+      color: Color(0xfff0eeea),
+      shape: BoxShape.circle,
+    ),
+    child: SvgPicture.asset(
+      'assets/profile/$asset',
+      width: 22,
+      height: 22,
+      colorFilter: const ColorFilter.mode(ink, BlendMode.srcIn),
+    ),
+  );
+  Widget accessLabel(String label) => Text(
+    label,
+    textAlign: TextAlign.center,
+    style: const TextStyle(
+      fontFamily: 'Inter',
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      height: 1.2,
+      color: Color(0xff5c5650),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(28),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x1415110d),
+          offset: Offset(0, 10),
+          blurRadius: 28,
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          'Pagos y transacciones',
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 16),
+        LayoutBuilder(
+          builder: (context, bounds) {
+            final stacked = MediaQuery.textScalerOf(context).scale(12) > 20;
+            Widget access(String label, String asset, String route) =>
+                ReferenceFocusOutline(
+                  radius: 14,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () => context.push(route),
+                      style: TextButton.styleFrom(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 2,
+                          vertical: 4,
+                        ),
+                        foregroundColor: ink,
+                        minimumSize: const Size(48, 48),
+                      ),
+                      child: stacked
+                          ? Row(
+                              children: [
+                                accessIcon(asset),
+                                const SizedBox(width: 12),
+                                Expanded(child: accessLabel(label)),
+                              ],
+                            )
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                accessIcon(asset),
+                                const SizedBox(height: 10),
+                                accessLabel(label),
+                              ],
+                            ),
+                    ),
+                  ),
+                );
+            final entries = [
+              ('Mi cuenta', 'icon-card.svg', '/settings'),
+              (
+                'Mi historial',
+                'icon-billing.svg',
+                '/rescuer/received-payments',
+              ),
+              ('¿Dudas?', 'icon-help.svg', '/help'),
+            ];
+            return stacked
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final e in entries) access(e.$1, e.$2, e.$3),
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < entries.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 8),
+                        Expanded(
+                          child: access(
+                            entries[i].$1,
+                            entries[i].$2,
+                            entries[i].$3,
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+          },
+        ),
+      ],
+    ),
+  );
 }
 
 class RescuerIdentityCard extends ConsumerStatefulWidget {

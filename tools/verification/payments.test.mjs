@@ -305,7 +305,7 @@ test('oneoff reconciles the exact Charge card without reading the current wallet
   assert.deepEqual(own.payment_method,{type:'card',brand:'visa',last4:'0029'});
   assert.equal(JSON.stringify(own).includes('synthetic-private'),false);
 });
-test('personality preserves legacy data, supports new traits and removes edited posts from discovery', async () => {
+test('personality preserves legacy data while discovery keeps only the approved version during editing', async () => {
   const post='30000000-0000-4000-8000-000000000001';
   await db.query("insert into dopmi_adoptions(id,owner_id,status,personality) values($1,$2,'published',array['calm','alegre'])",[post,rescuer]);
   await db.exec('set local role anon');
@@ -319,11 +319,15 @@ test('personality preserves legacy data, supports new traits and removes edited 
   await db.exec('set local role authenticated');
   const preserved=(await db.query("select dopmi_save_adoption('{}',$1,1) as value",[post])).rows[0].value;
   assert.deepEqual(preserved.personality,['calm','alegre']);
-  assert.equal(preserved.status,'draft');
+  assert.equal(preserved.status,'published');
+  assert.equal(preserved._has_private_draft,true);
   const edited=(await db.query(`select dopmi_save_adoption('{"personality":["triste","tranquilo"]}',$1,2) as value`,[post])).rows[0].value;
   assert.deepEqual(edited.personality,['triste','tranquilo']);
   await db.exec('reset role; set local role anon');
   assert.equal((await db.query(`select dopmi_discovery('{"personality":["triste"]}') as value`)).rows[0].value.total,0);
+  const approved=(await db.query(`select dopmi_discovery('{"personality":["calm"]}') as value`)).rows[0].value;
+  assert.equal(approved.total,1);
+  assert.deepEqual(approved.items[0].personality,['calm','alegre']);
   await db.exec('reset role; set local role authenticated');
   const cleared=(await db.query(`select dopmi_save_adoption('{"personality":[]}',$1,3) as value`,[post])).rows[0].value;
   assert.deepEqual(cleared.personality,[]);

@@ -143,7 +143,7 @@ void main() {
     });
   }
   testWidgets(
-    'rescuer configuration keeps public profile publications and Connect destinations',
+    'Mi cuenta opens settings and preserves public profile privacy and Connect destinations',
     (tester) async {
       final identity = FakeIdentityRepository()
         ..user = const Identity('one', 'fixture@example.test', verified: true);
@@ -152,7 +152,7 @@ void main() {
         overrides: [
           identityRepositoryProvider.overrideWithValue(identity),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          routerInitialLocationProvider.overrideWithValue('/settings'),
+          routerInitialLocationProvider.overrideWithValue('/profile'),
           rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           rescuerProfileRepositoryProvider.overrideWithValue(
             FakeRescuerProfile()..value['owner_id'] = 'one',
@@ -169,6 +169,17 @@ void main() {
           child: const DopmiApp(),
         ),
       );
+      await tester.pumpAndSettle();
+      expect(find.text('Cuenta y privacidad'), findsNothing);
+      final account = find.text('Mi cuenta');
+      await tester.scrollUntilVisible(
+        account,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(account), alignment: .5);
+      await tester.pumpAndSettle();
+      await tester.tap(account);
       await tester.pumpAndSettle();
       expect(find.byType(SettingsScreen), findsOneWidget);
       expect(find.text('Estado de verificación'), findsOneWidget);

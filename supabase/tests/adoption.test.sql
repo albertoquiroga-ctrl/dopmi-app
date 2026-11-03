@@ -105,9 +105,10 @@ select lives_ok($$select dopmi_read_thread(current_setting('test.thread')::uuid)
 select is((select count(*) from dopmi_notifications where kind='message' and read_at is null),0::bigint,'unread count clears');
 select lives_ok($$select dopmi_close_thread(current_setting('test.thread')::uuid)$$,'participant can close');
 select throws_ok($$select dopmi_send_message(current_setting('test.thread')::uuid,gen_random_uuid(),'Otro')$$,'22023',null,'closed thread blocks new messages');
-select lives_ok($$select dopmi_save_adoption((select to_jsonb(a) from dopmi_adoptions a where id='30000000-0000-4000-8000-000000000001')||'{"pet_name":"Nombre editado","status":"published"}', '30000000-0000-4000-8000-000000000001',5)$$,'published content can be edited with withdrawal');
-select is((dopmi_catalog()->>'total')::int,0,'edited publication disappears until reapproved');
-select is((select status from dopmi_adoptions where id='30000000-0000-4000-8000-000000000001'),'draft','payload cannot choose published status');
+select lives_ok($$select dopmi_save_adoption((select to_jsonb(a) from dopmi_adoptions a where id='30000000-0000-4000-8000-000000000001')||'{"pet_name":"Nombre editado","status":"published"}', '30000000-0000-4000-8000-000000000001',5)$$,'published content is edited as a private proposal');
+select is((dopmi_catalog()->>'total')::int,1,'approved publication stays visible during a private edit');
+select is(dopmi_adoption_detail('30000000-0000-4000-8000-000000000001')->>'pet_name','Luna','payload cannot replace approved public content');
+select lives_ok($$select dopmi_transition_adoption('30000000-0000-4000-8000-000000000001',6,'archive')$$,'explicit owner closure withdraws the publication and private proposal');
 select set_config('request.jwt.claim.sub','20000000-0000-4000-8000-000000000002',true);
 select is((dopmi_saved_adoptions()->'items'->0->>'available')::boolean,false,'withdrawn favorite becomes a private tombstone');
 select is(dopmi_saved_adoptions()->'items'->0 ?| array['pet_name','story','photos','owner_id'],false,'withdrawn favorite leaks no unpublished fields');

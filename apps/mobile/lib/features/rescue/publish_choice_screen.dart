@@ -120,7 +120,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                               fontSize: 28,
                               height: 1.1,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xff15110d),
+                              color: DopmiTokens.ink,
                             ),
                           ),
                         ),
@@ -134,11 +134,11 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                             style: TextStyle(
                               fontSize: 14,
                               height: 1.5,
-                              color: Color(0xff8a837c),
+                              color: DopmiTokens.muted,
                             ),
                           ),
                         ),
-                      SizedBox(height: chosen ? 40 : 28),
+                      const SizedBox(height: 28),
                       Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 280),
@@ -151,10 +151,12 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   subtitle: 'Publica una mascota que esté lista para encontrar un hogar',
                                   asset: 'assets/profile/publish-adopter.svg',
                                   colors: const [
-                                    DopmiTokens.purple,
-                                    DopmiTokens.purple,
+                                    DopmiTokens.orange,
+                                    DopmiTokens.sky,
+                                    DopmiTokens.saffronSoft,
                                   ],
                                   selected: selected == 'adoption',
+                                  muted: chosen && selected != 'adoption',
                                   onPressed: busy
                                       ? null
                                       : () => setState(
@@ -169,10 +171,12 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                   subtitle: 'Crea un caso para apoyarte a solventar los gastos que ya hayas cubierto recientemente de una mascota.',
                                   asset: 'assets/profile/tab-donate.svg',
                                   colors: const [
-                                    DopmiTokens.purple,
-                                    DopmiTokens.purple,
+                                    DopmiTokens.orange,
+                                    DopmiTokens.sky,
+                                    DopmiTokens.saffronSoft,
                                   ],
                                   selected: selected == 'donation',
+                                  muted: chosen && selected != 'donation',
                                   verification: true,
                                   onPressed: busy
                                       ? null
@@ -216,8 +220,9 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                           fontFamily: 'Inter',
                                           fontSize: 28,
                                           height: 1.1,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xff15110d),
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: -.56,
+                                          color: DopmiTokens.orange,
                                         ),
                                       ),
                                       const SizedBox(height: 10),
@@ -229,7 +234,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                         style: const TextStyle(
                                           fontSize: 14,
                                           height: 1.5,
-                                          color: Color(0xff8a837c),
+                                          color: DopmiTokens.muted,
                                         ),
                                       ),
                                     ],
@@ -249,22 +254,13 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                               TextButton(
                                 onPressed: () => showDialog<void>(
                                   context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Revisión del caso'),
-                                    content: const Text(
-                                      'Dopmi revisará los textos, fotos y privacidad antes de publicar. Los gastos requieren comprobantes y aprobación independiente.',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text('Entendido'),
-                                      ),
-                                    ],
+                                  builder: (context) => _PublishReviewDialog(
+                                    adoption: selected == 'adoption',
                                   ),
                                 ),
                                 style: TextButton.styleFrom(
-                                  foregroundColor: DopmiTokens.purple,
-                                  minimumSize: Size.zero,
+                                  foregroundColor: DopmiTokens.ink,
+                                  minimumSize: const Size(0, 48),
                                   padding: EdgeInsets.zero,
                                   tapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
@@ -292,7 +288,7 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                               FilledButton(
                                 onPressed: busy ? null : continueChoice,
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: const Color(0xff15110d),
+                                  backgroundColor: DopmiTokens.orangeButton,
                                   foregroundColor: Colors.white,
                                   minimumSize: const Size(0, 52),
                                   shape: const StadiumBorder(),
@@ -308,11 +304,12 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
+                                          color: Colors.white,
                                           semanticsLabel:
                                               'Consultando tu cuenta',
                                         ),
                                       )
-                                    : const Text('Continuar'),
+                                    : const Text('Empezar'),
                               ),
                               TextButton(
                                 onPressed: busy
@@ -351,6 +348,133 @@ class _PublishChoiceState extends ConsumerState<PublishChoiceScreen> {
   }
 }
 
+class _PublishReviewDialog extends StatelessWidget {
+  const _PublishReviewDialog({required this.adoption});
+
+  final bool adoption;
+
+  Widget heading() => Text(
+    adoption ? 'Revisión del caso de adopción' : 'Revisión del caso de apoyo',
+    style: const TextStyle(
+      fontFamily: 'Inter',
+      fontSize: 22,
+      height: 1.3,
+      fontWeight: FontWeight.w700,
+      color: DopmiTokens.ink,
+    ),
+  );
+
+  Widget close(BuildContext context) => IconButton(
+    onPressed: () => Navigator.pop(context),
+    tooltip: 'Cerrar',
+    padding: EdgeInsets.zero,
+    constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+    icon: const Icon(Icons.close, size: 22, color: DopmiTokens.muted),
+  );
+
+  @override
+  Widget build(BuildContext context) => Dialog(
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent,
+    insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 340),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (MediaQuery.textScalerOf(context).scale(22) > 30) ...[
+              Align(alignment: Alignment.centerRight, child: close(context)),
+              heading(),
+            ] else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: heading()),
+                  close(context),
+                ],
+              ),
+            const SizedBox(height: 14),
+            _ReviewPoint(
+              title: 'Qué es:',
+              description: adoption
+                  ? 'revisamos la información y las fotos de tu publicación antes de mostrarla a los adoptantes.'
+                  : 'revisamos la información, las fotos, las necesidades y los comprobantes de tu caso antes de publicarlo.',
+            ),
+            const SizedBox(height: 10),
+            _ReviewPoint(
+              title: 'Por qué:',
+              description: adoption
+                  ? 'cuidamos a quienes buscan adoptar y a las mascotas frente a casos incompletos o engañosos.'
+                  : 'cuidamos la confianza de quienes apoyan: las necesidades deben corresponder a gastos ya pagados y estar respaldadas.',
+            ),
+            const SizedBox(height: 10),
+            _ReviewPoint(
+              title: 'Cómo funciona:',
+              description: adoption
+                  ? 'completas el flujo de publicación y envías el caso; queda en revisión hasta que Dopmi lo apruebe y aparezca en Adoptar.'
+                  : 'completas el caso y sus necesidades, adjuntas los comprobantes y envías todo a revisión; Dopmi revisa el conjunto completo antes de publicarlo en Apoyar.',
+            ),
+            const SizedBox(height: 18),
+            FilledButton(
+              onPressed: () => Navigator.pop(context),
+              style: FilledButton.styleFrom(
+                backgroundColor: DopmiTokens.ink,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(0, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Entendido'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _ReviewPoint extends StatelessWidget {
+  const _ReviewPoint({required this.title, required this.description});
+
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text('• ', style: TextStyle(fontSize: 13, height: 1.45)),
+      Expanded(
+        child: Text.rich(
+          TextSpan(
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 13,
+              height: 1.45,
+              color: DopmiTokens.ink,
+            ),
+            children: [
+              TextSpan(
+                text: '$title ',
+                style: const TextStyle(
+                  color: DopmiTokens.orangeButton,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              TextSpan(text: description),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 class PublishTypeCard extends StatelessWidget {
   const PublishTypeCard({
     super.key,
@@ -361,11 +485,12 @@ class PublishTypeCard extends StatelessWidget {
     required this.onPressed,
     this.verification = false,
     this.selected = false,
+    this.muted = false,
   });
   final String title, subtitle, asset;
   final List<Color> colors;
   final VoidCallback? onPressed;
-  final bool verification, selected;
+  final bool verification, selected, muted;
   @override
   Widget build(BuildContext context) => Semantics(
     button: true,
@@ -384,40 +509,55 @@ class PublishTypeCard extends StatelessWidget {
                 : const Duration(milliseconds: 250),
             width: 92,
             height: 92,
+            padding: EdgeInsets.all(muted ? 1.5 : 2),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: selected ? const Color(0xfff3eeff) : Colors.white,
-              border: Border.all(
-                color: DopmiTokens.purple,
-                width: selected ? 2 : 1.5,
-              ),
+              color: muted ? DopmiTokens.line : null,
+              gradient: muted
+                  ? null
+                  : LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: colors,
+                      stops: colors.length == 3 ? const [0, .52, 1] : null,
+                    ),
+              boxShadow: muted
+                  ? null
+                  : const [
+                      BoxShadow(color: Color(0x57eb6425), blurRadius: 10),
+                      BoxShadow(color: Color(0x47cbe8fa), blurRadius: 16),
+                      BoxShadow(color: Color(0x38fef3d4), blurRadius: 22),
+                    ],
             ),
-            child: SvgPicture.asset(
-              asset,
-              width: 32,
-              height: 32,
-              colorFilter: const ColorFilter.mode(
-                Color(0xff15110d),
-                BlendMode.srcIn,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  asset,
+                  width: 32,
+                  height: 32,
+                  colorFilter: ColorFilter.mode(
+                    muted ? DopmiTokens.navigationInactive : DopmiTokens.orange,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 10),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 80),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                height: 1.3,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                color: selected
-                    ? const Color(0xff15110d)
-                    : const Color(0xff8a837c),
-              ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 15,
+              height: 1.35,
+              fontWeight: FontWeight.w500,
+              color: DopmiTokens.muted,
             ),
           ),
         ],

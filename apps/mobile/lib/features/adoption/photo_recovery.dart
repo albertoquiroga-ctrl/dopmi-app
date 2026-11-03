@@ -52,6 +52,7 @@ class PhotoRecoveryNotice extends ConsumerStatefulWidget {
 class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
   bool busy = false;
   String? error;
+  final recoveredOffsets = Map<LostPhoto, int>.identity();
   @override
   Widget build(BuildContext context) {
     final repo = ref.read(communityRepositoryProvider),
@@ -69,7 +70,7 @@ class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Notice(
-              'Android interrumpió la selección de una foto. Tu borrador está guardado.',
+              'Android interrumpió la selección de fotos. Tu borrador está guardado.',
             ),
             if (error != null) Notice(error!, isError: true),
             ActionButton(
@@ -78,6 +79,10 @@ class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
                   : 'Recuperar foto y retomar borrador',
               busy: busy,
               onPressed: () async {
+                bool current() =>
+                    mounted &&
+                    identical(repo, ref.read(communityRepositoryProvider)) &&
+                    repo.userId == userId;
                 setState(() {
                   busy = true;
                   error = null;
@@ -132,34 +137,49 @@ class _PhotoRecoveryState extends ConsumerState<PhotoRecoveryNotice> {
                     if (context.mounted) context.push('/rescue/${record.id}');
                     return;
                   }
-                  final post = await repo.own(lost.postId);
-                  if (post == null) {
+                  final initialPost = await repo.own(lost.postId);
+                  if (!current()) return;
+                  if (initialPost == null || initialPost.owner != userId) {
                     throw const FormatException(
                       'El borrador ya no está disponible.',
                     );
                   }
+                  var post = initialPost;
                   if (lost.files.isNotEmpty &&
                       post.photos.length < 6 &&
-                      [
-                        'draft',
-                        'changes_requested',
-                        'rejected',
-                        'archived',
-                      ].contains(post.status)) {
-                    final path = await repo.uploadPhoto(
-                      post.id,
-                      await lost.files.first.readAsBytes(),
-                    );
-                    await repo.save(
-                      {
-                        ...post.data,
-                        'photos': [...post.photos, path],
-                      },
-                      id: post.id,
-                      version: post.version,
-                    );
+                      ([
+                            'draft',
+                            'changes_requested',
+                            'rejected',
+                            'archived',
+                          ].contains(post.status) ||
+                          (post.status == 'published' &&
+                              post.data['_has_private_draft'] == true))) {
+                    final recovered = recoveredOffsets[lost] ?? 0;
+                    for (final file
+                        in lost.files
+                            .skip(recovered)
+                            .take(6 - post.photos.length)) {
+                      if (!current()) return;
+                      final bytes = await file.readAsBytes();
+                      if (!current()) return;
+                      final path = await repo.uploadPhoto(post.id, bytes);
+                      if (!current()) return;
+                      post = await repo.save(
+                        {
+                          ...post.data,
+                          'photos': [...post.photos, path],
+                        },
+                        id: post.id,
+                        version: post.version,
+                      );
+                      if (!current()) return;
+                      recoveredOffsets[lost] =
+                          (recoveredOffsets[lost] ?? 0) + 1;
+                    }
                   }
                   final preferences = await SharedPreferences.getInstance();
+                  if (!current()) return;
                   await preferences.remove(pendingPhotoKey(userId));
                   if (preferences.getString(pendingPhotoActorKey) == userId) {
                     await preferences.remove(pendingPhotoActorKey);

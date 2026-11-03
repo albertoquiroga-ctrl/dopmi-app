@@ -984,7 +984,7 @@ class _HomeFunnelGrid extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           adoption
-              ? 'Favoritos vigentes del período. Vistas desde ${trackingDay.day}/${trackingDay.month}/${trackingDay.year}.'
+              ? 'Favoritos vigentes del período. Vistas desde ${trackingDay.day}/${trackingDay.month}/${trackingDay.year}, sólo de personas que autorizaron la medición; no incluye tus propias visitas.'
               : 'Activos y completados al momento. Recaudado es apoyo neto asignado.',
           style: const TextStyle(fontSize: 10, color: Color(0xff5c5650)),
         ),
@@ -1729,6 +1729,10 @@ class _HomeEmpty extends StatelessWidget {
             'assets/profile/empty-pending-heart.svg',
             width: 32,
             height: 32,
+            colorFilter: const ColorFilter.mode(
+              DopmiTokens.orange,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -1758,7 +1762,11 @@ class _HomeEmpty extends StatelessWidget {
           onPressed: () => context.go('/publish'),
           icon: const Icon(Icons.add, size: 16),
           label: const Text('Publicar caso'),
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(0, 44),
+            backgroundColor: DopmiTokens.orangeButton,
+            foregroundColor: Colors.white,
+          ),
         ),
       ],
     ),

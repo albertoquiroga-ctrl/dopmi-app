@@ -1,3 +1,4 @@
+import 'package:dopmi_mobile/features/adoption/location_map_picker.dart';
 import 'package:dopmi_mobile/features/profile/monthly_impact_repository.dart';
 
 import '../test/monthly_impact_test.dart' show FakeMonthlyImpact;
@@ -252,6 +253,19 @@ class OwnedHistoryCaptureUpdates extends FakeCaseUpdates {
   @override
   Future<String> photoUrl(String path) async =>
       'https://fixture.example.test/story/$path.png';
+}
+
+class SubmittedAdoptionCaptureCommunity extends DetailCaptureCommunity {
+  @override
+  Future<Adoption> transition(Adoption value, String action) async {
+    if (action != 'submit') throw StateError('Unexpected capture action');
+    post = Adoption({
+      ...value.data,
+      'status': 'submitted',
+      'version': value.version + 1,
+    });
+    return post;
+  }
 }
 
 class PublicationCaptureCommunity extends DetailCaptureCommunity {
@@ -1445,8 +1459,6 @@ void main() {
       ('rescuer-messages-large', '/messages'),
       ('rescuer-messages-empty', '/messages'),
       ('rescuer-messages-empty-large', '/messages'),
-      ('match-threads-photo-search', '/messages'),
-      ('match-threads-photo-search-large', '/messages'),
       ('match-threads-photo-focus', '/messages'),
       ('match-threads-photo-focus-large', '/messages'),
       ('match-threads-focus', '/messages'),
@@ -1538,6 +1550,9 @@ void main() {
       ('publish-choice-adoption-large', '/publish'),
       ('publish-choice-donation', '/publish'),
       ('publish-choice-donation-large', '/publish'),
+      ('publish-choice-adoption-review-info', '/publish'),
+      ('publish-choice-adoption-review-info-large', '/publish'),
+      ('publish-choice-donation-review-info', '/publish'),
       ('managed-updates', '/rescue-cases/case-one/updates'),
       ('managed-updates-large', '/rescue-cases/case-one/updates'),
       ('managed-updates-empty', '/rescue-cases/case-one/updates'),
@@ -1610,6 +1625,7 @@ void main() {
       ('publish-information-location', '/my-adoptions/post'),
       ('publish-review', '/my-adoptions/post'),
       ('publish-review-large', '/my-adoptions/post'),
+      ('publish-review-submitted', '/my-adoptions/post'),
       ('publish-review-social', '/my-adoptions/post'),
       ('publish-review-social-large', '/my-adoptions/post'),
       ('publish-health', '/my-adoptions/post'),
@@ -1918,7 +1934,9 @@ void main() {
             : 'adoption',
         paymentsAcknowledged: large || spec.$1.endsWith('review'),
       );
-      final community = spec.$1.startsWith('bccd-cases')
+      final community = spec.$1 == 'publish-review-submitted'
+          ? SubmittedAdoptionCaptureCommunity()
+          : spec.$1.startsWith('bccd-cases')
           ? BccdCasesCaptureCommunity(bccdCases)
           : spec.$1.startsWith('bccd-')
           ? BccdMessagesCaptureCommunity(
@@ -2175,6 +2193,14 @@ void main() {
           if (spec.$1.startsWith('payment-history') ||
               spec.$1.startsWith('contribution'))
             rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          if (spec.$1 == 'publish-information-location' ||
+              spec.$1 == 'case-publication-information-location')
+            locationMapBuilderProvider.overrideWithValue(
+              (context, point, select) => const ColoredBox(
+                color: Color(0xffeaf5fb),
+                child: Center(child: Icon(Icons.map_outlined, size: 64)),
+              ),
+            ),
           identityRepositoryProvider.overrideWithValue(repo),
           if (spec.$1.startsWith('bccd-') || spec.$1.startsWith('rescuer-home'))
             photoRuntimeProvider.overrideWith((ref) {
@@ -3319,12 +3345,12 @@ void main() {
       }
       if (spec.$1 == 'match-empty-large') {
         await tester.scrollUntilVisible(
-          find.text('Explorar'),
+          find.text('Descubrir'),
           150,
           scrollable: find.byType(Scrollable).first,
         );
         await Scrollable.ensureVisible(
-          tester.element(find.text('Explorar')),
+          tester.element(find.text('Descubrir')),
           alignment: .35,
         );
         await tester.pumpAndSettle();
@@ -3864,13 +3890,34 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
+      if (spec.$1.contains('reference-transfer-focus') &&
+          !spec.$1.endsWith('-large')) {
+        for (final label in ['Mi cuenta', 'Mi historial', '¿Dudas?']) {
+          final access = find.widgetWithText(TextButton, label);
+          final circle = find.descendant(
+            of: access,
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Container &&
+                  widget.decoration is BoxDecoration &&
+                  (widget.decoration as BoxDecoration).shape == BoxShape.circle,
+            ),
+          );
+          expect(
+            tester.getCenter(circle).dx,
+            closeTo(tester.getCenter(access).dx, .5),
+            reason:
+                'Payment access icon is centered in its complete touch target: $label',
+          );
+        }
+      }
       if (spec.$1.contains('reference-metric-focus') ||
           spec.$1.contains('reference-transfer-focus')) {
         // The old metric cards were retired in 9ced. Exercise their live
         // replacements: verification and the account/privacy entry point.
         expect(find.byType(RescuerProfileMetric), findsNothing);
         final target = spec.$1.contains('transfer')
-            ? find.widgetWithText(TextButton, 'Cuenta y privacidad')
+            ? find.widgetWithText(TextButton, 'Mi cuenta')
             : find.byType(RescuerVerificationCard);
         await focusProfileCaptureTarget(tester, target);
         if (!spec.$1.contains('transfer')) {
@@ -3907,22 +3954,6 @@ void main() {
         await Scrollable.ensureVisible(tester.element(button), alignment: .4);
         await tester.pumpAndSettle();
         expect(tester.getRect(outline), tester.getRect(button).inflate(5));
-      }
-      if (spec.$1.startsWith('match-threads-photo-search')) {
-        final open = find.byTooltip('Buscar conversaciones');
-        await tester.scrollUntilVisible(
-          open,
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await Scrollable.ensureVisible(tester.element(open), alignment: .3);
-        await tester.pumpAndSettle();
-        await tester.tap(open);
-        await tester.pumpAndSettle();
-        final field = find.byType(TextField);
-        expect(field, findsOneWidget);
-        await Scrollable.ensureVisible(tester.element(field), alignment: .35);
-        await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('match-threads-focus') ||
           spec.$1.startsWith('match-threads-photo-focus')) {
@@ -4267,6 +4298,14 @@ void main() {
         await tester.tap(orb);
         await tester.pumpAndSettle();
       }
+      if (spec.$1.contains('publish-choice-') &&
+          spec.$1.contains('review-info')) {
+        final info = find.text('DopMi revisará el caso antes de publicar');
+        await Scrollable.ensureVisible(tester.element(info), alignment: .5);
+        await tester.pumpAndSettle();
+        await tester.tap(info);
+        await tester.pumpAndSettle();
+      }
       if (spec.$1.startsWith('publish-photo-grid') ||
           spec.$1.startsWith('publish-review') ||
           spec.$1.startsWith('publish-health') ||
@@ -4278,6 +4317,14 @@ void main() {
       if (spec.$1.startsWith('publish-review') ||
           spec.$1.startsWith('publish-preview-gallery')) {
         await publicationNext();
+      }
+      if (spec.$1 == 'publish-review-submitted') {
+        final send = find.text('Enviar a revisión');
+        await Scrollable.ensureVisible(tester.element(send), alignment: .5);
+        await tester.pumpAndSettle();
+        await tester.tap(send);
+        await tester.pumpAndSettle();
+        expect(find.text('Enviado a revisión'), findsOneWidget);
       }
       if (spec.$1.startsWith('publish-review-social')) {
         await Scrollable.ensureVisible(
@@ -4320,6 +4367,11 @@ void main() {
           find.byKey(const ValueKey('publication-location-map')),
         );
         await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const ValueKey('publication-location-map')),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(LocationMapPicker), findsOneWidget);
       }
       for (final entry in {
         'medicine': 'Medicina',
@@ -4695,8 +4747,8 @@ void main() {
           }
           if (spec.$1 == 'rescuer-settings-logout-focus') {
             final account = find.widgetWithText(
-              TextButton,
-              'Cuenta y privacidad',
+              DonorSupportRow,
+              'Centro de ayuda',
             );
             final logout = find.byType(DonorLogoutRow);
             expect(
@@ -5577,7 +5629,12 @@ void main() {
         if (spec.$1.contains('rescuer-profile-reference-transfer-focus') ||
             spec.$1 == 'rescuer-settings-footer') {
           await tester.tap(
-            find.widgetWithText(TextButton, 'Cuenta y privacidad'),
+            find.widgetWithText(
+              TextButton,
+              spec.$1.contains('reference-transfer-focus')
+                  ? 'Mi cuenta'
+                  : 'Cuenta y privacidad',
+            ),
           );
           await tester.pumpAndSettle();
           if (spec.$1.contains('reference-transfer-focus')) {
@@ -5586,7 +5643,15 @@ void main() {
               TextButton,
               'Cuenta y privacidad',
             );
-            await tester.ensureVisible(account);
+            await tester.scrollUntilVisible(
+              account,
+              200,
+              scrollable: find.byType(Scrollable).first,
+            );
+            await Scrollable.ensureVisible(
+              tester.element(account),
+              alignment: .5,
+            );
             await tester.pumpAndSettle();
             await tester.tap(account);
             await tester.pumpAndSettle();

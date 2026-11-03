@@ -151,7 +151,7 @@ void main() {
       expect(repo.supportRequests, 1);
       expect(
         find.text('Mascotas en adopción a 25 km de tu ubicación actual'),
-        findsOneWidget,
+        findsNothing,
       );
       expectNoManualOrigin();
       final logo = find.byWidgetPredicate(
@@ -160,6 +160,54 @@ void main() {
       expect(logo, findsOneWidget);
       expect(
         find.ancestor(of: logo, matching: find.byType(TextButton)),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'restored location approval shows only loading while GPS and cards resolve',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.nearby.prompt.v2:test:example.test:one': true,
+        'dopmi.nearby.follow-device.v2:test:example.test:one': true,
+      });
+      final repo = PendingNearbyCommunity();
+      final service = PendingDeviceLocation();
+      await startNearbyDiscovery(
+        tester,
+        repo: repo,
+        service: service,
+        identity: nearbyIdentity(),
+      );
+      await tester.pumpAndSettle();
+      expect(service.permissionRequests, [false]);
+      expect(find.text('Cargando…'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('discovery-location-required')),
+        findsNothing,
+      );
+      expect(find.text('Activar ubicación'), findsNothing);
+      expect(find.text('Obteniendo ubicación…'), findsNothing);
+
+      service.pending.single.complete(
+        const ApproximateLocation(25.686614, -100.316113),
+      );
+      await tester.pump();
+      expect(find.text('Cargando…'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('discovery-location-required')),
+        findsNothing,
+      );
+      expect(repo.requests.single['radius_km'], 25);
+
+      repo.pending.single.complete(DataPage([repo.post], 1));
+      await tester.pumpAndSettle();
+      expect(find.text('Luna'), findsWidgets);
+      expect(find.text('Cargando…'), findsNothing);
+      expect(
+        find.text('Mascotas en adopción a 25 km de tu ubicación actual'),
         findsNothing,
       );
       expect(tester.takeException(), isNull);

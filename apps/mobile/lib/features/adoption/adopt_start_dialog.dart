@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/ui.dart';
+import '../../core/design_tokens.dart';
 import '../../core/dialog_close.dart';
 
 Future<bool?> confirmAdoptionContact(
@@ -116,8 +117,8 @@ class AdoptStartDialog extends StatelessWidget {
     minimumSize: const Size(0, 48),
     padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
     visualDensity: VisualDensity.standard,
-    foregroundColor: ink,
-    backgroundColor: primary ? yellow : Colors.white,
+    foregroundColor: primary ? Colors.white : ink,
+    backgroundColor: primary ? DopmiTokens.orangeButton : Colors.white,
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     side: primary ? null : const BorderSide(color: Color(0xffe6e2dd)),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

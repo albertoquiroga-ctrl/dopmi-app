@@ -35,10 +35,6 @@ class ThreadsScreen extends ConsumerStatefulWidget {
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
   bool allFavorites = false;
-  bool showSearch = false;
-  String query = '';
-  final search = TextEditingController();
-  final searchFocus = FocusNode();
   final scroll = ScrollController();
   double homeOffset = 0;
   void showFavorites(bool value) {
@@ -54,8 +50,6 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
 
   @override
   void dispose() {
-    search.dispose();
-    searchFocus.dispose();
     scroll.dispose();
     super.dispose();
   }
@@ -71,42 +65,6 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
           : donor(context),
     );
   }
-
-  Widget chatSearchButton(BuildContext context) => ReferenceFocusOutline(
-    radius: 99,
-    child: IconButton(
-      tooltip: showSearch ? 'Cerrar búsqueda' : 'Buscar conversaciones',
-      onPressed: () {
-        if (showSearch) FocusScope.of(context).unfocus();
-        setState(() {
-          showSearch = !showSearch;
-          if (!showSearch) {
-            search.clear();
-            query = '';
-            page = 1;
-          }
-        });
-        if (showSearch) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted && showSearch) {
-              searchFocus.requestFocus();
-            }
-          });
-        }
-      },
-      style: IconButton.styleFrom(
-        minimumSize: const Size(48, 48),
-        overlayColor: Colors.transparent,
-      ),
-      icon: Transform.translate(
-        offset: Offset(
-          0,
-          (MediaQuery.textScalerOf(context).scale(16) * 1.3 - 48) / 2,
-        ),
-        child: Icon(showSearch ? Icons.close : Icons.search, color: ink),
-      ),
-    ),
-  );
 
   Widget donor(BuildContext context) => PopScope(
     canPop: !allFavorites,
@@ -173,7 +131,7 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(right: 48, bottom: 12),
+                        padding: EdgeInsets.only(bottom: 12),
                         child: Text(
                           'Chats',
                           style: TextStyle(
@@ -185,84 +143,50 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                           ),
                         ),
                       ),
-                      if (showSearch) ...[
-                        const SizedBox(height: 12),
-                        if (MediaQuery.textScalerOf(context).scale(16) >
-                            24) ...[
-                          const Text(
-                            'Buscar por mascota o persona',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16,
-                              height: 1.3,
-                              color: ink,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                        TextField(
-                          focusNode: searchFocus,
-                          controller: search,
-                          textInputAction: TextInputAction.search,
-                          decoration: InputDecoration(
-                            labelText:
-                                MediaQuery.textScalerOf(context).scale(16) > 24
-                                ? 'Buscar'
-                                : 'Buscar por mascota o persona',
-                            labelStyle: const TextStyle(color: muted),
-                            floatingLabelStyle: const TextStyle(color: ink),
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: query.isEmpty
-                                ? null
-                                : IconButton(
-                                    tooltip: 'Limpiar búsqueda',
-                                    onPressed: () => setState(() {
-                                      search.clear();
-                                      query = '';
-                                      page = 1;
-                                    }),
-                                    icon: const Icon(Icons.close),
-                                  ),
-                          ),
-                          onSubmitted: (value) => setState(() {
-                            query = value.trim();
-                            page = 1;
-                          }),
-                        ),
-                        const SizedBox(height: 12),
-                      ],
                       LiveSection<DataPage<Json>>(
-                        key: ValueKey('$page:$query'),
+                        key: ValueKey(page),
                         tables: const [
                           'dopmi_threads',
                           'dopmi_messages',
                           'dopmi_notifications',
                         ],
-                        load: () => ref
-                            .read(communityRepositoryProvider)
-                            .threads(page, search: query),
+                        load: () =>
+                            ref.read(communityRepositoryProvider).threads(page),
                         builder: (result, refresh) => Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             if (result.items.isEmpty)
-                              Text(
-                                query.isEmpty
-                                    ? 'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.'
-                                    : 'No encontramos conversaciones con “$query”.',
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  height: 1.45,
-                                  color: muted,
+                              Container(
+                                key: const ValueKey('match-chats-empty'),
+                                padding: const EdgeInsets.all(18),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: DopmiTokens.line),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 14,
+                                        height: 1.45,
+                                        color: muted,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    FilledButton(
+                                      style: FilledButton.styleFrom(
+                                        minimumSize: const Size(0, 44),
+                                      ),
+                                      onPressed: () => context.go('/adoptions'),
+                                      child: const Text('Descubrir'),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            if (result.items.isEmpty && query.isEmpty) ...[
-                              const SizedBox(height: 16),
-                              FilledButton(
-                                onPressed: () => context.go('/adoptions'),
-                                child: const Text('Descubrir'),
-                              ),
-                            ],
                             if (result.items.isNotEmpty)
                               Container(
                                 key: const ValueKey('match-thread-list'),
@@ -311,11 +235,6 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                         ),
                       ),
                     ],
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: chatSearchButton(context),
                   ),
                 ],
               ),

@@ -9,8 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 
-class SearchCommunity extends FakeCommunity {
-  SearchCommunity() {
+class ThreadListCommunity extends FakeCommunity {
+  ThreadListCommunity() {
     savedItems = [];
     threadItems = [
       {
@@ -27,131 +27,126 @@ class SearchCommunity extends FakeCommunity {
       },
     ];
   }
+
   final queries = <String>[];
+
   @override
   Future<DataPage<Json>> threads(int page, {String search = ''}) async {
     queries.add(search);
-    final items = threadItems
-        .where(
-          (item) => '${item['pet_name']} ${item['participant_name']}'
-              .toLowerCase()
-              .contains(search.toLowerCase()),
-        )
-        .toList();
-    return DataPage(items, items.length);
+    return DataPage(threadItems, threadItems.length);
   }
+}
+
+Future<ProviderContainer> mountThreads(
+  WidgetTester tester,
+  ThreadListCommunity repo, {
+  required bool large,
+}) async {
+  tester.view.physicalSize = large
+      ? const Size(320, 640)
+      : const Size(384, 852);
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  final identity = FakeIdentityRepository()
+    ..user = const Identity('one', 'fixture@example.test', verified: true);
+  final container = ProviderContainer(
+    overrides: [
+      identityRepositoryProvider.overrideWithValue(identity),
+      communityRepositoryProvider.overrideWithValue(repo),
+      routerInitialLocationProvider.overrideWithValue('/messages'),
+    ],
+  );
+  addTearDown(() async {
+    container.dispose();
+    await identity.changes.close();
+  });
+  await tester.pumpWidget(
+    UncontrolledProviderScope(container: container, child: const DopmiApp()),
+  );
+  await tester.pumpAndSettle();
+  return container;
 }
 
 void main() {
   for (final large in [false, true]) {
     testWidgets(
-      'opening, clearing and closing thread search preserves the actual query flow; large=$large',
+      'empty Chats offers a compact Discover action without search; large=$large',
       (tester) async {
-        tester.view.physicalSize = large
-            ? const Size(320, 640)
-            : const Size(384, 852);
-        tester.view.devicePixelRatio = 1;
-        tester.platformDispatcher.textScaleFactorTestValue = large ? 2 : 1;
-        addTearDown(tester.view.resetPhysicalSize);
-        addTearDown(tester.view.resetDevicePixelRatio);
-        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-        final identity = FakeIdentityRepository()
-          ..user = const Identity(
-            'one',
-            'fixture@example.test',
-            verified: true,
-          );
-        final repo = SearchCommunity();
-        final container = ProviderContainer(
-          overrides: [
-            identityRepositoryProvider.overrideWithValue(identity),
-            communityRepositoryProvider.overrideWithValue(repo),
-            routerInitialLocationProvider.overrideWithValue('/messages'),
-          ],
+        final repo = ThreadListCommunity()..threadItems = [];
+        final container = await mountThreads(tester, repo, large: large);
+        final card = find.byKey(const ValueKey('match-chats-empty'));
+        final discover = find.descendant(
+          of: card,
+          matching: find.text('Descubrir'),
         );
-        addTearDown(() async {
-          container.dispose();
-          await identity.changes.close();
-        });
-        await tester.pumpWidget(
-          UncontrolledProviderScope(
-            container: container,
-            child: const DopmiApp(),
+        await tester.scrollUntilVisible(
+          discover,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.ensureVisible(discover);
+        await tester.pumpAndSettle();
+        expect(card, findsOneWidget);
+        expect(
+          find.descendant(
+            of: card,
+            matching: find.text(
+              'Aún no tienes chats. Ponte en contacto con el rescatista de tu compañero favorito.',
+            ),
           ),
+          findsOneWidget,
         );
-        await tester.pumpAndSettle();
+        final button = find.ancestor(
+          of: discover,
+          matching: find.byType(FilledButton),
+        );
+        expect(
+          tester.getCenter(button).dx,
+          large
+              ? lessThanOrEqualTo(tester.getCenter(card).dx)
+              : lessThan(tester.getCenter(card).dx),
+          reason:
+              'Discover is compact by default and can grow for enlarged text.',
+        );
+        expect(find.byTooltip('Buscar conversaciones'), findsNothing);
         expect(find.byType(TextField), findsNothing);
-        final open = find.byTooltip('Buscar conversaciones');
-        await tester.scrollUntilVisible(
-          open,
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await Scrollable.ensureVisible(tester.element(open), alignment: .3);
+        expect(repo.queries, isNotEmpty);
+        expect(repo.queries, everyElement(isEmpty));
+        await tester.tap(discover);
         await tester.pumpAndSettle();
-        await tester.tap(open);
-        await tester.pumpAndSettle();
-        final field = find.byType(TextField);
+        expect(container.read(routerProvider).state.uri.path, '/adoptions');
+        expect(repo.sentIds, isEmpty);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'Chats keeps existing conversations and their destination without a query; large=$large',
+      (tester) async {
+        final repo = ThreadListCommunity();
+        final container = await mountThreads(tester, repo, large: large);
         await tester.scrollUntilVisible(
-          field,
-          -200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.ensureVisible(field);
-        expect(tester.widget<TextField>(field).focusNode!.hasFocus, isTrue);
-        await tester.enterText(field, ' Luna ');
-        await tester.testTextInput.receiveAction(TextInputAction.search);
-        await tester.pumpAndSettle();
-        expect(repo.queries.last, 'Luna');
-        await tester.scrollUntilVisible(
-          find.text('Mensaje de Luna'),
+          find.text('Mensaje de Milo'),
           200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('match-thread-list')), findsOneWidget);
+        expect(find.byKey(const ValueKey('match-chats-empty')), findsNothing);
         expect(find.text('Mensaje de Luna'), findsOneWidget);
-        expect(find.text('Mensaje de Milo'), findsNothing);
-        await tester.ensureVisible(find.byTooltip('Limpiar búsqueda'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byTooltip('Limpiar búsqueda'));
-        await tester.pumpAndSettle();
-        expect(repo.queries.last, '');
-        await tester.scrollUntilVisible(
-          find.text('Mensaje de Milo'),
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.pumpAndSettle();
         expect(find.text('Mensaje de Milo'), findsOneWidget);
-        await tester.scrollUntilVisible(
-          field,
-          -200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.ensureVisible(field);
-        await tester.pumpAndSettle();
-        expect(tester.widget<TextField>(field).focusNode!.hasFocus, isFalse);
-        await tester.enterText(field, 'Ana');
-        await tester.testTextInput.receiveAction(TextInputAction.search);
-        await tester.pumpAndSettle();
-        await tester.scrollUntilVisible(
-          find.byTooltip('Cerrar b\u00fasqueda'),
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
-        await tester.ensureVisible(find.byTooltip('Cerrar b\u00fasqueda'));
-        await tester.tap(find.byTooltip('Cerrar búsqueda'));
-        await tester.pumpAndSettle();
+        expect(find.byTooltip('Buscar conversaciones'), findsNothing);
         expect(find.byType(TextField), findsNothing);
-        expect(repo.queries.last, '');
-        await tester.scrollUntilVisible(
-          find.text('Mensaje de Milo'),
-          200,
-          scrollable: find.byType(Scrollable).first,
-        );
+        expect(repo.queries, isNotEmpty);
+        expect(repo.queries, everyElement(isEmpty));
+        await tester.ensureVisible(find.text('Mensaje de Luna'));
+        await tester.tap(find.text('Mensaje de Luna'));
         await tester.pumpAndSettle();
-        expect(find.text('Mensaje de Milo'), findsOneWidget);
-        expect(container.read(routerProvider).state.uri.path, '/messages');
+        expect(container.read(routerProvider).state.uri.path, '/messages/luna');
+        expect(repo.sentIds, isEmpty);
         expect(tester.takeException(), isNull);
       },
     );

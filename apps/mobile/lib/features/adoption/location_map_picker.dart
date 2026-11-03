@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/foundation.dart' show Factory;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +39,22 @@ Future<SelectedLocation?> chooseLocationOnMap(
   return showModalBottomSheet<SelectedLocation>(
     context: context,
     isScrollControlled: true,
+    backgroundColor: Colors.transparent,
     useSafeArea: true,
-    builder: (_) => LocationMapPicker(
-      initial: initial,
-      city: city,
-      region: region,
-      requireAddress: requireAddress,
+    builder: (_) => ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
+        child: ColoredBox(
+          color: const Color(0xf2ffffff),
+          child: LocationMapPicker(
+            initial: initial,
+            city: city,
+            region: region,
+            requireAddress: requireAddress,
+          ),
+        ),
+      ),
     ),
   );
 }

@@ -2,6 +2,7 @@ import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/media/video_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
+import 'package:dopmi_mobile/features/adoption/publication_screens.dart';
 import 'package:dopmi_mobile/features/adoption/photo_recovery.dart';
 import 'package:dopmi_mobile/features/adoption/adoption_detail_layout.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'community_test.dart' show FakeCommunity, PhotoDraftCommunity;
 import 'fake_identity_repository.dart';
@@ -23,6 +25,7 @@ Future<void> startPublication(
   String path, {
   RescueRepository? rescue,
   VideoRepository? videos,
+  ImagePicker? photoPicker,
 }) async {
   SharedPreferences.setMockInitialValues({});
   final identity = FakeIdentityRepository()
@@ -43,6 +46,8 @@ Future<void> startPublication(
     overrides: [
       identityRepositoryProvider.overrideWithValue(identity),
       communityRepositoryProvider.overrideWithValue(repo),
+      if (photoPicker != null)
+        publicationImagePickerProvider.overrideWithValue(photoPicker),
       if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
       if (videos != null)
         rescueVideosRepositoryProvider.overrideWithValue(videos),

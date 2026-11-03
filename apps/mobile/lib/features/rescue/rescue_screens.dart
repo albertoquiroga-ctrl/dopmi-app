@@ -1034,7 +1034,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         'city',
         'state',
       ].every((key) => controllers[key]?.text.trim().isNotEmpty == true) &&
-      (controllers['story']?.text.trim().length ?? 0) >= 20 &&
+      (controllers['story']?.text.trim().length ?? 0) >= 1 &&
       (!mapsEnabled || selectedLocation != null);
 
   Future<void> loadPreviewActor() async {

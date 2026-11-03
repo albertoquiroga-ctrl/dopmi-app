@@ -81,6 +81,9 @@ abstract class CommunityRepository {
   Future<DataPage<Adoption>> catalog(Json filters, int page);
   Future<DataPage<Adoption>> discovery(Json filters, int page);
   Future<List<SupportOpportunity>> discoverySupport();
+  Future<Set<String>> seenAdoptions();
+  Future<void> markAdoptionSeen(String postId);
+  Future<void> resetSeenAdoptions();
   Future<Adoption?> detail(String id);
   Future<DataPage<Adoption>> mine(int page);
   Future<Adoption?> own(String id);
@@ -165,6 +168,18 @@ class SupabaseCommunityRepository implements CommunityRepository {
           .toList();
 
   @override
+  Future<Set<String>> seenAdoptions() async =>
+      (await rpc('dopmi_seen_adoptions') as List).cast<String>().toSet();
+
+  @override
+  Future<void> markAdoptionSeen(String postId) async =>
+      await rpc('dopmi_mark_adoption_seen', {'post_id': postId});
+
+  @override
+  Future<void> resetSeenAdoptions() async =>
+      await rpc('dopmi_reset_seen_adoptions');
+
+  @override
   Future<Adoption?> detail(String id) async {
     final data = await rpc('dopmi_adoption_detail', {'post_id': id});
     return data == null ? null : Adoption(Json.from(data));
@@ -172,26 +187,19 @@ class SupabaseCommunityRepository implements CommunityRepository {
 
   @override
   Future<DataPage<Adoption>> mine(int page) async {
-    final result = await client
-        .from('dopmi_adoptions')
-        .select()
-        .eq('owner_id', userId!)
-        .order('updated_at', ascending: false)
-        .order('id')
-        .range((page - 1) * 12, page * 12 - 1)
-        .count(CountOption.exact);
-    return DataPage(result.data.map(Adoption.new).toList(), result.count);
+    final result = await rpc('dopmi_adoption_mine', {'page_number': page});
+    return DataPage(
+      (result['items'] as List)
+          .map((item) => Adoption(Json.from(item)))
+          .toList(),
+      result['total'] as int,
+    );
   }
 
   @override
   Future<Adoption?> own(String id) async {
-    final data = await client
-        .from('dopmi_adoptions')
-        .select()
-        .eq('id', id)
-        .eq('owner_id', userId!)
-        .maybeSingle();
-    return data == null ? null : Adoption(data);
+    final data = await rpc('dopmi_adoption_own', {'post_id': id});
+    return data == null ? null : Adoption(Json.from(data));
   }
 
   @override
@@ -202,7 +210,7 @@ class SupabaseCommunityRepository implements CommunityRepository {
         .eq('rescue_case_id', caseId)
         .eq('owner_id', userId!)
         .maybeSingle();
-    return data == null ? null : Adoption(data);
+    return data == null ? null : own(data['id'] as String);
   }
 
   @override
@@ -273,13 +281,11 @@ class SupabaseCommunityRepository implements CommunityRepository {
         await rpc('dopmi_public_profile', {'person_id': id});
     if (result == null) return null;
     final profile = Json.from(result);
-    if (profile['verified'] == true) {
-      final metrics = await rpc('dopmi_rescuer_public_metrics', {
-        'person_id': id,
-      });
-      if (metrics == null) return null;
-      profile['metrics'] = Json.from(metrics);
-    }
+    final metrics = await rpc('dopmi_rescuer_public_metrics', {
+      'person_id': id,
+    });
+    if (metrics == null) return null;
+    profile['metrics'] = Json.from(metrics);
     return profile;
   }
 

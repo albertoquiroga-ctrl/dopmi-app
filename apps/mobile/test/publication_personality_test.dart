@@ -35,41 +35,38 @@ void main() {
         expect(repo.savedPayload!.containsKey(key), isTrue);
         expect(repo.savedPayload![key], isNull);
       }
-      await tapPublication(
-        tester,
-        find.text('Descartar cambios y cargar versión guardada'),
-      );
+      await tester.pumpWidget(const SizedBox.shrink());
+      await startPublication(tester, repo, '/my-adoptions/${repo.post.id}');
       expectUnselected();
       expect(tester.takeException(), isNull);
     },
   );
 
-  testWidgets(
-    'adoption cannot advance a story shorter than the server requirement',
-    (tester) async {
-      final repo = PhotoDraftCommunity();
-      await startPublication(tester, repo, '/my-adoptions/post');
-      final story = find.byKey(const ValueKey('publication-field-story'));
-      await tester.ensureVisible(story);
-      await tester.enterText(story, 'Historia corta');
-      await tester.pump();
-      expect(
-        tester
-            .widget<PublicationFooter>(find.byType(PublicationFooter))
-            .onContinue,
-        isNull,
-      );
-      await tester.enterText(story, 'Historia de rescate completa y veraz.');
-      await tester.pump();
-      expect(
-        tester
-            .widget<PublicationFooter>(find.byType(PublicationFooter))
-            .onContinue,
-        isNotNull,
-      );
-      expect(tester.takeException(), isNull);
-    },
-  );
+  testWidgets('adoption requires a nonblank story and accepts one character', (
+    tester,
+  ) async {
+    final repo = PhotoDraftCommunity();
+    await startPublication(tester, repo, '/my-adoptions/post');
+    final story = find.byKey(const ValueKey('publication-field-story'));
+    await tester.ensureVisible(story);
+    await tester.enterText(story, '   ');
+    await tester.pump();
+    expect(
+      tester
+          .widget<PublicationFooter>(find.byType(PublicationFooter))
+          .onContinue,
+      isNull,
+    );
+    await tester.enterText(story, 'A');
+    await tester.pump();
+    expect(
+      tester
+          .widget<PublicationFooter>(find.byType(PublicationFooter))
+          .onContinue,
+      isNotNull,
+    );
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'new personality choices cap at three without clearing legacy traits',

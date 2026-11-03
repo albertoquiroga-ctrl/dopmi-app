@@ -109,6 +109,13 @@ class CommunityDiagnosticsSpy implements ErrorDiagnostics {
 }
 
 class FakeCommunity implements CommunityRepository {
+  final seen = <String>{};
+  @override
+  Future<Set<String>> seenAdoptions() async => Set.of(seen);
+  @override
+  Future<void> markAdoptionSeen(String postId) async => seen.add(postId);
+  @override
+  Future<void> resetSeenAdoptions() async => seen.clear();
   Adoption post = Adoption({
     'id': 'post',
     'owner_id': 'owner',
@@ -695,11 +702,16 @@ void main() {
     'match favorite contact can be cancelled without starting a thread',
     (tester) async {
       final repo = FakeCommunity();
+      repo.savedItems = [
+        SavedEntry({...repo.post.data, 'pet_name': 'Zelda', 'available': true}),
+      ];
       await start(tester, repo, '/messages');
       expect(find.text('Mis favoritos'), findsOneWidget);
-      expect(find.text('Luna'), findsOneWidget);
-      await tester.tap(find.byTooltip('Escribir sobre Luna'));
+      expect(find.text('Zelda'), findsOneWidget);
+      await tester.tap(find.byTooltip('Escribir sobre Zelda'));
       await tester.pumpAndSettle();
+      expect(find.text('Conectar con Zelda'), findsOneWidget);
+      expect(find.text('Conectar con la mascota'), findsNothing);
       expect(find.text('Sí, contactar rescatista'), findsOneWidget);
       await tester.tap(find.text('Todavía no'));
       await tester.pumpAndSettle();

@@ -745,7 +745,7 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
     final tagColor = switch (phase) {
       'corrections' => const Color(0xffc41c2e),
       'pending_stripe' => const Color(0xffb45309),
-      'review' => const Color(0xff5c2fd4),
+      'review' => const Color(0xff8a5c00),
       'active' => ink,
       _ => const Color(0xff5c574f),
     };
@@ -809,7 +809,7 @@ class _OwnedCaseCardState extends ConsumerState<_OwnedCaseCard> {
                               : phase == 'corrections'
                               ? const Color(0xfffdecec)
                               : phase == 'review'
-                              ? const Color(0xffede8fc)
+                              ? DopmiTokens.saffronSoft
                               : phase == 'pending_stripe'
                               ? const Color(0xfffff7ed)
                               : adopted || neutral

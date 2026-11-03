@@ -23,6 +23,10 @@ import 'adoption_traits.dart';
 import 'adoption_detail_layout.dart';
 import '../identity/identity_controller.dart';
 
+final publicationImagePickerProvider = Provider<ImagePicker>(
+  (ref) => ImagePicker(),
+);
+
 class MyAdoptionsScreen extends ConsumerStatefulWidget {
   const MyAdoptionsScreen({super.key});
   @override
@@ -240,7 +244,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   bool get basicComplete =>
       photos.isNotEmpty &&
       fields['pet_name']!.text.trim().isNotEmpty &&
-      fields['story']!.text.trim().length >= 20 &&
+      fields['story']!.text.trim().isNotEmpty &&
       choices['species'] != null &&
       choices['sex'] != null &&
       choices['size'] != null &&
@@ -422,7 +426,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     if (mounted) {
       setState(() {
         post = result;
-        message = 'Guardamos tu borrador. Puedes continuar después.';
+        message = result.status == 'published'
+            ? 'Guardamos tus cambios privados. La versión aprobada sigue activa hasta que revisemos y aprobemos la edición.'
+            : 'Guardamos tu borrador. Puedes continuar después.';
       });
     }
   }
@@ -447,26 +453,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       });
       if (action == 'submit' && result.status == 'submitted') {
         setState(() => busy = false);
-        await showDialog<void>(
-          context: context,
-          builder: (context) => AlertDialog(
-            icon: const Icon(
-              Icons.check_circle_outline,
-              color: DopmiTokens.purple,
-              size: 48,
-            ),
-            title: const Text('Enviado a revisión'),
-            content: const Text(
-              'Gracias por compartir su historia. Dopmi revisará el caso antes de publicarlo.',
-            ),
-            actions: [
-              FilledButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Entendido'),
-              ),
-            ],
-          ),
-        );
+        await showPublicationSubmittedDialog(context);
       }
     }
   });
@@ -475,32 +462,67 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     bool replaceMain = false,
   }) => perform(() async {
     if (!replaceMain && photos.length >= 6) return;
+    final repository = repo;
+    final actor = repository.userId;
+    final identity = ref.read(identityControllerProvider).identity?.id;
+    if (actor == null || identity != actor) return;
+    final config = ref.read(configProvider);
+    bool current() =>
+        mounted &&
+        identical(repository, repo) &&
+        repository.userId == actor &&
+        ref.read(identityControllerProvider).identity?.id == identity &&
+        ref.read(configProvider).environment == config.environment &&
+        ref.read(configProvider).url == config.url;
     await save(); // Preserve all fields before the operating system opens its photo picker.
+    if (!current()) return;
+    final postId = post!.id;
     final preferences = await SharedPreferences.getInstance();
-    final pendingKey = pendingPhotoKey(repo.userId!);
-    await preferences.setString(pendingKey, post!.id);
-    await preferences.setString(pendingPhotoActorKey, repo.userId!);
-    final file = await ImagePicker().pickImage(
-      source: source,
-      maxWidth: 1600,
-      maxHeight: 1600,
-      requestFullMetadata: false,
-    );
+    if (!current()) return;
+    final pendingKey = pendingPhotoKey(actor);
+    await preferences.setString(pendingKey, postId);
+    if (!current()) return;
+    await preferences.setString(pendingPhotoActorKey, actor);
+    if (!current()) return;
+    final picker = ref.read(publicationImagePickerProvider);
+    final List<XFile> files;
+    if (source == ImageSource.gallery && !replaceMain) {
+      files = await picker.pickMultiImage(
+        maxWidth: 1600,
+        maxHeight: 1600,
+        limit: 6 - photos.length,
+        requestFullMetadata: false,
+      );
+    } else {
+      final file = await picker.pickImage(
+        source: source,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        requestFullMetadata: false,
+      );
+      files = file == null ? [] : [file];
+    }
+    if (!current()) return;
     await preferences.remove(pendingKey);
-    if (preferences.getString(pendingPhotoActorKey) == repo.userId) {
+    if (preferences.getString(pendingPhotoActorKey) == actor) {
       await preferences.remove(pendingPhotoActorKey);
     }
-    if (file == null || !mounted) return;
-    final path = await repo.uploadPhoto(post!.id, await file.readAsBytes());
-    if (!mounted) return;
-    setState(() {
-      if (replaceMain && photos.isNotEmpty) {
-        photos[0] = path;
-      } else {
-        photos.add(path);
-      }
-    });
-    await save();
+    for (final file in files.take(replaceMain ? 1 : 6 - photos.length)) {
+      if (!current()) return;
+      final bytes = await file.readAsBytes();
+      if (!current()) return;
+      final path = await repository.uploadPhoto(postId, bytes);
+      if (!current()) return;
+      setState(() {
+        if (replaceMain && photos.isNotEmpty) {
+          photos[0] = path;
+        } else {
+          photos.add(path);
+        }
+      });
+      // A later failure must not lose photos already attached successfully.
+      await save();
+    }
   });
   Widget field(
     String key,
@@ -657,6 +679,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     return PublicationFooter(
       label: step < 2 ? 'Continuar' : 'Enviar a revisión',
       review: step == 2,
+      saveLabel: post?.status == 'published'
+          ? 'Guardar cambios'
+          : 'Guardar borrador',
       busy: busy,
       compact: compact,
       onSave: () => perform(save),
@@ -963,9 +988,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             ),
           if (post?.text('review_feedback').isNotEmpty == true)
             Notice('Respuesta del equipo: ${post!.text('review_feedback')}'),
-          if (post?.status == 'published' || post?.status == 'adopted')
+          if (post?.status == 'published')
             const Notice(
-              'Guardar cambios o agregar fotos retirará esta publicación del catálogo. El contenido necesitará una nueva revisión.',
+              'La versión aprobada sigue activa. Tus cambios y fotos se guardan en privado y necesitan una nueva revisión antes de publicarse.',
             ),
           if (post?.status == 'submitted')
             const Notice(
@@ -1056,23 +1081,6 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   ),
                 ],
                 if (message != null) Notice(message!),
-                if (post?.status == 'published')
-                  OutlinedButton(
-                    onPressed: busy ? null : () => change('adopted'),
-                    child: const Text('Marcar adopción realizada'),
-                  ),
-                if (post != null && post!.status != 'archived')
-                  TextButton(
-                    onPressed: busy ? null : () => change('archive'),
-                    child: const Text('Retirar publicación'),
-                  ),
-                if (post != null)
-                  TextButton(
-                    onPressed: busy ? null : load,
-                    child: const Text(
-                      'Descartar cambios y cargar versión guardada',
-                    ),
-                  ),
               ],
             ),
           ),

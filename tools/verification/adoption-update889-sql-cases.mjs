@@ -59,7 +59,12 @@ export function registerAdoptionUpdateSqlCases(getDb, { donor, rescuer, other })
     const old=await value(db,"select dopmi_save_adoption('{}',$1,2) as value",[post]);
     assert.equal(old.age_band,'adult'); assert.deepEqual(old.coexistence,saved.coexistence); assert.deepEqual(old.personality,saved.personality);
     await db.exec('reset role; set local role anon');
-    assert.equal((await value(db,"select dopmi_discovery('{}') as value")).total,0);
+    const publicDeck=await value(db,"select dopmi_discovery('{}') as value");
+    assert.equal(publicDeck.total,1);
+    assert.equal(publicDeck.items[0].pet_name,'Luna');
+    assert.deepEqual(publicDeck.items[0].photos,[]);
+    assert.equal(saved.status,'published');
+    assert.equal(saved._has_private_draft,true);
     await db.exec('reset role'); await actor(db,rescuer);
     await assert.rejects(db.query('select dopmi_save_adoption($1::jsonb,$2,3)',[JSON.stringify({...payload,photos:[...photos,`${rescuer}/${post}/7.jpg`]}),post]),e=>e.code==='23514');
   });

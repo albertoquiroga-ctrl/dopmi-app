@@ -166,11 +166,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               onPressed: () => context.push('/help'),
             ),
             const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => context.push('/settings'),
-              child: const Text('Cuenta y privacidad'),
-            ),
-            const SizedBox(height: 12),
             DonorLogoutRow(
               onPressed: () async {
                 try {
@@ -1038,7 +1033,7 @@ class _DonorFeatureState extends State<DonorFeature> {
         borderRadius: BorderRadius.circular(24),
         border: widget.rescuer || light
             ? Border.all(
-                color: widget.rescuer
+                color: widget.rescuer && !light
                     ? DopmiTokens.line
                     : const Color(0xffb8ddf5),
               )
@@ -1061,7 +1056,7 @@ class _DonorFeatureState extends State<DonorFeature> {
               ],
       ),
       child: Material(
-        color: widget.rescuer
+        color: widget.rescuer && !light
             ? Colors.white
             : widget.guardianActive
             ? Colors.white
