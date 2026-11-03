@@ -66,7 +66,7 @@ Future<void> requestNearbyLocation(
           content: Text(
             rescuer
                 ? 'Para encontrar adoptantes cercanos para tus mascotas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Será el punto inicial de cada mascota y podrás cambiarlo en el mapa. Su ubicación exacta no se muestra públicamente.'
-                : 'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 20 km.',
+                : 'Para mostrarte mascotas cercanas, Dopmi necesita acceder a tu ubicación precisa mientras usas la app. Te mostraremos adopciones en un radio de 25 km.',
           ),
           actions: [
             TextButton(

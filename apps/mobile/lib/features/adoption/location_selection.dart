@@ -4,7 +4,7 @@ import 'package:geocoding/geocoding.dart';
 
 import 'location_service.dart';
 
-const nearbyDefaultRadiusKm = 20;
+const nearbyDefaultRadiusKm = 25;
 
 class SelectedLocation {
   SelectedLocation({

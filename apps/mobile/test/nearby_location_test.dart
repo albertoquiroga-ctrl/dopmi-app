@@ -150,7 +150,7 @@ void main() {
       expect(f.controller.discoveryFilters, isEmpty);
     },
   );
-  test('adopter uses precise device position at twenty km and stores only booleans', () async {
+  test('adopter uses precise device position at twenty-five km and stores only booleans', () async {
     SharedPreferences.setMockInitialValues({});
     final f = await locationFixture(
       service: FakeNearbyService()
@@ -163,7 +163,7 @@ void main() {
     expect(f.controller.discoveryFilters, {
       'latitude': 25.686614,
       'longitude': -100.316113,
-      'radius_km': 20,
+      'radius_km': 25,
     });
     expect(f.service.permissionRequests, [true]);
     final prefs = await SharedPreferences.getInstance();

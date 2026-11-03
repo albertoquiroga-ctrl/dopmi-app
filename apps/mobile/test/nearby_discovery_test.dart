@@ -102,7 +102,7 @@ void expectNoManualOrigin() {
 
 void main() {
   testWidgets(
-    'only explanatory approval requests GPS and discovery uses its precise fixed twenty km origin',
+    'only explanatory approval requests GPS and discovery uses its precise fixed twenty-five km origin',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final repo = PendingNearbyCommunity();
@@ -142,7 +142,7 @@ void main() {
           'species': 'dog',
           'latitude': 25.686614,
           'longitude': -100.316113,
-          'radius_km': 20,
+          'radius_km': 25,
         },
       ]);
       repo.pending.single.complete(DataPage([repo.post], 1));
@@ -150,7 +150,7 @@ void main() {
       expect(find.text('Luna'), findsWidgets);
       expect(repo.supportRequests, 1);
       expect(
-        find.text('Mascotas en adopción a 20 km de tu ubicación actual'),
+        find.text('Mascotas en adopción a 25 km de tu ubicación actual'),
         findsOneWidget,
       );
       expectNoManualOrigin();
@@ -253,7 +253,7 @@ void main() {
         'species': 'dog',
         'latitude': 26.0,
         'longitude': -101.0,
-        'radius_km': 20,
+        'radius_km': 25,
       });
       repo.pending.last.complete(
         DataPage([

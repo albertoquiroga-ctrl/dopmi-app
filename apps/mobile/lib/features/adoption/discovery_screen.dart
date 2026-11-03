@@ -572,7 +572,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      'Mascotas en adopción a 20 km de tu ubicación actual',
+                      'Mascotas en adopción a 25 km de tu ubicación actual',
                       style: const TextStyle(fontSize: 12, color: muted),
                     ),
                   ),
@@ -1540,7 +1540,7 @@ class _NearbyLocationRequired extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         const Text(
-          'Activa tu ubicación para ver mascotas en adopción a 20 km de ti. Puedes seguir usando el resto de Dopmi.',
+          'Activa tu ubicación para ver mascotas en adopción a 25 km de ti. Puedes seguir usando el resto de Dopmi.',
         ),
         if (error != null) Notice(error!, isError: true),
         const SizedBox(height: 16),

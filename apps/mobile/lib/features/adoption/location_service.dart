@@ -102,7 +102,7 @@ class LocationService {
       ),
     );
     // A precise permission is not a guarantee about this particular fix.
-    // Reject stale or kilometre-scale estimates before they drive a 20 km feed.
+    // Reject stale or kilometre-scale estimates before they drive the nearby adoption feed.
     final age = DateTime.now().difference(position.timestamp);
     if (!position.latitude.isFinite ||
         !position.longitude.isFinite ||

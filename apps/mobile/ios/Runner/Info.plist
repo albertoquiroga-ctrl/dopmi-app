@@ -7,7 +7,7 @@
   <key>FirebaseCrashlyticsCollectionEnabled</key>
   <false/>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Dopmi usa tu ubicación precisa mientras usas la app para encontrar mascotas a 20 km y proponer la ubicación de las mascotas que publicas. Puedes cambiar ese punto; se guarda de forma privada y sólo su zona es pública.</string>
+  <string>Dopmi usa tu ubicación precisa mientras usas la app para encontrar mascotas a 25 km y proponer la ubicación de las mascotas que publicas. Puedes cambiar ese punto; se guarda de forma privada y sólo su zona es pública.</string>
   <key>DopmiGoogleMapsApiKey</key>
   <string>$(DOPMI_MAPS_IOS_KEY)</string>
   <key>NSCameraUsageDescription</key>
