@@ -134,6 +134,8 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       return history!;
     }
     history?.dispose();
+    pendingFavorites.clear();
+    failedFavorites.clear();
     late final DiscoveryHistory created;
     created = DiscoveryHistory(
       scope: scope,
@@ -267,10 +269,17 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
 
   Future<void> persistFavorite(Adoption card) async {
     if (!mounted || !pendingFavorites.add(card.id)) return;
+    final source = ref.read(communityRepositoryProvider);
+    final cycle = history;
+    bool current() =>
+        mounted &&
+        identical(history, cycle) &&
+        cycle?.isCurrent() == true &&
+        identical(ref.read(communityRepositoryProvider), source);
     setState(() {});
     try {
-      await ref.read(communityRepositoryProvider).favorite(card.id, true);
-      if (!mounted) return;
+      await source.favorite(card.id, true);
+      if (!current()) return;
       setState(() {
         failedFavorites.remove(card.id);
         final position = cards.indexWhere((item) => item.id == card.id);
@@ -279,9 +288,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         }
       });
     } catch (cause) {
-      if (mounted) setState(() => failedFavorites[card.id] = card);
+      if (current()) setState(() => failedFavorites[card.id] = card);
     } finally {
-      if (mounted) setState(() => pendingFavorites.remove(card.id));
+      if (current()) setState(() => pendingFavorites.remove(card.id));
     }
   }
 
@@ -325,6 +334,9 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     final actor = source.userId,
         identity = ref.read(identityControllerProvider).identity?.id;
     final requestedFilters = effectiveFilters;
+    // A like may finish while this catalog response is in flight. Keep that
+    // intent excluded even if the response captured its previous saved value.
+    final likesAtLoad = {...pendingFavorites, ...failedFavorites.keys};
     final origin = nearby == null ? null : nearbyKey();
     bool current() =>
         mounted &&
@@ -392,12 +404,18 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         catalogRows += result.items.length;
         cards.addAll(
           result.items.where(
-            (item) => !cycle.seen.contains(item.id) && known.add(item.id),
+            (item) =>
+                !item.saved &&
+                !likesAtLoad.contains(item.id) &&
+                !pendingFavorites.contains(item.id) &&
+                !failedFavorites.containsKey(item.id) &&
+                !cycle.seen.contains(item.id) &&
+                known.add(item.id),
           ),
         );
         total = result.total;
         exhausted = catalogRows >= total || result.items.isEmpty;
-        // A page made entirely of seen cards must not hide later unseen pages.
+        // Seen or liked cards must not hide eligible cards on later pages.
         if (exhausted || deck.length > index) break;
         page++;
         result = await source.discovery(requestedFilters, page);
