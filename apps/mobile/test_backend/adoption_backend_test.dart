@@ -397,12 +397,35 @@ void main() {
       id: post.id,
       version: post.version,
     );
+    final approvedDuringEdit = await anonymous.detail(post.id);
+    expect(approvedDuringEdit!.name, payload['pet_name']);
+    expect(await anonymous.photoUrl(path), isNotEmpty);
+    expect(post.status, 'published');
+    expect(post.data['_has_private_draft'], true);
+    expect((await author.own(post.id))!.name, 'Cambio pendiente');
+    final privatePath = await author.uploadPhoto(
+      post.id,
+      Uint8List.fromList(img.encodePng(image)),
+    );
+    photos.add(privatePath);
+    await expectLater(
+      anonymous.photoUrl(privatePath),
+      throwsA(isA<StorageException>()),
+    );
+    final stillSaved = (await reader.savedAdoptions(1)).items.single;
+    expect(stillSaved.available, true);
+    expect(stillSaved.text('pet_name'), payload['pet_name']);
+    await reader.markAdoptionSeen(post.id);
+    expect(await reader.seenAdoptions(), {post.id});
+    expect(await stranger.seenAdoptions(), isEmpty);
+    await reader.resetSeenAdoptions();
+    expect(await reader.seenAdoptions(), isEmpty);
+    post = await author.transition(post, 'archive');
     expect(await anonymous.detail(post.id), isNull);
     await expectLater(
       anonymous.photoUrl(path),
       throwsA(isA<StorageException>()),
     );
-    expect((await author.own(post.id))!.name, 'Cambio pendiente');
     final removed = (await reader.savedAdoptions(1)).items.single;
     expect(removed.available, false);
     expect(removed.publicData, isEmpty);
