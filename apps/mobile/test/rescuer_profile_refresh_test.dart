@@ -90,7 +90,8 @@ void main() {
       expect(find.text('Sin conexión'), findsOneWidget);
       expect(find.byType(RescuerVerificationCard), findsNothing);
       expect(find.text('Verificación en proceso'), findsNothing);
-      expect(find.text('Pagos y transacciones'), findsNothing);
+      expect(find.byType(RescuerPaymentAccess), findsOneWidget);
+      expect(find.text('Pagos y transacciones'), findsOneWidget);
       expect(find.text('Volver a intentar'), findsOneWidget);
       repo.fail = false;
       repo.status = 'not_started';

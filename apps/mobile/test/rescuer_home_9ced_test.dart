@@ -136,7 +136,11 @@ void main() {
     await tester.tap(find.text('En adopción'));
     await tester.pumpAndSettle();
     expect(
-      find.text('Favoritos vigentes del período. Vistas desde 6/10/2026.'),
+      find.text(
+        'Favoritos vigentes del período. Vistas desde 6/10/2026, '
+        'sólo de personas que autorizaron la medición; '
+        'no incluye tus propias visitas.',
+      ),
       findsOneWidget,
     );
     expect(find.textContaining('7/10/2026'), findsNothing);
