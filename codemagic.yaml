@@ -145,10 +145,11 @@ workflows:
       - name: Create explicit Guardian environment configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}" in
-            test) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
+            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create matching Guardian Firebase configuration
         script: |
@@ -198,7 +199,9 @@ workflows:
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
               f"Environment: {config['DOPMI_ENVIRONMENT']}\n"
               f"Backend: {backend}\nProject: {project}\n"
+              f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}\n"
               f"Guardian: {config['ENABLE_GUARDIAN']}\n"
+              f"Stripe live client: {str(bool(config['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
               f"Measurement test: {config['ENABLE_MEASUREMENT_TEST']}\n"
               f"Native wallets test: {config['ENABLE_NATIVE_WALLETS_TEST']}\n"
@@ -323,10 +326,11 @@ workflows:
       - name: Create runtime configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}" in
-            test) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
+            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration
         script: |
@@ -382,6 +386,9 @@ workflows:
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
               f"Environment: {configuration['DOPMI_ENVIRONMENT']}\n"
+              f"Adoption only: {configuration['DOPMI_ADOPTION_ONLY']}\n"
+              f"Guardian: {configuration['ENABLE_GUARDIAN']}\n"
+              f"Stripe live client: {str(bool(configuration['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {configuration['ENABLE_GUARDIAN_TEST']}\n"
               "Distribution: TestFlight (external eligible)\n")
           PYINFO

@@ -29,7 +29,7 @@ def client_key(value, project_ref=None, require_project_ref=False):
         return False
 
 
-def build_config(env, guardian_test=False, measurement_test=False, production_beta=False):
+def build_config(env, guardian_test=False, measurement_test=False, production_beta=False, adoption_only=False):
     endpoint = "".join(env.get("SUPABASE_URL", "").split()).rstrip("/")
     key = "".join(env.get("SUPABASE_PUBLISHABLE_KEY", "").split())
     if not re.fullmatch(r"https://[a-z0-9-]+\.supabase\.co", endpoint):
@@ -40,6 +40,11 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         raise ValueError("DOPMI_ENVIRONMENT must be test or production.")
     if production_beta and (guardian_test or measurement_test):
         raise ValueError("Production beta cannot be combined with test build options.")
+    if adoption_only and not production_beta:
+        raise ValueError("Adoption-only requires --production-beta.")
+    requested_adoption_only = env.get("DOPMI_ADOPTION_ONLY")
+    if requested_adoption_only is not None and requested_adoption_only != str(adoption_only).lower():
+        raise ValueError("DOPMI_ADOPTION_ONLY must match the explicit adoption-only build option.")
     if (environment == "production") != production_beta:
         raise ValueError("Production requires DOPMI_ENVIRONMENT=production and --production-beta together.")
     registered_url = PRODUCTION_URL if production_beta else expected["SUPABASE_URL"].rstrip("/")
@@ -52,12 +57,13 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         raise ValueError("STRIPE_PUBLISHABLE_KEY is reserved for the production beta profile.")
     result = {
         "DOPMI_ENVIRONMENT": environment,
+        "DOPMI_ADOPTION_ONLY": str(adoption_only).lower(),
         "SUPABASE_URL": endpoint,
         "SUPABASE_PUBLISHABLE_KEY": key,
         "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
         "ENABLE_GUARDIAN_TEST": str(guardian_test).lower(),
         "ENABLE_MEASUREMENT_TEST": str(measurement_test).lower(),
-        "ENABLE_GUARDIAN": str(production_beta).lower(),
+        "ENABLE_GUARDIAN": str(production_beta and not adoption_only).lower(),
         "STRIPE_PUBLISHABLE_KEY": "",
     }
     for name in ("ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "ENABLE_GOOGLE_MAPS"):
@@ -92,7 +98,7 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         if merchant and not re.fullmatch(r"merchant\.[A-Za-z0-9.-]+", merchant):
             raise ValueError("APPLE_PAY_MERCHANT_ID must be an Apple merchant identifier.")
         result["APPLE_PAY_MERCHANT_ID"] = merchant
-    if production_beta:
+    if production_beta and not adoption_only:
         stripe_key = env.get("STRIPE_PUBLISHABLE_KEY", "").strip()
         if not re.fullmatch(r"pk_live_[A-Za-z0-9]+", stripe_key):
             raise ValueError("Production beta requires a Stripe live publishable key.")
@@ -105,12 +111,16 @@ def main():
     parser.add_argument("--guardian-test", action="store_true")
     parser.add_argument("--measurement-test", action="store_true")
     parser.add_argument("--production-beta", action="store_true")
+    parser.add_argument("--adoption-only", action="store_true")
     args = parser.parse_args()
     target = Path("config.json")
     # A failed validation must not leave an older connected configuration behind.
     target.unlink(missing_ok=True)
     try:
-        config = build_config(os.environ, args.guardian_test, args.measurement_test, args.production_beta)
+        config = build_config(
+            os.environ, args.guardian_test, args.measurement_test,
+            production_beta=args.production_beta, adoption_only=args.adoption_only,
+        )
     except ValueError as error:
         raise SystemExit(str(error)) from None
     target.write_text(json.dumps(config, indent=2) + "\n")
@@ -118,6 +128,7 @@ def main():
     print(
         "Flutter configuration ready. "
         f"Production beta: {args.production_beta}. "
+        f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}. "
         f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}. "
         f"Measurement test: {config['ENABLE_MEASUREMENT_TEST']}."
     )

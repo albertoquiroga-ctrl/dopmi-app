@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import '../../core/reference_focus_outline.dart';
@@ -77,6 +78,21 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
     'other',
   ];
   static const otherTopic = 9;
+  Iterable<int> get topicOptions sync* {
+    for (var i = 0; i < widget.topics.length; i++) {
+      if (adoptionOnlyBuild &&
+          const {
+            'support_rules',
+            'contribute',
+            'guardian',
+            'funds_evidence',
+          }.contains(topicIds[i])) {
+        continue;
+      }
+      yield i;
+    }
+  }
+
   String get topicLabel => topic == otherTopic ? 'Otro…' : widget.topics[topic];
 
   Future<void> chooseImage() async {
@@ -351,7 +367,7 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                           itemHeight: null,
                           isExpanded: true,
                           items: [
-                            for (var i = 0; i < widget.topics.length; i++)
+                            for (final i in topicOptions)
                               DropdownMenuItem(
                                 value: i,
                                 child: Text(widget.topics[i], softWrap: true),
@@ -362,8 +378,8 @@ class _HelpSupportDialogState extends State<HelpSupportDialog> {
                             ),
                           ],
                           selectedItemBuilder: (_) => [
-                            for (final item in widget.topics)
-                              Text(item, softWrap: true),
+                            for (final i in topicOptions)
+                              Text(widget.topics[i], softWrap: true),
                             const Text('Otro…'),
                           ],
                           onChanged: busy

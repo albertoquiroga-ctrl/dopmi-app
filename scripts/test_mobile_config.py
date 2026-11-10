@@ -95,6 +95,7 @@ class MobileConfigTests(unittest.TestCase):
     def test_production_beta_uses_registered_project_and_live_public_key(self):
         result = config.build_config(self.production_env(), production_beta=True)
         self.assertEqual(result["DOPMI_ENVIRONMENT"], "production")
+        self.assertEqual(result["DOPMI_ADOPTION_ONLY"], "false")
         self.assertEqual(result["SUPABASE_URL"], "https://ysaoeuidcvgtlmphmeyb.supabase.co")
         self.assertEqual(result["ENABLE_GUARDIAN"], "true")
         self.assertEqual(result["STRIPE_PUBLISHABLE_KEY"], "pk_live_fixture")
@@ -104,6 +105,36 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
         self.assertEqual(result["STRIPE_PUBLISHABLE_KEY_TEST"], "")
         self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
+
+    def test_adoption_only_uses_production_without_stripe_or_guardian(self):
+        env = {
+            **self.production_env(),
+            "DOPMI_ADOPTION_ONLY": "true",
+            "ENABLE_NATIVE_WALLETS_TEST": "true",
+            "APPLE_PAY_MERCHANT_ID": "merchant.test.fixture",
+        }
+        result = config.build_config(env, production_beta=True, adoption_only=True)
+        self.assertEqual(result["SUPABASE_URL"], self.production_env()["SUPABASE_URL"])
+        self.assertEqual(result["DOPMI_ADOPTION_ONLY"], "true")
+        for name in ("ENABLE_GUARDIAN", "ENABLE_GUARDIAN_TEST", "ENABLE_NATIVE_WALLETS_TEST"):
+            self.assertEqual(result[name], "false")
+        for name in ("STRIPE_PUBLISHABLE_KEY", "STRIPE_PUBLISHABLE_KEY_TEST", "APPLE_PAY_MERCHANT_ID"):
+            self.assertEqual(result[name], "")
+        env.pop("STRIPE_PUBLISHABLE_KEY")
+        self.assertEqual(config.build_config(env, production_beta=True, adoption_only=True), result)
+
+    def test_adoption_only_rejects_wrong_environment_or_conflicting_request(self):
+        cases = (
+            (self.env, False, True),
+            ({**self.production_env(), "SUPABASE_URL": self.env["SUPABASE_URL"]}, True, True),
+            ({**self.production_env(), "DOPMI_ADOPTION_ONLY": "false"}, True, True),
+            ({**self.production_env(), "DOPMI_ADOPTION_ONLY": "true"}, True, False),
+            ({**self.production_env(), "DOPMI_ADOPTION_ONLY": "yes"}, True, False),
+        )
+        for env, production, adoption_only in cases:
+            with self.subTest(production=production, adoption_only=adoption_only, requested=env.get("DOPMI_ADOPTION_ONLY")):
+                with self.assertRaises(ValueError):
+                    config.build_config(env, production_beta=production, adoption_only=adoption_only)
 
     def test_production_beta_cannot_be_combined_with_test_build_options(self):
         for guardian, measurement in ((True, False), (False, True), (True, True)):
@@ -164,13 +195,15 @@ class MobileConfigTests(unittest.TestCase):
 
     def test_cli_production_beta_and_failure_remove_stale_config(self):
         script = Path(__file__).with_name("write-mobile-config.py").resolve()
-        for options, env in (
-            (["--production-beta"], self.production_env()),
-            ([], self.production_env()),
-            (["--production-beta"], self.env),
-            (["--production-beta", "--guardian-test"], self.production_env()),
-            (["--production-beta", "--measurement-test"], self.production_env()),
-            (["--production-beta"], {**self.production_env(), "STRIPE_PUBLISHABLE_KEY": "sk_live_fixture"}),
+        for options, env, expected_guardian in (
+            (["--production-beta"], self.production_env(), "true"),
+            (["--production-beta", "--adoption-only"],
+             {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true"}, "false"),
+            ([], self.production_env(), None),
+            (["--production-beta"], self.env, None),
+            (["--production-beta", "--guardian-test"], self.production_env(), None),
+            (["--production-beta", "--measurement-test"], self.production_env(), None),
+            (["--production-beta"], {**self.production_env(), "STRIPE_PUBLISHABLE_KEY": "sk_live_fixture"}, None),
         ):
             with self.subTest(options=options, environment=env.get("DOPMI_ENVIRONMENT")), tempfile.TemporaryDirectory() as directory:
                 target = Path(directory) / "config.json"
@@ -179,12 +212,16 @@ class MobileConfigTests(unittest.TestCase):
                 child_env = {name: value for name, value in os.environ.items()
                              if name not in set(self.production_env()) | {
                                  "ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "GOOGLE_SERVER_CLIENT_ID",
-                                 "GOOGLE_IOS_CLIENT_ID", "ENABLE_NATIVE_WALLETS_TEST", "APPLE_PAY_MERCHANT_ID"}}
+                                 "GOOGLE_IOS_CLIENT_ID", "ENABLE_NATIVE_WALLETS_TEST", "APPLE_PAY_MERCHANT_ID",
+                                 "DOPMI_ADOPTION_ONLY"}}
                 process = subprocess.run([sys.executable, str(script), *options], cwd=directory,
                                          env={**child_env, **env}, capture_output=True, text=True)
-                if options == ["--production-beta"] and env == self.production_env():
+                if expected_guardian is not None:
                     self.assertEqual(process.returncode, 0, process.stderr)
-                    self.assertEqual(json.loads(target.read_text())["ENABLE_GUARDIAN"], "true")
+                    result = json.loads(target.read_text())
+                    adoption = "--adoption-only" in options
+                    self.assertEqual(result["DOPMI_ADOPTION_ONLY"], str(adoption).lower())
+                    self.assertEqual(result["ENABLE_GUARDIAN"], expected_guardian)
                 else:
                     self.assertNotEqual(process.returncode, 0)
                     self.assertFalse(target.exists())
@@ -267,59 +304,71 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(result["APPLE_PAY_MERCHANT_ID"], "")
         self.assertEqual(result["ENABLE_NATIVE_WALLETS_TEST"], "false")
 
-    def test_testflight_routes_both_configs_to_the_selected_environment(self):
+    def test_beta_workflows_route_both_configs_to_the_selected_environment(self):
         git = shutil.which("git")
         git_bash = Path(git).resolve().parents[1] / "bin/bash.exe" if git else None
         bash = (str(git_bash) if os.name == "nt" and git_bash and git_bash.exists()
                 else shutil.which("bash") if os.name != "nt" else None)
         if not bash:
             self.skipTest("Bash is needed to execute the Codemagic configuration steps")
-        workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text()
-        workflow = workflow.split("\n  ios-testflight:\n", 1)[1]
+        codemagic = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
 
-        def configuration_script(name):
+        def configuration_script(workflow, name):
             step = workflow.split(f"      - name: {name}\n", 1)[1].split("      - name:", 1)[0]
             lines = step.split("        script:", 1)[1].splitlines()
             if lines[0].strip() == "|":
                 return "\n".join(line[10:] for line in lines[1:] if line.startswith("          "))
             return lines[0].strip()
 
-        script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join(
-            configuration_script(name) for name in ("Create runtime configuration", "Create Firebase configuration")
-        )
-        test_calls = ["../../scripts/write-mobile-config.py --guardian-test --measurement-test",
-                      "../../scripts/write-firebase-config.py --platform ios"]
-        production_calls = ["../../scripts/write-mobile-config.py --production-beta",
-                            "../../scripts/write-firebase-config.py --production-beta --platform ios"]
-        for selected, expected in ((None, test_calls), ("test", test_calls),
-                                   ("production", production_calls), ("staging", None)):
-            with self.subTest(environment=selected), tempfile.TemporaryDirectory() as directory:
-                binary = Path(directory) / "bin/python3"
-                binary.parent.mkdir()
-                binary.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> calls.txt\n')
-                binary.chmod(0o755)
-                env = {name: value for name, value in os.environ.items()
-                       if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
-                if selected is not None:
-                    env["DOPMI_ENVIRONMENT"] = selected
-                process = subprocess.run([bash, "-c", script], cwd=directory, env=env,
-                                         capture_output=True, text=True)
-                calls = Path(directory) / "calls.txt"
-                if expected is None:
-                    self.assertNotEqual(process.returncode, 0)
-                    self.assertFalse(calls.exists(), "Unknown environments must not invoke either writer")
-                else:
-                    self.assertEqual(process.returncode, 0, process.stderr)
-                    self.assertEqual(calls.read_text().splitlines(), expected)
+        for workflow_id, platform, steps in (
+            ("android-guardian-internal", "android",
+             ("Create explicit Guardian environment configuration", "Create matching Guardian Firebase configuration")),
+            ("ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
+        ):
+            workflow = codemagic.split(f"\n  {workflow_id}:\n", 1)[1]
+            script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join(
+                configuration_script(workflow, name) for name in steps
+            )
+            test_calls = ["../../scripts/write-mobile-config.py --guardian-test --measurement-test",
+                          f"../../scripts/write-firebase-config.py --platform {platform}"]
+            production_calls = ["../../scripts/write-mobile-config.py --production-beta",
+                                f"../../scripts/write-firebase-config.py --production-beta --platform {platform}"]
+            adoption_calls = [production_calls[0] + " --adoption-only", production_calls[1]]
+            for selected, adoption, expected in (
+                (None, None, test_calls), ("test", None, test_calls), ("production", None, production_calls),
+                ("production", "true", adoption_calls), ("test", "true", None), ("production", "yes", None),
+                ("production", "", None), ("staging", None, None),
+            ):
+                with self.subTest(workflow=workflow_id, environment=selected, adoption=adoption), \
+                        tempfile.TemporaryDirectory() as directory:
+                    binary = Path(directory) / "bin/python3"
+                    binary.parent.mkdir()
+                    binary.write_text('#!/bin/sh\nprintf "%s\\n" "$*" >> calls.txt\n')
+                    binary.chmod(0o755)
+                    env = {name: value for name, value in os.environ.items()
+                           if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
+                    if selected is not None:
+                        env["DOPMI_ENVIRONMENT"] = selected
+                    if adoption is not None:
+                        env["DOPMI_ADOPTION_ONLY"] = adoption
+                    process = subprocess.run([bash, "-c", script], cwd=directory, env=env,
+                                             capture_output=True, text=True)
+                    calls = Path(directory) / "calls.txt"
+                    if expected is None:
+                        self.assertNotEqual(process.returncode, 0)
+                        self.assertFalse(calls.exists(), "Invalid profiles must not invoke either writer")
+                    else:
+                        self.assertEqual(process.returncode, 0, process.stderr)
+                        self.assertEqual(calls.read_text().splitlines(), expected)
 
     def test_testflight_build_info_describes_the_generated_profile(self):
-        workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text()
+        workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
         workflow = workflow.split("\n  ios-testflight:\n", 1)[1]
         embedded = workflow.split("<<'PYINFO'\n", 1)[1].split("          PYINFO", 1)[0]
         program = "\n".join(line[10:] for line in embedded.splitlines())
-        for production in (False, True):
-            with self.subTest(production=production), tempfile.TemporaryDirectory() as directory:
-                generated = (config.build_config(self.production_env(), production_beta=True) if production
+        for production, adoption in ((False, False), (True, False), (True, True)):
+            with self.subTest(production=production, adoption=adoption), tempfile.TemporaryDirectory() as directory:
+                generated = (config.build_config(self.production_env(), production_beta=True, adoption_only=adoption) if production
                              else config.build_config(self.env, guardian_test=True, measurement_test=True))
                 Path(directory, "config.json").write_text(json.dumps(generated))
                 Path(directory, "build").mkdir()
@@ -329,6 +378,8 @@ class MobileConfigTests(unittest.TestCase):
                     exec(compile(program, "codemagic.yaml:ios-testflight-build-info", "exec"), {})
                 artifact = Path(directory, "build/guardian-build-info.txt").read_text()
                 self.assertIn("Environment: production\n" if production else "Environment: test\n", artifact)
+                self.assertIn(f"Adoption only: {str(adoption).lower()}\n", artifact)
+                self.assertIn(f"Stripe live client: {str(production and not adoption).lower()}\n", artifact)
                 self.assertIn("Guardian test: false\n" if production else "Guardian test: true\n", artifact)
                 self.assertIn("Commit: fixture-source\nVersion: 2.3.3 (999)\n", artifact)
 

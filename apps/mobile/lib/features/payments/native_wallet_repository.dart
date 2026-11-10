@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../adoption/community_repository.dart';
 import 'guardian_repository.dart';
+import 'payment_environment.dart';
 
 final nativeWalletRepositoryProvider = Provider<NativeWalletRepository>(
   (ref) => NativeWalletRepository(Supabase.instance.client),
@@ -19,6 +20,7 @@ class NativeWalletRepository {
 
   // The SDK secret is transient. Only the minimal owner receipt may be stored.
   Future<Json> submit(Json intent) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     if (intent['consent_version'] != savedCardConsent ||
         !['apple_pay', 'google_pay'].contains(intent['wallet_type']) ||
         !_uuid.hasMatch(intent['key'] is String ? intent['key'] : '')) {

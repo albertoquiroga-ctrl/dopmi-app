@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../core/ui.dart';
+import '../../core/config/adoption_only_build.dart';
 import '../../core/donor_canvas.dart';
 import '../identity/experience_controller.dart';
 import 'community_repository.dart';
@@ -28,7 +29,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   void initState() {
     super.initState();
     // Historical links remain safe without reading or changing private rescuer saves.
-    kind = widget.initialKind == SavedKind.rescuer
+    kind = adoptionOnlyBuild || widget.initialKind == SavedKind.rescuer
         ? SavedKind.adoption
         : widget.initialKind;
   }
@@ -170,14 +171,15 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
         child: Divider(height: 1, color: Color(0xffe6e2dd)),
       ),
       actions: [
-        PopupMenuButton<SavedKind>(
-          tooltip: 'Tipos de guardados',
-          onSelected: select,
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: SavedKind.adoption, child: Text('Adopción')),
-            PopupMenuItem(value: SavedKind.donation, child: Text('Donación')),
-          ],
-        ),
+        if (!adoptionOnlyBuild)
+          PopupMenuButton<SavedKind>(
+            tooltip: 'Tipos de guardados',
+            onSelected: select,
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: SavedKind.adoption, child: Text('Adopción')),
+              PopupMenuItem(value: SavedKind.donation, child: Text('Donación')),
+            ],
+          ),
       ],
     ),
     body: DonorCanvas(
@@ -206,7 +208,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
               if (error != null) Notice(error!, isError: true),
               LiveSection<DataPage<SavedEntry>>(
                 key: ValueKey('$kind:$page:$revision'),
-                tables: const ['dopmi_favorites', 'dopmi_saved_cases'],
+                tables: const [
+                  'dopmi_favorites',
+                  if (!adoptionOnlyBuild) 'dopmi_saved_cases',
+                ],
                 load: load,
                 builder: (result, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

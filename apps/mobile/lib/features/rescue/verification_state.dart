@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 import 'verification_form.dart';
 
@@ -87,7 +88,9 @@ class VerificationStateScreen extends StatelessWidget {
               const SizedBox(height: 26.08),
               Text(
                 approved
-                    ? 'Ya puedes publicar y administrar casos con donaciones.'
+                    ? adoptionOnlyBuild
+                          ? 'Tu perfil público ya puede mostrar el sello Dopmi.'
+                          : 'Ya puedes publicar y administrar casos con donaciones.'
                     : 'El equipo revisará tus datos y documentos. Te avisaremos cuando responda.',
                 textAlign: TextAlign.center,
                 style: TextStyle(

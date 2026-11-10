@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../../core/heading_layout.dart';
@@ -12,8 +13,11 @@ export 'onboarding_flow.dart';
 
 import '../../core/ui.dart';
 
-String safeIntent(String? intent) =>
-    ['adopt', 'donate', 'rescue'].contains(intent) ? intent! : 'adopt';
+String safeIntent(String? intent) => switch (intent) {
+  'rescue' => 'rescue',
+  'donate' when !adoptionOnlyBuild => 'donate',
+  _ => 'adopt',
+};
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -32,7 +36,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     (
       'rescue',
       'Dar en adopción',
-      'Publica casos, pide apoyo para necesidades y comparte evidencia con tu comunidad.',
+      adoptionOnlyBuild
+          ? 'Publica mascotas en adopción y conversa con personas interesadas.'
+          : 'Publica casos, pide apoyo para necesidades y comparte evidencia con tu comunidad.',
     ),
   ];
   @override

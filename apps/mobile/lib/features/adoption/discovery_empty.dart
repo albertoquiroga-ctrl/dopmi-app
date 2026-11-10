@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import 'community_ui.dart';
@@ -52,47 +53,54 @@ class DiscoveryEmpty extends StatelessWidget {
                         : filtered
                         ? 'Prueba otros filtros o limpia la selección para ver más opciones.'
                         : global
-                        ? 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
+                        ? adoptionOnlyBuild
+                              ? 'Por ahora no hay mascotas en adopción. Vuelve pronto para conocer nuevas publicaciones.'
+                              : 'Por ahora no hay mascotas en adopción. Vuelve pronto o apoya a quienes ya buscan ayuda.'
                         : 'Por ahora no hay ${species == 'dog' ? 'perros' : 'gatos'} en adopción. Prueba la otra categoría o vuelve pronto.',
                   ),
                 ),
               ),
-              // Source paragraph margin16 + grid gap8 + button margin4.
-              const SizedBox(height: 28),
-              FilledButton(
-                onPressed: nearbyRadiusKm != null
-                    ? changeLocation
-                    : filtered
-                    ? clear
-                    : global
-                    ? () => context.go('/rescue-cases')
-                    : switchSpecies,
-                style: FilledButton.styleFrom(
-                  backgroundColor: global && !filtered
-                      ? ink
-                      : const Color(0xfffaf8f5),
-                  foregroundColor: global && !filtered ? Colors.white : ink,
-                  minimumSize: const Size(0, 52),
-                  side: global && !filtered
-                      ? null
-                      : const BorderSide(color: Color(0xffe8e2d9)),
-                  shape: const StadiumBorder(),
-                  textStyle: const TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              if (!adoptionOnlyBuild ||
+                  !global ||
+                  filtered ||
+                  nearbyRadiusKm != null) ...[
+                // Source paragraph margin16 + grid gap8 + button margin4.
+                const SizedBox(height: 28),
+                FilledButton(
+                  onPressed: nearbyRadiusKm != null
+                      ? changeLocation
+                      : filtered
+                      ? clear
+                      : global
+                      ? () => context.go('/rescue-cases')
+                      : switchSpecies,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: global && !filtered
+                        ? ink
+                        : const Color(0xfffaf8f5),
+                    foregroundColor: global && !filtered ? Colors.white : ink,
+                    minimumSize: const Size(0, 52),
+                    side: global && !filtered
+                        ? null
+                        : const BorderSide(color: Color(0xffe8e2d9)),
+                    shape: const StadiumBorder(),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  child: Text(
+                    nearbyRadiusKm != null
+                        ? 'Cambiar ubicación'
+                        : filtered
+                        ? 'Limpiar filtros'
+                        : global
+                        ? 'Ir a Apoyar'
+                        : 'Ver ${species == 'dog' ? 'gatos' : 'perros'}',
                   ),
                 ),
-                child: Text(
-                  nearbyRadiusKm != null
-                      ? 'Cambiar ubicación'
-                      : filtered
-                      ? 'Limpiar filtros'
-                      : global
-                      ? 'Ir a Apoyar'
-                      : 'Ver ${species == 'dog' ? 'gatos' : 'perros'}',
-                ),
-              ),
+              ],
             ],
           ),
         ),

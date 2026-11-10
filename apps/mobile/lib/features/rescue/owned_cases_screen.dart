@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
@@ -142,10 +143,15 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
       ? {widget.initialStatus!}
       : caseFilters.keys.toSet();
 
+  String get initialProgram =>
+      !adoptionOnlyBuild && widget.initialProgram == 'support'
+      ? 'support'
+      : 'adoption';
+
   @override
   void initState() {
     super.initState();
-    program = widget.initialProgram == 'support' ? 'support' : 'adoption';
+    program = initialProgram;
     statuses = initialStatuses();
   }
 
@@ -154,7 +160,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialProgram != widget.initialProgram ||
         oldWidget.initialStatus != widget.initialStatus) {
-      program = widget.initialProgram == 'support' ? 'support' : 'adoption';
+      program = initialProgram;
       statuses = initialStatuses();
       archived = false;
       page = 1;
@@ -338,51 +344,53 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                   ),
                   const SizedBox(height: 20),
                   const _OwnedCasesTitle(),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: const Color(0xffe2ddf1)),
-                      borderRadius: BorderRadius.circular(30),
+                  if (!adoptionOnlyBuild) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: const Color(0xffe2ddf1)),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: large
+                          ? Column(
+                              children: [
+                                for (final entry in const {
+                                  'adoption': 'Adopción',
+                                  'support': 'Apoyo',
+                                }.entries)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: _ProgramTab(
+                                      label: entry.value,
+                                      selected: program == entry.key,
+                                      onPressed: busy
+                                          ? null
+                                          : () => changeProgram(entry.key),
+                                    ),
+                                  ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                for (final entry in const {
+                                  'adoption': 'Adopción',
+                                  'support': 'Apoyo',
+                                }.entries)
+                                  Expanded(
+                                    child: _ProgramTab(
+                                      label: entry.value,
+                                      selected: program == entry.key,
+                                      onPressed: busy
+                                          ? null
+                                          : () => changeProgram(entry.key),
+                                    ),
+                                  ),
+                              ],
+                            ),
                     ),
-                    child: large
-                        ? Column(
-                            children: [
-                              for (final entry in const {
-                                'adoption': 'Adopción',
-                                'support': 'Apoyo',
-                              }.entries)
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: _ProgramTab(
-                                    label: entry.value,
-                                    selected: program == entry.key,
-                                    onPressed: busy
-                                        ? null
-                                        : () => changeProgram(entry.key),
-                                  ),
-                                ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              for (final entry in const {
-                                'adoption': 'Adopción',
-                                'support': 'Apoyo',
-                              }.entries)
-                                Expanded(
-                                  child: _ProgramTab(
-                                    label: entry.value,
-                                    selected: program == entry.key,
-                                    onPressed: busy
-                                        ? null
-                                        : () => changeProgram(entry.key),
-                                  ),
-                                ),
-                            ],
-                          ),
-                  ),
+                  ],
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -426,7 +434,7 @@ class _MyRescueCasesScreenState extends ConsumerState<MyRescueCasesScreen> {
                       'dopmi_adoptions',
                       'dopmi_rescue_records',
                       'dopmi_threads',
-                      'dopmi_donations',
+                      if (!adoptionOnlyBuild) 'dopmi_donations',
                     ],
                     load: () => repository.ownedCases(
                       page,
@@ -607,7 +615,9 @@ class _OwnedCasesEmpty extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Cuando publiques una mascota para adopción o apoyo, tus casos aparecerán aquí para que puedas darles seguimiento.',
+          adoptionOnlyBuild
+              ? 'Aquí podrás dar seguimiento a tus publicaciones de adopción.'
+              : 'Cuando publiques una mascota para adopción o apoyo, tus casos aparecerán aquí para que puedas darles seguimiento.',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 14, height: 20 / 14, color: muted),
         ),

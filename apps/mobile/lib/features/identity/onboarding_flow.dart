@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
@@ -42,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final rescue = widget.intent == 'rescue';
-    final donate = widget.intent == 'donate';
+    final donate = !adoptionOnlyBuild && widget.intent == 'donate';
     final slides = rescue
         ? const [
             (
@@ -51,8 +52,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               'Continuar',
             ),
             (
-              'Tú lo cuidas. Te ayudamos a cubrir lo que necesita.',
-              'Confirma tu correo y solicita apoyo para reembolsar gastos ya pagados, con evidencia revisada y aprobada por DopMi. Para recibir aportaciones, completa Stripe.',
+              adoptionOnlyBuild
+                  ? 'Publica y conecta con adoptantes.'
+                  : 'Tú lo cuidas. Te ayudamos a cubrir lo que necesita.',
+              adoptionOnlyBuild
+                  ? 'Confirma tu correo, envía la publicación a revisión y conversa con las personas interesadas cuando esté aprobada.'
+                  : 'Confirma tu correo y solicita apoyo para reembolsar gastos ya pagados, con evidencia revisada y aprobada por DopMi. Para recibir aportaciones, completa Stripe.',
               'Empezar',
             ),
           ]
@@ -243,9 +248,11 @@ class AccountStartScreen extends StatelessWidget {
     final copy = intent == 'rescue'
         ? (
             'Crea tu espacio para publicar',
-            'Confirma tu correo, envía casos para revisión y comparte evidencia con transparencia. La verificación Dopmi es opcional.',
+            adoptionOnlyBuild
+                ? 'Confirma tu correo y envía tus publicaciones de adopción a revisión.'
+                : 'Confirma tu correo, envía casos para revisión y comparte evidencia con transparencia. La verificación Dopmi es opcional.',
           )
-        : intent == 'donate'
+        : !adoptionOnlyBuild && intent == 'donate'
         ? (
             'Casi listo para apoyar',
             'Elige gastos aprobados y sigue el impacto de cada aportación.',

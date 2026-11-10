@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/config/adoption_only_build.dart';
+import '../../core/ui.dart';
 import 'legal_document_frame.dart';
 import 'identity_repository.dart';
 
@@ -24,6 +26,10 @@ class PrivacyNoticeScreen extends StatelessWidget {
       title: 'Aviso de Privacidad',
       lead: '${versions.privacy} · ${versions.date}',
       children: [
+        if (adoptionOnlyBuild)
+          const Notice(
+            'Esta versión está dedicada a adopciones. El uso de Stripe que describe este aviso corresponde a las funciones de pago cuando estén habilitadas.',
+          ),
         const LegalDocumentSection(
           'Qué cubre este aviso',
           'Dopmi facilita adopciones responsables, comunicación entre personas interesadas y rescatistas, publicación y moderación de casos de rescate y aportaciones a casos elegibles. Trata datos de cuenta, publicaciones, mensajes, moderación y operaciones necesarios para prestar esas funciones.',

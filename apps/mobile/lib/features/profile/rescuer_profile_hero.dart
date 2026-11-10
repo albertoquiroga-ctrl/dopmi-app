@@ -1,3 +1,4 @@
+import '../../core/config/adoption_only_build.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
@@ -409,7 +410,7 @@ class RescuerPaymentAccess extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Text(
-          'Pagos y transacciones',
+          adoptionOnlyBuild ? 'Accesos de cuenta' : 'Pagos y transacciones',
           style: TextStyle(
             fontFamily: 'Inter',
             fontSize: 18,
@@ -456,13 +457,18 @@ class RescuerPaymentAccess extends StatelessWidget {
                     ),
                   ),
                 );
-            final entries = [
-              ('Mi cuenta', 'icon-card.svg', '/settings'),
+            const entries = [
               (
-                'Mi historial',
-                'icon-billing.svg',
-                '/rescuer/received-payments',
+                'Mi cuenta',
+                adoptionOnlyBuild ? 'icon-shield.svg' : 'icon-card.svg',
+                '/settings',
               ),
+              if (!adoptionOnlyBuild)
+                (
+                  'Mi historial',
+                  'icon-billing.svg',
+                  '/rescuer/received-payments',
+                ),
               ('¿Dudas?', 'icon-help.svg', '/help'),
             ];
             return stacked

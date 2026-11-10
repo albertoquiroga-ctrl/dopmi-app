@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 
@@ -603,7 +604,11 @@ class OnboardingArt extends StatelessWidget {
     ),
   );
 
-  Widget rescue() => step == 0 ? publicationPreview() : supportPreview();
+  Widget rescue() => step == 0
+      ? publicationPreview()
+      : adoptionOnlyBuild
+      ? adoptionDetail()
+      : supportPreview();
 
   Widget publicationPreview() => Builder(
     builder: (context) {

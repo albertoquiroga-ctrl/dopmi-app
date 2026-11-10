@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
@@ -529,7 +530,11 @@ class PublicProfileTabs extends StatelessWidget {
           ),
           child: LayoutBuilder(
             builder: (context, bounds) {
-              final labels = ['Resumen', 'Adopci\u00f3n', 'Apoyo'];
+              final labels = [
+                'Resumen',
+                'Adopci\u00f3n',
+                if (!adoptionOnlyBuild) 'Apoyo',
+              ];
               var minimumTabWidth = 0.0;
               for (final label in labels) {
                 final painter = TextPainter(
@@ -549,7 +554,7 @@ class PublicProfileTabs extends StatelessWidget {
                 if (measured > minimumTabWidth) minimumTabWidth = measured;
                 painter.dispose();
               }
-              final requiredWidth = minimumTabWidth * 3;
+              final requiredWidth = minimumTabWidth * labels.length;
               final width = requiredWidth > bounds.maxWidth
                   ? requiredWidth
                   : bounds.maxWidth;

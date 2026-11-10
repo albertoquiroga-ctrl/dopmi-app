@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
@@ -28,10 +29,11 @@ class RescuerSettingsVerification extends ConsumerWidget {
               status: data['verification_status'] as String?,
               onPressed: () => context.push('/rescue/new?kind=verification'),
             ),
-            if (data['verification_status'] == 'approved')
-              const RescuerSettingsDetails()
-            else
-              const SettingsBankingSection(),
+            if (!adoptionOnlyBuild)
+              if (data['verification_status'] == 'approved')
+                const RescuerSettingsDetails()
+              else
+                const SettingsBankingSection(),
           ],
         ),
       ),

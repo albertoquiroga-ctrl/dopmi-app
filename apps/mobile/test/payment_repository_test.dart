@@ -32,6 +32,35 @@ Map<String, dynamic> session() => {
   },
 };
 void main() {
+  test('adoption-only mode blocks new payment and Connect requests', () async {
+    final client = SupabaseClient(
+      'http://127.0.0.1:54321',
+      'synthetic-key',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+      httpClient: MockClient((_) async => fail('must not contact payments')),
+    );
+    addTearDown(client.dispose);
+    const mode = PaymentEnvironment(
+      environment: 'production',
+      productionPublishableKey: 'pk_live_synthetic',
+      guardianProductionEnabled: true,
+      adoptionOnly: true,
+    );
+    final repo = PaymentRepository(client, paymentEnvironment: mode);
+    expect(mode.guardianEnabled, isFalse);
+    expect(mode.publishableKey, isEmpty);
+    expect(mode.isValid, isFalse);
+    await expectLater(
+      repo.checkout(expense, 2000, attempt),
+      throwsFormatException,
+    );
+    await expectLater(
+      repo.caseCheckout(expense, 2000, attempt),
+      throwsFormatException,
+    );
+    await expectLater(repo.action('connect_session'), throwsFormatException);
+  });
+
   for (final config in [
     (mode: 'test', consent: 'oneoff-test-2026-10-15'),
     (mode: 'production', consent: 'oneoff-live-2026-10-28'),

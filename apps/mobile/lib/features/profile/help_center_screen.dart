@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'help_support_dialog.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
@@ -115,7 +116,9 @@ const _topics = <(String, String, List<(String, String)>)>[
     'both',
     [
       (
-        '¿Cómo cambio entre Donante y Rescatista?',
+        adoptionOnlyBuild
+            ? '¿Cómo cambio entre Adoptante y Rescatista?'
+            : '¿Cómo cambio entre Donante y Rescatista?',
         'Desde Perfil usa la tarjeta para cambiar a modo Rescatista o Adoptante. El cambio conserva tus datos y no concede permisos de verificación.',
       ),
       (
@@ -136,10 +139,11 @@ const _topics = <(String, String, List<(String, String)>)>[
         '¿Cómo reporto un caso o un perfil?',
         'En el caso o perfil público toca Reportar y confirma el motivo. El equipo revisa los reportes.',
       ),
-      (
-        '¿Cómo protegen mis datos de pago?',
-        'Los pagos se procesan mediante Stripe. No compartas contraseñas, códigos de acceso ni datos completos de tarjeta con soporte.',
-      ),
+      if (!adoptionOnlyBuild)
+        (
+          '¿Cómo protegen mis datos de pago?',
+          'Los pagos se procesan mediante Stripe. No compartas contraseñas, códigos de acceso ni datos completos de tarjeta con soporte.',
+        ),
     ],
   ),
 ];
@@ -199,8 +203,19 @@ class _HelpCenterScreenState extends ConsumerState<HelpCenterScreen> {
     final large = MediaQuery.textScalerOf(context).scale(18) > 25;
     final audienceRescuer = selectedRescuer ?? rescuer;
     final visibleTopics = audienceRescuer
-        ? const [7, 4, 5, 6, 0, 8]
-        : const [7, 3, 2, 1, 0, 8];
+        ? const [
+            7,
+            4,
+            5,
+            if (!adoptionOnlyBuild) ...[6, 0],
+            8,
+          ]
+        : const [
+            7,
+            3,
+            if (!adoptionOnlyBuild) ...[2, 1, 0],
+            8,
+          ];
     final audienceTabs = DecoratedBox(
       decoration: BoxDecoration(
         color: const Color(0xffefede8),

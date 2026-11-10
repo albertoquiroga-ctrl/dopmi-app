@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/ui.dart';
+import '../../core/config/adoption_only_build.dart';
 import '../../core/navigation.dart';
 import '../../core/media/media_store.dart';
 import '../../core/media/photo_runtime.dart';
@@ -20,10 +21,13 @@ class CommunityNav extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final experience = ref.watch(experienceProvider);
-    final store = ref.watch(storeCatalogProvider).asData?.value;
-    final storeActor = ref.watch(storeActorProvider);
+    final store = adoptionOnlyBuild
+        ? null
+        : ref.watch(storeCatalogProvider).asData?.value;
+    final storeActor = adoptionOnlyBuild ? null : ref.watch(storeActorProvider);
     final storeIdentityMatches =
         store != null &&
+        storeActor != null &&
         storeActor.hasValue &&
         storeActor.value == ref.watch(storeRepositoryProvider).userId;
     return ListenableBuilder(
@@ -39,8 +43,7 @@ class CommunityNav extends ConsumerWidget {
                 : '/profile');
         return DopmiBottomBar(
           rescuer: rescuer,
-          storeEnabled:
-              !rescuer && storeIdentityMatches && store.enabled == true,
+          storeEnabled: !rescuer && storeIdentityMatches && store.enabled,
           storePreview: store?.preview == true,
           selectedPath: selected,
           onSelected: (destination) {

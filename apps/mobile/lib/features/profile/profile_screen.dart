@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/config/adoption_only_build.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -823,7 +826,11 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
           if (!loading) ...[
             Notice(
               versions == null
-                  ? 'No pudimos confirmar el entorno de la cuenta. La aceptación no está disponible. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes.'
+                  ? adoptionOnlyBuild
+                        ? 'No pudimos confirmar el entorno de la cuenta. Puedes consultar el Aviso de Privacidad mientras lo verificamos.'
+                        : 'No pudimos confirmar el entorno de la cuenta. La aceptación no está disponible. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes.'
+                  : adoptionOnlyBuild
+                  ? 'Actualización del ${versions.date}. Lee los Términos y Condiciones y el Aviso de Privacidad de esta fecha antes de confirmar.'
                   : 'Actualización del ${versions.date}. Lee los Términos y Condiciones y el Aviso de Privacidad de esta fecha antes de confirmar. Aceptar no te registra en Guardián, no guarda una tarjeta y no realiza ningún cobro. Puedes consultar privacidad, cancelar Guardián y revisar tus comprobantes sin aceptar.',
             ),
             const SizedBox(height: 12),
@@ -856,25 +863,27 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
                   widget.onPrivacy ?? () => context.push('/account-privacy'),
               child: const Text('Privacidad y eliminación de cuenta'),
             ),
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : widget.onPayments ?? () => context.push('/payments'),
-              child: const Text('Ver mis comprobantes'),
-            ),
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : widget.onReceivedPayments ??
-                        () => context.push('/rescuer/received-payments'),
-              child: const Text('Aportaciones recibidas'),
-            ),
-            TextButton(
-              onPressed: busy
-                  ? null
-                  : widget.onGuardian ?? () => context.push('/guardian'),
-              child: const Text('Cancelar o consultar Guardián'),
-            ),
+            if (!adoptionOnlyBuild) ...[
+              TextButton(
+                onPressed: busy
+                    ? null
+                    : widget.onPayments ?? () => context.push('/payments'),
+                child: const Text('Ver mis comprobantes'),
+              ),
+              TextButton(
+                onPressed: busy
+                    ? null
+                    : widget.onReceivedPayments ??
+                          () => context.push('/rescuer/received-payments'),
+                child: const Text('Aportaciones recibidas'),
+              ),
+              TextButton(
+                onPressed: busy
+                    ? null
+                    : widget.onGuardian ?? () => context.push('/guardian'),
+                child: const Text('Cancelar o consultar Guardián'),
+              ),
+            ],
           ],
           if (!loading && error != null)
             TextButton(onPressed: load, child: const Text('Volver a intentar')),

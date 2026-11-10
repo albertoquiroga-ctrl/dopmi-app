@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import 'design_tokens.dart';
+import 'config/adoption_only_build.dart';
 
 class DopmiDestination {
   const DopmiDestination(
@@ -106,13 +107,15 @@ class DopmiBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showStore = !adoptionOnlyBuild && storeEnabled;
     final destinations = rescuer
         ? rescuerDestinations
         : [
             for (final destination in donorDestinations) ...[
-              if (destination.path == '/profile' && storeEnabled)
+              if (destination.path == '/profile' && showStore)
                 storePreview ? storePreviewDestination : storeDestination,
-              destination,
+              if (!adoptionOnlyBuild || destination.path != '/rescue-cases')
+                destination,
             ],
           ];
     if (!rescuer) {
@@ -120,11 +123,11 @@ class DopmiBottomBar extends StatelessWidget {
         top: false,
         minimum: const EdgeInsets.only(bottom: 14),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: storeEnabled ? 12 : 14),
+          padding: EdgeInsets.symmetric(horizontal: showStore ? 12 : 14),
           child: Center(
             heightFactor: 1,
             child: Container(
-              width: storeEnabled ? 282 : 230,
+              width: showStore ? 282 : (adoptionOnlyBuild ? 178 : 230),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 boxShadow: const [

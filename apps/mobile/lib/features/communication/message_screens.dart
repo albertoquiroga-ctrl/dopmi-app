@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/donor_notification_button.dart';
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
 import '../../core/reference_focus_outline.dart';
@@ -644,7 +645,8 @@ class _ThreadState extends ConsumerState<ThreadScreen>
             ],
           ),
           actions: [
-            if (thread?['post_id'] != null)
+            if (thread?['post_id'] != null &&
+                (!adoptionOnlyBuild || thread?['case_id'] == null))
               ReferenceFocusOutline(
                 key: const ValueKey('chat-detail-link'),
                 radius: 0,

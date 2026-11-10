@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import 'identity_controller.dart';
@@ -809,6 +810,10 @@ class TermsScreen extends StatelessWidget {
       title: 'Términos y Condiciones',
       lead: '${versions.terms} · ${versions.date}',
       children: [
+        if (adoptionOnlyBuild)
+          const Notice(
+            'Esta versión está dedicada a adopciones. Las funciones de aportación y Guardián descritas en los términos se aplican cuando estén habilitadas.',
+          ),
         const LegalDocumentSection(
           'Quién puede usar Dopmi',
           'El uso de Dopmi está sujeto a estos términos. Proporciona información veraz y cuida la privacidad y seguridad de otras personas.',
@@ -828,7 +833,7 @@ class TermsScreen extends StatelessWidget {
         LegalDocumentSection(
           'Autorizaciones separadas',
           environment == 'production'
-              ? 'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de esta beta usan Stripe LIVE y dinero real, y requieren la confirmación correspondiente. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.'
+              ? 'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. ${adoptionOnlyBuild ? 'Cuando estén habilitadas, las aportaciones' : 'Las aportaciones de esta beta'} usan Stripe LIVE y dinero real, y requieren la confirmación correspondiente. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.'
               : 'Aceptar estos documentos no registra Guardián, no guarda una tarjeta y no cobra. Guardar tarjeta tampoco equivale a aportar. Las aportaciones de prueba usan exclusivamente Stripe TEST y no representan dinero real. Dopmi no ofrece fondo comunitario, bonos, cashback ni tienda.',
         ),
         const LegalDocumentSection(

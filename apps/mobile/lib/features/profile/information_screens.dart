@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 
 final informationLinkOpenerProvider = Provider<Future<bool> Function(Uri)>(
@@ -152,7 +153,9 @@ class AboutScreen extends ConsumerWidget {
             'En México, rescatar a un perro o un gato se hace a pura fuerza de voluntad: publicaciones que se pierden en redes, grupos de WhatsApp y la suerte de que alguien vea el post a tiempo.',
           ),
           InformationParagraph(
-            'Quienes rescatan no necesitan más ruido. Necesitan que su trabajo llegue a las personas correctas. Por eso hicimos DopMi: un solo lugar para adoptar, apoyar y darle seguimiento a cada rescate.',
+            adoptionOnlyBuild
+                ? 'Quienes rescatan necesitan que su trabajo llegue a las personas correctas. Por eso hicimos DopMi: un lugar para encontrar mascotas en adopción y contactar a quien las cuida.'
+                : 'Quienes rescatan no necesitan más ruido. Necesitan que su trabajo llegue a las personas correctas. Por eso hicimos DopMi: un solo lugar para adoptar, apoyar y darle seguimiento a cada rescate.',
           ),
         ],
       ),
@@ -165,14 +168,17 @@ class AboutScreen extends ConsumerWidget {
               'Mascotas reales, publicadas por rescatistas reales. Hablas directo con quien la cuida.',
               'tab-adoption.svg',
             ),
-            (
-              'Apoyar',
-              'Ayudas a reembolsar una necesidad pagada y aprobada, como comida, medicina o una consulta, y puedes seguir sus avances.',
-              'tab-donate.svg',
-            ),
+            if (!adoptionOnlyBuild)
+              (
+                'Apoyar',
+                'Ayudas a reembolsar una necesidad pagada y aprobada, como comida, medicina o una consulta, y puedes seguir sus avances.',
+                'tab-donate.svg',
+              ),
             (
               'Rescatar',
-              'Las rescatistas preparan sus casos, los envían a revisión y encuentran personas que quieren apoyar.',
+              adoptionOnlyBuild
+                  ? 'Las rescatistas envían sus publicaciones a revisión y encuentran personas que quieren adoptar.'
+                  : 'Las rescatistas preparan sus casos, los envían a revisión y encuentran personas que quieren apoyar.',
               'intent-rescuer.svg',
             ),
           ])
@@ -242,25 +248,32 @@ class AboutScreen extends ConsumerWidget {
           InformationParagraph(
             'No te pedimos que confíes. Te mostramos por qué puedes hacerlo.',
           ),
-          InformationParagraph(
-            'Casos revisados. Cada caso y sus gastos requieren aprobación. Stripe verifica los datos para recibir aportaciones. El sello Dopmi es opcional para refugios establecidos y sólo se muestra si está aprobado.',
-          ),
+          if (adoptionOnlyBuild)
+            InformationParagraph(
+              'El sello Dopmi es opcional para refugios establecidos y sólo se muestra si está aprobado.',
+            )
+          else
+            InformationParagraph(
+              'Casos revisados. Cada caso y sus gastos requieren aprobación. Stripe verifica los datos para recibir aportaciones. El sello Dopmi es opcional para refugios establecidos y sólo se muestra si está aprobado.',
+            ),
           InformationParagraph(
             'Mascotas reales. Revisamos cada publicación antes de mostrarla, y también cada cambio.',
           ),
-          InformationParagraph(
-            'Seguimiento con evidencia. Los avances y fotos públicos pasan por revisión. Tus documentos privados no se muestran en el caso.',
-          ),
+          if (!adoptionOnlyBuild)
+            InformationParagraph(
+              'Seguimiento con evidencia. Los avances y fotos públicos pasan por revisión. Tus documentos privados no se muestran en el caso.',
+            ),
         ],
       ),
-      const InformationSection(
-        'Guardianes',
-        children: [
-          InformationParagraph(
-            'Algunas personas eligen estar siempre. Con Guardián, tu apoyo mensual se asigna a gastos pagados y aprobados. Sólo se cobra cuando se puede asignar todo el neto. Puedes seguir los avances públicos de los casos que apoyaste.',
-          ),
-        ],
-      ),
+      if (!adoptionOnlyBuild)
+        const InformationSection(
+          'Guardianes',
+          children: [
+            InformationParagraph(
+              'Algunas personas eligen estar siempre. Con Guardián, tu apoyo mensual se asigna a gastos pagados y aprobados. Sólo se cobra cuando se puede asignar todo el neto. Puedes seguir los avances públicos de los casos que apoyaste.',
+            ),
+          ],
+        ),
       const InformationSection(
         'No estás ayudando solo.',
         children: [
@@ -269,10 +282,11 @@ class AboutScreen extends ConsumerWidget {
           ),
         ],
       ),
-      OutlinedButton(
-        onPressed: () => context.push('/transparency'),
-        child: const Text('Transparencia'),
-      ),
+      if (!adoptionOnlyBuild)
+        OutlinedButton(
+          onPressed: () => context.push('/transparency'),
+          child: const Text('Transparencia'),
+        ),
       const SizedBox(height: 28),
       const Divider(color: Color(0xffe6e2dd)),
       Wrap(

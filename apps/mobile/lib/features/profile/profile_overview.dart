@@ -10,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
@@ -198,7 +199,11 @@ class RescuerDonorModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final target = Semantics(
-      label: settings ? 'Cambiar a usuario donante' : 'Cambiar a modo donante',
+      label: adoptionOnlyBuild
+          ? 'Cambiar a modo adoptante'
+          : settings
+          ? 'Cambiar a usuario donante'
+          : 'Cambiar a modo donante',
       toggled: settings,
       enabled: enabled,
       child: ReferenceFocusOutline(
@@ -260,7 +265,13 @@ class RescuerDonorModeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings ? 'Cambiar a usuario donante' : 'Modo donante',
+                  adoptionOnlyBuild
+                      ? settings
+                            ? 'Cambiar a modo adoptante'
+                            : 'Modo adoptante'
+                      : settings
+                      ? 'Cambiar a usuario donante'
+                      : 'Modo donante',
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 16,
@@ -274,6 +285,8 @@ class RescuerDonorModeCard extends StatelessWidget {
                 Text(
                   settings
                       ? 'Cambia tu experiencia en la app'
+                      : adoptionOnlyBuild
+                      ? 'Encuentra mascotas en adopción'
                       : 'Adopta, apoya y sigue impacto',
                   style: TextStyle(
                     fontFamily: 'Inter',
@@ -708,29 +721,31 @@ class DonorProfileView extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
-            if (ref.watch(guardianEnabledProvider))
-              const DonorGuardianFeature(),
-            const SizedBox(height: 12),
-            const StorePromotion(),
-            DonorAccessGroup(
-              title: 'Pagos y suscripciones',
-              items: [
-                if (ref.watch(guardianEnabledProvider)) ...[
-                  (
-                    'Métodos de pago',
-                    Icons.credit_card,
-                    '/settings/payment-methods',
-                  ),
-                  (
-                    'Suscripción Guardián',
-                    Icons.receipt_long_outlined,
-                    '/guardian',
-                  ),
+            if (!adoptionOnlyBuild) ...[
+              if (ref.watch(guardianEnabledProvider))
+                const DonorGuardianFeature(),
+              const SizedBox(height: 12),
+              const StorePromotion(),
+              DonorAccessGroup(
+                title: 'Pagos y suscripciones',
+                items: [
+                  if (ref.watch(guardianEnabledProvider)) ...[
+                    (
+                      'Métodos de pago',
+                      Icons.credit_card,
+                      '/settings/payment-methods',
+                    ),
+                    (
+                      'Suscripción Guardián',
+                      Icons.receipt_long_outlined,
+                      '/guardian',
+                    ),
+                  ],
+                  ('Mi historial de pagos', Icons.access_time, '/payments'),
                 ],
-                ('Mi historial de pagos', Icons.access_time, '/payments'),
-              ],
-            ),
-            const SizedBox(height: 12),
+              ),
+              const SizedBox(height: 12),
+            ],
             DonorFeature(
               title: 'Publica un caso de adopción',
               subtitle: 'Cambia tu perfil a modo Rescatista. Siempre podrás regresar a la navegación como Adoptante.',
@@ -1734,7 +1749,7 @@ class SettingsScreen extends ConsumerWidget {
           icon: 'icon-user',
           path: '/basic-info',
         ),
-        if (ref.watch(guardianEnabledProvider)) ...[
+        if (!adoptionOnlyBuild && ref.watch(guardianEnabledProvider)) ...[
           const SizedBox(height: 12),
           const RescuerNavigationRow(
             standardSettings: true,
@@ -1774,13 +1789,15 @@ class SettingsScreen extends ConsumerWidget {
         const SizedBox(height: 12),
         const DonorSettingsModeSwitch(),
         const SizedBox(height: 12),
-        const RescuerNavigationRow(
-          standardSettings: true,
-          title: 'Historial de aportaciones',
-          icon: 'icon-billing',
-          path: '/payments',
-        ),
-        const SizedBox(height: 12),
+        if (!adoptionOnlyBuild) ...[
+          const RescuerNavigationRow(
+            standardSettings: true,
+            title: 'Historial de aportaciones',
+            icon: 'icon-billing',
+            path: '/payments',
+          ),
+          const SizedBox(height: 12),
+        ],
         const RescuerNavigationRow(
           standardSettings: true,
           title: 'Términos y privacidad',
@@ -1933,7 +1950,7 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
             icon: Icons.person_outline,
             path: '/basic-info',
           ),
-          if (ref.watch(guardianEnabledProvider)) ...[
+          if (!adoptionOnlyBuild && ref.watch(guardianEnabledProvider)) ...[
             const ProfileRow(
               title: 'Métodos de pago',
               subtitle: 'Administra tus tarjetas y métodos de pago',
@@ -1947,11 +1964,12 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
               path: '/guardian',
             ),
           ],
-          const ProfileRow(
-            title: 'Historial de aportaciones',
-            icon: Icons.history,
-            path: '/payments',
-          ),
+          if (!adoptionOnlyBuild)
+            const ProfileRow(
+              title: 'Historial de aportaciones',
+              icon: Icons.history,
+              path: '/payments',
+            ),
           const ProfileRow(
             title: 'Términos y privacidad',
             icon: Icons.description_outlined,
@@ -1963,7 +1981,7 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
             icon: Icons.privacy_tip_outlined,
             path: '/account-privacy',
           ),
-          if (rescuer)
+          if (rescuer && !adoptionOnlyBuild)
             const ProfileRow(
               title: 'Configurar pagos con Stripe',
               icon: Icons.account_balance_outlined,

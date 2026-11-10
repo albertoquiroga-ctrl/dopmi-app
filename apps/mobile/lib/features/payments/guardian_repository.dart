@@ -22,6 +22,7 @@ class GuardianRepository {
   GuardianRepository(this.client);
   final SupabaseClient client;
   Future<Json> submitRegistration(Json draft) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     final result = await client.functions.invoke(
       'guardian-client',
       body: {
@@ -98,6 +99,7 @@ class GuardianRepository {
   }
 
   Future<void> cancelRegistration(String id) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     final result = await client.functions.invoke(
       'guardian-client',
       body: {'action': 'registration_cancel', 'id': id},
@@ -112,6 +114,7 @@ class GuardianRepository {
   Future<Json> registrationMethodStatus(Json draft) =>
       _registrationMethod('registration_method_status', draft);
   Future<Json> _registrationMethod(String action, Json draft) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     final uuid = RegExp(
       r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
     );
@@ -200,6 +203,7 @@ class GuardianRepository {
     GuardianRegistration registration,
     int cents,
   ) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     final result = await client.functions.invoke(
       'guardian-client',
       body: {
@@ -220,6 +224,7 @@ class GuardianRepository {
     String registrationId,
     String attemptId,
   ) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     final result = await client.functions.invoke(
       'guardian-client',
       body: {
@@ -369,6 +374,7 @@ class GuardianRepository {
   }
 
   Future<Json> submit(Json intent) async {
+    const PaymentEnvironment.compiled().requireFinancialActions();
     if (intent['kind'] == 'saved_card_method') {
       if (!['default', 'remove'].contains(intent['action']) ||
           intent['consent_version'] != savedCardMethodConsent) {

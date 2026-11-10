@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/css_linear_gradient.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
@@ -68,7 +69,7 @@ class RescueHomeScreen extends ConsumerWidget {
                           tables: const [
                             'dopmi_rescue_records',
                             'dopmi_adoptions',
-                            'dopmi_donations',
+                            if (!adoptionOnlyBuild) 'dopmi_donations',
                             'dopmi_notifications',
                             'dopmi_favorites',
                           ],
@@ -214,7 +215,9 @@ class RescuerVerificationCard extends StatelessWidget {
           ),
         const SizedBox(height: 16),
         const Text(
-          'La verificación protege a donantes y mascotas. Tus documentos no son públicos.',
+          adoptionOnlyBuild
+              ? 'La verificación ayuda a identificar a las rescatistas. Tus documentos no son públicos.'
+              : 'La verificación protege a donantes y mascotas. Tus documentos no son públicos.',
           style: TextStyle(fontSize: 14, height: 1.5, color: Color(0xff4f4e5c)),
         ),
         const SizedBox(height: 16),
@@ -278,13 +281,16 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
 
   bool get empty =>
       _homeCountsEmpty(counts('adoption')) &&
-      _homeCountsEmpty(counts('support')) &&
       !counts('adoption').values.whereType<num>().any((value) => value > 0) &&
-      !counts('support').values.whereType<num>().any((value) => value > 0) &&
-      evidence.isEmpty &&
       widget.data['unanswered_conversations'] == 0 &&
-      widget.data['payments_unseen_count'] == 0 &&
-      activity.isEmpty;
+      (adoptionOnlyBuild ||
+          (_homeCountsEmpty(counts('support')) &&
+              !counts('support').values
+                  .whereType<num>()
+                  .any((value) => value > 0) &&
+              evidence.isEmpty &&
+              widget.data['payments_unseen_count'] == 0 &&
+              activity.isEmpty));
 
   @override
   Widget build(BuildContext context) {
@@ -299,9 +305,11 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
           selected: 'none',
           counts: {
             'adoption': _homePendingCount(counts('adoption')),
-            'support': _homePendingCount(counts('support')),
+            if (!adoptionOnlyBuild)
+              'support': _homePendingCount(counts('support')),
             'messages': _homeCount(widget.data['unanswered_conversations']),
-            'payments': _homeCount(widget.data['payments_unseen_count']),
+            if (!adoptionOnlyBuild)
+              'payments': _homeCount(widget.data['payments_unseen_count']),
           },
           onSelected: _select,
         ),
@@ -316,7 +324,7 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             'dopmi_adoptions',
             'dopmi_favorites',
             'dopmi_messages',
-            'dopmi_donations',
+            if (!adoptionOnlyBuild) 'dopmi_donations',
           ],
           statusFrame: (content) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -338,10 +346,12 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
               metrics.favorites,
               metrics.messages,
               metrics.adoptions,
-              metrics.donors,
-              metrics.activeCases,
-              metrics.completedCases,
-              metrics.raisedCents,
+              if (!adoptionOnlyBuild) ...[
+                metrics.donors,
+                metrics.activeCases,
+                metrics.completedCases,
+                metrics.raisedCents,
+              ],
             ].any((value) => value > 0);
             final showEmpty = empty && !hasResults;
             return Column(
@@ -362,9 +372,11 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             );
           },
         ),
-        const SizedBox(height: 20),
-        const SizedBox(height: 20),
-        const StorePromotion(),
+        if (!adoptionOnlyBuild) ...[
+          const SizedBox(height: 20),
+          const SizedBox(height: 20),
+          const StorePromotion(),
+        ],
       ],
     );
   }
@@ -381,11 +393,13 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
                   constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                   child: _programTab('adoption', 'En adopción'),
                 ),
-                const SizedBox(width: 20),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: constraints.maxWidth),
-                  child: _programTab('support', 'Recibiendo apoyo'),
-                ),
+                if (!adoptionOnlyBuild) ...[
+                  const SizedBox(width: 20),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+                    child: _programTab('support', 'Recibiendo apoyo'),
+                  ),
+                ],
               ],
             ),
           ),
@@ -1122,9 +1136,9 @@ class _HomeQuickAccess extends StatelessWidget {
   final ValueChanged<String> onSelected;
   static const actions = [
     ('adoption', 'Adopción', 'rtab-home.svg'),
-    ('support', 'Apoyo', 'tab-donate.svg'),
+    if (!adoptionOnlyBuild) ('support', 'Apoyo', 'tab-donate.svg'),
     ('messages', 'Mensajes', 'icon-messages.svg'),
-    ('payments', 'Pagos', 'icon-billing.svg'),
+    if (!adoptionOnlyBuild) ('payments', 'Pagos', 'icon-billing.svg'),
   ];
 
   @override
@@ -1143,7 +1157,7 @@ class _HomeQuickAccess extends StatelessWidget {
         LayoutBuilder(
           builder: (context, constraints) {
             final scale = MediaQuery.textScalerOf(context);
-            var columns = 4;
+            var columns = actions.length;
             final longestLabel = actions
                 .map((action) {
                   final painter = TextPainter(
@@ -1164,7 +1178,7 @@ class _HomeQuickAccess extends StatelessWidget {
                     (constraints.maxWidth - (columns - 1) * 8) / columns) {
               columns = columns == 4 ? 2 : 1;
             }
-            if (columns == 4) {
+            if (columns == actions.length) {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1749,7 +1763,9 @@ class _HomeEmpty extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const Text(
-          'Aún no tienes casos de adopción o de apoyo publicados.',
+          adoptionOnlyBuild
+              ? 'Aún no tienes mascotas en adopción publicadas.'
+              : 'Aún no tienes casos de adopción o de apoyo publicados.',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 14,
@@ -2280,7 +2296,9 @@ class RescuerPendingEmpty extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           cases
-              ? 'Cuando publiques una mascota para adopción o donaciones, tus casos aparecerán aquí para que puedas darles seguimiento.'
+              ? adoptionOnlyBuild
+                    ? 'Aquí podrás dar seguimiento a tus publicaciones de adopción.'
+                    : 'Cuando publiques una mascota para adopción o donaciones, tus casos aparecerán aquí para que puedas darles seguimiento.'
               : 'Los borradores, correcciones, mensajes y evidencias aparecerán aquí.',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -2305,7 +2323,10 @@ String _verificationTitle(String status) => switch (status) {
   'submitted' => 'Verificación en proceso',
   'changes_requested' || 'rejected' => 'Corrige tu información',
   'draft' => 'Continúa tu verificación',
-  _ => 'Verifícate para recibir aportaciones',
+  _ =>
+    adoptionOnlyBuild
+        ? 'Verifica tu perfil'
+        : 'Verifícate para recibir aportaciones',
 };
 
 class RescuerFundingSummary extends StatelessWidget {

@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/ui.dart';
+import 'core/config/adoption_only_build.dart';
 import 'core/splash.dart';
 import 'core/navigation.dart';
 import 'core/measurement.dart';
@@ -62,6 +63,55 @@ const accountRouteAliases = <String, String>{
   '/rescuer/settings': '/settings/account',
 };
 
+/// Maps legacy or unavailable destinations to routes served by the adoption beta.
+String? adoptionOnlyRouteRedirect(Uri uri) {
+  final path = '/${uri.pathSegments.where((part) => part.isNotEmpty).join('/')}'
+      .toLowerCase();
+  final canonicalPath = accountRouteAliases[path] ?? path;
+  if (canonicalPath == '/publish') return '/my-adoptions/new';
+  if (canonicalPath == '/my-cases' &&
+      uri.queryParametersAll['program']?.any((value) => value != 'adoption') ==
+          true) {
+    return '/my-cases';
+  }
+  if (canonicalPath == '/saved' &&
+      uri.queryParametersAll['kind']?.contains('donation') == true) {
+    return '/saved';
+  }
+  if (canonicalPath.startsWith('/my-adoptions/') &&
+      uri.queryParameters.containsKey('case')) {
+    return uri.path;
+  }
+  // Verification links opt in to the verification-only editor, which also
+  // checks the persisted record kind before presenting an existing record.
+  if (canonicalPath.startsWith('/rescue/') &&
+      (uri.pathSegments.length != 2 ||
+          uri.queryParametersAll.length != 1 ||
+          uri.queryParametersAll['kind']?.length != 1 ||
+          uri.queryParameters['kind'] != 'verification')) {
+    return '/home';
+  }
+  const unavailable = {
+    '/rescue-cases',
+    '/contribute',
+    '/contribute-case',
+    '/guardian',
+    '/impact',
+    '/connect',
+    '/payments',
+    '/rescuer/received-payments',
+    '/settings/payment-methods',
+    '/store',
+    '/transparency',
+  };
+  return unavailable.any(
+        (route) =>
+            canonicalPath == route || canonicalPath.startsWith('$route/'),
+      )
+      ? '/home'
+      : null;
+}
+
 bool _legalConsentExempt(String path, {required bool recovering}) =>
     (recovering && path == '/reset-password') ||
     const {
@@ -88,6 +138,13 @@ final routerProvider = Provider<GoRouter>((ref) {
     overridePlatformDefaultLocation: session != 0,
     refreshListenable: Listenable.merge([identity, experience]),
     redirect: (_, state) {
+      if (adoptionOnlyBuild) {
+        final destination = adoptionOnlyRouteRedirect(state.uri);
+        if (destination != null) {
+          restoringPath = null;
+          return destination;
+        }
+      }
       // Supabase restores an existing local session synchronously. Keep the
       // requested route mounted while the server validates it so a concurrent
       // profile refresh cannot replace it with the loading route.

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/measurement.dart';
 import '../../core/adoption_view_day.dart';
 import '../../core/media/photo_prefetch.dart';
@@ -368,8 +369,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
       }
     });
     try {
-      // Without a device origin, adoption discovery stays empty. Supporting
-      // cases remain available through their separate, global catalog.
+      // Without a device origin, nearby adoption discovery stays empty.
       if (needsNearbyLocation) {
         total = 0;
         exhausted = true;
@@ -393,7 +393,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
           // A failed alternate-category lookup cannot prove the entire catalog empty.
         }
       }
-      if (reset) {
+      if (reset && !adoptionOnlyBuild) {
         final opportunities = await source.discoverySupport();
         if (!current()) return;
         support.addAll(opportunities);
@@ -1671,10 +1671,11 @@ class _NearbyLocationRequired extends StatelessWidget {
           onPressed: onActivate,
           child: Text(busy ? 'Obteniendo ubicación…' : 'Activar ubicación'),
         ),
-        TextButton(
-          onPressed: () => context.go('/rescue-cases'),
-          child: const Text('Ver casos para apoyar'),
-        ),
+        if (!adoptionOnlyBuild)
+          TextButton(
+            onPressed: () => context.go('/rescue-cases'),
+            child: const Text('Ver casos para apoyar'),
+          ),
       ],
     ),
   );

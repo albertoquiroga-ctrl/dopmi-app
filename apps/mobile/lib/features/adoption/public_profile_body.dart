@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/css_linear_gradient.dart';
 import '../../core/design_tokens.dart';
 import '../../core/ui.dart';
@@ -50,10 +51,6 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
     final profile = widget.profile;
     final adoptions = (profile['adoptions'] as List? ?? const [])
         .map((row) => Adoption(Json.from(row as Map)))
-        .toList();
-    final cases = (profile['cases'] as List? ?? const [])
-        .map((row) => Json.from(row as Map))
-        .where((row) => row['accepts_support'] == true)
         .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -159,8 +156,14 @@ class _PublicProfileBodyState extends State<PublicProfileBody> {
               interactive: widget.interactive,
             ),
         ],
-        if (tab == 2)
-          PublicProfileCaseGrid(cases: cases, interactive: widget.interactive),
+        if (!adoptionOnlyBuild && tab == 2)
+          PublicProfileCaseGrid(
+            cases: (profile['cases'] as List? ?? const [])
+                .map((row) => Json.from(row as Map))
+                .where((row) => row['accepts_support'] == true)
+                .toList(),
+            interactive: widget.interactive,
+          ),
         const SizedBox(height: 18),
         ReferenceFocusOutline(
           radius: 0,

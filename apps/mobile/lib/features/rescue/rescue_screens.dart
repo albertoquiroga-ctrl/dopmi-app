@@ -2,6 +2,7 @@ import 'package:file_selector/file_selector.dart';
 
 import 'package:flutter/material.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/content_links.dart';
 
 import 'package:image_picker/image_picker.dart' show ImagePicker, ImageSource;
@@ -747,6 +748,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   int step = 0;
   bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
+  bool recordUnavailable = false;
   bool expenseSubmitted = false;
   bool caseThanksReady = false,
       caseThanksActive = false,
@@ -856,12 +858,23 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Future<void> load() async {
+    if (adoptionOnlyBuild &&
+        widget.id == 'new' &&
+        widget.kind != 'verification') {
+      return;
+    }
     setState(() => loading = true);
     try {
       if (widget.id != 'new' || record != null) {
         final data = await repository.detail(record?.id ?? widget.id);
         if (!mounted) return;
-        record = RescueRecord(Json.from(data['record']));
+        final loaded = RescueRecord(Json.from(data['record']));
+        if (adoptionOnlyBuild && loaded.kind != 'verification') {
+          recordUnavailable = true;
+          loadFailed = true;
+          return;
+        }
+        record = loaded;
         caseUnit = data['case_unit'] is Map
             ? Json.from(data['case_unit'] as Map)
             : null;
@@ -1887,6 +1900,29 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (adoptionOnlyBuild &&
+        (recordUnavailable ||
+            (record == null &&
+                (widget.id != 'new' || widget.kind != 'verification')))) {
+      final unavailable = recordUnavailable || widget.id == 'new';
+      return CommunityFrame(
+        children: [
+          if (unavailable)
+            const Notice('Este contenido no está disponible.')
+          else if (loading)
+            const Center(child: CircularProgressIndicator())
+          else ...[
+            Notice(error ?? 'No pudimos cargar el contenido.', isError: true),
+            TextButton(onPressed: load, child: const Text('Volver a intentar')),
+          ],
+          TextButton(
+            onPressed: () =>
+                context.canPop() ? context.pop() : context.go('/rescuer'),
+            child: const Text('Regresar'),
+          ),
+        ],
+      );
+    }
     if (kind == 'expense' && widget.id == 'new') {
       return CommunityFrame(
         children: [

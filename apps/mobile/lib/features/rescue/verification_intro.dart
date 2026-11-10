@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 
 class VerificationIntroScreen extends StatelessWidget {
@@ -158,43 +159,47 @@ class VerificationIntroScreen extends StatelessWidget {
                             const SizedBox(height: 16),
                             card(
                               'Un sello para refugios establecidos',
-                              'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes solicitar apoyo sin este sello; cada caso y sus gastos requieren aprobación y debes completar Stripe.',
+                              adoptionOnlyBuild
+                                  ? 'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes publicar mascotas en adopción mientras revisamos tu solicitud.'
+                                  : 'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes solicitar apoyo sin este sello; cada caso y sus gastos requieren aprobación y debes completar Stripe.',
                             ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Cómo funciona el reembolso',
-                              style: TextStyle(
-                                fontSize: 16,
-                                height: 1.25,
-                                fontWeight: FontWeight.w700,
-                                color: ink,
+                            if (!adoptionOnlyBuild) ...[
+                              const SizedBox(height: 20),
+                              const Text(
+                                'Cómo funciona el reembolso',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  height: 1.25,
+                                  fontWeight: FontWeight.w700,
+                                  color: ink,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Para recibir el dinero donado, deberás comprobar los gastos con evidencia:',
-                              style: TextStyle(
-                                fontSize: 14,
-                                height: 1.55,
-                                color: muted,
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Para recibir el dinero donado, deberás comprobar los gastos con evidencia:',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 1.55,
+                                  color: muted,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            requirement(
-                              'Para comida:',
-                              'Comprobante de compra y fotografías de la mascota con la comida.',
-                            ),
-                            const SizedBox(height: 12),
-                            requirement(
-                              'Para medicina o veterinario:',
-                              'Comprobante, descripción del gasto y evidencia fotográfica cuando aplique.',
-                            ),
-                            const SizedBox(height: 16),
-                            card(
-                              'Revisión manual',
-                              'El equipo Dopmi revisa manualmente cada evidencia. La aprobación puede tardar. Los fondos se liberan solo después de la revisión.',
-                              notice: true,
-                            ),
+                              const SizedBox(height: 20),
+                              requirement(
+                                'Para comida:',
+                                'Comprobante de compra y fotografías de la mascota con la comida.',
+                              ),
+                              const SizedBox(height: 12),
+                              requirement(
+                                'Para medicina o veterinario:',
+                                'Comprobante, descripción del gasto y evidencia fotográfica cuando aplique.',
+                              ),
+                              const SizedBox(height: 16),
+                              card(
+                                'Revisión manual',
+                                'El equipo Dopmi revisa manualmente cada evidencia. La aprobación puede tardar. Los fondos se liberan solo después de la revisión.',
+                                notice: true,
+                              ),
+                            ],
                             const SizedBox(height: 16),
                             FilledButton(
                               onPressed: onContinue,

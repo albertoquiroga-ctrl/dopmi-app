@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/design_tokens.dart';
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/measurement.dart';
 import 'community_repository.dart';
@@ -262,7 +263,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     } else if (context.canPop()) {
       context.pop();
     } else {
-      context.go('/publish');
+      context.go(adoptionOnlyBuild ? '/my-cases' : '/publish');
     }
   }
 
@@ -981,8 +982,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         if (!loading && widget.id != 'new' && post == null)
           ActionButton('Volver a intentar', onPressed: load),
         if (!loading && (post != null || widget.id == 'new')) ...[
-          if (widget.rescueCaseId != null ||
-              post?.data['rescue_case_id'] != null)
+          if (!adoptionOnlyBuild &&
+              (widget.rescueCaseId != null ||
+                  post?.data['rescue_case_id'] != null))
             const Notice(
               'Esta publicación está vinculada a un caso aprobado. Su revisión de adopción es independiente.',
             ),

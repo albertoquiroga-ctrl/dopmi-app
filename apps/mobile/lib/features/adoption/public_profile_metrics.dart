@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/design_tokens.dart';
 import 'community_repository.dart';
 
-/// These four public counts come from the server's approved projections.
+/// Public counts come from the server's approved projections.
 class PublicProfileMetrics extends StatelessWidget {
   const PublicProfileMetrics({
     super.key,
@@ -38,20 +39,22 @@ class PublicProfileMetrics extends StatelessWidget {
           const Color(0xffffe8d6),
           DopmiTokens.orange,
         ),
-        (
-          'active_donation_cases',
-          'Mascotas están recibiendo apoyo.',
-          'tab-donate',
-          const Color(0xffefe4d8),
-          ink,
-        ),
-        (
-          'received_support_pets',
-          'Mascotas recibieron apoyo.',
-          'icon-heart',
-          DopmiTokens.sky,
-          ink,
-        ),
+        if (!adoptionOnlyBuild) ...[
+          (
+            'active_donation_cases',
+            'Mascotas están recibiendo apoyo.',
+            'tab-donate',
+            const Color(0xffefe4d8),
+            ink,
+          ),
+          (
+            'received_support_pets',
+            'Mascotas recibieron apoyo.',
+            'icon-heart',
+            DopmiTokens.sky,
+            ink,
+          ),
+        ],
       ];
       Widget card(int index) {
         final item = cards[index];
@@ -126,7 +129,7 @@ class PublicProfileMetrics extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          for (var i = 0; i < 4; i += single ? 1 : 2) ...[
+          for (var i = 0; i < cards.length; i += single ? 1 : 2) ...[
             if (i > 0) const SizedBox(height: 10),
             if (single)
               card(i)

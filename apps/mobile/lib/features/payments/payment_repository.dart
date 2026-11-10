@@ -23,6 +23,7 @@ class PaymentRepository {
     await client.rpc('dopmi_expense_funding', params: {'record_id': expense}),
   );
   Future<Json> action(String action, [Json fields = const {}]) async {
+    paymentEnvironment.requireFinancialActions();
     final result = await client.functions.invoke(
       'payments',
       body: {'action': action, ...fields},
@@ -145,7 +146,11 @@ class PaymentRepository {
     final before = await readOwned();
     // Historical terminal receipts and absent/forbidden rows remain readable
     // without the new native feature or a provider request.
-    if (before == null || before['payment_status'] != 'pending') return before;
+    if (paymentEnvironment.adoptionOnly ||
+        before == null ||
+        before['payment_status'] != 'pending') {
+      return before;
+    }
     try {
       final state = await client.functions.invoke(
         'payments',
@@ -182,6 +187,7 @@ class PaymentRepository {
   }
 
   Future<void> openStripe(String value) async {
+    paymentEnvironment.requireFinancialActions();
     final url = Uri.parse(value);
     if (url.scheme != 'https' ||
         !['checkout.stripe.com', 'connect.stripe.com'].contains(url.host)) {
