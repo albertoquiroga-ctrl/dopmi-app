@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dopmi.admin",
+      "sha256_cert_fingerprints": [
+        "6B:81:4F:5A:F0:A0:B7:D3:A9:21:EE:BF:D7:3B:85:A1:7F:AF:75:77:98:65:EA:64:CC:20:11:F1:CC:80:11:A4"
+      ]
+    }
+  }
+]

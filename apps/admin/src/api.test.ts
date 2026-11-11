@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import { configuredApi, createAdminApi, type RescueRecord, type RescuerPublicProfile } from './api';
+import { storeOAuthQueue } from './adminPushRoutes';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 test('case packets use server pagination and need comments retain destination versions and request ID', async()=>{
@@ -228,6 +229,7 @@ test('TEST and default admin clients cannot initiate Google OAuth', () => {
 
 test('real SDK PKCE callback exchanges once, clears the URL and still asks the server for membership', async () => {
   window.history.replaceState({}, '', '/?code=fixture-code&next=https://untrusted.example/#users');
+  storeOAuthQueue('support');
   const storageValues = new Map([['admin-callback-fixture-code-verifier', JSON.stringify('fixture-verifier')]]);
   const storage = { getItem: (key: string) => storageValues.get(key) ?? null, setItem: (key: string, value: string) => { storageValues.set(key, value); }, removeItem: (key: string) => { storageValues.delete(key); } };
   const accessToken = `e30.${btoa(JSON.stringify({ sub: 'fixture-user', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + 3600 }))}.fixture`;
@@ -246,7 +248,7 @@ test('real SDK PKCE callback exchanges once, clears the URL and still asks the s
   const [, request] = tokenCalls[0] as unknown as [string, RequestInit];
   expect(JSON.parse(request.body as string)).toMatchObject({ auth_code: 'fixture-code', code_verifier: 'fixture-verifier' });
   expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rest/v1/rpc/dopmi_is_admin'))).toBe(true);
-  expect(window.location.href).toBe(`${window.location.origin}/`);
+  expect(window.location.href).toBe(`${window.location.origin}/?queue=support`);
 });
 
 test('failed OAuth callback clears secrets and remains retryable without accepting URL claims', async () => {

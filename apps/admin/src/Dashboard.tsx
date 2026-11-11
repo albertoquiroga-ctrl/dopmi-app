@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { AdminApi } from './api';
 import type { ModerationView } from './ModerationQueues';
+import AdminPushControls from './AdminPushControls';
 
 export type DashboardDestination =
   | { section: 'rescues'; kind: 'case' | 'verification' }
@@ -66,6 +67,7 @@ export default function Dashboard({ api, onOpen }: {
       <div><p className="eyebrow">Equipo Dopmi</p><h1>Pendientes de revisión</h1><p>Todo lo que necesita tu atención, en un mismo lugar.</p></div>
       <button className="secondary refresh-button" disabled={loading} onClick={() => setRevision(value => value + 1)}>{loading ? 'Consultando…' : 'Actualizar pendientes'}</button>
     </header>
+    {api.pushNotifications && <AdminPushControls api={api.pushNotifications} />}
     <section className="dashboard-summary" aria-live="polite" aria-busy={loading}>
       <span className="summary-mark" aria-hidden="true">♡</span>
       <div><h2>{loading ? 'Consultando las colas de revisión…' : failed.length === counts.length ? 'No pudimos consultar los pendientes' : failed.length ? `${knownTotal} pendientes en las colas consultadas` : knownTotal ? `${knownTotal} ${knownTotal === 1 ? 'pendiente por revisar' : 'pendientes por revisar'}` : 'Estas colas están al día'}</h2>

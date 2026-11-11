@@ -2,6 +2,8 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { supportRequests, type SupportPage } from './supportApi';
 import { createStoreCatalogApi, type StoreCatalogApi } from './StoreCatalog';
 import { createVideoModerationApi, type VideoModerationApi } from './VideoModeration';
+import { createAdminPushApi, revokeAdminPushOnLogout, type AdminPushApi } from './adminPush';
+import { adminQueueUrl, queueFromUrl, storeOAuthQueue, takeOAuthQueue } from './adminPushRoutes';
 
 export type AdminUser = {
   id: string; display_name: string; email: string | null; phone: string; city: string;
@@ -71,6 +73,7 @@ export type AdminApi = {
   readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
   videoModeration?: VideoModerationApi;
+  pushNotifications?: AdminPushApi;
   listSupportRequests?: (page: number) => Promise<SupportPage>;
   supportAttachmentUrl?: (path: string) => Promise<string>;
   session: () => Promise<boolean>;
@@ -123,6 +126,7 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     const fragment = new URLSearchParams(url.hash.slice(1));
     return callbackKeys.some(key => url.searchParams.has(key) || fragment.has(key));
   })();
+  const pushNotifications = createAdminPushApi(client, import.meta.env.VITE_ADMIN_PUSH_PUBLIC_KEY);
   let callbackHandled = !arrivedFromAuth;
   let callbackSession: Promise<boolean> | undefined;
   function callbackFailure() { return Object.assign(new Error('Google sign-in failed'), { code: 'google_sign_in_failed' }); }
@@ -135,11 +139,16 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
         const { data, error } = await client.auth.getSession();
         return !error && !!data.session;
       } catch { return false; }
-      finally { window.history.replaceState(window.history.state, '', new URL('/', window.location.origin)); }
+      finally {
+        const savedQueue = takeOAuthQueue();
+        const queue = queueFromUrl(window.location.href) ?? savedQueue;
+        window.history.replaceState(window.history.state, '', adminQueueUrl(window.location.origin, queue));
+      }
     })();
   }
   return {
     environment,
+    pushNotifications,
     storeCatalog: createStoreCatalogApi(client),
     videoModeration: createVideoModerationApi(client),
     listSupportRequests: supportRequests(client),
@@ -225,12 +234,22 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     async login(email, password) { callbackHandled = true; const { error } = await client.auth.signInWithPassword({ email, password }); if (error) throw error; },
     loginWithGoogle: environment === 'production' ? async () => {
       callbackHandled = true;
+      storeOAuthQueue(queueFromUrl(window.location.href));
       try {
         const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: new URL('/', window.location.origin).href } });
         if (error) throw callbackFailure();
-      } catch { throw callbackFailure(); }
+      } catch {
+        storeOAuthQueue(null);
+        throw callbackFailure();
+      }
     } : undefined,
-    async logout() { callbackHandled = true; const { error } = await client.auth.signOut({ scope: 'local' }); if (error) throw error; },
+    async logout() {
+      callbackHandled = true;
+      storeOAuthQueue(null);
+      if (pushNotifications) await revokeAdminPushOnLogout(pushNotifications);
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+    },
     async isAdmin() { const { data, error } = await client.rpc('dopmi_is_admin'); if (error) throw error; return data === true; },
     async listUsers(search, page) {
       const { data, error } = await client.rpc('admin_list_users', { search_text: search, page_number: page, page_size: 20 });
