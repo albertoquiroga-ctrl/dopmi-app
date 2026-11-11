@@ -45,6 +45,38 @@ const storeFixtureProducts = [
   ),
 ];
 
+const _foodVariants = [
+  StoreProduct(
+    id: 'salmon-1500',
+    name: 'Adulto salmón',
+    brand: 'Marca A',
+    species: 'dog',
+    age: 'adult',
+    size: 'medium',
+    sizes: ['medium', 'large'],
+    weightKg: 1.5,
+    imageUrl: '',
+    merchantName: 'Comercio de prueba',
+    familyId: 'adult',
+    familyName: 'Alimento adulto',
+    flavor: 'Salmón',
+  ),
+  StoreProduct(
+    id: 'pollo-15000',
+    name: 'Adulto pollo',
+    brand: 'Marca A',
+    species: 'dog',
+    age: 'adult',
+    size: 'medium',
+    weightKg: 15,
+    imageUrl: '',
+    merchantName: 'Comercio de prueba',
+    familyId: 'adult',
+    familyName: 'Alimento adulto',
+    flavor: 'Pollo',
+  ),
+];
+
 class StoreFake implements StoreRepository {
   bool enabled = true, fail = false;
   bool preview = false, externalLinksEnabled = true;
@@ -85,6 +117,47 @@ class StoreFake implements StoreRepository {
 }
 
 void main() {
+  test('variant matching combines flavor, presentation and breed size', () {
+    expect(
+      filterStoreProducts(
+        _foodVariants,
+        species: 'dog',
+        size: 'large',
+        query: 'Marca A salmon 1,5kg',
+      ).map((product) => product.id),
+      ['salmon-1500'],
+    );
+    expect(
+      filterStoreProducts(
+        _foodVariants,
+        species: 'dog',
+        query: '1500 g',
+      ).map((product) => product.id),
+      ['salmon-1500'],
+    );
+    expect(
+      filterStoreProducts(
+        _foodVariants,
+        species: 'dog',
+        flavor: 'Salmón',
+        weightKg: 15,
+      ),
+      isEmpty,
+    );
+    final groups = groupStoreProducts([
+      ..._foodVariants,
+      storeFixtureProducts.first,
+    ]);
+    expect(groups.map((group) => group.name), [
+      'Alimento adulto',
+      'Alimento uno',
+    ]);
+    expect(groups.first.variants.map((product) => product.id), [
+      'salmon-1500',
+      'pollo-15000',
+    ]);
+  });
+
   Future<void> open(
     WidgetTester tester,
     StoreFake repo, {
@@ -112,6 +185,16 @@ void main() {
         ),
       ),
     );
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> openMerchant(WidgetTester tester) async {
+    final action = find.widgetWithText(
+      FilledButton,
+      'Ver en Comercio de prueba',
+    );
+    await tester.ensureVisible(action);
+    await tester.tap(action);
     await tester.pumpAndSettle();
   }
 
@@ -143,6 +226,8 @@ void main() {
       expect(repo.linked, isEmpty);
       expect(opened, 0);
       expect(find.text('Salida de prueba no habilitada'), findsWidgets);
+      await tester.tap(find.byTooltip('Cerrar opciones'));
+      await tester.pumpAndSettle();
     },
   );
   testWidgets(
@@ -229,12 +314,38 @@ void main() {
     });
   }
   testWidgets(
-    'reference composition uses paw header, Inter title, inline species and a centered white filter dialog',
+    'open private detail observes revocation while catalog is offstage',
+    (tester) async {
+      final repo = StoreFake()
+        ..preview = true
+        ..expiresAt = DateTime.now().add(const Duration(hours: 1));
+      await open(tester, repo);
+      final item = find.text('Alimento dos');
+      await tester.ensureVisible(item);
+      await tester.tap(item);
+      await tester.pumpAndSettle();
+      final detail = find.byKey(const ValueKey('store-product-detail'));
+      expect(detail, findsOneWidget);
+
+      repo.enabled = false;
+      repo.switchActor('ordinary');
+      await tester.pumpAndSettle();
+      expect(detail, findsNothing);
+      expect(item, findsNothing);
+      expect(
+        find.text('La Tienda Dopmi todavía no está disponible.'),
+        findsOneWidget,
+      );
+      expect(repo.linked, isEmpty);
+    },
+  );
+  testWidgets(
+    'storefront keeps its compact paw header visible and opens a centered filter dialog',
     (tester) async {
       await open(tester, StoreFake());
       final title = tester.widget<Text>(find.text('Tienda Dopmi'));
       expect(title.style?.fontFamily, 'Inter');
-      expect(title.style?.fontSize, 32);
+      expect(title.style?.fontSize, 24);
       expect(find.byTooltip('Regresar'), findsNothing);
       expect(find.text('Perros'), findsOneWidget);
       expect(find.text('Gatos'), findsOneWidget);
@@ -385,8 +496,12 @@ void main() {
       final beforeOpening = position.pixels;
       await tester.tap(find.text('Alimento uno'));
       await tester.pumpAndSettle();
+      expect(repo.linked, isEmpty);
+      await openMerchant(tester);
       expect(opened.single, Uri.parse('https://shop.example/exact'));
       expect(repo.linked, ['a']);
+      await tester.tap(find.byTooltip('Cerrar opciones'));
+      await tester.pumpAndSettle();
       expect(find.byTooltip('Filtros activos'), findsOneWidget);
       expect(find.byTooltip('Ordenar: Mayor a menor kg'), findsOneWidget);
       expect(position.pixels, beforeOpening);
@@ -410,9 +525,42 @@ void main() {
     await tester.ensureVisible(find.text('Alimento dos'));
     await tester.tap(find.text('Alimento dos'));
     await tester.pumpAndSettle();
+    await openMerchant(tester);
     expect(opens, 0);
     expect(find.textContaining('No pudimos abrir el comercio'), findsOneWidget);
     expect(find.text('Alimento dos'), findsOneWidget);
+    await tester.tap(find.byTooltip('Cerrar opciones'));
+    await tester.pumpAndSettle();
+  });
+  testWidgets('variant picker opens only the selected presentation', (
+    tester,
+  ) async {
+    final repo = StoreFake()..products = _foodVariants;
+    final opened = <Uri>[];
+    await open(
+      tester,
+      repo,
+      opener: (uri) async {
+        opened.add(uri);
+        return true;
+      },
+    );
+    await tester.ensureVisible(find.text('Alimento adulto'));
+    await tester.tap(find.text('Alimento adulto'));
+    await tester.pumpAndSettle();
+    final pollo = find.byKey(const ValueKey('store-flavor-Pollo'));
+    await tester.ensureVisible(pollo);
+    await tester.tap(pollo);
+    await tester.pumpAndSettle();
+    final weight = find.byKey(const ValueKey('store-variant-pollo-15000'));
+    await tester.ensureVisible(weight);
+    await tester.tap(weight);
+    await tester.pumpAndSettle();
+    await openMerchant(tester);
+    expect(repo.linked, ['pollo-15000']);
+    expect(opened, [repo.link]);
+    await tester.tap(find.byTooltip('Cerrar opciones'));
+    await tester.pumpAndSettle();
   });
   testWidgets('account change clears filters and replaces the catalog', (
     tester,

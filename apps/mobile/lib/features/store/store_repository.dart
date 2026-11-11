@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/config/adoption_only_build.dart';
+import 'store_review_repository.dart';
+
 class StoreProduct {
   const StoreProduct({
     required this.id,
@@ -17,6 +20,10 @@ class StoreProduct {
     required this.imageUrl,
     required this.merchantName,
     this.assetKey,
+    this.familyId,
+    this.familyName,
+    this.flavor,
+    this.sizes = const [],
   });
   factory StoreProduct.fromJson(Map<String, dynamic> value) => StoreProduct(
     id: value['id'] as String,
@@ -29,11 +36,23 @@ class StoreProduct {
     imageUrl: value['image_url'] as String? ?? '',
     merchantName: value['merchant_name'] as String,
     assetKey: value['asset_key'] as String?,
+    familyId: _storeMetadata(value['family_id']),
+    familyName: _storeMetadata(value['family_name']),
+    flavor: _storeMetadata(value['flavor']),
+    sizes: switch (value['sizes']) {
+      final List<dynamic> sizes => List.unmodifiable(sizes.whereType<String>()),
+      _ => const [],
+    },
   );
   final String id, name, brand, species, age, size, imageUrl, merchantName;
   final double weightKg;
   final String? assetKey;
+  final String? familyId, familyName, flavor;
+  final List<String> sizes;
 }
+
+String? _storeMetadata(Object? value) =>
+    value is String && value.trim().isNotEmpty ? value.trim() : null;
 
 class StoreCatalog {
   const StoreCatalog({
@@ -142,13 +161,13 @@ class RpcStoreRepository implements StoreRepository {
   Future<Uri?> productLink(String productId) async {
     final actor = userId;
     final catalog = _lastCatalog;
-    if (_catalogActor != actor || catalog == null || !catalog.enabled) {
+    if (_catalogActor != actor ||
+        catalog == null ||
+        !catalog.enabled ||
+        !catalog.products.any((product) => product.id == productId)) {
       return null;
     }
-    if (catalog.preview &&
-        (!catalog.externalLinksEnabled ||
-            actor == null ||
-            !catalog.products.any((product) => product.id == productId))) {
+    if (catalog.preview && (!catalog.externalLinksEnabled || actor == null)) {
       return null;
     }
     final value = await rpc(
@@ -188,9 +207,16 @@ class SupabaseStoreRepository extends RpcStoreRepository {
       );
 }
 
-final storeRepositoryProvider = Provider<StoreRepository>(
-  (ref) => SupabaseStoreRepository(Supabase.instance.client),
-);
+final storeRepositoryProvider = Provider<StoreRepository>((ref) {
+  final client = Supabase.instance.client;
+  if (!storeReviewAvailable) return SupabaseStoreRepository(client);
+  return StoreReviewRepository(
+    currentUser: () => client.auth.currentUser?.id,
+    changes: client.auth.onAuthStateChange
+        .map((event) => event.session?.user.id)
+        .distinct(),
+  );
+});
 final storeActorProvider = StreamProvider<String?>((ref) async* {
   final repository = ref.watch(storeRepositoryProvider);
   yield repository.userId;
@@ -237,6 +263,16 @@ final storeLinkOpenerProvider = Provider<Future<bool> Function(Uri)>(
       (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
 );
 
+/// The local review harness can supply artwork without enabling catalog links.
+/// Server-authorized previews never load remote product images.
+final storePreviewImageProvider =
+    Provider<ImageProvider<Object>? Function(String)>(
+      (ref) =>
+          (id) => storeReviewAvailable && id == 'whiskas-adult-3-1500'
+          ? const AssetImage('assets/store/review-packshot.png')
+          : null,
+    );
+
 List<StoreProduct> filterStoreProducts(
   List<StoreProduct> source, {
   required String species,
@@ -244,14 +280,32 @@ List<StoreProduct> filterStoreProducts(
   String? size,
   Set<String> brands = const {},
   bool descending = false,
+  String query = '',
+  String? flavor,
+  double? weightKg,
 }) {
+  final search = _storeSearchText(query);
+  final weightPattern = RegExp(r'\b(\d+(?:\.\d+)?) *(kg|g)\b');
+  final searchWeights = weightPattern
+      .allMatches(search)
+      .map((match) => double.parse(match[1]!) / (match[2] == 'g' ? 1000 : 1))
+      .toList();
+  final terms = search
+      .replaceAll(weightPattern, ' ')
+      .split(' ')
+      .where((word) => word.isNotEmpty)
+      .toList();
   final result = source
       .where(
         (item) =>
             item.species == species &&
             (age == null || item.age == age) &&
-            (size == null || item.size == size) &&
-            (brands.isEmpty || brands.contains(item.brand)),
+            (size == null || item.size == size || item.sizes.contains(size)) &&
+            (brands.isEmpty || brands.contains(item.brand)) &&
+            (flavor == null || item.flavor == flavor) &&
+            (weightKg == null || item.weightKg == weightKg) &&
+            searchWeights.every((weight) => weight == item.weightKg) &&
+            (terms.isEmpty || _matchesStoreQuery(item, terms)),
       )
       .toList();
   result.sort((a, b) {
@@ -259,4 +313,76 @@ List<StoreProduct> filterStoreProducts(
     return order == 0 ? a.id.compareTo(b.id) : order;
   });
   return result;
+}
+
+class StoreProductGroup {
+  const StoreProductGroup._(this.id, this.name, this.variants);
+
+  final String id, name;
+  final List<StoreProduct> variants;
+  StoreProduct get primary => variants.first;
+}
+
+/// Accepts variants already filtered and ordered by presentation. Older catalog
+/// rows without complete grouping metadata retain their individual cards.
+List<StoreProductGroup> groupStoreProducts(List<StoreProduct> products) {
+  final groups =
+      <
+        (String, String, String, String, String, String, String),
+        List<StoreProduct>
+      >{};
+  for (final product in products) {
+    final hasFamily = product.familyId != null && product.familyName != null;
+    final key = (
+      hasFamily ? 'family' : 'product',
+      hasFamily ? product.familyId! : product.id,
+      hasFamily ? product.familyName! : product.name,
+      product.species,
+      product.brand,
+      product.age,
+      product.merchantName,
+    );
+    (groups[key] ??= []).add(product);
+  }
+  return [
+    for (final entry in groups.entries)
+      StoreProductGroup._(
+        entry.value.first.id,
+        entry.key.$3,
+        List.unmodifiable(entry.value),
+      ),
+  ];
+}
+
+String storeWeightLabel(double kg) => kg < 1
+    ? '${(kg * 1000).round()} g'
+    : '${kg.toString().replaceFirst(RegExp(r'\.0$'), '')} kg';
+
+bool _matchesStoreQuery(StoreProduct product, Iterable<String> terms) {
+  final weight = storeWeightLabel(product.weightKg);
+  final grams = '${(product.weightKg * 1000).round()} g';
+  final text = _storeSearchText(
+    '${product.brand} ${product.name} ${product.familyName ?? ''} '
+    '${product.flavor ?? ''} $weight ${weight.replaceAll(' ', '')} '
+    '$grams ${grams.replaceAll(' ', '')}',
+  );
+  return terms.every(text.contains);
+}
+
+String _storeSearchText(String value) {
+  const accents = {
+    'á': 'a',
+    'é': 'e',
+    'í': 'i',
+    'ó': 'o',
+    'ú': 'u',
+    'ü': 'u',
+    'ñ': 'n',
+  };
+  return value
+      .toLowerCase()
+      .replaceAllMapped(RegExp('[áéíóúüñ]'), (match) => accents[match[0]]!)
+      .replaceAllMapped(RegExp(r'(\d),(?=\d)'), (match) => '${match[1]}.')
+      .replaceAll(RegExp(r'[^a-z0-9.]+'), ' ')
+      .trim();
 }

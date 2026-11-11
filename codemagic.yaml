@@ -145,10 +145,11 @@ workflows:
       - name: Create explicit Guardian environment configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
-            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}" in
+            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            production:true:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create matching Guardian Firebase configuration
@@ -200,6 +201,7 @@ workflows:
               f"Environment: {config['DOPMI_ENVIRONMENT']}\n"
               f"Backend: {backend}\nProject: {project}\n"
               f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}\n"
+              f"Store review: {config['DOPMI_STORE_REVIEW']}\n"
               f"Guardian: {config['ENABLE_GUARDIAN']}\n"
               f"Stripe live client: {str(bool(config['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
@@ -326,10 +328,10 @@ workflows:
       - name: Create runtime configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
-            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}" in
+            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration
