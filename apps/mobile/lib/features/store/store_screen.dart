@@ -709,7 +709,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const _StoreHero(),
+          _StoreHero(amazonProductLinks: widget.catalog.amazonProductLinks),
           const SizedBox(height: 12),
           TextField(
             key: const ValueKey('store-search'),
@@ -1162,7 +1162,9 @@ class _StoreKitCard extends StatelessWidget {
 }
 
 class _StoreHero extends StatelessWidget {
-  const _StoreHero();
+  const _StoreHero({required this.amazonProductLinks});
+
+  final bool amazonProductLinks;
 
   @override
   Widget build(BuildContext context) {
@@ -1214,9 +1216,11 @@ class _StoreHero extends StatelessWidget {
                       children: [
                         Semantics(
                           header: true,
-                          child: const Text(
-                            'Lo esencial para su nueva casa',
-                            style: TextStyle(
+                          child: Text(
+                            amazonProductLinks
+                                ? 'Más hogares para más mascotas'
+                                : 'Lo esencial para su nueva casa',
+                            style: const TextStyle(
                               fontFamily: DopmiTokens.legacyDisplayFont,
                               fontSize: 28,
                               fontWeight: FontWeight.w600,
@@ -1227,9 +1231,11 @@ class _StoreHero extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Alimento para cada etapa.',
-                          style: TextStyle(
+                        Text(
+                          amazonProductLinks
+                              ? 'DopMi conecta a mascotas en adopción con familias.'
+                              : 'Alimento para cada etapa.',
+                          style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             height: 1.3,
@@ -1260,6 +1266,13 @@ class _StoreCatalogNotice extends StatelessWidget {
   final bool externalLinksEnabled;
   final bool amazonProductLinks;
 
+  static const _noticeStyle = TextStyle(
+    fontFamily: DopmiTokens.bodyFont,
+    fontSize: 12,
+    height: 1.4,
+    color: DopmiTokens.muted,
+  );
+
   @override
   Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1274,20 +1287,31 @@ class _StoreCatalogNotice extends StatelessWidget {
       ),
       const SizedBox(width: 7),
       Expanded(
-        child: Text(
-          amazonProductLinks
-              ? 'Fotos de Amazon México. Consulta disponibilidad y compra en Amazon.'
-              : preview
-              ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
-                    '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
-              : 'Compra y paga en el comercio. Dopmi puede recibir una comisión por compras que cumplan los requisitos.',
-          style: const TextStyle(
-            fontFamily: DopmiTokens.bodyFont,
-            fontSize: 12,
-            height: 1.4,
-            color: DopmiTokens.muted,
-          ),
-        ),
+        child: amazonProductLinks
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Precio y pago en Amazon México',
+                    style: _noticeStyle.copyWith(
+                      color: DopmiTokens.ink,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
+                    style: _noticeStyle,
+                  ),
+                ],
+              )
+            : Text(
+                preview
+                    ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
+                          '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
+                    : 'Compra y paga en el comercio. Dopmi puede recibir una comisión por compras que cumplan los requisitos.',
+                style: _noticeStyle,
+              ),
       ),
     ],
   );

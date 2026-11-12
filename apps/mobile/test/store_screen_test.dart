@@ -148,6 +148,18 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
+      expect(find.text('Más hogares para más mascotas'), findsOneWidget);
+      expect(
+        find.text('DopMi conecta a mascotas en adopción con familias.'),
+        findsOneWidget,
+      );
+      expect(find.text('Precio y pago en Amazon México'), findsOneWidget);
+      expect(
+        find.text(
+          'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
+        ),
+        findsOneWidget,
+      );
       final cats = find.byKey(const ValueKey('store-species-cat'));
       await tester.ensureVisible(cats);
       await tester.tap(cats);
@@ -385,6 +397,7 @@ void main() {
         },
       );
       expect(find.text('Vista previa de Tienda'), findsOneWidget);
+      expect(find.text('Más hogares para más mascotas'), findsNothing);
       expect(
         find.textContaining('Catálogo TEST. No permite compras reales.'),
         findsOneWidget,
