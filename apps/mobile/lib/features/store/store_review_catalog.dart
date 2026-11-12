@@ -242,7 +242,8 @@ final storeReviewProducts = <StoreProduct>[
     age: 'adult',
     recipes: [
       ('Carne', [1.5, 3, 4.5]),
-      ('Pescado', [0.5, 1.5, 3, 9, 10, 11.5, 20.5, 25]),
+      ('Pescado', [0.5, 1.5, 3, 10, 11.5, 20.5, 25]),
+      ('Pescado y mariscos', [9]),
     ],
   ),
   ..._family(
@@ -293,7 +294,7 @@ final storeReviewProducts = <StoreProduct>[
     age: 'puppy',
     recipes: [
       ('Pollo', [1.4]),
-      ('Res', [0.3, 0.5, 1.4, 9]),
+      ('Carne', [0.3, 0.5, 1.4, 9]),
     ],
   ),
   ..._family(

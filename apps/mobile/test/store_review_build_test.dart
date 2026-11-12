@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config/adoption_only_build.dart';
 import 'package:dopmi_mobile/features/store/store_repository.dart';
-import 'package:dopmi_mobile/features/store/store_review_amazon_links.dart';
+import 'package:dopmi_mobile/features/store/store_review_amazon_listings.dart';
 import 'package:dopmi_mobile/features/store/store_review_catalog.dart';
 import 'package:dopmi_mobile/features/store/store_review_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -73,7 +74,7 @@ void main() {
   });
 
   test(
-    'the review catalog is authenticated, local and cannot launch a merchant',
+    'each visible Amazon presentation has a photo and a direct tagged link',
     () async {
       String? actor;
       final repository = StoreReviewRepository(
@@ -81,81 +82,78 @@ void main() {
         changes: const Stream.empty(),
       );
       expect((await repository.catalog()).enabled, false);
-      actor = 'review-actor';
-      final review = await repository.catalog();
-      expect(review.enabled, true);
-      expect(review.preview, true);
-      expect(review.products, hasLength(128));
       expect(
-        review.products.every((product) => product.imageUrl.isEmpty),
-        true,
+        await repository.productLink(storeReviewAmazonListings.keys.first),
+        isNull,
       );
-      expect(review.externalLinksEnabled, false);
-      expect(review.amazonAffiliateSearch, false);
-      expect(await repository.productLink(review.products.first.id), isNull);
-      actor = null;
-      expect((await repository.catalog()).products, isEmpty);
-    },
-  );
-
-  test(
-    'signed-in review testers get the original link for each family',
-    () async {
-      String? actor;
-      final repository = StoreReviewRepository(
-        currentUser: () => actor,
-        changes: const Stream.empty(),
-        amazonLinks: storeReviewAmazonLinks,
-      );
-      final sample = storeReviewProducts.first;
-      expect((await repository.catalog()).amazonAffiliateSearch, false);
-      expect(await repository.productLink(sample.id), isNull);
 
       actor = 'review-actor';
       final review = await repository.catalog();
       expect(review.preview, true);
       expect(review.externalLinksEnabled, true);
-      expect(review.amazonAffiliateSearch, true);
-      expect(storeReviewAmazonLinks.keys.toSet(), {
-        for (final product in review.products) product.familyId,
-      });
+      expect(review.amazonProductLinks, true);
+      expect(
+        review.products.map((product) => product.id).toSet(),
+        storeReviewAmazonListings.keys.toSet(),
+      );
       for (final product in review.products) {
+        final listing = storeReviewAmazonListings[product.id]!;
         final link = await repository.productLink(product.id);
-        expect(link?.toString(), storeReviewAmazonLinks[product.familyId]);
+        expect(link?.host, 'www.amazon.com.mx');
+        expect(link?.path, '/dp/${listing.asin}');
+        expect(link?.queryParameters, {'tag': 'albertoquir0f-20'});
+        final image = storeReviewAmazonArtworkFor(product.id)?.image;
+        expect(image, isA<NetworkImage>());
+        expect((image as NetworkImage).url, listing.imageUri.toString());
       }
-      expect(await repository.productLink(sample.familyId!), isNull);
+      expect(
+        storeReviewAmazonListings.values.map((listing) => listing.asin).toSet(),
+        hasLength(storeReviewAmazonListings.length),
+      );
       expect(await repository.productLink('not-in-the-catalog'), isNull);
 
       actor = null;
-      expect(await repository.productLink(sample.id), isNull);
+      expect((await repository.catalog()).products, isEmpty);
+      expect(
+        await repository.productLink(storeReviewAmazonListings.keys.first),
+        isNull,
+      );
     },
   );
 
-  test('a missing or unsafe family link disables the catalog action', () async {
+  test('missing and unsafe listings cannot appear or open a link', () async {
     final sample = storeReviewProducts.first;
-    for (final unsafe in [
-      null,
-      'http://www.amazon.com.mx/s?k=mascotas&tag=albertoquir0f-20',
-      'https://www.amazon.com.mx.ejemplo.test/s?tag=albertoquir0f-20',
-      'https://user@www.amazon.com.mx/s?tag=albertoquir0f-20',
-      'https://www.amazon.com.mx:443/s?tag=albertoquir0f-20',
-      'https://www.amazon.com.mx/dp/B000000001?tag=albertoquir0f-20',
-      'https://www.amazon.com.mx/s?k=mascotas&tag=albertoquir0f-20#otro',
-      'https://www.amazon.com.mx/s?k=mascotas&tag=otro-20',
-      'https://www.amazon.com.mx/s?tag=albertoquir0f-20&tag=otro-20',
+    for (final invalid in [
+      const StoreReviewAmazonListing(
+        'not-an-asin',
+        'https://m.media-amazon.com/images/I/photo.jpg',
+      ),
+      const StoreReviewAmazonListing(
+        'B000000001',
+        'http://m.media-amazon.com/images/I/photo.jpg',
+      ),
+      const StoreReviewAmazonListing(
+        'B000000001',
+        'https://m.media-amazon.com.example.test/images/I/photo.jpg',
+      ),
+      const StoreReviewAmazonListing(
+        'B000000001',
+        'https://user@m.media-amazon.com/images/I/photo.jpg',
+      ),
+      const StoreReviewAmazonListing(
+        'B000000001',
+        'https://m.media-amazon.com/search',
+      ),
     ]) {
-      final links = Map.of(storeReviewAmazonLinks)..remove(sample.familyId);
-      if (unsafe != null) links[sample.familyId!] = unsafe;
       final repository = StoreReviewRepository(
         currentUser: () => 'review-actor',
         changes: const Stream.empty(),
-        amazonLinks: links,
+        listings: {sample.id: invalid},
       );
       final review = await repository.catalog();
-      expect(review.enabled, true);
-      expect(review.amazonAffiliateSearch, false, reason: unsafe);
-      expect(review.externalLinksEnabled, false, reason: unsafe);
-      expect(await repository.productLink(sample.id), isNull, reason: unsafe);
+      expect(review.enabled, false);
+      expect(review.products, isEmpty);
+      expect(await repository.productLink(sample.id), isNull);
     }
   });
 
@@ -167,10 +165,10 @@ void main() {
           .add(const Duration(hours: 1))
           .toIso8601String(),
       'external_links_enabled': true,
-      'amazon_affiliate_search': true,
+      'amazon_product_links': true,
       'items': <Object>[],
     });
     expect(catalog.externalLinksEnabled, true);
-    expect(catalog.amazonAffiliateSearch, false);
+    expect(catalog.amazonProductLinks, false);
   });
 }

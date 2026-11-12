@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/store/store_repository.dart';
-import 'package:dopmi_mobile/features/store/store_review_amazon_links.dart';
 import 'package:dopmi_mobile/features/store/store_review_repository.dart';
 import 'package:dopmi_mobile/features/store/store_screen.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +118,7 @@ class StoreFake implements StoreRepository {
 }
 
 void main() {
-  testWidgets('internal Store hands the original affiliate search to Amazon', (
+  testWidgets('internal Store opens the selected presentation on Amazon', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -130,7 +129,6 @@ void main() {
     final repository = StoreReviewRepository(
       currentUser: () => 'play-tester',
       changes: const Stream.empty(),
-      amazonLinks: storeReviewAmazonLinks,
     );
     await tester.pumpWidget(
       ProviderScope(
@@ -146,19 +144,30 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    final product = find.text('Pedigree').first;
+    await tester.enterText(
+      find.byKey(const ValueKey('store-search')),
+      'Pedigree adulto razas pequeñas',
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final product = find.text('Adulto razas pequeñas').first;
     await tester.ensureVisible(product);
     await tester.tap(product);
     await tester.pumpAndSettle();
     expect(find.textContaining('Enlace de afiliado'), findsOneWidget);
-    expect(
-      find.text('Amazon puede mostrar otras presentaciones.'),
-      findsOneWidget,
+    final size = find.byKey(
+      const ValueKey('store-variant-pedigree-mini-0-10000'),
     );
-    expect(opened, isEmpty);
-    await tester.tap(find.text('Buscar en Amazon México'));
+    await tester.ensureVisible(size);
+    await tester.tap(size);
     await tester.pumpAndSettle();
-    expect(opened.single.toString(), storeReviewAmazonLinks['pedigree-mini']);
+    expect(opened, isEmpty);
+    await tester.tap(find.text('Ver producto en Amazon México'));
+    await tester.pumpAndSettle();
+    expect(
+      opened.single.toString(),
+      'https://www.amazon.com.mx/dp/B00DUAMJDS?tag=albertoquir0f-20',
+    );
   });
 
   test('variant matching combines flavor, presentation and breed size', () {

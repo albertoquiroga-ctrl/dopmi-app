@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config/adoption_only_build.dart';
-import 'store_review_amazon_links.dart';
+import 'store_review_amazon_listings.dart';
 import 'store_review_catalog.dart';
 import 'store_review_repository.dart';
 
@@ -63,7 +63,7 @@ class StoreCatalog {
     this.preview = false,
     this.expiresAt,
     this.externalLinksEnabled = true,
-    this.amazonAffiliateSearch = false,
+    this.amazonProductLinks = false,
     // Preserve the public named argument; the stored flag excludes expiry.
     // ignore: prefer_initializing_formals
   }) : _enabled = enabled;
@@ -91,7 +91,7 @@ class StoreCatalog {
     );
   }
   final bool _enabled, preview, externalLinksEnabled;
-  final bool amazonAffiliateSearch;
+  final bool amazonProductLinks;
   final DateTime? expiresAt;
   bool get enabled =>
       _enabled &&
@@ -219,7 +219,6 @@ final storeRepositoryProvider = Provider<StoreRepository>((ref) {
     changes: client.auth.onAuthStateChange
         .map((event) => event.session?.user.id)
         .distinct(),
-    amazonLinks: storeReviewAmazonLinks,
   );
 });
 final storeActorProvider = StreamProvider<String?>((ref) async* {
@@ -279,7 +278,7 @@ class StorePreviewArtwork {
 
   final ImageProvider<Object> image;
   final StorePreviewArtworkKind kind;
-  final String credit;
+  final String? credit;
 }
 
 final _storeReviewProductIds = storeReviewProducts
@@ -311,11 +310,21 @@ StorePreviewArtwork? storeReviewArtworkFor(String id) {
   );
 }
 
-/// The local review can supply artwork without enabling catalog links.
+StorePreviewArtwork? storeReviewAmazonArtworkFor(String id) {
+  final image = storeReviewAmazonListings[id]?.imageUri;
+  if (image == null) return null;
+  return StorePreviewArtwork(
+    NetworkImage(image.toString()),
+    kind: StorePreviewArtworkKind.photo,
+    credit: null,
+  );
+}
+
+/// Product photos load from Amazon only in the internal Android catalog.
 /// Server-authorized previews never load remote product images.
 final storePreviewImageProvider =
     Provider<StorePreviewArtwork? Function(String)>(
-      (ref) => storeReviewAvailable ? storeReviewArtworkFor : (_) => null,
+      (ref) => storeReviewAvailable ? storeReviewAmazonArtworkFor : (_) => null,
     );
 
 List<StoreProduct> filterStoreProducts(

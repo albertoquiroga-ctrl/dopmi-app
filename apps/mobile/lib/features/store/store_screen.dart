@@ -338,7 +338,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               : group.primary,
           preview: catalog.preview,
           canOpen: !catalog.preview || catalog.externalLinksEnabled,
-          amazonAffiliateSearch: catalog.amazonAffiliateSearch,
+          amazonProductLinks: catalog.amazonProductLinks,
           onOpen: openProduct,
         ),
       ),
@@ -690,7 +690,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
           _StoreCatalogNotice(
             preview: widget.catalog.preview,
             externalLinksEnabled: widget.catalog.externalLinksEnabled,
-            amazonAffiliateSearch: widget.catalog.amazonAffiliateSearch,
+            amazonProductLinks: widget.catalog.amazonProductLinks,
           ),
           const SizedBox(height: 16),
           Row(
@@ -946,12 +946,12 @@ class _StoreCatalogNotice extends StatelessWidget {
   const _StoreCatalogNotice({
     required this.preview,
     required this.externalLinksEnabled,
-    required this.amazonAffiliateSearch,
+    required this.amazonProductLinks,
   });
 
   final bool preview;
   final bool externalLinksEnabled;
-  final bool amazonAffiliateSearch;
+  final bool amazonProductLinks;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -968,8 +968,8 @@ class _StoreCatalogNotice extends StatelessWidget {
       const SizedBox(width: 7),
       Expanded(
         child: Text(
-          amazonAffiliateSearch
-              ? 'Catálogo de prueba con imágenes de referencia. Las compras se realizan en Amazon México.'
+          amazonProductLinks
+              ? 'Fotos de Amazon México. Consulta disponibilidad y compra en Amazon.'
               : preview
               ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
                     '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
@@ -1018,7 +1018,7 @@ class _StoreProductDetail extends StatefulWidget {
     required this.initialProduct,
     required this.preview,
     required this.canOpen,
-    required this.amazonAffiliateSearch,
+    required this.amazonProductLinks,
     required this.onOpen,
   });
 
@@ -1026,7 +1026,7 @@ class _StoreProductDetail extends StatefulWidget {
   final StoreProduct initialProduct;
   final bool preview;
   final bool canOpen;
-  final bool amazonAffiliateSearch;
+  final bool amazonProductLinks;
   final Future<void> Function(StoreProduct, BuildContext) onOpen;
 
   @override
@@ -1069,8 +1069,8 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
         ? 'Abriendo comercio…'
         : !widget.canOpen
         ? 'Salida de prueba no habilitada'
-        : widget.amazonAffiliateSearch
-        ? 'Buscar en Amazon México'
+        : widget.amazonProductLinks
+        ? 'Ver producto en Amazon México'
         : widget.preview
         ? 'Abrir destino TEST'
         : 'Ver en ${selected.merchantName}';
@@ -1229,7 +1229,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    widget.amazonAffiliateSearch
+                    widget.amazonProductLinks
                         ? 'Enlace de afiliado. Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.'
                         : widget.preview
                         ? 'Catálogo TEST. No permite compras reales.'
@@ -1240,12 +1240,6 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       color: DopmiTokens.muted,
                     ),
                   ),
-                  if (widget.amazonAffiliateSearch)
-                    const Text(
-                      'Amazon puede mostrar otras presentaciones.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: DopmiTokens.muted),
-                    ),
                 ],
               ),
             ),
@@ -1553,7 +1547,11 @@ class _StoreProductArtwork extends ConsumerWidget {
                               : null,
                           excludeFromSemantics: !detail,
                           errorBuilder: (_, _, _) =>
-                              const _StoreCategoryArtwork(),
+                              preview && image is NetworkImage
+                              ? const Center(
+                                  child: Text('Imagen no disponible'),
+                                )
+                              : const _StoreCategoryArtwork(),
                         ),
                       ),
               ),

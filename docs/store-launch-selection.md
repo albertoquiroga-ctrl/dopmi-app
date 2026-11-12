@@ -1,9 +1,9 @@
 # Catálogo propuesto de Tienda Dopmi
 
-La vista previa ampliada reúne **32 familias y 128 combinaciones** de sabor y
-presentación. Perros aporta 17 familias y 65 presentaciones. Gatos aporta 15
-familias y 63 presentaciones. La selección cubre cachorro o gatito, adulto y
-adulto mayor, con bolsas pequeñas y bultos de reposición.
+La versión interna de Android incluye **29 familias y 67 presentaciones**
+cotejadas con fichas de Amazon México. La selección editorial original reúne
+32 familias y 128 combinaciones. Sólo se muestran las presentaciones que
+tienen una ficha de Amazon y una foto de esa ficha.
 
 Una familia tiene una ficha. Al abrirla, la presentación se elige entre las
 verificadas para ese sabor. Fórmulas distintas, como Pro Plan Sensitive Skin y
@@ -14,24 +14,19 @@ etapa, marca, sabor, presentación y, en perros, tamaño.
 
 El [surtido completo](../apps/mobile/lib/features/store/store_review_catalog.dart) contiene
 la combinación de cada ficha. Es una muestra local reproducible en Flutter.
-Las 32 tarjetas y las 128 presentaciones tienen imagen en la vista previa
-interna. Hay 19 fotos de referencia cotejadas por presentación y 109 imágenes
-ilustrativas. Una tarjeta prioriza una foto de sus presentaciones filtradas y
-abre esa misma presentación. El detalle muestra la imagen de la variante
-seleccionada. Las ilustraciones se identifican con «Imagen ilustrativa». La
-base genérica de bolsa de papel marfil se generó con ImageGen y la app compone
-la etiqueta con marca, fórmula, sabor registrado y peso de cada presentación.
-Whiskas Atún 1.5 kg conserva su ilustración anterior.
+La tarjeta muestra la foto de Amazon de la presentación que abre. El detalle
+actualiza la foto y el enlace al cambiar de sabor o peso. Amazon aloja las
+fotos y la app carga sus URLs de HTTPS. Las imágenes de referencia del corte
+anterior quedan disponibles para los recorridos locales de prueba.
 
 ## Fotos y salida a Amazon
 
-La versión interna de Android abre Amazon México desde el detalle de cada
-producto. SiteStripe generó una búsqueda por cada una de las 32 familias
-con el identificador `albertoquir0f-20`. El botón indica que Amazon puede
-mostrar otras presentaciones y muestra el aviso de afiliación. La etiqueta
-del enlace y el registro de la app en la cuenta son comprobables. Amazon
-evalúa por separado la aprobación móvil y la elegibilidad de cada compra.
-[Enlaces en aplicaciones móviles](https://afiliados.amazon.com.mx/help/node/topic/GQZMCDD9PB7CXV7N).
+El botón «Ver producto en Amazon México» abre la ficha `/dp/ASIN` de la
+presentación seleccionada con el identificador `albertoquir0f-20`. La ficha
+incluye el aviso de afiliación. Los precios y la disponibilidad se consultan
+en Amazon. Dog Chow Complete 22.7 kg, Pedigree Balance Natural seco y Whiskas
+Esterilizados seco quedaron fuera de este corte al no localizar sus fichas
+exactas. [Formato de enlaces de Afiliados México](https://afiliados.amazon.com.mx/welcome/topic/tools).
 
 Fotos de la vista de prueba, de `foodless`, `detrumpezvous` y colaboradores
 de Open Pet Food Facts. Los créditos individuales están en el código y en las fichas. Los JPG
