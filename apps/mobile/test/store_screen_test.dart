@@ -171,10 +171,18 @@ void main() {
       await tester.pumpAndSettle();
       final handoff = find.byKey(const ValueKey('store-amazon-handoff'));
       expect(handoff, findsOneWidget);
+      final journey = find.byKey(const ValueKey('store-amazon-journey'));
+      expect(journey, findsOneWidget);
       expect(
-        find.textContaining('ya va incluido en el enlace'),
+        find.descendant(of: journey, matching: find.text('DopMi')),
         findsOneWidget,
       );
+      expect(
+        find.descendant(of: journey, matching: find.text('Amazon México')),
+        findsOneWidget,
+      );
+      expect(find.text('Precio y pago'), findsOneWidget);
+      expect(find.text('Código de afiliado incluido'), findsOneWidget);
       expect(
         find.textContaining('comisión por compras elegibles'),
         findsOneWidget,
@@ -213,6 +221,7 @@ void main() {
     tester.view.physicalSize = const Size(377, 852);
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final opened = <Uri>[];
     final repository = StoreReviewRepository(
       currentUser: () => 'play-tester',
@@ -254,7 +263,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('store-amazon-handoff')), findsOneWidget);
     expect(opened, isEmpty);
-    await tester.tap(find.text('Ir a Amazon México'));
+    tester.view.physicalSize = const Size(320, 640);
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    await tester.pumpAndSettle();
+    final continueToAmazon = find.text('Ir a Amazon México');
+    await tester.scrollUntilVisible(
+      continueToAmazon,
+      120,
+      scrollable: find.descendant(
+        of: find.byKey(const ValueKey('store-amazon-handoff')),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    await tester.tap(continueToAmazon);
+    tester.view.physicalSize = const Size(377, 852);
+    tester.platformDispatcher.clearTextScaleFactorTestValue();
     await tester.pumpAndSettle();
     expect(
       opened.single.toString(),

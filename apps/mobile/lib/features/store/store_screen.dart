@@ -1584,7 +1584,7 @@ class _StoreAmazonHandoff extends StatelessWidget {
                   Semantics(
                     header: true,
                     child: const Text(
-                      'Tu compra continúa en Amazon',
+                      '¿Dónde se paga?',
                       style: TextStyle(
                         fontFamily: DopmiTokens.legacyDisplayFont,
                         fontSize: 30,
@@ -1594,31 +1594,56 @@ class _StoreAmazonHandoff extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'En Amazon México podrás consultar el precio y hacer tu pedido.',
-                    style: TextStyle(fontSize: 16, height: 1.45),
-                  ),
+                  const SizedBox(height: 16),
+                  const _StoreAmazonJourney(),
                   const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: _storeCream,
-                      border: Border.all(color: _storeBorder),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Text(
-                      'El código de afiliado de DopMi ya va incluido en el enlace. '
-                      'Puedes pagar sin escribir ningún código. Como afiliado de Amazon, '
-                      'DopMi puede recibir una comisión por compras elegibles.',
-                      style: TextStyle(
-                        fontSize: 15,
-                        height: 1.4,
-                        color: DopmiTokens.ink,
+                  const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        radius: 21,
+                        backgroundColor: DopmiTokens.saffronSoft,
+                        foregroundColor: DopmiTokens.cafeStrong,
+                        child: Icon(Icons.link_rounded, size: 23),
                       ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Código de afiliado incluido',
+                              style: TextStyle(
+                                fontSize: 16,
+                                height: 1.2,
+                                fontWeight: FontWeight.w700,
+                                color: DopmiTokens.ink,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Puedes pagar sin escribirlo.',
+                              style: TextStyle(
+                                fontSize: 14,
+                                height: 1.3,
+                                color: DopmiTokens.muted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.3,
+                      color: DopmiTokens.muted,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: DopmiTokens.cafeStrong,
@@ -1626,7 +1651,20 @@ class _StoreAmazonHandoff extends StatelessWidget {
                       minimumSize: const Size(0, 48),
                     ),
                     onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Ir a Amazon México'),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Ir a Amazon México',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(Icons.open_in_new_rounded, size: 18),
+                      ],
+                    ),
                   ),
                   TextButton(
                     style: TextButton.styleFrom(
@@ -1642,6 +1680,120 @@ class _StoreAmazonHandoff extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _StoreAmazonJourney extends StatelessWidget {
+  const _StoreAmazonJourney();
+
+  @override
+  Widget build(BuildContext context) {
+    final stacked = MediaQuery.textScalerOf(context).scale(16) > 26;
+    final dopmi = _StoreJourneyStep(
+      name: 'DopMi',
+      icon: SvgPicture.asset(
+        'assets/profile/logo-paw-naranja.svg',
+        width: 23,
+        height: 23,
+        excludeFromSemantics: true,
+      ),
+    );
+    const amazon = _StoreJourneyStep(
+      name: 'Amazon México',
+      detail: 'Precio y pago',
+      icon: Icon(Icons.shopping_bag_outlined, size: 24),
+    );
+    return Semantics(
+      key: const ValueKey('store-amazon-journey'),
+      label: 'De DopMi a Amazon México. Ahí ves el precio y haces el pago.',
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: _storeCream,
+          border: Border.all(color: _storeBorder),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: stacked
+            ? Column(
+                children: [
+                  dopmi,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Icon(
+                      Icons.arrow_downward_rounded,
+                      color: DopmiTokens.cafeStrong,
+                    ),
+                  ),
+                  amazon,
+                ],
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: dopmi),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(8, 11, 8, 0),
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      color: DopmiTokens.cafeStrong,
+                    ),
+                  ),
+                  const Expanded(child: amazon),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class _StoreJourneyStep extends StatelessWidget {
+  const _StoreJourneyStep({
+    required this.name,
+    required this.icon,
+    this.detail,
+  });
+
+  final String name;
+  final Widget icon;
+  final String? detail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 23,
+          backgroundColor: Colors.white,
+          foregroundColor: DopmiTokens.cafeStrong,
+          child: icon,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 16,
+            height: 1.2,
+            color: DopmiTokens.ink,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (detail != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 3),
+            child: Text(
+              detail!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 13,
+                height: 1.25,
+                color: DopmiTokens.muted,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
