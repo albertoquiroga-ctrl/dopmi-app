@@ -19,6 +19,12 @@ actualiza la foto y el enlace al cambiar de sabor o peso. Amazon aloja las
 fotos y la app carga sus URLs de HTTPS. Las imágenes de referencia del corte
 anterior quedan disponibles para los recorridos locales de prueba.
 
+Antes de abrir Amazon México, tanto alimentos como accesorios muestran una
+pantalla que explica dónde se compra, que el código de afiliado viaja en el
+enlace y que DopMi puede recibir una comisión por compras elegibles. El botón
+«Ir a Amazon México» abre la ficha elegida y «Seguir en DopMi» regresa a ella.
+[Divulgación de enlaces de Amazon Afiliados](https://afiliados.amazon.com.mx/help/node/topic/GHQNZAU6669EZS98).
+
 ## Kits de adopción
 
 La versión interna añade un kit por especie, con cuatro fichas de Amazon

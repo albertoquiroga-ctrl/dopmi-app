@@ -207,6 +207,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
   late final ScrollController scroll;
   late final TextEditingController search;
   ModalRoute<Object?>? catalogOverlay;
+  MaterialPageRoute<bool>? amazonHandoff;
   String get species => widget.selection.species;
   set species(String value) => widget.selection.species = value;
   String? get age => widget.selection.age;
@@ -235,18 +236,22 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
 
   @override
   void dispose() {
-    final route = catalogOverlay;
-    final navigator = route?.navigator;
-    if (route != null && navigator != null) {
-      // The overlay belongs to this catalog/account. Remove only that route,
-      // after the current navigator frame releases its lock.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (navigator.mounted && route.isActive) navigator.removeRoute(route);
-      });
-    }
+    removeCatalogRoutes(catalogOverlay);
     search.dispose();
     scroll.dispose();
     super.dispose();
+  }
+
+  void removeCatalogRoutes(ModalRoute<Object?>? catalogRoute) {
+    final routes = [amazonHandoff, catalogRoute];
+    // Remove only routes owned by this catalog after the navigator frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (final route in routes) {
+        if (route != null && route.isActive) {
+          route.navigator?.removeRoute(route);
+        }
+      }
+    });
   }
 
   bool canOpenProduct(
@@ -281,6 +286,14 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     }
     setState(() => opening = productId);
     try {
+      if (catalog.amazonProductLinks) {
+        final confirmed = await confirmAmazonHandoff(feedbackContext);
+        if (!confirmed ||
+            !feedbackContext.mounted ||
+            !canOpenProduct(productId, catalog, feedbackContext)) {
+          return;
+        }
+      }
       final repository = ref.read(storeRepositoryProvider);
       final link = await repository.productLink(productId);
       if (!feedbackContext.mounted ||
@@ -308,6 +321,20 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     }
   }
 
+  Future<bool> confirmAmazonHandoff(BuildContext sourceContext) async {
+    final route = catalogPage<bool>(const _StoreAmazonHandoff());
+    amazonHandoff = route;
+    try {
+      return await Navigator.of(
+            sourceContext,
+            rootNavigator: true,
+          ).push(route) ??
+          false;
+    } finally {
+      if (identical(amazonHandoff, route)) amazonHandoff = null;
+    }
+  }
+
   Future<T?> showCatalogOverlay<T>(ModalRoute<T> route) async {
     if (catalogOverlay != null || !widget.catalog.enabled) return null;
     FocusScope.of(context).unfocus();
@@ -319,14 +346,13 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     }
   }
 
-  Future<void> showCatalogPage(Widget page) async {
+  MaterialPageRoute<T> catalogPage<T>(Widget page) {
     final catalog = widget.catalog;
     final actor = widget.actor;
-    late final MaterialPageRoute<void> route;
-    route = MaterialPageRoute<void>(
+    return MaterialPageRoute<T>(
       builder: (context) => Consumer(
         builder: (context, ref, child) {
-          // Keep authorization observed while the catalog route is offstage.
+          // Observe access in the visible route, even if the catalog is offstage.
           final currentActor = ref.watch(storeActorProvider).asData;
           final currentCatalog = ref.watch(storeCatalogProvider).asData?.value;
           if (currentActor == null ||
@@ -334,9 +360,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               ref.watch(storeRepositoryProvider).userId != actor ||
               !identical(currentCatalog, catalog) ||
               !catalog.enabled) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (route.isActive) route.navigator?.removeRoute(route);
-            });
+            removeCatalogRoutes(catalogOverlay);
             return Scaffold(
               appBar: AppBar(),
               body: const Center(
@@ -349,7 +373,10 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         child: page,
       ),
     );
-    await showCatalogOverlay(route);
+  }
+
+  Future<void> showCatalogPage(Widget page) async {
+    await showCatalogOverlay(catalogPage<void>(page));
   }
 
   Future<void> showProductOptions(StoreProductGroup group) {
@@ -1519,6 +1546,95 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       fontSize: 12,
                       color: DopmiTokens.muted,
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StoreAmazonHandoff extends StatelessWidget {
+  const _StoreAmazonHandoff();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: const ValueKey('store-amazon-handoff'),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: DopmiTokens.ink,
+        leading: const BackButton(),
+      ),
+      body: DonorCanvas(
+        child: SafeArea(
+          top: false,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 460),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+                children: [
+                  Semantics(
+                    header: true,
+                    child: const Text(
+                      'Tu compra continúa en Amazon',
+                      style: TextStyle(
+                        fontFamily: DopmiTokens.legacyDisplayFont,
+                        fontSize: 30,
+                        height: 1.12,
+                        fontWeight: FontWeight.w600,
+                        color: DopmiTokens.ink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'En Amazon México podrás consultar el precio y hacer tu pedido.',
+                    style: TextStyle(fontSize: 16, height: 1.45),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: _storeCream,
+                      border: Border.all(color: _storeBorder),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Text(
+                      'El código de afiliado de DopMi ya va incluido en el enlace. '
+                      'Puedes pagar sin escribir ningún código. Como afiliado de Amazon, '
+                      'DopMi puede recibir una comisión por compras elegibles.',
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.4,
+                        color: DopmiTokens.ink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: DopmiTokens.cafeStrong,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(0, 48),
+                    ),
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text('Ir a Amazon México'),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: DopmiTokens.cafeStrong,
+                      minimumSize: const Size(0, 48),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Seguir en DopMi'),
                   ),
                 ],
               ),

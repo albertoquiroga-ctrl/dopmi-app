@@ -119,20 +119,23 @@ class StoreFake implements StoreRepository {
 
 void main() {
   testWidgets(
-    'cat kit opens the chosen accessory only after tapping its link',
+    'cat kit explains the affiliate link and opens only after confirmation',
     (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(377, 852);
       addTearDown(tester.view.resetDevicePixelRatio);
       addTearDown(tester.view.resetPhysicalSize);
       final opened = <Uri>[];
+      final changes = StreamController<String?>.broadcast();
+      addTearDown(() => unawaited(changes.close()));
+      String? actor = 'play-tester';
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             storeRepositoryProvider.overrideWithValue(
               StoreReviewRepository(
-                currentUser: () => 'play-tester',
-                changes: const Stream.empty(),
+                currentUser: () => actor,
+                changes: changes.stream,
               ),
             ),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
@@ -166,10 +169,40 @@ void main() {
       await tester.ensureVisible(collar);
       await tester.tap(collar);
       await tester.pumpAndSettle();
+      final handoff = find.byKey(const ValueKey('store-amazon-handoff'));
+      expect(handoff, findsOneWidget);
+      expect(
+        find.textContaining('ya va incluido en el enlace'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('comisión por compras elegibles'),
+        findsOneWidget,
+      );
+      expect(opened, isEmpty);
+      await tester.tap(find.text('Seguir en DopMi'));
+      await tester.pumpAndSettle();
+      expect(handoff, findsNothing);
+      expect(collar, findsOneWidget);
+      expect(opened, isEmpty);
+      await tester.tap(collar);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ir a Amazon México'));
+      await tester.pumpAndSettle();
       expect(
         opened.single.toString(),
         'https://www.amazon.com.mx/dp/B0D8LZRS6H?tag=albertoquir0f-20',
       );
+      await tester.tap(collar);
+      await tester.pumpAndSettle();
+      expect(handoff, findsOneWidget);
+      actor = null;
+      changes.add(null);
+      await tester.pumpAndSettle();
+      expect(handoff, findsNothing);
+      expect(find.byKey(const ValueKey('store-kit-screen')), findsNothing);
+      expect(opened, hasLength(1));
+      expect(tester.takeException(), isNull);
     },
   );
 
@@ -218,6 +251,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(opened, isEmpty);
     await tester.tap(find.text('Ver producto en Amazon México'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('store-amazon-handoff')), findsOneWidget);
+    expect(opened, isEmpty);
+    await tester.tap(find.text('Ir a Amazon México'));
     await tester.pumpAndSettle();
     expect(
       opened.single.toString(),
