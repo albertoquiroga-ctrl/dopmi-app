@@ -19,6 +19,24 @@ actualiza la foto y el enlace al cambiar de sabor o peso. Amazon aloja las
 fotos y la app carga sus URLs de HTTPS. Las imágenes de referencia del corte
 anterior quedan disponibles para los recorridos locales de prueba.
 
+## Kits de adopción
+
+La versión interna añade un kit por especie, con cuatro fichas de Amazon
+México en cada uno. Perros incluye collar ajustable, correa, dos platos y
+transportadora. Gatos incluye collar de broche liberable, un paquete de dos
+platos con rascador, transportadora y arenero con pala. La foto, las medidas
+y el enlace de afiliado corresponden a la ficha de cada artículo.
+
+El comprador elige y abre cada artículo por separado. La documentación
+vigente de Creators API describe operaciones de catálogo. El formulario
+histórico para agregar varios artículos al carrito no enumera México.
+[Creators API](https://affiliate-program.amazon.com/creatorsapi/docs/en-us/api-reference)
+· [Guía histórica de Amazon](https://awsdocs.s3.amazonaws.com/Associates/latest/prod-adv-api-dg.pdf).
+
+Amazon México publica 8% estándar para Mascotas, sujeto a la clasificación
+del producto y a la elegibilidad de la compra, con tope de $500 MXN por
+producto calificado. [Tabla de comisiones](https://afiliados.amazon.com.mx/help/node/topic/GRXPHT8U84RAYDXZ).
+
 ## Fotos y salida a Amazon
 
 El botón «Ver producto en Amazon México» abre la ficha `/dp/ASIN` de la

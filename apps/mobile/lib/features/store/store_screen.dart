@@ -6,6 +6,7 @@ import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../../core/donor_notification_button.dart';
 import '../../core/warm_filter_dialog.dart';
+import 'store_kit_item.dart';
 import 'store_repository.dart';
 
 const _storeCream = Color(0xfffaf1e7);
@@ -248,25 +249,42 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     super.dispose();
   }
 
+  bool canOpenProduct(
+    String productId,
+    StoreCatalog catalog,
+    BuildContext feedbackContext,
+  ) {
+    if (!mounted ||
+        !feedbackContext.mounted ||
+        ModalRoute.of(feedbackContext)?.isCurrent != true ||
+        !catalog.enabled ||
+        (catalog.preview && !catalog.externalLinksEnabled)) {
+      return false;
+    }
+    final actor = ref.read(storeActorProvider).asData;
+    return actor != null &&
+        actor.value == widget.actor &&
+        ref.read(storeRepositoryProvider).userId == widget.actor &&
+        identical(ref.read(storeCatalogProvider).asData?.value, catalog) &&
+        (catalog.products.any((product) => product.id == productId) ||
+            catalog.kitItems.any((item) => item.id == productId));
+  }
+
   Future<void> openProduct(
-    StoreProduct product,
+    String productId,
     BuildContext feedbackContext,
   ) async {
-    if (!mounted ||
-        opening != null ||
-        !widget.catalog.enabled ||
-        (widget.catalog.preview && !widget.catalog.externalLinksEnabled) ||
-        !widget.catalog.products.any((current) => current.id == product.id)) {
+    final catalog = widget.catalog;
+    if (opening != null ||
+        !canOpenProduct(productId, catalog, feedbackContext)) {
       return;
     }
-    setState(() => opening = product.id);
+    setState(() => opening = productId);
     try {
       final repository = ref.read(storeRepositoryProvider);
-      final link = await repository.productLink(product.id);
-      if (!mounted ||
-          !widget.catalog.enabled ||
-          !feedbackContext.mounted ||
-          ModalRoute.of(feedbackContext)?.isCurrent != true ||
+      final link = await repository.productLink(productId);
+      if (!feedbackContext.mounted ||
+          !canOpenProduct(productId, catalog, feedbackContext) ||
           repository.userId != widget.actor) {
         return;
       }
@@ -275,7 +293,8 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
       if (!opened) throw StateError('not opened');
       // Returning from the merchant is not a purchase confirmation.
     } catch (_) {
-      if (mounted && feedbackContext.mounted) {
+      if (feedbackContext.mounted &&
+          canOpenProduct(productId, catalog, feedbackContext)) {
         ScaffoldMessenger.of(feedbackContext).showSnackBar(
           const SnackBar(
             content: Text(
@@ -300,7 +319,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     }
   }
 
-  Future<void> showProductOptions(StoreProductGroup group) async {
+  Future<void> showCatalogPage(Widget page) async {
     final catalog = widget.catalog;
     final actor = widget.actor;
     late final MaterialPageRoute<void> route;
@@ -327,23 +346,30 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
           }
           return child!;
         },
-        child: _StoreProductDetail(
-          group: group,
-          initialProduct: catalog.preview
-              ? _selectStorePreviewArtwork(
-                  group.primary,
-                  group.variants.skip(1),
-                  ref.read(storePreviewImageProvider),
-                ).product
-              : group.primary,
-          preview: catalog.preview,
-          canOpen: !catalog.preview || catalog.externalLinksEnabled,
-          amazonProductLinks: catalog.amazonProductLinks,
-          onOpen: openProduct,
-        ),
+        child: page,
       ),
     );
     await showCatalogOverlay(route);
+  }
+
+  Future<void> showProductOptions(StoreProductGroup group) {
+    final catalog = widget.catalog;
+    return showCatalogPage(
+      _StoreProductDetail(
+        group: group,
+        initialProduct: catalog.preview
+            ? _selectStorePreviewArtwork(
+                group.primary,
+                group.variants.skip(1),
+                ref.read(storePreviewImageProvider),
+              ).product
+            : group.primary,
+        preview: catalog.preview,
+        canOpen: !catalog.preview || catalog.externalLinksEnabled,
+        amazonProductLinks: catalog.amazonProductLinks,
+        onOpen: openProduct,
+      ),
+    );
   }
 
   Future<void> showFilters() async {
@@ -641,6 +667,12 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         ? '1 producto'
         : '${groups.length} productos';
     final showVariantCount = groups.any(_hasStoreFamily);
+    final kitItems = widget.catalog.kitItems
+        .where((item) => item.species.contains(species))
+        .toList(growable: false);
+    final kitTitle = species == 'dog'
+        ? 'Kit de adopción para perros'
+        : 'Kit de adopción para gatos';
     return SingleChildScrollView(
       key: PageStorageKey(
         'store-scroll-${widget.actor}-${widget.catalog.preview}',
@@ -774,6 +806,22 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               ),
             ],
           ),
+          if (kitItems.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            _StoreKitEntry(
+              title: kitTitle,
+              onTap: () => showCatalogPage(
+                _StoreKitScreen(
+                  title: kitTitle,
+                  items: kitItems,
+                  canOpen:
+                      !widget.catalog.preview ||
+                      widget.catalog.externalLinksEnabled,
+                  onOpen: openProduct,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           Wrap(
             spacing: 12,
@@ -849,6 +897,238 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _StoreKitEntry extends StatelessWidget {
+  const _StoreKitEntry({required this.title, required this.onTap});
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: _storeCream,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: _storeBorder),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        key: const ValueKey('store-kit-entry'),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              const Icon(Icons.inventory_2_outlined, color: DopmiTokens.ink),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: DopmiTokens.ink,
+                  ),
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, color: DopmiTokens.ink),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StoreKitScreen extends StatefulWidget {
+  const _StoreKitScreen({
+    required this.title,
+    required this.items,
+    required this.canOpen,
+    required this.onOpen,
+  });
+
+  final String title;
+  final List<StoreKitItem> items;
+  final bool canOpen;
+  final Future<void> Function(String, BuildContext) onOpen;
+
+  @override
+  State<_StoreKitScreen> createState() => _StoreKitScreenState();
+}
+
+class _StoreKitScreenState extends State<_StoreKitScreen> {
+  String? openingId;
+
+  Future<void> openItem(String id) async {
+    if (openingId != null || !widget.canOpen) return;
+    setState(() => openingId = id);
+    try {
+      await widget.onOpen(id, context);
+    } finally {
+      if (mounted) setState(() => openingId = null);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: const ValueKey('store-kit-screen'),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        foregroundColor: DopmiTokens.ink,
+        leading: const BackButton(),
+      ),
+      body: DonorCanvas(
+        child: SafeArea(
+          top: false,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(18, 4, 18, 24),
+                children: [
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(
+                        fontFamily: DopmiTokens.legacyDisplayFont,
+                        fontSize: 27,
+                        height: 1.15,
+                        fontWeight: FontWeight.w600,
+                        color: DopmiTokens.ink,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Cada artículo se compra por separado en Amazon México. '
+                    'Como afiliado de Amazon, DopMi puede recibir una '
+                    'comisión por compras elegibles.',
+                    style: TextStyle(height: 1.4, color: DopmiTokens.muted),
+                  ),
+                  for (final item in widget.items)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: _StoreKitCard(
+                        item: item,
+                        opening: openingId == item.id,
+                        onTap: widget.canOpen && openingId == null
+                            ? () => openItem(item.id)
+                            : null,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StoreKitCard extends StatelessWidget {
+  const _StoreKitCard({
+    required this.item,
+    required this.opening,
+    required this.onTap,
+  });
+
+  final StoreKitItem item;
+  final bool opening;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final image = item.imageUri;
+    const missingImage = Icon(
+      Icons.image_not_supported_outlined,
+      color: DopmiTokens.muted,
+    );
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: _storeBorder),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                SizedBox.square(
+                  dimension: 76,
+                  child: image == null
+                      ? missingImage
+                      : Image.network(
+                          image.toString(),
+                          fit: BoxFit.contain,
+                          excludeFromSemantics: true,
+                          errorBuilder: (_, _, _) => missingImage,
+                        ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.brand,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: DopmiTokens.muted,
+                        ),
+                      ),
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: DopmiTokens.ink,
+                        ),
+                      ),
+                      Text(
+                        item.presentation,
+                        style: const TextStyle(color: DopmiTokens.muted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            OutlinedButton(
+              key: ValueKey('store-kit-amazon-${item.id}'),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 48),
+                foregroundColor: DopmiTokens.cafeStrong,
+                side: const BorderSide(color: _storeBorder),
+              ),
+              onPressed: onTap,
+              child: Text(
+                opening ? 'Abriendo Amazon México…' : 'Ver en Amazon México',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const Text(
+              'Enlace de afiliado',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: DopmiTokens.muted),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1027,7 +1307,7 @@ class _StoreProductDetail extends StatefulWidget {
   final bool preview;
   final bool canOpen;
   final bool amazonProductLinks;
-  final Future<void> Function(StoreProduct, BuildContext) onOpen;
+  final Future<void> Function(String, BuildContext) onOpen;
 
   @override
   State<_StoreProductDetail> createState() => _StoreProductDetailState();
@@ -1051,7 +1331,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
     if (opening || !widget.canOpen) return;
     setState(() => opening = true);
     try {
-      await widget.onOpen(selected, context);
+      await widget.onOpen(selected.id, context);
     } finally {
       if (mounted) setState(() => opening = false);
     }

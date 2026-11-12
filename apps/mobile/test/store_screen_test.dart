@@ -118,6 +118,61 @@ class StoreFake implements StoreRepository {
 }
 
 void main() {
+  testWidgets(
+    'cat kit opens the chosen accessory only after tapping its link',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(377, 852);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.view.resetPhysicalSize);
+      final opened = <Uri>[];
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            storeRepositoryProvider.overrideWithValue(
+              StoreReviewRepository(
+                currentUser: () => 'play-tester',
+                changes: const Stream.empty(),
+              ),
+            ),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+            storeLinkOpenerProvider.overrideWithValue((uri) async {
+              opened.add(uri);
+              return true;
+            }),
+          ],
+          child: const MaterialApp(home: Scaffold(body: StoreScreen())),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final cats = find.byKey(const ValueKey('store-species-cat'));
+      await tester.ensureVisible(cats);
+      await tester.tap(cats);
+      await tester.pumpAndSettle();
+      final entry = find.byKey(const ValueKey('store-kit-entry'));
+      await tester.ensureVisible(entry);
+      await tester.tap(entry);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('store-kit-screen')), findsOneWidget);
+      expect(find.text('Kit de adopción para gatos'), findsOneWidget);
+      expect(opened, isEmpty);
+      expect(
+        find.byKey(const ValueKey('store-kit-amazon-kit-dog-leash')),
+        findsNothing,
+      );
+      final collar = find.byKey(
+        const ValueKey('store-kit-amazon-kit-cat-collar'),
+      );
+      await tester.ensureVisible(collar);
+      await tester.tap(collar);
+      await tester.pumpAndSettle();
+      expect(
+        opened.single.toString(),
+        'https://www.amazon.com.mx/dp/B0D8LZRS6H?tag=albertoquir0f-20',
+      );
+    },
+  );
+
   testWidgets('internal Store opens the selected presentation on Amazon', (
     tester,
   ) async {

@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config/adoption_only_build.dart';
+import 'store_kit_item.dart';
 import 'store_review_amazon_listings.dart';
 import 'store_review_catalog.dart';
 import 'store_review_repository.dart';
@@ -64,6 +65,7 @@ class StoreCatalog {
     this.expiresAt,
     this.externalLinksEnabled = true,
     this.amazonProductLinks = false,
+    this.kitItems = const [],
     // Preserve the public named argument; the stored flag excludes expiry.
     // ignore: prefer_initializing_formals
   }) : _enabled = enabled;
@@ -97,6 +99,7 @@ class StoreCatalog {
       _enabled &&
       (!preview || (expiresAt != null && expiresAt!.isAfter(DateTime.now())));
   final List<StoreProduct> products;
+  final List<StoreKitItem> kitItems;
 }
 
 abstract class StoreRepository {

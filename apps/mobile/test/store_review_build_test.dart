@@ -121,6 +121,42 @@ void main() {
     },
   );
 
+  test(
+    'each adoption kit exposes four exact affiliate products to testers',
+    () async {
+      String? actor;
+      final repository = StoreReviewRepository(
+        currentUser: () => actor,
+        changes: const Stream.empty(),
+      );
+      expect((await repository.catalog()).kitItems, isEmpty);
+      expect(await repository.productLink('kit-cat-collar'), isNull);
+
+      actor = 'review-actor';
+      final catalog = await repository.catalog();
+      for (final species in ['dog', 'cat']) {
+        final kit = catalog.kitItems.where(
+          (item) => item.species.contains(species),
+        );
+        expect(kit, hasLength(4));
+        expect(kit.map((item) => item.listing.asin).toSet(), hasLength(4));
+        for (final item in kit) {
+          expect(item.imageUri?.host, 'm.media-amazon.com');
+          expect(
+            await repository.productLink(item.id),
+            Uri.https('www.amazon.com.mx', '/dp/${item.listing.asin}', {
+              'tag': 'albertoquir0f-20',
+            }),
+          );
+        }
+      }
+      expect(
+        catalog.products.any((product) => product.id.startsWith('kit-')),
+        false,
+      );
+    },
+  );
+
   test('missing and unsafe listings cannot appear or open a link', () async {
     final sample = storeReviewProducts.first;
     for (final invalid in [
@@ -149,6 +185,7 @@ void main() {
         currentUser: () => 'review-actor',
         changes: const Stream.empty(),
         listings: {sample.id: invalid},
+        kitItems: const [],
       );
       final review = await repository.catalog();
       expect(review.enabled, false);
