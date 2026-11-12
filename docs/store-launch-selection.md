@@ -14,11 +14,14 @@ etapa, marca, sabor, presentación y, en perros, tamaño.
 
 El [surtido completo](../apps/mobile/lib/features/store/store_review_catalog.dart) contiene
 la combinación de cada ficha. Es una muestra local reproducible en Flutter.
-La ficha nativa muestra la foto de la variante seleccionada, su sabor y su
-presentación. La versión 370 sólo incluyó el ejemplo ilustrativo de Whiskas
-Atún 1.5 kg. El candidato incorpora 19 fotos de empaques de referencia,
-cotejadas por presentación. Las fichas sin foto exacta muestran la ilustración
-identificada o el ícono genérico.
+Las 32 tarjetas y las 128 presentaciones tienen imagen en la vista previa
+interna. Hay 19 fotos de referencia cotejadas por presentación y 109 imágenes
+ilustrativas. Una tarjeta prioriza una foto de sus presentaciones filtradas y
+abre esa misma presentación. El detalle muestra la imagen de la variante
+seleccionada. Las ilustraciones se identifican con «Imagen ilustrativa». La
+base genérica de bolsa de papel marfil se generó con ImageGen y la app compone
+la etiqueta con marca, fórmula, sabor registrado y peso de cada presentación.
+Whiskas Atún 1.5 kg conserva su ilustración anterior.
 
 ## Fotos y salida a Amazon
 

@@ -1450,13 +1450,17 @@ _selectStorePreviewArtwork(
   Iterable<StoreProduct> alternatives,
   StorePreviewArtwork? Function(String) getArtwork,
 ) {
-  final artwork = getArtwork(primary.id);
-  if (artwork != null) return (product: primary, artwork: artwork);
+  final primaryArtwork = getArtwork(primary.id);
+  if (primaryArtwork?.kind == StorePreviewArtworkKind.photo) {
+    return (product: primary, artwork: primaryArtwork);
+  }
   for (final alternative in alternatives) {
     final artwork = getArtwork(alternative.id);
-    if (artwork != null) return (product: alternative, artwork: artwork);
+    if (artwork?.kind == StorePreviewArtworkKind.photo) {
+      return (product: alternative, artwork: artwork);
+    }
   }
-  return (product: primary, artwork: null);
+  return (product: primary, artwork: primaryArtwork);
 }
 
 class _StoreProductArtwork extends ConsumerWidget {
@@ -1491,6 +1495,8 @@ class _StoreProductArtwork extends ConsumerWidget {
         ? NetworkImage(uri.toString())
         : null;
     final credit = previewArtwork?.credit;
+    final usesTemplate =
+        previewArtwork?.kind == StorePreviewArtworkKind.template;
     return LayoutBuilder(
       builder: (context, bounds) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1507,6 +1513,15 @@ class _StoreProductArtwork extends ConsumerWidget {
                     : _storeCream,
                 child: image == null
                     ? const _StoreCategoryArtwork()
+                    : usesTemplate
+                    ? _StoreIllustratedPack(
+                        key: ValueKey(
+                          'store-product-illustration-${artworkProduct.id}',
+                        ),
+                        image: image,
+                        product: artworkProduct,
+                        detail: detail,
+                      )
                     : Padding(
                         padding: EdgeInsets.all(detail ? 18 : 10),
                         child: Image(
@@ -1540,6 +1555,125 @@ class _StoreProductArtwork extends ConsumerWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _StoreIllustratedPack extends StatelessWidget {
+  const _StoreIllustratedPack({
+    super.key,
+    required this.image,
+    required this.product,
+    required this.detail,
+  });
+
+  final ImageProvider<Object> image;
+  final StoreProduct product;
+  final bool detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final weight = storeWeightLabel(product.weightKg);
+    final flavor = product.flavor;
+    final color = switch (product.brand) {
+      'Cat Chow' || 'Dog Chow' => const Color(0xff3f5c4d),
+      'Nupec' || 'Purina ONE' => const Color(0xff325867),
+      'Whiskas' || 'Royal Canin' => const Color(0xff673e56),
+      'Pedigree' || 'Gatina' => const Color(0xff795015),
+      _ => const Color(0xff634535),
+    };
+    final labelColor = switch (product.age) {
+      'puppy' => Color.lerp(color, const Color(0xff793d28), .55)!,
+      'senior' => Color.lerp(color, const Color(0xff323047), .65)!,
+      _ => color,
+    };
+    // Text on the illustration is also available in the surrounding UI.
+    return Semantics(
+      image: detail,
+      label: detail ? '${product.brand} ${product.name}, $weight' : null,
+      excludeSemantics: true,
+      child: Padding(
+        padding: EdgeInsets.all(detail ? 10 : 2),
+        child: FittedBox(
+          child: SizedBox(
+            width: 144,
+            height: 172,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(
+                  child: Image(image: image, fit: BoxFit.fill),
+                ),
+                Positioned(
+                  top: 56,
+                  width: 87,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: labelColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 6, 6, 5),
+                      child: DefaultTextStyle(
+                        style: const TextStyle(
+                          fontFamily: DopmiTokens.bodyFont,
+                          color: Colors.white,
+                          height: 1.12,
+                        ),
+                        textAlign: TextAlign.center,
+                        child: MediaQuery.withNoTextScaling(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  product.brand,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                product.name,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              if (flavor != null) ...[
+                                const SizedBox(height: 3),
+                                Text(
+                                  flavor,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 8),
+                                ),
+                              ],
+                              const SizedBox(height: 4),
+                              Text(
+                                weight,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/store/store_repository.dart';
+import 'package:dopmi_mobile/features/store/store_review_catalog.dart';
 import 'package:dopmi_mobile/features/store/store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,8 +17,6 @@ import '../test/community_test.dart' show FakeCommunity;
 import '../test/fake_identity_repository.dart';
 import '../test/store_screen_test.dart' show StoreFake;
 import 'capture_design_test.dart' show saveCapture;
-
-import 'package:dopmi_mobile/features/store/store_review_catalog.dart';
 
 void main() {
   testWidgets('captures native catalog, search and exact presentations', (
@@ -88,6 +87,10 @@ void main() {
           storeReviewArtworkFor('whiskas-adult-3-1500')!.image,
           storeContext,
         ),
+        precacheImage(
+          storeReviewArtworkFor('nupec-puppy-small-0-2000')!.image,
+          storeContext,
+        ),
       ]),
     );
     await tester.pumpAndSettle();
@@ -127,12 +130,49 @@ void main() {
           .data,
       '500 g',
     );
+    final twoKg = find.byKey(
+      const ValueKey('store-variant-dog-chow-medium-large-0-2000'),
+    );
+    await tester.ensureVisible(twoKg);
+    await tester.tap(twoKg);
+    await tester.pumpAndSettle();
+    final dogChowIllustration = find.byKey(
+      const ValueKey('store-product-illustration-dog-chow-medium-large-0-2000'),
+    );
+    expect(dogChowIllustration, findsOneWidget);
+    expect(find.byKey(dogChowPhoto), findsNothing);
+    expect(
+      find.descendant(of: dogChowIllustration, matching: find.text('2 kg')),
+      findsOneWidget,
+    );
+    expect(find.text('Imagen ilustrativa'), findsOneWidget);
+    await capture('detalle-dog-chow-ilustrativo');
+    await tester.tap(find.byTooltip('Cerrar opciones'));
+    await tester.pumpAndSettle();
+
+    final search = find.byKey(const ValueKey('store-search'));
+    await tester.enterText(search, 'nupec');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final nupecIllustration = find.byKey(
+      const ValueKey('store-product-illustration-nupec-puppy-small-0-2000'),
+    );
+    expect(nupecIllustration.hitTestable(), findsOneWidget);
+    await capture('nupec');
+    await tester.tap(nupecIllustration.hitTestable());
+    await tester.pumpAndSettle();
+    expect(nupecIllustration.hitTestable(), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('store-selected-variant')))
+          .data,
+      '2 kg',
+    );
     await tester.tap(find.byTooltip('Cerrar opciones'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Gatos'));
     await tester.pumpAndSettle();
-    final search = find.byKey(const ValueKey('store-search'));
     await tester.enterText(search, 'whiskas');
     FocusManager.instance.primaryFocus?.unfocus();
     await tester.pumpAndSettle();

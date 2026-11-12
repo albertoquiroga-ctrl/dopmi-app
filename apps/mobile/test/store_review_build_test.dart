@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config/adoption_only_build.dart';
-import 'package:dopmi_mobile/features/store/store_review_repository.dart';
+import 'package:dopmi_mobile/features/store/store_repository.dart';
 import 'package:dopmi_mobile/features/store/store_review_catalog.dart';
+import 'package:dopmi_mobile/features/store/store_review_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -47,6 +48,29 @@ void main() {
     expect(storeReviewAvailable, expected);
   });
 
+  test('every review presentation resolves to local product artwork', () {
+    final artworkById = {
+      for (final product in storeReviewProducts)
+        product.id: storeReviewArtworkFor(product.id),
+    };
+    expect(artworkById, hasLength(128));
+    expect(artworkById.values, everyElement(isNotNull));
+
+    Set<String> idsFor(StorePreviewArtworkKind kind) => artworkById.entries
+        .where((entry) => entry.value?.kind == kind)
+        .map((entry) => entry.key)
+        .toSet();
+
+    final photoIds = idsFor(StorePreviewArtworkKind.photo);
+    expect(photoIds, hasLength(19));
+    expect(photoIds, storeReviewPhotoSources.keys.toSet());
+    expect(idsFor(StorePreviewArtworkKind.illustration), {
+      'whiskas-adult-3-1500',
+    });
+    expect(idsFor(StorePreviewArtworkKind.template), hasLength(108));
+    expect(storeReviewArtworkFor('unknown-review-product'), isNull);
+  });
+
   test(
     'the review catalog is authenticated, local and cannot launch a merchant',
     () async {
@@ -61,11 +85,6 @@ void main() {
       expect(review.enabled, true);
       expect(review.preview, true);
       expect(review.products, hasLength(128));
-      expect(storeReviewPhotoSources, hasLength(19));
-      expect(
-        review.products.map((product) => product.id).toSet(),
-        containsAll(storeReviewPhotoSources.keys),
-      );
       expect(
         review.products.every((product) => product.imageUrl.isEmpty),
         true,

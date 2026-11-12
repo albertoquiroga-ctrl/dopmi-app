@@ -264,12 +264,23 @@ final storeLinkOpenerProvider = Provider<Future<bool> Function(Uri)>(
       (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
 );
 
+enum StorePreviewArtworkKind { photo, illustration, template }
+
 class StorePreviewArtwork {
-  const StorePreviewArtwork(this.image, {this.credit = 'Imagen ilustrativa'});
+  const StorePreviewArtwork(
+    this.image, {
+    required this.kind,
+    required this.credit,
+  });
 
   final ImageProvider<Object> image;
+  final StorePreviewArtworkKind kind;
   final String credit;
 }
+
+final _storeReviewProductIds = storeReviewProducts
+    .map((product) => product.id)
+    .toSet();
 
 StorePreviewArtwork? storeReviewArtworkFor(String id) {
   final source = storeReviewPhotoSources[id];
@@ -277,14 +288,23 @@ StorePreviewArtwork? storeReviewArtworkFor(String id) {
     final (barcode, author) = source;
     return StorePreviewArtwork(
       AssetImage('assets/store/review-photos/$barcode.jpg'),
+      kind: StorePreviewArtworkKind.photo,
       credit: 'Foto de $author · Open Pet Food Facts · CC BY-SA 3.0',
     );
   }
-  return id == 'whiskas-adult-3-1500'
-      ? const StorePreviewArtwork(
-          AssetImage('assets/store/review-packshot.png'),
-        )
-      : null;
+  if (id == 'whiskas-adult-3-1500') {
+    return const StorePreviewArtwork(
+      AssetImage('assets/store/review-packshot.png'),
+      kind: StorePreviewArtworkKind.illustration,
+      credit: 'Imagen ilustrativa',
+    );
+  }
+  if (!_storeReviewProductIds.contains(id)) return null;
+  return const StorePreviewArtwork(
+    AssetImage('assets/store/review-pack-template.png'),
+    kind: StorePreviewArtworkKind.template,
+    credit: 'Imagen ilustrativa',
+  );
 }
 
 /// The local review can supply artwork without enabling catalog links.
