@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/store/store_repository.dart';
+import 'package:dopmi_mobile/features/store/store_review_amazon_links.dart';
+import 'package:dopmi_mobile/features/store/store_review_repository.dart';
 import 'package:dopmi_mobile/features/store/store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -117,6 +119,48 @@ class StoreFake implements StoreRepository {
 }
 
 void main() {
+  testWidgets('internal Store hands the original affiliate search to Amazon', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(377, 852);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+    final opened = <Uri>[];
+    final repository = StoreReviewRepository(
+      currentUser: () => 'play-tester',
+      changes: const Stream.empty(),
+      amazonLinks: storeReviewAmazonLinks,
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          storeRepositoryProvider.overrideWithValue(repository),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          storeLinkOpenerProvider.overrideWithValue((uri) async {
+            opened.add(uri);
+            return true;
+          }),
+        ],
+        child: const MaterialApp(home: Scaffold(body: StoreScreen())),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final product = find.text('Pedigree').first;
+    await tester.ensureVisible(product);
+    await tester.tap(product);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Enlace de afiliado'), findsOneWidget);
+    expect(
+      find.text('Amazon puede mostrar otras presentaciones.'),
+      findsOneWidget,
+    );
+    expect(opened, isEmpty);
+    await tester.tap(find.text('Buscar en Amazon México'));
+    await tester.pumpAndSettle();
+    expect(opened.single.toString(), storeReviewAmazonLinks['pedigree-mini']);
+  });
+
   test('variant matching combines flavor, presentation and breed size', () {
     expect(
       filterStoreProducts(

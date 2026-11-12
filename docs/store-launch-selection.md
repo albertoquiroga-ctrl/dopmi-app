@@ -25,6 +25,14 @@ Whiskas Atún 1.5 kg conserva su ilustración anterior.
 
 ## Fotos y salida a Amazon
 
+La versión interna de Android abre Amazon México desde el detalle de cada
+producto. SiteStripe generó una búsqueda por cada una de las 32 familias
+con el identificador `albertoquir0f-20`. El botón indica que Amazon puede
+mostrar otras presentaciones y muestra el aviso de afiliación. La etiqueta
+del enlace y el registro de la app en la cuenta son comprobables. Amazon
+evalúa por separado la aprobación móvil y la elegibilidad de cada compra.
+[Enlaces en aplicaciones móviles](https://afiliados.amazon.com.mx/help/node/topic/GQZMCDD9PB7CXV7N).
+
 Fotos de la vista de prueba, de `foodless`, `detrumpezvous` y colaboradores
 de Open Pet Food Facts. Los créditos individuales están en el código y en las fichas. Los JPG
 se conservan como los entrega su fuente, con licencia

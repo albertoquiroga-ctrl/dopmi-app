@@ -338,6 +338,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               : group.primary,
           preview: catalog.preview,
           canOpen: !catalog.preview || catalog.externalLinksEnabled,
+          amazonAffiliateSearch: catalog.amazonAffiliateSearch,
           onOpen: openProduct,
         ),
       ),
@@ -689,6 +690,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
           _StoreCatalogNotice(
             preview: widget.catalog.preview,
             externalLinksEnabled: widget.catalog.externalLinksEnabled,
+            amazonAffiliateSearch: widget.catalog.amazonAffiliateSearch,
           ),
           const SizedBox(height: 16),
           Row(
@@ -944,10 +946,12 @@ class _StoreCatalogNotice extends StatelessWidget {
   const _StoreCatalogNotice({
     required this.preview,
     required this.externalLinksEnabled,
+    required this.amazonAffiliateSearch,
   });
 
   final bool preview;
   final bool externalLinksEnabled;
+  final bool amazonAffiliateSearch;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -964,7 +968,9 @@ class _StoreCatalogNotice extends StatelessWidget {
       const SizedBox(width: 7),
       Expanded(
         child: Text(
-          preview
+          amazonAffiliateSearch
+              ? 'Catálogo de prueba con imágenes de referencia. Las compras se realizan en Amazon México.'
+              : preview
               ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
                     '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
               : 'Compra y paga en el comercio. Dopmi puede recibir una comisión por compras que cumplan los requisitos.',
@@ -1012,6 +1018,7 @@ class _StoreProductDetail extends StatefulWidget {
     required this.initialProduct,
     required this.preview,
     required this.canOpen,
+    required this.amazonAffiliateSearch,
     required this.onOpen,
   });
 
@@ -1019,6 +1026,7 @@ class _StoreProductDetail extends StatefulWidget {
   final StoreProduct initialProduct;
   final bool preview;
   final bool canOpen;
+  final bool amazonAffiliateSearch;
   final Future<void> Function(StoreProduct, BuildContext) onOpen;
 
   @override
@@ -1061,6 +1069,8 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
         ? 'Abriendo comercio…'
         : !widget.canOpen
         ? 'Salida de prueba no habilitada'
+        : widget.amazonAffiliateSearch
+        ? 'Buscar en Amazon México'
         : widget.preview
         ? 'Abrir destino TEST'
         : 'Ver en ${selected.merchantName}';
@@ -1219,7 +1229,9 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    widget.preview
+                    widget.amazonAffiliateSearch
+                        ? 'Enlace de afiliado. Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.'
+                        : widget.preview
                         ? 'Catálogo TEST. No permite compras reales.'
                         : 'Consulta el precio y compra en ${selected.merchantName}.',
                     textAlign: TextAlign.center,
@@ -1228,6 +1240,12 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       color: DopmiTokens.muted,
                     ),
                   ),
+                  if (widget.amazonAffiliateSearch)
+                    const Text(
+                      'Amazon puede mostrar otras presentaciones.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: DopmiTokens.muted),
+                    ),
                 ],
               ),
             ),

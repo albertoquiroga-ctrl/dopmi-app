@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config/adoption_only_build.dart';
+import 'store_review_amazon_links.dart';
 import 'store_review_catalog.dart';
 import 'store_review_repository.dart';
 
@@ -62,6 +63,7 @@ class StoreCatalog {
     this.preview = false,
     this.expiresAt,
     this.externalLinksEnabled = true,
+    this.amazonAffiliateSearch = false,
     // Preserve the public named argument; the stored flag excludes expiry.
     // ignore: prefer_initializing_formals
   }) : _enabled = enabled;
@@ -89,6 +91,7 @@ class StoreCatalog {
     );
   }
   final bool _enabled, preview, externalLinksEnabled;
+  final bool amazonAffiliateSearch;
   final DateTime? expiresAt;
   bool get enabled =>
       _enabled &&
@@ -216,6 +219,7 @@ final storeRepositoryProvider = Provider<StoreRepository>((ref) {
     changes: client.auth.onAuthStateChange
         .map((event) => event.session?.user.id)
         .distinct(),
+    amazonLinks: storeReviewAmazonLinks,
   );
 });
 final storeActorProvider = StreamProvider<String?>((ref) async* {
