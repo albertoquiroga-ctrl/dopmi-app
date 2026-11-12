@@ -8570,3 +8570,11 @@ Contador del objetivo03:00:50,658,820tokens/148,129s; contra corte17:15: +2,558,
 tokens/+6,485s activos. Sin desglose fiable ni conversión a costo/tiempo por tarea.
 Checkpoint/tablero/cola existentes actualizados; pendienteconfirmación→QA única→
 release341/QA enlace→aceptación titular/UX. Fuente de producto356; docs aún locales.
+
+## 12/11/2026 — Enlaces de descarga y piloto de adquisición de rescatistas
+
+Facebook confirmó 12 comentarios iniciales, 6 personales y 6 de DopMi. El titular pidió iterar con un experimento y eligió atribución automática sin códigos. Quedaron definidos el reparto aleatorio, las dos variantes y el primer envío a revisión como resultado principal. La muestra inicial es descriptiva.
+
+Ruta publicada en [Vercel](https://www.dopmi.org/descargar) con SHA e56a6020caad69b3244cb8b55fc6ee37f8b90f09 y despliegue dpl_DP5X7KVS4A8BdDnoYmQxT1KipoAE READY. Verificadas 16 respuestas HTTP y el selector en navegador. El piloto y la demostración están en [la ficha de adquisición](facebook-rescuer-experiment.md).
+
+Android y PostgreSQL se prepararon sobre la base pública fc1da17a. Atribución privada con consentimiento, ventana de 14 días desde el clic y reporte agregado. Sigue pendiente probar una instalación real de Google Play con y sin consentimiento, así como obtener el token de campaña de App Store Connect. El motor de Docker local no estuvo disponible para levantar Supabase. La ronda comparativa se conserva pendiente hasta validar la medición instalada. Producción móvil y Supabase siguen en su versión previa.

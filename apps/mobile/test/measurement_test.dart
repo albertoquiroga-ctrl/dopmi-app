@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:dopmi_mobile/core/measurement.dart';
@@ -12,6 +13,20 @@ class AnalyticsSpy implements ProductAnalytics {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     events.add(name);
+  }
+}
+
+class BlockingEnableAnalytics extends AnalyticsSpy {
+  final started = Completer<void>();
+  final release = Completer<void>();
+
+  @override
+  Future<void> enabled(bool value) async {
+    if (value) {
+      started.complete();
+      await release.future;
+    }
+    await super.enabled(value);
   }
 }
 
@@ -51,13 +66,13 @@ void main() {
   test('adoption measurement syncs explicit consent without adding Firebase events', () async {
     SharedPreferences.setMockInitialValues({});
     final analytics = AnalyticsSpy();
-    final sync = <bool>[];
+    final sync = <(String, bool)>[];
     final controller = MeasurementController(
       await SharedPreferences.getInstance(),
       'test',
       analytics,
       DiagnosticsSpy(),
-      adoptionConsent: (enabled) async => sync.add(enabled),
+      adoptionConsent: (owner, enabled) async => sync.add((owner, enabled)),
     );
     await controller.owner('alice');
     await controller.consentReady;
@@ -65,7 +80,7 @@ void main() {
     await controller.consentReady;
     await controller.setAnalytics(false);
     await controller.consentReady;
-    expect(sync, [false, true, false]);
+    expect(sync, [('alice', false), ('alice', true), ('alice', false)]);
     expect(analytics.events, isEmpty);
     controller.dispose();
   });
@@ -122,6 +137,71 @@ void main() {
     expect(controller.lastAnalyticsResult, isNull);
     await controller.event('contact_started');
     expect(analytics.events, ['publication_submitted']);
+    controller.dispose();
+  });
+
+  test(
+    'a pending opt-in cannot enable analytics for the next account',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = BlockingEnableAnalytics();
+      final sync = <(String, bool)>[];
+      final controller = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        adoptionConsent: (owner, enabled) async => sync.add((owner, enabled)),
+      );
+      await controller.owner('alice');
+      await controller.consentReady;
+
+      final optIn = controller.setAnalytics(true);
+      await analytics.started.future;
+      final switched = controller.owner('bob');
+      expect(controller.ownerId, isNull);
+      analytics.release.complete();
+      await optIn;
+      await switched;
+      await controller.consentReady;
+
+      expect(sync, [('alice', false), ('bob', false)]);
+      expect(preferences.getBool('dopmi.test.alice.analytics'), true);
+      expect(preferences.getBool('dopmi.test.bob.analytics'), isNull);
+      expect(controller.ownerId, 'bob');
+      expect(controller.analyticsEnabled, false);
+      expect(analytics.enabledValue, false);
+      controller.dispose();
+    },
+  );
+
+  test('a queued revocation prevents the pending opt-in from syncing', () async {
+    SharedPreferences.setMockInitialValues({});
+    final analytics = BlockingEnableAnalytics();
+    final sync = <bool>[];
+    final controller = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      DiagnosticsSpy(),
+      adoptionConsent: (_, enabled) async => sync.add(enabled),
+    );
+    await controller.owner('alice');
+    await controller.consentReady;
+
+    final optIn = controller.setAnalytics(true);
+    await analytics.started.future;
+    final revoked = controller.setAnalytics(false);
+    expect(controller.analyticsConsentCurrent, false);
+    analytics.release.complete();
+    await optIn;
+    await revoked;
+    await controller.consentReady;
+
+    expect(sync, [false, false]);
+    expect(controller.analyticsConsentCurrent, false);
+    expect(analytics.enabledValue, false);
     controller.dispose();
   });
 

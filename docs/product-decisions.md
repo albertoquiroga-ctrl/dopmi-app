@@ -492,3 +492,7 @@ El titular eligió «Preparar ese escenario TEST de $100/$20» (call_bd473bfa0c7
 ## 23/10/2026 — Donante y conservación de P3 TEST resueltos
 
 Titular eligió la cuenta donante por su correo habitual en call_2de41477d5b7410f99e555851a83d795/item0; contacto/UUID sólo en evidencia privada. SELECT READ ONLY confirmó cuenta activa, email confirmado y distinta de la rescatista, sin iniciar sesión ni pagar. call_7ada6f41b64549008541fc81c1f24594/item0 eligió «Conservar caso y aporte TEST para revisar»: futuro cierre conserva caso abierto claramente TEST, gasto ficticio y aporte confirmado para Impacto, sin devolución rutinaria; video OFF al terminar. La capacidad TEST restante puede seguir pública aun con video OFF y debe declararse en paquete de ejecución. No reabrir estas decisiones. La elección no crea/aprueba/publica ni cobra, ni sustituye sesión legítima o permiso operativo del paquete. Dinero exclusivamente TEST, sin tarjeta bancaria real.
+
+## 12/11/2026 — Adquisición de rescatistas desde Facebook
+
+El titular pidió comparar mensajes y perfiles con un experimento. Eligió atribución automática donde sea posible, sin códigos para la persona. El piloto reutiliza el consentimiento de Analítica de uso y compara primeras fichas enviadas a revisión, con aprobación como resultado separado. Android recupera la variante desde Google Play y App Store Connect aporta métricas agregadas en iPhone cuando la campaña sea visible. Ver [piloto de Facebook](facebook-rescuer-experiment.md).

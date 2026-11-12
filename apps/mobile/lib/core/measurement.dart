@@ -88,19 +88,42 @@ class MeasurementController extends ChangeNotifier {
     this.diagnostics, {
     this.adoptionConsent,
   });
-  final Future<void> Function(bool)? adoptionConsent;
+  final Future<void> Function(String owner, bool enabled)? adoptionConsent;
   Future<void> _consentSync = Future.value();
-  String? get ownerId => _owner;
+  Future<void> _settingsSync = Future.value();
+  Future<void>? _ownerSync;
+  String? _requestedOwner;
+  int _ownerRevision = 0;
+  int _configuredOwnerRevision = 0;
+  int _analyticsRevision = 0;
+  int _configuredAnalyticsRevision = 0;
+  String? get ownerId =>
+      _ownerRevision == _configuredOwnerRevision ? _owner : null;
+  int get analyticsRevision => _analyticsRevision;
+  bool get analyticsConsentCurrent =>
+      analyticsEnabled && _analyticsRevision == _configuredAnalyticsRevision;
   Future<void> get consentReady => _consentSync;
+
+  Future<void> _queueSettings(Future<void> Function() apply) {
+    final pending = _settingsSync.then((_) => apply());
+    _settingsSync = pending.catchError((Object _) {});
+    return pending;
+  }
 
   void _syncConsent() {
     final callback = adoptionConsent;
-    if (_owner == null || callback == null) return;
+    final expectedOwner = ownerId;
+    if (expectedOwner == null || callback == null) return;
     final enabled = analyticsEnabled;
-    final expectedOwner = _owner;
+    final ownerRevision = _ownerRevision;
+    final analyticsRevision = _configuredAnalyticsRevision;
     _consentSync = _consentSync
         .then((_) async {
-          if (_owner == expectedOwner) await callback(enabled);
+          if (ownerId == expectedOwner &&
+              ownerRevision == _ownerRevision &&
+              analyticsRevision == _analyticsRevision) {
+            await callback(expectedOwner, enabled);
+          }
         })
         .catchError((Object _) {});
   }
@@ -119,44 +142,70 @@ class MeasurementController extends ChangeNotifier {
 
   String key(String kind) => 'dopmi.$namespace.${_owner ?? 'signed-out'}.$kind';
 
-  Future<void> owner(String? value) async {
-    if (_owner == value && !loading) return;
-    await analytics.enabled(false);
-    await diagnostics.enabled(false);
-    _removeErrorHandler();
-    if (_owner != null && _owner != value) {
-      await diagnostics.discardPending();
+  Future<void> owner(String? value) {
+    if (_requestedOwner == value) {
+      final pending = _ownerSync;
+      if (pending != null) return pending;
+      if (!loading && _configuredOwnerRevision == _ownerRevision) {
+        return Future.value();
+      }
     }
-    _owner = value;
-    lastAnalyticsEvent = null;
-    lastAnalyticsResult = null;
-    analyticsEnabled =
-        value != null && (preferences.getBool(key('analytics')) ?? false);
-    diagnosticsEnabled =
-        value != null && (preferences.getBool(key('diagnostics')) ?? false);
-    await analytics.enabled(analyticsEnabled);
-    if (diagnosticsEnabled) {
-      await diagnostics.enabled(true);
-    } else if (value != null) {
-      await diagnostics.discardPending();
-    }
-    if (diagnosticsEnabled) _installErrorHandler();
-    loading = false;
-    _syncConsent();
-    notifyListeners();
-  }
-
-  Future<void> setAnalytics(bool value) async {
-    if (_owner == null) return;
-    await analytics.enabled(value);
-    await preferences.setBool(key('analytics'), value);
-    analyticsEnabled = value;
-    _syncConsent();
-    if (!value) {
+    _requestedOwner = value;
+    final revision = ++_ownerRevision;
+    final analyticsRevision = ++_analyticsRevision;
+    final pending = _queueSettings(() async {
+      if (revision != _ownerRevision) return;
+      await analytics.enabled(false);
+      await diagnostics.enabled(false);
+      _removeErrorHandler();
+      if (_owner != null && _owner != value) {
+        await diagnostics.discardPending();
+      }
+      _owner = value;
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;
-    }
-    notifyListeners();
+      analyticsEnabled =
+          value != null && (preferences.getBool(key('analytics')) ?? false);
+      diagnosticsEnabled =
+          value != null && (preferences.getBool(key('diagnostics')) ?? false);
+      await analytics.enabled(analyticsEnabled);
+      if (diagnosticsEnabled) {
+        await diagnostics.enabled(true);
+      } else if (value != null) {
+        await diagnostics.discardPending();
+      }
+      if (diagnosticsEnabled) _installErrorHandler();
+      if (revision != _ownerRevision) return;
+      _configuredOwnerRevision = revision;
+      _configuredAnalyticsRevision = analyticsRevision;
+      loading = false;
+      _syncConsent();
+      notifyListeners();
+    });
+    _ownerSync = pending;
+    return pending.whenComplete(() {
+      if (identical(_ownerSync, pending)) _ownerSync = null;
+    });
+  }
+
+  Future<void> setAnalytics(bool value) {
+    if (ownerId == null) return Future.value();
+    final preferenceKey = key('analytics');
+    final revision = _ownerRevision;
+    final analyticsRevision = ++_analyticsRevision;
+    return _queueSettings(() async {
+      if (revision == _ownerRevision) await analytics.enabled(value);
+      await preferences.setBool(preferenceKey, value);
+      if (revision != _ownerRevision) return;
+      analyticsEnabled = value;
+      _configuredAnalyticsRevision = analyticsRevision;
+      _syncConsent();
+      if (!value) {
+        lastAnalyticsEvent = null;
+        lastAnalyticsResult = null;
+      }
+      notifyListeners();
+    });
   }
 
   Future<void> setDiagnostics(bool value) async {
@@ -185,7 +234,7 @@ class MeasurementController extends ChangeNotifier {
         'Dopmi measurement events do not accept payloads',
       );
     }
-    if (!analyticsEnabled) {
+    if (!analyticsConsentCurrent || ownerId == null) {
       lastAnalyticsEvent = name;
       lastAnalyticsResult = 'omitido_sin_consentimiento';
       notifyListeners();
