@@ -8578,3 +8578,5 @@ Facebook confirmó 12 comentarios iniciales, 6 personales y 6 de DopMi. El titul
 Ruta publicada en [Vercel](https://www.dopmi.org/descargar) con SHA e56a6020caad69b3244cb8b55fc6ee37f8b90f09 y despliegue dpl_DP5X7KVS4A8BdDnoYmQxT1KipoAE READY. Verificadas 16 respuestas HTTP y el selector en navegador. El piloto y la demostración están en [la ficha de adquisición](facebook-rescuer-experiment.md).
 
 Android y PostgreSQL se prepararon sobre la base pública fc1da17a. Atribución privada con consentimiento, ventana de 14 días desde el clic y reporte agregado. Sigue pendiente probar una instalación real de Google Play con y sin consentimiento, así como obtener el token de campaña de App Store Connect. El motor de Docker local no estuvo disponible para levantar Supabase. La ronda comparativa se conserva pendiente hasta validar la medición instalada. Producción móvil y Supabase siguen en su versión previa.
+
+Validación local sobre el cambio de atribución d13a9bb5. Backend 1,290 aprobadas, 9 omitidas y 0 fallos. Flutter 19 pruebas enfocadas y análisis sin hallazgos. Configuración móvil 36 pruebas aprobadas. Queda pendiente el recorrido instalado.

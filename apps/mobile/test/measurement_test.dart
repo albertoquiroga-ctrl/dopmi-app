@@ -176,34 +176,37 @@ void main() {
     },
   );
 
-  test('a queued revocation prevents the pending opt-in from syncing', () async {
-    SharedPreferences.setMockInitialValues({});
-    final analytics = BlockingEnableAnalytics();
-    final sync = <bool>[];
-    final controller = MeasurementController(
-      await SharedPreferences.getInstance(),
-      'test',
-      analytics,
-      DiagnosticsSpy(),
-      adoptionConsent: (_, enabled) async => sync.add(enabled),
-    );
-    await controller.owner('alice');
-    await controller.consentReady;
+  test(
+    'a queued revocation prevents the pending opt-in from syncing',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final analytics = BlockingEnableAnalytics();
+      final sync = <bool>[];
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        adoptionConsent: (_, enabled) async => sync.add(enabled),
+      );
+      await controller.owner('alice');
+      await controller.consentReady;
 
-    final optIn = controller.setAnalytics(true);
-    await analytics.started.future;
-    final revoked = controller.setAnalytics(false);
-    expect(controller.analyticsConsentCurrent, false);
-    analytics.release.complete();
-    await optIn;
-    await revoked;
-    await controller.consentReady;
+      final optIn = controller.setAnalytics(true);
+      await analytics.started.future;
+      final revoked = controller.setAnalytics(false);
+      expect(controller.analyticsConsentCurrent, false);
+      analytics.release.complete();
+      await optIn;
+      await revoked;
+      await controller.consentReady;
 
-    expect(sync, [false, false]);
-    expect(controller.analyticsConsentCurrent, false);
-    expect(analytics.enabledValue, false);
-    controller.dispose();
-  });
+      expect(sync, [false, false]);
+      expect(controller.analyticsConsentCurrent, false);
+      expect(analytics.enabledValue, false);
+      controller.dispose();
+    },
+  );
 
   test('measurement rejects unknown events and every payload', () async {
     SharedPreferences.setMockInitialValues({});
