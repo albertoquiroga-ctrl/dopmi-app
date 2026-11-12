@@ -1182,69 +1182,114 @@ class _StoreHero extends StatelessWidget {
             padding: const EdgeInsets.all(1),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(23),
-              child: Stack(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (photoWidth > 0)
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      width: photoWidth,
-                      child: Image.asset(
-                        'assets/store/store-home.png',
-                        fit: BoxFit.cover,
-                        excludeFromSemantics: true,
-                        errorBuilder: (_, _, _) => const ColoredBox(
-                          color: Color(0xffead8c6),
-                          child: Center(
-                            child: Icon(
-                              Icons.pets_rounded,
-                              size: 36,
-                              color: DopmiTokens.ink,
+                  Stack(
+                    children: [
+                      if (photoWidth > 0)
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          right: 0,
+                          width: photoWidth,
+                          child: Image.asset(
+                            'assets/store/store-home.png',
+                            fit: BoxFit.cover,
+                            excludeFromSemantics: true,
+                            errorBuilder: (_, _, _) => const ColoredBox(
+                              color: Color(0xffead8c6),
+                              child: Center(
+                                child: Icon(
+                                  Icons.pets_rounded,
+                                  size: 36,
+                                  color: DopmiTokens.ink,
+                                ),
+                              ),
                             ),
                           ),
+                        ),
+                      Container(
+                        constraints: const BoxConstraints(minHeight: 132),
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          18,
+                          photoWidth + 12,
+                          18,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                amazonProductLinks
+                                    ? 'Más hogares para más mascotas'
+                                    : 'Lo esencial para su nueva casa',
+                                style: const TextStyle(
+                                  fontFamily: DopmiTokens.legacyDisplayFont,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -.5,
+                                  height: 1.02,
+                                  color: DopmiTokens.ink,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              amazonProductLinks
+                                  ? 'DopMi conecta a mascotas en adopción con familias.'
+                                  : 'Alimento para cada etapa.',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                height: 1.3,
+                                color: DopmiTokens.muted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (amazonProductLinks)
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(top: BorderSide(color: _storeBorder)),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Una fuente de ingresos para nuestra app de adopción',
+                              style: TextStyle(
+                                color: DopmiTokens.ink,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde los enlaces de esta Tienda.',
+                              style: TextStyle(
+                                color: DopmiTokens.muted,
+                                fontSize: 12,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  Container(
-                    constraints: const BoxConstraints(minHeight: 132),
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(16, 18, photoWidth + 12, 18),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Semantics(
-                          header: true,
-                          child: Text(
-                            amazonProductLinks
-                                ? 'Más hogares para más mascotas'
-                                : 'Lo esencial para su nueva casa',
-                            style: const TextStyle(
-                              fontFamily: DopmiTokens.legacyDisplayFont,
-                              fontSize: 28,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: -.5,
-                              height: 1.02,
-                              color: DopmiTokens.ink,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          amazonProductLinks
-                              ? 'DopMi conecta a mascotas en adopción con familias.'
-                              : 'Alimento para cada etapa.',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            height: 1.3,
-                            color: DopmiTokens.muted,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -1288,22 +1333,12 @@ class _StoreCatalogNotice extends StatelessWidget {
       const SizedBox(width: 7),
       Expanded(
         child: amazonProductLinks
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Precio y pago en Amazon México',
-                    style: _noticeStyle.copyWith(
-                      color: DopmiTokens.ink,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  const Text(
-                    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
-                    style: _noticeStyle,
-                  ),
-                ],
+            ? Text(
+                'Precio y pago en Amazon México',
+                style: _noticeStyle.copyWith(
+                  color: DopmiTokens.ink,
+                  fontWeight: FontWeight.w700,
+                ),
               )
             : Text(
                 preview

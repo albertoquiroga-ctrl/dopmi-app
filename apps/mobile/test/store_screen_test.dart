@@ -154,11 +154,19 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Precio y pago en Amazon México'), findsOneWidget);
+      final fundingHeading = find.text(
+        'Una fuente de ingresos para nuestra app de adopción',
+      );
+      final affiliateNotice = find.text(
+        'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde los enlaces de esta Tienda.',
+      );
+      expect(fundingHeading, findsOneWidget);
+      expect(affiliateNotice, findsOneWidget);
       expect(
-        find.text(
-          'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
+        tester.getBottomLeft(affiliateNotice).dy,
+        lessThan(
+          tester.getTopLeft(find.byKey(const ValueKey('store-search'))).dy,
         ),
-        findsOneWidget,
       );
       final cats = find.byKey(const ValueKey('store-species-cat'));
       await tester.ensureVisible(cats);
@@ -398,6 +406,7 @@ void main() {
       );
       expect(find.text('Vista previa de Tienda'), findsOneWidget);
       expect(find.text('Más hogares para más mascotas'), findsNothing);
+      expect(find.textContaining('Una fuente de ingresos'), findsNothing);
       expect(
         find.textContaining('Catálogo TEST. No permite compras reales.'),
         findsOneWidget,
