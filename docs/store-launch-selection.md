@@ -1,7 +1,7 @@
 # Catálogo propuesto de Tienda Dopmi
 
-La vista previa ampliada reúne **32 familias y 127 combinaciones** de sabor y
-presentación. Perros aporta 17 familias y 64 presentaciones. Gatos aporta 15
+La vista previa ampliada reúne **32 familias y 128 combinaciones** de sabor y
+presentación. Perros aporta 17 familias y 65 presentaciones. Gatos aporta 15
 familias y 63 presentaciones. La selección cubre cachorro o gatito, adulto y
 adulto mayor, con bolsas pequeñas y bultos de reposición.
 
@@ -15,10 +15,42 @@ etapa, marca, sabor, presentación y, en perros, tamaño.
 El [surtido completo](../apps/mobile/lib/features/store/store_review_catalog.dart) contiene
 la combinación de cada ficha. Es una muestra local reproducible en Flutter.
 La ficha nativa muestra la foto de la variante seleccionada, su sabor y su
-presentación. En la muestra se usa un empaque ilustrativo propio para enseñar
-la colocación, con enlaces comerciales deshabilitados.
+presentación. La versión 370 sólo incluyó el ejemplo ilustrativo de Whiskas
+Atún 1.5 kg. El candidato incorpora 19 fotos de empaques de referencia,
+cotejadas por presentación. Las fichas sin foto exacta muestran la ilustración
+identificada o el ícono genérico.
 
 ## Fotos y salida a Amazon
+
+Fotos de la vista de prueba, de `foodless`, `detrumpezvous` y colaboradores
+de Open Pet Food Facts. Los créditos individuales están en el código y en las fichas. Los JPG
+se conservan como los entrega su fuente, con licencia
+[CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). La licencia
+del fotógrafo y los derechos de la gráfica del empaque son distintos.
+[Datos y licencia de Open Pet Food Facts](https://world.openpetfoodfacts.org/data).
+
+- `dog-chow-medium-large-0-500` · [7501072217554](https://world.openpetfoodfacts.org/product/7501072217554)
+- `pedigree-adult-0-500` · [7506174514716](https://world.openpetfoodfacts.org/product/7506174514716)
+- `pedigree-high-protein-0-2000` · [7506174515058](https://world.openpetfoodfacts.org/product/7506174515058)
+- `pedigree-mini-0-1000` · [7506174514419](https://world.openpetfoodfacts.org/product/7506174514419)
+- `whiskas-adult-1-1500` · [0706460029284](https://world.openpetfoodfacts.org/product/0706460029284)
+- `whiskas-adult-1-3000` · [0706460029376](https://world.openpetfoodfacts.org/product/0706460029376)
+- `whiskas-adult-2-1500` · [0706460029321](https://world.openpetfoodfacts.org/product/0706460029321)
+- `whiskas-adult-2-3000` · [7506174516345](https://world.openpetfoodfacts.org/product/7506174516345)
+- `whiskas-kitten-0-1400` · [7506174513603](https://world.openpetfoodfacts.org/product/7506174513603)
+- `whiskas-kitten-1-1400` · [7506174513382](https://world.openpetfoodfacts.org/product/7506174513382)
+- `whiskas-sterilised-0-1500` · [7506174514792](https://world.openpetfoodfacts.org/product/7506174514792)
+- `whiskas-adult-5-3000` · [7506174515119](https://world.openpetfoodfacts.org/product/7506174515119)
+- `gatina-adult-0-3000` · [7501072216625](https://world.openpetfoodfacts.org/product/7501072216625)
+- `cat-chow-indoor-0-3000` · [7501072202277](https://world.openpetfoodfacts.org/product/7501072202277)
+- `cat-chow-kitten-0-1500` · [7501072200730](https://world.openpetfoodfacts.org/product/7501072200730)
+- `cat-chow-delimix-0-1500` · [7501072204431](https://world.openpetfoodfacts.org/product/7501072204431)
+- `cat-chow-adult-0-3000` · [7501072214089](https://world.openpetfoodfacts.org/product/7501072214089)
+- `cat-chow-adult-1-1500` · [7501777001151](https://world.openpetfoodfacts.org/product/7501777001151)
+- `cat-chow-adult-1-3000` · [7501072202246](https://world.openpetfoodfacts.org/product/7501072202246)
+
+El peso de Pedigree Razas Pequeñas 1 kg coincide con el código de barras
+del catálogo del distribuidor. [Catálogo Dibeal](https://www.dibeal.com/wp-content/uploads/2024/05/Catalogo-Dibeal-mayo-2024_compressed.pdf).
 
 Para cada combinación comercial, conservar juntos el nombre, la marca, el
 sabor, el peso, el ASIN de la variante exacta, su enlace oficial y la foto que
@@ -68,4 +100,4 @@ La organización toma de Petco la navegación por especie y el filtrado por etap
 
 Amazon México publica 8% estándar para Mascotas en compras calificadas y determina la categoría de cada producto. La documentación de apps móviles indica una aprobación separada y distingue sus ingresos de los de enlaces web. Las presentaciones se verificaron en fichas de marca o comercios mexicanos. Queda pendiente cotejar cada ASIN exacto, su disponibilidad y clasificación en Amazon México, y la comisión aplicable al tráfico de Dopmi. [Tabla de comisiones](https://afiliados.amazon.com.mx/help/node/topic/GRXPHT8U84RAYDXZ) · [Enlaces en aplicaciones móviles](https://afiliados.amazon.com.mx/help/node/topic/GQZMCDD9PB7CXV7N)
 
-La vista previa de Flutter carga estos candidatos desde un archivo de captura, con ilustraciones genéricas y salida externa deshabilitada. Para cargar fichas comerciales se requieren imágenes autorizadas y enlaces aprobados por producto. El catálogo productivo conserva su configuración actual.
+La revisión de Android carga estos candidatos desde el catálogo local con la salida externa deshabilitada. Para cargar fichas comerciales se requieren imágenes y enlaces aprobados por producto.

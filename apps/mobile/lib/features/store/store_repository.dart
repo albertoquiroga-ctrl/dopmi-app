@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config/adoption_only_build.dart';
+import 'store_review_catalog.dart';
 import 'store_review_repository.dart';
 
 class StoreProduct {
@@ -263,14 +264,34 @@ final storeLinkOpenerProvider = Provider<Future<bool> Function(Uri)>(
       (uri) => launchUrl(uri, mode: LaunchMode.externalApplication),
 );
 
-/// The local review harness can supply artwork without enabling catalog links.
+class StorePreviewArtwork {
+  const StorePreviewArtwork(this.image, {this.credit = 'Imagen ilustrativa'});
+
+  final ImageProvider<Object> image;
+  final String credit;
+}
+
+StorePreviewArtwork? storeReviewArtworkFor(String id) {
+  final source = storeReviewPhotoSources[id];
+  if (source != null) {
+    final (barcode, author) = source;
+    return StorePreviewArtwork(
+      AssetImage('assets/store/review-photos/$barcode.jpg'),
+      credit: 'Foto de $author · Open Pet Food Facts · CC BY-SA 3.0',
+    );
+  }
+  return id == 'whiskas-adult-3-1500'
+      ? const StorePreviewArtwork(
+          AssetImage('assets/store/review-packshot.png'),
+        )
+      : null;
+}
+
+/// The local review can supply artwork without enabling catalog links.
 /// Server-authorized previews never load remote product images.
 final storePreviewImageProvider =
-    Provider<ImageProvider<Object>? Function(String)>(
-      (ref) =>
-          (id) => storeReviewAvailable && id == 'whiskas-adult-3-1500'
-          ? const AssetImage('assets/store/review-packshot.png')
-          : null,
+    Provider<StorePreviewArtwork? Function(String)>(
+      (ref) => storeReviewAvailable ? storeReviewArtworkFor : (_) => null,
     );
 
 List<StoreProduct> filterStoreProducts(

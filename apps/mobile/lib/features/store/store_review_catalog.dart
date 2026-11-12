@@ -10,7 +10,7 @@ final storeReviewProducts = <StoreProduct>[
     age: 'adult',
     sizes: ['small'],
     recipes: [
-      ('Res y vegetales', [0.42, 2, 4, 10, 20]),
+      ('Res y vegetales', [0.42, 1, 2, 4, 10, 20]),
     ],
   ),
   ..._family(
@@ -378,3 +378,26 @@ Iterable<StoreProduct> _family({
     }
   }
 }
+
+/// Original community photos, CC BY-SA 3.0. See docs/store-launch-selection.md.
+const storeReviewPhotoSources = <String, (String barcode, String author)>{
+  'dog-chow-medium-large-0-500': ('7501072217554', 'foodless'),
+  'pedigree-adult-0-500': ('7506174514716', 'openfoodfacts-contributors'),
+  'pedigree-high-protein-0-2000': ('7506174515058', 'detrumpezvous'),
+  'pedigree-mini-0-1000': ('7506174514419', 'openfoodfacts-contributors'),
+  'whiskas-adult-1-1500': ('0706460029284', 'foodless'),
+  'whiskas-adult-1-3000': ('0706460029376', 'foodless'),
+  'whiskas-adult-2-1500': ('0706460029321', 'foodless'),
+  'whiskas-adult-2-3000': ('7506174516345', 'foodless'),
+  'whiskas-kitten-0-1400': ('7506174513603', 'foodless'),
+  'whiskas-kitten-1-1400': ('7506174513382', 'foodless'),
+  'whiskas-sterilised-0-1500': ('7506174514792', 'foodless'),
+  'whiskas-adult-5-3000': ('7506174515119', 'foodless'),
+  'gatina-adult-0-3000': ('7501072216625', 'foodless'),
+  'cat-chow-indoor-0-3000': ('7501072202277', 'foodless'),
+  'cat-chow-kitten-0-1500': ('7501072200730', 'foodless'),
+  'cat-chow-delimix-0-1500': ('7501072204431', 'foodless'),
+  'cat-chow-adult-0-3000': ('7501072214089', 'foodless'),
+  'cat-chow-adult-1-1500': ('7501777001151', 'openfoodfacts-contributors'),
+  'cat-chow-adult-1-3000': ('7501072202246', 'foodless'),
+};

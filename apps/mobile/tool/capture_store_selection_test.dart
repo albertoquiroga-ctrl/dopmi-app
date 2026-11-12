@@ -53,11 +53,10 @@ void main() {
       ..link = null
       ..products = storeReviewProducts;
     addTearDown(repo.changes.close);
-    expect(storeReviewProducts.map((item) => item.id).toSet(), hasLength(127));
+    expect(storeReviewProducts.map((item) => item.id).toSet(), hasLength(128));
     expect(groupStoreProducts(storeReviewProducts), hasLength(32));
 
-    final out = Directory('../../.tools/store-detail-preview');
-    const examplePhoto = AssetImage('assets/store/review-packshot.png');
+    final out = Directory('../../.tools/store-photo-review');
 
     final key = GlobalKey();
     await tester.pumpWidget(
@@ -68,9 +67,7 @@ void main() {
             identityRepositoryProvider.overrideWithValue(identity),
             routerInitialLocationProvider.overrideWithValue('/store'),
             storeRepositoryProvider.overrideWithValue(repo),
-            storePreviewImageProvider.overrideWithValue(
-              (id) => id == 'whiskas-adult-3-1500' ? examplePhoto : null,
-            ),
+            storePreviewImageProvider.overrideWithValue(storeReviewArtworkFor),
             communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           ],
           child: const DopmiApp(),
@@ -80,10 +77,18 @@ void main() {
     await tester.pumpAndSettle();
     final storeContext = tester.element(find.byType(StoreScreen));
     await tester.runAsync(
-      () => precacheImage(
-        const AssetImage('assets/store/store-home.png'),
-        storeContext,
-      ),
+      () => Future.wait([
+        precacheImage(
+          const AssetImage('assets/store/store-home.png'),
+          storeContext,
+        ),
+        for (final id in storeReviewPhotoSources.keys)
+          precacheImage(storeReviewArtworkFor(id)!.image, storeContext),
+        precacheImage(
+          storeReviewArtworkFor('whiskas-adult-3-1500')!.image,
+          storeContext,
+        ),
+      ]),
     );
     await tester.pumpAndSettle();
     await tester.runAsync(() => out.create(recursive: true));
@@ -94,7 +99,36 @@ void main() {
 
     expect(find.text('Vista previa de Tienda'), findsOneWidget);
     expect(find.text('Adulto razas pequeñas').hitTestable(), findsOneWidget);
+    const pedigreePhoto = ValueKey('store-product-image-pedigree-mini-0-1000');
+    const dogChowPhoto = ValueKey(
+      'store-product-image-dog-chow-medium-large-0-500',
+    );
+    expect(find.byKey(pedigreePhoto).hitTestable(), findsOneWidget);
+    expect(find.byKey(dogChowPhoto).hitTestable(), findsOneWidget);
     await capture('perros');
+    await tester.tap(find.text('Adulto razas pequeñas').hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.byKey(pedigreePhoto).hitTestable(), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('store-selected-variant')))
+          .data,
+      'Res y vegetales · 1 kg',
+    );
+    await tester.tap(find.byTooltip('Cerrar opciones'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(dogChowPhoto).hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.byKey(dogChowPhoto).hitTestable(), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('store-selected-variant')))
+          .data,
+      '500 g',
+    );
+    await tester.tap(find.byTooltip('Cerrar opciones'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Gatos'));
     await tester.pumpAndSettle();
@@ -104,8 +138,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Adulto 4 en 1').hitTestable(), findsOneWidget);
     expect(find.text('Hogareños'), findsNothing);
-    await capture('busqueda');
-
     await tester.tap(find.text('Adulto 4 en 1'));
     await tester.pumpAndSettle();
     final atun = find.byKey(const ValueKey('store-flavor-Atún'));
@@ -121,11 +153,7 @@ void main() {
       find.byKey(const ValueKey('store-variant-whiskas-adult-1-9000')),
       findsNothing,
     );
-    final detail = tester.element(atun);
-    await tester.runAsync(() => precacheImage(examplePhoto, detail));
-    await tester.pumpAndSettle();
     expect(find.text('Imagen ilustrativa'), findsOneWidget);
-    await capture('detalle');
     await tester.ensureVisible(carne);
     await tester.tap(carne);
     await tester.pumpAndSettle();
@@ -133,7 +161,12 @@ void main() {
       find.byKey(const ValueKey('store-variant-whiskas-adult-1-9000')),
       findsOneWidget,
     );
-    await capture('sabores-y-presentaciones');
+    expect(
+      find.byKey(const ValueKey('store-product-image-whiskas-adult-1-1500')),
+      findsOneWidget,
+    );
+    expect(find.textContaining('CC BY-SA 3.0'), findsOneWidget);
+    await capture('detalle-whiskas');
     await tester.tap(find.byTooltip('Cerrar opciones'));
     await tester.pumpAndSettle();
     tester.view.physicalSize = const Size(320, 640);

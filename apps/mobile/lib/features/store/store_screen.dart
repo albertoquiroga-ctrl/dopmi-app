@@ -329,6 +329,13 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         },
         child: _StoreProductDetail(
           group: group,
+          initialProduct: catalog.preview
+              ? _selectStorePreviewArtwork(
+                  group.primary,
+                  group.variants.skip(1),
+                  ref.read(storePreviewImageProvider),
+                ).product
+              : group.primary,
           preview: catalog.preview,
           canOpen: !catalog.preview || catalog.externalLinksEnabled,
           onOpen: openProduct,
@@ -1002,12 +1009,14 @@ class _StoreOptionSection extends StatelessWidget {
 class _StoreProductDetail extends StatefulWidget {
   const _StoreProductDetail({
     required this.group,
+    required this.initialProduct,
     required this.preview,
     required this.canOpen,
     required this.onOpen,
   });
 
   final StoreProductGroup group;
+  final StoreProduct initialProduct;
   final bool preview;
   final bool canOpen;
   final Future<void> Function(StoreProduct, BuildContext) onOpen;
@@ -1027,7 +1036,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
     for (final product in widget.group.variants) {
       variantsByFlavor.putIfAbsent(product.flavor, () => []).add(product);
     }
-    selected = widget.group.primary;
+    selected = widget.initialProduct;
   }
 
   Future<void> openSelected() async {
@@ -1336,7 +1345,11 @@ class _StoreCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _StoreProductArtwork(product: product, preview: preview),
+              _StoreProductArtwork(
+                product: product,
+                preview: preview,
+                previewAlternatives: group.variants.skip(1),
+              ),
               const SizedBox(height: 12),
               Text(
                 product.brand,
@@ -1431,28 +1444,53 @@ class _StoreCard extends StatelessWidget {
   }
 }
 
+({StoreProduct product, StorePreviewArtwork? artwork})
+_selectStorePreviewArtwork(
+  StoreProduct primary,
+  Iterable<StoreProduct> alternatives,
+  StorePreviewArtwork? Function(String) getArtwork,
+) {
+  final artwork = getArtwork(primary.id);
+  if (artwork != null) return (product: primary, artwork: artwork);
+  for (final alternative in alternatives) {
+    final artwork = getArtwork(alternative.id);
+    if (artwork != null) return (product: alternative, artwork: artwork);
+  }
+  return (product: primary, artwork: null);
+}
+
 class _StoreProductArtwork extends ConsumerWidget {
   const _StoreProductArtwork({
     required this.product,
     required this.preview,
     this.detail = false,
+    this.previewAlternatives = const [],
   });
 
   final StoreProduct product;
   final bool preview;
   final bool detail;
+  final Iterable<StoreProduct> previewAlternatives;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final (product: artworkProduct, artwork: previewArtwork) = preview
+        ? _selectStorePreviewArtwork(
+            product,
+            previewAlternatives,
+            ref.watch(storePreviewImageProvider),
+          )
+        : (product: product, artwork: null);
     final uri = Uri.tryParse(product.imageUrl);
     final ImageProvider<Object>? image = preview
-        ? ref.watch(storePreviewImageProvider)(product.id)
+        ? previewArtwork?.image
         : uri != null &&
               uri.scheme == 'https' &&
               uri.host.isNotEmpty &&
               uri.userInfo.isEmpty
         ? NetworkImage(uri.toString())
         : null;
+    final credit = previewArtwork?.credit;
     return LayoutBuilder(
       builder: (context, bounds) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1472,11 +1510,13 @@ class _StoreProductArtwork extends ConsumerWidget {
                     : Padding(
                         padding: EdgeInsets.all(detail ? 18 : 10),
                         child: Image(
-                          key: ValueKey('store-product-image-${product.id}'),
+                          key: ValueKey(
+                            'store-product-image-${artworkProduct.id}',
+                          ),
                           image: image,
                           fit: BoxFit.contain,
                           semanticLabel: detail
-                              ? 'Empaque de ${product.name}'
+                              ? 'Empaque de ${artworkProduct.name}'
                               : null,
                           excludeFromSemantics: !detail,
                           errorBuilder: (_, _, _) =>
@@ -1486,13 +1526,17 @@ class _StoreProductArtwork extends ConsumerWidget {
               ),
             ),
           ),
-          if (preview && detail && image != null)
-            const Padding(
-              padding: EdgeInsets.only(top: 4),
+          if (credit != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
               child: Text(
-                'Imagen ilustrativa',
+                credit,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: DopmiTokens.muted),
+                style: TextStyle(
+                  fontSize: detail ? 12 : 10,
+                  height: 1.15,
+                  color: DopmiTokens.muted,
+                ),
               ),
             ),
         ],

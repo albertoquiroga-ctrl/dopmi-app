@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config/adoption_only_build.dart';
 import 'package:dopmi_mobile/features/store/store_review_repository.dart';
+import 'package:dopmi_mobile/features/store/store_review_catalog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -59,7 +60,12 @@ void main() {
       final review = await repository.catalog();
       expect(review.enabled, true);
       expect(review.preview, true);
-      expect(review.products, hasLength(127));
+      expect(review.products, hasLength(128));
+      expect(storeReviewPhotoSources, hasLength(19));
+      expect(
+        review.products.map((product) => product.id).toSet(),
+        containsAll(storeReviewPhotoSources.keys),
+      );
       expect(
         review.products.every((product) => product.imageUrl.isEmpty),
         true,
