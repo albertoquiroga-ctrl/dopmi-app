@@ -198,8 +198,19 @@ FROM (
 )
 ```
 
-Para configurar por API, usa `insight:write` y `alert:write`, más
-`query:read` para verificar las consultas. Para consultar desde Codex,
+El script [configure-posthog-adoption.py](../scripts/configure-posthog-adoption.py)
+muestra la configuración sin red con `python3 scripts/configure-posthog-adoption.py`.
+Desde una terminal con `POSTHOG_PERSONAL_API_KEY` en el entorno y acotada
+al proyecto, agrega `--apply --region us --project-id ID` para crear el
+tablero, el embudo, las consultas y las alertas. Usa `eu` si el proyecto
+está en esa región. La clave necesita `dashboard:write`, `insight:write`,
+`alert:write` y `user:read`. Las alertas suscriben al titular de la clave.
+El script verifica los recursos por nombre y se detiene ante diferencias
+o duplicados. Ejecuta una sola instancia por proyecto. Si se interrumpe,
+vuelve a ejecutarlo para leer el estado antes de crear lo que falte.
+Los ajustes de privacidad se configuran en PostHog.
+
+Para consultar desde Codex,
 limita el acceso al proyecto con `insight:read`, `alert:read` y
 `query:read`. Agrega `dashboard:read` si se comparte un tablero.
 [Conector de PostHog](https://posthog.com/docs/model-context-protocol/codex) · [Permisos de API](https://posthog.com/docs/api/scopes)
