@@ -898,8 +898,14 @@ class PublicationTraitCheck extends StatelessWidget {
 }
 
 class PublicationMainPhoto extends StatelessWidget {
-  const PublicationMainPhoto({super.key, this.photo, required this.onPick});
+  const PublicationMainPhoto({
+    super.key,
+    this.photo,
+    this.pickerKey,
+    required this.onPick,
+  });
   final Widget? photo;
+  final Key? pickerKey;
   final VoidCallback? onPick;
   @override
   Widget build(BuildContext context) => Column(
@@ -967,6 +973,7 @@ class PublicationMainPhoto extends StatelessWidget {
                 right: 2,
                 bottom: 2,
                 child: IconButton(
+                  key: pickerKey,
                   tooltip: 'Editar foto de la mascota',
                   onPressed: onPick,
                   style: IconButton.styleFrom(

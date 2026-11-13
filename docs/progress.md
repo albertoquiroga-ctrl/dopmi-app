@@ -8641,3 +8641,43 @@ El resumen muestra «Changes in review» y comprobaciones automáticas en
 curso. Publicación administrada apagada. La disponibilidad pública de
 383 queda pendiente de Google. Las pruebas en el Samsung se realizaron
 en Play interno. La 368 pública fue verificada en la consola.
+
+### 12/11/2026 CDMX — Diagnóstico del abandono y vista de producto
+
+El titular precisó que busca identificar y corregir el motivo por el que las
+personas rescatistas no publican, además de tener una herramienta para
+analizar su comportamiento. Corte de las 19:22 CDMX en Supabase PROD:
+40 altas desde el 11, 12 cuentas en modo Rescatista al consultar y 7
+borradores activos, 6 de cuentas en ese modo. Todos sin foto ni objeto
+de foto guardado. A 2 sólo les faltaba foto para cumplir la validación
+del servidor. A 5 también les faltaba historia. Cero envíos y cero cola
+de primera revisión. Los conteos excluyen borradores archivados del
+análisis de requisitos y carecen de datos sobre el motivo del abandono.
+
+Se añadió y compartió **Primera publicación** en la exploración existente
+de GA4 Producción, con eventos del formulario por plataforma y acceso de
+lectura para quienes ya tienen acceso a la propiedad. La vista del día
+todavía mostraba ausencia de datos del formulario. La ficha de operación
+incluye el guion para observar a rescatistas y la comparación con PostHog
+para un piloto con alertas y reportes. La consulta de comportamiento de
+clientes requiere tráfico medido de una versión que emita los eventos.
+Al consultar a las 19:34 CDMX, la preferencia de analítica estaba
+sincronizada en `true` para los 7 autores con borrador activo, 7 de las
+12 cuentas Rescatista y 9 de las 40 altas. La preferencia actual no
+acredita recepción de eventos ni configuración histórica del dispositivo.
+
+Defecto reproducido antes de corregir: al tocar el botón deshabilitado
+«Continuar» con un requisito pendiente, el formulario no explica qué falta.
+Tres casos fallaron antes del cambio: ubicación, foto con historia completa
+y foto con historia vacía. La corrección conserva los requisitos. Fuente
+funcional `f04fd1ff`. La ref de Irlanda observada en el arranque
+`f693c0367643605fa8495c1ae3c171df4ccf85b6` se conserva como referencia
+contextual. El cambio parte del formulario distribuido.
+
+Al tocar «Continuar» se muestra el requisito pendiente y el formulario
+se desplaza al control. Al completar ese requisito la indicación cambia
+al siguiente. La prueba combinada a 320×640 con texto al 200 % valida
+foto, historia y avance. Análisis Flutter sin hallazgos, 78 pruebas
+dirigidas y 36 de configuración móvil aprobadas. La corrección está en
+preparación para integración.
+El Samsung reporta 2.3.3 (384) instalada desde Play, un candidato distinto.

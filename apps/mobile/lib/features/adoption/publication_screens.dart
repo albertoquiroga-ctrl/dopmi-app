@@ -166,6 +166,23 @@ class PublicationScreen extends ConsumerStatefulWidget {
 
 class _PublicationState extends ConsumerState<PublicationScreen> {
   final form = GlobalKey<FormState>();
+  final _basicFieldAnchors = {
+    for (final field in [
+      'photo',
+      'pet_name',
+      'species',
+      'sex',
+      'size',
+      'age_band',
+      'story',
+      'location',
+      'city',
+      'region',
+      'publisher_name',
+    ])
+      field: GlobalKey(),
+  };
+  bool _showBasicGuidance = false;
   final fields = <String, TextEditingController>{
     for (final key in [
       'pet_name',
@@ -362,19 +379,86 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     }
   }
 
-  bool get basicComplete =>
-      photos.isNotEmpty &&
-      fields['pet_name']!.text.trim().isNotEmpty &&
-      fields['story']!.text.trim().isNotEmpty &&
-      choices['species'] != null &&
-      choices['sex'] != null &&
-      choices['size'] != null &&
-      (choices['age_band'] != null ||
-          (publicationAgeMonths(fields['age_months']!.text) ?? 0) > 0) &&
-      (!mapsEnabled || selectedLocation != null) &&
-      fields['city']!.text.trim().isNotEmpty &&
-      fields['region']!.text.trim().isNotEmpty &&
-      fields['publisher_name']!.text.trim().isNotEmpty;
+  ({String field, String guidance})? get _firstMissingBasicField {
+    bool blank(String field) => fields[field]!.text.trim().isEmpty;
+    if (photos.isEmpty) {
+      return (field: 'photo', guidance: 'Agrega una foto principal.');
+    }
+    if (blank('pet_name')) {
+      return (field: 'pet_name', guidance: 'Escribe el nombre de la mascota.');
+    }
+    if (choices['species'] == null) {
+      return (field: 'species', guidance: 'Elige la especie.');
+    }
+    if (choices['sex'] == null) {
+      return (field: 'sex', guidance: 'Elige el sexo.');
+    }
+    if (choices['size'] == null) {
+      return (field: 'size', guidance: 'Elige el tamaño.');
+    }
+    if (choices['age_band'] == null &&
+        (publicationAgeMonths(fields['age_months']!.text) ?? 0) <= 0) {
+      return (field: 'age_band', guidance: 'Elige la edad aproximada.');
+    }
+    if (blank('story')) {
+      return (field: 'story', guidance: 'Cuéntanos su historia.');
+    }
+    final missingCity = blank('city');
+    final missingRegion = blank('region');
+    if (mapsEnabled &&
+        (selectedLocation == null || missingCity || missingRegion)) {
+      return (field: 'location', guidance: 'Elige la ubicación en el mapa.');
+    }
+    if (missingCity) {
+      return (field: 'city', guidance: 'Escribe la ciudad.');
+    }
+    if (missingRegion) {
+      return (field: 'region', guidance: 'Escribe el estado.');
+    }
+    if (blank('publisher_name')) {
+      return (
+        field: 'publisher_name',
+        guidance: 'Escribe tu nombre público o el de tu refugio.',
+      );
+    }
+    return null;
+  }
+
+  Future<void> _continuePublication() async {
+    if (busy) return;
+    final missing = step == 0 ? _firstMissingBasicField : null;
+    if (missing != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      setState(() => _showBasicGuidance = true);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || step != 0) return;
+        final target = _basicFieldAnchors[missing.field]?.currentContext;
+        if (target != null) {
+          unawaited(
+            Scrollable.ensureVisible(
+              target,
+              alignment: missing.field == 'photo' ? .5 : .1,
+              duration: const Duration(milliseconds: 220),
+            ),
+          );
+        }
+      });
+      return;
+    }
+    await perform(() async {
+      final source = repo;
+      final report = _formReporter(source, source.userId);
+      if (!form.currentState!.validate()) return;
+      await save();
+      if (mounted) {
+        setState(() {
+          _showBasicGuidance = false;
+          step++;
+        });
+        _observeReachedStep(step, report);
+      }
+    });
+  }
 
   void backStep() {
     if (busy) return;
@@ -725,6 +809,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     int lines = 1,
     bool required = false,
   }) => Padding(
+    key: _basicFieldAnchors[key],
     padding: const EdgeInsets.only(bottom: 16),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -821,6 +906,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     String label,
     Map<String, String> options,
   ) => PublicationChoiceRow(
+    key: _basicFieldAnchors[key],
     label: label,
     options: options,
     required: ['sex', 'species', 'size', 'age_band'].contains(key),
@@ -870,7 +956,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         onContinue: () => change('withdraw'),
       );
     }
-    return PublicationFooter(
+    final footer = PublicationFooter(
       label: step < 2 ? 'Continuar' : 'Enviar a revisión',
       review: step == 2,
       saveLabel: post?.status == 'published'
@@ -879,20 +965,32 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       busy: busy,
       compact: compact,
       onSave: () => perform(save),
-      onContinue: step == 0 && !basicComplete
-          ? null
-          : step < 2
-          ? () => perform(() async {
-              final source = repo;
-              final report = _formReporter(source, source.userId);
-              if (!form.currentState!.validate()) return;
-              await save();
-              if (mounted) {
-                setState(() => step++);
-                _observeReachedStep(step, report);
-              }
-            })
-          : () => change('submit'),
+      onContinue: step < 2 ? _continuePublication : () => change('submit'),
+    );
+    final guidance = step == 0 && _showBasicGuidance
+        ? _firstMissingBasicField?.guidance
+        : null;
+    if (guidance == null) return footer;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          liveRegion: true,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Text(
+              guidance,
+              style: const TextStyle(
+                color: DopmiTokens.danger,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+        footer,
+      ],
     );
   }
 
@@ -1204,6 +1302,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                 if (step == 0) ...[
                   sectionTitle('Perfil'),
                   PublicationMainPhoto(
+                    pickerKey: _basicFieldAnchors['photo'],
                     photo: photos.isEmpty
                         ? null
                         : AdoptionPhoto(photos.first, height: 120),
@@ -1236,6 +1335,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                   ),
                   if (mapsEnabled)
                     PublicationLocationField(
+                      key: _basicFieldAnchors['location'],
                       city: fields['city']!.text,
                       region: fields['region']!.text,
                       selection: selectedLocation,

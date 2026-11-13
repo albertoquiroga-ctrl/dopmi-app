@@ -1,19 +1,27 @@
+import 'dart:typed_data';
+
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/location_map_picker.dart';
 import 'package:dopmi_mobile/features/adoption/location_selection.dart';
 import 'package:dopmi_mobile/features/adoption/location_service.dart';
 import 'package:dopmi_mobile/features/adoption/publication_frame.dart';
+import 'package:dopmi_mobile/features/adoption/publication_screens.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'case_publication_test.dart' show DraftCaseRescue;
-import 'community_test.dart' show PhotoDraftCommunity;
+import 'community_test.dart'
+    show
+        MeasuredPublicationCommunity,
+        MeasuredPublicationPicker,
+        PhotoDraftCommunity;
 import 'fake_identity_repository.dart';
 import 'nearby_location_test.dart'
     show mapConfig, FakeNearbyService, PendingPlaceLookup;
@@ -52,6 +60,7 @@ Future<ProviderContainer> mapPublication(
   bool defaultAllowed = false,
   FakeNearbyService? gps,
   PlaceLookup? lookup,
+  ImagePicker? photoPicker,
 }) async {
   SharedPreferences.setMockInitialValues({
     if (defaultAllowed)
@@ -81,6 +90,8 @@ Future<ProviderContainer> mapPublication(
       if (rescue != null) rescueRepositoryProvider.overrideWithValue(rescue),
       routerInitialLocationProvider.overrideWithValue(path),
       if (gps != null) locationServiceProvider.overrideWithValue(gps),
+      if (photoPicker != null)
+        publicationImagePickerProvider.overrideWithValue(photoPicker),
       placeLookupProvider.overrideWithValue(lookup ?? FixturePlaceLookup()),
       locationMapBuilderProvider.overrideWithValue(
         (context, point, select) => TextButton(
@@ -251,7 +262,7 @@ void main() {
   });
 
   testWidgets(
-    'adoption draft saves before a map choice, then saves the selected precise private pair',
+    'adoption explains the missing map choice and can still save a draft',
     (tester) async {
       final repo = PhotoDraftCommunity();
       await mapPublication(tester, '/my-adoptions/post', repo);
@@ -259,22 +270,18 @@ void main() {
         find.byKey(const ValueKey('publication-field-city')),
         findsNothing,
       );
+      await tapPublication(tester, find.text('Continuar'));
       expect(
-        tester
-            .widget<PublicationFooter>(find.byType(PublicationFooter))
-            .onContinue,
-        isNull,
+        find.text('Elige la ubicación en el mapa.').hitTestable(),
+        findsOneWidget,
       );
+      expect(find.text('Un poco más...'), findsNothing);
+      expect(repo.savedPayload, isNull);
       await tapPublication(tester, find.text('Guardar borrador'));
       expect(repo.savedPayload!.containsKey('approximate_latitude'), isFalse);
       await selectFixtureMap(tester);
-      expect(
-        tester
-            .widget<PublicationFooter>(find.byType(PublicationFooter))
-            .onContinue,
-        isNotNull,
-      );
-      await tapPublication(tester, find.text('Guardar borrador'));
+      await tapPublication(tester, find.text('Continuar'));
+      expect(find.text('Un poco más...'), findsOneWidget);
       expect(repo.savedPayload!['approximate_latitude'], 25.686614);
       expect(repo.savedPayload!['location_precision_version'], 1);
       expect(repo.savedPayload!['approximate_longitude'], -100.316113);
@@ -284,6 +291,74 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  for (final missingStory in [false, true]) {
+    testWidgets(
+      'adoption explains the missing photo with ${missingStory ? 'an empty' : 'a completed'} story',
+      (tester) async {
+        if (missingStory) {
+          tester.view.physicalSize = const Size(320, 640);
+          tester.view.devicePixelRatio = 1;
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        }
+        final repo = MeasuredPublicationCommunity();
+        final picker = MeasuredPublicationPicker()
+          ..result = () async => XFile.fromData(Uint8List.fromList([1, 2, 3]));
+        repo.post = Adoption({
+          ...repo.post.data,
+          'photos': <String>[],
+          'approximate_latitude': 25.69,
+          'approximate_longitude': -100.32,
+          if (missingStory) 'story': '',
+        });
+        await mapPublication(
+          tester,
+          '/my-adoptions/post',
+          repo,
+          photoPicker: picker,
+        );
+        final photo = find.byTooltip('Editar foto de la mascota');
+        final story = find.byKey(const ValueKey('publication-field-story'));
+        await tester.ensureVisible(story);
+        await tester.pumpAndSettle();
+        expect(photo.hitTestable(), findsNothing);
+        await tapPublication(tester, find.text('Continuar'));
+
+        expect(
+          find.text('Agrega una foto principal.').hitTestable(),
+          findsOneWidget,
+        );
+        expect(photo.hitTestable(), findsOneWidget);
+        expect(find.text('Un poco más...'), findsNothing);
+        expect(repo.savedPayload, isNull);
+
+        await tapPublication(tester, photo);
+        await tapPublication(tester, find.text('Subir desde galería'));
+        expect(repo.post.photos, hasLength(1));
+        expect(find.text('Agrega una foto principal.'), findsNothing);
+        if (missingStory) {
+          expect(
+            find.text('Cuéntanos su historia.').hitTestable(),
+            findsOneWidget,
+          );
+          final lastDraft = repo.savedPayload;
+          await tapPublication(tester, find.text('Continuar'));
+          expect(find.text('Un poco más...'), findsNothing);
+          expect(repo.savedPayload, same(lastDraft));
+          await tester.enterText(story, 'Luna necesita una familia.');
+          await tester.pumpAndSettle();
+          expect(find.text('Cuéntanos su historia.'), findsNothing);
+        }
+        await tapPublication(tester, find.text('Continuar'));
+        expect(find.text('Un poco más...'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
   testWidgets(
     'existing adoption restores its private pair without another map selection',
     (tester) async {

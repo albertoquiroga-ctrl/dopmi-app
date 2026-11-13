@@ -1648,13 +1648,11 @@ void main() {
     await tap(tester, 'Guardar borrador');
     expect(repo.savedPayload?['rescue_case_id'], 'case-one');
     expect(repo.post.status, 'draft');
+    final lastDraft = repo.savedPayload;
+    await tap(tester, 'Continuar');
     expect(find.text('Empecemos...'), findsOneWidget);
-    expect(
-      tester
-          .widget<FilledButton>(find.widgetWithText(FilledButton, 'Continuar'))
-          .onPressed,
-      isNull,
-    );
+    expect(find.text('Agrega una foto principal.'), findsOneWidget);
+    expect(repo.savedPayload, same(lastDraft));
   });
   testWidgets(
     'ambiguous message response retries with same id and removes private data on logout',

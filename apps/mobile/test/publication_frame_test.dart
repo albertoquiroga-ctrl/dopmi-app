@@ -255,12 +255,14 @@ void main() {
           ),
           isNull,
         );
+        final lastDraft = repo.savedPayload;
+        await tapPublication(tester, find.text('Continuar'));
         expect(
-          tester
-              .widget<PublicationFooter>(find.byType(PublicationFooter))
-              .onContinue,
-          isNull,
+          find.text('Agrega una foto principal.').hitTestable(),
+          findsOneWidget,
         );
+        expect(find.text('Un poco más...'), findsNothing);
+        expect(repo.savedPayload, same(lastDraft));
         expect(tester.takeException(), isNull);
       },
     );

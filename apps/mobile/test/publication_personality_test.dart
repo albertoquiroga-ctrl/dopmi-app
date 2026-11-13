@@ -51,20 +51,16 @@ void main() {
     await tester.ensureVisible(story);
     await tester.enterText(story, '   ');
     await tester.pump();
-    expect(
-      tester
-          .widget<PublicationFooter>(find.byType(PublicationFooter))
-          .onContinue,
-      isNull,
-    );
+    await tapPublication(tester, find.text('Continuar'));
+    expect(find.text('Cuéntanos su historia.').hitTestable(), findsOneWidget);
+    expect(find.text('Un poco más...'), findsNothing);
+    expect(repo.savedPayload, isNull);
     await tester.enterText(story, 'A');
     await tester.pump();
-    expect(
-      tester
-          .widget<PublicationFooter>(find.byType(PublicationFooter))
-          .onContinue,
-      isNotNull,
-    );
+    expect(find.text('Cuéntanos su historia.'), findsNothing);
+    await tapPublication(tester, find.text('Continuar'));
+    expect(find.text('Un poco más...'), findsOneWidget);
+    expect(repo.savedPayload?['story'], 'A');
     expect(tester.takeException(), isNull);
   });
 
