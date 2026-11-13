@@ -8677,3 +8677,31 @@ El resumen muestra «Changes in review» y comprobaciones automáticas en
 curso. Publicación administrada apagada. La disponibilidad pública de
 383 queda pendiente de Google. Las pruebas en el Samsung se realizaron
 en Play interno. La 368 pública fue verificada en la consola.
+
+## 12/11/2026 CDMX — Candidato integrado para atribución de Android
+
+El titular pidió integrar atribución en la rama vigente de Tienda y
+publicar un candidato interno con Supabase DEV. El SHA
+`a4f1bc34f4350e167afcfd587582458e0720501d` combina Tienda
+`29cddea2`, adquisición y la medición de la primera publicación
+`009c169f`. Quedó en ambas ramas, sin promover a Producción.
+
+Análisis Flutter limpio y 81 pruebas móviles enfocadas aprobadas.
+Admin: 159 pruebas y compilación. Backend: 1293 aprobadas, 9
+omitidas, sin fallos. Configuración móvil: 38 pruebas aprobadas.
+[CI del candidato](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43344468869).
+Codemagic `6af66698487dc6c58d7d64ff` recibió el SHA exacto con el
+perfil interno de DEV. En DEV se verificaron el RPC de atribución,
+el trigger de envío y el bucket privado para fotos. La tabla de
+atribución estaba vacía antes de la prueba.
+
+El Samsung estuvo sin DopMi tras la desinstalación manual y a las
+19:25 volvió a instalar el 384 desde Google Play. Este build es
+anterior a la integración de atribución. Se necesita otra instalación
+nueva, desde el enlace etiquetado, cuando Play sirva el candidato.
+
+Codemagic compiló el paquete firmado DopMi 2.3.3 (386) después
+de aprobar configuración DEV, análisis y la suite Flutter.
+Publicación de Codemagic aprobada. Play Console verificó el código
+386 disponible para testers internos en el [release 210](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/210/details)
+el 12/11 a las 19:39 CDMX.
