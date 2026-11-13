@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -49,14 +51,16 @@ class _BootstrapState extends State<Bootstrap> {
       Uri.parse(config.url).host,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
-      adoptionConsent: (consent) async {
-        await Supabase.instance.client.rpc(
-          'dopmi_set_adoption_measurement',
-          params: {'consent': consent},
-        );
+      adoptionConsent: (owner, consent) async {
+        final client = Supabase.instance.client;
+        final session = client.auth.currentSession;
+        if (session == null || session.user.id != owner) return;
+        await client
+            .rpc('dopmi_set_adoption_measurement', params: {'consent': consent})
+            .setHeader('Authorization', 'Bearer ${session.accessToken}');
       },
     );
-    await measurement.owner(null);
+    await measurement.prepareStartup();
     {
       final namespace = Uri.parse(config.url).host;
       final callback = Uri.parse(config.redirect);
@@ -100,9 +104,24 @@ class _BootstrapState extends State<Bootstrap> {
                 identityRepositoryProvider.overrideWithValue(
                   snapshot.data!.identity,
                 ),
-                measurementControllerProvider.overrideWith(
-                  (ref) => snapshot.data!.measurement,
-                ),
+                measurementControllerProvider.overrideWith((ref) {
+                  final measurement = snapshot.data!.measurement;
+                  final identity = ref.watch(identityControllerProvider);
+                  void synchronize() {
+                    if (identity.loading) return;
+                    final owner = identity.identity?.id;
+                    // A failed initial restore does not establish sign-out.
+                    if (identity.error != null && measurement.loading) return;
+                    unawaited(
+                      measurement.owner(owner).catchError((Object _) {}),
+                    );
+                  }
+
+                  identity.addListener(synchronize);
+                  scheduleMicrotask(synchronize);
+                  ref.onDispose(() => identity.removeListener(synchronize));
+                  return measurement;
+                }),
                 rescueVideosRepositoryProvider.overrideWith((ref) {
                   final repository = VideoRepository.supabase(
                     Supabase.instance.client,

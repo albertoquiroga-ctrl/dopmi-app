@@ -737,11 +737,7 @@ class DopmiApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final experience = ref.watch(experienceProvider);
     final identityController = ref.watch(identityControllerProvider);
-    final identity = identityController.identity;
-    final measurement = ref.watch(measurementControllerProvider);
-    if (measurement != null && (!measurement.loading || identity != null)) {
-      Future.microtask(() => measurement.owner(identity?.id));
-    }
+    ref.watch(measurementControllerProvider.notifier);
     return ListenableBuilder(
       listenable: Listenable.merge([experience, identityController]),
       builder: (context, _) => MaterialApp.router(

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract interface class ProductAnalytics {
+  Future<void> pause();
   Future<void> enabled(bool value);
   Future<void> event(String name, {Map<String, Object>? parameters});
 }
@@ -30,25 +31,22 @@ class FirebaseProductAnalytics implements ProductAnalytics {
     'contribution_confirmed',
   };
   @override
+  Future<void> pause() => analytics.setAnalyticsCollectionEnabled(false);
+
+  @override
   Future<void> enabled(bool value) async {
-    if (value) {
-      await analytics.setConsent(
-        analyticsStorageConsentGranted: true,
-        adStorageConsentGranted: false,
-        adUserDataConsentGranted: false,
-        adPersonalizationSignalsConsentGranted: false,
-      );
-      await analytics.setAnalyticsCollectionEnabled(true);
-      return;
-    }
-    await analytics.setAnalyticsCollectionEnabled(false);
+    if (!value) await pause();
     await analytics.setConsent(
-      analyticsStorageConsentGranted: false,
+      analyticsStorageConsentGranted: value,
       adStorageConsentGranted: false,
       adUserDataConsentGranted: false,
       adPersonalizationSignalsConsentGranted: false,
     );
-    await analytics.resetAnalyticsData();
+    if (value) {
+      await analytics.setAnalyticsCollectionEnabled(true);
+    } else {
+      await analytics.resetAnalyticsData();
+    }
   }
 
   @override
@@ -88,19 +86,25 @@ class MeasurementController extends ChangeNotifier {
     this.diagnostics, {
     this.adoptionConsent,
   });
-  final Future<void> Function(bool)? adoptionConsent;
+  final Future<void> Function(String owner, bool enabled)? adoptionConsent;
   Future<void> _consentSync = Future.value();
-  String? get ownerId => _owner;
+  Future<void> _settingsSync = Future.value();
+  Future<void>? _ownerTransition;
+  String? _requestedOwner;
+  int _pendingAnalyticsChanges = 0;
+  String? get ownerId => _ownerTransition == null && !loading ? _owner : null;
   Future<void> get consentReady => _consentSync;
 
   void _syncConsent() {
     final callback = adoptionConsent;
-    if (_owner == null || callback == null) return;
+    final expectedOwner = ownerId;
+    if (expectedOwner == null || callback == null) return;
     final enabled = analyticsEnabled;
-    final expectedOwner = _owner;
     _consentSync = _consentSync
         .then((_) async {
-          if (_owner == expectedOwner) await callback(enabled);
+          if (ownerId == expectedOwner && analyticsEnabled == enabled) {
+            await callback(expectedOwner, enabled);
+          }
         })
         .catchError((Object _) {});
   }
@@ -110,68 +114,170 @@ class MeasurementController extends ChangeNotifier {
   final ProductAnalytics analytics;
   final ErrorDiagnostics diagnostics;
   String? _owner;
-  bool analyticsEnabled = false, diagnosticsEnabled = false, loading = true;
+  bool _analyticsAllowed = false;
+  bool diagnosticsEnabled = false, loading = true;
+  bool get analyticsEnabled =>
+      _analyticsAllowed && ownerId != null && _pendingAnalyticsChanges == 0;
   String? lastAnalyticsEvent;
   String? lastAnalyticsResult;
   bool _handlersInstalled = false;
   FlutterExceptionHandler? _previousFlutterHandler;
   ErrorCallback? _previousPlatformHandler;
 
-  String key(String kind) => 'dopmi.$namespace.${_owner ?? 'signed-out'}.$kind';
+  // The SDK has one local identity. Store the preference key locally to scope
+  // it to both the account and environment, without sending it to Firebase.
+  static const _analyticsOwnerKey = 'dopmi.analyticsOwner';
 
-  Future<void> owner(String? value) async {
-    if (_owner == value && !loading) return;
-    await analytics.enabled(false);
+  String _preferenceKey(String? owner, String kind) =>
+      'dopmi.$namespace.${owner ?? 'signed-out'}.$kind';
+
+  Future<void> prepareStartup() async {
+    await analytics.pause();
     await diagnostics.enabled(false);
-    _removeErrorHandler();
-    if (_owner != null && _owner != value) {
-      await diagnostics.discardPending();
-    }
-    _owner = value;
-    lastAnalyticsEvent = null;
-    lastAnalyticsResult = null;
-    analyticsEnabled =
-        value != null && (preferences.getBool(key('analytics')) ?? false);
-    diagnosticsEnabled =
-        value != null && (preferences.getBool(key('diagnostics')) ?? false);
-    await analytics.enabled(analyticsEnabled);
-    if (diagnosticsEnabled) {
-      await diagnostics.enabled(true);
-    } else if (value != null) {
-      await diagnostics.discardPending();
-    }
-    if (diagnosticsEnabled) _installErrorHandler();
-    loading = false;
-    _syncConsent();
-    notifyListeners();
   }
 
-  Future<void> setAnalytics(bool value) async {
-    if (_owner == null) return;
-    await analytics.enabled(value);
-    await preferences.setBool(key('analytics'), value);
-    analyticsEnabled = value;
-    _syncConsent();
-    if (!value) {
-      lastAnalyticsEvent = null;
-      lastAnalyticsResult = null;
-    }
-    notifyListeners();
+  Future<void> _configure(Future<void> Function() action) {
+    final pending = _settingsSync.then((_) => action());
+    _settingsSync = pending.catchError((Object _) {});
+    return pending;
   }
 
-  Future<void> setDiagnostics(bool value) async {
-    if (_owner == null) return;
-    if (value) {
-      await diagnostics.discardPending();
-      await diagnostics.enabled(true);
-    } else {
-      await diagnostics.enabled(false);
-      await diagnostics.discardPending();
+  Future<void> _setAnalyticsOwner(String? allowedPreference) async {
+    final previous = preferences.getString(_analyticsOwnerKey);
+    final next = allowedPreference ?? '';
+    if (previous != next) {
+      // A missing marker can mean an upgrade from a build that never recorded
+      // the owner. Clear that unscoped identity once before accepting a grant.
+      if (previous != '') await analytics.enabled(false);
+      if (!await preferences.setString(_analyticsOwnerKey, next)) {
+        await preferences.reload();
+        throw StateError('analytics_owner_not_saved');
+      }
     }
-    await preferences.setBool(key('diagnostics'), value);
-    diagnosticsEnabled = value;
-    value ? _installErrorHandler() : _removeErrorHandler();
-    notifyListeners();
+  }
+
+  Future<void> owner(String? value) {
+    if (_requestedOwner == value) {
+      final transition = _ownerTransition;
+      if (transition != null) return transition;
+      if (_owner == value && !loading) return Future.value();
+    }
+    _requestedOwner = value;
+    late final Future<void> transition;
+    transition =
+        _configure(() async {
+          bool isCurrent() => identical(_ownerTransition, transition);
+          await analytics.pause();
+          await diagnostics.enabled(false);
+          _removeErrorHandler();
+          if (_owner != null && _owner != value) {
+            await diagnostics.discardPending();
+          }
+          final preference = _preferenceKey(value, 'analytics');
+          final allowed =
+              value != null && (preferences.getBool(preference) ?? false);
+          final diagnosticsAllowed =
+              value != null &&
+              (preferences.getBool(_preferenceKey(value, 'diagnostics')) ??
+                  false);
+          await _setAnalyticsOwner(isCurrent() && allowed ? preference : null);
+          if (allowed && isCurrent()) {
+            await analytics.enabled(true);
+            if (!isCurrent()) await analytics.pause();
+          }
+          if (diagnosticsAllowed && isCurrent()) {
+            await diagnostics.enabled(true);
+            _installErrorHandler();
+          } else if (value != null) {
+            await diagnostics.discardPending();
+          }
+          _owner = value;
+          _analyticsAllowed = allowed && isCurrent();
+          diagnosticsEnabled = diagnosticsAllowed && isCurrent();
+          lastAnalyticsEvent = null;
+          lastAnalyticsResult = null;
+        }).then(
+          (_) {
+            if (!identical(_ownerTransition, transition)) return;
+            _ownerTransition = null;
+            loading = false;
+            _syncConsent();
+            notifyListeners();
+          },
+          onError: (Object error, StackTrace stack) {
+            if (identical(_ownerTransition, transition)) {
+              _ownerTransition = null;
+              _analyticsAllowed = false;
+              loading = true;
+            }
+            Error.throwWithStackTrace(error, stack);
+          },
+        );
+    _ownerTransition = transition;
+    return transition;
+  }
+
+  Future<void> setAnalytics(bool value) {
+    final requestingOwner = ownerId;
+    if (requestingOwner == null) return Future.value();
+    final preference = _preferenceKey(requestingOwner, 'analytics');
+    _pendingAnalyticsChanges++;
+    return _configure(() async {
+      if (!value) await analytics.pause();
+      if (!await preferences.setBool(preference, value)) {
+        await preferences.reload();
+        throw StateError('analytics_preference_not_saved');
+      }
+      if (ownerId != requestingOwner) return;
+      await _setAnalyticsOwner(value ? preference : null);
+      if (value && ownerId == requestingOwner) {
+        await analytics.enabled(true);
+        if (ownerId != requestingOwner) await analytics.pause();
+      }
+      if (ownerId != requestingOwner) return;
+      _analyticsAllowed = value;
+      if (!value) {
+        lastAnalyticsEvent = null;
+        lastAnalyticsResult = null;
+      }
+    }).then(
+      (_) {
+        _pendingAnalyticsChanges--;
+        if (_pendingAnalyticsChanges == 0 && ownerId == requestingOwner) {
+          _syncConsent();
+          notifyListeners();
+        }
+      },
+      onError: (Object error, StackTrace stack) {
+        _pendingAnalyticsChanges--;
+        if (ownerId == requestingOwner) _analyticsAllowed = false;
+        Error.throwWithStackTrace(error, stack);
+      },
+    );
+  }
+
+  Future<void> setDiagnostics(bool value) {
+    final requestingOwner = ownerId;
+    if (requestingOwner == null) return Future.value();
+    return _configure(() async {
+      if (ownerId != requestingOwner) return;
+      if (value) {
+        await diagnostics.discardPending();
+        if (ownerId != requestingOwner) return;
+        await diagnostics.enabled(true);
+      } else {
+        await diagnostics.enabled(false);
+        await diagnostics.discardPending();
+      }
+      await preferences.setBool(
+        _preferenceKey(requestingOwner, 'diagnostics'),
+        value,
+      );
+      if (ownerId != requestingOwner) return;
+      diagnosticsEnabled = value;
+      value ? _installErrorHandler() : _removeErrorHandler();
+      notifyListeners();
+    });
   }
 
   Future<void> event(String name, {Map<String, Object>? parameters}) async {

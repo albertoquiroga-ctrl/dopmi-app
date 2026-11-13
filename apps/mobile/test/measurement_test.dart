@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:dopmi_mobile/core/measurement.dart';
@@ -6,9 +7,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AnalyticsSpy implements ProductAnalytics {
   bool enabledValue = false;
+  int resets = 0;
   final events = <String>[];
   @override
-  Future<void> enabled(bool value) async => enabledValue = value;
+  Future<void> pause() async => enabledValue = false;
+  @override
+  Future<void> enabled(bool value) async {
+    enabledValue = value;
+    if (!value) resets++;
+  }
+
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     events.add(name);
@@ -19,6 +27,21 @@ class FailingAnalytics extends AnalyticsSpy {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     throw StateError('provider unavailable');
+  }
+}
+
+class PendingPauseAnalytics extends AnalyticsSpy {
+  final pauseStarted = Completer<void>();
+  final resumePause = Completer<void>();
+  bool holdPause = false;
+
+  @override
+  Future<void> pause() async {
+    if (holdPause && !pauseStarted.isCompleted) {
+      pauseStarted.complete();
+      await resumePause.future;
+    }
+    await super.pause();
   }
 }
 
@@ -48,6 +71,122 @@ class DiagnosticsSpy implements ErrorDiagnostics {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test(
+    'same consenting account retains Analytics across process restarts',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.test.alice.analytics': true,
+      });
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = AnalyticsSpy();
+      MeasurementController start() => MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+      );
+
+      final original = start();
+      await original.prepareStartup();
+      await original.owner('alice');
+      expect(analytics.enabledValue, isTrue);
+      expect(analytics.resets, 1); // One-time cleanup of unscoped legacy state.
+      original.dispose();
+
+      final restarted = start();
+      await restarted.prepareStartup();
+      expect(analytics.enabledValue, isFalse);
+      await restarted.event('contact_started');
+      expect(analytics.events, isEmpty);
+      await restarted.owner('alice');
+      await restarted.event('contact_started');
+      expect(analytics.enabledValue, isTrue);
+      expect(analytics.resets, 1);
+      expect(analytics.events, ['contact_started']);
+      restarted.dispose();
+    },
+  );
+
+  test('withdrawal resets once and stays off on restart', () async {
+    SharedPreferences.setMockInitialValues({});
+    final preferences = await SharedPreferences.getInstance();
+    final analytics = AnalyticsSpy();
+    final original = MeasurementController(
+      preferences,
+      'test',
+      analytics,
+      DiagnosticsSpy(),
+    );
+    await original.owner('alice');
+    await original.setAnalytics(true);
+    final beforeWithdrawal = analytics.resets;
+    await original.setAnalytics(false);
+    expect(analytics.resets, beforeWithdrawal + 1);
+    original.dispose();
+
+    final restarted = MeasurementController(
+      preferences,
+      'test',
+      analytics,
+      DiagnosticsSpy(),
+    );
+    await restarted.prepareStartup();
+    await restarted.owner('alice');
+    await restarted.event('sign_up_completed');
+    expect(analytics.enabledValue, isFalse);
+    expect(analytics.resets, beforeWithdrawal + 1);
+    expect(analytics.events, isEmpty);
+    restarted.dispose();
+  });
+
+  test(
+    'restoring a different consenting account resets the previous identity',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.analyticsOwner': 'dopmi.test.alice.analytics',
+        'dopmi.test.bob.analytics': true,
+      });
+      final analytics = AnalyticsSpy();
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+      );
+      await controller.prepareStartup();
+      await controller.owner('bob');
+      expect(analytics.resets, 1);
+      expect(analytics.enabledValue, isTrue);
+      await controller.owner(null);
+      expect(analytics.resets, 2);
+      expect(analytics.enabledValue, isFalse);
+      controller.dispose();
+    },
+  );
+
+  test('queued account switch blocks events from the previous owner', () async {
+    SharedPreferences.setMockInitialValues({});
+    final analytics = PendingPauseAnalytics();
+    final controller = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      DiagnosticsSpy(),
+    );
+    await controller.owner('alice');
+    await controller.setAnalytics(true);
+    analytics.holdPause = true;
+    final switchAccount = controller.owner('bob');
+    await analytics.pauseStarted.future;
+    await controller.event('contact_started');
+    expect(analytics.events, isEmpty);
+    analytics.resumePause.complete();
+    await switchAccount;
+    expect(analytics.enabledValue, isFalse);
+    expect(controller.ownerId, 'bob');
+    controller.dispose();
+  });
+
   test('adoption measurement syncs explicit consent without adding Firebase events', () async {
     SharedPreferences.setMockInitialValues({});
     final analytics = AnalyticsSpy();
@@ -57,7 +196,7 @@ void main() {
       'test',
       analytics,
       DiagnosticsSpy(),
-      adoptionConsent: (enabled) async => sync.add(enabled),
+      adoptionConsent: (owner, enabled) async => sync.add(enabled),
     );
     await controller.owner('alice');
     await controller.consentReady;
