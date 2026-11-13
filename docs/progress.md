@@ -8705,3 +8705,16 @@ de aprobar configuración DEV, análisis y la suite Flutter.
 Publicación de Codemagic aprobada. Play Console verificó el código
 386 disponible para testers internos en el [release 210](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/210/details)
 el 12/11 a las 19:39 CDMX.
+
+El 13/11 se confirmó que la CI del SHA exacto terminó con sus cuatro
+trabajos aprobados. Tras reconectar el Samsung, ADB mostró 2.3.4 (388)
+instalado por Play a las 07:38:44, con la primera instalación del 384
+intacta (12/11 19:25:09). Codemagic confirmó que otro build de Tienda,
+`6af67182cea754f06a1f0b55`, publicó el 388 con fuente anterior
+`29cddea2`, perfil de Producción y sin atribución. DEV seguía con cero
+filas; no se creó una cuenta ni se envió una ficha en ese build.
+
+Se solicitó un reemplazo de DEV desde el mismo SHA integrado y la misma
+rama de Tienda: Codemagic `6af713c7e9a8ac69654da6b8`. La prueba requiere
+confirmar el nuevo código en Play, desinstalar el 388 del Samsung e
+instalar directamente desde el enlace de campaña.
