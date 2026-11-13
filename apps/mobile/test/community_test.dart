@@ -203,6 +203,8 @@ class FakeCommunity implements CommunityRepository {
     savedItems?.length ?? 1,
   );
   @override
+  Future<DataPage<SavedEntry>> matchFavorites(int page) => savedAdoptions(page);
+  @override
   Future<DataPage<SavedEntry>> savedCases(int page) async =>
       const DataPage([], 0);
   @override

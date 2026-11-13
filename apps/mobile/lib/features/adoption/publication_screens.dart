@@ -1406,12 +1406,14 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
                     'Esta es una previsualización de la publicación que verán los adoptantes.',
                   ),
                   PublicationPreviewFrame(
+                    expandToContent: true,
                     child: AdoptionDetailLayout(
                       post: previewPost(),
                       saved: false,
                       busy: true,
                       owner: true,
                       preview: true,
+                      inlinePreview: true,
                       favorite: () {},
                       contact: () {},
                       share: () {},

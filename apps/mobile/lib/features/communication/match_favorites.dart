@@ -24,11 +24,11 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
   bool busy = false, oldest = false;
   Future<DataPage<SavedEntry>> load() async {
     final repo = ref.read(communityRepositoryProvider);
-    final first = await repo.savedAdoptions(1);
+    final first = await repo.matchFavorites(1);
     if (!widget.all) return first;
     final items = <SavedEntry>[...first.items];
     for (var page = 2; (page - 1) * 20 < first.total; page++) {
-      final next = await repo.savedAdoptions(page);
+      final next = await repo.matchFavorites(page);
       if (next.items.isEmpty) break;
       items.addAll(next.items);
     }
@@ -37,26 +37,33 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
   }
 
   String? error;
-  Future<void> contact(SavedEntry item) async {
+  Future<void> contact(SavedEntry item, VoidCallback refresh) async {
     if (busy) return;
+    final repo = ref.read(communityRepositoryProvider);
+    final actor = repo.userId;
+    if (actor == null) return;
     final accepted = await confirmAdoptionContact(
       context,
       petName: item.text('pet_name'),
       rescuerName: item.publicData['publisher_name'] as String?,
     );
-    if (accepted != true || !mounted || busy) return;
+    if (accepted != true || !mounted || busy || repo.userId != actor) return;
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      final id = await ref
-          .read(communityRepositoryProvider)
-          .startThread(item.id);
+      final id = await repo.startThread(item.id);
+      if (!mounted || repo.userId != actor) return;
+      refresh();
       await ref.read(measurementControllerProvider)?.event('contact_started');
-      if (mounted) await context.push('/messages/$id');
+      if (!mounted || repo.userId != actor) return;
+      await context.push('/messages/$id');
+      if (mounted && repo.userId == actor) refresh();
     } catch (cause) {
-      if (mounted) setState(() => error = communityError(cause));
+      if (mounted && repo.userId == actor) {
+        setState(() => error = communityError(cause));
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -65,7 +72,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
   @override
   Widget build(BuildContext context) => LiveSection<DataPage<SavedEntry>>(
     key: ValueKey(widget.all),
-    tables: const ['dopmi_favorites', 'dopmi_adoptions'],
+    tables: const ['dopmi_favorites', 'dopmi_adoptions', 'dopmi_threads'],
     load: load,
     builder: (result, refresh) {
       final items = result.items.where((item) => item.available).toList();
@@ -110,7 +117,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                         ),
                         onTap: () async {
                           await context.push('/adoptions/${item.id}');
-                          refresh();
+                          if (mounted) refresh();
                         },
                         child: photos.isEmpty
                             ? const Icon(Icons.pets)
@@ -150,7 +157,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
                         shape: const CircleBorder(),
                         child: IconButton(
                           tooltip: 'Escribir sobre ${item.text('pet_name')}',
-                          onPressed: busy ? null : () => contact(item),
+                          onPressed: busy ? null : () => contact(item, refresh),
                           constraints: BoxConstraints.tightFor(
                             width: widget.all ? 30 : 34,
                             height: widget.all ? 30 : 34,

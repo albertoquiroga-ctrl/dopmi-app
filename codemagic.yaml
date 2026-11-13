@@ -145,10 +145,11 @@ workflows:
       - name: Create explicit Guardian environment configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
-            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}" in
+            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            production:true:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create matching Guardian Firebase configuration
@@ -200,6 +201,7 @@ workflows:
               f"Environment: {config['DOPMI_ENVIRONMENT']}\n"
               f"Backend: {backend}\nProject: {project}\n"
               f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}\n"
+              f"Store review: {config['DOPMI_STORE_REVIEW']}\n"
               f"Guardian: {config['ENABLE_GUARDIAN']}\n"
               f"Stripe live client: {str(bool(config['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
@@ -294,7 +296,7 @@ workflows:
       - $CM_BUILD_DIR/apps/mobile/build/ios/ipa/*.ipa
       - $CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/dSYMs/**/*.dSYM
 
-  ios-testflight:
+  ios-testflight: &ios-signed-release
     name: Dopmi iOS — TestFlight
     instance_type: mac_mini_m2
     max_build_duration: 60
@@ -303,7 +305,7 @@ workflows:
     integrations:
       app_store_connect: dopmi_app_store
 
-    environment:
+    environment: &ios-signed-environment
       flutter: '3.47.4'
       xcode: latest
       groups:
@@ -312,7 +314,7 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.mycompany.dopmi
-      vars:
+      vars: &ios-signed-vars
         BUNDLE_ID: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
         BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
@@ -326,10 +328,15 @@ workflows:
       - name: Create runtime configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}" in
-            test:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+          PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}"
+          if [ "${DOPMI_APP_STORE_SUBMISSION:-false}" = true ] && [ "$PROFILE" != production:true:false ]; then
+            echo "The App Store workflow requires the production adoption profile." >&2
+            exit 1
+          fi
+          case "$PROFILE" in
+            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration
@@ -404,3 +411,22 @@ workflows:
         # Upload an external-eligible build; beta review is handled in App Store Connect.
         submit_to_testflight: false
         submit_to_app_store: false
+
+  ios-app-store:
+    <<: *ios-signed-release
+    name: Dopmi iOS — App Store
+    environment:
+      <<: *ios-signed-environment
+      vars:
+        <<: *ios-signed-vars
+        DOPMI_APP_STORE_SUBMISSION: 'true'
+        DOPMI_ENVIRONMENT: production
+        DOPMI_ADOPTION_ONLY: 'true'
+        DOPMI_STORE_REVIEW: 'false'
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: true
+        cancel_previous_submissions: false
+        release_type: AFTER_APPROVAL
