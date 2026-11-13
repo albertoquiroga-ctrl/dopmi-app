@@ -8570,3 +8570,29 @@ Contador del objetivo03:00:50,658,820tokens/148,129s; contra corte17:15: +2,558,
 tokens/+6,485s activos. Sin desglose fiable ni conversión a costo/tiempo por tarea.
 Checkpoint/tablero/cola existentes actualizados; pendienteconfirmación→QA única→
 release341/QA enlace→aceptación titular/UX. Fuente de producto356; docs aún locales.
+
+## 12/11/2026 CDMX — Primera publicación de adopción
+
+El titular solicitó probar cámara y galería en la versión pública, medir
+el formulario y dar visibilidad al equipo. Base Android público
+2.3.3 (368), `fc1da17a`, trabajo aislado en
+`codex/adoption-form-measurement`. La app registra aperturas, pasos y
+resultados de foto principal y envío con el consentimiento vigente. La
+restauración y los cambios de cuenta se verifican antes de medir y el
+consentimiento sincronizado se vincula a la sesión que originó la solicitud.
+La tarjeta Admin de primera publicación consulta únicamente agregados
+mediante un RPC con control de administrador activo.
+
+La lectura del 12/11 a las 17:30 produjo 35 altas en siete días, 9 autores
+con una publicación guardada, 1 con foto, 0 envíos y 0 primeras revisiones
+en cola. Storage registró 2 subidas exitosas entre las 17:16 y las 17:39.
+[Operación y señales de diagnóstico](adoption-first-publication-operations.md).
+
+Análisis Flutter limpio, 1757 pruebas aprobadas y 4 omitidas. Admin pasó su
+suite de 159 pruebas y compilación, con 8 pruebas del tablero aprobadas
+después de ajustar el umbral. Verificación de backend aprobó 1287
+pruebas, con 9 que requieren PostgreSQL local y quedaron omitidas. La
+configuración móvil pasó 36. El emulador con Play Store solicitó iniciar
+sesión y ADB no detectó un Samsung conectado. Para el recorrido público
+falta una sesión controlada en la app instalada desde Play. La recepción
+en Firebase y la publicación de la app, el panel y su RPC quedan pendientes.

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:dopmi_mobile/core/measurement.dart';
@@ -19,6 +20,20 @@ class FailingAnalytics extends AnalyticsSpy {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     throw StateError('provider unavailable');
+  }
+}
+
+class PendingOptInAnalytics extends AnalyticsSpy {
+  final optInStarted = Completer<void>();
+  final finishOptIn = Completer<void>();
+
+  @override
+  Future<void> enabled(bool value) async {
+    if (value && !optInStarted.isCompleted) {
+      optInStarted.complete();
+      await finishOptIn.future;
+    }
+    await super.enabled(value);
   }
 }
 
@@ -51,13 +66,13 @@ void main() {
   test('adoption measurement syncs explicit consent without adding Firebase events', () async {
     SharedPreferences.setMockInitialValues({});
     final analytics = AnalyticsSpy();
-    final sync = <bool>[];
+    final sync = <(String, bool)>[];
     final controller = MeasurementController(
       await SharedPreferences.getInstance(),
       'test',
       analytics,
       DiagnosticsSpy(),
-      adoptionConsent: (enabled) async => sync.add(enabled),
+      adoptionConsent: (owner, enabled) async => sync.add((owner, enabled)),
     );
     await controller.owner('alice');
     await controller.consentReady;
@@ -65,7 +80,7 @@ void main() {
     await controller.consentReady;
     await controller.setAnalytics(false);
     await controller.consentReady;
-    expect(sync, [false, true, false]);
+    expect(sync, [('alice', false), ('alice', true), ('alice', false)]);
     expect(analytics.events, isEmpty);
     controller.dispose();
   });
@@ -145,6 +160,36 @@ void main() {
     );
     controller.dispose();
   });
+
+  test(
+    'an opt-in in flight does not enable analytics for the next account',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = PendingOptInAnalytics();
+      final controller = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+      );
+      await controller.owner('alice');
+      final optIn = controller.setAnalytics(true);
+      await analytics.optInStarted.future;
+      final switchAccount = controller.owner('bob');
+      await Future<void>.delayed(Duration.zero);
+      analytics.finishOptIn.complete();
+      await Future.wait([optIn, switchAccount]);
+      await controller.event('adoption_form_opened');
+
+      expect(preferences.getBool('dopmi.test.alice.analytics'), isTrue);
+      expect(preferences.getBool('dopmi.test.bob.analytics'), isNull);
+      expect(controller.analyticsEnabled, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      expect(analytics.events, isEmpty);
+      controller.dispose();
+    },
+  );
 
   test(
     'every approved conversion event is forwarded without payload',

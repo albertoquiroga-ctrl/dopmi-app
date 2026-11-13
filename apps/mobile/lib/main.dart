@@ -49,11 +49,13 @@ class _BootstrapState extends State<Bootstrap> {
       Uri.parse(config.url).host,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
-      adoptionConsent: (consent) async {
-        await Supabase.instance.client.rpc(
-          'dopmi_set_adoption_measurement',
-          params: {'consent': consent},
-        );
+      adoptionConsent: (owner, consent) async {
+        final client = Supabase.instance.client;
+        final session = client.auth.currentSession;
+        if (session == null || session.user.id != owner) return;
+        await client
+            .rpc('dopmi_set_adoption_measurement', params: {'consent': consent})
+            .setHeader('Authorization', 'Bearer ${session.accessToken}');
       },
     );
     await measurement.owner(null);

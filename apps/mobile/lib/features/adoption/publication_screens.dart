@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'publication_age.dart';
 import 'location_map_picker.dart';
 import 'location_selection.dart';
@@ -5,6 +7,7 @@ import 'nearby_location_controller.dart';
 import 'publication_location_default.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -187,6 +190,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   String? error, message;
   int loaded = 0, step = 0;
   bool requiresSpecialCare = false, needsPublisherName = true;
+  CommunityRepository? _formRepository;
+  String? _formActor;
+  bool _openingObserved = false;
+  VoidCallback? _cancelOpeningObservation;
+  final _reachedSteps = <int>{};
   CommunityRepository get repo => ref.read(communityRepositoryProvider);
   @override
   void initState() {
@@ -196,7 +204,119 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     } else {
       prefillPublisher();
       startLocationDefault();
+      _observeFormOpening(repo, repo.userId, 'adoption_form_opened');
     }
+  }
+
+  bool _currentPublicationActor(CommunityRepository source, String? actor) =>
+      mounted &&
+      actor != null &&
+      identical(source, repo) &&
+      source.userId == actor &&
+      ref.read(identityControllerProvider).identity?.id == actor;
+
+  MeasurementController? _currentPublicationMeasurement(
+    CommunityRepository source,
+    String? actor,
+  ) {
+    if (!_currentPublicationActor(source, actor)) return null;
+    final measurement = ref.read(measurementControllerProvider);
+    return measurement?.ownerId == actor ? measurement : null;
+  }
+
+  void Function(String) _formReporter(
+    CommunityRepository source,
+    String? actor,
+  ) {
+    final measurement = _currentPublicationMeasurement(source, actor);
+    if (!identical(_formRepository, source) ||
+        _formActor != actor ||
+        measurement == null ||
+        !measurement.preferencesReadyFor(actor) ||
+        !measurement.analyticsEnabled) {
+      return (_) {};
+    }
+    return (event) {
+      if (identical(
+            _currentPublicationMeasurement(source, actor),
+            measurement,
+          ) &&
+          measurement.preferencesReadyFor(actor) &&
+          measurement.analyticsEnabled) {
+        unawaited(measurement.event(event));
+      }
+    };
+  }
+
+  void _observeFormOpening(
+    CommunityRepository source,
+    String? actor,
+    String event,
+  ) {
+    if (_openingObserved) return;
+    final routeId = widget.id;
+    bool visible() =>
+        _currentPublicationActor(source, actor) &&
+        widget.id == routeId &&
+        ModalRoute.isCurrentOf(context) != false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_openingObserved || !visible()) return;
+      _openingObserved = true;
+
+      void resolve(MeasurementController measurement) {
+        if (!measurement.analyticsEnabled) return;
+        _formRepository = source;
+        _formActor = actor;
+        unawaited(measurement.event(event));
+      }
+
+      final measurement = ref.read(measurementControllerProvider);
+      if (measurement == null) return;
+      if (measurement.preferencesReadyFor(actor)) {
+        resolve(measurement);
+        return;
+      }
+      if (measurement.ownerId != null && measurement.ownerId != actor) return;
+
+      final identity = ref.read(identityControllerProvider);
+      void onIdentityChanged() {
+        if (!visible()) _cancelOpeningObservation?.call();
+      }
+
+      final subscription = ref.listenManual(measurementControllerProvider, (
+        _,
+        restored,
+      ) {
+        if (!visible() ||
+            !identical(restored, measurement) ||
+            (restored?.ownerId != null && restored?.ownerId != actor)) {
+          _cancelOpeningObservation?.call();
+        } else if (measurement.preferencesReadyFor(actor)) {
+          _cancelOpeningObservation?.call();
+          resolve(measurement);
+        }
+      });
+      identity.addListener(onIdentityChanged);
+      _cancelOpeningObservation = () {
+        subscription.close();
+        identity.removeListener(onIdentityChanged);
+        _cancelOpeningObservation = null;
+      };
+    });
+  }
+
+  void _observeReachedStep(int reached, void Function(String) report) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          step != reached ||
+          ModalRoute.isCurrentOf(context) == false ||
+          !_reachedSteps.add(reached)) {
+        return;
+      }
+      report(
+        reached == 1 ? 'adoption_details_reached' : 'adoption_preview_reached',
+      );
+    });
   }
 
   void startLocationDefault() {
@@ -295,6 +415,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
 
   @override
   void dispose() {
+    _cancelOpeningObservation?.call();
     locationDefault?.dispose();
     for (final field in fields.values) {
       field.dispose();
@@ -303,12 +424,14 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   }
 
   Future<void> load() async {
+    final source = repo;
+    final actor = source.userId;
     setState(() {
       loading = true;
       error = null;
     });
     try {
-      final result = await repo.own(post?.id ?? widget.id);
+      final result = await source.own(post?.id ?? widget.id);
       if (result == null) {
         throw const FormatException(
           'Esta publicación no está disponible para tu cuenta.',
@@ -347,6 +470,13 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           );
           if (result.status == 'submitted') step = 2;
         });
+        if (widget.id != 'new' &&
+            (result.status == 'draft' ||
+                result.status == 'changes_requested') &&
+            result.data['_has_private_draft'] != true &&
+            result.data['published_at'] == null) {
+          _observeFormOpening(source, actor, 'adoption_draft_resumed');
+        }
       }
     } catch (cause) {
       if (mounted) setState(() => error = communityError(cause));
@@ -435,15 +565,39 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   }
 
   Future<void> change(String action) => perform(() async {
+    final source = repo;
+    final actor = source.userId;
+    final report = _formReporter(source, actor);
     if (action == 'submit') {
-      if (!form.currentState!.validate()) return;
-      await save();
+      report('adoption_submit_attempted');
+      if (!form.currentState!.validate()) {
+        report('adoption_submit_validation_failed');
+        return;
+      }
+      try {
+        await save();
+      } catch (_) {
+        report('adoption_submit_save_failed');
+        rethrow;
+      }
     }
-    final result = await repo.transition(post!, action);
+    final Adoption result;
+    try {
+      result = await repo.transition(post!, action);
+    } catch (_) {
+      if (action == 'submit') report('adoption_submit_transition_failed');
+      rethrow;
+    }
     if (action == 'submit') {
-      await ref
-          .read(measurementControllerProvider)
-          ?.event('publication_submitted');
+      report(
+        result.status == 'submitted'
+            ? 'adoption_submit_accepted'
+            : 'adoption_submit_transition_failed',
+      );
+      final measurement = _currentPublicationMeasurement(source, actor);
+      if (measurement != null) {
+        unawaited(measurement.event('publication_submitted'));
+      }
     }
     if (mounted) {
       setState(() {
@@ -475,54 +629,93 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         ref.read(identityControllerProvider).identity?.id == identity &&
         ref.read(configProvider).environment == config.environment &&
         ref.read(configProvider).url == config.url;
-    await save(); // Preserve all fields before the operating system opens its photo picker.
-    if (!current()) return;
-    final postId = post!.id;
-    final preferences = await SharedPreferences.getInstance();
-    if (!current()) return;
-    final pendingKey = pendingPhotoKey(actor);
-    await preferences.setString(pendingKey, postId);
-    if (!current()) return;
-    await preferences.setString(pendingPhotoActorKey, actor);
-    if (!current()) return;
-    final picker = ref.read(publicationImagePickerProvider);
-    final List<XFile> files;
-    if (source == ImageSource.gallery && !replaceMain) {
-      files = await picker.pickMultiImage(
-        maxWidth: 1600,
-        maxHeight: 1600,
-        limit: 6 - photos.length,
-        requestFullMetadata: false,
-      );
-    } else {
-      final file = await picker.pickImage(
-        source: source,
-        maxWidth: 1600,
-        maxHeight: 1600,
-        requestFullMetadata: false,
-      );
-      files = file == null ? [] : [file];
-    }
-    if (!current()) return;
-    await preferences.remove(pendingKey);
-    if (preferences.getString(pendingPhotoActorKey) == actor) {
-      await preferences.remove(pendingPhotoActorKey);
-    }
-    for (final file in files.take(replaceMain ? 1 : 6 - photos.length)) {
+    final report = replaceMain ? _formReporter(repository, actor) : null;
+    report?.call(
+      source == ImageSource.camera
+          ? 'adoption_main_photo_camera'
+          : 'adoption_main_photo_gallery',
+    );
+    var failureEvent = 'adoption_photo_prep_failed';
+    try {
+      await save(); // Preserve all fields before the operating system opens its photo picker.
       if (!current()) return;
-      final bytes = await file.readAsBytes();
+      final postId = post!.id;
+      final preferences = await SharedPreferences.getInstance();
       if (!current()) return;
-      final path = await repository.uploadPhoto(postId, bytes);
+      final pendingKey = pendingPhotoKey(actor);
+      await preferences.setString(pendingKey, postId);
       if (!current()) return;
-      setState(() {
-        if (replaceMain && photos.isNotEmpty) {
-          photos[0] = path;
-        } else {
-          photos.add(path);
+      await preferences.setString(pendingPhotoActorKey, actor);
+      if (!current()) return;
+      failureEvent = 'adoption_photo_picker_failed';
+      final picker = ref.read(publicationImagePickerProvider);
+      final List<XFile> files;
+      if (source == ImageSource.gallery && !replaceMain) {
+        files = await picker.pickMultiImage(
+          maxWidth: 1600,
+          maxHeight: 1600,
+          limit: 6 - photos.length,
+          requestFullMetadata: false,
+        );
+      } else {
+        final file = await picker.pickImage(
+          source: source,
+          maxWidth: 1600,
+          maxHeight: 1600,
+          requestFullMetadata: false,
+        );
+        files = file == null ? [] : [file];
+      }
+      if (!current()) return;
+      await preferences.remove(pendingKey);
+      if (preferences.getString(pendingPhotoActorKey) == actor) {
+        await preferences.remove(pendingPhotoActorKey);
+      }
+      if (files.isEmpty) {
+        report?.call('adoption_photo_picker_cancelled');
+        return;
+      }
+      for (final file in files.take(replaceMain ? 1 : 6 - photos.length)) {
+        if (!current()) return;
+        failureEvent = 'adoption_photo_read_failed';
+        final bytes = await file.readAsBytes();
+        if (!current()) return;
+        failureEvent = 'adoption_photo_upload_failed';
+        final path = await repository.uploadPhoto(postId, bytes);
+        if (!current()) return;
+        setState(() {
+          if (replaceMain && photos.isNotEmpty) {
+            photos[0] = path;
+          } else {
+            photos.add(path);
+          }
+        });
+        // A later failure must not lose photos already attached successfully.
+        failureEvent = 'adoption_photo_attach_save_failed';
+        await save();
+      }
+      if (current()) report?.call('adoption_photo_attached');
+    } catch (cause) {
+      if (current()) {
+        const deniedCodes = {
+          'camera_access_denied',
+          'camera_access_restricted',
+          'photo_access_denied',
+          'photo_access_restricted',
+        };
+        final denied =
+            failureEvent == 'adoption_photo_picker_failed' &&
+            cause is PlatformException &&
+            deniedCodes.contains(cause.code);
+        if (denied) {
+          failureEvent = 'adoption_photo_picker_denied';
+        } else if (failureEvent == 'adoption_photo_upload_failed' &&
+            cause is FormatException) {
+          failureEvent = 'adoption_photo_process_failed';
         }
-      });
-      // A later failure must not lose photos already attached successfully.
-      await save();
+        report?.call(failureEvent);
+      }
+      rethrow;
     }
   });
   Widget field(
@@ -690,9 +883,14 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
           ? null
           : step < 2
           ? () => perform(() async {
+              final source = repo;
+              final report = _formReporter(source, source.userId);
               if (!form.currentState!.validate()) return;
               await save();
-              if (mounted) setState(() => step++);
+              if (mounted) {
+                setState(() => step++);
+                _observeReachedStep(step, report);
+              }
             })
           : () => change('submit'),
     );

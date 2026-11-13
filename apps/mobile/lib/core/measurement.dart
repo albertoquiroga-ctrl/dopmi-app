@@ -26,6 +26,26 @@ class FirebaseProductAnalytics implements ProductAnalytics {
     'sign_up_completed',
     'contact_started',
     'publication_submitted',
+    'adoption_form_opened',
+    'adoption_draft_resumed',
+    'adoption_details_reached',
+    'adoption_preview_reached',
+    'adoption_main_photo_camera',
+    'adoption_main_photo_gallery',
+    'adoption_photo_prep_failed',
+    'adoption_photo_picker_cancelled',
+    'adoption_photo_picker_denied',
+    'adoption_photo_picker_failed',
+    'adoption_photo_read_failed',
+    'adoption_photo_process_failed',
+    'adoption_photo_upload_failed',
+    'adoption_photo_attach_save_failed',
+    'adoption_photo_attached',
+    'adoption_submit_attempted',
+    'adoption_submit_validation_failed',
+    'adoption_submit_save_failed',
+    'adoption_submit_transition_failed',
+    'adoption_submit_accepted',
     'contribution_started',
     'contribution_confirmed',
   };
@@ -88,19 +108,22 @@ class MeasurementController extends ChangeNotifier {
     this.diagnostics, {
     this.adoptionConsent,
   });
-  final Future<void> Function(bool)? adoptionConsent;
+  final Future<void> Function(String owner, bool consent)? adoptionConsent;
   Future<void> _consentSync = Future.value();
+  Future<void> _analyticsPreferences = Future.value();
   String? get ownerId => _owner;
+  bool preferencesReadyFor(String? owner) =>
+      owner != null && _owner == owner && _readyOwner == owner;
   Future<void> get consentReady => _consentSync;
 
   void _syncConsent() {
     final callback = adoptionConsent;
-    if (_owner == null || callback == null) return;
-    final enabled = analyticsEnabled;
     final expectedOwner = _owner;
+    if (expectedOwner == null || callback == null) return;
+    final enabled = analyticsEnabled;
     _consentSync = _consentSync
         .then((_) async {
-          if (_owner == expectedOwner) await callback(enabled);
+          if (_owner == expectedOwner) await callback(expectedOwner, enabled);
         })
         .catchError((Object _) {});
   }
@@ -110,6 +133,7 @@ class MeasurementController extends ChangeNotifier {
   final ProductAnalytics analytics;
   final ErrorDiagnostics diagnostics;
   String? _owner;
+  String? _readyOwner;
   bool analyticsEnabled = false, diagnosticsEnabled = false, loading = true;
   String? lastAnalyticsEvent;
   String? lastAnalyticsResult;
@@ -119,8 +143,17 @@ class MeasurementController extends ChangeNotifier {
 
   String key(String kind) => 'dopmi.$namespace.${_owner ?? 'signed-out'}.$kind';
 
-  Future<void> owner(String? value) async {
-    if (_owner == value && !loading) return;
+  // The SDK is shared by all accounts on a device. Finish an in-flight
+  // preference change before restoring another account's configuration.
+  Future<void> _configureAnalytics(Future<void> Function() action) {
+    final result = _analyticsPreferences.then((_) => action());
+    _analyticsPreferences = result.catchError((Object _) {});
+    return result;
+  }
+
+  Future<void> owner(String? value) => _configureAnalytics(() async {
+    if (_owner == value && !loading && _readyOwner == value) return;
+    _readyOwner = null;
     await analytics.enabled(false);
     await diagnostics.enabled(false);
     _removeErrorHandler();
@@ -142,21 +175,25 @@ class MeasurementController extends ChangeNotifier {
     }
     if (diagnosticsEnabled) _installErrorHandler();
     loading = false;
+    _readyOwner = value;
     _syncConsent();
     notifyListeners();
-  }
+  });
 
-  Future<void> setAnalytics(bool value) async {
-    if (_owner == null) return;
-    await analytics.enabled(value);
-    await preferences.setBool(key('analytics'), value);
-    analyticsEnabled = value;
-    _syncConsent();
-    if (!value) {
-      lastAnalyticsEvent = null;
-      lastAnalyticsResult = null;
-    }
-    notifyListeners();
+  Future<void> setAnalytics(bool value) {
+    final requestingOwner = _owner;
+    return _configureAnalytics(() async {
+      if (!preferencesReadyFor(requestingOwner)) return;
+      await analytics.enabled(value);
+      await preferences.setBool(key('analytics'), value);
+      analyticsEnabled = value;
+      _syncConsent();
+      if (!value) {
+        lastAnalyticsEvent = null;
+        lastAnalyticsResult = null;
+      }
+      notifyListeners();
+    });
   }
 
   Future<void> setDiagnostics(bool value) async {

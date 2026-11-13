@@ -42,7 +42,7 @@ void main() {
         'view-test',
         CommunityAnalyticsSpy(),
         CommunityDiagnosticsSpy(),
-        adoptionConsent: (_) => consent.future,
+        adoptionConsent: (_, _) => consent.future,
       );
       await measurement.owner('one');
       final repository = ViewSessionCommunity();
