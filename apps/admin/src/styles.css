@@ -53,3 +53,16 @@ body{min-width:280px}button,input,select,textarea{font:inherit}button{min-height
 .admin-push-card p { margin: 0; font-size: 14px; }
 .admin-push-card button { min-height: 44px; }
 .admin-push-card .admin-push-error { margin-top: 6px; color: #862923; }
+
+.first-publication { margin-top: 24px; }
+.first-publication p { margin: 0 0 12px; }
+.first-publication > button { align-self: flex-start; }
+.first-publication-counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(134px, 1fr));
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.first-publication-counts > div { padding: 12px; border-radius: 12px; background: #faf7f4; }
+.first-publication-counts dt { font-size: 13px; color: var(--muted); }
+.first-publication-counts dd { margin: 5px 0 0; font-size: 24px; font-weight: 650; }
