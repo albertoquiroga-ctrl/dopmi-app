@@ -8703,3 +8703,63 @@ materiales. La corrección sigue en la rama de trabajo, pendiente de
 integración y validación física. El Samsung reportó 2.3.3 (384) instalada
 desde Play, un candidato distinto. Play Console todavía mostró en revisión
 el despliegue de la 383 con medición a las 19:43 CDMX.
+
+### 13/11/2026 CDMX — Distribución del arreglo y PostHog
+
+Play Producción confirmó 2.3.3 (383) disponible desde el 12 de noviembre
+a las 19:47 CDMX. App Store público muestra 2.3.3. El candidato de
+corrección se fijó en `081995c6de7245f0ee7c8327ccb2cdb9be75283d`, con
+el formulario `ccaa6c9b`, la vista previa desplazable de `29cddea2`,
+perfil Producción sólo adopciones y Tienda de revisión apagada. La
+referencia de Irlanda conserva `f693c0367643605fa8495c1ae3c171df4ccf85b6`.
+Supabase PROD confirma por catálogo de sólo lectura la firma
+`dopmi_match_favorites(integer,integer)` y la migración ya registrada.
+La prueba de configuración pasa 39 casos. El flujo iOS de App Store
+reutiliza firma y pruebas del de TestFlight, exige el perfil indicado y
+solicita publicación tras la aprobación de Apple. El esquema oficial de
+Codemagic validó la configuración.
+
+[CI 43438360025](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43438360025)
+aprobó en `081995c6`. Codemagic recibió una solicitud por plataforma:
+Android `6af71cda7c3d7e6ee640940f` e iOS `6af71cda2218b3df563590c5`.
+El readback inicial confirmó SHA y workflow exactos, ambos en cola.
+La publicación en tienda y la prueba física se registran por separado.
+El primer Android falló al configurar Google Maps por omitir el grupo
+`dopmi_production_maps` al copiar las variables del perfil. El primer
+iOS se canceló antes de empezar y sin artefactos. Se reenviaron una vez
+con los grupos del perfil público anterior, sin cambio de SHA:
+Android `6af72788facdcc804121d7cc` e iOS `6af7278960df6e0fbcb49178`.
+El readback acreditó el grupo corregido en ambos.
+Android terminó con publicación aprobada a las 09:40 CDMX. El artefacto
+y `guardian-build-info.txt` acreditan 2.3.4 (393), el SHA exacto, perfil
+Producción sólo adopciones, Tienda/Guardián/cobros apagados y destino
+Google Play interno. Play Console verificó release interno 213 disponible
+para testers y el código 393. El Samsung se desconectó antes de actualizar;
+las pruebas físicas y con los dos rescatistas quedan pendientes.
+Se promovió ese código al release 40 de Producción, 100 % de países ya
+configurados. Play confirmó un solo cambio en «Changes in review», con
+comprobaciones automáticas en curso y publicación administrada apagada.
+La lectura posterior confirmó «Your changes are now in review» después
+de las comprobaciones de Google.
+iOS 2.3.4 (394) se cargó a Apple a las 10:05 CDMX. La IPA y el
+artefacto de información acreditan el mismo SHA y perfil. La tarea de
+distribución terminó sin error y la respuesta de App Store Connect en
+el registro de Codemagic mostró `WAITING_FOR_REVIEW` a las 10:11 CDMX.
+Se solicitó publicación tras la aprobación. La disponibilidad pública
+de los códigos nuevos depende de la revisión de cada tienda.
+
+El cliente PostHog mantiene Firebase independiente. Requiere activar
+una preferencia nueva, usa un identificador aleatorio por intento y
+envía sólo eventos fijos de adopción. No incorpora SDK de grabación.
+El aviso web actualizado está disponible con HTTP 200 y coincide con
+el contenido de `dopmi-landing-mockup@92393a8`. La sesión del proveedor
+mostró inicio de sesión. Quedan pendientes la configuración del proyecto,
+la recepción real, el embudo y las alertas remotas. El arreglo de las
+tiendas avanza con PostHog desactivado. El candidato de PostHog queda
+en `9e9c36c9a997fdc71ec02858155e3072c62a5648`, con 61 pruebas dirigidas,
+análisis dirigido sin hallazgos en `7173a920` y
+[CI integrado 43440351474](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43440351474)
+aprobado. La guía de operación de esa rama describe el embudo de cinco
+pasos y las dos alertas, con lógica ensayada en seis escenarios sintéticos.
+El script `ddfdb8d4` prepara tablero, embudo y alertas y se probó con un
+servicio simulado. Sigue pendiente el acceso al proyecto del proveedor.
