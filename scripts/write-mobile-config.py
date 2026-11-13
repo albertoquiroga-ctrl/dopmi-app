@@ -29,7 +29,8 @@ def client_key(value, project_ref=None, require_project_ref=False):
         return False
 
 
-def build_config(env, guardian_test=False, measurement_test=False, production_beta=False, adoption_only=False):
+def build_config(env, guardian_test=False, measurement_test=False, production_beta=False,
+                 adoption_only=False, store_review=False):
     endpoint = "".join(env.get("SUPABASE_URL", "").split()).rstrip("/")
     key = "".join(env.get("SUPABASE_PUBLISHABLE_KEY", "").split())
     if not re.fullmatch(r"https://[a-z0-9-]+\.supabase\.co", endpoint):
@@ -45,6 +46,11 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
     requested_adoption_only = env.get("DOPMI_ADOPTION_ONLY")
     if requested_adoption_only is not None and requested_adoption_only != str(adoption_only).lower():
         raise ValueError("DOPMI_ADOPTION_ONLY must match the explicit adoption-only build option.")
+    if store_review and not (production_beta and adoption_only):
+        raise ValueError("Store review requires --production-beta and --adoption-only.")
+    requested_store_review = env.get("DOPMI_STORE_REVIEW")
+    if requested_store_review is not None and requested_store_review != str(store_review).lower():
+        raise ValueError("DOPMI_STORE_REVIEW must match the explicit Store review build option.")
     if (environment == "production") != production_beta:
         raise ValueError("Production requires DOPMI_ENVIRONMENT=production and --production-beta together.")
     registered_url = PRODUCTION_URL if production_beta else expected["SUPABASE_URL"].rstrip("/")
@@ -58,6 +64,7 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
     result = {
         "DOPMI_ENVIRONMENT": environment,
         "DOPMI_ADOPTION_ONLY": str(adoption_only).lower(),
+        "DOPMI_STORE_REVIEW": str(store_review).lower(),
         "SUPABASE_URL": endpoint,
         "SUPABASE_PUBLISHABLE_KEY": key,
         "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
@@ -112,6 +119,7 @@ def main():
     parser.add_argument("--measurement-test", action="store_true")
     parser.add_argument("--production-beta", action="store_true")
     parser.add_argument("--adoption-only", action="store_true")
+    parser.add_argument("--store-review", action="store_true")
     args = parser.parse_args()
     target = Path("config.json")
     # A failed validation must not leave an older connected configuration behind.
@@ -120,6 +128,7 @@ def main():
         config = build_config(
             os.environ, args.guardian_test, args.measurement_test,
             production_beta=args.production_beta, adoption_only=args.adoption_only,
+            store_review=args.store_review,
         )
     except ValueError as error:
         raise SystemExit(str(error)) from None
@@ -129,6 +138,7 @@ def main():
         "Flutter configuration ready. "
         f"Production beta: {args.production_beta}. "
         f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}. "
+        f"Store review: {config['DOPMI_STORE_REVIEW']}. "
         f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}. "
         f"Measurement test: {config['ENABLE_MEASUREMENT_TEST']}."
     )

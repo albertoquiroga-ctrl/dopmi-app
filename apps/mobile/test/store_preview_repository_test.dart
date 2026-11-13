@@ -27,6 +27,47 @@ Map<String, dynamic> previewCatalog({bool links = false}) => {
 };
 
 void main() {
+  test(
+    'hands off the authorized catalog variant without changing its URL',
+    () async {
+      final link =
+          'https://www.amazon.com.mx/dp/B000000001?tag=example-20&th=1';
+      final calls = <Map<String, dynamic>>[];
+      final repository = RpcStoreRepository(
+        currentUser: () => null,
+        changes: const Stream.empty(),
+        rpc: (name, params) async {
+          if (name == 'dopmi_store_catalog') {
+            return {
+              'enabled': true,
+              'items': [
+                {
+                  'id': 'pollo-1500',
+                  'name': 'Pollo',
+                  'brand': 'Marca',
+                  'species': 'cat',
+                  'age': 'adult',
+                  'size': 'small',
+                  'weight_kg': 1.5,
+                  'merchant_name': 'Amazon México',
+                },
+              ],
+            };
+          }
+          expect(name, 'dopmi_store_product_link');
+          calls.add(params);
+          return link;
+        },
+      );
+      await repository.catalog();
+      expect(await repository.productLink('other-size'), isNull);
+      expect((await repository.productLink('pollo-1500')).toString(), link);
+      expect(calls, [
+        {'product_id': 'pollo-1500'},
+      ]);
+    },
+  );
+
   test('anonymous OFF never calls preview, selected actor uses explicit TEST catalog', () async {
     String? actor;
     final calls = <String>[];

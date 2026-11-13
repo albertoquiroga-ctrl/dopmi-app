@@ -1,3 +1,20 @@
+## 11/11/2026 CDMX — Fotos de referencia para Tienda TEST
+
+El titular prefiere fotos oficiales de Amazon. Afiliados México muestra las
+fichas de Android e iOS declaradas en el listado de sitios y apps. La página
+de Creators API de la cuenta muestra la opción de crear la primera aplicación
+y el requisito de elegibilidad de 10 ventas calificadas en 30 días para datos
+de producto. Sin confirmación de aprobación móvil ni acceso de API
+comprobado. Las búsquedas de Pedigree 2 kg y Dog Chow 15 kg tampoco
+confirmaron sus ASIN exactos en Amazon México.
+
+La captura del titular confirma el catálogo instalado con las huellas de la
+370. El titular eligió continuar con las fotos disponibles. El candidato
+reúne 19 fotos de referencia de Open Pet Food Facts con crédito por
+presentación. Las cuatro adicionales son Dog Chow Adultos Medianos y
+Grandes 500 g, Pedigree High Protein 2 kg, Whiskas Esterilizados 1.5 kg
+y Cat Chow Gatitos 1.5 kg.
+
 ## 29/10/2026 22:28UTC — Legales públicos, PROD cerrado y soporte Google exacto
 
 Fuente móvil f20b27e6/CI40936283326 cuatroSUCCESS sin delta ni otra suite/build.

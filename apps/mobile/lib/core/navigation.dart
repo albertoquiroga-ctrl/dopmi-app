@@ -107,13 +107,18 @@ class DopmiBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showStore = !adoptionOnlyBuild && storeEnabled;
+    final showStore =
+        !rescuer &&
+        storeEnabled &&
+        (!adoptionOnlyBuild || storeReviewAvailable);
     final destinations = rescuer
         ? rescuerDestinations
         : [
             for (final destination in donorDestinations) ...[
               if (destination.path == '/profile' && showStore)
-                storePreview ? storePreviewDestination : storeDestination,
+                (storePreview || storeReviewAvailable)
+                    ? storePreviewDestination
+                    : storeDestination,
               if (!adoptionOnlyBuild || destination.path != '/rescue-cases')
                 destination,
             ],

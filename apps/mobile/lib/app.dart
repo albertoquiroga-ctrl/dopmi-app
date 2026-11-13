@@ -64,7 +64,8 @@ const accountRouteAliases = <String, String>{
 };
 
 /// Maps legacy or unavailable destinations to routes served by the adoption beta.
-String? adoptionOnlyRouteRedirect(Uri uri) {
+String? adoptionOnlyRouteRedirect(Uri uri, {bool allowStoreReview = false}) {
+  if (allowStoreReview && uri.toString() == '/store') return null;
   final path = '/${uri.pathSegments.where((part) => part.isNotEmpty).join('/')}'
       .toLowerCase();
   final canonicalPath = accountRouteAliases[path] ?? path;
@@ -139,7 +140,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: Listenable.merge([identity, experience]),
     redirect: (_, state) {
       if (adoptionOnlyBuild) {
-        final destination = adoptionOnlyRouteRedirect(state.uri);
+        final destination = adoptionOnlyRouteRedirect(
+          state.uri,
+          allowStoreReview: storeReviewAvailable,
+        );
         if (destination != null) {
           restoringPath = null;
           return destination;
