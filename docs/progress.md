@@ -8607,3 +8607,73 @@ El titular autorizó Play Internal Testing. El flujo estándar android-internal 
 El Samsung conectado mostró DopMi 2.3.3 (382), instalado por Google Play como actualización de una instalación del 12/08/2025. El titular autorizó una reinstalación. La revisión automática bloqueó el comando ADB de desinstalación; no se ejecutó. Mientras se preparaba el recorrido, el teléfono se actualizó a 2.3.3 (383), también desde Play. Play Console marcó al 382 como reemplazado el 12/11 a las 18:53 de Monterrey. El 383 proviene de f04fd1ff, rama de medición del formulario, sin Play Install Referrer. En paralelo, Codemagic reportó otro build interno de la rama de Tienda sobre 29cddea2. No se observó una instalación nueva desde campaña ni se envió una ficha.
 
 Supabase DEV tenía el contrato legal de octubre y el 382 pide el par TEST de noviembre. Se aplicó únicamente el [RPC de compatibilidad de DEV](../supabase/dev-compatibility/20261112_legal_acceptance_build_382.sql), con cuatro escenarios locales aprobados y registro remoto 20261113005644. El catálogo confirmó ejecución autenticada y revocación para anon/service_role. No se cambiaron el trigger de alta ni el vínculo de entorno. Este RPC temporal debe retirarse explícitamente al converger con las migraciones canónicas. La tabla de atribución continuó vacía y no se creó una cuenta remota. La ronda A/B queda pendiente de la prueba instalada.
+## 12/11/2026 CDMX — Primera publicación de adopción
+
+El titular solicitó probar cámara y galería en la versión pública, medir
+el formulario y dar visibilidad al equipo. Base Android público
+2.3.3 (368), `fc1da17a`, trabajo aislado en
+`codex/adoption-form-measurement`. La app registra aperturas, pasos y
+resultados de foto principal y envío con el consentimiento vigente. La
+restauración y los cambios de cuenta se verifican antes de medir y el
+consentimiento sincronizado se vincula a la sesión que originó la solicitud.
+La tarjeta Admin de primera publicación consulta únicamente agregados
+mediante un RPC con control de administrador activo.
+
+La lectura del 12/11 a las 17:30 produjo 35 altas en siete días, 9 autores
+con una publicación guardada, 1 con foto, 0 envíos y 0 primeras revisiones
+en cola. Storage registró 2 subidas exitosas entre las 17:16 y las 17:39.
+[Operación y señales de diagnóstico](adoption-first-publication-operations.md).
+
+Análisis Flutter limpio, 1757 pruebas aprobadas y 4 omitidas. Admin pasó su
+suite de 159 pruebas y compilación, con 8 pruebas del tablero aprobadas
+después de ajustar el umbral. Verificación de backend aprobó 1287
+pruebas, con 9 que requieren PostgreSQL local y quedaron omitidas. La
+configuración móvil pasó 36. El emulador con Play Store solicitó iniciar
+sesión y ADB no detectó un Samsung conectado. Para el recorrido público
+falta una sesión controlada en la app instalada desde Play. La recepción
+en Firebase y la publicación de la app, el panel y su RPC quedan pendientes.
+
+### 12/11/2026 CDMX — Admin en producción y prueba física de fotos
+
+Samsung SM-S938B con Dopmi 2.3.3 (381) instalada desde Play interno,
+fuente `fc840477`. Google Play Console confirmó 368 en el canal público.
+El editor, la recuperación de fotos, la capa de medios, Android y el
+archivo de dependencias coinciden entre 368 y 381 en el alcance de fotos.
+En la cuenta de prueba, cámara capturó y adjuntó, galería reemplazó la
+imagen principal y el borrador privado conservó la foto al reabrir.
+Storage registró dos cargas HTTP 200 y el borrador quedó sin envío.
+La validación directa de la 368 pública requiere una instalación de ese
+canal. El candidato de medición `f04fd1ff` tiene CI 43334770716 en curso.
+
+RPC de Admin aplicado en Supabase PROD una vez como
+`20261113001808/admin_first_publication`, desde el SQL
+`20261112232548_admin_first_publication.sql`. Las 67 entradas anteriores
+conservan su huella. Acceso anónimo y service role revocados, usuario
+autenticado sin membresía rechazado y administrador activo devuelve
+agregados. Admin desplegado desde `bcf5e33b` sobre la base con Web Push,
+Vercel `dpl_G7Eb6puLnaEN7RXhBViUEnJ7S7c3` READY. La vista autenticada
+mostró 38 altas, 9 autores, 1 con foto, 0 envíos y 0 publicaciones a las
+18:22 CDMX. La suite de Admin pasó 169 pruebas y compilación.
+
+DebugView de Firebase Producción recibió `session_start` y `first_open`
+en la ventana de preparación con el Samsung y la cuenta de prueba.
+Los eventos nuevos requieren instalar el candidato de medición y
+observar su recepción por nombre.
+
+CI `43334770716` completó sus cuatro trabajos en el SHA `f04fd1ff`.
+Codemagic `6af65ba18800b1de0cfc46bd` compiló y publicó Android
+2.3.3 (383), perfil producción sólo adopciones, Play interno release
+208. AAB verificado y 383 instalada en el Samsung por Google Play.
+DebugView de Firebase Producción, propiedad 561295536, mostró una vez
+cada evento del Samsung entre las 18:57 y las 19:01 CDMX: apertura,
+inicio de cámara, cancelación, inicio de galería, adjunto guardado y
+borrador retomado. El adjunto seguía visible al reabrir. Se archivó el
+borrador de prueba y se restauró la analítica apagada. El modo de
+depuración se deshabilitó.
+
+Play Console recibió la promoción del mismo código 383 como único
+cambio de Producción. Alcance 100 % en los países ya configurados.
+El resumen muestra «Changes in review» y comprobaciones automáticas en
+curso. Publicación administrada apagada. La disponibilidad pública de
+383 queda pendiente de Google. Las pruebas en el Samsung se realizaron
+en Play interno. La 368 pública fue verificada en la consola.

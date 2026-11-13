@@ -26,6 +26,26 @@ class FirebaseProductAnalytics implements ProductAnalytics {
     'sign_up_completed',
     'contact_started',
     'publication_submitted',
+    'adoption_form_opened',
+    'adoption_draft_resumed',
+    'adoption_details_reached',
+    'adoption_preview_reached',
+    'adoption_main_photo_camera',
+    'adoption_main_photo_gallery',
+    'adoption_photo_prep_failed',
+    'adoption_photo_picker_cancelled',
+    'adoption_photo_picker_denied',
+    'adoption_photo_picker_failed',
+    'adoption_photo_read_failed',
+    'adoption_photo_process_failed',
+    'adoption_photo_upload_failed',
+    'adoption_photo_attach_save_failed',
+    'adoption_photo_attached',
+    'adoption_submit_attempted',
+    'adoption_submit_validation_failed',
+    'adoption_submit_save_failed',
+    'adoption_submit_transition_failed',
+    'adoption_submit_accepted',
     'contribution_started',
     'contribution_confirmed',
   };
@@ -99,6 +119,7 @@ class MeasurementController extends ChangeNotifier {
   int _configuredAnalyticsRevision = 0;
   String? get ownerId =>
       _ownerRevision == _configuredOwnerRevision ? _owner : null;
+  bool preferencesReadyFor(String? owner) => owner != null && ownerId == owner;
   int get analyticsRevision => _analyticsRevision;
   bool get analyticsConsentCurrent =>
       analyticsEnabled && _analyticsRevision == _configuredAnalyticsRevision;

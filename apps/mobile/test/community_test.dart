@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/adoption/publication_screens.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fake_identity_repository.dart';
@@ -94,6 +96,15 @@ class CommunityAnalyticsSpy implements ProductAnalytics {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
     events.add(name);
+  }
+}
+
+class RestoringPublicationAnalytics extends CommunityAnalyticsSpy {
+  final ready = Completer<void>();
+
+  @override
+  Future<void> enabled(bool value) async {
+    if (value) await ready.future;
   }
 }
 
@@ -415,6 +426,47 @@ class PhotoDraftCommunity extends FakeCommunity {
       throw const FormatException('Foto sin conexión en fixture');
 }
 
+class MeasuredPublicationCommunity extends PhotoDraftCommunity {
+  String actor = 'one';
+  bool failProcessing = false, failUpload = false, failTransition = false;
+  int uploads = 0;
+
+  @override
+  String? get userId => actor;
+
+  @override
+  Future<String> uploadPhoto(String postId, Uint8List bytes) async {
+    uploads++;
+    if (failProcessing) throw const FormatException('Invalid photo');
+    if (failUpload) throw StateError('storage unavailable');
+    return 'fixture/$postId/photo';
+  }
+
+  @override
+  Future<Adoption> transition(Adoption post, String action) async {
+    if (failTransition) throw StateError('review unavailable');
+    return this.post = Adoption({...post.data, 'status': 'submitted'});
+  }
+}
+
+class MeasuredPublicationPicker extends ImagePicker {
+  final sources = <ImageSource>[];
+  Future<XFile?> Function() result = () async => null;
+
+  @override
+  Future<XFile?> pickImage({
+    required ImageSource source,
+    double? maxWidth,
+    double? maxHeight,
+    int? imageQuality,
+    CameraDevice preferredCameraDevice = CameraDevice.rear,
+    bool requestFullMetadata = true,
+  }) {
+    sources.add(source);
+    return result();
+  }
+}
+
 class PagedSavedCommunity extends FakeCommunity {
   final pages = <int>[];
   @override
@@ -490,6 +542,7 @@ void main() {
     FakeCommunity repo,
     String path, {
     MeasurementController? measurement,
+    ImagePicker? photoPicker,
     bool rescuer = false,
   }) async {
     tester.view.physicalSize = const Size(390, 844);
@@ -507,6 +560,8 @@ void main() {
         routerInitialLocationProvider.overrideWithValue(path),
         if (measurement != null)
           measurementControllerProvider.overrideWith((ref) => measurement),
+        if (photoPicker != null)
+          publicationImagePickerProvider.overrideWithValue(photoPicker),
       ],
     );
     addTearDown(() async {
@@ -1326,6 +1381,234 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Nina'), findsOneWidget);
   });
+  Future<MeasurementController> publicationMeasurement(
+    CommunityAnalyticsSpy analytics, {
+    bool consent = true,
+  }) async {
+    SharedPreferences.setMockInitialValues({});
+    final measurement = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      CommunityDiagnosticsSpy(),
+    );
+    await measurement.owner('one');
+    if (consent) await measurement.setAnalytics(true);
+    return measurement;
+  }
+
+  Future<void> openPhotoSourceMenu(WidgetTester tester) async {
+    final edit = find.byTooltip('Editar foto de la mascota');
+    await tester.ensureVisible(edit);
+    await tester.pumpAndSettle();
+    await tester.tap(edit);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('initial adoption records main photo outcomes on each retry', (
+    tester,
+  ) async {
+    final repo = MeasuredPublicationCommunity();
+    final picker = MeasuredPublicationPicker();
+    final analytics = CommunityAnalyticsSpy();
+    await start(
+      tester,
+      repo,
+      '/my-adoptions/new',
+      measurement: await publicationMeasurement(analytics),
+      photoPicker: picker,
+    );
+
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pumpAndSettle();
+    expect(repo.post.photos, isEmpty);
+
+    picker.result = () async => throw PlatformException(
+      code: 'photo_access_denied',
+      message: 'Private platform details',
+    );
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Subir desde galería'));
+    await tester.pumpAndSettle();
+    expect(repo.uploads, 0);
+
+    picker.result = () async => XFile.fromData(Uint8List.fromList([1, 2, 3]));
+    repo.failProcessing = true;
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Subir desde galería'));
+    await tester.pumpAndSettle();
+    expect(repo.post.photos, isEmpty);
+
+    repo.failProcessing = false;
+    repo.failUpload = true;
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Subir desde galería'));
+    await tester.pumpAndSettle();
+    expect(repo.post.photos, isEmpty);
+
+    repo.failUpload = false;
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Subir desde galería'));
+    await tester.pumpAndSettle();
+    expect(repo.post.photos, hasLength(1));
+    expect(analytics.events, [
+      'adoption_form_opened',
+      'adoption_main_photo_camera',
+      'adoption_photo_picker_cancelled',
+      'adoption_main_photo_gallery',
+      'adoption_photo_picker_denied',
+      'adoption_main_photo_gallery',
+      'adoption_photo_process_failed',
+      'adoption_main_photo_gallery',
+      'adoption_photo_upload_failed',
+      'adoption_main_photo_gallery',
+      'adoption_photo_attached',
+    ]);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('resumed adoption records each step once and an accepted retry', (
+    tester,
+  ) async {
+    final repo = MeasuredPublicationCommunity();
+    final analytics = CommunityAnalyticsSpy();
+    await start(
+      tester,
+      repo,
+      '/my-adoptions/post',
+      measurement: await publicationMeasurement(analytics),
+    );
+    await tap(tester, 'Continuar');
+    await tester.tap(find.byKey(const ValueKey('publication-header-back')));
+    await tester.pumpAndSettle();
+    await tap(tester, 'Continuar');
+    await tap(tester, 'Continuar');
+    expect(find.text('Valida tu caso'), findsOneWidget);
+
+    repo.failSave = true;
+    await tap(tester, 'Enviar a revisión');
+    repo.failSave = false;
+    repo.failTransition = true;
+    await tap(tester, 'Enviar a revisión');
+    expect(repo.post.status, 'draft');
+    repo.failTransition = false;
+    await tap(tester, 'Enviar a revisión');
+    expect(repo.post.status, 'submitted');
+    expect(analytics.events, [
+      'adoption_draft_resumed',
+      'adoption_details_reached',
+      'adoption_preview_reached',
+      'adoption_submit_attempted',
+      'adoption_submit_save_failed',
+      'adoption_submit_attempted',
+      'adoption_submit_transition_failed',
+      'adoption_submit_attempted',
+      'adoption_submit_accepted',
+      'publication_submitted',
+    ]);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('the adoption form works with analytics disabled', (
+    tester,
+  ) async {
+    final repo = MeasuredPublicationCommunity();
+    final picker = MeasuredPublicationPicker();
+    final analytics = CommunityAnalyticsSpy();
+    final measurement = await publicationMeasurement(analytics, consent: false);
+    await start(
+      tester,
+      repo,
+      '/my-adoptions/new',
+      measurement: measurement,
+      photoPicker: picker,
+    );
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pumpAndSettle();
+    expect(picker.sources, [ImageSource.camera]);
+    expect(analytics.events, isEmpty);
+    await measurement.setAnalytics(true);
+    await tester.pumpAndSettle();
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pumpAndSettle();
+    expect(picker.sources, [ImageSource.camera, ImageSource.camera]);
+    expect(analytics.events, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('cold adoption form waits for saved consent before measuring', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({'dopmi.test.one.analytics': true});
+    final analytics = RestoringPublicationAnalytics();
+    final measurement = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      analytics,
+      CommunityDiagnosticsSpy(),
+    );
+    await measurement.owner(null);
+    final picker = MeasuredPublicationPicker();
+    await start(
+      tester,
+      MeasuredPublicationCommunity(),
+      '/my-adoptions/new',
+      measurement: measurement,
+      photoPicker: picker,
+    );
+    expect(analytics.events, isEmpty);
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pumpAndSettle();
+    expect(analytics.events, isEmpty);
+
+    analytics.ready.complete();
+    await tester.pumpAndSettle();
+    expect(analytics.events, ['adoption_form_opened']);
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pumpAndSettle();
+    expect(analytics.events, [
+      'adoption_form_opened',
+      'adoption_main_photo_camera',
+      'adoption_photo_picker_cancelled',
+    ]);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a main photo result for an obsolete account emits no outcome', (
+    tester,
+  ) async {
+    final repo = MeasuredPublicationCommunity();
+    final pending = Completer<XFile?>();
+    final picker = MeasuredPublicationPicker()..result = () => pending.future;
+    final analytics = CommunityAnalyticsSpy();
+    await start(
+      tester,
+      repo,
+      '/my-adoptions/new',
+      measurement: await publicationMeasurement(analytics),
+      photoPicker: picker,
+    );
+    await openPhotoSourceMenu(tester);
+    await tester.tap(find.text('Tomar foto'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(picker.sources, [ImageSource.camera]);
+    repo.actor = 'two';
+    pending.complete(XFile.fromData(Uint8List.fromList([1])));
+    await tester.pumpAndSettle();
+    expect(repo.uploads, 0);
+    expect(analytics.events, [
+      'adoption_form_opened',
+      'adoption_main_photo_camera',
+    ]);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'failed draft save preserves authored content and can be retried',
     (tester) async {

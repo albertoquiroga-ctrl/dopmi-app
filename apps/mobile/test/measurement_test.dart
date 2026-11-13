@@ -37,6 +37,20 @@ class FailingAnalytics extends AnalyticsSpy {
   }
 }
 
+class PendingOptInAnalytics extends AnalyticsSpy {
+  final optInStarted = Completer<void>();
+  final finishOptIn = Completer<void>();
+
+  @override
+  Future<void> enabled(bool value) async {
+    if (value && !optInStarted.isCompleted) {
+      optInStarted.complete();
+      await finishOptIn.future;
+    }
+    await super.enabled(value);
+  }
+}
+
 class DiagnosticsSpy implements ErrorDiagnostics {
   bool enabledValue = false;
   int reports = 0;
@@ -228,6 +242,36 @@ void main() {
     );
     controller.dispose();
   });
+
+  test(
+    'an opt-in in flight does not enable analytics for the next account',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = PendingOptInAnalytics();
+      final controller = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+      );
+      await controller.owner('alice');
+      final optIn = controller.setAnalytics(true);
+      await analytics.optInStarted.future;
+      final switchAccount = controller.owner('bob');
+      await Future<void>.delayed(Duration.zero);
+      analytics.finishOptIn.complete();
+      await Future.wait([optIn, switchAccount]);
+      await controller.event('adoption_form_opened');
+
+      expect(preferences.getBool('dopmi.test.alice.analytics'), isTrue);
+      expect(preferences.getBool('dopmi.test.bob.analytics'), isNull);
+      expect(controller.analyticsEnabled, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      expect(analytics.events, isEmpty);
+      controller.dispose();
+    },
+  );
 
   test(
     'every approved conversion event is forwarded without payload',
