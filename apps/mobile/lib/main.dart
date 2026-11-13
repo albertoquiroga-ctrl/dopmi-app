@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
+import 'core/android_rescuer_acquisition.dart';
 import 'core/config.dart';
 import 'core/storage.dart';
 import 'core/measurement.dart';
@@ -44,21 +47,54 @@ class _BootstrapState extends State<Bootstrap> {
     if (!config.isValid) throw StateError('missing_config');
     final preferences = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
-    final measurement = MeasurementController(
+    final namespace = Uri.parse(config.url).host;
+    final acquisition = AndroidRescuerAcquisition(preferences, namespace);
+    late final MeasurementController measurement;
+    measurement = MeasurementController(
       preferences,
-      Uri.parse(config.url).host,
+      namespace,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
-      adoptionConsent: (consent) async {
-        await Supabase.instance.client.rpc(
-          'dopmi_set_adoption_measurement',
-          params: {'consent': consent},
+      adoptionConsent: (owner, consent) async {
+        final client = Supabase.instance.client;
+        final session = client.auth.currentSession;
+        if (session == null || session.user.id != owner) return;
+        final authorization = 'Bearer ${session.accessToken}';
+        final analyticsRevision = measurement.analyticsRevision;
+        await client
+            .rpc('dopmi_set_adoption_measurement', params: {'consent': consent})
+            .setHeader('Authorization', authorization);
+        if (!consent || !supportsPlayInstallReferrer) return;
+
+        unawaited(
+          acquisition.record(
+            owner: owner,
+            sessionStillEligible: () =>
+                measurement.ownerId == owner &&
+                measurement.analyticsConsentCurrent &&
+                measurement.analyticsRevision == analyticsRevision &&
+                client.auth.currentSession?.user.id == owner,
+            send: (variant, clickedAt) async {
+              final current = client.auth.currentSession;
+              if (current == null || current.user.id != owner) {
+                throw StateError('Acquisition session changed');
+              }
+              await client
+                  .rpc(
+                    'dopmi_record_android_rescuer_acquisition',
+                    params: {
+                      'p_variant': variant,
+                      'p_clicked_at': clickedAt.toIso8601String(),
+                    },
+                  )
+                  .setHeader('Authorization', 'Bearer ${current.accessToken}');
+            },
+          ),
         );
       },
     );
     await measurement.owner(null);
     {
-      final namespace = Uri.parse(config.url).host;
       final callback = Uri.parse(config.redirect);
       await Supabase.initialize(
         url: config.url,

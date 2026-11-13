@@ -116,12 +116,37 @@ class MobileConfigTests(unittest.TestCase):
         result = config.build_config(env, production_beta=True, adoption_only=True)
         self.assertEqual(result["SUPABASE_URL"], self.production_env()["SUPABASE_URL"])
         self.assertEqual(result["DOPMI_ADOPTION_ONLY"], "true")
+        self.assertEqual(result["DOPMI_STORE_REVIEW"], "false")
         for name in ("ENABLE_GUARDIAN", "ENABLE_GUARDIAN_TEST", "ENABLE_NATIVE_WALLETS_TEST"):
             self.assertEqual(result[name], "false")
         for name in ("STRIPE_PUBLISHABLE_KEY", "STRIPE_PUBLISHABLE_KEY_TEST", "APPLE_PAY_MERCHANT_ID"):
             self.assertEqual(result[name], "")
         env.pop("STRIPE_PUBLISHABLE_KEY")
         self.assertEqual(config.build_config(env, production_beta=True, adoption_only=True), result)
+
+    def test_store_review_only_adds_its_own_flag_to_production_adoption(self):
+        env = {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true"}
+        env.pop("STRIPE_PUBLISHABLE_KEY")
+        adoption = config.build_config(env, production_beta=True, adoption_only=True)
+        review = config.build_config(
+            {**env, "DOPMI_STORE_REVIEW": "true"},
+            production_beta=True, adoption_only=True, store_review=True,
+        )
+        self.assertEqual(review, {**adoption, "DOPMI_STORE_REVIEW": "true"})
+        self.assertEqual(config.build_config(self.env)["DOPMI_STORE_REVIEW"], "false")
+
+    def test_store_review_rejects_incompatible_or_implicit_selection(self):
+        production = self.production_env()
+        cases = (
+            (self.env, False, False, True),
+            (production, True, False, True),
+            ({**production, "DOPMI_STORE_REVIEW": "true"}, True, True, False),
+            ({**production, "DOPMI_STORE_REVIEW": "false"}, True, True, True),
+            ({**production, "DOPMI_STORE_REVIEW": "yes"}, True, True, False),
+        )
+        for env, beta, adoption, review in cases:
+            with self.subTest(beta=beta, adoption=adoption, review=review), self.assertRaises(ValueError):
+                config.build_config(env, production_beta=beta, adoption_only=adoption, store_review=review)
 
     def test_adoption_only_rejects_wrong_environment_or_conflicting_request(self):
         cases = (
@@ -199,6 +224,10 @@ class MobileConfigTests(unittest.TestCase):
             (["--production-beta"], self.production_env(), "true"),
             (["--production-beta", "--adoption-only"],
              {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true"}, "false"),
+            (["--production-beta", "--adoption-only", "--store-review"],
+             {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true", "DOPMI_STORE_REVIEW": "true"}, "false"),
+            (["--production-beta", "--adoption-only"],
+             {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true", "DOPMI_STORE_REVIEW": "true"}, None),
             ([], self.production_env(), None),
             (["--production-beta"], self.env, None),
             (["--production-beta", "--guardian-test"], self.production_env(), None),
@@ -213,7 +242,7 @@ class MobileConfigTests(unittest.TestCase):
                              if name not in set(self.production_env()) | {
                                  "ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "GOOGLE_SERVER_CLIENT_ID",
                                  "GOOGLE_IOS_CLIENT_ID", "ENABLE_NATIVE_WALLETS_TEST", "APPLE_PAY_MERCHANT_ID",
-                                 "DOPMI_ADOPTION_ONLY"}}
+                                 "DOPMI_ADOPTION_ONLY", "DOPMI_STORE_REVIEW"}}
                 process = subprocess.run([sys.executable, str(script), *options], cwd=directory,
                                          env={**child_env, **env}, capture_output=True, text=True)
                 if expected_guardian is not None:
@@ -221,6 +250,7 @@ class MobileConfigTests(unittest.TestCase):
                     result = json.loads(target.read_text())
                     adoption = "--adoption-only" in options
                     self.assertEqual(result["DOPMI_ADOPTION_ONLY"], str(adoption).lower())
+                    self.assertEqual(result["DOPMI_STORE_REVIEW"], str("--store-review" in options).lower())
                     self.assertEqual(result["ENABLE_GUARDIAN"], expected_guardian)
                 else:
                     self.assertNotEqual(process.returncode, 0)
@@ -334,12 +364,23 @@ class MobileConfigTests(unittest.TestCase):
             production_calls = ["../../scripts/write-mobile-config.py --production-beta",
                                 f"../../scripts/write-firebase-config.py --production-beta --platform {platform}"]
             adoption_calls = [production_calls[0] + " --adoption-only", production_calls[1]]
-            for selected, adoption, expected in (
-                (None, None, test_calls), ("test", None, test_calls), ("production", None, production_calls),
-                ("production", "true", adoption_calls), ("test", "true", None), ("production", "yes", None),
-                ("production", "", None), ("staging", None, None),
+            review_calls = [adoption_calls[0] + " --store-review", adoption_calls[1]]
+            for selected, adoption, review, expected in (
+                (None, None, None, test_calls),
+                ("test", None, None, test_calls),
+                ("production", None, None, production_calls),
+                ("production", "true", "false", adoption_calls),
+                ("production", "true", "true", review_calls if platform == "android" else None),
+                ("production", None, "true", None),
+                ("production", "true", "yes", None),
+                ("production", "true", "", None),
+                ("test", None, "true", None),
+                ("test", "true", None, None),
+                ("production", "yes", None, None),
+                ("production", "", None, None),
+                ("staging", None, None, None),
             ):
-                with self.subTest(workflow=workflow_id, environment=selected, adoption=adoption), \
+                with self.subTest(workflow=workflow_id, environment=selected, adoption=adoption, review=review), \
                         tempfile.TemporaryDirectory() as directory:
                     binary = Path(directory) / "bin/python3"
                     binary.parent.mkdir()
@@ -351,6 +392,8 @@ class MobileConfigTests(unittest.TestCase):
                         env["DOPMI_ENVIRONMENT"] = selected
                     if adoption is not None:
                         env["DOPMI_ADOPTION_ONLY"] = adoption
+                    if review is not None:
+                        env["DOPMI_STORE_REVIEW"] = review
                     process = subprocess.run([bash, "-c", script], cwd=directory, env=env,
                                              capture_output=True, text=True)
                     calls = Path(directory) / "calls.txt"

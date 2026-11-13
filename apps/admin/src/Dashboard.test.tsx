@@ -133,4 +133,36 @@ describe('pending review dashboard', () => {
     expect(open).toHaveBeenLastCalledWith({ section: 'rescues', kind: 'case' });
   });
 
+  it('shows the photo signal and distinguishes an unavailable report from zero activity', async () => {
+    const load = vi.fn<NonNullable<AdminApi['firstPublicationSummary']>>()
+      .mockRejectedValueOnce(new Error('private-provider-message'))
+      .mockResolvedValueOnce({
+        generated_at: '2026-11-12T23:16:00Z',
+        window_started_at: '2026-11-05T23:16:00Z',
+        accounts_created: 31,
+        rescuer_mode_accounts: 9,
+        authors_with_drafts: 7,
+        authors_with_photo: 1,
+        authors_with_submissions: 0,
+        authors_with_publications: 0,
+        first_reviews_pending: 0,
+        oldest_first_review_hours: null,
+        stalled_draft_authors: 5,
+      });
+    const open = vi.fn();
+    render(<Dashboard api={api({ firstPublicationSummary: load })} onOpen={open}/>);
+    const report = within(screen.getByRole('region', { name: 'Primera publicación de adopción' }));
+    expect(await report.findByRole('status')).toHaveTextContent('Datos no disponibles');
+    expect(report.queryByText('Con foto guardada')).not.toBeInTheDocument();
+    expect(report.queryByText('private-provider-message')).not.toBeInTheDocument();
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Actualizar pendientes' }));
+    expect(await report.findByText('Revisar cámara y galería.')).toBeInTheDocument();
+    expect(report.getByText('Con foto guardada').nextElementSibling).toHaveTextContent('1');
+    expect(report.getByText('Con envío a revisión').nextElementSibling).toHaveTextContent('0');
+    expect(load).toHaveBeenCalledTimes(2);
+    await userEvent.click(report.getByRole('button', { name: 'Abrir revisión de adopciones' }));
+    expect(open).toHaveBeenCalledWith({ section: 'adoptions' });
+  });
+
 });

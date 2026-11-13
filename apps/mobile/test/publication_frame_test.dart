@@ -168,7 +168,7 @@ void main() {
   );
   for (final scale in [1.0, 2.0]) {
     testWidgets(
-      'three step preview keeps the footer reachable at scale $scale',
+      'three step preview scrolls from the pet summary to the notice at scale $scale',
       (tester) async {
         tester.view.physicalSize = const Size(320, 640);
         tester.view.devicePixelRatio = 1;
@@ -180,6 +180,14 @@ void main() {
           ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
         await tester.runAsync(font.load);
         final repo = PhotoDraftCommunity();
+        const care = 'Necesita medicina por la mañana.';
+        repo.post = Adoption({
+          ...repo.post.data,
+          'story': List.filled(12, 'Busca una familia tranquila.').join(' '),
+          'vaccinated': true,
+          'sterilized': true,
+          'special_care': care,
+        });
         await startPublication(tester, repo, '/my-adoptions/post');
         await tapPublication(tester, find.text('Continuar'));
         await tapPublication(tester, find.text('Continuar'));
@@ -192,12 +200,35 @@ void main() {
         expect(find.text('Quiero saber más'), findsNothing);
         final submit = find.widgetWithText(FilledButton, 'Enviar a revisión');
         expect(tester.getRect(submit).bottom, lessThanOrEqualTo(640));
+        final intro = find.text('Vista previa de la publicación');
+        final introTop = tester.getTopLeft(intro).dy;
         final notice = find.text(
           'Al enviar, el equipo revisará fotos, información y privacidad antes de publicar.',
         );
-        await tester.ensureVisible(notice);
+        final start = tester.getRect(submit).topCenter - const Offset(0, 40);
+        await tester.timedDragFrom(
+          start,
+          const Offset(0, -150),
+          const Duration(milliseconds: 600),
+        );
         await tester.pumpAndSettle();
+        expect(tester.getTopLeft(intro).dy, lessThan(introTop));
+        var sawCare = find.text(care).hitTestable().evaluate().isNotEmpty;
+        for (var drag = 0; drag < 24; drag++) {
+          if (notice.hitTestable().evaluate().isNotEmpty) break;
+          await tester.timedDragFrom(
+            start,
+            const Offset(0, -110),
+            const Duration(milliseconds: 600),
+          );
+          await tester.pumpAndSettle();
+          sawCare =
+              sawCare || find.text(care).hitTestable().evaluate().isNotEmpty;
+        }
+        expect(sawCare, isTrue);
         expect(notice.hitTestable(), findsOneWidget);
+        expect(submit.hitTestable(), findsOneWidget);
+        expect(find.text('Guardar borrador').hitTestable(), findsOneWidget);
         expect(
           find.byKey(const ValueKey('publication-header-back')).hitTestable(),
           findsOneWidget,

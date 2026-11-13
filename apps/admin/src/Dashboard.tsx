@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { AdminApi } from './api';
 import type { ModerationView } from './ModerationQueues';
+import FirstPublicationPanel from './FirstPublicationPanel';
 
 export type DashboardDestination =
   | { section: 'rescues'; kind: 'case' | 'verification' }
@@ -92,6 +93,11 @@ export default function Dashboard({ api, onOpen }: {
     </div>
     <footer className="dashboard-footer"><p>{updatedAt ? `Última consulta: ${updatedAt.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}. Los recuentos cambian al actualizar.` : 'Los recuentos se consultan al abrir este resumen.'}</p>
     </footer>
+    {api.firstPublicationSummary && <FirstPublicationPanel
+      load={api.firstPublicationSummary}
+      revision={revision}
+      onReview={() => onOpen({ section: 'adoptions' })}
+    />}
     {(api.videoModeration || api.listSupportRequests) && <section className="dashboard-tools" aria-labelledby="dashboard-tools-title"><h2 id="dashboard-tools-title">Otros apartados</h2><p>Los videos y las consultas de soporte se revisan por separado y no están incluidos en estos recuentos.</p><div>{api.videoModeration && <button className="secondary" onClick={() => onOpen({ section: 'videos' })}>Revisar videos</button>}{api.listSupportRequests && <button className="secondary" onClick={() => onOpen({ section: 'moderation', view: 'support' })}>Revisar soporte</button>}</div></section>}
   </>;
 }

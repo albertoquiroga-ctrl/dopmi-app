@@ -12,6 +12,8 @@ import '../../core/donor_notification_button.dart';
 import '../../core/config/adoption_only_build.dart';
 import '../../core/ui.dart';
 import '../../core/media/media_store.dart';
+import '../../core/media/photo_runtime.dart';
+import '../../core/media/remote_photo.dart';
 import '../../core/reference_focus_outline.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
@@ -35,6 +37,7 @@ class ThreadsScreen extends ConsumerStatefulWidget {
 
 class _ThreadsState extends ConsumerState<ThreadsScreen> {
   int page = 1;
+  int favoritesRevision = 0;
   bool allFavorites = false;
   final scroll = ScrollController();
   double homeOffset = 0;
@@ -120,7 +123,7 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
               ),
             if (!allFavorites) const SizedBox(height: 12),
             MatchFavorites(
-              key: const ValueKey('match-favorites'),
+              key: ValueKey(('match-favorites', favoritesRevision)),
               all: allFavorites,
               showAll: showFavorites,
             ),
@@ -219,6 +222,10 @@ class _ThreadsState extends ConsumerState<ThreadsScreen> {
                                           await context.push(
                                             '/messages/${result.items[i]['id']}',
                                           );
+                                          if (!mounted) return;
+                                          // The first send may remove a favorite even
+                                          // when Realtime has not reached this device.
+                                          setState(() => favoritesRevision++);
                                           refresh();
                                         },
                                       ),
@@ -590,12 +597,77 @@ class _ThreadState extends ConsumerState<ThreadScreen>
       final textInk = rescuer ? const Color(0xff151423) : ink;
       final textMuted = rescuer ? const Color(0xff4f4e5c) : muted;
       final line = rescuer ? const Color(0xffe3e4ed) : const Color(0xffe6e2dd);
+      final adopterId = thread?['adopter_id'];
+      final showPetCover =
+          !rescuer && adopterId is String && adopterId == repo.userId;
+      final coverPath = thread?['photo'];
+      final participant = thread?['participant_name'] as String? ?? '';
+      final textScaler = MediaQuery.textScalerOf(context);
+      final compactDetail =
+          showPetCover &&
+          MediaQuery.sizeOf(context).width < 360 &&
+          textScaler.scale(12) >= 18;
+      final headerHeight =
+          textScaler.scale(18) * 1.25 +
+          (participant.isEmpty ? 0 : textScaler.scale(12) * 1.2 + 2) +
+          16;
+      final title = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: showPetCover
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        children: [
+          Text(
+            thread?['pet_name'] as String? ?? 'Conversación',
+            maxLines: showPetCover ? 1 : null,
+            overflow: showPetCover ? TextOverflow.ellipsis : null,
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              height: 1.25,
+              letterSpacing: -.36,
+              color: textInk,
+            ),
+          ),
+          if (participant.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              participant,
+              maxLines: showPetCover ? 1 : null,
+              overflow: showPetCover ? TextOverflow.ellipsis : null,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                height: 1.2,
+                letterSpacing: 0,
+                color: textMuted,
+              ),
+            ),
+          ],
+        ],
+      );
+
+      void openDetail() {
+        final info = thread!;
+        final owned = rescuer && info['owner_id'] == repo.userId;
+        final path = owned
+            ? info['case_id'] != null
+                  ? '/rescue/${info['case_id']}'
+                  : '/my-adoptions/${info['post_id']}'
+            : '/adoptions/${info['post_id']}';
+        context.push(path);
+      }
+
       return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          toolbarHeight: 70,
-          centerTitle: true,
-          leadingWidth: 60,
+          toolbarHeight: showPetCover
+              ? headerHeight.clamp(70.0, double.infinity).toDouble()
+              : 70,
+          centerTitle: !showPetCover,
+          leadingWidth: showPetCover ? 52 : 60,
           titleSpacing: 0,
           surfaceTintColor: Colors.transparent,
           shape: Border(bottom: BorderSide(color: line)),
@@ -612,81 +684,58 @@ class _ThreadState extends ConsumerState<ThreadScreen>
               height: 20,
             ),
           ),
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                thread?['pet_name'] as String? ?? 'Conversación',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  height: 1.25,
-                  letterSpacing: -.36,
-                  color: textInk,
-                ),
-              ),
-              if ((thread?['participant_name'] as String? ?? '')
-                  .isNotEmpty) ...[
-                const SizedBox(height: 2),
-                Text(
-                  thread!['participant_name'] as String,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    height: 1.2,
-                    letterSpacing: 0,
-                    color: textMuted,
-                  ),
-                ),
-              ],
-            ],
-          ),
+          title: showPetCover
+              ? Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ThreadPetCover(
+                      source: coverPath is String && coverPath.isNotEmpty
+                          ? adoptionPhotoSource(repo, coverPath)
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    Flexible(child: title),
+                  ],
+                )
+              : title,
           actions: [
             if (thread?['post_id'] != null &&
                 (!adoptionOnlyBuild || thread?['case_id'] == null))
               ReferenceFocusOutline(
                 key: const ValueKey('chat-detail-link'),
                 radius: 0,
-                outlineInset: EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical:
-                      (48 - MediaQuery.textScalerOf(context).scale(12) * 1.2)
-                          .clamp(0, 48) /
-                      2,
-                ),
-                child: TextButton(
-                  onPressed: () {
-                    final owned =
-                        rescuer &&
-                        thread?['owner_id'] ==
-                            ref.read(communityRepositoryProvider).userId;
-                    var path = '/adoptions/${thread!['post_id']}';
-                    if (owned) {
-                      path = thread!['case_id'] != null
-                          ? '/rescue/${thread!['case_id']}'
-                          : '/my-adoptions/${thread!['post_id']}';
-                    }
-                    context.push(path);
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: textInk,
-                    overlayColor: Colors.transparent,
-                    splashFactory: NoSplash.splashFactory,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    textStyle: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      height: 1.2,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  child: const Text('Ver detalle'),
-                ),
+                outlineInset: compactDetail
+                    ? const EdgeInsets.all(4)
+                    : EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical:
+                            (48 - textScaler.scale(12) * 1.2).clamp(0, 48) / 2,
+                      ),
+                child: compactDetail
+                    ? IconButton(
+                        tooltip: 'Ver detalle',
+                        onPressed: openDetail,
+                        color: textInk,
+                        icon: const Icon(Icons.info_outline),
+                      )
+                    : TextButton(
+                        onPressed: openDetail,
+                        style: TextButton.styleFrom(
+                          foregroundColor: textInk,
+                          overlayColor: Colors.transparent,
+                          splashFactory: NoSplash.splashFactory,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          textStyle: const TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 12,
+                            height: 1.2,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        child: const Text('Ver detalle'),
+                      ),
               ),
             if (thread != null && thread!['status'] != 'closed')
               PopupMenuButton<String>(
@@ -943,6 +992,38 @@ class _ThreadState extends ConsumerState<ThreadScreen>
       );
     },
   );
+}
+
+class _ThreadPetCover extends StatelessWidget {
+  const _ThreadPetCover({required this.source});
+
+  final PhotoRef? source;
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 40.0;
+    const placeholder = ColoredBox(
+      color: Color(0xffefeae3),
+      child: Icon(Icons.pets, color: muted, size: 20),
+    );
+    final photo = source;
+    return SizedBox.square(
+      key: const ValueKey('chat-pet-cover'),
+      dimension: size,
+      child: ClipOval(
+        child: photo == null
+            ? placeholder
+            : RemotePhoto(
+                source: photo,
+                width: size,
+                height: size,
+                loading: placeholder,
+                unavailable: (_) => placeholder,
+                excludeFromSemantics: true,
+              ),
+      ),
+    );
+  }
 }
 
 class NotificationsScreen extends ConsumerStatefulWidget {

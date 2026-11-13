@@ -67,6 +67,19 @@ export function validateProfileFieldFeedback(feedback: ProfileFieldFeedback): vo
 export type RescuerPublicProfile = { owner_id:string; display_name:string; bio:string; city:string; region:string; instagram_url:string; facebook_url:string; avatar_path:string; status:string; version:number; review_feedback:string; submitted_at:string|null; updated_at:string; public_email?:string; public_phone?:string; public_address?:string; website_url?:string; contact_consent?:boolean; contact_publication_enabled?:boolean; field_feedback?:ProfileFieldFeedback; approved_snapshot?:Partial<RescuerPublicProfile> };
 export const adoptionStatus: Record<string, string> = { submitted: 'En revisión', published: 'Publicadas', changes_requested: 'Con correcciones', rejected: 'No aprobadas', adopted: 'Adopciones realizadas', archived: 'Retiradas', draft: 'Borradores' };
 export type AdminEnvironment = 'test' | 'production';
+export type FirstPublicationSummary = {
+  generated_at: string;
+  window_started_at: string;
+  accounts_created: number;
+  rescuer_mode_accounts: number;
+  authors_with_drafts: number;
+  authors_with_photo: number;
+  authors_with_submissions: number;
+  authors_with_publications: number;
+  first_reviews_pending: number;
+  oldest_first_review_hours: number | null;
+  stalled_draft_authors: number;
+};
 export type AdminApi = {
   readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
@@ -79,6 +92,7 @@ export type AdminApi = {
   loginWithGoogle?: () => Promise<void>;
   logout: () => Promise<void>;
   isAdmin: () => Promise<boolean>;
+  firstPublicationSummary?: () => Promise<FirstPublicationSummary>;
   listUsers: (search: string, page: number) => Promise<UserPage>;
   listAdoptions: (status: string, page: number) => Promise<{ total: number; items: Adoption[] }>;
   reviews: (postId: string) => Promise<Review[]>;
@@ -232,6 +246,11 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     } : undefined,
     async logout() { callbackHandled = true; const { error } = await client.auth.signOut({ scope: 'local' }); if (error) throw error; },
     async isAdmin() { const { data, error } = await client.rpc('dopmi_is_admin'); if (error) throw error; return data === true; },
+    async firstPublicationSummary() {
+      const { data, error } = await client.rpc('dopmi_admin_first_publication');
+      if (error) throw error;
+      return data;
+    },
     async listUsers(search, page) {
       const { data, error } = await client.rpc('admin_list_users', { search_text: search, page_number: page, page_size: 20 });
       if (error) throw error;

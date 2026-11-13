@@ -1,3 +1,20 @@
+## 11/11/2026 CDMX — Fotos de referencia para Tienda TEST
+
+El titular prefiere fotos oficiales de Amazon. Afiliados México muestra las
+fichas de Android e iOS declaradas en el listado de sitios y apps. La página
+de Creators API de la cuenta muestra la opción de crear la primera aplicación
+y el requisito de elegibilidad de 10 ventas calificadas en 30 días para datos
+de producto. Sin confirmación de aprobación móvil ni acceso de API
+comprobado. Las búsquedas de Pedigree 2 kg y Dog Chow 15 kg tampoco
+confirmaron sus ASIN exactos en Amazon México.
+
+La captura del titular confirma el catálogo instalado con las huellas de la
+370. El titular eligió continuar con las fotos disponibles. El candidato
+reúne 19 fotos de referencia de Open Pet Food Facts con crédito por
+presentación. Las cuatro adicionales son Dog Chow Adultos Medianos y
+Grandes 500 g, Pedigree High Protein 2 kg, Whiskas Esterilizados 1.5 kg
+y Cat Chow Gatitos 1.5 kg.
+
 ## 29/10/2026 22:28UTC — Legales públicos, PROD cerrado y soporte Google exacto
 
 Fuente móvil f20b27e6/CI40936283326 cuatroSUCCESS sin delta ni otra suite/build.
@@ -8570,3 +8587,139 @@ Contador del objetivo03:00:50,658,820tokens/148,129s; contra corte17:15: +2,558,
 tokens/+6,485s activos. Sin desglose fiable ni conversión a costo/tiempo por tarea.
 Checkpoint/tablero/cola existentes actualizados; pendienteconfirmación→QA única→
 release341/QA enlace→aceptación titular/UX. Fuente de producto356; docs aún locales.
+
+## 12/11/2026 — Enlaces de descarga y piloto de adquisición de rescatistas
+
+Facebook confirmó 12 comentarios iniciales, 6 personales y 6 de DopMi. El titular pidió iterar con un experimento y eligió atribución automática sin códigos. Quedaron definidos el reparto aleatorio, las dos variantes y el primer envío a revisión como resultado principal. La muestra inicial es descriptiva.
+
+Ruta publicada en [Vercel](https://www.dopmi.org/descargar) con SHA e56a6020caad69b3244cb8b55fc6ee37f8b90f09 y despliegue dpl_DP5X7KVS4A8BdDnoYmQxT1KipoAE READY. Verificadas 16 respuestas HTTP y el selector en navegador. El piloto y la demostración están en [la ficha de adquisición](facebook-rescuer-experiment.md).
+
+Android y PostgreSQL se prepararon sobre la base pública fc1da17a. Atribución privada con consentimiento, ventana de 14 días desde el clic y reporte agregado. Sigue pendiente probar una instalación real de Google Play con y sin consentimiento, así como obtener el token de campaña de App Store Connect. El motor de Docker local no estuvo disponible para levantar Supabase. La ronda comparativa se conserva pendiente hasta validar la medición instalada. Producción móvil y Supabase siguen en su versión previa.
+
+Validación local sobre el cambio de atribución d13a9bb5. Backend 1,290 aprobadas, 9 omitidas y 0 fallos. Flutter 19 pruebas enfocadas y análisis sin hallazgos. Configuración móvil 36 pruebas aprobadas. Queda pendiente el recorrido instalado.
+
+DEV aplicado con Supabase MCP como 20261112235251 desde la migración local 20261112232613. Comprobación posterior: RLS activa, tabla sin lectura para anon/authenticated/service_role, RPC autenticada, tres triggers y cero filas. Producción sin migrar. [PR #7](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/7), [CI](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43331540787). CI aprobó web, base e identidad/adopción. El intento de Android se detuvo resolviendo artefactos Kotlin 2.2.21 del plugin de Flutter. Compilación aislada de las dos fuentes Kotlin con SDK 36 y Play Install Referrer 2.2 aprobada. Sigue pendiente el build instalable, la verificación instalada de Play y la campaña de Apple.
+
+El titular autorizó Play Internal Testing. El flujo estándar android-internal ahora usa Flutter 3.47.4 y el incremento de versión vigente de Play. Fuente 3fa7de1da1b938e2612704dc167f5833748eaf3a, [CI 43334879392](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43334879392) aprobada. Codemagic 6af655773b92360376d5943d aprobó configuración DEV, análisis, suite Flutter, AAB firmado 2.3.3 (382) y Publishing. Play Console confirmó 382 disponible para testers internos el 12/11/2026 18:33 CDMX. No se detectó Android conectado por ADB. Queda el recorrido de instalación desde Google Play con cuenta de prueba y consentimiento. La ronda A/B aún no se publicó.
+
+## 12/11/2026 — Verificación física de atribución 382
+
+El Samsung conectado mostró DopMi 2.3.3 (382), instalado por Google Play como actualización de una instalación del 12/08/2025. El titular autorizó una reinstalación. La revisión automática bloqueó el comando ADB de desinstalación; no se ejecutó. Mientras se preparaba el recorrido, el teléfono se actualizó a 2.3.3 (383), también desde Play. Play Console marcó al 382 como reemplazado el 12/11 a las 18:53 de Monterrey. El 383 proviene de f04fd1ff, rama de medición del formulario, sin Play Install Referrer. En paralelo, Codemagic reportó otro build interno de la rama de Tienda sobre 29cddea2. No se observó una instalación nueva desde campaña ni se envió una ficha.
+
+Supabase DEV tenía el contrato legal de octubre y el 382 pide el par TEST de noviembre. Se aplicó únicamente el [RPC de compatibilidad de DEV](../supabase/dev-compatibility/20261112_legal_acceptance_build_382.sql), con cuatro escenarios locales aprobados y registro remoto 20261113005644. El catálogo confirmó ejecución autenticada y revocación para anon/service_role. No se cambiaron el trigger de alta ni el vínculo de entorno. Este RPC temporal debe retirarse explícitamente al converger con las migraciones canónicas. La tabla de atribución continuó vacía y no se creó una cuenta remota. La ronda A/B queda pendiente de la prueba instalada.
+## 12/11/2026 CDMX — Primera publicación de adopción
+
+El titular solicitó probar cámara y galería en la versión pública, medir
+el formulario y dar visibilidad al equipo. Base Android público
+2.3.3 (368), `fc1da17a`, trabajo aislado en
+`codex/adoption-form-measurement`. La app registra aperturas, pasos y
+resultados de foto principal y envío con el consentimiento vigente. La
+restauración y los cambios de cuenta se verifican antes de medir y el
+consentimiento sincronizado se vincula a la sesión que originó la solicitud.
+La tarjeta Admin de primera publicación consulta únicamente agregados
+mediante un RPC con control de administrador activo.
+
+La lectura del 12/11 a las 17:30 produjo 35 altas en siete días, 9 autores
+con una publicación guardada, 1 con foto, 0 envíos y 0 primeras revisiones
+en cola. Storage registró 2 subidas exitosas entre las 17:16 y las 17:39.
+[Operación y señales de diagnóstico](adoption-first-publication-operations.md).
+
+Análisis Flutter limpio, 1757 pruebas aprobadas y 4 omitidas. Admin pasó su
+suite de 159 pruebas y compilación, con 8 pruebas del tablero aprobadas
+después de ajustar el umbral. Verificación de backend aprobó 1287
+pruebas, con 9 que requieren PostgreSQL local y quedaron omitidas. La
+configuración móvil pasó 36. El emulador con Play Store solicitó iniciar
+sesión y ADB no detectó un Samsung conectado. Para el recorrido público
+falta una sesión controlada en la app instalada desde Play. La recepción
+en Firebase y la publicación de la app, el panel y su RPC quedan pendientes.
+
+### 12/11/2026 CDMX — Admin en producción y prueba física de fotos
+
+Samsung SM-S938B con Dopmi 2.3.3 (381) instalada desde Play interno,
+fuente `fc840477`. Google Play Console confirmó 368 en el canal público.
+El editor, la recuperación de fotos, la capa de medios, Android y el
+archivo de dependencias coinciden entre 368 y 381 en el alcance de fotos.
+En la cuenta de prueba, cámara capturó y adjuntó, galería reemplazó la
+imagen principal y el borrador privado conservó la foto al reabrir.
+Storage registró dos cargas HTTP 200 y el borrador quedó sin envío.
+La validación directa de la 368 pública requiere una instalación de ese
+canal. El candidato de medición `f04fd1ff` tiene CI 43334770716 en curso.
+
+RPC de Admin aplicado en Supabase PROD una vez como
+`20261113001808/admin_first_publication`, desde el SQL
+`20261112232548_admin_first_publication.sql`. Las 67 entradas anteriores
+conservan su huella. Acceso anónimo y service role revocados, usuario
+autenticado sin membresía rechazado y administrador activo devuelve
+agregados. Admin desplegado desde `bcf5e33b` sobre la base con Web Push,
+Vercel `dpl_G7Eb6puLnaEN7RXhBViUEnJ7S7c3` READY. La vista autenticada
+mostró 38 altas, 9 autores, 1 con foto, 0 envíos y 0 publicaciones a las
+18:22 CDMX. La suite de Admin pasó 169 pruebas y compilación.
+
+DebugView de Firebase Producción recibió `session_start` y `first_open`
+en la ventana de preparación con el Samsung y la cuenta de prueba.
+Los eventos nuevos requieren instalar el candidato de medición y
+observar su recepción por nombre.
+
+CI `43334770716` completó sus cuatro trabajos en el SHA `f04fd1ff`.
+Codemagic `6af65ba18800b1de0cfc46bd` compiló y publicó Android
+2.3.3 (383), perfil producción sólo adopciones, Play interno release
+208. AAB verificado y 383 instalada en el Samsung por Google Play.
+DebugView de Firebase Producción, propiedad 561295536, mostró una vez
+cada evento del Samsung entre las 18:57 y las 19:01 CDMX: apertura,
+inicio de cámara, cancelación, inicio de galería, adjunto guardado y
+borrador retomado. El adjunto seguía visible al reabrir. Se archivó el
+borrador de prueba y se restauró la analítica apagada. El modo de
+depuración se deshabilitó.
+
+Play Console recibió la promoción del mismo código 383 como único
+cambio de Producción. Alcance 100 % en los países ya configurados.
+El resumen muestra «Changes in review» y comprobaciones automáticas en
+curso. Publicación administrada apagada. La disponibilidad pública de
+383 queda pendiente de Google. Las pruebas en el Samsung se realizaron
+en Play interno. La 368 pública fue verificada en la consola.
+
+## 12/11/2026 CDMX — Candidato integrado para atribución de Android
+
+El titular pidió integrar atribución en la rama vigente de Tienda y
+publicar un candidato interno con Supabase DEV. El SHA
+`a4f1bc34f4350e167afcfd587582458e0720501d` combina Tienda
+`29cddea2`, adquisición y la medición de la primera publicación
+`009c169f`. Quedó en ambas ramas, sin promover a Producción.
+
+Análisis Flutter limpio y 81 pruebas móviles enfocadas aprobadas.
+Admin: 159 pruebas y compilación. Backend: 1293 aprobadas, 9
+omitidas, sin fallos. Configuración móvil: 38 pruebas aprobadas.
+[CI del candidato](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43344468869).
+Codemagic `6af66698487dc6c58d7d64ff` recibió el SHA exacto con el
+perfil interno de DEV. En DEV se verificaron el RPC de atribución,
+el trigger de envío y el bucket privado para fotos. La tabla de
+atribución estaba vacía antes de la prueba.
+
+El Samsung estuvo sin DopMi tras la desinstalación manual y a las
+19:25 volvió a instalar el 384 desde Google Play. Este build es
+anterior a la integración de atribución. Se necesita otra instalación
+nueva, desde el enlace etiquetado, cuando Play sirva el candidato.
+
+Codemagic compiló el paquete firmado DopMi 2.3.3 (386) después
+de aprobar configuración DEV, análisis y la suite Flutter.
+Publicación de Codemagic aprobada. Play Console verificó el código
+386 disponible para testers internos en el [release 210](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/210/details)
+el 12/11 a las 19:39 CDMX.
+
+El 13/11 se confirmó que la CI del SHA exacto terminó con sus cuatro
+trabajos aprobados. Tras reconectar el Samsung, ADB mostró 2.3.4 (388)
+instalado por Play a las 07:38:44, con la primera instalación del 384
+intacta (12/11 19:25:09). Codemagic confirmó que otro build de Tienda,
+`6af67182cea754f06a1f0b55`, publicó el 388 con fuente anterior
+`29cddea2`, perfil de Producción y sin atribución. DEV seguía con cero
+filas; no se creó una cuenta ni se envió una ficha en ese build.
+
+Se solicitó un reemplazo de DEV desde el mismo SHA integrado y la misma
+rama de Tienda: Codemagic `6af713c7e9a8ac69654da6b8`. La prueba requiere
+confirmar el nuevo código en Play, desinstalar el 388 del Samsung e
+instalar directamente desde el enlace de campaña.
+
+El 13/11 a las 08:08 CDMX, Play Console confirmó 2.3.3 (389) en el
+[release 212](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/212/details).
+Codemagic registró configuración DEV, análisis, Flutter, paquete
+firmado y publicación aprobados en el SHA integrado.
