@@ -85,6 +85,13 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         result[name] = value
     if result["ENABLE_GOOGLE_AUTH"] == "true" and not result["GOOGLE_SERVER_CLIENT_ID"]:
         raise ValueError("Google authentication requires GOOGLE_SERVER_CLIENT_ID.")
+    posthog_token = env.get("DOPMI_POSTHOG_PROJECT_TOKEN", "").strip()
+    posthog_region = env.get("DOPMI_POSTHOG_REGION", "").strip()
+    if posthog_token or posthog_region:
+        if not re.fullmatch(r"phc_[A-Za-z0-9]+", posthog_token) or posthog_region not in {"us", "eu"}:
+            raise ValueError("PostHog requires a project ingestion token and region us or eu.")
+        result["DOPMI_POSTHOG_PROJECT_TOKEN"] = posthog_token
+        result["DOPMI_POSTHOG_REGION"] = posthog_region
     native = env.get("ENABLE_NATIVE_WALLETS_TEST", "false").strip().lower() or "false"
     if native not in ("true", "false"):
         raise ValueError("ENABLE_NATIVE_WALLETS_TEST must be true or false.")

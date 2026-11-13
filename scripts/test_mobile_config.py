@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -18,6 +19,12 @@ spec.loader.exec_module(config)
 maps_spec = importlib.util.spec_from_file_location("maps_config", Path(__file__).with_name("write-maps-config.py"))
 maps_config = importlib.util.module_from_spec(maps_spec)
 maps_spec.loader.exec_module(maps_config)
+
+
+def codemagic_workflow(source, workflow_id):
+    heading = rf"^  {re.escape(workflow_id)}:(?: +&[\w-]+)? *\n"
+    body = re.split(heading, source, maxsplit=1, flags=re.MULTILINE)[1]
+    return re.split(r"^  [\w-]+:", body, maxsplit=1, flags=re.MULTILINE)[0]
 
 
 class MobileConfigTests(unittest.TestCase):
@@ -62,6 +69,21 @@ class MobileConfigTests(unittest.TestCase):
             config.build_config({**self.env, "ENABLE_GOOGLE_AUTH": "true"})
         with self.assertRaises(ValueError):
             config.build_config({**self.env, "GOOGLE_SERVER_CLIENT_ID": "not-an-oauth-client"})
+
+    def test_posthog_passes_only_explicit_ingestion_configuration(self):
+        token = "phc_UnitTestFixture"
+        self.assertNotIn("DOPMI_POSTHOG_PROJECT_TOKEN", config.build_config(self.env))
+        for region in ("us", "eu"):
+            configured = config.build_config({**self.env, "DOPMI_POSTHOG_PROJECT_TOKEN": token,
+                                               "DOPMI_POSTHOG_REGION": region})
+            self.assertEqual(configured["DOPMI_POSTHOG_PROJECT_TOKEN"], token)
+            self.assertEqual(configured["DOPMI_POSTHOG_REGION"], region)
+        for invalid_token, invalid_region in ((token, ""), ("", "us"),
+                                               (token, "example.com"), ("phx_UnitTestFixture", "us")):
+            with self.assertRaises(ValueError) as caught:
+                config.build_config({**self.env, "DOPMI_POSTHOG_PROJECT_TOKEN": invalid_token,
+                                     "DOPMI_POSTHOG_REGION": invalid_region})
+            self.assertNotIn("UnitTestFixture", str(caught.exception))
 
     def test_invalid_or_missing_options_fail_early(self):
         for name, value in (("SUPABASE_URL", ""), ("SUPABASE_PUBLISHABLE_KEY", ""),
@@ -350,12 +372,13 @@ class MobileConfigTests(unittest.TestCase):
                 return "\n".join(line[10:] for line in lines[1:] if line.startswith("          "))
             return lines[0].strip()
 
-        for workflow_id, platform, steps in (
-            ("android-guardian-internal", "android",
+        for workflow_id, source_id, platform, steps in (
+            ("android-guardian-internal", "android-guardian-internal", "android",
              ("Create explicit Guardian environment configuration", "Create matching Guardian Firebase configuration")),
-            ("ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
+            ("ios-testflight", "ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
+            ("ios-app-store", "ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
         ):
-            workflow = codemagic.split(f"\n  {workflow_id}:\n", 1)[1]
+            workflow = codemagic_workflow(codemagic, source_id)
             script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join(
                 configuration_script(workflow, name) for name in steps
             )
@@ -388,6 +411,10 @@ class MobileConfigTests(unittest.TestCase):
                     binary.chmod(0o755)
                     env = {name: value for name, value in os.environ.items()
                            if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
+                    if workflow_id == "ios-app-store":
+                        env["DOPMI_APP_STORE_SUBMISSION"] = "true"
+                        if (selected, adoption, review) != ("production", "true", "false"):
+                            expected = None
                     if selected is not None:
                         env["DOPMI_ENVIRONMENT"] = selected
                     if adoption is not None:
@@ -406,7 +433,7 @@ class MobileConfigTests(unittest.TestCase):
 
     def test_testflight_build_info_describes_the_generated_profile(self):
         workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
-        workflow = workflow.split("\n  ios-testflight:\n", 1)[1]
+        workflow = codemagic_workflow(workflow, "ios-testflight")
         embedded = workflow.split("<<'PYINFO'\n", 1)[1].split("          PYINFO", 1)[0]
         program = "\n".join(line[10:] for line in embedded.splitlines())
         for production, adoption in ((False, False), (True, False), (True, True)):
@@ -432,7 +459,7 @@ class MobileConfigTests(unittest.TestCase):
         for name, argument in (("ios-verify", '--app "$CM_BUILD_DIR/apps/mobile/build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app"'),
                                ("ios-testflight", '--ipa "$IPA_PATH"')):
             with self.subTest(workflow=name):
-                workflow = codemagic.split(f"\n  {name}:\n", 1)[1].split("\n  ios-", 1)[0]
+                workflow = codemagic_workflow(codemagic, name)
                 environment, scripts = workflow.split("    scripts:\n", 1)
                 self.assertIn("BYPASS_PERMISSION_LOCATION_ALWAYS: '1'", environment)
                 guard = f"python3 ../../scripts/verify-ios-foreground-location.py {argument}"
