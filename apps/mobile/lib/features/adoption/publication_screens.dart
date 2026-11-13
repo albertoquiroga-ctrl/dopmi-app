@@ -209,6 +209,10 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
   bool requiresSpecialCare = false, needsPublisherName = true;
   CommunityRepository? _formRepository;
   String? _formActor;
+  Future<void> Function(String)? _postHogAttempt;
+  bool _postHogPhotoReady = false;
+  final _reportedMissingRequirements = <String>{};
+  bool _firebaseOpeningObserved = false;
   bool _openingObserved = false;
   VoidCallback? _cancelOpeningObservation;
   final _reachedSteps = <int>{};
@@ -249,20 +253,34 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     if (!identical(_formRepository, source) ||
         _formActor != actor ||
         measurement == null ||
-        !measurement.preferencesReadyFor(actor) ||
-        !measurement.analyticsEnabled) {
+        !measurement.preferencesReadyFor(actor)) {
       return (_) {};
     }
+    final sendFirebase =
+        _firebaseOpeningObserved && measurement.analyticsEnabled;
+    final postHogAttempt = _postHogAttempt;
     return (event) {
       if (identical(
             _currentPublicationMeasurement(source, actor),
             measurement,
           ) &&
-          measurement.preferencesReadyFor(actor) &&
-          measurement.analyticsEnabled) {
-        unawaited(measurement.event(event));
+          measurement.preferencesReadyFor(actor)) {
+        if (sendFirebase && measurement.analyticsEnabled) {
+          unawaited(measurement.event(event));
+        }
+        if (postHogAttempt != null) {
+          unawaited(postHogAttempt(event));
+          if (event == 'adoption_photo_attached') _reportPostHogPhotoReady();
+        }
       }
     };
+  }
+
+  void _reportPostHogPhotoReady() {
+    final attempt = _postHogAttempt;
+    if (attempt == null || _postHogPhotoReady) return;
+    _postHogPhotoReady = true;
+    unawaited(attempt('adoption_photo_ready'));
   }
 
   void _observeFormOpening(
@@ -281,10 +299,20 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       _openingObserved = true;
 
       void resolve(MeasurementController measurement) {
-        if (!measurement.analyticsEnabled) return;
+        final attempt = measurement.adoptionAttempt(actor);
+        if (!measurement.analyticsEnabled && attempt == null) return;
         _formRepository = source;
         _formActor = actor;
-        unawaited(measurement.event(event));
+        if (measurement.analyticsEnabled) {
+          _firebaseOpeningObserved = true;
+          unawaited(measurement.event(event));
+        }
+        if (attempt != null) {
+          _postHogAttempt = attempt;
+          unawaited(attempt('adoption_editor_started'));
+          unawaited(attempt(event));
+          if (photos.isNotEmpty) _reportPostHogPhotoReady();
+        }
       }
 
       final measurement = ref.read(measurementControllerProvider);
@@ -428,6 +456,18 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     if (busy) return;
     final missing = step == 0 ? _firstMissingBasicField : null;
     if (missing != null) {
+      final attempt = _postHogAttempt;
+      if (attempt != null && _currentPublicationActor(repo, _formActor)) {
+        final event = switch (missing.field) {
+          'photo' => 'adoption_continue_needs_photo',
+          'story' => 'adoption_continue_needs_story',
+          'location' ||
+          'city' ||
+          'region' => 'adoption_continue_needs_location',
+          _ => 'adoption_continue_needs_other',
+        };
+        if (_reportedMissingRequirements.add(event)) unawaited(attempt(event));
+      }
       FocusManager.instance.primaryFocus?.unfocus();
       setState(() => _showBasicGuidance = true);
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -451,6 +491,9 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       if (!form.currentState!.validate()) return;
       await save();
       if (mounted) {
+        if (step == 0 && _currentPublicationActor(source, _formActor)) {
+          _reportPostHogPhotoReady();
+        }
         setState(() {
           _showBasicGuidance = false;
           step++;

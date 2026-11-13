@@ -6,6 +6,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+
+import 'posthog_adoption.dart';
 
 abstract interface class ProductAnalytics {
   Future<void> enabled(bool value);
@@ -107,14 +110,29 @@ class MeasurementController extends ChangeNotifier {
     this.analytics,
     this.diagnostics, {
     this.adoptionConsent,
+    this._postHog,
+    this._authenticatedOwner,
   });
   final Future<void> Function(String owner, bool consent)? adoptionConsent;
+  final PostHogAdoptionAnalytics? _postHog;
+  final String? Function()? _authenticatedOwner;
   Future<void> _consentSync = Future.value();
   Future<void> _analyticsPreferences = Future.value();
+  int _adoptionConsentVersion = 0;
+  bool _adoptionAnalyticsEnabled = false;
+  final _pendingAdoptionRevocations = <String>{};
   String? get ownerId => _owner;
   bool preferencesReadyFor(String? owner) =>
       owner != null && _owner == owner && _readyOwner == owner;
   Future<void> get consentReady => _consentSync;
+  bool get hasAdoptionAnalytics => _postHog != null;
+  bool get adoptionAnalyticsSelected =>
+      _adoptionAnalyticsEnabled &&
+      preferencesReadyFor(_owner) &&
+      _authenticatedOwner?.call() == _owner;
+  bool get adoptionAnalyticsEnabled =>
+      adoptionAnalyticsSelected &&
+      !_pendingAdoptionRevocations.contains(_owner);
 
   void _syncConsent() {
     final callback = adoptionConsent;
@@ -154,6 +172,8 @@ class MeasurementController extends ChangeNotifier {
   Future<void> owner(String? value) => _configureAnalytics(() async {
     if (_owner == value && !loading && _readyOwner == value) return;
     _readyOwner = null;
+    _adoptionConsentVersion++;
+    _adoptionAnalyticsEnabled = false;
     await analytics.enabled(false);
     await diagnostics.enabled(false);
     _removeErrorHandler();
@@ -165,6 +185,10 @@ class MeasurementController extends ChangeNotifier {
     lastAnalyticsResult = null;
     analyticsEnabled =
         value != null && (preferences.getBool(key('analytics')) ?? false);
+    _adoptionAnalyticsEnabled =
+        _postHog != null &&
+        value != null &&
+        (preferences.getBool(key('posthog-adoption-v1')) ?? false);
     diagnosticsEnabled =
         value != null && (preferences.getBool(key('diagnostics')) ?? false);
     await analytics.enabled(analyticsEnabled);
@@ -194,6 +218,64 @@ class MeasurementController extends ChangeNotifier {
       }
       notifyListeners();
     });
+  }
+
+  Future<void> setAdoptionAnalytics(bool value) {
+    final actor = _owner;
+    if (actor == null ||
+        _postHog == null ||
+        !preferencesReadyFor(actor) ||
+        _authenticatedOwner?.call() != actor) {
+      return Future.value();
+    }
+    final version = ++_adoptionConsentVersion;
+    final preferenceKey = key('posthog-adoption-v1');
+    if (!value) _pendingAdoptionRevocations.add(actor);
+    return _configureAnalytics(() async {
+      if (!await preferences.setBool(preferenceKey, value)) {
+        throw StateError('posthog_consent_not_saved');
+      }
+      _pendingAdoptionRevocations.remove(actor);
+      if (version == _adoptionConsentVersion &&
+          preferencesReadyFor(actor) &&
+          _authenticatedOwner?.call() == actor) {
+        _adoptionAnalyticsEnabled = value;
+      }
+      notifyListeners();
+    });
+  }
+
+  Future<void> Function(String)? adoptionAttempt(String? actor) {
+    final postHog = _postHog;
+    if (postHog == null ||
+        !preferencesReadyFor(actor) ||
+        !adoptionAnalyticsEnabled) {
+      return null;
+    }
+    final consentVersion = _adoptionConsentVersion;
+    final attempt = const Uuid().v4();
+    DateTime? lastTimestamp;
+    Future<void> pending = Future.value();
+    return (event) {
+      if (!PostHogAdoptionAnalytics.allowed.contains(event)) {
+        return Future.value();
+      }
+      final previous = lastTimestamp;
+      final now = DateTime.now().toUtc();
+      final timestamp =
+          previous != null &&
+              now.millisecondsSinceEpoch <= previous.millisecondsSinceEpoch
+          ? previous.add(const Duration(milliseconds: 1))
+          : now;
+      lastTimestamp = timestamp;
+      return pending = pending.then((_) async {
+        if (consentVersion == _adoptionConsentVersion &&
+            preferencesReadyFor(actor) &&
+            adoptionAnalyticsEnabled) {
+          await postHog.capture(event, attempt, timestamp);
+        }
+      });
+    };
   }
 
   Future<void> setDiagnostics(bool value) async {
@@ -281,6 +363,8 @@ class MeasurementController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _adoptionConsentVersion++;
+    _postHog?.close();
     _removeErrorHandler();
     super.dispose();
   }

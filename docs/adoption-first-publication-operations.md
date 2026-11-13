@@ -105,21 +105,128 @@ confirmar que la ficha se debe publicar. Una sesión ayuda a formular una
 corrección. Volver a probar el paso con otra persona ayuda a ver si la
 corrección resuelve el mismo problema.
 
-Para un piloto de analítica de producto, PostHog permite
-[embudos](https://posthog.com/docs/product-analytics/funnels),
-[alertas](https://posthog.com/docs/alerts),
-[suscripciones a reportes](https://posthog.com/docs/product-analytics/subscriptions)
-y [grabación para Flutter](https://posthog.com/docs/session-replay/installation/flutter).
-Codex puede consultar los reportes con el
-[conector de PostHog](https://posthog.com/docs/model-context-protocol/codex)
-y [acceso acotado de lectura](https://posthog.com/docs/api/scopes).
-Su [plan gratuito](https://posthog.com/pricing) incluye un millón de
-eventos y cinco mil grabaciones al mes. El piloto recomendado empezaría
-con eventos explícitos y grabación apagada, una vez aprobados el proveedor
-y el alcance del consentimiento. La prueba de grabación, si se necesita,
-usaría cuentas y datos sintéticos antes de exponerla a usuarios.
+## PostHog
 
-**Comprobación de la siguiente versión.** En DebugView de Firebase para DEV,
+La configuración remota queda pendiente de acceso al proyecto de Dopmi.
+En el proyecto, desactiva **Session Replay**, **Autocapture** y la
+transformación **GeoIP**. En **Settings → Project → General**, configura
+**IP data capture** para descartar las IP. El cliente usa captura directa,
+envía eventos explícitos con `platform` y `environment`, y pide a
+PostHog omitir perfiles de persona y enriquecimiento geográfico.
+En **Cuenta y privacidad**, **Medición de publicaciones con PostHog**
+empieza apagada y tiene consentimiento propio. El identificador aleatorio
+agrupa eventos de un intento en el editor. [Privacidad en PostHog](https://posthog.com/docs/privacy/data-collection)
+
+### Embudo guardado
+
+Guarda **Dopmi · Primera publicación de adopción** en Product Analytics,
+con pasos ordenados, últimos 30 días y ventana de conversión de siete días.
+Aplica el filtro de evento `environment = production` y desglosa por
+`platform` cuando compares Android e iOS.
+
+| Paso | Evento |
+| --- | --- |
+| Abre o retoma el editor | `adoption_editor_started` |
+| Tiene foto principal guardada | `adoption_photo_ready` |
+| Avanza a detalles | `adoption_details_reached` |
+| Llega a la vista previa | `adoption_preview_reached` |
+| El servidor acepta el envío a revisión | `adoption_submit_accepted` |
+
+El embudo cuenta intentos con consentimiento. Una nueva apertura crea otro
+intento y retomar un borrador con foto ya guardada cuenta como foto lista.
+Usa Admin para las cifras por cuenta y la cola de revisión. [Embudos de PostHog](https://posthog.com/docs/product-analytics/funnels)
+
+### Alertas diarias
+
+Guarda cada consulta como un insight SQL (HogQL). En **Monitor → Alerts**,
+selecciona la columna `incidencias`, la última fila y **Has value**.
+Suscribe al operador responsable que ya tenga acceso al proyecto. Revisa
+el valor calculado y la próxima comprobación desde la alerta.
+[Alertas en PostHog](https://posthog.com/docs/alerts)
+
+**Foto principal con fallos sin resolver.** Avisa si `incidencias > 2`.
+Cuenta tres o más intentos distintos en las últimas 24 horas con un fallo
+de foto y sin foto lista en ese intento. Revisa el evento de fallo y la
+plataforma antes de reproducirlo.
+
+```sql
+SELECT count() AS incidencias
+FROM (
+  SELECT distinct_id
+  FROM events
+  WHERE timestamp >= now() - INTERVAL 24 HOUR
+    AND properties.environment = 'production'
+    AND event IN (
+      'adoption_photo_prep_failed',
+      'adoption_photo_picker_denied',
+      'adoption_photo_picker_failed',
+      'adoption_photo_read_failed',
+      'adoption_photo_process_failed',
+      'adoption_photo_upload_failed',
+      'adoption_photo_attach_save_failed',
+      'adoption_photo_ready'
+    )
+  GROUP BY distinct_id
+  HAVING countIf(event = 'adoption_photo_ready') = 0
+)
+```
+
+**Editor sin envíos aceptados.** Avisa si `incidencias > 0`. Se activa
+cuando cinco o más intentos empezaron en los últimos siete días y tuvieron
+al menos 24 horas para avanzar, y ninguno de esos intentos llegó a envío.
+Revisa el paso con menor avance y compáralo con Admin.
+
+```sql
+SELECT if(
+  countIf(aperturas > 0) >= 5
+  AND countIf(aperturas > 0 AND envios > 0) = 0,
+  1,
+  0
+) AS incidencias
+FROM (
+  SELECT
+    countIf(
+      event = 'adoption_editor_started'
+      AND timestamp <= now() - INTERVAL 24 HOUR
+    ) AS aperturas,
+    countIf(event = 'adoption_submit_accepted') AS envios
+  FROM events
+  WHERE timestamp >= now() - INTERVAL 7 DAY
+    AND properties.environment = 'production'
+    AND event IN ('adoption_editor_started', 'adoption_submit_accepted')
+  GROUP BY distinct_id
+)
+```
+
+Para configurar por API, usa `insight:write` y `alert:write`, más
+`query:read` para verificar las consultas. Para consultar desde Codex,
+limita el acceso al proyecto con `insight:read`, `alert:read` y
+`query:read`. Agrega `dashboard:read` si se comparte un tablero.
+[Conector de PostHog](https://posthog.com/docs/model-context-protocol/codex) · [Permisos de API](https://posthog.com/docs/api/scopes)
+
+### Comprobación de PostHog
+
+1. Con una cuenta controlada en DEV y PostHog apagado, abre **Publicar** y
+   toca **Continuar** sin foto. Comprueba que se muestra la indicación y
+   que esos pasos no aparecen en la actividad de PostHog.
+2. Activa la opción de PostHog y abre el editor de nuevo. Cancela el selector
+   de cámara, toca **Continuar**, adjunta una foto de galería, completa la
+   ficha y envíala a revisión en DEV. Comprueba los cinco eventos del
+   embudo y los eventos de diagnóstico. Deben compartir el mismo código
+   aleatorio y estar etiquetados `environment = test`.
+3. Retoma el borrador con foto en una prueba separada. Comprueba el nuevo
+   código de intento y el paso de foto lista. Apaga la opción antes de
+   repetir una acción y verifica que no aparezcan eventos nuevos.
+4. Comprueba que la actividad contiene sólo los eventos esperados y los
+   metadatos previstos. Verifica que la grabación siga apagada. Ejecuta
+   ambas consultas, comprueba sus valores y verifica que el embudo y las
+   alertas de producción excluyen los eventos de DEV.
+
+La recepción de eventos y la evaluación de alertas requieren acceso
+al proyecto y una compilación configurada. Una carga aceptada por el
+endpoint no acredita que el evento ya sea consultable.
+
+**Comprobación de Firebase y Admin.** En DebugView de Firebase para DEV,
 con una cuenta controlada que activó medición, abre Publicar, cancela cámara,
 selecciona una foto en galería y verifica el adjunto al reabrir el borrador.
 Completa los campos, llega a la vista previa y envía a revisión en DEV.

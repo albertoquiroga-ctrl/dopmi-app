@@ -12,6 +12,7 @@ import 'app.dart';
 import 'core/config.dart';
 import 'core/storage.dart';
 import 'core/measurement.dart';
+import 'core/posthog_adoption.dart';
 import 'core/ui.dart';
 import 'core/content_links.dart';
 import 'core/media/photo_runtime.dart';
@@ -49,6 +50,17 @@ class _BootstrapState extends State<Bootstrap> {
       Uri.parse(config.url).host,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
+      postHog: kIsWeb
+          ? null
+          : PostHogAdoptionAnalytics.configure(
+              token: const String.fromEnvironment(
+                'DOPMI_POSTHOG_PROJECT_TOKEN',
+              ),
+              region: const String.fromEnvironment('DOPMI_POSTHOG_REGION'),
+              platform: defaultTargetPlatform.name.toLowerCase(),
+              environment: config.environment,
+            ),
+      authenticatedOwner: () => Supabase.instance.client.auth.currentUser?.id,
       adoptionConsent: (owner, consent) async {
         final client = Supabase.instance.client;
         final session = client.auth.currentSession;

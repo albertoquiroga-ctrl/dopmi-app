@@ -199,6 +199,30 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
               isError: measurement.lastAnalyticsResult != 'aceptado_por_sdk',
             ),
           ],
+          if (measurement?.hasAdoptionAnalytics == true)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Medición de publicaciones con PostHog'),
+              subtitle: const Text(
+                'Si la activas, PostHog recibe los pasos del formulario y sus resultados. Usamos un código aleatorio por intento. No enviamos tu cuenta, el contenido de la ficha ni grabaciones de pantalla. Puedes apagarla en cualquier momento.',
+              ),
+              value: measurement!.adoptionAnalyticsSelected,
+              onChanged: measurement.loading || busy
+                  ? null
+                  : (value) => perform(() async {
+                      try {
+                        await measurement.setAdoptionAnalytics(value);
+                      } catch (_) {
+                        if (mounted) {
+                          setState(
+                            () => error = value
+                                ? 'No pudimos guardar tu elección de PostHog. Intenta de nuevo.'
+                                : 'Pausamos la medición de PostHog. Intenta apagarla de nuevo para guardar el cambio.',
+                          );
+                        }
+                      }
+                    }),
+            ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Diagnóstico de errores'),

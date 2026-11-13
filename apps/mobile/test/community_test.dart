@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
+import 'package:dopmi_mobile/core/posthog_adoption.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/publication_screens.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
@@ -10,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1505,6 +1509,52 @@ void main() {
       'adoption_submit_accepted',
       'publication_submitted',
     ]);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('resumed adoption sends an independent PostHog funnel', (
+    tester,
+  ) async {
+    final repo = MeasuredPublicationCommunity();
+    final firebase = CommunityAnalyticsSpy();
+    final events = <Map<String, dynamic>>[];
+    SharedPreferences.setMockInitialValues({});
+    final measurement = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      firebase,
+      CommunityDiagnosticsSpy(),
+      postHog: PostHogAdoptionAnalytics.configure(
+        token: 'phc_test',
+        region: 'us',
+        platform: 'ios',
+        environment: 'test',
+        client: MockClient((request) async {
+          events.add(jsonDecode(request.body) as Map<String, dynamic>);
+          return http.Response('{"status":1}', 200);
+        }),
+      ),
+      authenticatedOwner: () => repo.userId,
+    );
+    await measurement.owner('one');
+    await measurement.setAdoptionAnalytics(true);
+    await start(tester, repo, '/my-adoptions/post', measurement: measurement);
+    await tap(tester, 'Continuar');
+    await tap(tester, 'Continuar');
+    await tap(tester, 'Enviar a revisión');
+
+    expect(repo.post.status, 'submitted');
+    expect(firebase.events, isEmpty);
+    expect(events.map((body) => body['event']), [
+      'adoption_editor_started',
+      'adoption_draft_resumed',
+      'adoption_photo_ready',
+      'adoption_details_reached',
+      'adoption_preview_reached',
+      'adoption_submit_attempted',
+      'adoption_submit_accepted',
+    ]);
+    expect(events.map((body) => body['distinct_id']).toSet(), hasLength(1));
     expect(tester.takeException(), isNull);
   });
 
