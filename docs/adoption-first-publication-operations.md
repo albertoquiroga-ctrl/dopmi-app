@@ -92,20 +92,23 @@ de GA4 como evidencia de usuarios.
 
 ### Sesión observada de diez minutos
 
-Pide a una persona que ya tenga una mascota lista para adopción que use su
-propio teléfono y publique como lo haría normalmente. Deja que encuentre
-**Publicar** por su cuenta. Si se detiene, pregunta «¿Qué esperabas que
-pasara?» y «¿Qué harías ahora?». Anota el dispositivo y la versión, el
-último paso completado y la respuesta en tus propias palabras. Si el
-obstáculo es una foto, anota si llegó a abrir el selector, si encontró
-una imagen y si volvió al formulario con ella. Pide que avise antes de
-enviar a revisión, para confirmar que la ficha se debe publicar. Una
-sesión ayuda a formular una corrección. Volver a probar el paso con
-otra persona ayuda a ver si la corrección resuelve el mismo problema.
+Invita a dos personas que tengan una mascota lista para adopción y que
+acepten que observes el recorrido en su propio teléfono. Pide a una que
+retome su borrador y a la otra que encuentre **Publicar** por su cuenta.
+Si alguien se detiene, pregunta «¿Qué esperabas que pasara?» y «¿Qué harías
+ahora?». Anota el dispositivo, la versión, el último paso completado y la
+dificultad en tus propias palabras. Registra sólo la dificultad y el paso,
+omitiendo nombres, fotos, direcciones y texto de la ficha. Si el obstáculo
+es una foto, anota si abrió el selector, encontró una imagen y volvió al
+formulario con ella. Pide que avise antes de enviar a revisión para
+confirmar que la ficha se debe publicar. Una sesión ayuda a formular una
+corrección. Volver a probar el paso con otra persona ayuda a ver si la
+corrección resuelve el mismo problema.
 
-Para un piloto de analítica de producto con alertas y reportes recurrentes,
-[PostHog](https://posthog.com/docs/product-analytics/funnels) permite
-embudos, [suscripciones a reportes](https://posthog.com/docs/product-analytics/subscriptions)
+Para un piloto de analítica de producto, PostHog permite
+[embudos](https://posthog.com/docs/product-analytics/funnels),
+[alertas](https://posthog.com/docs/alerts),
+[suscripciones a reportes](https://posthog.com/docs/product-analytics/subscriptions)
 y [grabación para Flutter](https://posthog.com/docs/session-replay/installation/flutter).
 Codex puede consultar los reportes con el
 [conector de PostHog](https://posthog.com/docs/model-context-protocol/codex)

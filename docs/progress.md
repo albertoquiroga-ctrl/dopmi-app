@@ -8678,6 +8678,11 @@ Al tocar «Continuar» se muestra el requisito pendiente y el formulario
 se desplaza al control. Al completar ese requisito la indicación cambia
 al siguiente. La prueba combinada a 320×640 con texto al 200 % valida
 foto, historia y avance. Análisis Flutter sin hallazgos, 78 pruebas
-dirigidas y 36 de configuración móvil aprobadas. La corrección está en
-preparación para integración.
-El Samsung reporta 2.3.3 (384) instalada desde Play, un candidato distinto.
+dirigidas y 36 de configuración móvil aprobadas. El candidato
+`ccaa6c9be71bdb28e98abab2b87594c440159ee0` pasó los cuatro trabajos de
+[verificación integrada](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43346860238).
+La revisión independiente de producto y seguridad no encontró regresiones
+materiales. La corrección sigue en la rama de trabajo, pendiente de
+integración y validación física. El Samsung reportó 2.3.3 (384) instalada
+desde Play, un candidato distinto. Play Console todavía mostró en revisión
+el despliegue de la 383 con medición a las 19:43 CDMX.
