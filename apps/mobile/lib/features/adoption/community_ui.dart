@@ -21,10 +21,11 @@ class CommunityNav extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final experience = ref.watch(experienceProvider);
-    final store = adoptionOnlyBuild
-        ? null
-        : ref.watch(storeCatalogProvider).asData?.value;
-    final storeActor = adoptionOnlyBuild ? null : ref.watch(storeActorProvider);
+    final canShowStore = !adoptionOnlyBuild || storeReviewAvailable;
+    final store = canShowStore
+        ? ref.watch(storeCatalogProvider).asData?.value
+        : null;
+    final storeActor = canShowStore ? ref.watch(storeActorProvider) : null;
     final storeIdentityMatches =
         store != null &&
         storeActor != null &&

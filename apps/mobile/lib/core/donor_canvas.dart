@@ -4,15 +4,21 @@ import 'package:flutter/material.dart';
 /// The 200px transparent tile is the original SVG feTurbulence rendered by
 /// Chromium at the reference's background-size, including its .12 opacity.
 class DonorCanvas extends StatelessWidget {
-  const DonorCanvas({super.key, required this.child, this.enabled = true});
+  const DonorCanvas({
+    super.key,
+    required this.child,
+    this.enabled = true,
+    this.fit = StackFit.expand,
+  });
   final Widget child;
   final bool enabled;
+  final StackFit fit;
 
   @override
   Widget build(BuildContext context) => !enabled
       ? child
       : Stack(
-          fit: StackFit.expand,
+          fit: fit,
           children: [
             const Positioned.fill(
               child: IgnorePointer(

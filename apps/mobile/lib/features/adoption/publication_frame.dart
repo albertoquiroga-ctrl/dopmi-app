@@ -999,11 +999,18 @@ class PublicationMainPhoto extends StatelessWidget {
 }
 
 class PublicationPreviewFrame extends StatelessWidget {
-  const PublicationPreviewFrame({super.key, required this.child});
+  const PublicationPreviewFrame({
+    super.key,
+    required this.child,
+    this.expandToContent = false,
+  });
   final Widget child;
+  final bool expandToContent;
   @override
   Widget build(BuildContext context) => Container(
-    height: (MediaQuery.sizeOf(context).height - 220).clamp(240.0, 640.0),
+    height: expandToContent
+        ? null
+        : (MediaQuery.sizeOf(context).height - 220).clamp(240.0, 640.0),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(28),
@@ -1017,7 +1024,10 @@ class PublicationPreviewFrame extends StatelessWidget {
       ],
     ),
     clipBehavior: Clip.antiAlias,
-    child: DonorCanvas(child: child),
+    child: DonorCanvas(
+      fit: expandToContent ? StackFit.passthrough : StackFit.expand,
+      child: child,
+    ),
   );
 }
 

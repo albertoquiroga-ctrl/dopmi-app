@@ -55,6 +55,10 @@ flutter:
     - assets/welcome-pets.png
     - assets/navigation/
     - assets/profile/
+    - assets/store/store-home.png
+    - assets/store/review-packshot.png
+    - assets/store/review-pack-template.png
+    - assets/store/review-photos/
     - assets/onboarding/
     - assets/guardian/
     - assets/guardian/bubbles/

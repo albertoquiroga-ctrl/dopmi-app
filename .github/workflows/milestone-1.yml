@@ -185,7 +185,34 @@ jobs:
       - run: npm ci
         working-directory: tools/verification
       - name: Start local Auth, PostgreSQL, Storage, Realtime and test mail
-        run: tools/verification/node_modules/.bin/supabase start --exclude imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import socket
+
+          config = Path('supabase/config.toml')
+          text = config.read_text(encoding='utf-8')
+          # The tests discover this port from `supabase status`.
+          for port in range(15424, 15434):
+              with socket.socket() as probe:
+                  try:
+                      probe.bind(('0.0.0.0', port))
+                  except OSError:
+                      continue
+                  break
+          else:
+              raise SystemExit('No free port for the local test mailbox')
+          updated, count = re.subn(
+              r'(?m)(^\[local_smtp\]\nenabled = true\nport = )\d+$',
+              lambda match: f'{match[1]}{port}',
+              text,
+          )
+          if count != 1:
+              raise SystemExit('Expected one local SMTP port in Supabase config')
+          config.write_text(updated, encoding='utf-8')
+          PY
+          tools/verification/node_modules/.bin/supabase start --exclude imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
       - name: Prepare temporary local test configuration
         run: tools/verification/node_modules/.bin/supabase status --output json > "$RUNNER_TEMP/supabase-status.json"
       - run: flutter pub get

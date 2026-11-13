@@ -92,6 +92,7 @@ abstract class CommunityRepository {
   Future<Adoption> transition(Adoption post, String action);
   Future<void> favorite(String id, bool saved);
   Future<DataPage<SavedEntry>> savedAdoptions(int page);
+  Future<DataPage<SavedEntry>> matchFavorites(int page);
   Future<DataPage<SavedEntry>> savedCases(int page);
   Future<DataPage<SavedEntry>> savedRescuers(int page);
   Future<void> favoriteCase(String id, bool saved);
@@ -248,6 +249,9 @@ class SupabaseCommunityRepository implements CommunityRepository {
   @override
   Future<DataPage<SavedEntry>> savedAdoptions(int page) =>
       savedPage('dopmi_saved_adoptions', page);
+  @override
+  Future<DataPage<SavedEntry>> matchFavorites(int page) =>
+      savedPage('dopmi_match_favorites', page);
   @override
   Future<DataPage<SavedEntry>> savedCases(int page) =>
       savedPage('dopmi_saved_case_list', page);
