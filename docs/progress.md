@@ -8718,3 +8718,8 @@ Se solicitó un reemplazo de DEV desde el mismo SHA integrado y la misma
 rama de Tienda: Codemagic `6af713c7e9a8ac69654da6b8`. La prueba requiere
 confirmar el nuevo código en Play, desinstalar el 388 del Samsung e
 instalar directamente desde el enlace de campaña.
+
+El 13/11 a las 08:08 CDMX, Play Console confirmó 2.3.3 (389) en el
+[release 212](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/212/details).
+Codemagic registró configuración DEV, análisis, Flutter, paquete
+firmado y publicación aprobados en el SHA integrado.
