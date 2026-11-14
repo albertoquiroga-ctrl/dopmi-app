@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'design_tokens.dart';
 
@@ -22,8 +23,8 @@ class DopmiSplash extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Image.asset(
-              'assets/onboarding/splash-wordmark.png',
+            child: SvgPicture.asset(
+              'assets/onboarding/splash-wordmark.svg',
               width: 258,
               height: 86,
               fit: BoxFit.contain,
