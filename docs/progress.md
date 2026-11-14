@@ -8773,3 +8773,73 @@ de México devuelve 2.3.4, las mismas notas y fecha de publicación
 17:58:38 CDMX. Los códigos 393 para Android y 394 para iOS corresponden
 a los artefactos ya verificados de `081995c6` y a las solicitudes
 registradas arriba. Este corte no acredita la prueba de los dos rescatistas.
+
+### 14/11/2026 — Ícono y pantalla de arranque para Dopmi 2.3.5
+
+La 2.3.4 pública usa el arte de un logotipo rectangular estirado a un
+cuadrado, con letras blancas sobre fondo marfil. El arranque café usa
+una variante raster de 266 px en Flutter y en el arranque de Android
+anterior a Android 12. Se corrigió el ícono iOS/Android conservando el
+nombre y la huella, con proporción, margen y contraste. Android usa un
+ícono adaptable en plataformas compatibles. El arranque usa el mismo
+trazado vectorial en Flutter, iOS y el arranque clásico de Android. Sin
+cambios en sesiones, permisos, servidor ni configuración de pagos.
+
+Candidato `433ab517e49a0dcf95c6f5d1c697a3c21f79688a`, base pública
+`463e306e` (producto `081995c6`), referencia Irlanda vigente
+`f693c0367643605fa8495c1ae3c171df4ccf85b6` sin delta de mock.
+39 pruebas locales de configuración aprobadas; comprobados tamaño,
+opacidad y margen de los recursos, máscara adaptable de Android y
+referencias nativas. Revisión independiente de código y producto sin
+bloqueantes; render comparativo de recursos a 60 y 116 px sin afirmar
+captura instalada. [CI 43646610785](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43646610785).
+
+Codemagic Android interno `6af8dc957bd581c5a647c043` e iOS App Store
+`6af8dceb38c0bd9f8613e631` aceptaron 2.3.5 del mismo SHA y perfil
+Producción sólo adopciones, con Tienda de revisión apagada. La versión
+pública comprobada al iniciar era 2.3.4: Google Play (393) y App Store (394).
+El Samsung aún no aparece por ADB (USB ni mDNS). La prueba final exige
+instalar el nuevo candidato, observar el ícono en Inicio y abrir Dopmi
+en frío hasta la pantalla habitual. El iPhone requiere el mismo recorrido.
+
+Retro: el defecto del ícono se volvió evidente al comparar los recursos
+del mismo paquete con una máscara de lanzador a 60 px. Esa comparación
+sirve para próximos cambios de marca; la compilación es una comprobación
+distinta.
+
+Google Play confirmó que Android 2.3.5 (395) está publicado en Internal
+Testing. Codemagic aprobó análisis, pruebas Flutter, compilación firmada
+y distribución. El APK universal generado por Google tiene el mismo
+certificado que 393 y contiene el SVG exacto del commit.
+SHA-256 del APK: `8ace9fccc16d9d9244ff065112c20a34c1f4cc7d0a6ad7521dade9f4f6373686`.
+La compilación de iOS en simulador aprobó en GitHub y la compilación con
+firma se ejecuta en Codemagic. Play Producción permanece en 393; la
+promoción de 395 está preparada y requiere completar el recorrido
+instalado en el Samsung.
+
+El [CI integrado 43646610785](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/43646610785)
+completó con éxito sus cuatro trabajos para el SHA del candidato. Se
+preserva [la comparación a tamaño de lanzador](design-reviews/launch-branding-2-3-5.png).
+Los cambios de cliente no añaden solicitudes de red ni permisos; los
+recursos de arranque son locales.
+
+En un emulador Android API 35 se instaló el APK de Play 395 y se verificó
+su firma con apksigner. Al abrirlo tras la instalación por ADB, la
+actividad visible fue la entrada sin autenticar de Google Play. No se
+completó una apertura visual de Dopmi. La prueba no sustituye la
+instalación desde Play interno en el Samsung, que sigue sin conexión.
+
+Codemagic firmó y cargó iOS 2.3.5 (396). La IPA contiene el ícono iOS
+de 120 px con los mismos píxeles que el recurso versionado, el catálogo
+con LaunchWordmark, el storyboard compilado y el SVG de Flutter que
+coincide con el commit. La carga del binario y el envío a revisión de
+App Store Connect se verifican por separado.
+
+A las 16:44 CDMX App Store Connect confirmó `WAITING_FOR_REVIEW` para
+iOS 2.3.5 (396), con publicación `AFTER_APPROVAL`. La ficha mexicana
+todavía mostraba 2.3.4. En Android, el 395 sigue publicado en Play
+interno y la pista de producción sigue en 393. No hubo prueba en
+iPhone ni en Samsung físico. Siguiente acción: instalar 395 desde Play
+interno en el Samsung, revisar el ícono en Inicio, cerrar y abrir en
+frío hasta la pantalla habitual, y promover ese mismo código si se ve
+correctamente. Apple queda a la espera de revisión.
