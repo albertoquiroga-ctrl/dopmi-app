@@ -8763,3 +8763,13 @@ aprobado. La guía de operación de esa rama describe el embudo de cinco
 pasos y las dos alertas, con lógica ensayada en seis escenarios sintéticos.
 El script `ddfdb8d4` prepara tablero, embudo y alertas y se probó con un
 servicio simulado. Sigue pendiente el acceso al proyecto del proveedor.
+
+### 13/11/2026 18:50 CDMX — Corrección pública en las dos tiendas
+
+El titular confirmó que ya probó la corrección y pidió enviarla a
+producción. La ficha pública de Google Play en México muestra DopMi
+2.3.4 y las notas sobre «Continuar» y la vista previa. App Store Lookup
+de México devuelve 2.3.4, las mismas notas y fecha de publicación
+17:58:38 CDMX. Los códigos 393 para Android y 394 para iOS corresponden
+a los artefactos ya verificados de `081995c6` y a las solicitudes
+registradas arriba. Este corte no acredita la prueba de los dos rescatistas.
