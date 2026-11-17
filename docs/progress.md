@@ -8916,3 +8916,19 @@ procesadas en la biblioteca. Apple confirmó el envío independiente de las
 15 a revisión. Aún falta asignarlas a la galería de una versión editable.
 La 2.3.5 pública conserva su galería y la revisión de la 2.3.6 (400)
 continuó por separado, sin retirar ni sustituir ese envío.
+
+## 16/11/2026 CDMX — Fotos en pantalla completa en detalle de mascota
+
+Fuente `d0da2aa1`, descendiente de la versión de Play interno con enlaces
+HTTPS. En el detalle, tocar una foto o el icono de ampliar abre el carrusel
+en esa posición. El visor conserva el encuadre original con `BoxFit.contain`
+y ofrece flechas, contador y cierre. Reutiliza las rutas autorizadas y el
+reintento de carga. Una actualización que quite fotos o retire la ficha
+cierra ese visor. La vista previa privada conserva sólo su galería interna.
+
+Flutter: análisis limpio, 45 pruebas focales y revisión visual con fotos
+vertical y horizontal. Revisión independiente de código y privacidad sin
+bloqueos. CI integrada `44019399843` con cuatro trabajos aprobados.
+Codemagic `6afbe07b49785c5bca06491a` firmó 2.3.6 (403) y la lectura de
+Google Play devolvió `internal/completed/403`. Instalación y prueba en
+el teléfono pendientes.
