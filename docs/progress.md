@@ -8896,3 +8896,23 @@ El Samsung con la 395 de Play reconoce el destino nativo del botón web.
 El botón web usa el esquema de DopMi ya registrado en Android e iOS.
 Pendientes la instalación de la 402 y la vista previa desde WhatsApp en el
 teléfono. No se envió una publicación general nueva de la app.
+
+## 16/11/2026 CDMX — Capturas actuales en las fichas de tiendas
+
+Se prepararon 30 capturas con pantallas reales de la fuente pública
+`dd913fe7` (2.3.5), perfil de adopciones y datos ilustrativos. Los cinco
+momentos son descubrimiento, detalle de mascota, favoritos, chat y alta
+de una adopción. El juego de Descargas `DopMi-capturas-tiendas-20261116-221013`
+contiene 15 PNG de Play y 15 de Apple individualizados por dispositivo.
+
+Google Play, ficha predeterminada `es-419`: reemplazadas las galerías de
+teléfono, tablet de 7″ y tablet de 10″, cinco imágenes ordenadas en cada
+una. También se reemplazó el gráfico destacado de 1024 × 500 con el
+logotipo actual. Publishing overview confirmó los cuatro cambios exactos
+en revisión y publicación gestionada apagada. No se incluyó un binario.
+
+App Store Connect: 15 imágenes de iPhone (6.3″ y 6.9″) y iPad (13″)
+procesadas en la biblioteca. Apple confirmó el envío independiente de las
+15 a revisión. Aún falta asignarlas a la galería de una versión editable.
+La 2.3.5 pública conserva su galería y la revisión de la 2.3.6 (400)
+continuó por separado, sin retirar ni sustituir ese envío.
