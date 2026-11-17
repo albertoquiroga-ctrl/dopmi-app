@@ -8874,3 +8874,17 @@ credencial. Producción todavía carece del gate de Meta. Quedan pendientes
 la asociación de la app al conjunto de datos y sus credenciales, el
 aviso y las declaraciones de Play, y la prueba real en Android de ambos
 eventos y de su disponibilidad en Meta.
+
+La primera ejecución integrada del candidato
+`dddbf98acd77966ecd0b952b74ff62760c824b8e` pasó la integración de identidad
+y adopción. Su suite Node expuso que los esquemas Auth simulados no incluían
+`auth.users.deleted_at`, que sí existe en Supabase DEV y producción.
+Se añadió la columna nullable en los fixtures que cargan las migraciones
+completas. SQL aplicado en DEV permanece igual.
+[CI 44010028959](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44010028959)
+
+ADB detectó el Samsung con DopMi 2.3.5 (395), instalada por Play. La
+compilación local de depuración permitió comprobar el puente Kotlin y el
+manifiesto con el acceso al identificador de publicidad separado de
+Firebase. La comprobación del recorrido de Meta requiere un candidato
+firmado, la fuente y las credenciales de prueba.
