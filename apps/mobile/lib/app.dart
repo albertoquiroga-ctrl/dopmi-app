@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'features/rescue/publish_choice_screen.dart';
 import 'features/store/store_screen.dart';
 import 'features/adoption/community_ui.dart';
@@ -730,6 +732,29 @@ final routerProvider = Provider<GoRouter>((ref) {
   return router;
 });
 
+final _measurementOwnerProvider = Provider<void>((ref) {
+  final measurement = ref.watch(measurementControllerProvider.notifier);
+  if (measurement == null) return;
+  final identity = ref.watch(identityControllerProvider);
+  var disposed = false;
+
+  void synchronize() {
+    if (disposed || identity.loading) return;
+    // A failed initial restore does not establish sign-out.
+    if (identity.error != null && measurement.loading) return;
+    unawaited(
+      measurement.owner(identity.identity?.id).catchError((Object _) {}),
+    );
+  }
+
+  identity.addListener(synchronize);
+  scheduleMicrotask(synchronize);
+  ref.onDispose(() {
+    disposed = true;
+    identity.removeListener(synchronize);
+  });
+});
+
 class DopmiApp extends ConsumerWidget {
   const DopmiApp({super.key});
   @override
@@ -737,7 +762,7 @@ class DopmiApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final experience = ref.watch(experienceProvider);
     final identityController = ref.watch(identityControllerProvider);
-    ref.watch(measurementControllerProvider.notifier);
+    ref.watch(_measurementOwnerProvider);
     return ListenableBuilder(
       listenable: Listenable.merge([experience, identityController]),
       builder: (context, _) => MaterialApp.router(
