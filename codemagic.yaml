@@ -122,7 +122,7 @@ workflows:
     max_build_duration: 60
     working_directory: apps/mobile
 
-    environment:
+    environment: &android_guardian_environment
       flutter: '3.47.4'
       java: 17
       android_signing:
@@ -135,7 +135,7 @@ workflows:
         PACKAGE_NAME: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
 
-    cache:
+    cache: &android_guardian_cache
       cache_paths:
         - $FLUTTER_ROOT/.pub-cache
         - $HOME/.gradle/caches
@@ -170,7 +170,8 @@ workflows:
         script: flutter analyze
       - name: Unit and widget tests
         script: flutter test
-      - name: Build signed Guardian Android App Bundle
+      - &build_signed_guardian_android_bundle
+        name: Build signed Guardian Android App Bundle
         script: |
           set -euo pipefail
           # Play uses the existing application ID, never the standalone APK suffix.
@@ -224,6 +225,48 @@ workflows:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
         submit_as_draft: false
+
+  android-analytics-samsung-qa:
+    name: Dopmi — Samsung Analytics draft
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    working_directory: apps/mobile
+
+    environment:
+      <<: *android_guardian_environment
+      vars:
+        PACKAGE_NAME: com.mycompany.dopmi
+        RELEASE_NAME: 2.3.5
+
+    cache: *android_guardian_cache
+
+    scripts:
+      - name: Configure the production adoption build for Samsung QA
+        script: |
+          set -euo pipefail
+          test "$DOPMI_ENVIRONMENT:$DOPMI_ADOPTION_ONLY:$DOPMI_STORE_REVIEW" = "production:true:false"
+          python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only
+          python3 ../../scripts/write-firebase-config.py --production-beta --platform android
+          python3 ../../scripts/write-maps-config.py --platform android
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Static analysis
+        script: flutter analyze
+      - name: Unit and widget tests
+        script: flutter test
+      - *build_signed_guardian_android_bundle
+      - name: Generate a Play-signed APK for the Samsung QA device
+        script: |
+          set -euo pipefail
+          python3 -m venv "$CM_BUILD_DIR/.qa-publisher"
+          "$CM_BUILD_DIR/.qa-publisher/bin/python" -m pip install --quiet 'google-auth[requests]'
+          "$CM_BUILD_DIR/.qa-publisher/bin/python" ../../scripts/play-samsung-analytics-qa.py
+
+    artifacts:
+      - build/guardian-build-info.txt
+      - build/app/outputs/bundle/release/app-release.aab
+      - build/play-analytics-qa.apk
+      - build/play-analytics-qa.json
 
   ios-verify:
     name: Dopmi iOS — Build and Verify
