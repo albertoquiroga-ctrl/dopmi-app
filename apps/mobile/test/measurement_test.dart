@@ -16,6 +16,20 @@ class AnalyticsSpy implements ProductAnalytics {
   }
 }
 
+class BlockingEnableAnalytics extends AnalyticsSpy {
+  final started = Completer<void>();
+  final release = Completer<void>();
+
+  @override
+  Future<void> enabled(bool value) async {
+    if (value) {
+      started.complete();
+      await release.future;
+    }
+    await super.enabled(value);
+  }
+}
+
 class FailingAnalytics extends AnalyticsSpy {
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
@@ -72,7 +86,8 @@ void main() {
       'test',
       analytics,
       DiagnosticsSpy(),
-      adoptionConsent: (owner, enabled) async => sync.add((owner, enabled)),
+      prepareAdoptionConsent: (owner, enabled) =>
+          () async => sync.add((owner, enabled)),
     );
     await controller.owner('alice');
     await controller.consentReady;
@@ -139,6 +154,127 @@ void main() {
     expect(analytics.events, ['publication_submitted']);
     controller.dispose();
   });
+
+  test(
+    'a pending opt-in cannot enable analytics for the next account',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = BlockingEnableAnalytics();
+      final sync = <(String, bool)>[];
+      final controller = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: (owner, enabled) =>
+            () async => sync.add((owner, enabled)),
+      );
+      await controller.owner('alice');
+      await controller.consentReady;
+
+      final optIn = controller.setAnalytics(true);
+      await analytics.started.future;
+      final switched = controller.owner('bob');
+      expect(controller.ownerId, isNull);
+      analytics.release.complete();
+      await optIn;
+      await switched;
+      await controller.consentReady;
+
+      expect(sync, [('alice', false), ('bob', false)]);
+      expect(preferences.getBool('dopmi.test.alice.analytics'), true);
+      expect(preferences.getBool('dopmi.test.bob.analytics'), isNull);
+      expect(controller.ownerId, 'bob');
+      expect(controller.analyticsEnabled, false);
+      expect(analytics.enabledValue, false);
+      controller.dispose();
+    },
+  );
+
+  test(
+    'a queued revocation prevents the pending opt-in from syncing',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final analytics = BlockingEnableAnalytics();
+      final sync = <bool>[];
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: (_, enabled) =>
+            () async => sync.add(enabled),
+      );
+      await controller.owner('alice');
+      await controller.consentReady;
+
+      final optIn = controller.setAnalytics(true);
+      await analytics.started.future;
+      final revoked = controller.setAnalytics(false);
+      expect(controller.analyticsConsentCurrent, false);
+      analytics.release.complete();
+      await optIn;
+      await revoked;
+      await controller.consentReady;
+
+      expect(sync, [false, false]);
+      expect(controller.analyticsConsentCurrent, false);
+      expect(analytics.enabledValue, false);
+      controller.dispose();
+    },
+  );
+
+  for (final nextOwner in <String?>[null, 'bob']) {
+    test(
+      'an explicit revocation survives switching to ${nextOwner ?? 'signed out'}',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'dopmi.test.alice.analytics': true,
+        });
+        final preferences = await SharedPreferences.getInstance();
+        final priorRequestStarted = Completer<void>();
+        final finishPriorRequest = Completer<void>();
+        final submitted = <(String, bool)>[];
+        String? authenticatedOwner = 'alice';
+        final controller = MeasurementController(
+          preferences,
+          'test',
+          AnalyticsSpy(),
+          DiagnosticsSpy(),
+          prepareAdoptionConsent: (owner, enabled) {
+            final authorizedOwner = authenticatedOwner;
+            if (authorizedOwner != owner) return null;
+            return () async {
+              if (enabled) {
+                priorRequestStarted.complete();
+                await finishPriorRequest.future;
+              }
+              submitted.add((owner, enabled));
+            };
+          },
+        );
+        await controller.owner('alice');
+        await priorRequestStarted.future;
+
+        final revoke = controller.setAnalytics(false);
+        authenticatedOwner = nextOwner;
+        await controller.owner(nextOwner);
+        await revoke;
+        expect(submitted, isEmpty);
+
+        finishPriorRequest.complete();
+        await controller.consentReady;
+        expect(submitted, [
+          ('alice', true),
+          ('alice', false),
+          if (nextOwner != null) (nextOwner, false),
+        ]);
+        expect(preferences.getBool('dopmi.test.alice.analytics'), false);
+        controller.dispose();
+      },
+    );
+  }
 
   test('measurement rejects unknown events and every payload', () async {
     SharedPreferences.setMockInitialValues({});

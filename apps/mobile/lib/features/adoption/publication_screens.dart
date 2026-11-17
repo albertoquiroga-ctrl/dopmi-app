@@ -250,7 +250,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         _formActor != actor ||
         measurement == null ||
         !measurement.preferencesReadyFor(actor) ||
-        !measurement.analyticsEnabled) {
+        !measurement.analyticsConsentCurrent) {
       return (_) {};
     }
     return (event) {
@@ -259,7 +259,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
             measurement,
           ) &&
           measurement.preferencesReadyFor(actor) &&
-          measurement.analyticsEnabled) {
+          measurement.analyticsConsentCurrent) {
         unawaited(measurement.event(event));
       }
     };
@@ -281,7 +281,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       _openingObserved = true;
 
       void resolve(MeasurementController measurement) {
-        if (!measurement.analyticsEnabled) return;
+        if (!measurement.analyticsConsentCurrent) return;
         _formRepository = source;
         _formActor = actor;
         unawaited(measurement.event(event));

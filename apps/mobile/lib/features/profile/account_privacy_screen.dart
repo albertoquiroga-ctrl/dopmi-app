@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/android_rescuer_acquisition.dart';
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
 import '../identity/identity_controller.dart';
@@ -178,8 +179,10 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Analítica de uso'),
-            subtitle: const Text(
-              'Comparte navegación y conversiones básicas. No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
+            subtitle: Text(
+              'Comparte navegación y conversiones básicas. '
+              '${supportsPlayInstallReferrer ? 'En Android, puede vincular la campaña de Google Play con tu primera ficha enviada a revisión. ' : ''}'
+              'No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
             ),
             value: measurement?.analyticsEnabled ?? false,
             onChanged: measurement == null || measurement.loading

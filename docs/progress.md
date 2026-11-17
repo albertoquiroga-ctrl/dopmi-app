@@ -8773,3 +8773,37 @@ de México devuelve 2.3.4, las mismas notas y fecha de publicación
 17:58:38 CDMX. Los códigos 393 para Android y 394 para iOS corresponden
 a los artefactos ya verificados de `081995c6` y a las solicitudes
 registradas arriba. Este corte no acredita la prueba de los dos rescatistas.
+
+
+### 16/11/2026 CDMX — Experimento de adquisición desde Facebook
+
+Se definieron cuatro combinaciones, dos mensajes en el perfil personal y los
+mismos dos mensajes en la página de DopMi. El [protocolo](facebook-rescuer-experiment.md)
+fija el sorteo, la ventana, el resultado por aviso asignado y el criterio de
+decisión. La bitácora anterior es descriptiva porque usó el enlace general.
+El piloto de atribución medida aún no empezó.
+
+Ocho lecturas HTTP verificaron las cuatro variantes de la landing en Android
+y los cuatro saltos a la ficha mexicana de App Store. El Samsung conectado
+muestra 2.3.5 (395), instalada por Google Play. El candidato DEV 389 quedó
+publicado en el canal interno, con la primera ficha instalada sin verificar.
+El corte de Play de la rama de marca registró 393 pública y 395 en revisión.
+Ambos códigos se construyeron sin atribución.
+
+El port local sobre la fuente de 395, `433ab517`, conserva la integración
+Play Install Referrer, el consentimiento de Analítica de uso y la migración
+original. Se corrigió la pérdida de la revocación en cola al cerrar sesión
+o cambiar de cuenta y se usó el consentimiento vigente para emitir vistas.
+La entrega de una revocación al servidor sigue sujeta a la red y a la vigencia
+del token de la cuenta. Las pruebas enfocadas finales de la corrección
+pasaron 18 de 18, Flutter analyze terminó limpio, configuración móvil pasó
+39 de 39 y la suite de backend pasó 1,293 con nueve omitidas. La suite Flutter
+completa se inició localmente. Docker no estaba disponible para
+`supabase test db`.
+
+Queda pendiente distribuir un candidato DEV vigente desde Play, verificar
+instalación nueva y primer envío con y sin consentimiento, y verificar el
+contrato y la disponibilidad pública antes de abrir la ronda. La migración
+`20261112232613_android_rescuer_acquisition.sql` conserva el contenido
+instalado previamente en DEV como `20261112235251`. La preparación de esta
+rama no publica un build ni cambia un entorno remoto.
