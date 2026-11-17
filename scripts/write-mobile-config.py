@@ -30,7 +30,8 @@ def client_key(value, project_ref=None, require_project_ref=False):
 
 
 def build_config(env, guardian_test=False, measurement_test=False, production_beta=False,
-                 adoption_only=False, store_review=False, store_amazon_public=False):
+                 adoption_only=False, store_review=False, store_amazon_public=False,
+                 meta_ads_measurement=False):
     endpoint = "".join(env.get("SUPABASE_URL", "").split()).rstrip("/")
     key = "".join(env.get("SUPABASE_PUBLISHABLE_KEY", "").split())
     if not re.fullmatch(r"https://[a-z0-9-]+\.supabase\.co", endpoint):
@@ -76,6 +77,7 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         "AUTH_REDIRECT_URL": "io.dopmi.app://auth/callback",
         "ENABLE_GUARDIAN_TEST": str(guardian_test).lower(),
         "ENABLE_MEASUREMENT_TEST": str(measurement_test).lower(),
+        "ENABLE_META_ADS_MEASUREMENT": str(meta_ads_measurement).lower(),
         "ENABLE_GUARDIAN": str(production_beta and not adoption_only).lower(),
         "STRIPE_PUBLISHABLE_KEY": "",
     }
@@ -130,6 +132,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--guardian-test", action="store_true")
     parser.add_argument("--measurement-test", action="store_true")
+    parser.add_argument("--meta-ads-measurement", action="store_true")
     parser.add_argument("--production-beta", action="store_true")
     parser.add_argument("--adoption-only", action="store_true")
     parser.add_argument("--store-review", action="store_true")
@@ -144,6 +147,7 @@ def main():
             production_beta=args.production_beta, adoption_only=args.adoption_only,
             store_review=args.store_review,
             store_amazon_public=args.store_amazon_public,
+            meta_ads_measurement=args.meta_ads_measurement,
         )
     except ValueError as error:
         raise SystemExit(str(error)) from None

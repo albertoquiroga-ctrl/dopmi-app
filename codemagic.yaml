@@ -145,12 +145,17 @@ workflows:
       - name: Create explicit Guardian environment configuration
         script: |
           set -euo pipefail
+          case "${DOPMI_ANDROID_META_ADS_MEASUREMENT-false}" in
+            true) set -- --meta-ads-measurement ;;
+            false) set -- ;;
+            *) echo "Unknown Android Meta ads measurement setting." >&2; exit 1 ;;
+          esac
           case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}" in
-            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
-            production:true:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review ;;
-            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
+            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test "$@" ;;
+            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta "$@" ;;
+            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only "$@" ;;
+            production:true:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review "$@" ;;
+            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public "$@" ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create matching Guardian Firebase configuration
@@ -256,7 +261,12 @@ workflows:
             echo "Google Play production requires the public Amazon adoption profile." >&2
             exit 1
           fi
-          python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public
+          case "${DOPMI_ANDROID_META_ADS_MEASUREMENT-false}" in
+            true) set -- --meta-ads-measurement ;;
+            false) set -- ;;
+            *) echo "Unknown Android Meta ads measurement setting." >&2; exit 1 ;;
+          esac
+          python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public "$@"
       - name: Create matching Guardian Firebase configuration
         script: *android-signed-firebase
       - name: Configure native Google Maps

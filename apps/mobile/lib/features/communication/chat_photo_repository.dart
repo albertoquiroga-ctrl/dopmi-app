@@ -4,10 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/media/media_store.dart';
+import '../../core/meta_ads_measurement.dart';
 import '../adoption/community_repository.dart';
 
 final chatPhotoRepositoryProvider = Provider<ChatPhotoRepository>(
-  (_) => SupabaseChatPhotoRepository(Supabase.instance.client),
+  (ref) => SupabaseChatPhotoRepository(
+    Supabase.instance.client,
+    metaAds: ref.watch(metaAdsMeasurementProvider),
+  ),
 );
 
 abstract class ChatPhotoRepository {
@@ -24,8 +28,9 @@ abstract class ChatPhotoRepository {
 }
 
 class SupabaseChatPhotoRepository implements ChatPhotoRepository {
-  SupabaseChatPhotoRepository(this.client);
+  SupabaseChatPhotoRepository(this.client, {this.metaAds});
   final SupabaseClient client;
+  final MetaAdsMeasurement? metaAds;
   @override
   String? get userId => client.auth.currentUser?.id;
   @override
@@ -37,17 +42,26 @@ class SupabaseChatPhotoRepository implements ChatPhotoRepository {
     String messageId,
     String body,
     String attachmentPath,
-  ) async => Json.from(
-    await client.rpc(
-      'dopmi_send_message_v2',
-      params: {
-        'thread_id': threadId,
-        'message_id': messageId,
-        'message_body': body,
-        'attachment_path': attachmentPath,
-      },
-    ) as Map,
-  );
+  ) async {
+    final params = {
+      'thread_id': threadId,
+      'message_id': messageId,
+      'message_body': body,
+      'attachment_path': attachmentPath,
+    };
+    final measurement = metaAds;
+    final result = measurement == null
+        ? await client.rpc('dopmi_send_message_v2', params: params)
+        : await measurement.runProductRpc(
+            legacy: 'dopmi_send_message_v2',
+            measured: 'dopmi_send_message_meta',
+            params: params,
+            action: MetaAdsAction.adoptionMessage,
+            targetId: threadId,
+          );
+    return Json.from(result as Map);
+  }
+
   @override
   Future<String> photoUrl(String path) =>
       MediaStore(client).signedUrl(path, MediaPurpose.chatPhoto);

@@ -44,6 +44,13 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(config.build_config(self.env)["ENABLE_MEASUREMENT_TEST"], "false")
         self.assertEqual(config.build_config(self.env, measurement_test=True)["ENABLE_MEASUREMENT_TEST"], "true")
 
+    def test_meta_ads_measurement_requires_explicit_build_option(self):
+        self.env["ENABLE_META_ADS_MEASUREMENT"] = "true"
+        self.assertEqual(config.build_config(self.env)["ENABLE_META_ADS_MEASUREMENT"], "false")
+        enabled = config.build_config(self.env, meta_ads_measurement=True)
+        self.assertEqual(enabled["ENABLE_META_ADS_MEASUREMENT"], "true")
+        self.assertEqual(enabled["ENABLE_MEASUREMENT_TEST"], "false")
+
     def test_guardian_rejects_another_project(self):
         self.env["SUPABASE_URL"] = "https://another-project.supabase.co"
         with self.assertRaises(ValueError):
@@ -449,6 +456,15 @@ class MobileConfigTests(unittest.TestCase):
                 ("staging", None, None, None, None),
             )
             cases = [(*profile, {}) for profile in profiles]
+            if platform == "android":
+                for meta_ads_setting, expected in (
+                    ("true", [public_calls[0] + " --meta-ads-measurement", public_calls[1]]),
+                    ("false", public_calls),
+                    ("", None),
+                    ("yes", None),
+                ):
+                    cases.append(("production", "true", "false", "true", expected,
+                                  {"DOPMI_ANDROID_META_ADS_MEASUREMENT": meta_ads_setting}))
             if workflow_id == "android-play-production":
                 cases += [
                     ("production", "true", "false", "true", public_calls, {"GOOGLE_PLAY_TRACK": "production"}),

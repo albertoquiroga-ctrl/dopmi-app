@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/media/media_store.dart';
+import '../../core/meta_ads_measurement.dart';
 import 'adoption_traits.dart';
 export '../../core/media/prepare_photo.dart' show preparePhoto;
 
@@ -73,7 +74,10 @@ class SavedEntry {
 }
 
 final communityRepositoryProvider = Provider<CommunityRepository>(
-  (ref) => SupabaseCommunityRepository(Supabase.instance.client),
+  (ref) => SupabaseCommunityRepository(
+    Supabase.instance.client,
+    metaAds: ref.watch(metaAdsMeasurementProvider),
+  ),
 );
 
 abstract class CommunityRepository {
@@ -131,9 +135,14 @@ abstract class CommunityRepository {
 }
 
 class SupabaseCommunityRepository implements CommunityRepository {
-  SupabaseCommunityRepository(this.client, {this.observeRealtime});
+  SupabaseCommunityRepository(
+    this.client, {
+    this.observeRealtime,
+    this.metaAds,
+  });
   final SupabaseClient client;
   final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
+  final MetaAdsMeasurement? metaAds;
   @override
   String? get userId => client.auth.currentUser?.id;
   Future<dynamic> rpc(String name, [Json params = const {}]) =>
@@ -226,15 +235,25 @@ class SupabaseCommunityRepository implements CommunityRepository {
         ),
       );
   @override
-  Future<Adoption> transition(Adoption post, String action) async => Adoption(
-    Json.from(
-      await rpc('dopmi_transition_adoption', {
-        'post_id': post.id,
-        'expected_version': post.version,
-        'action': action,
-      }),
-    ),
-  );
+  Future<Adoption> transition(Adoption post, String action) async {
+    final params = {
+      'post_id': post.id,
+      'expected_version': post.version,
+      'action': action,
+    };
+    final measurement = action == 'submit' ? metaAds : null;
+    final result = measurement == null
+        ? await rpc('dopmi_transition_adoption', params)
+        : await measurement.runProductRpc(
+            legacy: 'dopmi_transition_adoption',
+            measured: 'dopmi_transition_adoption_meta',
+            params: params,
+            action: MetaAdsAction.adoptionSubmission,
+            targetId: post.id,
+          );
+    return Adoption(Json.from(result));
+  }
+
   @override
   Future<void> favorite(String id, bool saved) async =>
       await rpc('dopmi_set_favorite', {'post_id': id, 'saved': saved});
@@ -396,13 +415,26 @@ class SupabaseCommunityRepository implements CommunityRepository {
     String threadId,
     String messageId,
     String body,
-  ) async => Json.from(
-    await rpc('dopmi_send_message', {
+  ) async {
+    final params = {
       'thread_id': threadId,
       'message_id': messageId,
       'message_body': body,
-    }),
-  );
+    };
+    final measurement = metaAds;
+    final result = measurement == null
+        ? await rpc('dopmi_send_message', params)
+        : await measurement.runProductRpc(
+            legacy: 'dopmi_send_message',
+            measured: 'dopmi_send_message_meta',
+            params: params,
+            action: MetaAdsAction.adoptionMessage,
+            targetId: threadId,
+            measuredOnly: const {'attachment_path': null},
+          );
+    return Json.from(result);
+  }
+
   @override
   Future<void> closeThread(String id) async =>
       await rpc('dopmi_close_thread', {'thread_id': id});

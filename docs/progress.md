@@ -8843,3 +8843,34 @@ iPhone ni en Samsung físico. Siguiente acción: instalar 395 desde Play
 interno en el Samsung, revisar el ícono en Inicio, cerrar y abrir en
 frío hasta la pantalla habitual, y promover ese mismo código si se ve
 correctamente. Apple queda a la espera de revisión.
+
+### 16 de noviembre de 2026 · Piloto Meta de eventos de adopción
+
+Se duplicaron las dos campañas de descargas de Android en el Administrador
+de anuncios de DopMi. Los borradores conservan sus dos públicos y ocho
+anuncios, con la ampliación sugerida en el cuadro de duplicación apagada.
+Se seleccionó maximizar eventos de la aplicación. Meta pide recibir un
+evento estándar del origen antes de habilitar la selección. Las copias y
+sus conjuntos están apagados, sin publicar. [Borradores y configuración](meta-app-events.md)
+
+La rama parte de `d429b09b5ba9331002a40c1bb2193a94eb590cb1` e incorpora
+la corrección previa de continuidad de Firebase. Android pide al servidor
+confirmar la elegibilidad y el permiso antes de consultar el identificador
+publicitario. El evento se genera al guardar el primer mensaje elegible
+del adoptante o al enviar la primera ficha nueva a revisión. La aprobación
+de la ficha sigue siendo una métrica interna. El permiso de Meta se retira
+desde la cuenta y se mantiene separado de Analítica de uso.
+
+Validación local con 85 pruebas pgTAP en PGlite, 13 pruebas dirigidas
+Flutter, nueve pruebas del worker y 43 pruebas de configuración. Docker
+Desktop local no arrancó. El gate de CI integrado incluye el stack
+PostgreSQL de Supabase.
+
+En DEV, migración `20261117032316/meta_adoption_app_events` aplicada desde
+`20261117025940_meta_adoption_app_events.sql`. Se comprobaron el gate cerrado,
+la cola vacía, RLS y los permisos restringidos del worker. Edge
+`meta-ads-worker` v1 está activo en DEV y responde 405 a GET y 401 a POST sin
+credencial. Producción todavía carece del gate de Meta. Quedan pendientes
+la asociación de la app al conjunto de datos y sus credenciales, el
+aviso y las declaraciones de Play, y la prueba real en Android de ambos
+eventos y de su disponibilidad en Meta.

@@ -91,3 +91,7 @@ verify_jwt = false
 # Separate server-only secret is checked by the cleanup handler.
 [functions.video-cleanup]
 verify_jwt = false
+
+# Dedicated scheduler secret is checked by the Meta app events worker.
+[functions.meta-ads-worker]
+verify_jwt = false
