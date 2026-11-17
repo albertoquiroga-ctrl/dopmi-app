@@ -225,6 +225,7 @@ class AdoptionPhoto extends ConsumerWidget {
     super.key,
     this.height = 240,
     this.radius = 20,
+    this.fit = BoxFit.cover,
     this.source,
     this.preview = false,
     this.onDisplayed,
@@ -235,6 +236,7 @@ class AdoptionPhoto extends ConsumerWidget {
   final VoidCallback? onDisplayed;
   final double height;
   final double radius;
+  final BoxFit fit;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.read(communityRepositoryProvider);
@@ -246,6 +248,7 @@ class AdoptionPhoto extends ConsumerWidget {
         source: source ?? adoptionPhotoSource(repository, path),
         height: height,
         width: double.infinity,
+        fit: fit,
         semanticLabel: 'Foto de la publicación',
         loading: preview
             ? const ColoredBox(
