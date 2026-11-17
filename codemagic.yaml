@@ -61,7 +61,7 @@ workflows:
     working_directory: apps/mobile
 
     environment:
-      flutter: stable
+      flutter: '3.47.4'
       java: 17
       android_signing:
         - dopmi_upload_2026
@@ -96,7 +96,7 @@ workflows:
 
       - name: Build signed Android App Bundle
         script: |
-          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build appbundle \
             --release \
             --build-name="$RELEASE_NAME" \
