@@ -17,7 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
-import 'rescue_test.dart' show FakeRescue;
+import 'rescue_test.dart' show FakeRescue, completeVerificationRecord;
 
 class VerificationNavigationRescue extends FakeRescue {
   VerificationNavigationRescue(this.status);
@@ -27,6 +27,26 @@ class VerificationNavigationRescue extends FakeRescue {
     ...await super.dashboard(),
     'verification_status': status,
   };
+
+  RescueRecord get application => RescueRecord({
+    ...completeVerificationRecord('verification-id').data,
+    'status': status,
+  });
+
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async => kind == 'verification'
+      ? DataPage([application], 1)
+      : super.mine(kind, page, parent: parent);
+
+  @override
+  Future<Json> detail(String id) async {
+    expect(id, application.id);
+    return {'record': application.data, 'history': <Json>[]};
+  }
 }
 
 class VerificationOwnerProfile extends FakeRescuerProfile {
@@ -169,17 +189,27 @@ void main() {
       expect(card.hitTestable(), findsOneWidget);
       await tester.tap(card);
       await tester.pumpAndSettle();
+      final router = container.read(routerProvider);
+      expect(router.state.uri.path, '/rescue/new');
+      expect(router.state.uri.queryParameters['kind'], 'verification');
+      expect(find.byType(RescueEditorScreen), findsOneWidget);
+      expect(find.text('Configurar pagos con Stripe'), findsNothing);
       if (status == 'approved') {
-        expect(container.read(routerProvider).state.uri.path, '/settings');
-        expect(find.text('Configuración'), findsOneWidget);
-        expect(find.byType(RescueEditorScreen), findsNothing);
+        final profileAction = find.text('Ver mi perfil');
+        expect(find.text('Consultar expediente'), findsOneWidget);
+        await tester.ensureVisible(profileAction);
+        await tester.tap(profileAction);
+        await tester.pumpAndSettle();
+        expect(router.state.uri.path, '/profile');
       } else {
-        expect(container.read(routerProvider).state.uri.path, '/rescue/new');
-        expect(
-          container.read(routerProvider).state.uri.queryParameters['kind'],
-          'verification',
+        expect(find.text('Estamos revisando tu información'), findsOneWidget);
+        final recordAction = find.text('Consultar expediente');
+        await tester.scrollUntilVisible(
+          recordAction,
+          160,
+          scrollable: find.byType(Scrollable).last,
         );
-        expect(find.byType(RescueEditorScreen), findsOneWidget);
+        expect(recordAction.hitTestable(), findsOneWidget);
       }
       expect(tester.takeException(), isNull);
     });
