@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/store/store_repository.dart';
+import 'package:dopmi_mobile/features/store/store_review_repository.dart';
+import 'package:dopmi_mobile/features/store/store_screen.dart';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -20,24 +22,15 @@ import '../test/store_screen_test.dart' show StoreFake;
 import 'capture_design_test.dart' show saveCapture;
 
 void main() {
+  if (const bool.fromEnvironment('CAPTURE_AMAZON_STORE')) {
+    testWidgets('capture the Amazon Store and handoff', _captureAmazonStore);
+    return;
+  }
+
   testWidgets('capture Store widgets using test-only editorial fixtures', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetDevicePixelRatio);
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-    for (final family in ['Inter', 'Fraunces', 'MaterialIcons']) {
-      final loader = FontLoader(family)
-        ..addFont(
-          rootBundle.load(
-            family == 'MaterialIcons'
-                ? 'fonts/MaterialIcons-Regular.otf'
-                : 'assets/fonts/$family.ttf',
-          ),
-        );
-      await tester.runAsync(loader.load);
-    }
+    await _prepareStoreCapture(tester);
     final out = Directory('../../.tools/integral20d21-20261018/store');
     await tester.runAsync(() => out.create(recursive: true));
     for (final variant in [
@@ -156,4 +149,126 @@ void main() {
       await identity.changes.close();
     }
   });
+}
+
+Future<void> _prepareStoreCapture(WidgetTester tester) async {
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  for (final family in ['Inter', 'Fraunces', 'MaterialIcons']) {
+    final loader = FontLoader(family)
+      ..addFont(
+        rootBundle.load(
+          family == 'MaterialIcons'
+              ? 'fonts/MaterialIcons-Regular.otf'
+              : 'assets/fonts/$family.ttf',
+        ),
+      );
+    await tester.runAsync(loader.load);
+  }
+}
+
+Future<void> _captureAmazonStore(WidgetTester tester) async {
+  await _prepareStoreCapture(tester);
+  final out = Directory('../../.tools/store-amazon-review');
+  await tester.runAsync(() => out.create(recursive: true));
+  for (final (name, size, scale) in [
+    ('normal', const Size(377, 852), 1.0),
+    ('large', const Size(320, 640), 2.0),
+  ]) {
+    tester.view.physicalSize = size;
+    tester.platformDispatcher.textScaleFactorTestValue = scale;
+    SharedPreferences.setMockInitialValues({});
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    await identity.setExperience('donor');
+    addTearDown(identity.changes.close);
+    final repo = StoreReviewRepository(
+      currentUser: () => identity.user?.id,
+      changes: const Stream.empty(),
+      preview: false,
+    );
+    final opened = <Uri>[];
+    final key = GlobalKey();
+    await tester.pumpWidget(
+      RepaintBoundary(
+        key: key,
+        child: ProviderScope(
+          overrides: [
+            identityRepositoryProvider.overrideWithValue(identity),
+            routerInitialLocationProvider.overrideWithValue('/store'),
+            storeRepositoryProvider.overrideWithValue(repo),
+            storeLinkOpenerProvider.overrideWithValue((uri) async {
+              opened.add(uri);
+              return true;
+            }),
+            communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          ],
+          child: const DopmiApp(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final storeContext = tester.element(find.byType(StoreScreen));
+    await tester.runAsync(
+      () => precacheImage(
+        const AssetImage('assets/store/store-home.png'),
+        storeContext,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    Future<void> capture(String screen) async {
+      expect(tester.takeException(), isNull);
+      await tester.runAsync(
+        () => saveCapture(key, '${out.path}/$screen-$name.png'),
+      );
+    }
+
+    final funding = find.text(
+      'Las comisiones ayudan a sostener la app de adopción',
+    );
+    expect(tester.getBottomLeft(funding).dy, lessThan(size.height - 72));
+    await capture('hero');
+    final search = find.byKey(const ValueKey('store-search'));
+    await tester.ensureVisible(search);
+    await tester.enterText(search, 'Pedigree adulto razas pequeñas');
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    final product = find.text('Adulto razas pequeñas').first;
+    await tester.ensureVisible(product);
+    await tester.pumpAndSettle();
+    await tester.tap(product.hitTestable());
+    await tester.pumpAndSettle();
+    final detailAction = find.text('Ver producto en Amazon México');
+    await tester.ensureVisible(detailAction);
+    await tester.pumpAndSettle();
+    await tester.tap(detailAction.hitTestable());
+    await tester.pumpAndSettle();
+    final handoff = find.byKey(const ValueKey('store-amazon-handoff'));
+    expect(handoff, findsOneWidget);
+    expect(tester.getBottomLeft(funding).dy, lessThan(size.height));
+    await capture('handoff');
+
+    final handoffScroll = find.descendant(
+      of: handoff,
+      matching: find.byType(Scrollable),
+    );
+    final amazon = find.text('Ir a Amazon México');
+    await tester.scrollUntilVisible(amazon, 120, scrollable: handoffScroll);
+    await tester.pumpAndSettle();
+    expect(amazon.hitTestable(), findsOneWidget);
+    if (scale > 1) await capture('handoff-actions');
+    final stay = find.text('Seguir en DopMi');
+    await tester.scrollUntilVisible(stay, 120, scrollable: handoffScroll);
+    await tester.pumpAndSettle();
+    await tester.tap(stay.hitTestable());
+    await tester.pumpAndSettle();
+    expect(handoff, findsNothing);
+    expect(opened, isEmpty);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
+  }
 }

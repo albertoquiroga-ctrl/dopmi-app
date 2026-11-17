@@ -11,6 +11,8 @@ import 'store_repository.dart';
 
 const _storeCream = Color(0xfffaf1e7);
 const _storeBorder = Color(0xffeaded3);
+const _amazonAffiliateDisclosure =
+    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde esta Tienda.';
 
 /// Gate for every navigation entry/banner. This does not authorize the route:
 /// StoreScreen and the link RPC independently enforce current availability.
@@ -1174,6 +1176,15 @@ class _StoreHero extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, bounds) {
         final photoWidth = largeText ? 0.0 : bounds.maxWidth * .43;
+        final funding = DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: largeText
+                ? const Border(bottom: BorderSide(color: _storeBorder))
+                : const Border(top: BorderSide(color: _storeBorder)),
+          ),
+          child: const _StoreAdoptionFunding(),
+        );
         return DecoratedBox(
           decoration: BoxDecoration(
             color: _storeCream,
@@ -1187,6 +1198,7 @@ class _StoreHero extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (amazonProductLinks && largeText) funding,
                   Stack(
                     children: [
                       if (photoWidth > 0)
@@ -1243,7 +1255,7 @@ class _StoreHero extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               amazonProductLinks
-                                  ? 'DopMi conecta a mascotas en adopción con familias.'
+                                  ? 'DopMi acerca a rescatistas y familias que quieren adoptar.'
                                   : 'Alimento para cada etapa.',
                               style: const TextStyle(
                                 fontSize: 13,
@@ -1257,41 +1269,7 @@ class _StoreHero extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (amazonProductLinks)
-                    const DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(top: BorderSide(color: _storeBorder)),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Una fuente de ingresos para nuestra app de adopción',
-                              style: TextStyle(
-                                color: DopmiTokens.ink,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde los enlaces de esta Tienda.',
-                              style: TextStyle(
-                                color: DopmiTokens.muted,
-                                fontSize: 12,
-                                height: 1.4,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                  if (amazonProductLinks && !largeText) funding,
                 ],
               ),
             ),
@@ -1300,6 +1278,59 @@ class _StoreHero extends StatelessWidget {
       },
     );
   }
+}
+
+class _StoreAdoptionFunding extends StatelessWidget {
+  const _StoreAdoptionFunding();
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(16),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (MediaQuery.textScalerOf(context).scale(16) <= 26) ...[
+          const ExcludeSemantics(
+            child: CircleAvatar(
+              radius: 19,
+              backgroundColor: DopmiTokens.saffronSoft,
+              foregroundColor: DopmiTokens.cafeStrong,
+              child: Icon(Icons.home_outlined, size: 23),
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Semantics(
+                header: true,
+                child: const Text(
+                  'Las comisiones ayudan a sostener la app de adopción',
+                  style: TextStyle(
+                    color: DopmiTokens.ink,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 1.2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                _amazonAffiliateDisclosure,
+                style: TextStyle(
+                  color: DopmiTokens.muted,
+                  fontSize: 13,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _StoreCatalogNotice extends StatelessWidget {
@@ -1599,7 +1630,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                   const SizedBox(height: 5),
                   Text(
                     widget.amazonProductLinks
-                        ? 'Enlace de afiliado. Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.'
+                        ? 'Enlace de afiliado · DopMi puede recibir una comisión.'
                         : widget.preview
                         ? 'Catálogo TEST. No permite compras reales.'
                         : 'Consulta el precio y compra en ${selected.merchantName}.',
@@ -1624,6 +1655,15 @@ class _StoreAmazonHandoff extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final largeText = MediaQuery.textScalerOf(context).scale(16) > 26;
+    final funding = DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: _storeBorder),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: const _StoreAdoptionFunding(),
+    );
     return Scaffold(
       key: const ValueKey('store-amazon-handoff'),
       backgroundColor: Colors.white,
@@ -1645,11 +1685,11 @@ class _StoreAmazonHandoff extends StatelessWidget {
                 children: [
                   Semantics(
                     header: true,
-                    child: const Text(
-                      '¿Dónde se paga?',
+                    child: Text(
+                      'Tu compra continúa en Amazon',
                       style: TextStyle(
                         fontFamily: DopmiTokens.legacyDisplayFont,
-                        fontSize: 30,
+                        fontSize: largeText ? 24 : 30,
                         height: 1.12,
                         fontWeight: FontWeight.w600,
                         color: DopmiTokens.ink,
@@ -1657,55 +1697,29 @@ class _StoreAmazonHandoff extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  if (largeText) ...[funding, const SizedBox(height: 14)],
                   const _StoreAmazonJourney(),
-                  const SizedBox(height: 20),
-                  const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 21,
-                        backgroundColor: DopmiTokens.saffronSoft,
-                        foregroundColor: DopmiTokens.cafeStrong,
-                        child: Icon(Icons.link_rounded, size: 23),
+                  if (!largeText) ...[const SizedBox(height: 14), funding],
+                  const SizedBox(height: 12),
+                  const ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    leading: ExcludeSemantics(
+                      child: Icon(
+                        Icons.link_rounded,
+                        color: DopmiTokens.cafeStrong,
                       ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Código de afiliado incluido',
-                              style: TextStyle(
-                                fontSize: 16,
-                                height: 1.2,
-                                fontWeight: FontWeight.w700,
-                                color: DopmiTokens.ink,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Puedes pagar sin escribirlo.',
-                              style: TextStyle(
-                                fontSize: 14,
-                                height: 1.3,
-                                color: DopmiTokens.muted,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                    title: Text(
+                      'Código de afiliado incluido',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: DopmiTokens.ink,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                  const Text(
-                    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.3,
-                      color: DopmiTokens.muted,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: DopmiTokens.cafeStrong,
