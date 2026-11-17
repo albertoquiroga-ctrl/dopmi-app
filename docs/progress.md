@@ -8843,3 +8843,18 @@ iPhone ni en Samsung físico. Siguiente acción: instalar 395 desde Play
 interno en el Samsung, revisar el ícono en Inicio, cerrar y abrir en
 frío hasta la pantalla habitual, y promover ese mismo código si se ve
 correctamente. Apple queda a la espera de revisión.
+
+### 16/11/2026 — Verificación en Samsung y envío de 2.3.5 a producción
+
+En Samsung Galaxy S25 Ultra (SM-S938B), Dopmi 2.3.5 (395) instalado por
+Google Play (`com.android.vending`). El teléfono usa un lanzador
+personalizado. La ficha «Información de la aplicación» de Android mostró
+el ícono legible y con proporciones correctas. Tras detener el proceso y
+abrir la actividad principal, Android confirmó arranque en frío. Se
+observó el logo nítido y centrado sobre fondo café y la app llegó a
+«Adoptar». Evidencia visual conservada localmente.
+
+Se promovió a producción ese mismo código 395 con fuente
+`433ab517e49a0dcf95c6f5d1c697a3c21f79688a`. La consulta de Google Play
+de las 20:04 CDMX devolvió `IN_REVIEW` para 395 y `PUBLISHED` para
+393. App Store Lookup de México devolvió 2.3.5, publicada el 15/11.
