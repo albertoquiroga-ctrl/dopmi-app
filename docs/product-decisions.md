@@ -1,3 +1,12 @@
+## 16/11/2026 CDMX — Tienda Amazon en producción
+
+El titular informó que Amazon dio luz verde por teléfono y pidió publicar
+Tienda en producción. El catálogo móvil de Android y iOS abre fichas de
+productos físicos en Amazon México con el código de afiliado existente.
+La habilitación es explícita en el perfil de adopciones y conserva las
+fichas de descarga declaradas. DopMi informa la posible comisión antes
+de abrir Amazon. No se modifican los servicios de pagos de DopMi.
+
 ## 29/10/2026 — Soporte Google exacto y publicación legal LIVE
 
 Titular call_a919/item0 elige preparar soporte@dopmi.org en Google; call_31c4/item0

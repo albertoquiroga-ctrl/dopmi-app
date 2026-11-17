@@ -116,13 +116,13 @@ workflows:
         track: internal
         submit_as_draft: false
 
-  android-guardian-internal:
+  android-guardian-internal: &android-signed-release
     name: Dopmi Guardián — Google Play Internal Testing
     instance_type: mac_mini_m2
     max_build_duration: 60
     working_directory: apps/mobile
 
-    environment:
+    environment: &android-signed-environment
       flutter: '3.47.4'
       java: 17
       android_signing:
@@ -131,7 +131,7 @@ workflows:
         - dopmi_supabase
         - dopmi_firebase
         - dopmi_google_play
-      vars:
+      vars: &android-signed-vars
         PACKAGE_NAME: com.mycompany.dopmi
         RELEASE_NAME: 2.3.3
 
@@ -145,15 +145,16 @@ workflows:
       - name: Create explicit Guardian environment configuration
         script: |
           set -euo pipefail
-          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}" in
-            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
-            production:true:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review ;;
+          case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}" in
+            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            production:true:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-review ;;
+            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create matching Guardian Firebase configuration
-        script: |
+        script: &android-signed-firebase |
           set -euo pipefail
           case "${DOPMI_ENVIRONMENT:-test}" in
             test) python3 ../../scripts/write-firebase-config.py --platform android ;;
@@ -161,17 +162,17 @@ workflows:
             *) echo "Unknown Dopmi build environment." >&2; exit 1 ;;
           esac
       - name: Configure native Google Maps
-        script: |
+        script: &android-signed-maps |
           set -euo pipefail
           python3 ../../scripts/write-maps-config.py --platform android
       - name: Install dependencies
-        script: flutter pub get
+        script: &android-signed-dependencies flutter pub get
       - name: Static analysis
-        script: flutter analyze
+        script: &android-signed-analysis flutter analyze
       - name: Unit and widget tests
-        script: flutter test
+        script: &android-signed-tests flutter test
       - name: Build signed Guardian Android App Bundle
-        script: |
+        script: &android-signed-bundle |
           set -euo pipefail
           # Play uses the existing application ID, never the standalone APK suffix.
           unset DOPMI_GUARDIAN_ACCEPTANCE_BUILD
@@ -196,12 +197,16 @@ workflows:
           firebase_android = json.loads(firebase_android_bytes)
           firebase_client = next(client for client in firebase_android['client']
               if client['client_info']['android_client_info']['package_name'] == 'com.mycompany.dopmi')
+          distribution = ('Google Play production'
+              if os.environ.get('DOPMI_PLAY_PRODUCTION_SUBMISSION') == 'true'
+              else 'Google Play internal')
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
               f"Environment: {config['DOPMI_ENVIRONMENT']}\n"
               f"Backend: {backend}\nProject: {project}\n"
               f"Adoption only: {config['DOPMI_ADOPTION_ONLY']}\n"
               f"Store review: {config['DOPMI_STORE_REVIEW']}\n"
+              f"Amazon Store public: {config['DOPMI_STORE_AMAZON_PUBLIC']}\n"
               f"Guardian: {config['ENABLE_GUARDIAN']}\n"
               f"Stripe live client: {str(bool(config['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
@@ -211,7 +216,7 @@ workflows:
               f"Firebase Android app: {firebase_client['client_info']['mobilesdk_app_id']}\n"
               f"Firebase Android config SHA256: {hashlib.sha256(firebase_android_bytes).hexdigest()}\n"
               f"Firebase iOS config SHA256: {hashlib.sha256(firebase_ios_bytes).hexdigest()}\n"
-              "Distribution: Google Play internal\n", encoding='utf-8')
+              f"Distribution: {distribution}\n", encoding='utf-8')
           PYINFO
 
     artifacts:
@@ -223,6 +228,52 @@ workflows:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
+        submit_as_draft: false
+
+  android-play-production:
+    <<: *android-signed-release
+    name: Dopmi Android — Google Play Production
+    environment:
+      <<: *android-signed-environment
+      vars:
+        <<: *android-signed-vars
+        DOPMI_PLAY_PRODUCTION_SUBMISSION: 'true'
+        DOPMI_ENVIRONMENT: production
+        DOPMI_ADOPTION_ONLY: 'true'
+        DOPMI_STORE_REVIEW: 'false'
+        DOPMI_STORE_AMAZON_PUBLIC: 'true'
+
+    scripts:
+      - name: Require the public Amazon adoption profile
+        script: |
+          set -euo pipefail
+          if [ "${GOOGLE_PLAY_TRACK:-production}" != production ]; then
+            echo "This workflow can only publish to the Google Play production track." >&2
+            exit 1
+          fi
+          PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
+          if [ "${DOPMI_PLAY_PRODUCTION_SUBMISSION:-false}" != true ] || [ "$PROFILE" != production:true:false:true ]; then
+            echo "Google Play production requires the public Amazon adoption profile." >&2
+            exit 1
+          fi
+          python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public
+      - name: Create matching Guardian Firebase configuration
+        script: *android-signed-firebase
+      - name: Configure native Google Maps
+        script: *android-signed-maps
+      - name: Install dependencies
+        script: *android-signed-dependencies
+      - name: Static analysis
+        script: *android-signed-analysis
+      - name: Unit and widget tests
+        script: *android-signed-tests
+      - name: Build signed Android App Bundle
+        script: *android-signed-bundle
+
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: production
         submit_as_draft: false
 
   ios-verify:
@@ -328,19 +379,16 @@ workflows:
       - name: Create runtime configuration
         script: |
           set -euo pipefail
-          PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}"
-          if [ "${DOPMI_APP_STORE_SUBMISSION:-false}" = true ] && [ "$PROFILE" != production:true:false ]; then
-            echo "The App Store workflow requires the production adoption profile." >&2
-            exit 1
-          fi
+          PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
           case "$PROFILE" in
-            test:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
+            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
+            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration
-        script: |
+        script: &ios-signed-firebase |
           set -euo pipefail
           case "${DOPMI_ENVIRONMENT:-test}" in
             test) python3 ../../scripts/write-firebase-config.py --platform ios ;;
@@ -349,24 +397,24 @@ workflows:
           esac
 
       - name: Configure native Google Maps
-        script: |
+        script: &ios-signed-maps |
           set -euo pipefail
           python3 ../../scripts/write-maps-config.py --platform ios
       - name: Install dependencies
-        script: flutter pub get
+        script: &ios-signed-dependencies flutter pub get
 
       - name: Static analysis
-        script: flutter analyze
+        script: &ios-signed-analysis flutter analyze
 
       - name: Unit and widget tests
-        script: flutter test
+        script: &ios-signed-tests flutter test
 
       - name: Set up iOS code signing
-        script: |
+        script: &ios-signed-signing |
           xcode-project use-profiles --custom-export-options='{"testFlightInternalTestingOnly": false}'
 
       - name: Build signed IPA
-        script: |
+        script: &ios-signed-ipa |
           set -euo pipefail
           BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build ipa \
@@ -390,14 +438,19 @@ workflows:
           from pathlib import Path
           sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
           configuration = json.loads(Path('config.json').read_text())
+          distribution = ('App Store submission'
+              if os.environ.get('DOPMI_APP_STORE_SUBMISSION') == 'true'
+              else 'TestFlight (external eligible)')
           Path('build/guardian-build-info.txt').write_text(
               f"Commit: {sha}\nVersion: {os.environ['RELEASE_NAME']} ({sys.argv[1]})\n"
               f"Environment: {configuration['DOPMI_ENVIRONMENT']}\n"
               f"Adoption only: {configuration['DOPMI_ADOPTION_ONLY']}\n"
+              f"Store review: {configuration['DOPMI_STORE_REVIEW']}\n"
+              f"Amazon Store public: {configuration['DOPMI_STORE_AMAZON_PUBLIC']}\n"
               f"Guardian: {configuration['ENABLE_GUARDIAN']}\n"
               f"Stripe live client: {str(bool(configuration['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {configuration['ENABLE_GUARDIAN_TEST']}\n"
-              "Distribution: TestFlight (external eligible)\n")
+              f"Distribution: {distribution}\n")
           PYINFO
 
     artifacts:
@@ -423,6 +476,31 @@ workflows:
         DOPMI_ENVIRONMENT: production
         DOPMI_ADOPTION_ONLY: 'true'
         DOPMI_STORE_REVIEW: 'false'
+        DOPMI_STORE_AMAZON_PUBLIC: 'false'
+    scripts:
+      - name: Require the App Store adoption profile
+        script: |
+          set -euo pipefail
+          PROFILE="${DOPMI_APP_STORE_SUBMISSION-false}:${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
+          case "$PROFILE" in
+            true:production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
+            true:production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
+            *) echo "The App Store workflow requires the production adoption profile." >&2; exit 1 ;;
+          esac
+      - name: Create Firebase configuration
+        script: *ios-signed-firebase
+      - name: Configure native Google Maps
+        script: *ios-signed-maps
+      - name: Install dependencies
+        script: *ios-signed-dependencies
+      - name: Static analysis
+        script: *ios-signed-analysis
+      - name: Unit and widget tests
+        script: *ios-signed-tests
+      - name: Set up iOS code signing
+        script: *ios-signed-signing
+      - name: Build signed IPA
+        script: *ios-signed-ipa
     publishing:
       app_store_connect:
         auth: integration

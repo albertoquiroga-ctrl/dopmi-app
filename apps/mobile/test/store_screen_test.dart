@@ -118,6 +118,8 @@ class StoreFake implements StoreRepository {
 }
 
 void main() {
+  final amazonStoreModes = ValueVariant<bool>({true, false});
+
   testWidgets(
     'cat kit explains the affiliate link and opens only after confirmation',
     (tester) async {
@@ -234,9 +236,8 @@ void main() {
     },
   );
 
-  testWidgets('internal Store opens the selected presentation on Amazon', (
-    tester,
-  ) async {
+  testWidgets('Amazon Store opens the selected presentation', (tester) async {
+    final preview = amazonStoreModes.currentValue!;
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(377, 852);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -246,11 +247,15 @@ void main() {
     final repository = StoreReviewRepository(
       currentUser: () => 'play-tester',
       changes: const Stream.empty(),
+      preview: preview,
     );
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           storeRepositoryProvider.overrideWithValue(repository),
+          storePreviewImageProvider.overrideWithValue(
+            storeReviewAmazonArtworkFor,
+          ),
           communityRepositoryProvider.overrideWithValue(FakeCommunity()),
           storeLinkOpenerProvider.overrideWithValue((uri) async {
             opened.add(uri);
@@ -261,6 +266,10 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
+    expect(
+      find.text(preview ? 'Vista previa de Tienda' : 'Tienda Dopmi'),
+      findsOneWidget,
+    );
     await tester.enterText(
       find.byKey(const ValueKey('store-search')),
       'Pedigree adulto razas pequeñas',
@@ -271,6 +280,10 @@ void main() {
     await tester.ensureVisible(product);
     await tester.tap(product);
     await tester.pumpAndSettle();
+    expect(
+      find.text('Vista previa TEST'),
+      preview ? findsOneWidget : findsNothing,
+    );
     expect(find.textContaining('Enlace de afiliado'), findsOneWidget);
     final size = find.byKey(
       const ValueKey('store-variant-pedigree-mini-0-10000'),
@@ -278,6 +291,10 @@ void main() {
     await tester.ensureVisible(size);
     await tester.tap(size);
     await tester.pumpAndSettle();
+    final image = find.byKey(
+      const ValueKey('store-product-image-pedigree-mini-0-10000'),
+    );
+    expect(tester.widget<Image>(image).image, isA<NetworkImage>());
     expect(opened, isEmpty);
     await tester.tap(find.text('Ver producto en Amazon México'));
     await tester.pumpAndSettle();
@@ -305,7 +322,7 @@ void main() {
       opened.single.toString(),
       'https://www.amazon.com.mx/dp/B00DUAMJDS?tag=albertoquir0f-20',
     );
-  });
+  }, variant: amazonStoreModes);
 
   test('variant matching combines flavor, presentation and breed size', () {
     expect(

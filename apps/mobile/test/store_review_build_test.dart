@@ -11,44 +11,76 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test(
-    'the adoption-only build exposes only the explicit Store review route',
-    () {
-      expect(adoptionOnlyRouteRedirect(Uri.parse('/store')), '/home');
+  test('the adoption-only build exposes only the explicit Store route', () {
+    expect(adoptionOnlyRouteRedirect(Uri.parse('/store')), '/home');
+    expect(
+      adoptionOnlyRouteRedirect(Uri.parse('/store'), allowStore: true),
+      isNull,
+    );
+    for (final path in [
+      '/store/?next=/contribute',
+      '/store/item',
+      '/apoya-causa',
+      '/rescuer/apoya-causa',
+      '/contribute',
+      '/connect',
+      '/guardian',
+    ]) {
       expect(
-        adoptionOnlyRouteRedirect(Uri.parse('/store'), allowStoreReview: true),
-        isNull,
+        adoptionOnlyRouteRedirect(Uri.parse(path), allowStore: true),
+        '/home',
+        reason: path,
       );
-      for (final path in [
-        '/store/?next=/contribute',
-        '/store/item',
-        '/apoya-causa',
-        '/rescuer/apoya-causa',
-        '/contribute',
-        '/connect',
-        '/guardian',
-      ]) {
-        expect(
-          adoptionOnlyRouteRedirect(Uri.parse(path), allowStoreReview: true),
-          '/home',
-          reason: path,
-        );
-      }
-    },
-  );
+    }
+  });
 
-  test('the opt-in also requires Android, production and adoption-only', () {
-    final expected =
-        const bool.fromEnvironment('DOPMI_STORE_REVIEW') &&
-        const bool.fromEnvironment('DOPMI_ADOPTION_ONLY') &&
-        const String.fromEnvironment('DOPMI_ENVIRONMENT') == 'production';
-    expect(storeReviewBuild, expected);
+  test('production Store opt-ins expose only their eligible platforms', () {
+    const reviewRequested = bool.fromEnvironment('DOPMI_STORE_REVIEW');
+    const publicRequested = bool.fromEnvironment('DOPMI_STORE_AMAZON_PUBLIC');
+    const productionAdoption =
+        bool.fromEnvironment('DOPMI_ADOPTION_ONLY') &&
+        String.fromEnvironment('DOPMI_ENVIRONMENT') == 'production';
+    const review = productionAdoption && reviewRequested && !publicRequested;
+    const publicEnabled =
+        productionAdoption && publicRequested && !reviewRequested;
+    expect(storeReviewBuild, review);
+    expect(storeAmazonPublicBuild, publicEnabled);
     addTearDown(() => debugDefaultTargetPlatformOverride = null);
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     expect(storeReviewAvailable, false);
+    expect(storeAmazonPublicAvailable, publicEnabled);
+    expect(storeAmazonAvailable, publicEnabled);
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
-    expect(storeReviewAvailable, expected);
+    expect(storeReviewAvailable, review);
+    expect(storeAmazonPublicAvailable, publicEnabled);
+    expect(storeAmazonAvailable, review || publicEnabled);
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+    expect(storeAmazonAvailable, false);
   });
+
+  test(
+    'the public Amazon catalog remains available without preview expiry',
+    () async {
+      String? actor = 'signed-in-user';
+      final repository = StoreReviewRepository(
+        currentUser: () => actor,
+        changes: const Stream.empty(),
+        preview: false,
+      );
+      final catalog = await repository.catalog();
+      expect(catalog.enabled, true);
+      expect(catalog.preview, false);
+      expect(catalog.expiresAt, isNull);
+      expect(catalog.amazonProductLinks, true);
+      expect(catalog.products, hasLength(storeReviewAmazonListings.length));
+      expect(catalog.kitItems, hasLength(8));
+
+      actor = null;
+      expect((await repository.catalog()).enabled, false);
+      expect(await repository.productLink(catalog.products.first.id), isNull);
+      expect(await repository.productLink(catalog.kitItems.first.id), isNull);
+    },
+  );
 
   test('every review presentation resolves to local product artwork', () {
     final artworkById = {
