@@ -10,6 +10,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'community_test.dart' show FakeCommunity;
 
+const _adoptionFunding = 'Las comisiones ayudan a sostener la app de adopción';
+const _affiliateDisclosure =
+    'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde esta Tienda.';
+
 const storeFixtureProducts = [
   StoreProduct(
     id: 'a',
@@ -152,16 +156,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Más hogares para más mascotas'), findsOneWidget);
       expect(
-        find.text('DopMi conecta a mascotas en adopción con familias.'),
+        find.text('DopMi acerca a rescatistas y familias que quieren adoptar.'),
         findsOneWidget,
       );
       expect(find.text('Precio y pago en Amazon México'), findsOneWidget);
-      final fundingHeading = find.text(
-        'Una fuente de ingresos para nuestra app de adopción',
-      );
-      final affiliateNotice = find.text(
-        'Como afiliado de Amazon, DopMi puede recibir una comisión por compras elegibles hechas desde los enlaces de esta Tienda.',
-      );
+      final fundingHeading = find.text(_adoptionFunding);
+      final affiliateNotice = find.text(_affiliateDisclosure);
       expect(fundingHeading, findsOneWidget);
       expect(affiliateNotice, findsOneWidget);
       expect(
@@ -205,10 +205,9 @@ void main() {
       );
       expect(find.text('Precio y pago'), findsOneWidget);
       expect(find.text('Código de afiliado incluido'), findsOneWidget);
-      expect(
-        find.textContaining('comisión por compras elegibles'),
-        findsOneWidget,
-      );
+      expect(find.text('Tu compra continúa en Amazon'), findsOneWidget);
+      expect(fundingHeading, findsOneWidget);
+      expect(affiliateNotice, findsOneWidget);
       expect(opened, isEmpty);
       await tester.tap(find.text('Seguir en DopMi'));
       await tester.pumpAndSettle();
@@ -217,7 +216,10 @@ void main() {
       expect(opened, isEmpty);
       await tester.tap(collar);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Ir a Amazon México'));
+      final openAmazon = find.text('Ir a Amazon México');
+      await tester.ensureVisible(openAmazon);
+      await tester.pumpAndSettle();
+      await tester.tap(openAmazon);
       await tester.pumpAndSettle();
       expect(
         opened.single.toString(),
@@ -303,14 +305,18 @@ void main() {
     tester.view.physicalSize = const Size(320, 640);
     tester.platformDispatcher.textScaleFactorTestValue = 2;
     await tester.pumpAndSettle();
+    final handoffScroll = find.descendant(
+      of: find.byKey(const ValueKey('store-amazon-handoff')),
+      matching: find.byType(Scrollable),
+    );
+    final funding = find.text(_adoptionFunding);
+    await tester.scrollUntilVisible(funding, 120, scrollable: handoffScroll);
+    expect(funding, findsOneWidget);
     final continueToAmazon = find.text('Ir a Amazon México');
     await tester.scrollUntilVisible(
       continueToAmazon,
       120,
-      scrollable: find.descendant(
-        of: find.byKey(const ValueKey('store-amazon-handoff')),
-        matching: find.byType(Scrollable),
-      ),
+      scrollable: handoffScroll,
     );
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
@@ -423,12 +429,12 @@ void main() {
       );
       expect(find.text('Vista previa de Tienda'), findsOneWidget);
       expect(find.text('Más hogares para más mascotas'), findsNothing);
-      expect(find.textContaining('Una fuente de ingresos'), findsNothing);
+      expect(find.text(_adoptionFunding), findsNothing);
       expect(
         find.textContaining('Catálogo TEST. No permite compras reales.'),
         findsOneWidget,
       );
-      expect(find.textContaining('Las comisiones corresponden'), findsNothing);
+      expect(find.text(_affiliateDisclosure), findsNothing);
       await tester.ensureVisible(find.text('Alimento dos'));
       await tester.tap(find.text('Alimento dos'));
       await tester.pumpAndSettle();
