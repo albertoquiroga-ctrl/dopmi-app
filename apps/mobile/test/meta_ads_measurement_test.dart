@@ -177,6 +177,24 @@ void main() {
     expect(routes(), [_eligibility, 'dopmi_send_message']);
   });
 
+  test('a measured operation without a session makes no RPC', () async {
+    final guest = SupabaseClient(
+      'http://127.0.0.1:54321',
+      'test-key',
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
+      httpClient: MockClient((_) async => fail('guest product request')),
+    );
+    addTearDown(guest.dispose);
+    native((_) async => fail('guest AAID request'));
+    await expectLater(
+      SupabaseCommunityRepository(
+        guest,
+        metaAds: MetaAdsMeasurement(guest),
+      ).sendMessage('thread', 'msg', 'body'),
+      throwsStateError,
+    );
+  });
+
   test('older backends do not report a prior grant', () async {
     missingPreference = true;
     expect(await measurement.preference(_actor), isFalse);

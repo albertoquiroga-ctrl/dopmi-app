@@ -188,7 +188,7 @@ class MetaAdsMeasurement {
     Map<String, Object?> measuredOnly = const {},
   }) async {
     final initialSession = client.auth.currentSession;
-    if (initialSession == null) return client.rpc(legacy, params: params);
+    if (initialSession == null) throw StateError('La sesión cambió.');
     final owner = initialSession.user.id;
 
     Future<dynamic> runLegacyForOwner() async {

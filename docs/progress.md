@@ -8882,9 +8882,17 @@ y adopción. Su suite Node expuso que los esquemas Auth simulados no incluían
 Se añadió la columna nullable en los fixtures que cargan las migraciones
 completas. SQL aplicado en DEV permanece igual.
 [CI 44010028959](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44010028959)
+Después de reinstalar las dependencias, la suite Node completa dio 1296
+aprobadas, nueve omitidas y cero fallos. La corrección de fixtures entró
+en `d375ff1712e6470f7190ac8135963b64f19a5ec2`.
+[CI 44011139825](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44011139825)
 
 ADB detectó el Samsung con DopMi 2.3.5 (395), instalada por Play. La
 compilación local de depuración permitió comprobar el puente Kotlin y el
 manifiesto con el acceso al identificador de publicidad separado de
 Firebase. La comprobación del recorrido de Meta requiere un candidato
 firmado, la fuente y las credenciales de prueba.
+
+La última revisión también comprobó que una operación sin sesión inicial
+se rechaza localmente sin consultar el identificador ni llamar a Supabase.
+Pasaron las 14 pruebas Flutter dirigidas del cambio.
