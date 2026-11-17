@@ -8843,3 +8843,56 @@ iPhone ni en Samsung físico. Siguiente acción: instalar 395 desde Play
 interno en el Samsung, revisar el ícono en Inicio, cerrar y abrir en
 frío hasta la pantalla habitual, y promover ese mismo código si se ve
 correctamente. Apple queda a la espera de revisión.
+## 16/11/2026 CDMX — Publicación de Tienda Amazon
+
+El titular informó la luz verde de Amazon por teléfono y autorizó la
+publicación. La 2.3.6 habilita la Tienda en el perfil de adopciones de
+Android e iOS, con fotos, kits, enlace directo y aviso de afiliación.
+Conserva el código de Afiliados México que ya usaba Android. Las
+propiedades móviles estaban declaradas en la última lectura autenticada.
+Los datos de atribución y las compras elegibles se verifican en Amazon.
+
+Fuente `d429b09b5ba9331002a40c1bb2193a94eb590cb1`, base de marca
+`dd913fe7`, CI `44001410874` con cuatro trabajos aprobados. Flutter
+analyze, 1,780 pruebas generales, 28 del perfil Tienda pública y 42 de
+configuración. Verificados perfil de producción, aislamiento de pagos
+y enlace directo por presentación en pruebas. Código y seguridad revisados.
+
+Android 2.3.6 (399), Codemagic `6afbbddaa76e02e73740699f`, compiló y
+firmó correctamente. Google Play rechazó crear la versión de producción
+con «The caller does not have permission». El AAB exacto quedó verificado
+y copiado a Descargas como `DopMi-2.3.6-399-Play.aab`. Play Console
+mostró 2.3.5 activa en Producción. El control de Chrome se detuvo al
+perder la verificación de la URL antes de crear la versión 399. Su
+envío a revisión, instalación y recorrido físico siguen pendientes.
+
+iOS 2.3.6 (400), Codemagic `6afbc24b324c6f02b8e6d096`, cargado y
+enviado a App Review. App Store Connect devolvió `WAITING_FOR_REVIEW`
+a las 21:14 CDMX. La publicación está configurada para después de la
+aprobación. Instalación y recorrido físico pendientes.
+
+## 16/11/2026 CDMX — Enlace para compartir una mascota en adopción
+
+El botón Compartir en producción genera `https://www.dopmi.org/adoptions/{id}`
+en su propia línea. La ficha web sirve foto, nombre, texto de la publicación
+y un botón que usa la ruta nativa existente. Conserva el alcance de las
+publicaciones moderadas y las fotos aprobadas mediante acceso anónimo sin
+escrituras. Ninguna coordenada, ruta interna de archivos o dato de contacto
+se añade a la tarjeta. La imagen de vista previa se entrega como JPEG de
+1200 × 630 sin EXIF.
+
+Publicado en `dopmi-landing-mockup@da72e901`, Vercel
+`dpl_EwtsSYkp4ZqFS4pKstVtvzozbqyE`. Comprobados en el dominio público la
+ficha reportada y su imagen con agente de vista previa, 404 para fichas
+ausentes, y la disponibilidad de privacidad y del enlace de descarga.
+14 pruebas web, TypeScript, build y revisión independiente aprobados.
+
+Móvil `c3c04cca`, CI `44010426038` con cuatro trabajos aprobados. Análisis
+limpio y 31 pruebas focales; reproducido en Flutter el texto roto previo y
+reparado en el botón real. Android 2.3.6 (402) compilado y publicado en
+Play interno por `6afbcf4f11ebbd9baf59a85e`. La API de Google Play
+devolvió `internal/completed` para el código 402.
+El Samsung con la 395 de Play reconoce el destino nativo del botón web.
+El botón web usa el esquema de DopMi ya registrado en Android e iOS.
+Pendientes la instalación de la 402 y la vista previa desde WhatsApp en el
+teléfono. No se envió una publicación general nueva de la app.
