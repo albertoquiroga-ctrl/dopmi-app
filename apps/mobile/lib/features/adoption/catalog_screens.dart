@@ -10,6 +10,7 @@ import '../../core/media/remote_photo.dart';
 import '../../core/content_links.dart';
 import '../../core/measurement.dart';
 import '../community/content_actions.dart';
+import '../identity/identity_controller.dart';
 import '../profile/rescuer_profile_repository.dart';
 import 'adopt_start_dialog.dart';
 import 'adoption_detail_layout.dart';
@@ -394,9 +395,14 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   }
 
   Future<void> share(Adoption post) async {
+    final link = publicContentLink(
+      PublicContent.adoption,
+      post.id,
+      production: ref.read(configProvider).environment == 'production',
+    );
     await shareContent(
       context,
-      'Conoce la historia de ${post.name} en Dopmi. ${publicContentLink(PublicContent.adoption, post.id)}',
+      'Conoce la historia de ${post.name} en DopMi.\n$link',
     );
   }
 

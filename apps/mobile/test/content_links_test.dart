@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/core/content_links.dart';
+import 'package:dopmi_mobile/features/adoption/catalog_screens.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -24,6 +27,31 @@ class LinkFixture implements ContentLinkSource {
 const id = '11111111-2222-3333-4444-555555555555';
 
 void main() {
+  test('the production adoption URL is canonical and opens the pet', () {
+    final uri = Uri.parse('https://www.dopmi.org/adoptions/$id');
+    expect(
+      publicContentLink(PublicContent.adoption, id, production: true),
+      uri,
+    );
+    expect(contentLinkDestination(uri), '/adoptions/$id');
+    expect(
+      publicContentLink(PublicContent.adoption, id).toString(),
+      'io.dopmi.app://content/adoptions/$id',
+    );
+    expect(
+      publicContentLink(PublicContent.profile, id, production: true).toString(),
+      'io.dopmi.app://content/people/$id',
+    );
+    expect(
+      publicContentLink(
+        PublicContent.rescueCase,
+        id,
+        production: true,
+      ).toString(),
+      'io.dopmi.app://content/rescue-cases/$id',
+    );
+  });
+
   test('content links accept only public UUID routes, excluding auth/payment and private targets', () {
     for (final kind in PublicContent.values) {
       final uri = publicContentLink(kind, id);
@@ -39,9 +67,54 @@ void main() {
       'io.dopmi.app://user@content/people/$id',
       'https://content/people/$id',
       'io.dopmi.app://content/people/$id/extra',
+      'http://www.dopmi.org/adoptions/$id',
+      'https://www.dopmi.org.evil.test/adoptions/$id',
+      'https://www.dopmi.org/people/$id',
+      'https://www.dopmi.org/adoptions/$id?token=private',
+      'https://www.dopmi.org/adoptions/$id#private',
+      'https://user@www.dopmi.org/adoptions/$id',
+      'https://www.dopmi.org:8443/adoptions/$id',
+      'https://www.dopmi.org/adoptions/not-a-uuid',
     ]) {
       expect(contentLinkDestination(Uri.parse(value)), isNull);
     }
+  });
+
+  testWidgets('Compartir sends an HTTPS URL on its own line', (tester) async {
+    const channel = MethodChannel('dev.fluttercommunity.plus/share');
+    final calls = <MethodCall>[];
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call);
+      return 'dev.fluttercommunity.plus/share/dismissed';
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    final community = FakeCommunity();
+    community.post = Adoption({...community.post.data, 'id': id});
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          configProvider.overrideWithValue(
+            const AppConfig(
+              url: 'https://ysaoeuidcvgtlmphmeyb.supabase.co',
+              key: 'sb_publishable_fixture',
+              redirect: 'io.dopmi.app://auth/callback',
+              environment: 'production',
+            ),
+          ),
+          communityRepositoryProvider.overrideWithValue(community),
+        ],
+        child: const MaterialApp(home: AdoptionDetailScreen(id)),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Compartir'));
+    await tester.pumpAndSettle();
+    expect(
+      calls.single.arguments['text'],
+      'Conoce la historia de Luna en DopMi.\nhttps://www.dopmi.org/adoptions/$id',
+    );
   });
 
   for (final cold in [true, false]) {

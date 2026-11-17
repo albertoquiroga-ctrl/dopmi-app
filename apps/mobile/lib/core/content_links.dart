@@ -8,33 +8,47 @@ import '../app.dart' show routerProvider;
 
 enum PublicContent { profile, adoption, rescueCase }
 
+const _publicShareHost = 'www.dopmi.org';
+
 String _segment(PublicContent kind) => switch (kind) {
   PublicContent.profile => 'people',
   PublicContent.adoption => 'adoptions',
   PublicContent.rescueCase => 'rescue-cases',
 };
 
-Uri publicContentLink(PublicContent kind, String id) => Uri(
-  scheme: 'io.dopmi.app',
-  host: 'content',
-  pathSegments: [_segment(kind), id],
-);
+Uri publicContentLink(
+  PublicContent kind,
+  String id, {
+  bool production = false,
+}) {
+  final path = [_segment(kind), id];
+  if (production && kind == PublicContent.adoption) {
+    return Uri(scheme: 'https', host: _publicShareHost, pathSegments: path);
+  }
+  return Uri(scheme: 'io.dopmi.app', host: 'content', pathSegments: path);
+}
 
 String? contentLinkDestination(Uri uri) {
   final parts = uri.pathSegments;
-  if (uri.scheme != 'io.dopmi.app' ||
-      uri.host != 'content' ||
-      uri.userInfo.isNotEmpty ||
+  if (uri.userInfo.isNotEmpty ||
       uri.hasPort ||
       uri.hasQuery ||
       uri.hasFragment ||
       parts.length != 2 ||
-      !['people', 'adoptions', 'rescue-cases'].contains(parts.first) ||
       !RegExp(
         r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
       ).hasMatch(parts.last)) {
     return null;
   }
+  final legacy =
+      uri.scheme == 'io.dopmi.app' &&
+      uri.host == 'content' &&
+      ['people', 'adoptions', 'rescue-cases'].contains(parts.first);
+  final adoptionShare =
+      uri.scheme == 'https' &&
+      uri.host == _publicShareHost &&
+      parts.first == 'adoptions';
+  if (!legacy && !adoptionShare) return null;
   return '/${parts.first}/${parts.last}';
 }
 
