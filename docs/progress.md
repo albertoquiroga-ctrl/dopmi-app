@@ -8953,3 +8953,20 @@ Codemagic `6afbf27130fbaa3e3135cc82` completó sus 14 pasos y la lectura
 posterior de Google Play confirmó `internal/completed/404` para 2.3.6.
 El Samsung conserva 2.3.5 (395) de Play al cierre de esta lectura.
 Instalación, prueba física y aceptación visual de 404 pendientes.
+
+## 17/11/2026 CDMX — Tienda explica cómo las comisiones sostienen Dopmi
+
+El catálogo Amazon muestra antes del buscador la misión de adopción y la
+comisión por compras elegibles. El paso previo a Amazon muestra el mismo
+aviso junto con el destino de pago y el código de afiliado incluido. Con
+texto ampliado, el mensaje de comisiones aparece primero en el catálogo
+y antes del diagrama de salida. El texto explica los ingresos de la app
+sin solicitar apoyo a través de los enlaces. [Guía de Amazon México](https://afiliados.amazon.com.mx/help/node/topic/G8TW5AE9XL2VX9VM).
+
+Fuente `be9854f6`. Análisis Flutter limpio y 37 pruebas focales aprobadas.
+Las capturas de 377 × 852 y 320 × 640 al 200 % confirmaron la jerarquía del
+mensaje. Las pruebas conservaron la cancelación y el enlace afiliado
+exacto de la presentación seleccionada. CI `44034362414` aprobó sus cuatro
+trabajos. Codemagic `6afbfe39d74e7129f7239a50` completó sus 14 pasos y
+Google Play confirmó `internal/completed/405` para 2.3.6. Instalación
+y prueba en teléfono pendientes.
