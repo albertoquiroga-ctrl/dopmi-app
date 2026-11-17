@@ -8932,3 +8932,24 @@ bloqueos. CI integrada `44019399843` con cuatro trabajos aprobados.
 Codemagic `6afbe07b49785c5bca06491a` firmó 2.3.6 (403) y la lectura de
 Google Play devolvió `internal/completed/403`. Instalación y prueba en
 el teléfono pendientes.
+
+## 17/11/2026 CDMX — Solicitud del sello Dopmi según el mock de Irlanda
+
+Referencia `irlanda/apoyar-detalle-perfil` fijada en
+`f693c0367643605fa8495c1ae3c171df4ccf85b6`. Perfil abre el cuadro del
+sello con la lista de datos que se pueden completar. La lista orienta y se
+puede continuar al expediente con los requisitos privados vigentes. La
+confirmación precede al envío real, el acceso retoma el mismo expediente
+y la aprobación vuelve a Perfil. La solicitud del sello y el alta Stripe
+son independientes.
+
+Análisis Flutter limpio, 105 pruebas focales aprobadas y revisión visual
+con datos sintéticos, a escala normal y al 200 %. Revisión independiente
+de privacidad y flujo sin bloqueos. Se actualizó una prueba que aún
+esperaba Ajustes como destino de la tarjeta aprobada. El candidato final
+`5abb7ba0` aprobó los cuatro trabajos de CI `44027740882`.
+
+Codemagic `6afbf27130fbaa3e3135cc82` completó sus 14 pasos y la lectura
+posterior de Google Play confirmó `internal/completed/404` para 2.3.6.
+El Samsung conserva 2.3.5 (395) de Play al cierre de esta lectura.
+Instalación, prueba física y aceptación visual de 404 pendientes.
