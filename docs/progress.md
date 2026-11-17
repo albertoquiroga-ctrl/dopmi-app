@@ -8807,3 +8807,23 @@ contrato y la disponibilidad pública antes de abrir la ronda. La migración
 `20261112232613_android_rescuer_acquisition.sql` conserva el contenido
 instalado previamente en DEV como `20261112235251`. La preparación de esta
 rama no publica un build ni cambia un entorno remoto.
+
+### 16/11/2026 21:32 CDMX — Build 401 de atribución en Play interno
+
+El titular autorizó publicar el candidato con Supabase DEV. El commit
+`83156fb60b7c1a71c17852ce42d0ff445b76b5a6` aprobó los cuatro trabajos de
+[CI 44006649962](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44006649962).
+El flujo local de Flutter se detuvo tras 354 pruebas aprobadas para continuar
+la verificación completa en CI. Flutter también pasó en Codemagic.
+
+[Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afbc7876f3c0aa0ae70d72b)
+confirmó el SHA, el flujo `android-internal`, la configuración DEV, el AAB
+firmado y la publicación. [Play Console](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/215/details)
+muestra DopMi 2.3.3 (401) disponible para testers internos, release 215.
+La lectura en DEV confirmó la migración, los dos RPC, RLS, tres triggers,
+cero atribuciones y cero primeros envíos atribuidos antes de probar.
+
+El Samsung seguía con la instalación 395 iniciada el 12 de noviembre. Se
+pidió una instalación nueva desde `/descargar/personal-a`. Sigue pendiente
+la primera ficha de prueba y el resultado atribuido. La ronda en Facebook
+quedó pendiente de la disponibilidad de medición pública.
