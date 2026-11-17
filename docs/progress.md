@@ -8896,3 +8896,7 @@ firmado, la fuente y las credenciales de prueba.
 La última revisión también comprobó que una operación sin sesión inicial
 se rechaza localmente sin consultar el identificador ni llamar a Supabase.
 Pasaron las 14 pruebas Flutter dirigidas del cambio.
+El gate nativo de permisos PostgreSQL pasó en el CI 44011139825 con el
+mismo SQL del candidato final. La revisión móvil quedó en
+`690655e32f0f7a06405aab4892bbcfcb9812ff9b`.
+[CI 44011630787](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44011630787)
