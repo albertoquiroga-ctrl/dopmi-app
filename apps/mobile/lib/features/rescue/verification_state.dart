@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 import 'verification_form.dart';
 
@@ -15,12 +14,12 @@ class VerificationStateScreen extends StatelessWidget {
     required this.onHome,
     required this.onRecord,
     required this.onRefresh,
-    this.onPublish,
+    this.onViewProfile,
     this.onWithdraw,
   });
   final bool approved, loading;
   final VoidCallback onBack, onHome, onRecord, onRefresh;
-  final VoidCallback? onPublish, onWithdraw;
+  final VoidCallback? onViewProfile, onWithdraw;
   @override
   Widget build(BuildContext context) => VerificationFormFrame(
     title: approved ? 'Verificación' : 'Verificación en revisión',
@@ -88,10 +87,8 @@ class VerificationStateScreen extends StatelessWidget {
               const SizedBox(height: 26.08),
               Text(
                 approved
-                    ? adoptionOnlyBuild
-                          ? 'Tu perfil público ya puede mostrar el sello Dopmi.'
-                          : 'Ya puedes publicar y administrar casos con donaciones.'
-                    : 'El equipo revisará tus datos y documentos. Te avisaremos cuando responda.',
+                    ? 'Tu perfil público ya puede mostrar el sello Dopmi.'
+                    : 'El equipo Dopmi revisará los datos y documentos de tu refugio. Te avisaremos cuando responda.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -110,7 +107,7 @@ class VerificationStateScreen extends StatelessWidget {
                 ),
               if (approved)
                 FilledButton(
-                  onPressed: loading ? null : onPublish,
+                  onPressed: loading ? null : onViewProfile,
                   style:
                       FilledButton.styleFrom(
                         minimumSize: const Size(0, 48),
@@ -133,7 +130,7 @@ class VerificationStateScreen extends StatelessWidget {
                         ),
                         animationDuration: Duration.zero,
                       ),
-                  child: const Text('Publicar un caso'),
+                  child: const Text('Ver mi perfil'),
                 )
               else
                 OutlinedButton(

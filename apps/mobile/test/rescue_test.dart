@@ -17,6 +17,8 @@ import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
 import 'package:dopmi_mobile/features/rescue/rescuer_funnel.dart';
 import 'package:dopmi_mobile/features/rescue/case_update_repository.dart';
 import 'package:dopmi_mobile/features/rescue/public_expense_card.dart';
+import 'package:dopmi_mobile/features/rescue/verification_intro.dart';
+import 'package:dopmi_mobile/features/rescue/verification_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -273,6 +275,90 @@ class FakeRescue extends RescueRepository {
       'files': files,
       'version': 5,
       'status': 'draft',
+    });
+  }
+}
+
+RescueRecord completeVerificationRecord(String id) => RescueRecord({
+  'id': id,
+  'owner_id': 'one',
+  'kind': 'verification',
+  'status': 'draft',
+  'version': 4,
+  'public_data': {
+    'public_name': 'Refugio Luna',
+    'bio': 'Rescatamos animales',
+    'city': 'Monterrey',
+    'state': 'Nuevo León',
+  },
+  'private_data': {
+    'legal_name': 'Ana López',
+    'phone': '8188888888',
+    'experience': 'Rescatamos desde hace tres años.',
+    'social_url': 'https://example.test/refugio-luna',
+    'identity_type': 'ine',
+  },
+  'files': [
+    {'role': 'identity', 'path': 'one/$id/identity.pdf'},
+    {'role': 'address', 'path': 'one/$id/address.pdf'},
+  ],
+});
+
+class ExistingVerificationRescue extends FakeRescue {
+  ExistingVerificationRescue() {
+    conflict = false;
+  }
+
+  RescueRecord current = completeVerificationRecord('verification-id');
+  final detailIds = <String>[];
+  final submittedIds = <String>[];
+
+  @override
+  Future<DataPage<RescueRecord>> mine(
+    String kind,
+    int page, {
+    String? parent,
+  }) async {
+    if (kind == 'verification') return DataPage([current], 1);
+    return super.mine(kind, page, parent: parent);
+  }
+
+  @override
+  Future<Json> detail(String id) async {
+    detailIds.add(id);
+    expect(id, current.id);
+    return {'record': current.data, 'history': <Json>[]};
+  }
+
+  @override
+  Future<RescueRecord> save(
+    String kind,
+    Json publicData,
+    Json privateData,
+    List<Json> files, {
+    RescueRecord? record,
+    String? parent,
+  }) async {
+    expect(record?.id, current.id);
+    return current = await super.save(
+      kind,
+      publicData,
+      privateData,
+      files,
+      record: record,
+      parent: parent,
+    );
+  }
+
+  @override
+  Future<RescueRecord> transition(RescueRecord record, String action) async {
+    expect(action, 'submit');
+    expect(record.id, current.id);
+    submittedIds.add(record.id);
+    return current = RescueRecord({
+      ...record.data,
+      'status': 'submitted',
+      'version': record.version + 1,
     });
   }
 }
@@ -1139,6 +1225,97 @@ void main() {
       },
     );
   }
+  testWidgets('verification resumes and submits the same shelter application', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 852);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    SharedPreferences.setMockInitialValues({});
+    const verificationRoute = '/rescue/new?kind=verification';
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    final repo = ExistingVerificationRescue();
+    final container = ProviderContainer(
+      overrides: [
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        rescueRepositoryProvider.overrideWithValue(repo),
+        routerInitialLocationProvider.overrideWithValue(verificationRoute),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await identity.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    final router = GoRouter.of(
+      tester.element(find.byType(VerificationFormFrame)),
+    );
+    expect(find.byType(VerificationIntroScreen), findsNothing);
+    expect(find.text('Borrador · Versión 4'), findsOneWidget);
+    expect(repo.detailIds, ['verification-id']);
+
+    final submit = find.byKey(const ValueKey('verification-submit'));
+    Future<void> openConfirmation() async {
+      await tester.ensureVisible(submit);
+      await tester.pumpAndSettle();
+      await tester.tap(submit);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.text('¿Enviar solicitud de verificación?'), findsOneWidget);
+      expect(repo.saveCalls, 0);
+      expect(repo.submittedIds, isEmpty);
+    }
+
+    await tester.scrollUntilVisible(
+      submit,
+      350,
+      maxScrolls: 20,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey('verification-form-body')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await openConfirmation();
+    final cancel = find.text('Ahora no');
+    await tester.ensureVisible(cancel);
+    await tester.tap(cancel);
+    await tester.pumpAndSettle();
+    expect(find.byType(VerificationIntroScreen), findsNothing);
+    expect(repo.saveCalls, 0);
+    expect(repo.submittedIds, isEmpty);
+    expect(repo.current.status, 'draft');
+
+    await openConfirmation();
+    final confirm = find.text('Enviar solicitud');
+    await tester.ensureVisible(confirm);
+    await tester.tap(confirm);
+    await tester.pumpAndSettle();
+    expect(find.byType(VerificationStateScreen), findsOneWidget);
+    expect(repo.saveCalls, 1);
+    expect(repo.submittedIds, ['verification-id']);
+    expect(repo.current.status, 'submitted');
+
+    router.go('/rescuer');
+    await tester.pumpAndSettle();
+    router.push<void>(verificationRoute).ignore();
+    await tester.pumpAndSettle();
+    expect(find.byType(VerificationIntroScreen), findsNothing);
+    expect(find.byType(VerificationStateScreen), findsOneWidget);
+    expect(repo.detailIds, everyElement('verification-id'));
+    expect(repo.detailIds, hasLength(3));
+    expect(repo.saveCalls, 1);
+    expect(repo.submittedIds, ['verification-id']);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('rescuer draft keeps private fields after a save conflict', (
     tester,
   ) async {

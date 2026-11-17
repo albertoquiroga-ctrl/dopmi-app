@@ -460,6 +460,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   : 'case',
               parent: state.uri.queryParameters['case'],
               showRecord: state.uri.queryParameters['record'] == '1',
+              verificationIntroSeen: state.extra == true,
               key: ValueKey('${identity.identity?.id}:${state.uri}'),
             ),
           ),

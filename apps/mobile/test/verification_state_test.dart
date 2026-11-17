@@ -144,6 +144,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(repo.reads, 2);
       expect(find.text('Cuenta verificada'), findsOneWidget);
+      expect(
+        find.text('Tu perfil público ya puede mostrar el sello Dopmi.'),
+        findsOneWidget,
+      );
       expect(find.text('Retirar a borrador'), findsNothing);
       await tester.tap(find.text('Consultar expediente'));
       await tester.pumpAndSettle();
@@ -167,7 +171,7 @@ void main() {
       await tester.tap(find.text('Recargar estado'));
       await tester.pumpAndSettle();
       expect(find.text('Cuenta verificada'), findsNothing);
-      expect(find.text('Publicar un caso'), findsNothing);
+      expect(find.text('Ver mi perfil'), findsNothing);
       expect(find.text('Volver a intentar'), findsOneWidget);
       repo.fail = false;
       await tester.tap(find.text('Volver a intentar'));

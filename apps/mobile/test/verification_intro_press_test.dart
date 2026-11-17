@@ -11,7 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   for (final platform in [TargetPlatform.android, TargetPlatform.iOS]) {
     for (final scale in [1.0, 2.0]) {
-      for (final section in ['Continuar a verificación', 'Después', 'Cerrar']) {
+      for (final section in ['Completar solicitud', 'Ahora no', 'Cerrar']) {
         testWidgets(
           'Verification intro preserves press and cancels safely: section=$section scale=$scale platform=$platform',
           (tester) async {

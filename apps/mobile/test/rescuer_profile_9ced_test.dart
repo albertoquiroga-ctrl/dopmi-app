@@ -82,6 +82,52 @@ Future<void> reveal9ced(WidgetTester tester, Finder target) async {
 }
 
 void main() {
+  testWidgets('profile verification offers the mock checklist and real form', (
+    tester,
+  ) async {
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    final container = await mount9cedProfile(
+      tester,
+      identity,
+      Profile9cedRepository(),
+      status: 'not_started',
+    );
+    final router = container.read(routerProvider);
+    final card = find.text('Verifica tu cuenta');
+    final dialog = find.byType(Dialog);
+    Future<void> enter() async {
+      await reveal9ced(tester, card);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+    }
+
+    await enter();
+    expect(router.state.uri.path, '/profile');
+    expect(dialog, findsOneWidget);
+    expect(find.text('Foto de perfil'), findsOneWidget);
+    expect(find.text('Teléfono'), findsOneWidget);
+    expect(find.text('Correo electrónico'), findsNothing);
+    expect(find.text('Red social (Instagram o Facebook)'), findsNothing);
+    final complete = find.text('Completar mi información');
+    await tester.ensureVisible(complete);
+    await tester.tap(complete);
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/rescuer/profile/edit');
+    router.pop();
+    await tester.pumpAndSettle();
+
+    await enter();
+    final continueRequest = find.text('Continuar con la solicitud');
+    await tester.ensureVisible(continueRequest);
+    await tester.tap(continueRequest);
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, '/rescue/new');
+    expect(find.text('Formulario de verificación'), findsOneWidget);
+    expect(dialog, findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('profile owns moderated social editing; settings keeps Connect', (
     tester,
   ) async {

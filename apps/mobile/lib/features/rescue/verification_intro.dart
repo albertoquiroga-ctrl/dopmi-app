@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../core/config/adoption_only_build.dart';
 import '../../core/design_tokens.dart';
 
 class VerificationIntroScreen extends StatelessWidget {
@@ -10,25 +9,52 @@ class VerificationIntroScreen extends StatelessWidget {
     super.key,
     required this.onContinue,
     required this.onLater,
+    this.profileGaps = const [],
+    this.onContinueWithoutProfile,
+    this.asDialog = false,
+    this.confirmingSubmission = false,
   });
-  final VoidCallback onContinue, onLater;
-  static const purple = DopmiTokens.purple;
-  static const ink = Color(0xff15110d);
-  static const muted = Color(0xff554e48);
-  Widget icon(String name, double size, {Color color = purple}) =>
-      SvgPicture.asset(
-        'assets/profile/$name',
-        width: size,
-        height: size,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-      );
 
-  Widget card(String title, String copy, {bool notice = false}) => DecoratedBox(
+  final VoidCallback onContinue, onLater;
+  final List<String> profileGaps;
+  final VoidCallback? onContinueWithoutProfile;
+  final bool asDialog, confirmingSubmission;
+
+  static const _body = TextStyle(
+    fontSize: 14,
+    height: 1.5,
+    color: DopmiTokens.muted,
+  );
+  static const _heading = TextStyle(
+    color: DopmiTokens.ink,
+    fontSize: 16,
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+  );
+  static const _buttonText = TextStyle(
+    fontFamily: DopmiTokens.bodyFont,
+    fontSize: 14,
+    height: 1.25,
+    fontWeight: FontWeight.w600,
+  );
+  static final _buttonShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(14),
+  );
+
+  bool get _showGaps => !confirmingSubmission && profileGaps.isNotEmpty;
+
+  Widget _icon(String name, double size, Color color) => SvgPicture.asset(
+    'assets/profile/$name',
+    width: size,
+    height: size,
+    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+    excludeFromSemantics: true,
+  );
+
+  Widget _introCard() => DecoratedBox(
     decoration: BoxDecoration(
-      color: notice ? const Color(0x0f7c3aed) : Colors.white,
-      border: Border.all(
-        color: notice ? const Color(0x407c3aed) : const Color(0xffe6e2dd),
-      ),
+      color: DopmiTokens.surface,
+      border: Border.all(color: DopmiTokens.line),
       borderRadius: BorderRadius.circular(16),
     ),
     child: Padding(
@@ -36,29 +62,30 @@ class VerificationIntroScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          icon(notice ? 'icon-doc.svg' : 'icon-shield.svg', 18, color: ink),
-          const SizedBox(width: 12),
+          if (!_showGaps) ...[
+            _icon('icon-shield.svg', 18, DopmiTokens.ink),
+            const SizedBox(width: 12),
+          ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: notice ? 14 : 16,
-                    height: notice ? 17 / 14 : 1.25,
-                    fontWeight: FontWeight.w700,
-                    color: notice ? purple : ink,
-                  ),
+                  confirmingSubmission
+                      ? 'Revisión del sello Dopmi'
+                      : _showGaps
+                      ? 'Confirma tu identidad y experiencia como rescatista'
+                      : 'Sello Dopmi para tu refugio',
+                  style: _heading,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  copy,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.55,
-                    color: muted,
-                  ),
+                  confirmingSubmission
+                      ? 'El equipo de Dopmi revisará tu solicitud y tus documentos. '
+                            'Tus documentos son privados y no aparecerán en tu perfil.'
+                      : 'Al aprobar tu solicitud, el sello aparecerá en tu perfil y tus publicaciones. '
+                            'Ayuda a que los adoptantes reconozcan a tu refugio.',
+                  style: _body.copyWith(fontSize: 13),
                 ),
               ],
             ),
@@ -67,241 +94,225 @@ class VerificationIntroScreen extends StatelessWidget {
       ),
     ),
   );
-  Widget requirement(String title, String copy) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: icon('check-circle.svg', 16),
-      ),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                height: 1.25,
-                fontWeight: FontWeight.w700,
-                color: ink,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              copy,
-              style: const TextStyle(fontSize: 13, height: 1.55, color: muted),
-            ),
-          ],
+
+  Widget _gapList() => Semantics(
+    container: true,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Puedes completar estos datos en tu perfil',
+          style: _heading,
         ),
-      ),
-    ],
-  );
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xff8f8d8b),
-    body: SafeArea(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 430,
-              maxHeight: MediaQuery.sizeOf(context).height * .86,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: ColoredBox(
-                color: Colors.white,
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal:
-                              MediaQuery.textScalerOf(context).scale(22) > 32
-                              ? 16
-                              : 24,
-                          vertical: 24,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Center(
-                              child: Container(
-                                width: 64,
-                                height: 64,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color(0x337c3aed),
-                                ),
-                                child: Center(
-                                  child: icon('icon-shield.svg', 28),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Semantics(
-                              header: true,
-                              child: const Text(
-                                'Verificación Dopmi opcional',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 22,
-                                  height: 1.3,
-                                  fontWeight: FontWeight.w700,
-                                  color: ink,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            card(
-                              'Un sello para refugios establecidos',
-                              adoptionOnlyBuild
-                                  ? 'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes publicar mascotas en adopción mientras revisamos tu solicitud.'
-                                  : 'Si tienes un refugio establecido, puedes solicitar el sello Dopmi. Sólo se muestra después de aprobar tu solicitud. Puedes solicitar apoyo sin este sello; cada caso y sus gastos requieren aprobación y debes completar Stripe.',
-                            ),
-                            if (!adoptionOnlyBuild) ...[
-                              const SizedBox(height: 20),
-                              const Text(
-                                'Cómo funciona el reembolso',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  height: 1.25,
-                                  fontWeight: FontWeight.w700,
-                                  color: ink,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              const Text(
-                                'Para recibir el dinero donado, deberás comprobar los gastos con evidencia:',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  height: 1.55,
-                                  color: muted,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              requirement(
-                                'Para comida:',
-                                'Comprobante de compra y fotografías de la mascota con la comida.',
-                              ),
-                              const SizedBox(height: 12),
-                              requirement(
-                                'Para medicina o veterinario:',
-                                'Comprobante, descripción del gasto y evidencia fotográfica cuando aplique.',
-                              ),
-                              const SizedBox(height: 16),
-                              card(
-                                'Revisión manual',
-                                'El equipo Dopmi revisa manualmente cada evidencia. La aprobación puede tardar. Los fondos se liberan solo después de la revisión.',
-                                notice: true,
-                              ),
-                            ],
-                            const SizedBox(height: 16),
-                            FilledButton(
-                              onPressed: onContinue,
-                              style:
-                                  FilledButton.styleFrom(
-                                    backgroundColor: purple,
-                                    foregroundColor: const Color(0xfffbfbff),
-                                    splashFactory: NoSplash.splashFactory,
-                                    animationDuration: Duration.zero,
-                                    minimumSize: const Size(0, 44),
-                                    padding:
-                                        MediaQuery.textScalerOf(context)
-                                                .scale(14) >
-                                            21
-                                        ? const EdgeInsets.symmetric(
-                                            horizontal: 18,
-                                            vertical: 10,
-                                          )
-                                        : null,
-                                    textStyle: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    shape: const StadiumBorder(),
-                                  ).copyWith(
-                                    overlayColor: const WidgetStatePropertyAll(
-                                      Colors.transparent,
-                                    ),
-                                  ),
-                              child: const Text(
-                                'Continuar a verificación',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            // Padded touch targets add 8 px between the visible surfaces.
-                            const SizedBox(height: 8),
-                            OutlinedButton(
-                              onPressed: onLater,
-                              style:
-                                  OutlinedButton.styleFrom(
-                                    foregroundColor: ink,
-                                    backgroundColor: Colors.white,
-                                    minimumSize: const Size(0, 36),
-                                    padding:
-                                        MediaQuery.textScalerOf(context)
-                                                .scale(14) >
-                                            21
-                                        ? const EdgeInsets.symmetric(
-                                            horizontal: 18,
-                                            vertical: 10,
-                                          )
-                                        : null,
-                                    side: const BorderSide(
-                                      color: Color(0xffe6e2dd),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                    splashFactory: NoSplash.splashFactory,
-                                    animationDuration: Duration.zero,
-                                    textStyle: const TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 14,
-                                      height: 17 / 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ).copyWith(
-                                    overlayColor: const WidgetStatePropertyAll(
-                                      Colors.transparent,
-                                    ),
-                                  ),
-                              child: const Text('Después'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: IconButton(
-                        onPressed: onLater,
-                        tooltip: 'Cerrar',
-                        style:
-                            IconButton.styleFrom(
-                              splashFactory: NoSplash.splashFactory,
-                            ).copyWith(
-                              overlayColor: const WidgetStatePropertyAll(
-                                Colors.transparent,
-                              ),
-                            ),
-                        icon: const Icon(Icons.close, size: 22, color: muted),
-                      ),
-                    ),
-                  ],
+        const SizedBox(height: 10),
+        for (final gap in profileGaps)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: _icon(
+                    'check-circle.svg',
+                    16,
+                    DopmiTokens.orangeButton,
+                  ),
                 ),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    gap,
+                    style: _body.copyWith(
+                      color: DopmiTokens.ink,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    ),
+  );
+
+  Widget _panel(BuildContext context) => SizedBox(
+    width: 340,
+    child: ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * .86,
+      ),
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.textScalerOf(context).scale(22) > 32
+                  ? 16
+                  : 24,
+              vertical: 24,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 64,
+                    height: 64,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: DopmiTokens.sky,
+                    ),
+                    child: Center(
+                      child: _icon('icon-shield.svg', 28, DopmiTokens.skyInk),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    confirmingSubmission
+                        ? '¿Enviar solicitud de verificación?'
+                        : 'Verifica tu cuenta',
+                    textAlign: TextAlign.center,
+                    style: _heading.copyWith(fontSize: 22),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _introCard(),
+                if (_showGaps) ...[
+                  const SizedBox(height: 16),
+                  _gapList(),
+                ] else if (!confirmingSubmission) ...[
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Refugios, fundaciones y centros',
+                    style: _heading,
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Si representas a un refugio establecido, una fundación o '
+                    'un centro de bienestar animal, puedes solicitar el sello. '
+                    'Es opcional: puedes publicar mascotas en adopción sin él.',
+                    style: _body,
+                  ),
+                ],
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: onContinue,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: DopmiTokens.orangeButton,
+                    foregroundColor: Colors.white,
+                    textStyle: _buttonText,
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    shape: _buttonShape,
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
+                  ),
+                  child: Text(
+                    confirmingSubmission
+                        ? 'Enviar solicitud'
+                        : _showGaps
+                        ? 'Completar mi información'
+                        : 'Completar solicitud',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton(
+                  onPressed: onLater,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: DopmiTokens.ink,
+                    textStyle: _buttonText,
+                    minimumSize: const Size(0, 44),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    side: const BorderSide(color: DopmiTokens.line),
+                    shape: _buttonShape,
+                    splashFactory: NoSplash.splashFactory,
+                    overlayColor: Colors.transparent,
+                    animationDuration: Duration.zero,
+                  ),
+                  child: Text(
+                    _showGaps ? 'Cerrar' : 'Ahora no',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                if (_showGaps && onContinueWithoutProfile != null) ...[
+                  const SizedBox(height: 4),
+                  TextButton(
+                    onPressed: onContinueWithoutProfile,
+                    style: TextButton.styleFrom(
+                      foregroundColor: DopmiTokens.ink,
+                      textStyle: _buttonText,
+                      minimumSize: const Size(0, 44),
+                    ),
+                    child: const Text(
+                      'Continuar con la solicitud',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 4,
+            child: IconButton(
+              onPressed: onLater,
+              tooltip: 'Cerrar',
+              style: IconButton.styleFrom(splashFactory: NoSplash.splashFactory)
+                  .copyWith(
+                    overlayColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                  ),
+              icon: const Icon(Icons.close, size: 22, color: DopmiTokens.muted),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(24),
+    );
+    if (asDialog) {
+      return Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        shape: shape,
+        clipBehavior: Clip.antiAlias,
+        backgroundColor: DopmiTokens.surface,
+        elevation: 0,
+        child: _panel(context),
+      );
+    }
+    return Scaffold(
+      backgroundColor: const Color(0xff8f8d8b),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Material(
+              color: DopmiTokens.surface,
+              shape: shape,
+              clipBehavior: Clip.antiAlias,
+              child: _panel(context),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

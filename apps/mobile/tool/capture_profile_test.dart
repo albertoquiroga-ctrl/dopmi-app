@@ -2301,6 +2301,8 @@ void main() {
                   ? SubmittedExpenseRescue()
                   : DraftExpenseRescue(),
             ),
+          if (spec.$2 == '/rescue/new?kind=verification')
+            rescueRepositoryProvider.overrideWithValue(FakeRescue()),
           if (spec.$1.startsWith('verification-approved') ||
               spec.$1.startsWith('verification-review'))
             rescueRepositoryProvider.overrideWithValue(
@@ -4583,7 +4585,7 @@ void main() {
         await tester.pumpAndSettle();
       }
       if (spec.$1.startsWith('verification-form')) {
-        final next = find.text('Continuar a verificación');
+        final next = find.text('Completar solicitud');
         await Scrollable.ensureVisible(tester.element(next), alignment: .5);
         await tester.pumpAndSettle();
         await tester.tap(next);

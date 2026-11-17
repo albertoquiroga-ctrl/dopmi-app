@@ -728,10 +728,11 @@ class RescueEditorScreen extends ConsumerStatefulWidget {
     this.kind = 'case',
     this.parent,
     this.showRecord = false,
+    this.verificationIntroSeen = false,
   });
   final String id, kind;
   final String? parent;
-  final bool showRecord;
+  final bool showRecord, verificationIntroSeen;
   @override
   ConsumerState<RescueEditorScreen> createState() => _RescueEditorState();
 }
@@ -746,7 +747,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   List<Json> files = [], history = [];
   int step = 0;
-  bool verificationIntroDismissed = false;
+  late bool verificationIntroDismissed = widget.verificationIntroSeen;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   bool recordUnavailable = false;
   bool expenseSubmitted = false;
@@ -865,8 +866,14 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     }
     setState(() => loading = true);
     try {
-      if (widget.id != 'new' || record != null) {
-        final data = await repository.detail(record?.id ?? widget.id);
+      var recordId = record?.id ?? (widget.id == 'new' ? null : widget.id);
+      if (recordId == null && kind == 'verification') {
+        final page = await repository.mine('verification', 1);
+        if (!mounted) return;
+        recordId = page.items.firstOrNull?.id;
+      }
+      if (recordId != null) {
+        final data = await repository.detail(recordId);
         if (!mounted) return;
         final loaded = RescueRecord(Json.from(data['record']));
         if (adoptionOnlyBuild && loaded.kind != 'verification') {
@@ -1395,7 +1402,33 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
       context.go('/my-cases');
       return;
     }
+    if (action == 'submit' &&
+        result.kind == 'verification' &&
+        result.status == 'submitted') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Solicitud de verificación enviada')),
+      );
+    }
     await load();
+  }
+
+  Future<void> confirmVerificationSubmission(bool complete) async {
+    if (!complete) {
+      throw const FormatException(
+        'Completa los datos del refugio y adjunta ambos documentos para enviar tu solicitud.',
+      );
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => VerificationIntroScreen(
+        asDialog: true,
+        confirmingSubmission: true,
+        onContinue: () => Navigator.pop(dialogContext, true),
+        onLater: () => Navigator.pop(dialogContext, false),
+      ),
+    );
+    if (mounted && confirmed == true) await transition('submit');
   }
 
   Future<void> refreshStripeCase() async {
@@ -1773,7 +1806,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             },
       children: [
         const Text(
-          'Completa tu información para verificar tu cuenta de rescatista',
+          'Completa la solicitud del sello Dopmi para tu refugio.',
           style: TextStyle(
             fontSize: 14,
             height: 1.55,
@@ -1856,7 +1889,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           if (editable)
             VerificationFormActions(
               busy: busy,
-              onSubmit: () => run(() => transition('submit')),
+              onSubmit: () =>
+                  run(() => confirmVerificationSubmission(captured == total)),
               onSaveLater: () => run(() async {
                 await save();
                 if (mounted) context.go('/rescuer');
@@ -1947,6 +1981,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     }
     if (widget.id == 'new' &&
         kind == 'verification' &&
+        record == null &&
+        !loading &&
+        !loadFailed &&
         !verificationIntroDismissed) {
       return VerificationIntroScreen(
         onContinue: () => setState(() => verificationIntroDismissed = true),
@@ -1965,7 +2002,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         loading: loading || busy,
         onBack: () => context.canPop() ? context.pop() : context.go('/rescuer'),
         onHome: () => context.go('/rescuer'),
-        onPublish: () => context.go('/publish'),
+        onViewProfile: () => context.go('/profile'),
         onRecord: () async {
           await context.push('/rescue/${record!.id}?record=1');
           if (mounted) await load();

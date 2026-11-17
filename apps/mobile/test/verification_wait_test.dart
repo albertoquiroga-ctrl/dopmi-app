@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
 import 'publication_frame_test.dart' show startPublication;
-import 'rescue_test.dart' show FakeRescue;
+import 'rescue_test.dart' show FakeRescue, completeVerificationRecord;
 
 class WaitingVerification extends FakeRescue {
   final saveResponse = Completer<void>();
@@ -18,14 +18,10 @@ class WaitingVerification extends FakeRescue {
   RescueRecord? current;
   int submits = 0;
   @override
-  Future<Json> detail(String id) async {
-    final data = await super.detail(id);
-    return {
-      ...data,
-      'record':
-          current?.data ?? {...Json.from(data['record']), 'status': 'draft'},
-    };
-  }
+  Future<Json> detail(String id) async => {
+    'record': current?.data ?? completeVerificationRecord(id).data,
+    'history': <Json>[],
+  };
 
   @override
   Future<RescueRecord> save(
@@ -106,7 +102,7 @@ void main() {
         );
         final phone = find.byKey(const ValueKey('verification-field-phone'));
         await reveal(tester, phone);
-        await tester.enterText(phone, '8188888888');
+        await tester.enterText(phone, '8188888899');
         FocusManager.instance.primaryFocus?.unfocus();
         await tester.pumpAndSettle();
         final button = find.byKey(
@@ -120,6 +116,15 @@ void main() {
         final submit = find.byKey(const ValueKey('verification-submit'));
         final beforeHeight = tester.getSize(submit).height;
         await tester.tap(button);
+        if (action == 'submit') {
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 400));
+          expect(repo.saveCalls, 0);
+          final confirm = find.text('Enviar solicitud');
+          await tester.ensureVisible(confirm);
+          await tester.tap(confirm);
+          await tester.pump();
+        }
         await tester.pump(const Duration(milliseconds: 200));
         expect(tester.getSize(submit).height, beforeHeight);
         expect(
@@ -136,7 +141,7 @@ void main() {
         await tester.tap(button);
         await tester.pump(const Duration(milliseconds: 200));
         expect(repo.saveCalls, 1);
-        expect(repo.saved?['phone'], '8188888888');
+        expect(repo.saved?['phone'], '8188888899');
         if (action == 'failed-save') {
           repo.saveResponse.completeError(
             const FormatException('No se pudo guardar de prueba.'),
@@ -150,7 +155,7 @@ void main() {
           await reveal(tester, phone, delta: -250);
           expect(
             tester.widget<TextField>(phone).controller!.text,
-            '8188888888',
+            '8188888899',
           );
         } else {
           repo.saveResponse.complete();
@@ -170,7 +175,7 @@ void main() {
           } else {
             await tester.pumpAndSettle();
             expect(router.routeInformationProvider.value.uri.path, '/rescuer');
-            expect(repo.current!.privateData['phone'], '8188888888');
+            expect(repo.current!.privateData['phone'], '8188888899');
           }
         }
         expect(repo.saveCalls, 1);

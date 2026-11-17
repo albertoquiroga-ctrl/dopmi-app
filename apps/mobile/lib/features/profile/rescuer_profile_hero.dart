@@ -16,6 +16,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
+import '../rescue/verification_intro.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -68,6 +69,53 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
   void dispose() {
     account.removeListener(identityChanged);
     super.dispose();
+  }
+
+  Future<void> openVerification(
+    Json data,
+    Json? draft,
+    VoidCallback refresh,
+  ) async {
+    final status = data['verification_status'] as String?;
+    const path = '/rescue/new?kind=verification';
+    if (status != null && status != 'not_started') {
+      await context.push<void>(path);
+      if (mounted) refresh();
+      return;
+    }
+
+    bool missing(Object? value) => value is! String || value.trim().isEmpty;
+    final owner = profile.id;
+    final revision = epoch;
+    final gaps = [
+      if (missing(draft?['display_name']) && missing(profile.name)) 'Nombre',
+      if (missing(data['avatar_path'])) 'Foto de perfil',
+      if (missing(contactEmail)) 'Correo electrónico',
+      if (missing(contactPhone) && missing(profile.phone)) 'Teléfono',
+      if (missing(draft?['instagram_url']) && missing(draft?['facebook_url']))
+        'Red social (Instagram o Facebook)',
+    ];
+    final action = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => VerificationIntroScreen(
+        asDialog: true,
+        profileGaps: gaps,
+        onContinue: () =>
+            Navigator.pop(dialogContext, gaps.isEmpty ? 'request' : 'profile'),
+        onContinueWithoutProfile: () => Navigator.pop(dialogContext, 'request'),
+        onLater: () => Navigator.pop(dialogContext),
+      ),
+    );
+    if (!mounted || epoch != revision || account.identity?.id != owner) return;
+    switch (action) {
+      case 'request':
+        await context.push<void>(path, extra: true);
+      case 'profile':
+        await context.push<void>('/rescuer/profile/edit');
+      default:
+        return;
+    }
+    if (mounted) refresh();
   }
 
   @override
@@ -258,11 +306,7 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
             const SizedBox(height: 12),
             RescuerVerificationCard(
               status: data['verification_status'] as String?,
-              onPressed: () => context.push(
-                data['verification_status'] == 'approved'
-                    ? '/settings'
-                    : '/rescue/new?kind=verification',
-              ),
+              onPressed: () => openVerification(data, draft, refresh),
             ),
             const SizedBox(height: 12),
             ReferenceFocusOutline(

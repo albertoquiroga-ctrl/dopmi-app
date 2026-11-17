@@ -66,7 +66,7 @@ class RescuerProfileActivity extends StatelessWidget {
                 Text(
                   approved
                       ? 'Aún no hay movimiento. Publica un caso para empezar a recibir apoyo.'
-                      : 'Verifica tu cuenta para publicar casos y ver donaciones aquí.',
+                      : 'Aún no hay movimiento. Puedes enviar un caso a revisión sin el sello Dopmi.',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Inter',
