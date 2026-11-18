@@ -235,6 +235,85 @@ workflows:
         track: internal
         submit_as_draft: false
 
+  android-meta-samsung-private-qa:
+    name: Dopmi — Signed DEV Android Meta QA bundle
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    working_directory: apps/mobile
+
+    environment:
+      <<: *android-signed-environment
+      groups:
+        - dopmi_supabase
+        - dopmi_firebase
+      vars:
+        <<: *android-signed-vars
+        RELEASE_NAME: 2.3.6
+        DOPMI_ENVIRONMENT: test
+        DOPMI_ADOPTION_ONLY: 'false'
+        DOPMI_STORE_REVIEW: 'false'
+        DOPMI_STORE_AMAZON_PUBLIC: 'false'
+        DOPMI_ANDROID_META_ADS_MEASUREMENT: 'true'
+        DOPMI_PLAY_PRODUCTION_SUBMISSION: 'false'
+
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+
+    scripts:
+      - name: Require the private DEV Meta profile
+        script: |
+          set -euo pipefail
+          test "$DOPMI_ENVIRONMENT:$DOPMI_ADOPTION_ONLY:$DOPMI_STORE_REVIEW:$DOPMI_STORE_AMAZON_PUBLIC:$DOPMI_ANDROID_META_ADS_MEASUREMENT:$DOPMI_PLAY_PRODUCTION_SUBMISSION" = 'test:false:false:false:true:false'
+          test "$((PROJECT_BUILD_NUMBER + 231))" -gt 405
+          test -s "$CM_KEYSTORE_PATH"
+          python3 ../../scripts/write-mobile-config.py --meta-ads-measurement
+      - name: Create DEV Firebase configuration
+        script: *android-signed-firebase
+      - name: Configure native Google Maps
+        script: *android-signed-maps
+      - name: Install dependencies
+        script: *android-signed-dependencies
+      - name: Static analysis
+        script: *android-signed-analysis
+      - name: Unit and widget tests
+        script: *android-signed-tests
+      - name: Build the upload-signed Android App Bundle
+        script: *android-signed-bundle
+      - name: Verify the private build profile and record the artifact
+        script: |
+          set -euo pipefail
+          python3 - <<'METAQA'
+          import hashlib, json
+          from pathlib import Path
+
+          config = json.loads(Path("config.json").read_text(encoding="utf-8"))
+          assert config["DOPMI_ENVIRONMENT"] == "test"
+          assert config["ENABLE_META_ADS_MEASUREMENT"] == "true"
+          assert config["ENABLE_GUARDIAN"] == config["ENABLE_GUARDIAN_TEST"] == "false"
+          assert not config["STRIPE_PUBLISHABLE_KEY"] and not config["STRIPE_PUBLISHABLE_KEY_TEST"]
+          bundle = Path("build/app/outputs/bundle/release/app-release.aab")
+          info = Path("build/guardian-build-info.txt")
+          summary = info.read_text(encoding="utf-8").replace(
+              "Distribution: Google Play internal",
+              "Distribution: private Codemagic artifact",
+          )
+          digest = hashlib.sha256()
+          with bundle.open("rb") as artifact:
+              for block in iter(lambda: artifact.read(1024 * 1024), b""):
+                  digest.update(block)
+          info.write_text(
+              summary + "Meta ads measurement: true\n" + f"AAB SHA256: {digest.hexdigest()}\n",
+              encoding="utf-8",
+          )
+          METAQA
+
+    artifacts:
+      - build/guardian-build-info.txt
+      - build/app/outputs/bundle/release/app-release.aab
+
   android-play-production:
     <<: *android-signed-release
     name: Dopmi Android — Google Play Production
