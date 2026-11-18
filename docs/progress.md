@@ -8954,3 +8954,14 @@ lectura anónima y entre cuentas, lista paginada y paginación inválida.
 En DEV se comprobó la ACL y el gate de Meta cerrado. Hay una ficha
 válida de QA que permanece privada y pendiente de su primer envío,
 con foto de muestra verificada mediante Storage.
+
+El titular indicó la cuenta de Google Play para el Samsung. Se creó la
+lista `Samsung Meta QA` con un integrante y se guardó como única lista
+de la pista cerrada `samsung-meta-qa`. Se enviaron tres cambios para
+revisión. Todos se limitan a esa pista: lanzamiento 406, reanudación
+de la pista y lista de probadores. El panel confirmó «Changes in review»
+con comprobaciones automáticas pendientes. La cuenta indicada todavía
+no era elegible en el enlace de inscripción. Se verificó que el Samsung
+seguía en 405 instalado por Play, y que DEV tenía el gate apagado,
+ningún permiso de medición y la cola vacía.
+[Revisión de Play](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/publishing)
