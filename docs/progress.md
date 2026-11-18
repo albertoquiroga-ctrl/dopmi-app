@@ -8910,3 +8910,28 @@ y la suite Flutter de la aplicación. El capturador de QA falló al buscar
 previa». Se corrigió el capturador en un cambio separado, sin modificar
 las fuentes, recursos ni configuración que produjeron el AAB y la IPA.
 La misma prueba de capturas de CI aprobó localmente tras el ajuste.
+
+[CI 44234910171](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44234910171)
+aprobó los cuatro trabajos en `a979a6ce51cd0633b0d30cb19d2986cef3633f36`.
+Frente al SHA de los binarios, sólo cambian el capturador de QA y la
+bitácora. En el Samsung, la cuenta de prueba llegó a «Detalles
+opcionales» y a la vista previa con una foto principal sintética de
+galería y sin llenar extras. La ficha no se envió a revisión y el
+borrador sintético quedó archivado. Captura local:
+`dopmi-237-samsung-detalles.png`.
+
+**App Store.** IPA 2.3.7 (410) firmada, con información de compilación
+igual al SHA y al perfil esperado. El registro de Magic Actions confirmó
+`WAITING_FOR_REVIEW` a las 22:18 CDMX y publicación `AFTER_APPROVAL`.
+La consulta pública de México aún devuelve 2.3.6.
+
+**Google Play.** El envío por API se detuvo con
+`CHANGES_ALREADY_IN_REVIEW`. Play Console identifica la solicitud
+155 de pruebas cerradas para atribución DEV 407, ingresada a las
+22:23 CDMX. Se preparó en consola el lanzamiento 42 de Producción
+con el paquete 409, notas en español y despliegue completo. Sigue
+listado como un cambio listo para enviar. La consola confirmó que
+enviarlo en ese momento cancelaría y reiniciaría la revisión activa.
+El titular eligió conservar la revisión 407. Seguimiento de este
+hilo activo cada 15 minutos para enviar el 409 al terminar la
+revisión activa y comprobar la disponibilidad en las dos tiendas.
