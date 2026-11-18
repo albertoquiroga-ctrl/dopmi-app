@@ -8992,3 +8992,9 @@ entre los cambios pendientes, y el 407 en revisión. Enviar únicamente el
 411 cuando concluya esa revisión. La verificación de `Contact` y
 `SubmitApplication` sigue pendiente de instalar el 411 desde Play en el
 Samsung. Las campañas piloto siguen en borrador.
+
+La revisión del 407 salió de la cola. Play aceptó el envío de un solo
+cambio y mostró el 411 en «Changes in review» con comprobaciones previas.
+Se verificó que el borrador de producción 2.3.7 seguía en cambios por
+enviar. Play mantiene la publicación gestionada desactivada. Falta que
+termine la revisión y la actualización llegue al probador del Samsung.
