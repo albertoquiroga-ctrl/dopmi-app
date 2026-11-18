@@ -8957,3 +8957,15 @@ del cambio de testers. El [release cerrado del 413](https://play.google.com/cons
 mostró el código 413 en revisión. La lectura de Supabase DEV previa a la
 prueba mostró cero instalaciones atribuidas y cero primeros envíos para
 `personal-a`. Falta la disponibilidad del 413 para instalar y probar.
+
+### 18/11/2026 00:48 CDMX — Play habilitó el build DEV 413 cerrado
+
+La actividad de Play muestra el envío 158 de la lista de testers y el
+[envío 159](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/publishing/submission-activity/159/details)
+del AAB como publicados en `attribution-dev-qa`. El [release 2](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/2/details)
+mostró 2.3.3 (413) disponible para testers seleccionados desde las 00:48.
+Se pidió inscribir la cuenta exclusiva en la prueba cerrada y hacer una
+instalación nueva desde `/descargar/personal-a`. ADB confirmó que el
+Samsung estaba conectado y que DopMi estaba ausente en el perfil principal
+en esta ventana. Falta verificar la nueva instalación por USB y reconciliar
+en DEV la atribución de la primera ficha.
