@@ -8935,3 +8935,11 @@ enviarlo en ese momento cancelaría y reiniciaría la revisión activa.
 El titular eligió conservar la revisión 407. Seguimiento de este
 hilo activo cada 15 minutos para enviar el 409 al terminar la
 revisión activa y comprobar la disponibilidad en las dos tiendas.
+
+**17/11/2026 23:20 CDMX.** Cuando terminó la revisión de pruebas cerradas
+del 411, quedaba un solo cambio para enviar. En Play Console se verificó
+el lanzamiento 42 de Producción, paquete 409, despliegue completo y notas
+en español (Latinoamérica). Se envió una vez y el resumen de publicación
+mostró la 2.3.7 en revisión. La publicación administrada está apagada.
+El seguimiento continúa hasta confirmar la disponibilidad pública en
+México de la 2.3.7 en las dos tiendas.
