@@ -4166,10 +4166,11 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      Future<void> publicationNext() async {
-        await tester.ensureVisible(find.text('Continuar'));
+      Future<void> publicationNext([String label = 'Continuar']) async {
+        final next = find.text(label);
+        await tester.ensureVisible(next);
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Continuar'));
+        await tester.tap(next);
         await tester.pumpAndSettle();
       }
 
@@ -4316,7 +4317,7 @@ void main() {
       }
       if (spec.$1.startsWith('publish-review') ||
           spec.$1.startsWith('publish-preview-gallery')) {
-        await publicationNext();
+        await publicationNext('Ir a vista previa');
       }
       if (spec.$1 == 'publish-review-submitted') {
         final send = find.text('Enviar a revisión');

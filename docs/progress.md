@@ -8877,3 +8877,36 @@ con esas escalas. Flutter Analyze no reportó problemas y las 39 pruebas de
 configuración móvil pasaron.
 La comprobación instalada de este ajuste queda pendiente de distribuir
 un nuevo candidato.
+
+### 17/11/2026 CDMX — Candidato 2.3.7 para producción
+
+El titular autorizó el envío del ajuste a App Store y Google Play.
+Fuente `24f0656b12936f4b72bb1f3d6070697234626580`, con el cambio de
+formulario `2ef993ae` integrado sobre la base iOS pública 2.3.6
+`d429b09b`. Referencia de Irlanda `f693c0367643605fa8495c1ae3c171df4ccf85b6`,
+sin delta de mock. Las notas es-MX describen la segunda pantalla.
+Pasan 42 pruebas de configuración. [CI 44232175248](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44232175248)
+corresponde al mismo SHA.
+
+Play Producción publicaba 2.3.5 (395) y Play interno 2.3.6 (408) al
+iniciar. El perfil Android mantiene la configuración pública de
+adopciones sin Tienda. En iOS se conserva la Tienda de Amazon que ya
+está pública en 2.3.6 (400). Codemagic tomó el tag de la fuente en
+Android interno `6afd1e961556d961399ba09c` e iOS App Store
+`6afd1e9862cf879bfdadd2ce`. Se verificó el SHA en ambos.
+
+Codemagic terminó el AAB firmado 2.3.7 (409). El artefacto coincide con el
+SHA, el perfil de adopciones y el destino Play interno. La consulta de
+Google Play confirmó 409 disponible. Se actualizó desde la ficha beta de
+Play en el Samsung SM-S938B y se comprobó versión 409, instalador
+`com.android.vending` y arranque en frío. La app estaba sin sesión.
+El recorrido del borrador sigue pendiente del acceso con la cuenta de
+prueba. La ficha de producción sigue en 395 y está preparado el envío
+del 409 tras la validación instalada.
+
+CI 44232175248 aprobó servidor, iOS, integración de identidad y adopciones,
+y la suite Flutter de la aplicación. El capturador de QA falló al buscar
+«Continuar» en el segundo paso, donde el botón ahora se llama «Ir a vista
+previa». Se corrigió el capturador en un cambio separado, sin modificar
+las fuentes, recursos ni configuración que produjeron el AAB y la IPA.
+La misma prueba de capturas de CI aprobó localmente tras el ajuste.
