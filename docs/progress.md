@@ -8929,3 +8929,31 @@ mediante DopMi Inner Team. La pertenencia a la lista no acredita el estado
 de inscripción en el dispositivo. Se pidió verificar la inscripción por
 el enlace específico de [Internal Testing](https://play.google.com/apps/internaltest/4701490604660624893)
 antes de otro intento de instalación.
+
+### 17/11/2026 CDMX — Cuenta exclusiva y candidato DEV en canal cerrado
+
+El titular confirmó que la cuenta anterior seguía inscrita en Internal
+Testing. También coincidía con el tester del canal cerrado de Meta, donde
+Play mostraba 411 disponible. Se creó una lista de un integrante, DopMi
+Attribution DEV QA. La cuenta nueva no coincidió con las listas seleccionadas
+en Internal Testing ni con la lista de Meta. Los dos cambios enviados a
+revisión se limitan a [attribution-dev-qa](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086?tab=testers),
+donde se sustituye la lista anterior por la nueva.
+
+Play mostró [Producción 2.3.7 (409)](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4697779152556900251/releases/42/details)
+disponible desde las 23:31 CDMX. Ese código ya supera al candidato 407
+para una cuenta elegible únicamente para el canal cerrado de atribución.
+
+El titular autorizó un candidato DEV superior a 411 y limitado al mismo
+canal cerrado. [Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afd3a229875d6ed9cd0b8e9)
+confirmó el SHA `83156fb60b7c1a71c17852ce42d0ff445b76b5a6`, entorno `test`
+y la sobreescritura de destino `GOOGLE_PLAY_TRACK=attribution-dev-qa` en
+la solicitud de build. Terminó a las 23:57 CDMX con análisis, pruebas
+móviles, AAB firmado 2.3.3 (413) y publicación correctos. La configuración
+del repositorio coincide con la del 407.
+
+Play mantuvo seleccionada sólo la lista de atribución tras la publicación
+del cambio de testers. El [release cerrado del 413](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/2/details)
+mostró el código 413 en revisión. La lectura de Supabase DEV previa a la
+prueba mostró cero instalaciones atribuidas y cero primeros envíos para
+`personal-a`. Falta la disponibilidad del 413 para instalar y probar.
