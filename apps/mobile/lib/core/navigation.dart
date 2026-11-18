@@ -130,7 +130,6 @@ class DopmiBottomBar extends StatelessWidget {
           child: Center(
             heightFactor: 1,
             child: Container(
-              width: showStore ? 282 : (adoptionOnlyBuild ? 178 : 230),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 boxShadow: const [
@@ -174,6 +173,7 @@ class DopmiBottomBar extends StatelessWidget {
                         vertical: 9,
                       ),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           for (
                             var index = 0;
