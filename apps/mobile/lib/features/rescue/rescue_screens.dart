@@ -61,7 +61,6 @@ import 'owned_expense_card.dart';
 import 'owned_case_history.dart';
 import 'verification_intro.dart';
 import 'verification_form.dart';
-import 'verification_state.dart';
 
 import 'owned_cases_screen.dart' show OwnedCasesHeading;
 export 'rescuer_home_screen.dart';
@@ -746,7 +745,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool get mapsEnabled => ref.read(configProvider).mapsEnabled;
   List<Json> files = [], history = [];
   int step = 0;
-  bool verificationIntroDismissed = false;
   bool loading = true, busy = false, dirty = false, loadFailed = false;
   bool recordUnavailable = false;
   bool expenseSubmitted = false;
@@ -786,18 +784,22 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   bool get urgencyComplementEligible =>
       hasUrgentCaseNeed(needItems, expenseDrafts);
   String get kind => record?.kind ?? widget.kind;
+  bool get showSeal =>
+      (widget.id == 'new' && widget.kind == 'verification') ||
+      (record?.kind == 'verification' &&
+          (!widget.showRecord ||
+              record?.privateData['verification_method'] == 'profile'));
   bool get editable =>
-      kind != 'expense' &&
+      kind == 'case' &&
       (record?.editable ?? true) &&
-      !(kind == 'case' &&
-          (caseUnit?['ever_approved'] == true ||
-              record?.data['approved_at'] != null));
+      caseUnit?['ever_approved'] != true &&
+      record?.data['approved_at'] == null;
   RescueRepository get repository => ref.read(rescueRepositoryProvider);
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    load();
+    if (widget.id != 'new' || widget.kind != 'verification') load();
   }
 
   @override
@@ -847,7 +849,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         mounted &&
-        ['verification', 'expense'].contains(kind) &&
+        (kind == 'expense' || kind == 'verification' && !showSeal) &&
         record != null &&
         !editable &&
         !loading &&
@@ -869,12 +871,23 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
         final data = await repository.detail(record?.id ?? widget.id);
         if (!mounted) return;
         final loaded = RescueRecord(Json.from(data['record']));
-        if (adoptionOnlyBuild && loaded.kind != 'verification') {
+        if ((adoptionOnlyBuild || widget.kind == 'verification') &&
+            loaded.kind != 'verification') {
+          recordUnavailable = true;
+          loadFailed = true;
+          return;
+        }
+        final actor = ref.read(identityControllerProvider).identity?.id;
+        if (loaded.kind == 'verification' &&
+            (actor == null ||
+                loaded.id != widget.id ||
+                loaded.data['owner_id'] != actor)) {
           recordUnavailable = true;
           loadFailed = true;
           return;
         }
         record = loaded;
+        if (showSeal) return;
         caseUnit = data['case_unit'] is Map
             ? Json.from(data['case_unit'] as Map)
             : null;
@@ -1590,10 +1603,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     child: VerificationDocumentCard(
       role: role,
       title: evidenceRoles[role]!,
-      showUpload: editable,
-      onUpload: busy || files.length >= 12
-          ? null
-          : () => run(() => attach(role)),
+      showUpload: false,
+      onUpload: null,
       attachments: [
         for (final file in files.where((file) => file['role'] == role))
           Row(
@@ -1606,17 +1617,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
                       context.push('/rescue-file', extra: file['path']),
                 ),
               ),
-              if (editable)
-                IconButton(
-                  tooltip: 'Quitar archivo ${files.indexOf(file) + 1}',
-                  icon: const Icon(Icons.close),
-                  onPressed: busy
-                      ? null
-                      : () => setState(() {
-                          files.remove(file);
-                          dirty = true;
-                        }),
-                ),
             ],
           ),
       ],
@@ -1734,27 +1734,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
   }
 
   Widget verificationForm() {
-    final total = rescueFields['verification']!.length + 2;
-    final captured =
-        rescueFields['verification']!
-            .where(
-              (field) =>
-                  controllers[field.key]?.text.trim().isNotEmpty == true &&
-                  (field.key != 'social_url' ||
-                      RegExp(r'^https://[^ /]+/.+')
-                          .hasMatch(controllers[field.key]!.text.trim())),
-            )
-            .length +
-        ['identity', 'address']
-            .where(
-              (role) => files.any(
-                (file) =>
-                    file['role'] == role &&
-                    (file['path'] as String? ?? '').isNotEmpty,
-              ),
-            )
-            .length;
     return VerificationFormFrame(
+      title: 'Expediente de verificación',
       processing: busy,
       onBack: busy
           ? null
@@ -1773,7 +1754,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             },
       children: [
         const Text(
-          'Completa tu información para verificar tu cuenta de rescatista',
+          'Consulta los datos de tu solicitud anterior.',
           style: TextStyle(
             fontSize: 14,
             height: 1.55,
@@ -1793,13 +1774,9 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
             ),
           if ((record?.data['feedback'] as String? ?? '').isNotEmpty)
             Notice('Respuesta del equipo: ${record!.data['feedback']}'),
-          if (!editable)
-            const Notice(
-              'Los datos enviados están protegidos. Puedes consultar el estado actualizado al recargar.',
-            ),
           const VerificationSectionTitle('Información básica'),
           const Text(
-            'Estos datos son privados y se usarán para revisar tu solicitud.',
+            'Estos datos se guardaron para la revisión privada de esta solicitud.',
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
@@ -1824,7 +1801,7 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           verificationField('social_url'),
           const VerificationSectionTitle('Perfil público'),
           const Text(
-            'Estos datos aparecerán después de la aprobación. No incluyas domicilios particulares, teléfonos ni datos de tus comprobantes.',
+            'Datos que se propusieron para el perfil público.',
             style: TextStyle(
               fontSize: 12,
               height: 1.55,
@@ -1836,37 +1813,15 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
           verificationField('bio'),
           verificationField('city'),
           verificationField('state'),
-          const VerificationSectionTitle('Documentos'),
-          verificationField('identity_type'),
-          const Text(
-            'Hasta 12 archivos de 5 MB. JPG, PNG, WebP o PDF.',
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.55,
-              color: Color(0xff4f4e5c),
-            ),
-          ),
-          const SizedBox(height: 16),
-          verificationDocument('identity'),
-          verificationDocument('address'),
-          VerificationProgress(captured: captured, total: total),
+          if (files.isNotEmpty) ...[
+            const VerificationSectionTitle('Documentos'),
+            for (final role in ['identity', 'address'])
+              if (files.any((file) => file['role'] == role))
+                verificationDocument(role),
+          ],
           const SizedBox(height: 16),
           if (error != null) Notice(error!, isError: true),
           if (message != null) Notice(message!),
-          if (editable)
-            VerificationFormActions(
-              busy: busy,
-              onSubmit: () => run(() => transition('submit')),
-              onSaveLater: () => run(() async {
-                await save();
-                if (mounted) context.go('/rescuer');
-              }),
-            ),
-          if (record?.status == 'submitted')
-            OutlinedButton(
-              onPressed: busy ? null : () => run(() => transition('withdraw')),
-              child: const Text('Retirar a borrador'),
-            ),
           TextButton(
             onPressed: busy
                 ? null
@@ -1900,10 +1855,8 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (adoptionOnlyBuild &&
-        (recordUnavailable ||
-            (record == null &&
-                (widget.id != 'new' || widget.kind != 'verification')))) {
+    if (showSeal) return const Scaffold(body: RescuerSealScreen());
+    if (recordUnavailable || (adoptionOnlyBuild && record == null)) {
       final unavailable = recordUnavailable || widget.id == 'new';
       return CommunityFrame(
         children: [
@@ -1945,38 +1898,6 @@ class _RescueEditorState extends ConsumerState<RescueEditorScreen>
     if (expenseSubmitted) {
       return ExpenseSubmitted(onClose: closeExpenseEditor);
     }
-    if (widget.id == 'new' &&
-        kind == 'verification' &&
-        !verificationIntroDismissed) {
-      return VerificationIntroScreen(
-        onContinue: () => setState(() => verificationIntroDismissed = true),
-        onLater: () =>
-            context.canPop() ? context.pop() : context.go('/rescuer'),
-      );
-    }
-
-    if (kind == 'verification' &&
-        record != null &&
-        ['submitted', 'approved'].contains(record!.status) &&
-        !loadFailed &&
-        !widget.showRecord) {
-      return VerificationStateScreen(
-        approved: record!.status == 'approved',
-        loading: loading || busy,
-        onBack: () => context.canPop() ? context.pop() : context.go('/rescuer'),
-        onHome: () => context.go('/rescuer'),
-        onPublish: () => context.go('/publish'),
-        onRecord: () async {
-          await context.push('/rescue/${record!.id}?record=1');
-          if (mounted) await load();
-        },
-        onRefresh: load,
-        onWithdraw: record!.status == 'submitted'
-            ? () => run(() => transition('withdraw'))
-            : null,
-      );
-    }
-
     final ownCase =
         record != null &&
         record!.kind == 'case' &&

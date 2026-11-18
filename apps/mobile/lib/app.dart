@@ -38,6 +38,7 @@ import 'features/adoption/saved_screen.dart';
 import 'features/adoption/publication_screens.dart';
 import 'features/communication/message_screens.dart';
 import 'features/rescue/rescue_screens.dart';
+import 'features/rescue/verification_intro.dart';
 import 'features/rescue/case_update_screens.dart';
 import 'features/rescue/case_revision_screen.dart';
 import 'features/payments/payment_screens.dart';
@@ -83,13 +84,18 @@ String? adoptionOnlyRouteRedirect(Uri uri, {bool allowStore = false}) {
       uri.queryParameters.containsKey('case')) {
     return uri.path;
   }
-  // Verification links opt in to the verification-only editor, which also
-  // checks the persisted record kind before presenting an existing record.
+  // Only verification records may open the shared rescue editor in this build.
   if (canonicalPath.startsWith('/rescue/') &&
       (uri.pathSegments.length != 2 ||
-          uri.queryParametersAll.length != 1 ||
           uri.queryParametersAll['kind']?.length != 1 ||
-          uri.queryParameters['kind'] != 'verification')) {
+          uri.queryParameters['kind'] != 'verification' ||
+          uri.queryParametersAll.entries.any(
+            (entry) =>
+                entry.key != 'kind' &&
+                !(entry.key == 'record' &&
+                    entry.value.length == 1 &&
+                    entry.value.single == '1'),
+          ))) {
     return '/home';
   }
   const unavailable = {
@@ -334,8 +340,21 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/rescuer/profile/edit',
-            builder: (_, _) => RescuerPublicProfileEditScreen(
-              key: ValueKey(identity.identity?.id),
+            builder: (_, state) => RescuerPublicProfileEditScreen(
+              key: ValueKey('${identity.identity?.id}:${state.uri}'),
+              forSeal: state.uri.queryParameters['seal'] == '1',
+            ),
+          ),
+          GoRoute(
+            path: RescuerSealScreen.path,
+            pageBuilder: (_, state) => CustomTransitionPage<void>(
+              key: state.pageKey,
+              opaque: false,
+              barrierColor: Colors.black54,
+              barrierLabel: 'Verificación Dopmi',
+              child: RescuerSealScreen(key: ValueKey(identity.identity?.id)),
+              transitionsBuilder: (_, animation, _, child) =>
+                  FadeTransition(opacity: animation, child: child),
             ),
           ),
           GoRoute(
@@ -448,6 +467,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/rescue/:id',
+            redirect: (_, state) =>
+                state.pathParameters['id'] == 'new' &&
+                    state.uri.queryParameters['kind'] == 'verification'
+                ? RescuerSealScreen.path
+                : null,
             builder: (_, state) => RescueEditorScreen(
               state.pathParameters['id']!,
               kind:

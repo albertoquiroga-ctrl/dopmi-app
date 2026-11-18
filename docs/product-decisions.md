@@ -1,3 +1,16 @@
+## 17/11/2026 CDMX — Sello Dopmi con revisión del perfil
+
+El titular eligió usar sólo los datos del mock de Irlanda
+`f693c036` para solicitar el sello de rescatista. El equipo revisa
+manualmente el nombre, la foto y un enlace de Instagram o Facebook.
+La solicitud comprueba el correo y el teléfono confirmados en Auth.
+El nombre visible de la cuenta puede mostrarse con el sello aprobado.
+La foto y los datos de contacto y redes de la solicitud permanecen
+privados en el expediente.
+La nueva solicitud prescinde de identificación oficial y comprobante
+de domicilio. El historial documental previo conserva su protección.
+La verificación de pagos sigue su flujo vigente en Stripe.
+
 ## 16/11/2026 CDMX — Tienda Amazon en producción
 
 El titular informó que Amazon dio luz verde por teléfono y pidió publicar

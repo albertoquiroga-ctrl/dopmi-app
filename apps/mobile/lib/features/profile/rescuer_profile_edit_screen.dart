@@ -27,7 +27,9 @@ final publicProfilePhotoPickerProvider = Provider<Future<XFile?> Function()>((
 });
 
 class RescuerPublicProfileEditScreen extends ConsumerStatefulWidget {
-  const RescuerPublicProfileEditScreen({super.key});
+  const RescuerPublicProfileEditScreen({super.key, this.forSeal = false});
+
+  final bool forSeal;
   @override
   ConsumerState<RescuerPublicProfileEditScreen> createState() =>
       _RescuerPublicProfileEditState();
@@ -260,6 +262,18 @@ class _RescuerPublicProfileEditState
     }
   }
 
+  Future<void> saveForSeal() async {
+    bool changed(TextEditingController field, String key) =>
+        field.text.trim() != (profile?[key] as String? ?? '').trim();
+    final changedProfile =
+        avatarDirty ||
+        changed(name, 'display_name') ||
+        changed(instagram, 'instagram_url') ||
+        changed(facebook, 'facebook_url');
+    if (changedProfile && !await save(announce: false)) return;
+    if (mounted) leaveEditor();
+  }
+
   @override
   Widget build(BuildContext context) {
     final visibleAvatarPath = avatarPath;
@@ -281,7 +295,7 @@ class _RescuerPublicProfileEditState
             ? MediaQuery.textScalerOf(context).scale(18) * 2.6 + 16
             : 67,
         title: Text(
-          'Información básica',
+          widget.forSeal ? 'Completa tu perfil' : 'Información básica',
           maxLines: large ? 3 : 1,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -312,9 +326,11 @@ class _RescuerPublicProfileEditState
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           children: [
-            const Text(
-              'Tus cambios públicos se revisan antes de publicarse. El estado de tu verificación Dopmi se conserva. Elige por separado los contactos que quieres compartir.',
-              style: TextStyle(fontSize: 14, height: 1.55, color: ink),
+            Text(
+              widget.forSeal
+                  ? 'Completa los datos para solicitar el sello Dopmi. Tu correo y teléfono de la cuenta son privados.'
+                  : 'Tus cambios públicos se revisan antes de publicarse. El estado de tu verificación Dopmi se conserva. Elige por separado los contactos que quieres compartir.',
+              style: const TextStyle(fontSize: 14, height: 1.55, color: ink),
             ),
             const SizedBox(height: 16),
             if (loading) const LinearProgressIndicator(),
@@ -501,7 +517,15 @@ class _RescuerPublicProfileEditState
                 ),
               ),
               const SizedBox(height: 16),
-              _StatusCard(status, profile?['review_feedback'] as String? ?? ''),
+              if (!widget.forSeal)
+                _StatusCard(
+                  status,
+                  profile?['review_feedback'] as String? ?? '',
+                )
+              else if (status == 'submitted')
+                const Notice(
+                  'Tu perfil público está en revisión. Puedes retirarlo de esa revisión para editar el nombre, la foto o las redes.',
+                ),
               const SizedBox(height: 12),
               TextFormField(
                 initialValue:
@@ -513,19 +537,25 @@ class _RescuerPublicProfileEditState
                 ),
               ),
               const SizedBox(height: 16),
-              _PhoneVerification(enabled: editable && !busy),
+              _PhoneVerification(
+                enabled: (editable || widget.forSeal) && !busy,
+              ),
               const SizedBox(height: 16),
               for (final item in [
                 ('Nombre', name, 1),
-                ('Ciudad', city, 1),
-                ('Estado', region, 1),
-                ('Correo público', publicEmail, 1),
-                ('Teléfono público', publicPhone, 1),
-                ('Dirección pública', address, 1),
+                if (!widget.forSeal) ...[
+                  ('Ciudad', city, 1),
+                  ('Estado', region, 1),
+                  ('Correo público', publicEmail, 1),
+                  ('Teléfono público', publicPhone, 1),
+                  ('Dirección pública', address, 1),
+                ],
                 ('Instagram (https://)', instagram, 1),
                 ('Facebook (https://)', facebook, 1),
-                ('Página web (https://)', website, 1),
-                ('Sobre ti', bio, 5),
+                if (!widget.forSeal) ...[
+                  ('Página web (https://)', website, 1),
+                  ('Sobre ti', bio, 5),
+                ],
               ]) ...[
                 Semantics(
                   label: item.$1,
@@ -625,47 +655,49 @@ class _RescuerPublicProfileEditState
                 ),
                 const SizedBox(height: 16),
               ],
-              CheckboxListTile(
-                contentPadding: EdgeInsets.zero,
-                value: contactConsent,
-                onChanged: editable && !busy
-                    ? (value) {
-                        if (value == false &&
-                            profile?['contact_consent'] == true) {
-                          transition('revoke_contacts');
-                        } else {
-                          setState(() => contactConsent = value ?? false);
+              if (!widget.forSeal)
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: contactConsent,
+                  onChanged: editable && !busy
+                      ? (value) {
+                          if (value == false &&
+                              profile?['contact_consent'] == true) {
+                            transition('revoke_contacts');
+                          } else {
+                            setState(() => contactConsent = value ?? false);
+                          }
                         }
-                      }
-                    : status == 'submitted' && contactConsent && !busy
-                    ? (value) {
-                        if (value == false) transition('revoke_contacts');
-                      }
-                    : null,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text(
-                  'Quiero mostrar estos contactos en mi perfil público.',
+                      : status == 'submitted' && contactConsent && !busy
+                      ? (value) {
+                          if (value == false) transition('revoke_contacts');
+                        }
+                      : null,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: const Text(
+                    'Quiero mostrar estos contactos en mi perfil público.',
+                  ),
+                  subtitle: const Text(
+                    'Correo, teléfono y dirección públicos se muestran sólo con tu consentimiento y aprobación. Puedes retirarlos durante la revisión; publicarlos de nuevo requiere aprobación.',
+                  ),
                 ),
-                subtitle: const Text(
-                  'Correo, teléfono y dirección públicos se muestran sólo con tu consentimiento y aprobación. Puedes retirarlos durante la revisión; publicarlos de nuevo requiere aprobación.',
-                ),
-              ),
-              TextButton(
-                onPressed: busy
-                    ? null
-                    : () => Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => RescuerProfilePreview(
-                            ownerId: ref
-                                .read(rescuerProfileRepositoryProvider)
-                                .userId,
-                            payload: payload(avatarPath: avatarPath),
-                            avatarBytes: avatarBytes,
+              if (!widget.forSeal)
+                TextButton(
+                  onPressed: busy
+                      ? null
+                      : () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => RescuerProfilePreview(
+                              ownerId: ref
+                                  .read(rescuerProfileRepositoryProvider)
+                                  .userId,
+                              payload: payload(avatarPath: avatarPath),
+                              avatarBytes: avatarBytes,
+                            ),
                           ),
                         ),
-                      ),
-                child: const Text('Ver vista previa >'),
-              ),
+                  child: const Text('Ver vista previa >'),
+                ),
               if (error != null) Notice(error!, isError: true),
               if (busy)
                 const LinearProgressIndicator(
@@ -690,17 +722,26 @@ class _RescuerPublicProfileEditState
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  onPressed: busy ? null : save,
-                  child: const Text('Guardar borrador'),
+                  onPressed: busy
+                      ? null
+                      : widget.forSeal
+                      ? saveForSeal
+                      : save,
+                  child: Text(
+                    widget.forSeal ? 'Guardar y volver' : 'Guardar borrador',
+                  ),
                 ),
-                const SizedBox(height: 16),
-                ActionButton(
-                  'Enviar a revisión',
-                  busy: busy,
-                  onPressed: () async {
-                    if (await save(announce: false)) await transition('submit');
-                  },
-                ),
+                if (!widget.forSeal) ...[
+                  const SizedBox(height: 16),
+                  ActionButton(
+                    'Enviar a revisión',
+                    busy: busy,
+                    onPressed: () async {
+                      if (await save(announce: false))
+                        await transition('submit');
+                    },
+                  ),
+                ],
               ] else if (status == 'submitted')
                 OutlinedButton(
                   onPressed: busy ? null : () => transition('withdraw'),

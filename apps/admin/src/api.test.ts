@@ -29,6 +29,15 @@ test('the initial case decision sends one atomic RPC with the frozen submission 
   expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_initial_case_packet',{record_id:'case',expected_version:12,...decision});
 });
 
+test('a seal review sends the exact version and private profile acknowledgement with no legacy fallback',async()=>{
+  const rpc=vi.fn().mockResolvedValue({data:null,error:{code:'PGRST202'}});
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  await expect(api.reviewRescuerSeal!({id:'seal',version:9},'approved','Perfil revisado',true)).rejects.toEqual({code:'PGRST202'});
+  expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_rescuer_seal',{
+    record_id:'seal',expected_version:9,decision:'approved',note:'Perfil revisado',reviewed_profile:true,
+  });
+});
+
 test('the adapter refuses separate expense queues and all individual expense decisions, including historical ones',async()=>{
   const rpc=vi.fn();
   const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);

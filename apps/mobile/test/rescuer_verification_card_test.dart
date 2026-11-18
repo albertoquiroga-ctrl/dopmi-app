@@ -9,8 +9,7 @@ import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_verification_card.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
-import 'package:dopmi_mobile/features/rescue/rescue_screens.dart'
-    show RescueEditorScreen;
+import 'package:dopmi_mobile/features/rescue/verification_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +26,16 @@ class VerificationNavigationRescue extends FakeRescue {
     ...await super.dashboard(),
     'verification_status': status,
   };
+
+  @override
+  Future<RescuerSealStatus> rescuerSealStatus() async =>
+      RescuerSealStatus.fromJson({
+        'status': status,
+        'record_id': 'verification-id',
+        'verification_method': 'profile',
+        'missing': <String>[],
+        'feedback': '',
+      });
 }
 
 class VerificationOwnerProfile extends FakeRescuerProfile {
@@ -169,18 +178,15 @@ void main() {
       expect(card.hitTestable(), findsOneWidget);
       await tester.tap(card);
       await tester.pumpAndSettle();
-      if (status == 'approved') {
-        expect(container.read(routerProvider).state.uri.path, '/settings');
-        expect(find.text('Configuración'), findsOneWidget);
-        expect(find.byType(RescueEditorScreen), findsNothing);
-      } else {
-        expect(container.read(routerProvider).state.uri.path, '/rescue/new');
-        expect(
-          container.read(routerProvider).state.uri.queryParameters['kind'],
-          'verification',
-        );
-        expect(find.byType(RescueEditorScreen), findsOneWidget);
-      }
+      final seal = find.byType(RescuerSealScreen);
+      expect(
+        container.read(routerProvider).state.uri.path,
+        '/rescuer/verification',
+      );
+      expect(
+        find.descendant(of: seal, matching: find.text(label)),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
     });
   }

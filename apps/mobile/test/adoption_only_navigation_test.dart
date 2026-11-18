@@ -57,6 +57,8 @@ void main() {
         '/adoptions/pet',
         '/rescue/new?kind=verification',
         '/rescue/existing?kind=verification',
+        '/rescue/existing?kind=verification&record=1',
+        '/rescuer/verification',
         '/my-cases?program=adoption&status=published',
         '/messages/thread',
         '/notifications',

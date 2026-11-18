@@ -9,6 +9,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/profile/rescuer_profile_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ import 'package:go_router/go_router.dart';
 
 import 'fake_identity_repository.dart';
 import 'community_test.dart' show FakeCommunity;
+import 'rescue_test.dart' show FakeRescue;
 
 class FakeRescuerProfile implements RescuerProfileRepository {
   Json value = {
@@ -68,6 +70,67 @@ class FakeRescuerProfile implements RescuerProfileRepository {
 }
 
 void main() {
+  testWidgets('seal profile edits do not ask for a public address or publish', (
+    tester,
+  ) async {
+    final repo = FakeRescuerProfile();
+    final identity = FakeIdentityRepository()
+      ..user = const Identity('owner-one', 'ana@example.test', verified: true)
+      ..profile = const Profile(
+        id: 'owner-one',
+        name: 'Ana',
+        phone: '',
+        city: 'Monterrey',
+        mode: 'rescuer',
+        intent: 'rescue',
+        status: 'active',
+        termsVersion: currentTermsVersion,
+        privacyVersion: currentPrivacyVersion,
+        adultConfirmed: true,
+      );
+    addTearDown(() => identity.changes.close());
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          phoneVerificationRepositoryProvider.overrideWithValue(
+            EditorTestPhone(),
+          ),
+          rescuerProfileRepositoryProvider.overrideWithValue(repo),
+          identityRepositoryProvider.overrideWithValue(identity),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+          rescueRepositoryProvider.overrideWithValue(FakeRescue()),
+          routerInitialLocationProvider.overrideWithValue(
+            '/rescuer/profile/edit?seal=1',
+          ),
+        ],
+        child: const DopmiApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final name = find.byKey(const ValueKey('public-profile-Nombre'));
+    await tester.scrollUntilVisible(
+      name,
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Correo de tu cuenta'), findsOneWidget);
+    expect(find.text('Dirección pública'), findsNothing);
+    await tester.enterText(name, 'Refugio con datos revisados');
+    final save = find.text('Guardar y volver');
+    await tester.scrollUntilVisible(
+      save,
+      150,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Enviar a revisión'), findsNothing);
+    await tester.tap(save);
+    await tester.pump();
+    expect(repo.saves, 1);
+    expect(repo.value['display_name'], 'Refugio con datos revisados');
+    expect(repo.value['city'], 'Monterrey');
+    expect(repo.value['status'], 'draft');
+  });
+
   testWidgets(
     'photo picker prevents duplicate taps and retains draft on cancellation and failure',
     (tester) async {

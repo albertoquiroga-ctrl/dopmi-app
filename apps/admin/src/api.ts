@@ -102,6 +102,7 @@ export type AdminApi = {
   rescueDetail: (id: string, expensePage?: number) => Promise<RescueDetail>;
   saveNeedComments?: (record: Pick<RescueRecord, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<NeedCommentResult>;
   reviewRescue: (record: RescueRecord, decision: RescueDecision) => Promise<RescueRecord>;
+  reviewRescuerSeal?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: string, note: string, reviewedProfile: boolean) => Promise<RescueRecord>;
   reviewInitialCasePacket?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: InitialCaseDecision) => Promise<InitialCaseDecisionResult>;
   caseRevisionDetail?: (revisionId: string, expensePage?: number) => Promise<CaseRevisionPacket>;
   reviewCaseRevision?: (revision: Pick<CaseRevision, 'id' | 'version'>, decision: CaseRevisionDecision) => Promise<CaseRevisionDecisionResult>;
@@ -175,6 +176,13 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     async reviewRescue(record, decision) {
       if(record.kind==='expense'||record.review_kind==='revision'||record.kind==='case'&&decision.decision==='approved')throw {code:'22023',message:'La aprobación requiere la revisión conjunta del caso.'};
       const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data;
+    },
+    async reviewRescuerSeal(record, decision, note, reviewedProfile) {
+      const { data, error } = await client.rpc('dopmi_review_rescuer_seal', {
+        record_id: record.id, expected_version: record.version, decision, note, reviewed_profile: reviewedProfile,
+      });
+      if (error) throw error;
+      return data;
     },
     async reviewInitialCasePacket(record, decision) {
       const session=await client.auth.getSession();

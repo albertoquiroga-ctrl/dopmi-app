@@ -16,6 +16,7 @@ import '../adoption/community_ui.dart';
 import '../identity/identity_repository.dart';
 import '../identity/identity_controller.dart';
 import '../rescue/rescue_repository.dart';
+import '../rescue/verification_intro.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -258,11 +259,10 @@ class _RescuerProfileHeroState extends ConsumerState<RescuerProfileHero> {
             const SizedBox(height: 12),
             RescuerVerificationCard(
               status: data['verification_status'] as String?,
-              onPressed: () => context.push(
-                data['verification_status'] == 'approved'
-                    ? '/settings'
-                    : '/rescue/new?kind=verification',
-              ),
+              onPressed: () async {
+                await context.push<void>(RescuerSealScreen.path);
+                if (context.mounted) refresh();
+              },
             ),
             const SizedBox(height: 12),
             ReferenceFocusOutline(

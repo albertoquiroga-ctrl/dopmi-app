@@ -9,6 +9,7 @@ import '../../core/design_tokens.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../rescue/rescue_repository.dart';
+import '../rescue/verification_intro.dart';
 import 'rescuer_settings_details.dart';
 
 class RescuerSettingsVerification extends ConsumerWidget {
@@ -22,12 +23,15 @@ class RescuerSettingsVerification extends ConsumerWidget {
       LiveSection<Json>(
         tables: const ['dopmi_rescue_records'],
         load: () => ref.read(rescueRepositoryProvider).dashboard(),
-        builder: (data, _) => Column(
+        builder: (data, refresh) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SettingsVerificationCard(
               status: data['verification_status'] as String?,
-              onPressed: () => context.push('/rescue/new?kind=verification'),
+              onPressed: () async {
+                await context.push<void>(RescuerSealScreen.path);
+                if (context.mounted) refresh();
+              },
             ),
             if (!adoptionOnlyBuild)
               if (data['verification_status'] == 'approved')
@@ -92,7 +96,7 @@ class SettingsVerificationCard extends StatelessWidget {
         : review
         ? 'Estamos revisando tu información. Te avisaremos en cuanto termine.'
         : initial
-        ? 'Presenta tu expediente para revisión.'
+        ? 'Envía los datos de tu perfil para revisión.'
         : 'No pudimos determinar el estado de tu expediente.';
     final action = correction
         ? 'Corregir información'
