@@ -8858,3 +8858,22 @@ Se promovió a producción ese mismo código 395 con fuente
 `433ab517e49a0dcf95c6f5d1c697a3c21f79688a`. La consulta de Google Play
 de las 20:04 CDMX devolvió `IN_REVIEW` para 395 y `PUBLISHED` para
 393. App Store Lookup de México devolvió 2.3.5, publicada el 15/11.
+
+### 16/11/2026 CDMX — Detalles opcionales de adopción
+
+Cambio acotado al segundo paso del editor en la rama
+`codex/adoption-optional-details`, desde la base pública de 2.3.5
+`433ab517` y su registro `82123869`. El paso identifica los detalles y
+las fotos adicionales como opcionales. La acción fija «Ir a vista previa»
+permite continuar con la foto principal. El texto junto a las fotos
+explica su propósito y permite agregarlas ahora o al editar la ficha.
+La revisión de cambios de una ficha publicada conserva el mismo flujo.
+
+`flutter test --no-pub` terminó con 1,780 pruebas aprobadas y cuatro
+omitidas. Las dos pruebas nuevas fallaron en la base y pasaron con el
+cambio a 320 × 640, a escala 100 % y 200 %, sin tocar campos opcionales.
+Se revisaron capturas renderizadas localmente a 377 × 852 y 320 × 640
+con esas escalas. Flutter Analyze no reportó problemas y las 39 pruebas de
+configuración móvil pasaron.
+La comprobación instalada de este ajuste queda pendiente de distribuir
+un nuevo candidato.

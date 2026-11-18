@@ -1483,7 +1483,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('publication-header-back')));
     await tester.pumpAndSettle();
     await tap(tester, 'Continuar');
-    await tap(tester, 'Continuar');
+    await tap(tester, 'Ir a vista previa');
     expect(find.text('Valida tu caso'), findsOneWidget);
 
     repo.failSave = true;
@@ -1631,7 +1631,7 @@ void main() {
       await tap(tester, 'Continuar');
       expect(repo.post.name, 'Mora');
       expect(repo.post.status, 'draft');
-      await tap(tester, 'Continuar');
+      await tap(tester, 'Ir a vista previa');
       expect(find.text('Valida tu caso'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

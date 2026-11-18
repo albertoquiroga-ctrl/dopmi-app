@@ -957,7 +957,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       );
     }
     final footer = PublicationFooter(
-      label: step < 2 ? 'Continuar' : 'Enviar a revisión',
+      label: switch (step) {
+        0 => 'Continuar',
+        1 => 'Ir a vista previa',
+        _ => 'Enviar a revisión',
+      },
       review: step == 2,
       saveLabel: post?.status == 'published'
           ? 'Guardar cambios'
@@ -1019,10 +1023,16 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        sectionTitle('Complementa sus fotos'),
         const Text(
-          'Puedes agregar hasta 5 fotos más.',
-          style: TextStyle(fontSize: 14, color: Color(0xff8a837c)),
+          'Puedes seguir con la foto principal y agregar detalles más adelante.',
+          style: TextStyle(fontSize: 16, height: 1.5, color: DopmiTokens.ink),
+        ),
+        const SizedBox(height: 24),
+        sectionTitle('Fotos adicionales (opcionales)'),
+        const Text(
+          'Más fotos ayudan a que quienes buscan adoptar conozcan mejor a tu mascota y conecten con ella. '
+          'Puedes agregarlas ahora o al editar la ficha.',
+          style: TextStyle(fontSize: 14, height: 1.5, color: muted),
         ),
         const SizedBox(height: 16),
         if (photos.length < 6 && enabled)
@@ -1058,7 +1068,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
         const SizedBox(height: 24),
         sectionTitle('Características de la mascota'),
         const Text(
-          'Selecciona las que apliquen. Ninguna es obligatoria pero ayudará al adoptante a motivarse más rápido.',
+          'Selecciona las que apliquen.',
           style: TextStyle(fontSize: 14, height: 1.5, color: muted),
         ),
         const SizedBox(height: 20),
@@ -1266,7 +1276,7 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       title: step == 2
           ? 'Valida tu caso'
           : step == 1
-          ? 'Un poco más...'
+          ? 'Detalles opcionales'
           : 'Empecemos...',
       step: step,
       footer: publicationFooter(),

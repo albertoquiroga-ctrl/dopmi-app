@@ -168,6 +168,40 @@ void main() {
   );
   for (final scale in [1.0, 2.0]) {
     testWidgets(
+      'adoption makes optional details skippable without scrolling at scale $scale',
+      (tester) async {
+        tester.view.physicalSize = const Size(320, 640);
+        tester.view.devicePixelRatio = 1;
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        final repo = PhotoDraftCommunity();
+        await startPublication(tester, repo, '/my-adoptions/post');
+
+        await tapPublication(tester, find.text('Continuar'));
+        expect(find.text('Detalles opcionales').hitTestable(), findsOneWidget);
+        expect(
+          find
+              .text(
+                'Puedes seguir con la foto principal y agregar detalles más adelante.',
+              )
+              .hitTestable(),
+          findsOneWidget,
+        );
+        final preview = find.widgetWithText(FilledButton, 'Ir a vista previa');
+        expect(preview.hitTestable(), findsOneWidget);
+        await tester.tap(preview);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Vista previa de la publicación'), findsOneWidget);
+        expect(repo.post.photos, hasLength(1));
+        expect(repo.post.status, 'draft');
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
       'three step preview scrolls from the pet summary to the notice at scale $scale',
       (tester) async {
         tester.view.physicalSize = const Size(320, 640);
@@ -190,7 +224,7 @@ void main() {
         });
         await startPublication(tester, repo, '/my-adoptions/post');
         await tapPublication(tester, find.text('Continuar'));
-        await tapPublication(tester, find.text('Continuar'));
+        await tapPublication(tester, find.text('Ir a vista previa'));
         expect(
           tester
               .widget<AdoptionDetailLayout>(find.byType(AdoptionDetailLayout))
@@ -292,7 +326,7 @@ void main() {
           find.text('Agrega una foto principal.').hitTestable(),
           findsOneWidget,
         );
-        expect(find.text('Un poco más...'), findsNothing);
+        expect(find.text('Detalles opcionales'), findsNothing);
         expect(repo.savedPayload, same(lastDraft));
         expect(tester.takeException(), isNull);
       },
@@ -332,13 +366,19 @@ void main() {
         tester.widget<PublicationFrame>(find.byType(PublicationFrame)).step,
         1,
       );
-      expect(find.text('Complementa sus fotos').hitTestable(), findsOneWidget);
+      expect(
+        find.text('Fotos adicionales (opcionales)').hitTestable(),
+        findsOneWidget,
+      );
       final personality = find.byKey(
         const ValueKey('publication-personality-timido'),
       );
       await tester.ensureVisible(personality);
       await tester.pumpAndSettle();
-      expect(find.text('Complementa sus fotos').hitTestable(), findsNothing);
+      expect(
+        find.text('Fotos adicionales (opcionales)').hitTestable(),
+        findsNothing,
+      );
       await tapPublication(
         tester,
         find.byKey(const ValueKey('publication-header-back')),

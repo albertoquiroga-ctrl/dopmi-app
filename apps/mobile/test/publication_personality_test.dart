@@ -53,13 +53,13 @@ void main() {
     await tester.pump();
     await tapPublication(tester, find.text('Continuar'));
     expect(find.text('Cuéntanos su historia.').hitTestable(), findsOneWidget);
-    expect(find.text('Un poco más...'), findsNothing);
+    expect(find.text('Detalles opcionales'), findsNothing);
     expect(repo.savedPayload, isNull);
     await tester.enterText(story, 'A');
     await tester.pump();
     expect(find.text('Cuéntanos su historia.'), findsNothing);
     await tapPublication(tester, find.text('Continuar'));
-    expect(find.text('Un poco más...'), findsOneWidget);
+    expect(find.text('Detalles opcionales'), findsOneWidget);
     expect(repo.savedPayload?['story'], 'A');
     expect(tester.takeException(), isNull);
   });
@@ -179,11 +179,11 @@ void main() {
       await tester.tap(find.text('Alegre'));
       await tester.pumpAndSettle();
       await Scrollable.ensureVisible(
-        tester.element(find.text('Continuar')),
+        tester.element(find.text('Ir a vista previa')),
         alignment: .5,
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Continuar'));
+      await tester.tap(find.text('Ir a vista previa'));
       await tester.pumpAndSettle();
       expect(repository.savedPayload?['personality'], [
         'affectionate',

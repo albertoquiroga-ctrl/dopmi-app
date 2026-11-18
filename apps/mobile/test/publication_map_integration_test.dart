@@ -275,13 +275,13 @@ void main() {
         find.text('Elige la ubicación en el mapa.').hitTestable(),
         findsOneWidget,
       );
-      expect(find.text('Un poco más...'), findsNothing);
+      expect(find.text('Detalles opcionales'), findsNothing);
       expect(repo.savedPayload, isNull);
       await tapPublication(tester, find.text('Guardar borrador'));
       expect(repo.savedPayload!.containsKey('approximate_latitude'), isFalse);
       await selectFixtureMap(tester);
       await tapPublication(tester, find.text('Continuar'));
-      expect(find.text('Un poco más...'), findsOneWidget);
+      expect(find.text('Detalles opcionales'), findsOneWidget);
       expect(repo.savedPayload!['approximate_latitude'], 25.686614);
       expect(repo.savedPayload!['location_precision_version'], 1);
       expect(repo.savedPayload!['approximate_longitude'], -100.316113);
@@ -332,7 +332,7 @@ void main() {
           findsOneWidget,
         );
         expect(photo.hitTestable(), findsOneWidget);
-        expect(find.text('Un poco más...'), findsNothing);
+        expect(find.text('Detalles opcionales'), findsNothing);
         expect(repo.savedPayload, isNull);
 
         await tapPublication(tester, photo);
@@ -346,14 +346,14 @@ void main() {
           );
           final lastDraft = repo.savedPayload;
           await tapPublication(tester, find.text('Continuar'));
-          expect(find.text('Un poco más...'), findsNothing);
+          expect(find.text('Detalles opcionales'), findsNothing);
           expect(repo.savedPayload, same(lastDraft));
           await tester.enterText(story, 'Luna necesita una familia.');
           await tester.pumpAndSettle();
           expect(find.text('Cuéntanos su historia.'), findsNothing);
         }
         await tapPublication(tester, find.text('Continuar'));
-        expect(find.text('Un poco más...'), findsOneWidget);
+        expect(find.text('Detalles opcionales'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
