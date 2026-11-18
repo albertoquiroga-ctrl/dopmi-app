@@ -8876,3 +8876,17 @@ publicó DopMi 2.3.6 (408) en el mismo canal interno desde
 mostró 408 como único código activo. La lectura de DEV siguió en cero
 atribuciones y cero primeros envíos. Queda por hacer la instalación limpia
 desde Play en un candidato DEV y enviar la primera ficha a revisión.
+
+### 17/11/2026 CDMX — Instalación nueva desde Play entregó 405
+
+ADB observó el paquete ausente antes de la prueba. Después, el perfil
+principal mostró DopMi 2.3.6 (405), instalador `com.android.vending` y
+primera instalación y actualización a las 21:35:35. La instalación fue
+nueva. El único build 405 registrado en Codemagic usa Producción y carece
+de la integración, por lo que la ficha de prueba sigue pendiente.
+
+Play Console mostraba 408 en [Internal Testing](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/221/details)
+y 395 en [Producción pública](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4697779152556900251/releases/41/details).
+El instalador no identifica de qué canal recibió el Samsung la 405. La
+lista de canales cerrados mostró Alpha, analytics-samsung-qa sin release y
+samsung-meta-qa con la 406. No había canal exclusivo de atribución.
