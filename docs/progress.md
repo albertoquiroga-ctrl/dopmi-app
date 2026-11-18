@@ -8965,3 +8965,30 @@ no era elegible en el enlace de inscripción. Se verificó que el Samsung
 seguía en 405 instalado por Play, y que DEV tenía el gate apagado,
 ningún permiso de medición y la cola vacía.
 [Revisión de Play](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/publishing)
+
+El 17 de noviembre Play confirmó la pista cerrada activa y el 406
+disponible para los probadores seleccionados. La cuenta indicada aceptó
+la invitación y el enlace mostró «You are a tester». En el Samsung,
+ADB registró 409 (2.3.7) instalado por `com.android.vending`.
+La ficha de Play del teléfono mostraba beta interna. El recibo de
+Codemagic acreditó que el 409 usa Supabase y Firebase de producción.
+La prueba con el entorno DEV siguió pendiente de instalar el candidato
+correcto. Codemagic inició `6afd273d513f85ba4835df11` para generar
+una actualización privada superior a 409 desde el mismo SHA
+`dda575c1a00da14483d156a5c7767f90627ab0ba` del 406. El gate de DEV
+permaneció apagado, con cero eventos, contextos y entregas.
+
+La compilación privada terminó con el candidato 411 (2.3.6), perfil
+DEV y firma de carga igual a la del 409. Se verificó el manifiesto con
+`com.mycompany.dopmi`, el ajuste de Meta activo y la configuración
+independiente de Firebase. SHA-256 del AAB
+`b05937b91af6e4ea127d30e23bd6d5e80bdcb2fcedf7a1565f726c281de80a69`.
+
+Play validó el AAB y guardó el lanzamiento 411 en `samsung-meta-qa`.
+Al preparar el envío exclusivo de esa pista, la consola advirtió que
+reiniciaría la revisión en curso del 407 de `attribution-dev-qa`. Se
+canceló el envío. Se verificaron el 411 y el borrador de producción 2.3.7
+entre los cambios pendientes, y el 407 en revisión. Enviar únicamente el
+411 cuando concluya esa revisión. La verificación de `Contact` y
+`SubmitApplication` sigue pendiente de instalar el 411 desde Play en el
+Samsung. Las campañas piloto siguen en borrador.
