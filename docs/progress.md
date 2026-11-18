@@ -8827,3 +8827,19 @@ El Samsung seguía con la instalación 395 iniciada el 12 de noviembre. Se
 pidió una instalación nueva desde `/descargar/personal-a`. Sigue pendiente
 la primera ficha de prueba y el resultado atribuido. La ronda en Facebook
 quedó pendiente de la disponibilidad de medición pública.
+
+### 17/11/2026 CDMX — El Samsung recibió 405 de Play interno
+
+ADB en el perfil principal muestra DopMi 2.3.6 (405), instalador
+`com.android.vending`, última actualización a las 08:04:36 y fecha de
+primera instalación del 12/11 a las 19:25:09. El perfil secundario no
+tiene DopMi instalada. El [release interno 219](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/219/details)
+mostró sólo la 405 disponible, publicada el 17/11 a la 01:25 CDMX.
+
+[Codemagic 405](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afbfe39d74e7129f7239a50)
+confirmó publicación interna, perfil producción sólo adopciones y fuente
+`be9854f69c2926e480ad929fd3a69bc3ca8b3ab1`, que carece de atribución
+de Play. La lectura agregada de DEV mostró cero atribuciones y cero
+primeras fichas. No hubo envío de prueba. El recorrido sigue pendiente
+en una instalación nueva de un candidato DEV servido por Play. El código
+`83156fb6` y su CI aprobada se pueden reutilizar para ese candidato.
