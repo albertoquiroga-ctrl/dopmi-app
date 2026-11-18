@@ -9005,3 +9005,13 @@ la consola. Se notificó al probador con el enlace de instalación. En
 ese momento se comprobó que el perfil principal del Samsung no tenía
 DopMi instalada. Falta verificar el 411 instalado por Google Play y
 realizar las dos acciones con las cuentas DEV.
+
+El 18 de noviembre a las 17:17 CDMX se detectó 413 (2.3.3), instalado
+por `com.android.vending` en el Samsung. El recibo de Codemagic
+`6afd3a229875d6ed9cd0b8e9`, fuente
+`83156fb60b7c1a71c17852ce42d0ff445b76b5a6`, corresponde a DEV y carece
+de la integración de Meta. El chat de atribución mantiene una prueba
+activa en ese teléfono. La prueba de Meta espera que termine ese
+recorrido. Después se requiere un candidato con la integración y un
+código superior al instalado, o una instalación limpia del candidato
+elegible. Se conservaron el teléfono y los datos del ensayo en curso.
