@@ -8900,3 +8900,57 @@ El gate nativo de permisos PostgreSQL pasó en el CI 44011139825 con el
 mismo SQL del candidato final. La revisión móvil quedó en
 `690655e32f0f7a06405aab4892bbcfcb9812ff9b`.
 [CI 44011630787](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44011630787)
+
+### 17 de noviembre de 2026 · Conjunto de datos Meta vinculado
+
+Con autorización del titular para aceptar las condiciones empresariales,
+Meta creó el conjunto `1839761860506617` y lo vinculó a la app DopMi
+`1156849688851390`. Se comprobó la asociación en Configuración del
+Administrador de eventos. Esta acción no encendió el envío ni las campañas.
+[Conjunto DopMi](https://eventsmanager.facebook.com/events_manager2/list/dataset/1839761860506617/settings?business_id=733426408896859&act=773207924311457)
+
+El CI 44011630787 terminó en éxito con el SHA `690655e32f0f7a06405aab4892bbcfcb9812ff9b`.
+El Samsung aparece por USB con la versión 2.3.6 (405) de Play. Play Console
+confirma que 405 es el último bundle disponible en pruebas internas.
+La prueba de Meta usa un candidato firmado de DEV y cuentas privadas de QA.
+El panel de secretos del proyecto DEV requiere volver a iniciar sesión para
+guardar el token. El gate y la entrega permanecen apagados durante la
+preparación.
+
+Codemagic aceptó la compilación aislada
+`6afd090ade53fcc4a7652586`, SHA `dda575c1a00da14483d156a5c7767f90627ab0ba`.
+El SHA de QA conserva el producto validado y solo añade la configuración
+de la compilación DEV firmada. El workflow entrega un AAB sin publicarlo.
+Se prepararon dos cuentas sintéticas y una conversación privada de QA
+entre ellas. Los flujos pendientes son el envío desde el Samsung, la
+entrega de los dos eventos y la verificación en Meta.
+
+El titular completó el acceso a Supabase y autorizó la credencial de la
+API de conversiones y la prueba con los datos del Samsung. La credencial
+quedó guardada en Secrets de DEV con acceso de integración directa.
+El worker respondió HTTP 200 con 0 entregas, 0 omisiones y 0 fallos al
+invocarlo con el gate cerrado. Play creó la pista cerrada privada
+`samsung-meta-qa`. Codemagic terminó con éxito. Play guardó el AAB 406
+como borrador y generó el APK universal con el mismo certificado que el
+405 instalado. SHA-256 del APK: `874818ea3883f5b2e668fcd41eb6baa0fed9b121cf407d2de45d7d6dd5bc2ca8`.
+[Pista cerrada de Samsung](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4700110373098134212)
+
+El APK 406 se instaló por USB con restauración habilitada. La protección
+automática de Play redirigió la primera apertura a la tienda, antes de
+cargar la app. Se ejecutó la restauración nativa 406 → 405 con política de
+restaurar datos. La ruta de reparación «Actualizar desde Play» se usó
+después para recuperar la procedencia de la tienda. Se verificaron
+`com.android.vending`, el código 405, la marca de primera instalación
+conservada y la actividad de Dopmi en primer plano. Ningún evento se
+generó en el Samsung. Para terminar la prueba falta publicar el mismo
+406 sólo en la pista cerrada y que una cuenta elegible lo instale desde
+Play. La configuración de probadores quedó abierta.
+
+DEV tenía el esquema de adopción anterior a los borradores privados
+separados. Se aplicó `20261118023435/meta_samsung_dev_adoption_read_compat`
+desde [las lecturas manuales de DEV](../supabase/manual/meta_samsung_dev_adoption_reads.sql).
+La verificación en PGlite cubrió lectura del propietario, ausencia de
+lectura anónima y entre cuentas, lista paginada y paginación inválida.
+En DEV se comprobó la ACL y el gate de Meta cerrado. Hay una ficha
+válida de QA que permanece privada y pendiente de su primer envío,
+con foto de muestra verificada mediante Storage.
