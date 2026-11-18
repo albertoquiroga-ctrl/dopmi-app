@@ -8890,3 +8890,24 @@ y 395 en [Producción pública](https://play.google.com/console/u/0/developers/6
 El instalador no identifica de qué canal recibió el Samsung la 405. La
 lista de canales cerrados mostró Alpha, analytics-samsung-qa sin release y
 samsung-meta-qa con la 406. No había canal exclusivo de atribución.
+
+### 17/11/2026 CDMX — Canal cerrado de atribución DEV
+
+Con autorización del titular, se creó [attribution-dev-qa](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086).
+El [release](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/1/review)
+reutiliza de la biblioteca de Google Play el AAB firmado 2.3.3 (407),
+fuente `83156fb60b7c1a71c17852ce42d0ff445b76b5a6`. El canal selecciona
+únicamente la lista Samsung Meta QA, con un solo integrante, para la cuenta
+que el titular había indicado en el mismo Samsung. No se editó esa lista.
+
+Se enviaron los tres cambios exclusivos de esta pista, release 407, estado
+del canal y selección de testers. [Publishing overview](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/publishing)
+los mostró bajo Changes in review con comprobaciones rápidas activas a las
+22:24 CDMX. La disponibilidad para instalación sigue pendiente de Google.
+Producción pública mostraba 395 e Internal Testing mostraba 408 al preparar
+el canal.
+
+Después de la aprobación, la cuenta de prueba debe salir de Internal
+Testing e [inscribirse en la prueba cerrada](https://play.google.com/apps/testing/com.mycompany.dopmi).
+Entonces verificar desinstalación en el Samsung, abrir `/descargar/personal-a`
+en su Chrome, instalar por Play y comprobar 407 antes de enviar la ficha en DEV.
