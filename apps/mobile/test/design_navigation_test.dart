@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config/adoption_only_build.dart';
 import 'package:dopmi_mobile/core/navigation.dart';
 import 'package:dopmi_mobile/core/ui.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
@@ -17,6 +18,48 @@ import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
 
 void main() {
+  testWidgets('adopter destinations stay centered with or without Store', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final semantics = tester.ensureSemantics();
+
+    String? selected;
+    for (final storeEnabled in [false, true]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            bottomNavigationBar: DopmiBottomBar(
+              rescuer: false,
+              selectedPath: storeEnabled ? '/store' : '/adoptions',
+              storeEnabled: storeEnabled,
+              onSelected: (destination) => selected = destination.path,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final bar = tester.getRect(find.byType(DopmiBottomBar));
+      final first = tester.getRect(find.bySemanticsLabel('Adoptar'));
+      final last = tester.getRect(find.bySemanticsLabel('Perfil'));
+      expect((first.left + last.right) / 2, closeTo(bar.center.dx, .01));
+      final store = find.bySemanticsLabel('Tienda');
+      final showStore =
+          storeEnabled && (!adoptionOnlyBuild || storeAmazonAvailable);
+      expect(store, showStore ? findsOneWidget : findsNothing);
+      if (showStore) {
+        expect(tester.getSize(store), const Size(48, 48));
+        await tester.tap(store);
+        expect(selected, '/store');
+      }
+      expect(tester.takeException(), isNull);
+    }
+    semantics.dispose();
+  }, variant: TargetPlatformVariant({TargetPlatform.android}));
+
   testWidgets(
     'restoring a rescuer opens their home without changing permissions',
     (tester) async {
