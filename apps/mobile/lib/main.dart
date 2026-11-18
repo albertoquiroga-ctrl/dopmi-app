@@ -48,7 +48,16 @@ class _BootstrapState extends State<Bootstrap> {
     final preferences = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
     final namespace = Uri.parse(config.url).host;
-    final acquisition = AndroidRescuerAcquisition(preferences, namespace);
+    final acquisitionDiagnostics = config.environment == 'test';
+    final acquisition = AndroidRescuerAcquisition(
+      preferences,
+      namespace,
+      readInstall: () =>
+          readAndroidPlayInstall(diagnosticsEnabled: acquisitionDiagnostics),
+      onDiagnostic: acquisitionDiagnostics
+          ? (message) => debugPrint('DopmiAcquisition $message')
+          : null,
+    );
     late final MeasurementController measurement;
     measurement = MeasurementController(
       preferences,

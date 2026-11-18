@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dopmi_mobile/core/android_rescuer_acquisition.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +25,7 @@ PlayInstall install({
 Future<AndroidRescuerAcquisition> service(
   Future<PlayInstall?> Function() read, {
   bool resetPreferences = true,
+  void Function(String)? onDiagnostic,
 }) async {
   if (resetPreferences) SharedPreferences.setMockInitialValues({});
   return AndroidRescuerAcquisition(
@@ -30,11 +33,251 @@ Future<AndroidRescuerAcquisition> service(
     'test',
     readInstall: read,
     now: () => now,
+    onDiagnostic: onDiagnostic,
   );
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test(
+    'native diagnostic request is off by default and explicitly opt-in',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      const channel = MethodChannel('io.dopmi.app/play_install_referrer');
+      final calls = <MethodCall>[];
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(channel, (call) async {
+        calls.add(call);
+        return {
+          'referrer': referrer,
+          'clickedAtSeconds': install().clickedAtSeconds,
+          'installedAtSeconds': install().installedAtSeconds,
+        };
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+
+      expect(await readAndroidPlayInstall(), install());
+      expect(await readAndroidPlayInstall(diagnosticsEnabled: true), install());
+      expect(calls.map((call) => call.method), ['read', 'read']);
+      expect(calls.map((call) => call.arguments), [
+        {'diagnostics': false},
+        {'diagnostics': true},
+      ]);
+    },
+  );
+
+  test('unknown campaign values and parameter counts stay bounded', () async {
+    final diagnostics = <String>[];
+    final extra = List.generate(20, (i) => '&x$i=v').join();
+    final acquisition = await service(
+      () async => install(
+        source:
+            '${referrer.replaceAll('pagina-a', 'private@example.test')}$extra',
+      ),
+      onDiagnostic: diagnostics.add,
+    );
+    final sent = <String>[];
+    await acquisition.record(
+      owner: 'private-account-id',
+      sessionStillEligible: () => true,
+      send: (variant, _) async => sent.add(variant),
+    );
+    expect(sent, isEmpty);
+    final checks = diagnostics.singleWhere(
+      (line) => line.startsWith('state=referrerRejected '),
+    );
+    expect(
+      checks,
+      contains('campaign=false content=false variant=none unknown=16'),
+    );
+    expect(diagnostics.join('\n'), isNot(contains('private')));
+    expect(diagnostics.join('\n'), isNot(contains('@')));
+  });
+
+  test(
+    'diagnostics explain clock rejection without exposing timestamps',
+    () async {
+      final samples = [
+        (
+          sample: (
+            referrer: referrer,
+            clickedAtSeconds: 0,
+            installedAtSeconds: install().installedAtSeconds,
+          ),
+          check: 'positive=false',
+        ),
+        (
+          sample: install(installDelay: const Duration(seconds: -1)),
+          check: 'order=false',
+        ),
+        (
+          sample: install(installDelay: const Duration(days: 3)),
+          check: 'notFuture=false',
+        ),
+        (sample: install(age: const Duration(days: 14)), check: 'window=false'),
+      ];
+      for (final sample in samples) {
+        final diagnostics = <String>[];
+        final acquisition = await service(
+          () async => sample.sample,
+          onDiagnostic: diagnostics.add,
+        );
+        final sent = <String>[];
+        await acquisition.record(
+          owner: 'private-account-id',
+          sessionStillEligible: () => true,
+          send: (variant, _) async => sent.add(variant),
+        );
+        expect(sent, isEmpty);
+        final checks = diagnostics.singleWhere(
+          (line) => line.startsWith('state=referrerRejected '),
+        );
+        expect(checks, contains(sample.check));
+        expect(
+          checks,
+          isNot(contains(sample.sample.installedAtSeconds.toString())),
+        );
+      }
+    },
+  );
+
+  test('unrecognized encoding reports only an exact-match failure', () async {
+    final diagnostics = <String>[];
+    final acquisition = await service(
+      () async => install(source: 'utm_source=%ZZ'),
+      onDiagnostic: diagnostics.add,
+    );
+    final sent = <String>[];
+    await acquisition.record(
+      owner: 'private-account-id',
+      sessionStillEligible: () => true,
+      send: (variant, _) async => sent.add(variant),
+    );
+    expect(sent, isEmpty);
+    final checks = diagnostics.singleWhere(
+      (line) => line.startsWith('state=referrerRejected '),
+    );
+    expect(checks, contains('parsed=true source=false'));
+    expect(checks, isNot(contains('%ZZ')));
+  });
+
+  test(
+    'diagnostics expose bounded checks without referral or owner data',
+    () async {
+      final diagnostics = <String>[];
+      const privateValue = 'private.person@example.test';
+      final acquisition = await service(
+        () async => install(
+          source:
+              '$referrer&email=$privateValue'
+              '&email=Bearer-private-token&owner=private-owner',
+        ),
+        onDiagnostic: diagnostics.add,
+      );
+      final sent = <String>[];
+      await acquisition.record(
+        owner: 'private-account-id',
+        sessionStillEligible: () => true,
+        send: (variant, _) async => sent.add(variant),
+      );
+
+      expect(sent, isEmpty);
+      expect(diagnostics, contains('state=readStarted'));
+      expect(diagnostics, contains(startsWith('state=referrerRejected ')));
+      final checks = diagnostics.singleWhere(
+        (line) => line.startsWith('state=referrerRejected '),
+      );
+      expect(
+        checks,
+        contains('source=true medium=true campaign=true content=true'),
+      );
+      expect(checks, contains('variant=pagina-a unknown=2 duplicate=1'));
+      final output = diagnostics.join('\n');
+      for (final value in [
+        privateValue,
+        'Bearer',
+        'private-owner',
+        'private-account-id',
+        referrer,
+        install().clickedAtSeconds.toString(),
+      ]) {
+        expect(output, isNot(contains(value)));
+      }
+    },
+  );
+
+  test(
+    'diagnostics distinguish missing and failed reads without error text',
+    () async {
+      final samples = <({Future<PlayInstall?> Function() read, String state})>[
+        (read: () async => null, state: 'readNull'),
+        (
+          read: () async => throw PlatformException(
+            code: 'play_referrer_unavailable',
+            message: 'Bearer-private-token',
+          ),
+          state: 'readUnavailable',
+        ),
+        (
+          read: () async => throw StateError('private.person@example.test'),
+          state: 'readError',
+        ),
+      ];
+      for (final sample in samples) {
+        final diagnostics = <String>[];
+        final acquisition = await service(
+          sample.read,
+          onDiagnostic: diagnostics.add,
+        );
+        final sent = <String>[];
+        await acquisition.record(
+          owner: 'private-account-id',
+          sessionStillEligible: () => true,
+          send: (variant, _) async => sent.add(variant),
+        );
+        expect(sent, isEmpty);
+        expect(diagnostics, contains('state=${sample.state}'));
+        final output = diagnostics.join('\n');
+        expect(output, isNot(contains('private')));
+        expect(output, isNot(contains('Bearer')));
+        expect(output, isNot(contains('@')));
+      }
+    },
+  );
+
+  test(
+    'diagnostics report send outcomes and cannot interrupt attribution',
+    () async {
+      final diagnostics = <String>[];
+      final acquisition = await service(
+        () async => install(),
+        onDiagnostic: diagnostics.add,
+      );
+      await acquisition.record(
+        owner: 'private-account-id',
+        sessionStillEligible: () => true,
+        send: (_, _) async => throw StateError('Bearer-private-token'),
+      );
+      expect(diagnostics, contains('state=sendAttempted'));
+      expect(diagnostics, contains('state=sendError'));
+      expect(diagnostics.join('\n'), isNot(contains('private')));
+
+      final sent = <String>[];
+      final observerFails = await service(
+        () async => install(),
+        onDiagnostic: (_) => throw StateError('local observer failed'),
+      );
+      await observerFails.record(
+        owner: 'private-account-id',
+        sessionStillEligible: () => true,
+        send: (variant, _) async => sent.add(variant),
+      );
+      expect(sent, ['pagina-a']);
+    },
+  );
 
   test('an eligible Play install sends only its variant once', () async {
     var reads = 0;

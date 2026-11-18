@@ -9059,3 +9059,32 @@ Play Store» sin el parámetro `referrer`, aun cuando la URL de entrada lo
 incluye. Se prepara la corrección del enlace Android en la landing para
 abrir Play directamente mediante un gesto con el referrer completo.
 La primera ficha sigue sin crearse para conservar la prueba del primer envío.
+
+### 18/11/2026 17:23 CDMX — Enlace corregido y diagnóstico DEV preparado
+
+La landing se publicó desde el main vigente `da72e901` mediante el cambio
+acotado `aaec18e84495b298f4b802b538e481ea3abad31d`. [Vercel producción](https://vercel.com/dop-mi/dopmi-landing-mockup)
+mostró `dpl_45AES4tJGfdjMVpcwNJjgYjP1Kyg` READY con ese SHA y los dominios
+`dopmi.org` y `www.dopmi.org`. Quince pruebas locales, lint y build pasaron.
+Doce comprobaciones HTTP públicas pasaron a las 17:08 CDMX, incluidas las
+cuatro variantes Android con intent y fallback completos, las cuatro rutas
+iOS, selector de escritorio/crawler, HEAD y encabezados.
+
+El CTA propio entregó 413 en una instalación nueva a las 17:07:07 CDMX.
+El consentimiento se guardó tras la recuperación de reinicio, pero DEV
+siguió en cero atribuciones y primeros envíos. Una prueba acotada activó
+temporalmente el tag local `InstallReferrerClient` y confirmó setup,
+bind, conexión y cierre correctos a las 17:19:50. La propiedad se restauró
+a su valor vacío. El SDK responde; falta distinguir los datos recibidos
+de su validación. Los relojes de teléfono y DEV coincidieron con un segundo
+de diferencia.
+
+La corrección de identidad `17a420296f8fbe22079110818d0f68ec0adcad8b`
+aprobó los cuatro trabajos de [CI 44417010184](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44417010184).
+Se prepara un candidato del mismo canal DEV con diagnóstico local acotado
+para la lectura de Play y el resultado del parser. El gate de entorno TEST
+habilita únicamente estados constantes, booleanos, variantes permitidas y
+conteos limitados; el referrer bruto y los datos del actor quedan fuera.
+Pruebas enfocadas 28, análisis limpio, configuración móvil 39 y Firebase 26
+aprobados. Compilación y suite completa del nuevo SHA siguen pendientes
+de CI/Codemagic. La primera ficha continúa pendiente de atribución real.
