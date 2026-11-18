@@ -8992,3 +8992,21 @@ inscripción. Se intentó observar la pantalla mediante scrcpy oficial y
 CUA, con dos renderizadores, pero la captura de la ventana expiró. El
 proceso de espejo se cerró. La primera ficha y la atribución permanecen
 pendientes de una instalación del candidato DEV correcto.
+
+### 18/11/2026 CDMX — Inscripción cerrada confirmada y asociación de Play
+
+El titular confirmó que la cuenta exclusiva ofrecía convertirse en tester
+y completó esa inscripción. Se desinstaló 412 por USB y se confirmó el
+paquete ausente antes de pedir otra instalación desde la campaña. El
+teléfono volvió a recibir 412 a las 15:06:23. Una captura directa de Android
+mostró la página de prueba con «You are a tester» y la ficha nativa de Play
+con un aviso de asociación de la app a la cuenta anterior del teléfono.
+El selector nativo de Play sí mostraba la cuenta exclusiva elegida.
+
+La lectura de DEV a las 15:05 CDMX seguía en cero atribuciones, primeros
+envíos y aprobaciones de `personal-a`. Se retiró otra vez 412 y se cerró
+Play Store para abrir una ficha nueva. La revisión automática del entorno
+rechazó el comando `adb shell am start` que abriría la campaña en Chrome,
+con motivo «blocked by policy». Se pidió al titular abrir el enlace en el
+Samsung y dejar la ficha de Play visible antes de pulsar Instalar para
+comprobar su elegibilidad. Envío de ficha y atribución siguen pendientes.
