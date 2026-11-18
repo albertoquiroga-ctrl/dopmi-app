@@ -8969,3 +8969,26 @@ instalación nueva desde `/descargar/personal-a`. ADB confirmó que el
 Samsung estaba conectado y que DopMi estaba ausente en el perfil principal
 en esta ventana. Falta verificar la nueva instalación por USB y reconciliar
 en DEV la atribución de la primera ficha.
+
+### 18/11/2026 14:51 CDMX — La cuenta nueva recibió el 412
+
+El titular informó que instaló desde `/descargar/personal-a` con la cuenta
+nueva. ADB confirmó en el perfil principal del Samsung 2.3.7 (412),
+instalador `com.android.vending`, primera instalación y actualización a las
+14:49:48. El paquete corresponde al [build de Producción](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afd3614bc406f4c2f13e671),
+fuente `c9d9d03dc34ac99f743c15be8862788136b189be`, sin integración de
+atribución de Play. Se mantiene pendiente el envío de la ficha QA.
+
+Play Console sigue mostrando 413 disponible en el canal cerrado de
+atribución. Su lista seleccionada tiene un integrante y coincide con la
+cuenta nueva indicada por el titular. La pista está habilitada para México.
+El número 412 es inferior a 413. La lectura agregada de DEV sigue en cero
+atribuciones, primeros envíos y primeras aprobaciones para `personal-a`.
+
+Se pidió comprobar en Chrome del Samsung, con la cuenta exclusiva, si el
+enlace de prueba ofrece inscribirse, salir o informa que no está disponible.
+Los datos de ADB no identifican la cuenta que realizó la descarga ni su
+inscripción. Se intentó observar la pantalla mediante scrcpy oficial y
+CUA, con dos renderizadores, pero la captura de la ventana expiró. El
+proceso de espejo se cerró. La primera ficha y la atribución permanecen
+pendientes de una instalación del candidato DEV correcto.
