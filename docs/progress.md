@@ -8862,3 +8862,17 @@ El Samsung seguía mostrando 405 por USB al abrir la ventana. Se pidió al
 titular desinstalar y avisar antes de abrir el enlace, para observar la
 ausencia real del paquete en el perfil principal. Instalación, primera
 ficha y atribución en el teléfono quedan pendientes de ese paso.
+
+### 17/11/2026 21:11 CDMX — La ventana del 407 cerró antes de instalar
+
+Por USB se confirmó que `com.mycompany.dopmi` estaba ausente en el perfil
+principal del Samsung. Se pidió abrir `/descargar/personal-a` en Chrome del
+teléfono. La política del entorno bloqueó el intento de abrir Chrome por
+ADB. Durante la ventana y al terminarla, el paquete seguía ausente.
+
+[Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afd133ef4637d55b304dabf)
+publicó DopMi 2.3.6 (408) en el mismo canal interno desde
+`1d12cc2dacbe48c9760191eadafe97b205c46972`. [Play Console](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/221/details)
+mostró 408 como único código activo. La lectura de DEV siguió en cero
+atribuciones y cero primeros envíos. Queda por hacer la instalación limpia
+desde Play en un candidato DEV y enviar la primera ficha a revisión.
