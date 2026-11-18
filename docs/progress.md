@@ -9088,3 +9088,38 @@ conteos limitados; el referrer bruto y los datos del actor quedan fuera.
 Pruebas enfocadas 28, análisis limpio, configuración móvil 39 y Firebase 26
 aprobados. Compilación y suite completa del nuevo SHA siguen pendientes
 de CI/Codemagic. La primera ficha continúa pendiente de atribución real.
+
+### 18/11/2026 17:40 CDMX — Candidato DEV 414 enviado al canal cerrado
+
+El único [build de Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afe3382e74789b008cb2de8)
+de esta corrección usó el tag `codex/attribution-dev-diagnostics-dd7f0c0c`
+y la fuente exacta `dd7f0c0cda247625860591c6941a69c5a551a94c`. La
+configuración efectiva confirmó `test`, `GOOGLE_PLAY_TRACK=attribution-dev-qa`
+y las guardas de revisión/adopción exclusiva/envío a producción apagadas.
+Terminó a las 17:39:58 CDMX con los trece pasos correctos, incluidos análisis,
+suite móvil completa (1797 aprobadas, cuatro omitidas), AAB firmado
+2.3.3 (414) y publicación. La línea final del paso de pruebas del mismo
+build confirmó ese conteo. No se creó un
+segundo build. El candidato incluye la corrección de identidad tras Google
+y los diagnósticos locales acotados, habilitados sólo en DEV.
+
+La interfaz de [Play, release cerrado 3](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/3/details)
+confirmó `414 (2.3.3)` en revisión. Esto acredita el envío al canal cerrado,
+no disponibilidad, instalación ni atribución. El CI del mismo SHA,
+[44420319443](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44420319443),
+terminó a las 17:45 CDMX con los cuatro trabajos correctos, incluidas las
+capturas y artefactos. No confundirlo con el CI aprobado del padre `17a42029`.
+
+La lectura READ ONLY de DEV a las 17:28 CDMX confirmó una cuenta de prueba,
+consentimiento activo y cero atribuciones `personal-a` o primeros envíos.
+No se creó borrador ni ficha. La prueba debe confirmar primero la captura
+de campaña y después enviar `Prueba personal-a 413` con la foto sintética
+preparada, conservando el estado privado `submitted`. Como la cuenta de
+prueba precede al clic, ese resultado cuenta como primer envío observable,
+no como una cuenta nueva adquirida.
+
+Windows dejó de detectar el Samsung: ADB no enumera dispositivos y PnP no
+muestra Android conectado. Se pidió al titular reconectar el cable de datos
+y dejarlo desbloqueado. La comprobación instalada queda pendiente de esa
+conexión y de la aprobación de Play del 414. La autorización de analítica
+en DEV y la aceptación legal completada por el titular se conservan.
