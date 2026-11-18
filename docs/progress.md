@@ -8998,3 +8998,10 @@ cambio y mostró el 411 en «Changes in review» con comprobaciones previas.
 Se verificó que el borrador de producción 2.3.7 seguía en cambios por
 enviar. Play mantiene la publicación gestionada desactivada. Falta que
 termine la revisión y la actualización llegue al probador del Samsung.
+
+Play confirmó «Available to selected testers» para el código 411 en
+`samsung-meta-qa`, con publicación el 17 de noviembre a las 23:17 en
+la consola. Se notificó al probador con el enlace de instalación. En
+ese momento se comprobó que el perfil principal del Samsung no tenía
+DopMi instalada. Falta verificar el 411 instalado por Google Play y
+realizar las dos acciones con las cuentas DEV.
