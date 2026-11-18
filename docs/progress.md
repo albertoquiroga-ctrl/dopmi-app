@@ -8911,3 +8911,21 @@ Después de la aprobación, la cuenta de prueba debe salir de Internal
 Testing e [inscribirse en la prueba cerrada](https://play.google.com/apps/testing/com.mycompany.dopmi).
 Entonces verificar desinstalación en el Samsung, abrir `/descargar/personal-a`
 en su Chrome, instalar por Play y comprobar 407 antes de enviar la ficha en DEV.
+
+### 17/11/2026 23:27 CDMX — La instalación recibió 409 de Play
+
+Play habilitó [407 en attribution-dev-qa](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/1/details)
+a las 22:38 CDMX. La instalación nueva en el Samsung ocurrió a las
+23:21:56 desde `com.android.vending` y entregó 2.3.7 (409).
+[Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afd1e961556d961399ba09c)
+vincula 409 a `24f0656b12936f4b72bb1f3d6070697234626580`, perfil
+Producción sin atribución. La ficha de prueba queda pendiente.
+
+Play Console confirmó 409 disponible en [Internal Testing](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/222/details).
+El [409 público](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4697779152556900251/releases/42/details)
+estaba en revisión y el 395 seguía disponible en Producción. La cuenta de
+QA autorizada para attribution-dev-qa está también habilitada en Internal
+mediante DopMi Inner Team. La pertenencia a la lista no acredita el estado
+de inscripción en el dispositivo. Se pidió verificar la inscripción por
+el enlace específico de [Internal Testing](https://play.google.com/apps/internaltest/4701490604660624893)
+antes de otro intento de instalación.
