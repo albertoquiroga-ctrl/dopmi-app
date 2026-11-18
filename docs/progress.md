@@ -8843,3 +8843,22 @@ de Play. La lectura agregada de DEV mostró cero atribuciones y cero
 primeras fichas. No hubo envío de prueba. El recorrido sigue pendiente
 en una instalación nueva de un candidato DEV servido por Play. El código
 `83156fb6` y su CI aprobada se pueden reutilizar para ese candidato.
+
+### 17/11/2026 20:52 CDMX — Build DEV 407 disponible en Play interno
+
+El titular autorizó reemplazar temporalmente el candidato 405 en la ventana
+de prueba. La etiqueta `codex/attribution-dev-83156fb6` fija el código del
+401 en `83156fb60b7c1a71c17852ce42d0ff445b76b5a6`, aprobado por
+[CI 44006649962](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44006649962).
+
+[Codemagic](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6afd09306109bbd9339f71a1)
+confirmó el SHA exacto, flujo `android-internal`, configuración DEV, análisis,
+pruebas móviles, AAB firmado y publicación. [Play Console](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4701490604660624893/releases/220/details)
+mostró DopMi 2.3.3 (407) disponible para testers internos, release 220.
+Una comprobación HTTP Android confirmó que el enlace de campaña conserva
+`personal-a` al redirigir a Google Play.
+
+El Samsung seguía mostrando 405 por USB al abrir la ventana. Se pidió al
+titular desinstalar y avisar antes de abrir el enlace, para observar la
+ausencia real del paquete en el perfil principal. Instalación, primera
+ficha y atribución en el teléfono quedan pendientes de ese paso.
