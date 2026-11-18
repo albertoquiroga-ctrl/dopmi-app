@@ -1,4 +1,4 @@
-/// Amazon México listings used by the internal Android catalog.
+/// Amazon México listings used by the bundled adoption app catalog.
 class StoreReviewAmazonListing {
   const StoreReviewAmazonListing(this.asin, this.imageUrl);
 

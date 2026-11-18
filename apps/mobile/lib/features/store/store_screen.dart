@@ -384,7 +384,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     return showCatalogPage(
       _StoreProductDetail(
         group: group,
-        initialProduct: catalog.preview
+        initialProduct: catalog.preview || catalog.amazonProductLinks
             ? _selectStorePreviewArtwork(
                 group.primary,
                 group.variants.skip(1),
@@ -909,7 +909,9 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                         child: _StoreCard(
                           key: ValueKey('store-family-${group.id}'),
                           group: group,
-                          preview: widget.catalog.preview,
+                          useCatalogArtwork:
+                              widget.catalog.preview ||
+                              widget.catalog.amazonProductLinks,
                           busy: group.variants.any(
                             (variant) => opening == variant.id,
                           ),
@@ -1497,7 +1499,8 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                     const SizedBox(height: 14),
                     _StoreProductArtwork(
                       product: selected,
-                      preview: widget.preview,
+                      useCatalogArtwork:
+                          widget.preview || widget.amazonProductLinks,
                       detail: true,
                     ),
                     if (variantsByFlavor.keys.any((value) => value != null))
@@ -1924,12 +1927,12 @@ class _StoreCard extends StatelessWidget {
     required this.group,
     required this.busy,
     required this.onTap,
-    required this.preview,
+    required this.useCatalogArtwork,
   });
   final StoreProductGroup group;
   final bool busy;
   final VoidCallback? onTap;
-  final bool preview;
+  final bool useCatalogArtwork;
   @override
   Widget build(BuildContext context) {
     final product = group.primary;
@@ -1966,8 +1969,8 @@ class _StoreCard extends StatelessWidget {
             children: [
               _StoreProductArtwork(
                 product: product,
-                preview: preview,
-                previewAlternatives: group.variants.skip(1),
+                useCatalogArtwork: useCatalogArtwork,
+                artworkAlternatives: group.variants.skip(1),
               ),
               const SizedBox(height: 12),
               Text(
@@ -2085,27 +2088,27 @@ _selectStorePreviewArtwork(
 class _StoreProductArtwork extends ConsumerWidget {
   const _StoreProductArtwork({
     required this.product,
-    required this.preview,
+    required this.useCatalogArtwork,
     this.detail = false,
-    this.previewAlternatives = const [],
+    this.artworkAlternatives = const [],
   });
 
   final StoreProduct product;
-  final bool preview;
+  final bool useCatalogArtwork;
   final bool detail;
-  final Iterable<StoreProduct> previewAlternatives;
+  final Iterable<StoreProduct> artworkAlternatives;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final (product: artworkProduct, artwork: previewArtwork) = preview
+    final (product: artworkProduct, artwork: previewArtwork) = useCatalogArtwork
         ? _selectStorePreviewArtwork(
             product,
-            previewAlternatives,
+            artworkAlternatives,
             ref.watch(storePreviewImageProvider),
           )
         : (product: product, artwork: null);
     final uri = Uri.tryParse(product.imageUrl);
-    final ImageProvider<Object>? image = preview
+    final ImageProvider<Object>? image = useCatalogArtwork
         ? previewArtwork?.image
         : uri != null &&
               uri.scheme == 'https' &&
@@ -2154,7 +2157,7 @@ class _StoreProductArtwork extends ConsumerWidget {
                               : null,
                           excludeFromSemantics: !detail,
                           errorBuilder: (_, _, _) =>
-                              preview && image is NetworkImage
+                              useCatalogArtwork && image is NetworkImage
                               ? const Center(
                                   child: Text('Imagen no disponible'),
                                 )

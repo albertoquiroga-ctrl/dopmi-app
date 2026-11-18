@@ -170,6 +170,28 @@ class MobileConfigTests(unittest.TestCase):
             with self.subTest(beta=beta, adoption=adoption, review=review), self.assertRaises(ValueError):
                 config.build_config(env, production_beta=beta, adoption_only=adoption, store_review=review)
 
+    def test_public_amazon_store_is_an_explicit_production_adoption_option(self):
+        production = self.production_env()
+        adoption = config.build_config(production, production_beta=True, adoption_only=True)
+        public = config.build_config(
+            {**production, "DOPMI_STORE_AMAZON_PUBLIC": "true"},
+            production_beta=True, adoption_only=True, store_amazon_public=True,
+        )
+        self.assertEqual(public, {**adoption, "DOPMI_STORE_AMAZON_PUBLIC": "true"})
+        self.assertEqual(config.build_config(self.env)["DOPMI_STORE_AMAZON_PUBLIC"], "false")
+        invalid = (
+            (self.env, False, False, False, True),
+            (production, True, False, False, True),
+            (production, True, True, True, True),
+            ({**production, "DOPMI_STORE_AMAZON_PUBLIC": "true"}, True, True, False, False),
+            ({**production, "DOPMI_STORE_AMAZON_PUBLIC": "false"}, True, True, False, True),
+            ({**production, "DOPMI_STORE_AMAZON_PUBLIC": "yes"}, True, True, False, False),
+        )
+        for env, beta, adoption_only, review, public in invalid:
+            with self.subTest(beta=beta, adoption=adoption_only, review=review, public=public), self.assertRaises(ValueError):
+                config.build_config(env, production_beta=beta, adoption_only=adoption_only,
+                                    store_review=review, store_amazon_public=public)
+
     def test_adoption_only_rejects_wrong_environment_or_conflicting_request(self):
         cases = (
             (self.env, False, True),
@@ -248,8 +270,12 @@ class MobileConfigTests(unittest.TestCase):
              {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true"}, "false"),
             (["--production-beta", "--adoption-only", "--store-review"],
              {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true", "DOPMI_STORE_REVIEW": "true"}, "false"),
+            (["--production-beta", "--adoption-only", "--store-amazon-public"],
+             {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true", "DOPMI_STORE_AMAZON_PUBLIC": "true"}, "false"),
             (["--production-beta", "--adoption-only"],
              {**self.production_env(), "DOPMI_ADOPTION_ONLY": "true", "DOPMI_STORE_REVIEW": "true"}, None),
+            (["--production-beta", "--adoption-only", "--store-review", "--store-amazon-public"],
+             self.production_env(), None),
             ([], self.production_env(), None),
             (["--production-beta"], self.env, None),
             (["--production-beta", "--guardian-test"], self.production_env(), None),
@@ -264,7 +290,7 @@ class MobileConfigTests(unittest.TestCase):
                              if name not in set(self.production_env()) | {
                                  "ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "GOOGLE_SERVER_CLIENT_ID",
                                  "GOOGLE_IOS_CLIENT_ID", "ENABLE_NATIVE_WALLETS_TEST", "APPLE_PAY_MERCHANT_ID",
-                                 "DOPMI_ADOPTION_ONLY", "DOPMI_STORE_REVIEW"}}
+                                 "DOPMI_ADOPTION_ONLY", "DOPMI_STORE_REVIEW", "DOPMI_STORE_AMAZON_PUBLIC"}}
                 process = subprocess.run([sys.executable, str(script), *options], cwd=directory,
                                          env={**child_env, **env}, capture_output=True, text=True)
                 if expected_guardian is not None:
@@ -273,6 +299,7 @@ class MobileConfigTests(unittest.TestCase):
                     adoption = "--adoption-only" in options
                     self.assertEqual(result["DOPMI_ADOPTION_ONLY"], str(adoption).lower())
                     self.assertEqual(result["DOPMI_STORE_REVIEW"], str("--store-review" in options).lower())
+                    self.assertEqual(result["DOPMI_STORE_AMAZON_PUBLIC"], str("--store-amazon-public" in options).lower())
                     self.assertEqual(result["ENABLE_GUARDIAN"], expected_guardian)
                 else:
                     self.assertNotEqual(process.returncode, 0)
@@ -368,42 +395,73 @@ class MobileConfigTests(unittest.TestCase):
         def configuration_script(workflow, name):
             step = workflow.split(f"      - name: {name}\n", 1)[1].split("      - name:", 1)[0]
             lines = step.split("        script:", 1)[1].splitlines()
-            if lines[0].strip() == "|":
+            if lines[0].strip().endswith("|"):
                 return "\n".join(line[10:] for line in lines[1:] if line.startswith("          "))
             return lines[0].strip()
 
         for workflow_id, source_id, platform, steps in (
             ("android-guardian-internal", "android-guardian-internal", "android",
              ("Create explicit Guardian environment configuration", "Create matching Guardian Firebase configuration")),
+            ("android-play-production", "android-play-production", "android",
+             ("Require the public Amazon adoption profile", "Create matching Guardian Firebase configuration")),
             ("ios-testflight", "ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
-            ("ios-app-store", "ios-testflight", "ios", ("Create runtime configuration", "Create Firebase configuration")),
+            ("ios-app-store", "ios-app-store", "ios", ("Require the App Store adoption profile", "Create Firebase configuration")),
         ):
             workflow = codemagic_workflow(codemagic, source_id)
-            script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join(
-                configuration_script(workflow, name) for name in steps
-            )
+            firebase_workflow = workflow
+            if workflow_id == "android-play-production":
+                self.assertIn("script: *android-signed-firebase", workflow)
+                firebase_workflow = codemagic_workflow(codemagic, "android-guardian-internal")
+            if workflow_id == "ios-app-store":
+                self.assertIn("script: *ios-signed-firebase", workflow)
+                firebase_workflow = codemagic_workflow(codemagic, "ios-testflight")
+            script = 'export PATH="$PWD/bin:$PATH"\n' + "\n".join([
+                configuration_script(workflow, steps[0]),
+                configuration_script(firebase_workflow, steps[1]),
+            ])
             test_calls = ["../../scripts/write-mobile-config.py --guardian-test --measurement-test",
                           f"../../scripts/write-firebase-config.py --platform {platform}"]
             production_calls = ["../../scripts/write-mobile-config.py --production-beta",
                                 f"../../scripts/write-firebase-config.py --production-beta --platform {platform}"]
             adoption_calls = [production_calls[0] + " --adoption-only", production_calls[1]]
             review_calls = [adoption_calls[0] + " --store-review", adoption_calls[1]]
-            for selected, adoption, review, expected in (
-                (None, None, None, test_calls),
-                ("test", None, None, test_calls),
-                ("production", None, None, production_calls),
-                ("production", "true", "false", adoption_calls),
-                ("production", "true", "true", review_calls if platform == "android" else None),
-                ("production", None, "true", None),
-                ("production", "true", "yes", None),
-                ("production", "true", "", None),
-                ("test", None, "true", None),
-                ("test", "true", None, None),
-                ("production", "yes", None, None),
-                ("production", "", None, None),
-                ("staging", None, None, None),
-            ):
-                with self.subTest(workflow=workflow_id, environment=selected, adoption=adoption, review=review), \
+            public_calls = [adoption_calls[0] + " --store-amazon-public", adoption_calls[1]]
+            profiles = (
+                (None, None, None, None, test_calls),
+                ("test", None, None, None, test_calls),
+                ("production", None, None, None, production_calls),
+                ("production", "true", "false", None, adoption_calls),
+                ("production", "true", "false", "false", adoption_calls),
+                ("production", "true", "false", "true", public_calls),
+                ("production", "true", "true", "true", None),
+                ("production", "false", "false", "true", None),
+                ("production", "true", "false", "yes", None),
+                ("production", "true", "false", "", None),
+                ("test", "true", "false", "true", None),
+                ("production", "true", "true", None, review_calls if platform == "android" else None),
+                ("production", None, "true", None, None),
+                ("production", "true", "yes", None, None),
+                ("production", "true", "", None, None),
+                ("test", None, "true", None, None),
+                ("test", "true", None, None, None),
+                ("production", "yes", None, None, None),
+                ("production", "", None, None, None),
+                ("staging", None, None, None, None),
+            )
+            cases = [(*profile, {}) for profile in profiles]
+            if workflow_id == "android-play-production":
+                cases += [
+                    ("production", "true", "false", "true", public_calls, {"GOOGLE_PLAY_TRACK": "production"}),
+                    ("production", "true", "false", "true", None, {"GOOGLE_PLAY_TRACK": "internal"}),
+                    ("production", "true", "false", "true", None, {"DOPMI_PLAY_PRODUCTION_SUBMISSION": "false"}),
+                ]
+            if workflow_id == "ios-app-store":
+                cases += [
+                    ("production", "true", "false", "true", None, {"DOPMI_APP_STORE_SUBMISSION": "false"}),
+                    ("test", "false", "false", "false", None, {"DOPMI_APP_STORE_SUBMISSION": "false"}),
+                ]
+            for selected, adoption, review, public, expected, overrides in cases:
+                with self.subTest(workflow=workflow_id, environment=selected, adoption=adoption, review=review, public=public, overrides=overrides), \
                         tempfile.TemporaryDirectory() as directory:
                     binary = Path(directory) / "bin/python3"
                     binary.parent.mkdir()
@@ -415,12 +473,19 @@ class MobileConfigTests(unittest.TestCase):
                         env["DOPMI_APP_STORE_SUBMISSION"] = "true"
                         if (selected, adoption, review) != ("production", "true", "false"):
                             expected = None
+                    if workflow_id == "android-play-production":
+                        env["DOPMI_PLAY_PRODUCTION_SUBMISSION"] = "true"
+                        if (selected, adoption, review, public) != ("production", "true", "false", "true"):
+                            expected = None
                     if selected is not None:
                         env["DOPMI_ENVIRONMENT"] = selected
                     if adoption is not None:
                         env["DOPMI_ADOPTION_ONLY"] = adoption
                     if review is not None:
                         env["DOPMI_STORE_REVIEW"] = review
+                    if public is not None:
+                        env["DOPMI_STORE_AMAZON_PUBLIC"] = public
+                    env.update(overrides)
                     process = subprocess.run([bash, "-c", script], cwd=directory, env=env,
                                              capture_output=True, text=True)
                     calls = Path(directory) / "calls.txt"
@@ -431,24 +496,53 @@ class MobileConfigTests(unittest.TestCase):
                         self.assertEqual(process.returncode, 0, process.stderr)
                         self.assertEqual(calls.read_text().splitlines(), expected)
 
+    def test_public_play_publication_uses_existing_identity_and_signed_build(self):
+        codemagic = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
+        workflow = codemagic_workflow(codemagic, "android-play-production")
+        self.assertIn("<<: *android-signed-release", workflow)
+        self.assertIn("<<: *android-signed-environment", workflow)
+        self.assertIn("<<: *android-signed-vars", workflow)
+        self.assertIn("DOPMI_PLAY_PRODUCTION_SUBMISSION: 'true'", workflow)
+        self.assertIn("DOPMI_STORE_AMAZON_PUBLIC: 'true'", workflow)
+        self.assertIn("script: *android-signed-bundle", workflow)
+        self.assertIn("track: production", workflow)
+        self.assertIn("submit_as_draft: false", workflow)
+        self.assertNotIn("track: internal", workflow)
+
+    def test_app_store_publication_reuses_signed_ipa_after_its_required_guard(self):
+        codemagic = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
+        workflow = codemagic_workflow(codemagic, "ios-app-store")
+        scripts = workflow.split("    scripts:\n", 1)[1]
+        self.assertTrue(scripts.startswith("      - name: Require the App Store adoption profile\n"))
+        self.assertIn("script: *ios-signed-ipa", scripts)
+        self.assertIn("DOPMI_APP_STORE_SUBMISSION: 'true'", workflow)
+        self.assertIn("submit_to_app_store: true", workflow)
+        self.assertIn("release_type: AFTER_APPROVAL", workflow)
+
     def test_testflight_build_info_describes_the_generated_profile(self):
         workflow = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
         workflow = codemagic_workflow(workflow, "ios-testflight")
         embedded = workflow.split("<<'PYINFO'\n", 1)[1].split("          PYINFO", 1)[0]
         program = "\n".join(line[10:] for line in embedded.splitlines())
-        for production, adoption in ((False, False), (True, False), (True, True)):
-            with self.subTest(production=production, adoption=adoption), tempfile.TemporaryDirectory() as directory:
-                generated = (config.build_config(self.production_env(), production_beta=True, adoption_only=adoption) if production
+        for production, adoption, public in ((False, False, False), (True, False, False),
+                                             (True, True, False), (True, True, True)):
+            with self.subTest(production=production, adoption=adoption, public=public), tempfile.TemporaryDirectory() as directory:
+                generated = (config.build_config(self.production_env(), production_beta=True,
+                    adoption_only=adoption, store_amazon_public=public) if production
                              else config.build_config(self.env, guardian_test=True, measurement_test=True))
                 Path(directory, "config.json").write_text(json.dumps(generated))
                 Path(directory, "build").mkdir()
-                with contextlib.chdir(directory), patch.dict(os.environ, {"RELEASE_NAME": "2.3.3"}), \
+                release_env = {"RELEASE_NAME": "2.3.3", "DOPMI_APP_STORE_SUBMISSION": str(public).lower()}
+                with contextlib.chdir(directory), patch.dict(os.environ, release_env), \
                         patch.object(sys, "argv", ["-", "999"]), \
                         patch.object(subprocess, "check_output", return_value="fixture-source\n"):
                     exec(compile(program, "codemagic.yaml:ios-testflight-build-info", "exec"), {})
                 artifact = Path(directory, "build/guardian-build-info.txt").read_text()
                 self.assertIn("Environment: production\n" if production else "Environment: test\n", artifact)
                 self.assertIn(f"Adoption only: {str(adoption).lower()}\n", artifact)
+                self.assertIn("Store review: false\n", artifact)
+                self.assertIn(f"Amazon Store public: {str(public).lower()}\n", artifact)
+                self.assertIn(f"Distribution: {'App Store submission' if public else 'TestFlight (external eligible)'}\n", artifact)
                 self.assertIn(f"Stripe live client: {str(production and not adoption).lower()}\n", artifact)
                 self.assertIn("Guardian test: false\n" if production else "Guardian test: true\n", artifact)
                 self.assertIn("Commit: fixture-source\nVersion: 2.3.3 (999)\n", artifact)

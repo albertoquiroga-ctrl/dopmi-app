@@ -216,12 +216,13 @@ class SupabaseStoreRepository extends RpcStoreRepository {
 
 final storeRepositoryProvider = Provider<StoreRepository>((ref) {
   final client = Supabase.instance.client;
-  if (!storeReviewAvailable) return SupabaseStoreRepository(client);
+  if (!storeAmazonAvailable) return SupabaseStoreRepository(client);
   return StoreReviewRepository(
     currentUser: () => client.auth.currentUser?.id,
     changes: client.auth.onAuthStateChange
         .map((event) => event.session?.user.id)
         .distinct(),
+    preview: !storeAmazonPublicAvailable,
   );
 });
 final storeActorProvider = StreamProvider<String?>((ref) async* {
@@ -323,11 +324,11 @@ StorePreviewArtwork? storeReviewAmazonArtworkFor(String id) {
   );
 }
 
-/// Product photos load from Amazon only in the internal Android catalog.
+/// Only the bundled Amazon catalog loads these remote product photos.
 /// Server-authorized previews never load remote product images.
 final storePreviewImageProvider =
     Provider<StorePreviewArtwork? Function(String)>(
-      (ref) => storeReviewAvailable ? storeReviewAmazonArtworkFor : (_) => null,
+      (ref) => storeAmazonAvailable ? storeReviewAmazonArtworkFor : (_) => null,
     );
 
 List<StoreProduct> filterStoreProducts(

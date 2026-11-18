@@ -21,7 +21,7 @@ class CommunityNav extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final experience = ref.watch(experienceProvider);
-    final canShowStore = !adoptionOnlyBuild || storeReviewAvailable;
+    final canShowStore = !adoptionOnlyBuild || storeAmazonAvailable;
     final store = canShowStore
         ? ref.watch(storeCatalogProvider).asData?.value
         : null;

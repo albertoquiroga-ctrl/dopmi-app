@@ -3,11 +3,12 @@ import 'store_repository.dart';
 import 'store_review_amazon_listings.dart';
 import 'store_review_catalog.dart';
 
-/// Serves the internal review catalog locally for a signed-in Play tester.
+/// Serves the bundled Amazon catalog to a signed-in app user.
 class StoreReviewRepository implements StoreRepository {
   StoreReviewRepository({
     required this.currentUser,
     required Stream<String?> changes,
+    this.preview = true,
     Map<String, StoreReviewAmazonListing> listings = storeReviewAmazonListings,
     List<StoreKitItem> kitItems = storeReviewKitItems,
   }) : actorChanges = changes,
@@ -24,6 +25,7 @@ class StoreReviewRepository implements StoreRepository {
        ]);
 
   final String? Function() currentUser;
+  final bool preview;
   final Map<String, Uri> _linksByProduct;
   final List<StoreKitItem> _kitItems;
 
@@ -44,8 +46,10 @@ class StoreReviewRepository implements StoreRepository {
                 if (_linksByProduct.containsKey(product.id)) product,
             ]
           : const [],
-      preview: true,
-      expiresAt: enabled ? DateTime.now().add(const Duration(hours: 1)) : null,
+      preview: preview,
+      expiresAt: enabled && preview
+          ? DateTime.now().add(const Duration(hours: 1))
+          : null,
       externalLinksEnabled: enabled,
       amazonProductLinks: enabled,
       kitItems: enabled ? _kitItems : const [],
