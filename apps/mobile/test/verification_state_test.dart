@@ -75,6 +75,8 @@ void main() {
     expect(find.byType(VerificationFormFrame), findsNothing);
     await tapPublication(tester, find.text('Consultar expediente'));
     expect(find.text('Expediente de verificación'), findsOneWidget);
+    final name = find.byKey(const ValueKey('verification-field-legal_name'));
+    expect(tester.widget<TextField>(name).enabled, isFalse);
     final archive = find.byKey(const ValueKey('verification-form-body'));
     final scrollable = find
         .descendant(of: archive, matching: find.byType(Scrollable))
@@ -82,8 +84,6 @@ void main() {
     final archivedFile = find.text('Ver archivo 1');
     await tester.scrollUntilVisible(archivedFile, 200, scrollable: scrollable);
     expect(archivedFile.hitTestable(), findsOneWidget);
-    final name = find.byKey(const ValueKey('verification-field-legal_name'));
-    expect(tester.widget<TextField>(name).enabled, isFalse);
     expect(
       find.byKey(const ValueKey('verification-upload-identity')),
       findsNothing,

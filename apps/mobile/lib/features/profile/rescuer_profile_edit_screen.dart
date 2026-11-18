@@ -737,8 +737,9 @@ class _RescuerPublicProfileEditState
                     'Enviar a revisión',
                     busy: busy,
                     onPressed: () async {
-                      if (await save(announce: false))
+                      if (await save(announce: false)) {
                         await transition('submit');
+                      }
                     },
                   ),
                 ],

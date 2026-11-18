@@ -107,7 +107,7 @@ class _RescuerSealScreenState extends ConsumerState<RescuerSealScreen>
         }
       }
     }
-    if (!_current) return;
+    if (!mounted || !_current) return;
     setState(() {
       _sending = false;
       _status = result;
