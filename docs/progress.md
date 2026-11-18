@@ -8970,3 +8970,24 @@ exacto de la presentación seleccionada. CI `44034362414` aprobó sus cuatro
 trabajos. Codemagic `6afbfe39d74e7129f7239a50` completó sus 14 pasos y
 Google Play confirmó `internal/completed/405` para 2.3.6. Instalación
 y prueba en teléfono pendientes.
+
+## 17/11/2026 CDMX — Tienda 405 en Samsung y centrado de la navegación
+
+ADB confirmó 2.3.6 (405) instalada desde Play en Samsung, con texto al
+115 %. En la Tienda, el aviso de comisiones se leyó completo antes del
+buscador. Se repitió en la pantalla previa a Amazon al entrar desde un
+producto y desde el kit de perros, junto al destino de pago y al código
+incluido. «Seguir en DopMi» devolvió a la ficha o al kit. La prueba
+finalizó en la Tienda antes de abrir Amazon.
+
+Las cuatro pestañas de Adoptar y Tienda estaban desplazadas hacia la
+izquierda porque la cápsula reservaba el ancho de cinco. La corrección
+`1d12cc2d` ajusta el ancho al contenido y conserva las áreas táctiles de
+48 px. La prueba reprodujo 26 px lógicos de desfase con la configuración
+de la 405 y pasó con la corrección. El análisis Flutter y las 31 pruebas
+focales adicionales pasaron, así como los cuatro trabajos de CI
+`44221469113`.
+
+Codemagic `6afd133ef4637d55b304dabf` completó sus 14 pasos y Google Play
+confirmó `internal/completed/408` para 2.3.6. Instalación de la 408 y
+prueba de la barra corregida en el Samsung pendientes.
