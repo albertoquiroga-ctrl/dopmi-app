@@ -9010,3 +9010,27 @@ rechazó el comando `adb shell am start` que abriría la campaña en Chrome,
 con motivo «blocked by policy». Se pidió al titular abrir el enlace en el
 Samsung y dejar la ficha de Play visible antes de pulsar Instalar para
 comprobar su elegibilidad. Envío de ficha y atribución siguen pendientes.
+
+### 18/11/2026 16:24 CDMX — Instalación nueva del 413 por Play web
+
+La ficha nativa conservó el aviso de asociación a una cuenta anterior,
+incluso después de limpiar la caché de Play Store y retirar únicamente
+DopMi de la lista de apps no instaladas de esa cuenta. Play mostró que
+la entrada retirada se puede reinstalar. Se seleccionó otra vez la cuenta
+exclusiva y se abrió `/descargar/personal-a` en Chrome mediante la interfaz
+del teléfono. La redirección conservó la campaña completa en `referrer`.
+
+En Chrome se activó temporalmente la vista de escritorio, se seleccionó
+la cuenta exclusiva en Play web y se eligió el Samsung como destino de
+instalación. Google pidió verificar identidad; el titular completó ese
+paso en el teléfono. ADB confirmó 2.3.3 (413), instalador
+`com.android.vending`, primera instalación y actualización a las 16:24:07.
+El inicio de sesión de Google en DopMi abrió la pantalla de aceptación
+del par legal TEST. La lectura agregada de DEV a las 16:28 mostró una
+cuenta activa confirmada y cero envíos previos, consentimiento y atribución.
+
+Se pidió al titular completar la aceptación legal en el teléfono e indicar
+si autoriza habilitar Analítica de uso en DEV. La foto de prueba del
+repositorio se preparó en Descargas del teléfono. Falta confirmar la
+atribución antes de enviar la primera ficha y restaurar la vista de
+escritorio temporal al terminar.
