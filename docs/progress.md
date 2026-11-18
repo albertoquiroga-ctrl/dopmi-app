@@ -8943,3 +8943,9 @@ en español (Latinoamérica). Se envió una vez y el resumen de publicación
 mostró la 2.3.7 en revisión. La publicación administrada está apagada.
 El seguimiento continúa hasta confirmar la disponibilidad pública en
 México de la 2.3.7 en las dos tiendas.
+
+**17/11/2026 23:35 CDMX.** Play Console registra la solicitud 157
+como publicada. El detalle muestra la versión 2.3.7 de Producción
+con despliegue completo. La ficha pública de Google Play en México
+muestra la 2.3.7 y las notas del cambio de detalles opcionales.
+App Store México sigue mostrando la 2.3.6.
