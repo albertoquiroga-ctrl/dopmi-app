@@ -9034,3 +9034,28 @@ si autoriza habilitar Analítica de uso en DEV. La foto de prueba del
 repositorio se preparó en Descargas del teléfono. Falta confirmar la
 atribución antes de enviar la primera ficha y restaurar la vista de
 escritorio temporal al terminar.
+
+### 18/11/2026 CDMX — Dos fallos encontrados en la prueba instalada
+
+El titular aceptó el par legal y autorizó Analítica de uso en DEV. El 413
+dejó el propietario de medición vacío tras el primer login de Google.
+El interruptor permaneció apagado al pulsarlo. Cerrar y reabrir la misma
+instalación permitió habilitarlo y el servidor guardó el consentimiento.
+Un listener del ciclo de identidad corrige este caso en la fuente móvil.
+Dos regresiones reprodujeron el fallo antes del cambio y pasaron después,
+incluido el aislamiento al salir y entrar con otra cuenta.
+
+Validación local de la corrección con salida 0: 60 pruebas enfocadas,
+`flutter analyze --no-pub` limpio y suite completa 1790 aprobadas, cuatro
+omitidas por `adoptionOnlyBuild=false`. La corrección requiere candidato
+instalado para comprobar el primer login completo sin reinicio.
+
+Play nativo ya reconoció la cuenta exclusiva como tester. Se verificaron
+dos instalaciones nuevas adicionales del 413 a las 16:42:18 y 16:51:41.
+DEV conservó cero atribuciones y primeros envíos. Los logs mostraron
+cuatro POST de consentimiento HTTP 204 y cero solicitudes de adquisición.
+El HTML público actual de Google Play genera su enlace «Ver en la app de
+Play Store» sin el parámetro `referrer`, aun cuando la URL de entrada lo
+incluye. Se prepara la corrección del enlace Android en la landing para
+abrir Play directamente mediante un gesto con el referrer completo.
+La primera ficha sigue sin crearse para conservar la prueba del primer envío.
