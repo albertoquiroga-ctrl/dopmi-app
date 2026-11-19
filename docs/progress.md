@@ -9179,3 +9179,20 @@ y luego pasaron; las veintinueve pruebas dirigidas y `flutter analyze`
 terminaron con salida cero. La revisión estática independiente no encontró
 bloqueos de privacidad o alcance. Falta probar la clasificación en un nuevo
 candidato de Play; estas pruebas no acreditan atribución instalada.
+
+### 19/11/2026 17:09 CDMX — Clasificación DEV enviada a compilación
+
+Fuente congelada `8a95c2fc1e68b3aca836986a29cfb799611205ea`, tag
+`codex/attribution-dev-shape-8a95c2fc`. Una única solicitud creó
+[Codemagic 6aff819a31ca199e5b5fc108](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6aff819a31ca199e5b5fc108).
+El readback confirmó workflow `android-internal`, `test` y destino
+`attribution-dev-qa`, con las mismas guardas apagadas del 414. El CI exacto
+es [44635112776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44635112776).
+Compilación, suite completa, publicación, versión nueva de AAB y prueba
+instalada siguen pendientes. No volver a solicitar ese build por una espera.
+
+El Samsung conserva 414 de la instalación de las 16:59:06, con Analítica
+activa y diagnóstico de errores apagado. Chrome se restauró al enlace
+público `/descargar/personal-a`. La lectura READ ONLY de DEV a las 17:04
+confirmó cero atribuciones, cero primeros envíos y cero borradores/casos.
+La aceptación legal y la autorización de analítica siguen vigentes.
