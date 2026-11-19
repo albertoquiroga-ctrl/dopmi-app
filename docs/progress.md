@@ -9196,3 +9196,28 @@ activa y diagnóstico de errores apagado. Chrome se restauró al enlace
 público `/descargar/personal-a`. La lectura READ ONLY de DEV a las 17:04
 confirmó cero atribuciones, cero primeros envíos y cero borradores/casos.
 La aceptación legal y la autorización de analítica siguen vigentes.
+
+### 19/11/2026 17:29 CDMX — 415 publicada al canal cerrado, revisión pendiente
+
+El mismo [Codemagic 6aff819a31ca199e5b5fc108](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6aff819a31ca199e5b5fc108)
+terminó a las 17:28:02 CDMX, con trece pasos correctos. El AAB firmado es
+2.3.3 (415), fuente exacta `8a95c2fc1e68b3aca836986a29cfb799611205ea`,
+TEST, publicado a `attribution-dev-qa`. La línea final del paso de pruebas
+confirmó 1800 aprobadas y cuatro omitidas. El CI exacto
+[44635112776](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44635112776)
+terminó a las 17:24:37 con los cuatro trabajos correctos, incluidas capturas
+y artefactos. No se creó otro candidato por la espera de publicación.
+
+La interfaz de [Play, release cerrado 4](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/4/details)
+confirmó `415 (2.3.3)` en revisión. Falta disponibilidad e instalación
+para leer las nuevas categorías y probar la primera ficha. El Samsung
+continúa con 414, conectado, y la foto sintética conserva el hash del asset
+del repositorio. Se mantiene pendiente el envío, con consentimiento activo.
+
+Inventario de continuidad de sólo lectura: [PR 7](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/7)
+sigue draft con `cb812ae5` sobre `fc1da17a`; no contiene esta continuación.
+La línea release consultada `codex/adoption-409-store-nav@c9d9d03d`
+diverge desde `433ab517`, con ocho commits propios que deben conservarse.
+Si la QA pasa, integrar el diferencial sobre la línea release vigente;
+no promover íntegra esta rama 395. No se verificó ni modificó Supabase PROD,
+ni se autorizó en este corte su migración o distribución de producción.
