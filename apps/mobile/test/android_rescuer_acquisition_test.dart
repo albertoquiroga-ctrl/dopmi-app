@@ -41,6 +41,196 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test(
+    'diagnostic categories distinguish empty, organic and campaign data',
+    () async {
+      final samples = [
+        (
+          source: '',
+          empty: true,
+          parameters: 0,
+          sourceClass: 'absent',
+          mediumClass: 'absent',
+          campaignClass: 'absent',
+          contentClass: 'absent',
+        ),
+        (
+          source: 'utm_source=google-play&utm_medium=organic',
+          empty: false,
+          parameters: 2,
+          sourceClass: 'google-play',
+          mediumClass: 'organic',
+          campaignClass: 'absent',
+          contentClass: 'absent',
+        ),
+        (
+          source: 'utm_source=(not%20set)&utm_medium=(not%20set)',
+          empty: false,
+          parameters: 2,
+          sourceClass: 'not_set',
+          mediumClass: 'not_set',
+          campaignClass: 'absent',
+          contentClass: 'absent',
+        ),
+        (
+          source: 'utm_source=&utm_medium=&utm_campaign=&utm_content=',
+          empty: false,
+          parameters: 4,
+          sourceClass: 'empty',
+          mediumClass: 'empty',
+          campaignClass: 'empty',
+          contentClass: 'empty',
+        ),
+        (
+          source: referrer,
+          empty: false,
+          parameters: 4,
+          sourceClass: 'facebook',
+          mediumClass: 'organic_comment',
+          campaignClass: 'expected',
+          contentClass: 'expected',
+        ),
+        (
+          source: referrer.replaceAll('pagina-a', 'personal-a'),
+          empty: false,
+          parameters: 4,
+          sourceClass: 'facebook',
+          mediumClass: 'organic_comment',
+          campaignClass: 'expected',
+          contentClass: 'expected',
+        ),
+        (
+          source:
+              'utm_source=facebook&utm_medium=organic_comment'
+              '&utm_campaign=dopmi_rescatistas_mty_personal-a',
+          empty: false,
+          parameters: 3,
+          sourceClass: 'facebook',
+          mediumClass: 'organic_comment',
+          campaignClass: 'expected',
+          contentClass: 'absent',
+        ),
+        (
+          source:
+              'utm_source=unrecognized&utm_medium=unrecognized'
+              '&utm_campaign=unrecognized&utm_content=unrecognized',
+          empty: false,
+          parameters: 4,
+          sourceClass: 'other',
+          mediumClass: 'other',
+          campaignClass: 'other',
+          contentClass: 'other',
+        ),
+      ];
+      for (final sample in samples) {
+        final diagnostics = <String>[];
+        final acquisition = await service(
+          () async => install(source: sample.source),
+          onDiagnostic: diagnostics.add,
+        );
+        await acquisition.record(
+          owner: 'private-account-id',
+          sessionStillEligible: () => true,
+          send: (_, _) async {},
+        );
+        final checks = diagnostics.singleWhere(
+          (line) =>
+              line.startsWith('state=referrerAccepted ') ||
+              line.startsWith('state=referrerRejected '),
+        );
+        expect(
+          checks,
+          contains('empty=${sample.empty} parameters=${sample.parameters}'),
+        );
+        expect(checks, contains('sourceClass=${sample.sourceClass}'));
+        expect(checks, contains('mediumClass=${sample.mediumClass}'));
+        expect(checks, contains('campaignClass=${sample.campaignClass}'));
+        expect(checks, contains('contentClass=${sample.contentClass}'));
+      }
+    },
+  );
+
+  test(
+    'presence distinguishes absent keys and duplicated values stay private',
+    () async {
+      for (final sample in [
+        (
+          source: 'utm_source=google-play&utm_medium=organic',
+          expected: 'sourcePresent=true mediumPresent=true campaignPresent=false contentPresent=false',
+          parameters: 2,
+          sourceClass: 'google-play',
+        ),
+        (
+          source: '$referrer&utm_source=private.person%40example.test',
+          expected: 'sourcePresent=true mediumPresent=true campaignPresent=true contentPresent=true',
+          parameters: 5,
+          sourceClass: 'other',
+        ),
+      ]) {
+        final diagnostics = <String>[];
+        final acquisition = await service(
+          () async => install(source: sample.source),
+          onDiagnostic: diagnostics.add,
+        );
+        final sent = <String>[];
+        await acquisition.record(
+          owner: 'private-account-id',
+          sessionStillEligible: () => true,
+          send: (variant, _) async => sent.add(variant),
+        );
+        expect(sent, isEmpty);
+        final checks = diagnostics.singleWhere(
+          (line) => line.startsWith('state=referrerRejected '),
+        );
+        expect(checks, contains(sample.expected));
+        expect(checks, isNot(contains('private')));
+        expect(checks, isNot(contains('@')));
+        expect(checks, contains('parameters=${sample.parameters}'));
+        expect(checks, contains('sourceClass=${sample.sourceClass}'));
+      }
+    },
+  );
+
+  test(
+    'arbitrary values in every UTM field only produce closed categories',
+    () async {
+      final diagnostics = <String>[];
+      final acquisition = await service(
+        () async => install(
+          source:
+              'utm_source=private.person%40example.test&utm_medium=Bearer-private-token'
+              '&utm_campaign=123e4567-e89b-12d3-a456-426614174000&utm_content=private-account-id',
+        ),
+        onDiagnostic: diagnostics.add,
+      );
+      final sent = <String>[];
+      await acquisition.record(
+        owner: 'private-account-id',
+        sessionStillEligible: () => true,
+        send: (variant, _) async => sent.add(variant),
+      );
+      expect(sent, isEmpty);
+      final checks = diagnostics.singleWhere(
+        (line) => line.startsWith('state=referrerRejected '),
+      );
+      expect(
+        checks,
+        contains(
+          'sourceClass=other mediumClass=other campaignClass=other contentClass=other',
+        ),
+      );
+      for (final privateValue in [
+        'private',
+        '@',
+        'Bearer',
+        '123e4567',
+        install().clickedAtSeconds.toString(),
+      ]) {
+        expect(diagnostics.join('\n'), isNot(contains(privateValue)));
+      }
+    },
+  );
+
+  test(
     'native diagnostic request is off by default and explicitly opt-in',
     () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.android;
@@ -93,6 +283,7 @@ void main() {
       checks,
       contains('campaign=false content=false variant=none unknown=16'),
     );
+    expect(checks, contains('parameters=16'));
     expect(diagnostics.join('\n'), isNot(contains('private')));
     expect(diagnostics.join('\n'), isNot(contains('@')));
   });

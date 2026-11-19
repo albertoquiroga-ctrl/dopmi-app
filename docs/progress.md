@@ -9123,3 +9123,59 @@ muestra Android conectado. Se pidió al titular reconectar el cable de datos
 y dejarlo desbloqueado. La comprobación instalada queda pendiente de esa
 conexión y de la aprobación de Play del 414. La autorización de analítica
 en DEV y la aceptación legal completada por el titular se conservan.
+
+### 19/11/2026 17:04 CDMX — 414 instalada, diagnóstico y comparación de ruta
+
+El titular reconectó el Samsung. Play confirmó el release cerrado 3 con
+414 disponible desde el 18/11 a las 18:29 CDMX. Se retiró 413 y el enlace
+público `/descargar/personal-a`, mediante su CTA propio, instaló 2.3.3 (414)
+desde `com.android.vending` a las 16:43:44 del 19/11. El primer inicio de
+sesión Google permitió habilitar Analítica de uso sin cerrar ni reiniciar
+DopMi; el diagnóstico de errores quedó apagado. Esto comprueba en teléfono
+la corrección de sincronización de identidad de `17a42029` incluida en 414.
+
+La lectura nativa respondió `OK`. Dart informó `referrerRejected` con
+fechas positivas, orden, no futuro, ventana, formato y parseo correctos;
+source/medium/campaign/content fueron false, variante none y conteos de
+claves desconocidas/duplicadas cero. Esos datos todavía admiten referencia
+vacía o un subconjunto permitido con valores distintos; no demuestran
+literalmente una instalación orgánica. No se alteró la validación para
+admitir el dato. `dumpsys activity` confirmó que Play recibió la URL HTTPS
+con los cuatro UTM completos. Cerrar únicamente Play Store antes de otra
+instalación nueva del mismo 414, a las 16:49:15, reprodujo el rechazo.
+
+Se comparó una preview aislada de landing, fuente
+`6ca6c6b766dd0cf4708c435842c9a4e05903a779`, rama
+`codex/diagnose-market-referrer`, deployment
+`dpl_Gebo3fmV4eDftGzbnVRSvsauUoKL`. El único cambio funcional de la CTA
+usó `market` con idénticos UTM y fallback HTTPS. Las quince pruebas,
+lint y build pasaron; el integrador repitió las quince pruebas y revisó
+el diff. Otra instalación nueva de 414, a las 16:59:06, recibió el mismo
+rechazo. La actividad nativa conservó los UTM también por esa ruta.
+La comparación no acredita una corrección; producción y main de landing
+se conservaron en `aaec18e8`.
+
+Durante la navegación a la preview, una entrada incompleta abrió una
+búsqueda y mostró su enlace temporal privado en la salida de la herramienta.
+Se revocó ese acceso y se comprobó redirección a Vercel SSO. El segundo
+acceso se abrió sólo después de verificar íntegra la URL en la barra; se
+revocó al cerrar la comparación. Una comprobación adicional confirmó que
+la API no conservaba enlaces válidos y el mapa `protectionBypass` quedó
+vacío. No se desactivó protección, cambió dominio ni publicó la preview.
+No se afirma borrar la consulta enviada ni la salida previa.
+
+La primera ficha sigue sin crearse para preservar la precondición del
+primer envío. Se amplía únicamente la clasificación local DEV del dato
+recibido, con categorías cerradas sin referrer ni valores arbitrarios,
+antes de otro candidato del canal cerrado. No hay cambios de RPC o esquema.
+
+La ampliación quedó limitada a `_installChecks`: indicador de cadena vacía,
+conteo de entradas limitado a dieciséis, presencia de las cuatro claves y
+categorías cerradas. Valores arbitrarios o duplicados se muestran como
+`other`; los marcadores literales conocidos se clasifican sin imprimir el
+contenido recibido. `_variant`, `record`, el gate DEV y el RPC se conservan.
+Las tres regresiones nuevas fallaron antes de implementar la clasificación
+y luego pasaron; las veintinueve pruebas dirigidas y `flutter analyze`
+terminaron con salida cero. La revisión estática independiente no encontró
+bloqueos de privacidad o alcance. Falta probar la clasificación en un nuevo
+candidato de Play; estas pruebas no acreditan atribución instalada.

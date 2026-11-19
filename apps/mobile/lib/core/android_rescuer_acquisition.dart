@@ -112,6 +112,31 @@ class AndroidRescuerAcquisition {
     }
     bool matches(String key, String value) =>
         params[key]?.length == 1 && params[key]!.single == value;
+    String category(String key, Map<String, String> knownValues) {
+      final values = params[key];
+      if (values == null) return 'absent';
+      if (values.length != 1) return 'other';
+      if (values.single.isEmpty) return 'empty';
+      return knownValues[values.single] ?? 'other';
+    }
+
+    final sourceClass = category('utm_source', const {
+      'facebook': 'facebook',
+      'google-play': 'google-play',
+      '(not set)': 'not_set',
+    });
+    final mediumClass = category('utm_medium', const {
+      'organic_comment': 'organic_comment',
+      'organic': 'organic',
+      '(not set)': 'not_set',
+    });
+    final campaignClass = category('utm_campaign', {
+      for (final variant in _variants)
+        'dopmi_rescatistas_mty_$variant': 'expected',
+    });
+    final contentClass = category('utm_content', {
+      for (final variant in _variants) variant: 'expected',
+    });
     final content = params['utm_content'];
     final variant = content?.length == 1 && _variants.contains(content!.single)
         ? content.single
@@ -125,13 +150,23 @@ class AndroidRescuerAcquisition {
         .where((values) => values.length > 1)
         .length
         .clamp(0, 16);
+    final parameters = params.values
+        .fold<int>(0, (total, values) => total + values.length)
+        .clamp(0, 16);
     return 'positive=$positive order=$ordered notFuture=$notFuture '
         'window=$withinWindow shape=$validShape parsed=$parsed '
         'source=${matches('utm_source', 'facebook')} '
         'medium=${matches('utm_medium', 'organic_comment')} '
         'campaign=${variant != null && matches('utm_campaign', 'dopmi_rescatistas_mty_$variant')} '
         'content=${variant != null} variant=${variant ?? 'none'} '
-        'unknown=$unknown duplicate=$duplicate';
+        'unknown=$unknown duplicate=$duplicate '
+        'empty=${install.referrer.isEmpty} parameters=$parameters '
+        'sourcePresent=${params.containsKey('utm_source')} '
+        'mediumPresent=${params.containsKey('utm_medium')} '
+        'campaignPresent=${params.containsKey('utm_campaign')} '
+        'contentPresent=${params.containsKey('utm_content')} '
+        'sourceClass=$sourceClass mediumClass=$mediumClass '
+        'campaignClass=$campaignClass contentClass=$contentClass';
   }
 
   static String? _variant(PlayInstall install, DateTime now) {
