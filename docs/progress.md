@@ -9320,3 +9320,19 @@ ofreciendo ayuda si no encuentra la ventana. No dar el acceso por verificado
 por la respuesta humana cuando la lectura del dispositivo aún lo contradice.
 No seguir capturando/interactuando con la pantalla de credenciales durante
 este nuevo handoff; esperar su aviso y verificar entonces el estado real.
+
+### 19/11/2026 19:47 CDMX — Cuenta del control virtual verificada; inicio de Chrome pendiente
+
+El titular confirmó que la ventana ya quedó utilizable y que completó el acceso
+a Play en el Android virtual. La comprobación nueva de `emulator-5580` encontró
+una cuenta Google, coincidente con la cuenta de prueba, y Play mostró su estado
+autenticado. Se rechazó únicamente la recomendación opcional por ubicación.
+DopMi continúa ausente de ese AVD. El SELECT READ ONLY de DEV confirmó una cuenta,
+consentimiento activo, cero atribuciones `personal-a`, primeros envíos y fichas.
+
+Al abrir Chrome desde su icono apareció su inicio de primer uso, con el aviso
+de aceptación de sus condiciones al continuar. Se pidió al titular completar
+personalmente esa pantalla hasta llegar a la barra de direcciones. No se aceptaron
+las condiciones por él ni se vinculó Chrome a otra cuenta. Tampoco se abrió el
+enlace de campaña ni se instaló DopMi. La primera ficha sigue sin crearse para conservar la elegibilidad
+del primer envío. Retomar desde ese handoff, sin otra compilación ni publicación.
