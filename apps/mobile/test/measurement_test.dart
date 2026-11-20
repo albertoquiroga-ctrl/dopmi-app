@@ -95,10 +95,100 @@ void main() {
     await controller.consentReady;
     await controller.setAnalytics(false);
     await controller.consentReady;
-    expect(sync, [('alice', false), ('alice', true), ('alice', false)]);
+    expect(sync, [('alice', true), ('alice', false)]);
     expect(analytics.events, isEmpty);
     controller.dispose();
   });
+
+  test(
+    'an installation without a local choice leaves remote consent untouched',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.other.alice.analytics': false,
+        'dopmi.test.bob.analytics': true,
+      });
+      final preferences = await SharedPreferences.getInstance();
+      final analytics = AnalyticsSpy();
+      final sync = <(String, bool)>[];
+      final controller = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: (owner, enabled) =>
+            () async => sync.add((owner, enabled)),
+      );
+
+      await controller.owner('alice');
+      await controller.consentReady;
+      await controller.event('publication_submitted');
+
+      expect(controller.analyticsEnabled, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      expect(analytics.events, isEmpty);
+      expect(sync, isEmpty);
+      expect(preferences.getBool('dopmi.test.alice.analytics'), isNull);
+
+      await controller.owner('bob');
+      await controller.consentReady;
+      expect(sync, [('bob', true)]);
+      expect(controller.analyticsConsentCurrent, isTrue);
+
+      await controller.owner('alice');
+      await controller.consentReady;
+      expect(sync, [('bob', true)]);
+      expect(controller.analyticsConsentCurrent, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      controller.dispose();
+    },
+  );
+
+  test(
+    'an explicit opt-out saved offline is retried on the next login',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.test.alice.analytics': true,
+      });
+      final preferences = await SharedPreferences.getInstance();
+      final attempts = <(String, bool)>[];
+      var offline = true;
+      Future<void> Function() prepare(String owner, bool enabled) => () async {
+        attempts.add((owner, enabled));
+        if (!enabled && offline) throw StateError('offline');
+      };
+      final first = MeasurementController(
+        preferences,
+        'test',
+        AnalyticsSpy(),
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: prepare,
+      );
+      await first.owner('alice');
+      await first.consentReady;
+      await first.setAnalytics(false);
+      await first.consentReady;
+      expect(preferences.getBool('dopmi.test.alice.analytics'), isFalse);
+      expect(first.analyticsConsentCurrent, isFalse);
+      first.dispose();
+
+      offline = false;
+      final analytics = AnalyticsSpy();
+      final restarted = MeasurementController(
+        preferences,
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: prepare,
+      );
+      await restarted.owner('alice');
+      await restarted.consentReady;
+
+      expect(attempts, [('alice', true), ('alice', false), ('alice', false)]);
+      expect(restarted.analyticsConsentCurrent, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      restarted.dispose();
+    },
+  );
 
   test(
     'measurement is disabled initially and sends no accumulated events',
@@ -182,7 +272,7 @@ void main() {
       await switched;
       await controller.consentReady;
 
-      expect(sync, [('alice', false), ('bob', false)]);
+      expect(sync, isEmpty);
       expect(preferences.getBool('dopmi.test.alice.analytics'), true);
       expect(preferences.getBool('dopmi.test.bob.analytics'), isNull);
       expect(controller.ownerId, 'bob');
@@ -218,7 +308,7 @@ void main() {
       await revoked;
       await controller.consentReady;
 
-      expect(sync, [false, false]);
+      expect(sync, [false]);
       expect(controller.analyticsConsentCurrent, false);
       expect(analytics.enabledValue, false);
       controller.dispose();
@@ -265,11 +355,7 @@ void main() {
 
         finishPriorRequest.complete();
         await controller.consentReady;
-        expect(submitted, [
-          ('alice', true),
-          ('alice', false),
-          if (nextOwner != null) (nextOwner, false),
-        ]);
+        expect(submitted, [('alice', true), ('alice', false)]);
         expect(preferences.getBool('dopmi.test.alice.analytics'), false);
         controller.dispose();
       },

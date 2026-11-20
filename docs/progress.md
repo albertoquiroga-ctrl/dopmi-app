@@ -9393,3 +9393,39 @@ por lo que no se perdió una atribución existente. Corregir y verificar esa
 semántica multidispositivo antes de una ronda con primeras fichas; esta entrada
 no la da por corregida. Conservar la primera ficha sin consumir hasta obtener
 una fuente real. La atribución instalada y el A/B de conversiones siguen pendientes.
+
+### 19/11/2026 20:46 CDMX — Investigación de cuenta instaladora y corrección de consentimiento
+
+El titular pidió investigar y corregir hasta vincular automáticamente la primera
+ficha a `personal-a`, manteniendo el A/B en espera. Se conserva el alcance DEV y
+el canal cerrado exclusivo. El enlace público y el parser no se han modificado.
+
+Se extrajo sólo el APK oficial de Play instalado en el AVD: 54.3.07, SHA256
+`03df0a51f8d658b8b4e93f50f3351550fbc356a69deeed69367cce0537d80444`.
+La inspección estática independiente y el integrador encontraron en el servicio
+real Install Referrer una rama `delivered_managed_account` que sustituye la campaña
+por los dos marcadores recibidos. Evalúa la cuenta del registro de instalación del
+paquete. Una rama distinta, `delivered_notset`, devuelve lo mismo si falta la
+referencia almacenada; el resultado SDK solo todavía no distingue ambas. Los
+artefactos de inspección y herramientas quedaron en TEMP, fuera del repositorio.
+El issue público 445826632 no se leyó: el acceso autenticado exige aceptar unas
+condiciones nuevas y no se aceptaron. No atribuir confirmación oficial al issue.
+La prueba siguiente conserva enlace/binario y usa una cuenta Play personal no
+administrada; su correo requiere confirmación por un carácter adicional recibido.
+
+Se corrigió además el defecto reproducido de consentimiento entre dispositivos:
+preferencia local ausente mantiene Analítica apagada y omite la escritura global,
+mientras `false` explícito y `true` persistidos conservan su sincronización.
+La primera ejecución dirigida mostró once pruebas correctas y cinco fallos
+esperados, incluida la nueva regresión de instalación sin decisión local. Con
+el cambio mínimo y la comprobación de sesión real mediante widgets, las treinta
+y tres pruebas de medición/sesión/adquisición pasaron y `flutter analyze` no
+encontró problemas. La revisión independiente de privacidad/cancelación y
+aislamiento cerró sin P1/P2; las decisiones explícitas contradictorias entre
+equipos conservan su semántica anterior. No se cambió esquema, RPC, autorización,
+consentimiento por defecto ni formato de la campaña.
+
+Se anunció la ventana habitual de cinco minutos antes de un único candidato DEV
+del canal cerrado con esa corrección. La suite completa de Codemagic y el CI exacto,
+la publicación y la validación instalada siguen pendientes. La cuenta de prueba
+permanece sin fuente ni fichas: no se fabricó ni consumió la primera conversión.

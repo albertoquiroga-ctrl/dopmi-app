@@ -90,6 +90,9 @@ void main() {
     await tester.pumpAndSettle();
     final analytics = find.widgetWithText(SwitchListTile, 'Analítica de uso');
     await tester.ensureVisible(analytics);
+    await state.measurement.consentReady;
+    expect(tester.widget<SwitchListTile>(analytics).value, isFalse);
+    expect(state.consent, isEmpty);
     await tester.tap(analytics);
     await tester.pumpAndSettle();
     await state.measurement.consentReady;
@@ -139,8 +142,7 @@ void main() {
     expect(state.measurement.analyticsConsentCurrent, isFalse);
     final analytics = find.widgetWithText(SwitchListTile, 'Analítica de uso');
     expect(tester.widget<SwitchListTile>(analytics).value, isFalse);
-    expect(state.consent, contains(('two', false)));
-    expect(state.consent, isNot(contains(('two', true))));
+    expect(state.consent.where((entry) => entry.$1 == 'two'), isEmpty);
     expect(tester.takeException(), isNull);
   });
 }

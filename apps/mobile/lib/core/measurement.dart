@@ -194,8 +194,10 @@ class MeasurementController extends ChangeNotifier {
       _owner = value;
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;
-      analyticsEnabled =
-          value != null && (preferences.getBool(key('analytics')) ?? false);
+      final savedAnalytics = value == null
+          ? null
+          : preferences.getBool(key('analytics'));
+      analyticsEnabled = savedAnalytics ?? false;
       diagnosticsEnabled =
           value != null && (preferences.getBool(key('diagnostics')) ?? false);
       await analytics.enabled(analyticsEnabled);
@@ -209,7 +211,10 @@ class MeasurementController extends ChangeNotifier {
       _configuredOwnerRevision = revision;
       _configuredAnalyticsRevision = analyticsRevision;
       loading = false;
-      if (value != null) _syncConsent(value, analyticsEnabled);
+      // A new device's default is not a revocation of the account's consent.
+      if (value != null && savedAnalytics != null) {
+        _syncConsent(value, savedAnalytics);
+      }
       notifyListeners();
     });
     _ownerSync = pending;
