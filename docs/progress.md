@@ -9464,3 +9464,32 @@ recorren todas las cuentas presentes en el servicio. El motivo de la sustitució
 es telemetría interna, no un campo de la respuesta SDK ni un Logcat directo.
 Por eso sigue siendo necesaria la comparación de instalación con la cuenta
 personal; no declarar la causa ejecutada confirmada sólo por el marcador común.
+
+### 19/11/2026 21:10 CDMX — 416 compilada/publicada; Play en revisión y acceso personal pendiente
+
+El único [Codemagic 6affb5832e508c1164afa966](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6affb5832e508c1164afa966)
+terminó a las 21:05:17.738 CDMX con trece pasos correctos. Fuente exacta
+`953d334238af3e23e3dcf42340facee8d75f9568`, AAB firmado 2.3.3 (416), TEST.
+La línea final de pruebas fue `04:42 +1802 ~4: All tests passed!`.
+La publicación comprobó `com.mycompany.dopmi`, `attribution-dev-qa`, 416 y
+`completed`. El integrador volvió a consultar metadatos y trece acciones, sin
+otra solicitud. El [CI exacto 44663156603](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44663156603)
+también terminó con sus cuatro jobs correctos, incluidas todas las capturas y
+ambos uploads de Flutter. Ninguna de estas pruebas acredita atribución instalada.
+
+La interfaz de [Play, release cerrado 5](https://play.google.com/console/u/0/developers/6135505245902279362/app/4973415797410678796/tracks/4698086124804427086/releases/5/details)
+confirmó `416 (2.3.3)` en revisión. Captura local
+`dopmi-play-416-review-20261119.png`; no está disponible todavía según esa lectura.
+La release 4/415 seguía disponible. Managed publishing permanece apagado, sin
+modificación del ajuste. La lista exclusiva ya tiene dos testers, pero falta
+comprobar que la cuenta personal haya terminado el acceso y se haya inscrito
+efectivamente al programa. El AVD continúa en handoff de Google: no leer ni
+interactuar con credenciales mientras se espera el aviso del titular.
+
+La atribución y la primera ficha siguen pendientes. La siguiente secuencia es:
+confirmar la cuenta Play personal y su inscripción; comprobar disponibilidad del
+candidato; instalación nueva desde el enlace público con cuenta instaladora
+personal; verificar el código instalado y Analítica; exigir fila real `personal-a`
+antes de crear/enviar el fixture privado. Conservar la identidad DopMi de prueba
+existente para esa ficha y la aceptación/medición ya autorizadas. No sustituir
+este control por una fuente escrita mediante SQL ni publicar la ficha.
