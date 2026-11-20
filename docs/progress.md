@@ -9358,3 +9358,38 @@ El diagnóstico todavía no emitió una lectura de adquisición en esta sesión.
 No clasificar este intento como atribución fallida ni correcta hasta completar
 el acceso y comprobar el SDK junto con la fila DEV. Primera ficha aún ausente;
 el resultado del AVD no sustituirá la verificación pendiente del Samsung.
+
+### 19/11/2026 20:05 CDMX — Control virtual 415 negativo para atribución automática
+
+El titular completó el bloqueo y el acceso Google. DopMi mostró la cuenta de
+prueba y su inicio sin casos. La pantalla de cuenta confirmó 2.3.3 (415). En esta
+instalación nueva, Analítica estaba apagada; se activó por la autorización DEV
+vigente y se comprobó el switch encendido, con Diagnóstico de errores apagado.
+La primera lectura emitió `readStarted`, `native=OK`, `referrerRejected` y
+`completed`. Las comprobaciones de tiempo, forma y parseo fueron válidas, pero
+los dos parámetros recibidos se clasificaron como `sourceClass=not_set` y
+`mediumClass=not_set`; campaña y contenido estaban ausentes y `variant=none`.
+La lectura READ ONLY final confirmó: cuenta1, consentimiento1, fuentes0,
+`personal-a`0, primeros envíos0, aprobaciones0 y fichas0. No se creó el fixture.
+Se devolvió el AVD al inicio vacío; captura local
+`dopmi-415-avd-empty-home-20261119.png`, sin incorporarla al repositorio.
+
+La revisión independiente y el integrador comprobaron que Kotlin pasa
+`details.installReferrer` sin modificar y Dart sólo clasifica los valores;
+el diff de esos archivos respecto a `8a95c2fc` sigue vacío. El SDK devuelve los
+marcadores, no los genera un fallback de DopMi. El control reproduce el síntoma
+en un Android sin instalación previa de DopMi, por lo que no es exclusivo del
+Samsung; no determina la causa ni acredita el recorrido físico. La guía oficial
+de [Inline Installs](https://developer.android.com/distribute/marketing-tools/inline-installs)
+admite referrer en la ficha compacta. No atribuir el fallo a esa interfaz, al
+canal cerrado o a Workspace sin nueva evidencia. No hubo otro build o despliegue.
+
+Límite adicional detectado por lectura de código: `MeasurementController.owner`
+usa `false` cuando falta preferencia local y lo sincroniza al consentimiento
+global de la cuenta. Una instalación nueva puede así revocar la fuente de otra
+instalación sin una acción expresa de revocación. Aquí la lectura pasó de
+consentimiento1 a0 y volvió a1 al activar el switch, pero la fuente ya era0,
+por lo que no se perdió una atribución existente. Corregir y verificar esa
+semántica multidispositivo antes de una ronda con primeras fichas; esta entrada
+no la da por corregida. Conservar la primera ficha sin consumir hasta obtener
+una fuente real. La atribución instalada y el A/B de conversiones siguen pendientes.
