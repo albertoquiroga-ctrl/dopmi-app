@@ -9221,3 +9221,14 @@ diverge desde `433ab517`, con ocho commits propios que deben conservarse.
 Si la QA pasa, integrar el diferencial sobre la línea release vigente;
 no promover íntegra esta rama 395. No se verificó ni modificó Supabase PROD,
 ni se autorizó en este corte su migración o distribución de producción.
+
+Precisión del diagnóstico: que el href «See in Play Store app» omita el
+query no demuestra por sí solo que Play haya perdido la atribución; podría
+haberla registrado antes en la web, posibilidad no verificada. El ensayo
+web de 413 quedó confundido por el fallo de medición tras Google. Si 415
+rechaza el enlace directo, el siguiente control es instalar desde la web
+oficial con la cuenta correcta y la URL HTTPS completa, antes de modificar
+headers o extras de Intent sin contrato documentado. Chromium maneja el
+origen `Intent.EXTRA_REFERRER` por separado del query de campaña; las fuentes
+Google revisadas no establecen dependencia entre ellos. La landing actual
+verifica el handoff de parámetros, no una conversión atribuida completa.
