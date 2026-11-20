@@ -344,7 +344,7 @@ test('real PostgreSQL: consent, enrollment, contact and UUID races keep mileston
   const people = [randomUUID(), randomUUID()];
   const session = randomUUID(), listing = randomUUID();
   const connected = [];
-  let pending, created = false, adminConnected = false, seeded = false;
+  let pending, created = false, adminConnected = false;
   const queryValue = async (client, sql, params = []) => (await client.query(sql, params)).rows[0]?.value;
   async function asReader(client) {
     await client.query('begin');
@@ -398,7 +398,6 @@ test('real PostgreSQL: consent, enrollment, contact and UUID races keep mileston
     await control.query('insert into auth.sessions(id,user_id) values($1,$2)', [session, people[1]]);
     await control.query("insert into public.dopmi_adoptions(id,owner_id,pet_name,status) values($1,$2,'Carrera sintética','published')", [listing, people[0]]);
     await control.query('commit');
-    seeded = true;
     await asReader(first); await optIn(first); await enroll(first); await first.query('commit');
 
     // Concurrent contacts: only the creator emits one automatic greeting.
@@ -456,15 +455,17 @@ test('real PostgreSQL: consent, enrollment, contact and UUID races keep mileston
     try {
       await Promise.allSettled(connected.map(client => client.query('rollback')));
       if (pending) await pending.catch(() => {});
-      if (seeded && connected.includes(control)) {
-        await control.query('begin');
-        await control.query('delete from auth.users where id=any($1::uuid[])', [people]);
-        await control.query('commit');
-        assert.equal(await queryValue(control, 'select count(*)::int value from public.profiles where id=any($1::uuid[])', [people]), 0);
-      }
     } finally {
       await Promise.allSettled(connected.map(client => client.end()));
-      try { if (created) await admin.query(`drop database "${database}"`); }
+      try {
+        if (created) {
+          // H10 deliberately retains profiles after Auth deletion. Dispose the
+          // entire database created by this harness instead of assuming cascade.
+          assert.match(database, /^dopmi_acquisition_test_[0-9a-f]{32}$/);
+          await admin.query(`drop database "${database}"`);
+          assert.equal(await queryValue(admin, 'select count(*)::int value from pg_database where datname=$1', [database]), 0);
+        }
+      }
       finally { if (adminConnected) await admin.end(); }
     }
   }

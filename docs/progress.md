@@ -8926,3 +8926,20 @@ QADEV416 previa y dos fixtures privados consumidos se preservan, no se reutiliza
 Plan/contrato: docs/superpowers/plans/2026-11-20-production-attribution.md y
 facebook-rescuer-experiment.md. Siguiente: CI/PG real, operación revisada única,
 candidato2.3.8 desde esta fuente con entornoPROD y QA instalada antes de A/B.
+
+
+### 20/11/2026 — Primer CI integrado: dos fixtures corregidos
+
+Fuente51d21446, CI44822500409. Web/base/Admin/backend/config/pgTAP y carreras
+anteriores aprobaron; la prueba nueva de mensajes terminó con una aserción de
+limpieza incorrecta: Auth DELETE no borra perfiles desde H10. Se conserva cada
+assert de producto/concurrencia; se elimina la DB temporal UUID propia y se
+comprueba su ausencia, sin simular una cascada inexistente. CAS no cambió.
+La integración real Auth/Storage rechazó correctamente el envío anónimo antes
+de HTTP (StateError nuevo del guard), pero el test esperaba PostgrestException.
+El test verifica ahora rechazo cliente y también llama RPC directamente para
+comprobar permiso SQL42501. No se modificó SQL ni código de producto en este
+correctivo; sintaxisNode y análisisDartdeltest aprobaron. Se requiere CI nuevo
+para acreditar PostgreSQL completo y la limpieza; no declarar aquellas carreras
+verdes por un finally que pudo enmascarar otra excepción. Ningún apply o build
+firmado disparado; producción409 conserva su estado.

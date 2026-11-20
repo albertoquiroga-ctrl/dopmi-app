@@ -414,10 +414,35 @@ void main() {
       throwsA(isA<StorageException>()),
     );
     for (final stranger in strangers) {
+      final strangerMessage = const Uuid().v4();
       await expectLater(
-        stranger.send(thread, const Uuid().v4(), 'No permitido', ''),
-        throwsA(isA<PostgrestException>()),
+        stranger.send(thread, strangerMessage, 'No permitido', ''),
+        stranger.userId == null
+            ? throwsStateError
+            : throwsA(isA<PostgrestException>()),
       );
+      if (stranger.userId == null) {
+        // The client now stops before attribution or transmission without an
+        // actor. Also bypass that guard to verify the PostgreSQL boundary.
+        await expectLater(
+          stranger.client.rpc(
+            'dopmi_send_message_v2',
+            params: {
+              'thread_id': thread,
+              'message_id': strangerMessage,
+              'message_body': 'No permitido',
+              'attachment_path': null,
+            },
+          ),
+          throwsA(
+            isA<PostgrestException>().having(
+              (error) => error.code,
+              'code',
+              '42501',
+            ),
+          ),
+        );
+      }
     }
   }, timeout: const Timeout(Duration(minutes: 3)));
 }
