@@ -9429,3 +9429,38 @@ Se anunció la ventana habitual de cinco minutos antes de un único candidato DE
 del canal cerrado con esa corrección. La suite completa de Codemagic y el CI exacto,
 la publicación y la validación instalada siguen pendientes. La cuenta de prueba
 permanece sin fuente ni fichas: no se fabricó ni consumió la primera conversión.
+
+### 19/11/2026 20:58 CDMX — Candidato solicitado y cuenta personal habilitada
+
+La corrección quedó en `953d334238af3e23e3dcf42340facee8d75f9568`, tag
+`codex/attribution-dev-consent-953d3342`, ambos comprobados en remoto. Además de
+las treinta y tres pruebas dirigidas y el análisis, pasaron las treinta y nueve
+pruebas de configuración móvil. El CI exacto es
+[44663156603](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44663156603):
+web/base de datos e identidad/adopción correctos; Flutter e iOS aún en curso en
+la última lectura. El conector de corridas por commit filtra PR y devolvió vacío;
+el run de push se identificó en el navegador y luego se consultaron sus jobs.
+
+Tras la ventana anunciada, una sola petición creó a las 20:50:46 CDMX
+[Codemagic 6affb5832e508c1164afa966](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6affb5832e508c1164afa966).
+Su readback inicial confirmó `android-internal`, tag correcto y las cinco
+sobreescrituras de 415: entorno TEST, destino `attribution-dev-qa`, y Store
+Review/Adoption Only/Play Production Submission apagados. El SHA de clone, suite
+completa, versión AAB, publicación y disponibilidad siguen pendientes. No repetir
+la solicitud por espera ni confundirla con aceptación instalada.
+
+El titular proporcionó y confirmó una cuenta personal de Google para el control.
+Se añadió únicamente a la lista DopMi Attribution DEV QA, conservando la cuenta
+anterior. Play confirmó guardado y dos usuarios; ninguna otra lista fue seleccionada.
+Captura local `dopmi-attribution-consumer-tester-saved-20261119.png`, fuera de Git.
+En el AVD existente se abrió Play → otra cuenta y se dejó escrito sólo el correo
+confirmado en el acceso de Google. Se pidió al titular completar credenciales y
+condiciones hasta ver Play con esa cuenta. Esperar su aviso antes de volver a
+leer la pantalla de acceso. La inscripción efectiva al programa y la instalación
+desde `personal-a` aún no ocurrieron con la cuenta personal.
+
+La inspección del APK también trazó la cuenta del registro por paquete: no se
+recorren todas las cuentas presentes en el servicio. El motivo de la sustitución
+es telemetría interna, no un campo de la respuesta SDK ni un Logcat directo.
+Por eso sigue siendo necesaria la comparación de instalación con la cuenta
+personal; no declarar la causa ejecutada confirmada sólo por el marcador común.
