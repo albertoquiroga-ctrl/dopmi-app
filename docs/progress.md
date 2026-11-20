@@ -9232,3 +9232,41 @@ headers o extras de Intent sin contrato documentado. Chromium maneja el
 origen `Intent.EXTRA_REFERRER` por separado del query de campaña; las fuentes
 Google revisadas no establecen dependencia entre ellos. La landing actual
 verifica el handoff de parámetros, no una conversión atribuida completa.
+
+### 19/11/2026 18:45 CDMX — 415 disponible; referencia sin campaña en dos rutas
+
+Play confirmó `415 (2.3.3)` disponible en el release cerrado 4 desde las
+18:17 CDMX. La primera consulta del Samsung todavía instaló 414 a las
+18:21:34. Se intentó refrescar sólo caché mediante la opción documentada
+`pm clear --user 0 --cache-only com.android.vending`; el cliente quedó
+sin confirmación y se detuvieron únicamente ese comando y su cliente ADB.
+No se solicitó borrar datos/cuentas de Play ni se reinició el teléfono.
+La ficha Beta ofreció después Actualizar. Se desinstaló 414 desde Play,
+se reabrió `/descargar/personal-a` y se instaló desde «Ver detalles» de la
+ficha nativa, que conservó el query completo. ADB verificó instalación
+nueva de 415/2.3.3 por `com.android.vending` a las 18:29:48.
+
+El primer Google login y el interruptor funcionaron sin reinicio. La nueva
+clasificación mostró SDK `OK`, formato/fechas/parseo válidos, referencia
+no vacía con dos parámetros: `sourceClass=not_set`,
+`mediumClass=not_set`, `campaignClass=absent`, `contentClass=absent`.
+Son los marcadores literales `(not set)`, no una campaña personal-a ni
+una etiqueta orgánica inferida. La app rechazó el dato y no llamó al RPC
+de adquisición. Analítica quedó activa y diagnóstico de errores apagado.
+
+Control web: en Chrome del Samsung se verificó la URL HTTPS oficial con
+los cuatro UTM y la cuenta exclusiva correcta. Tras retirar 415 y elegir
+este SM-S938B como destino, Google pidió verificar identidad; el titular
+la completó personalmente. ADB verificó otra instalación nueva de 415 a
+las 18:40:31. Abrir DopMi desde el launcher, iniciar sesión y activar
+Analítica produjo la misma clasificación `not_set`/dos campos sin campaña.
+La vista de escritorio temporal de Chrome se restauró y su menú confirmó
+la vista móvil. La lectura READ ONLY de DEV conserva consentimiento activo,
+cero atribuciones personal-a, cero primeros envíos y cero casos/borradores.
+
+No se envió la primera ficha sin atribución ni se relajó el parser. Antes
+de un control en otro dispositivo, se prepara una preview desde `aaec18e8`
+que cambia únicamente el header de procedencia a
+`strict-origin-when-cross-origin`. La hipótesis es una dependencia no
+documentada de Play respecto al origen; no se considera una corrección
+probada ni autoriza cambiar producción. La ruta y el query se conservarán.
