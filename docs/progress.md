@@ -9270,3 +9270,42 @@ que cambia únicamente el header de procedencia a
 `strict-origin-when-cross-origin`. La hipótesis es una dependencia no
 documentada de Play respecto al origen; no se considera una corrección
 probada ni autoriza cambiar producción. La ruta y el query se conservarán.
+
+### 19/11/2026 19:18 CDMX — Control de origen negativo; Android limpio preparado
+
+La preview `169637962c14549aeb104ecac2d57e84c5c06d95`, rama
+`codex/diagnose-origin-referrer`, se creó desde `aaec18e8` y cambió sólo
+el header a `strict-origin-when-cross-origin` y su aserción. Quince pruebas,
+lint, build y revisión pasaron; el integrador repitió las quince pruebas y
+verificó el header real HTTP 200 del deployment privado
+`dpl_EZeDN94AXG6dpULUu4bxx47M97Ua`. Su CTA HTTPS y los UTM fueron los mismos.
+El Samsung recibió otra instalación nueva de 415 por Play a las 18:57:12.
+El primer login/consentimiento reprodujo SDK OK y los dos marcadores
+`not_set`, con campaña y contenido ausentes. Este control no acredita un
+arreglo. La rama no se fusionó ni publicó en producción, que sigue `aaec18e8`.
+Se revocó su acceso temporal y la API confirmó `protectionBypass` vacío.
+Chrome del Samsung se restauró al enlace público, con URL verificada antes
+de enviarla. La primera ficha continúa sin crearse.
+
+Para comparar un entorno sin historial de DopMi, se preparó un AVD NUEVO
+`Dopmi_Attribution_Fresh_20261119` desde la imagen local oficial Google Play
+API 35/x86_64, sin reutilizar ni borrar los AVD existentes. El control real
+`emulator.exe -accel-check` confirmó WHPX utilizable; no se habilitaron
+features de Windows ni se reinició la PC. Se usó el JDK 21 ya instalado,
+con configuración sólo de proceso. La VM nueva arrancó con 3 GB/2 núcleos,
+generó su userdata normalmente y confirmó `sys.boot_completed=1` y
+`com.android.vending` presente. No es todavía una prueba de atribución ni
+reproduce exactamente Android 17 del Samsung.
+
+Ahora hay dos dispositivos: Samsung se dirige mediante `adb -d`; el AVD
+mediante `adb -s emulator-5580`. No actuar con ADB sin destino explícito.
+La ventana nueva es `Android Emulator - Dopmi_Attribution_Fresh_20261119:5580`.
+Google Play está en su pantalla inicial de acceso. Se pidió al titular
+iniciar sesión personalmente con la cuenta de prueba y completar las
+condiciones que muestre Google. El agente no ingresó credenciales ni
+aceptó contratos en esa VM. DopMi aún no se instaló allí. Esperar el aviso
+del titular antes de volver a leer/interactuar con las pantallas de acceso.
+
+La instalación física permanece en 415, con Analítica activa, diagnóstico
+de errores apagado y referencia sin campaña. No hay evidencia de atribución
+personal-a ni de primera ficha; no marcar el recorrido del Samsung aprobado.
