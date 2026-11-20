@@ -5,8 +5,16 @@ reciente, recuperar visor/compartir y sello por perfil, conservar Tienda y fixes
 Base congelada c9d9d03d; rama `codex/production-attribution-restored-20261120`.
 Única cola Flutter. Inventario, interfaces y gates en
 [plan de integración](superpowers/plans/2026-11-20-production-attribution.md).
-Implementación integrada; faltan gates finales, CI/PG real, operación SQL
-aditiva revisada, distribución y QA instalada. No retomar A/B antes de ese cierre.
+Implementación y CI44823640872/ee3ef773 cerradas; SQL PROD agrupado y Admin
+desplegados/cotejados. Codemagic6b00c856/14SUCCESS genera2.3.8(418), fuenteee3,
+entornoPROD/AmazonON/finanzasOFF; Play cerrado attribution-dev-qa/release6 en
+revisión20nov22:39UTC. Samsung ya reconectado/416Vending; faltan disponibilidad, QA instalada
+desde personal-a y promoción del mismo418 a público. No recompilar como forma
+de promoción, no desinstalar416 antes de disponibilidad y no retomar A/B todavía.
+Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
+P3 posterior: precisar «primer mensaje escrito» del aviso de Analítica como
+«primer mensaje enviado como adoptante, de texto o foto»; no cambia el contrato
+del contador de compositor ya documentado/probado.
 Las colas históricas inferiores no reinician trabajo consumido.
 
 # Cola histórica — beta real por canales de prueba, 28/oct/2026

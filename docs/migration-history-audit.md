@@ -719,3 +719,40 @@ Proyecto ohqxranynackjignryep; candidato c3b9eb0539645a6ec3858fffdd44d5dc7c66203
 | 20261017163841_account_deletion_financial_links.sql | 9fda09a22c88853d6b10c4a578e506cc7a800b37abac13573365774e5c8c101d | 20261017203236 |
 | 20261017165709_case_received_allocations.sql | b108d28d43beef0cf7ad8800c3123bd252703a24163eeb6b596ed0ebdb199e25 | 20261017203236 |
 | 20261017171338_native_guardian_wallet_method_guard.sql | c080fa03dc4453a3b9fd33353a82e4cccb80f14cdd1286ec1dbc434dafae78b7 | 20261017203236 |
+
+## Atribución y restauración PROD — 20/11/2026
+
+Proyecto `ysaoeuidcvgtlmphmeyb`, fuente
+`ee3ef773798ff876430bc800c705e2a8ab7b0331`, CI44823640872 cuatroSUCCESS.
+Entrada remota única **20261120221225**, nombre
+`production_restored_campaign_attribution_20261120`. Estas cuatro fuentes ya
+están desplegadas por esa operación; no aplicar sus archivos individualmente,
+renombrar, reparar historia, replay ni dbpush para igualar timestamps.
+
+| Fuente local | SHA256 al aplicar | Registro PROD común |
+|---|---|---|
+| 20261112232613_android_rescuer_acquisition.sql | 5ff1c867187c6677702a73999c9ce1dc71706c728be9737ea85755eb7f8bc609 | 20261120221225 |
+| 20261117214500_rescuer_seal_profile.sql | 07c064ce2ba256b4a1683e5dc579d70712bbe4e83a03b438d18173a8a36f4f65 | 20261120221225 |
+| 20261120205535_android_acquisition_message_events.sql | e153c3cc8e4328c373f1042a30ebbc4fa91fd72f84e80ce2f11740c54403a972 | 20261120221225 |
+| 20261120210928_adoption_measurement_consent_revision.sql | 7ab0b386312d500698375c751b7a68bb201fe59f0820142e9524db7d535a4c06 | 20261120221225 |
+
+Payload agrupado33172B, SHA256
+`ba4c84170687826ac61fe650470da8fd145dbb380deb793d8d2f4eb5e64b826e`.
+Se retiraron sólo los BEGIN/COMMIT exteriores de las fuentes para conservar una
+transacción, con guardas previas de historia,12cuerpos, permisos y ausencias.
+Ensayo aislado positivo/negativo y carreras PostgreSQL reales aprobados antes
+de aplicar. El ensayo no se usó como prueba de igualdad de la historia remota.
+
+Preflight20nov22:01:47UTC:68entradas, MD5 del historial
+`f2d3664b9eae41b4f88b1e4a91de816b`;12cuerpos exactos y mensajes RLS/cliente
+SELECTonly. Postflight22:13:45UTC:69entradas, prefijo68sin cambios;
+MD5 de statements::text del registro nuevo
+`6155eaa108952c2e86f598237d0000d7` (representación33199B, distinta del payload).
+28cuerpos/configuración/SECDEF/volatilidad coinciden con el esperado aislado;
+12OID/ACL existentes exactos,2tablas privadasRLS sin CRUD directo cliente,
+12columnas/5triggers esperados. RPC públicos nuevos sólo authenticated;
+helpers privados, mensajes mantienen lectura por participantes. Sin mutación
+de Edge, cron, flags financieros o datos de usuarios/fixtures en esta operación.
+Recibos privados: production-attribution-20261120/manifest,
+preflight.actual y postflight.actual/expected. Esto acredita SQL desplegado,
+no la instalación ni atribución automática del candidato Play418 todavía.

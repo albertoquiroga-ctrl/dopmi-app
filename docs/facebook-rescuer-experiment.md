@@ -54,6 +54,14 @@ acción, con espera limitada y continuidad del producto ante fallo de medición.
 
 ## Evidencia previa y salida
 
+Integración vigente: fuenteee3ef773/CI44823640872 cuatroSUCCESS; SQL PROD agrupado
+20261120221225 y Admin de esa fuente desplegados/cotejados. Candidato Android
+2.3.8(418) compilado/publicado por Codemagic6b00c856, backendPROD y mediciónTESTOFF;
+Play cerrado attribution-dev-qa/release6 en revisión20nov22:39UTC. Disponibilidad,
+Samsung/atribución real de esta fuente y promoción pública pendientes. Android
+público continúa409. No confundir pruebas de los nuevos eventos en PostgreSQL
+real con un recorrido de mensajes en el candidato instalado.
+
 La fuente953d3342 pasó en DEV416: instalación limpia del enlace personal-a,
 primera ficha privada en Samsung y reinstalación sin revocación implícita.
 Recibo histórico: rama `codex/facebook-rescuer-attribution-395`, commit5a4faef2.

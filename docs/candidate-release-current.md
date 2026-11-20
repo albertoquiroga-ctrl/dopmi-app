@@ -1,4 +1,54 @@
-## Continuidad d304535 — 17/10/2026
+## Candidato vigente — atribución y restauraciones, 20/11/2026
+
+Este corte sustituye las instrucciones operativas históricas inferiores para
+la entrega actual. Rama `codex/production-attribution-restored-20261120`;
+base reciente congelada `c9d9d03dc34ac99f743c15be8862788136b189be`.
+Fuente del binario `ee3ef773798ff876430bc800c705e2a8ab7b0331`, tag inmutable
+`codex/production-attribution-2.3.8-ee3ef773`. No usar la rama395 ni el PR7 antiguo
+como base. Conservar Amazon, navegación centrada y detalles opcionales; compartir
+HTTPS y visor ampliado/carrusel restaurados, sello manual por perfil recuperado.
+
+- CI [44823640872](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44823640872):
+  cuatro jobs SUCCESS, Flutter1858PASS/4SKIP, PostgreSQL concurrente y servicios
+  reales Auth/Storage/Realtime aprobados. Compilación iOS simulator, sin firma ni
+  aceptación de iPhone atribuida.
+- Supabase PROD `ysaoeuidcvgtlmphmeyb`: operación agrupada única
+  `20261120221225 / production_restored_campaign_attribution_20261120` aplicada y
+  cotejada; historia68→69 con prefijo intacto,28funciones/ACL/RLS verificadas.
+  Mapeo de las cuatro fuentes en `migration-history-audit.md`; no reaplicar.
+- Admin PROD `dpl_8MLN3k2TThpEZA6DtH8eGLJh7kiz`, READY, fuenteee3ef773 y
+  root `apps/admin`; alias `https://dopmi-app.vercel.app`. Conserva WebPush y
+  Primera Publicación. No se realizó aprobación manual de sello ni login staff.
+- Codemagic `6b00c8569aa5efcb10765a77`, `android-guardian-internal`, terminó
+  con14accionesSUCCESS. AAB/metadatos del mismo handle: **2.3.8 (418)**,
+  SHAee3ef773, Supabase/Firebase PROD, adopciones/AmazonON, Guardian/mediciónTEST/
+  billeterasTESTOFF. Suite del candidato1858PASS/4SKIP. No cambiar sus gates.
+- Publishing y readback Codemagic confirman `attribution-dev-qa`; Play Console
+  verificó por separado release6/código418 **en revisión**20nov22:39UTC.
+  El rótulo genérico «Google Play internal» del build-info no acredita el canal.
+  Público Android sigue4092.3.7; no se ha promovido418.
+
+Samsung reconectado y desbloqueado por el titular; ADB confirmó416/Vending en
+el perfil principal20nov22:43UTC. Pendientes: disponibilidad de418,
+instalación limpia desde `personal-a`, atribución automática de primera ficha
+privada y QA de restauraciones/reinstalación del candidato. No desinstalar416
+antes de que418 esté disponible. No reciclar fixtures DEV consumidos ni aprobar
+una mascota ficticia. A/B pausado hasta cerrar estos gates.
+
+Tras QA, promover en Play **ese mismo código418**, sin recompilar con
+`android-play-production`. Ese workflow genera otro binario. No inferir que la
+entrega de servidor/Admin equivale a instalación, aceptación o publicación móvil.
+Distribución iOS equivalente todavía no iniciada; no hay atribución automática
+de instalación iOS en este lote. Plan/contrato y evidencia: `progress.md`,
+`facebook-rescuer-experiment.md` y
+`superpowers/plans/2026-11-20-production-attribution.md`.
+
+Precisión P3 para un próximo delta: el aviso de Analítica dice «primer mensaje
+escrito», pero el hito de compositor cuenta texto o foto, como documenta el
+reporte. No confundir esta etiqueta con un contador exclusivo de texto. La
+revisión de privacidad no encontró una discrepancia P1/P2 nueva.
+
+## Continuidad histórica d304535 — 17/10/2026
 
 Titular aprobó el plan de paridad d304535 y sus decisiones, registradas en product-decisions.md. Base c53b6686 / Play314; seguir codex/finish-release-20261015. Matriz única parity-current-review.md, checkpoint mock-sync-current.md.
 

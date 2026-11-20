@@ -46,41 +46,41 @@
 **Files:** content_links.dart, catalog_screens.dart, adoption_detail_layout.dart, adoption_photo_viewer.dart, community_ui.dart y pruebas relacionadas.
 **Interfaces:** conservar AdoptionPhoto/RemotePhoto y route links; sólo añadir fit opcional al componente existente.
 
-- [ ] Aplicar los dos parches exactos; inspeccionar ausencia de regresiones Store.
-- [ ] Ejecutar pruebas de enlaces y visor, analyze y capturas relevantes en la cola única.
-- [ ] Revisión independiente de diff y fotos verticales/horizontales, retirada, Back y preview privado.
+- [x] Aplicar los dos parches exactos; inspeccionar ausencia de regresiones Store.
+- [x] Ejecutar pruebas de enlaces y visor, analyze y capturas relevantes en la cola única.
+- [x] Revisión independiente de diff y pruebas de fotos verticales/horizontales, retirada, Back y preview privado. QA física permanece en Task5.
 
 ## Task2: Atribución y consentimiento integrados
 
 **Files:** core/android_rescuer_acquisition.dart, core/measurement.dart, main.dart, app.dart, Android native bridge, privacidad, discovery/publication y pruebas.
 **Interfaces:** `prepareAdoptionConsent(owner,bool)` captura sesión; `analyticsConsentCurrent` y revisiones invalidan tareas pendientes; RPC `dopmi_record_android_rescuer_acquisition(p_variant,p_clicked_at)` permanece compatible.
 
-- [ ] Integrar fuentes funcionales416 selectivamente y continuidad de identidad; conservar textos/pasos actuales.
-- [ ] Probar ausencia de preferencia, revocación, cambio de cuenta durante espera y reinicio misma cuenta.
-- [ ] Restaurar SQL/reporte original y comprobar aislamiento,14d, primer envío/aprobación y borrado.
-- [ ] Cerrar dos hallazgos de revisión: renovar el token del mismo actor antes de fijar Authorization; OFF no queda detrás de un ON atascado. Para este último, estado servidor con revisión y RPC compare-and-set, sin identificador de dispositivo: `dopmi_adoption_measurement_state()` y `dopmi_set_adoption_measurement_v2(consent,expected_revision)`. Cada actualización, incluso legacy, incrementa revisión. Una solicitud basada en una revisión antigua no sobrescribe un OFF ya aplicado. Transporte limitado10s; sólo OFF reintenta conflictos confirmados mientras siga vigente. ON nunca convierte un conflicto en una nueva autorización, incluso desde otro equipo; no repetir un POST de resultado indeterminado.
+- [x] Integrar fuentes funcionales416 selectivamente y continuidad de identidad; conservar textos/pasos actuales.
+- [x] Probar ausencia de preferencia, revocación, cambio de cuenta durante espera y reinicio misma cuenta.
+- [x] Restaurar SQL/reporte original y comprobar aislamiento,14d, primer envío/aprobación y borrado.
+- [x] Cerrar dos hallazgos de revisión: renovar el token del mismo actor antes de fijar Authorization; OFF no queda detrás de un ON atascado. Para este último, estado servidor con revisión y RPC compare-and-set, sin identificador de dispositivo: `dopmi_adoption_measurement_state()` y `dopmi_set_adoption_measurement_v2(consent,expected_revision)`. Cada actualización, incluso legacy, incrementa revisión. Una solicitud basada en una revisión antigua no sobrescribe un OFF ya aplicado. Transporte limitado10s; sólo OFF reintenta conflictos confirmados mientras siga vigente. ON nunca convierte un conflicto en una nueva autorización, incluso desde otro equipo; no repetir un POST de resultado indeterminado.
 
 ## Task3: Mensajería medible
 
 **Files:** nueva migración generada por CLI, pruebas SQL/pgTAP y reporte de adquisición.
 **Interfaces:** origen servidor de mensaje desconocido/saludo/usuario; hitos privados deduplicados por actor/tipo, sin texto ni ID de interlocutor exportado. RPCs públicos de mensajería conservan firma y autorización.
 
-- [ ] Escribir pruebas de saludo, texto/foto, respuesta dueño, legacy, rechazo, repetición UUID y consentimiento antes de implementar.
-- [ ] Implementar origen sólo en rutas servidor; INSERT confirmado registra hitos atómicos dentro de336horas.
-- [ ] Verificar opt-out/eliminación y concurrencia en PostgreSQL real; no enviar mensajes a usuarios de producción como fixture.
+- [x] Escribir pruebas de saludo, texto/foto, respuesta dueño, legacy, rechazo, repetición UUID y consentimiento antes de implementar.
+- [x] Implementar origen sólo en rutas servidor; INSERT confirmado registra hitos atómicos dentro de336horas.
+- [x] Verificar opt-out/eliminación y concurrencia en PostgreSQL real; no enviar mensajes a usuarios de producción como fixture.
 
 ## Task4: Recuperación de sello
 
 **Files:** delta acotado de a95a44c9/342c5dd5; Admin se compone desde su despliegue real, no desde una carpeta antigua.
 
-- [ ] Congelar baseline Admin actual e incorporar sólo delta revisado; conservar push y panel de primera publicación.
-- [ ] Validar SQL/RLS, revisión manual, móvil y Admin; no desplegar consumidores antes de RPC.
+- [x] Congelar baseline Admin actual e incorporar sólo delta revisado; conservar push y panel de primera publicación.
+- [x] Validar SQL/RLS, lógica de revisión manual, móvil y Admin; no desplegar consumidores antes de RPC. Aceptación física/staff no inferida de estas pruebas.
 
 ## Task5: Verificación y entrega
 
-- [ ] Flutter analyze/test, Admin test/build, tools/verification npm test, Python configuración; DB local y suites de aceptación afectadas cuando disponibles.
-- [ ] Revisión independiente de código/seguridad y CI completa por SHA.
-- [ ] Cotejo remoto, ensayo y aplicación aditiva única de SQL revisado; postflight.
-- [ ] Un candidato reciente con configuración PROD correcta; verificar publicación separadamente.
+- [x] Flutter analyze/test, Admin test/build, tools/verification npm test, Python configuración; DB y suites de aceptación afectadas en CI.
+- [x] Revisión independiente de código/seguridad y CI completa por SHA.
+- [x] Cotejo remoto, ensayo y aplicación aditiva única de SQL revisado; postflight.
+- [x] Un candidato reciente con configuración PROD correcta; publicación y readback del canal comprobados separadamente. Play418 en revisión, disponibilidad pendiente.
 - [ ] QA instalada en Samsung del candidato: atribución y eventos privados controlados, reinstalación, fotos/compartir, Store/nav/sello. No reciclar fixtures DEV416 consumidos.
 - [ ] Actualizar ledger con evidencia exacta y límites; completar distribución autorizada cuando sus gates pasen.

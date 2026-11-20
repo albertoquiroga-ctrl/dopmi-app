@@ -8943,3 +8943,88 @@ correctivo; sintaxisNode y análisisDartdeltest aprobaron. Se requiere CI nuevo
 para acreditar PostgreSQL completo y la limpieza; no declarar aquellas carreras
 verdes por un finally que pudo enmascarar otra excepción. Ningún apply o build
 firmado disparado; producción409 conserva su estado.
+
+### 20/11/2026 22:44UTC — CI cerrado, servidor/Admin PROD y candidato418 en revisión
+
+Fuente final `ee3ef773798ff876430bc800c705e2a8ab7b0331` en
+`codex/production-attribution-restored-20261120`, tag inmutable
+`codex/production-attribution-2.3.8-ee3ef773`. Sólo los dos fixtures descritos
+arriba cambian respecto51d21446; no SQL ni producto adicional. Base reciente
+c9d9d03d, compartir/visor, Store/nav/paso opcional y sello recuperado conservados.
+
+CI [44823640872](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44823640872)
+final cuatroSUCCESS: web/base136590790204, servicios reales136590789693,
+Flutter136590790091 e iOS136590789938. Flutter analyze sin incidencias,
+1858PASS/4SKIP y cinco suites de capturas aprobadas; APK debug compilado.
+PostgreSQL real aprueba contacto concurrente/UUID, adquisición y consentimiento
+CAS en ambos órdenes, sello-submit contra DELETE real de Storage. Integración
+Auth/Storage/Realtime aprobada; iOS simulator compila, sin firma/iPhone inferidos.
+Se consumen estos gates completos; no repetirlos por cambios sólo documentales.
+
+Operación Supabase PROD ejecutada una vez después de gates/revisión. Proyecto
+ysaoeuidcvgtlmphmeyb, registro `20261120221225 /
+production_restored_campaign_attribution_20261120`, cuatro fuentes locales
+agrupadas en una transacción con guardas de historia/12cuerpos/permisos/ausencias.
+Payload33172B/SHA256ba4c84170687826ac61fe650470da8fd145dbb380deb793d8d2f4eb5e64b826e.
+Preflight22:01:47UTC:68entradas/prefijoMD5f2d3664b9eae41b4f88b1e4a91de816b.
+Postflight22:13:45UTC:69entradas y prefijo68idéntico;28cuerpos/configuración/
+SECDEF/volatilidad exactos,12OID/ACL anteriores preservados,2tablas privadasRLS,
+12columnas/5triggers esperados. Mensajes mantienen SELECT sólo participantes,
+sin CRUD cliente; RPC nuevos authenticated, helpers privados. Mapeo e historia
+en migration-history-audit.md; sin replay/repair/rename/dbpush. No cambian Edge,
+cron, flags financieros, cobros ni datos de usuarios/fixtures por esta operación.
+
+Después de SQL, Admin PROD desplegado explícitamente con root apps/admin desde
+ee3ef773: Vercel `dpl_8MLN3k2TThpEZA6DtH8eGLJh7kiz`, READY/alias
+https://dopmi-app.vercel.app. HTML Administración y bundle index-Bp8rFdcF.js
+confirman backendYS, RPC de sello, Primera Publicación y admin-push-sw conservados.
+No se promovió el prototipo root ni se atribuye login staff/aprobación real de sello.
+
+Primer intento Codemagic6b00c66d591e09785aaa1f9e falló en configuración antes de
+compilar: faltaban overrides PROD/grupo Maps del build de producción previo.
+Sin AAB/publicación. Reintento único6b00c8569aa5efcb10765a77 reutiliza exactamente
+ee3ef773/tag y configuración PROD ya validada localmente, con grupos existentes.
+Terminó22:38:08UTC,14accionesSUCCESS; log de suite:1858PASS/4SKIP. AAB metadata y
+ZIP de build-info del mismo handle acreditan **2.3.8(418)**,96655822B, backendYS,
+Firebase dopmi-production, adopciones/AmazonON, Guardian/Stripecliente/mediciónTEST/
+billeterasTESTOFF. ZIP728B SHA2562be4ff6301a1fc45105c4ed0ebdd06d3fb7be9dbede30cf19368f060f8cb1f36;
+build-info raw674B SHA2569c06eec18e67ec7cebd1f94d2aa542ef5ec5075ac12200a4fe7fccad46ade2ce.
+No se descargó ni inspeccionó certificado binarioAAB; estos son metadatos y fuente
+del mismo handle, no aceptación física.
+
+Publishing log y readback de Codemagic confirman paquete com.mycompany.dopmi,
+versionCode418/track attribution-dev-qa. Play Console comprobado por separado
+22:39UTC:release6/2.3.8,418 **In review**; todavía no disponible para testers.
+El campo Distribution genérico del build-info dice internal, no sustituye el
+readback real del canal. Público Android sigue4092.3.7; sin promoción pública.
+No disparar android-play-production como promoción: recompila; promover el mismo
+418 tras QA. No iniciar otro candidato por esperar revisión de Google.
+
+Capturas CI actuales revisadas independientemente: detalle normal/200%, affordance
+de ampliar, enviado a revisión privado, detalle opcional/Ir a vista previa y
+personalidad legibles, sin P1/P2 visibles. No acreditan swipe/scroll físico ni
+configuración PROD instalada. Samsung estuvo ausente por USB durante el build;
+el titular lo reconectó y ADB confirmó416/Vending en el perfil principal22:43UTC.
+No se ha desinstalado ni cambiado la sesión; se conserva416
+y sus fixtures DEV. No desinstalar antes de418disponible ni reutilizar un primer
+envío consumido. Elegibilidad PROD de las cuentas propias sólo leída: hay una
+cuenta QA activa sin primer envío observable ni fuente; no se creó fuente/caso.
+Pendientes: disponibilidad, instalación limpia desde personal-a, primera ficha
+privada atribuida automáticamente y QA física de restauraciones/reinstalación;
+mensajes nuevos tienen prueba PostgreSQL real, no recorrido de producción instalado.
+A/B sigue pausado. iOS equivalente no iniciado, sin atribución automática de
+instalación iOS ni SDK/transferencias publicitarias Meta/TikTok activados.
+
+Recibos privados fuera de Git en production-attribution-20261120:
+manifest/preflight/postflight, candidate418-artifact-identity,
+candidate418-codemagic-final, publishing y tests; CI visual ZIP54360638B/
+SHA256d1cde0d8755026a5021aeab9f6bc999bc951fd2ee5c94a89a0d3d7066cf7aa72.
+Checkpoint operativo actualizado en candidate-release-current.md y backlog.
+
+Revisión acotada de privacidad: el aviso418 explica campaña/hitos y excluye el
+contenido de conversaciones; la política pública ya cubre analítica opcional e
+interacciones/contacto. Sin discrepancia P1/P2 nueva demostrada. Precisión P3
+documentada para siguiente delta: «primer mensaje escrito» debe decir «primer
+mensaje enviado como adoptante, de texto o foto», pues SQL cuenta ambos. No
+cambiar ni reconstruir418 por esa etiqueta; el reporte y contrato actuales ya
+explican el denominador. No se ha comprobado aquí una declaración nueva de tiendas.
