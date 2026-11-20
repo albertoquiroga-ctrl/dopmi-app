@@ -9309,3 +9309,14 @@ del titular antes de volver a leer/interactuar con las pantallas de acceso.
 La instalación física permanece en 415, con Analítica activa, diagnóstico
 de errores apagado y referencia sin campaña. No hay evidencia de atribución
 personal-a ni de primera ficha; no marcar el recorrido del Samsung aprobado.
+
+El titular informó después que abrió Play con la cuenta de prueba, pero
+la comprobación nueva del AVD mostró todavía «Sign in». AccountManager
+se pudo consultar y reportó `Accounts: 0`, sin la cuenta esperada; sólo
+existe usuario Android 0 y no hay perfil secundario que explique otra
+tienda. DopMi continúa ausente en esa VM. Se pidió completar el acceso
+en la ventana del Android virtual hasta ver el avatar de la cuenta,
+ofreciendo ayuda si no encuentra la ventana. No dar el acceso por verificado
+por la respuesta humana cuando la lectura del dispositivo aún lo contradice.
+No seguir capturando/interactuando con la pantalla de credenciales durante
+este nuevo handoff; esperar su aviso y verificar entonces el estado real.
