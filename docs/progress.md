@@ -9628,3 +9628,97 @@ limpio. Pendientes: candidato corregido en teléfono, regresión real del
 consentimiento entre dispositivos y ruta de producción antes de abrir el A/B.
 El éxito anterior es Android virtual/DEV; no afirmar adquisición instalada en
 Samsung, aprobación humana integral, producción pública ni atribución iOS.
+
+### 20/11/2026 13:45 CDMX — Primer envío físico atribuido y conservación tras reinstalar 416
+
+Este corte supersede el pendiente Samsung y el estado actual de la fuente virtual
+del apartado anterior. La ficha virtual se conserva como prueba histórica, pero
+su fuente fue retirada después. Al preparar el control físico se detectaron
+consentimientofalse/fuentes0/ficha1 en aquella identidad, antes de abrir416.
+Auth confirmó un ingreso a19:17:13.437966UTC y el consentimiento cambió a
+19:17:13.651974UTC. La consulta de logs acotada19:16:30–19:18:00UTC encontró un
+login y una sola RPC `dopmi_set_adoption_measurement`,204, desde Android físico
+S938B. Ese teléfono todavía tenía415:416 se instaló por primera vez a19:21:48UTC.
+La escritura coincide con el defecto conocido de elección ausente del415; el
+trigger de revocación retiró la fuente. No se restauró ni reconstruyó por SQL;
+su fixture privado y elegibilidad consumida se conservaron.
+
+El titular preparó Play del Samsung con la cuenta personal. Se verificó el correo
+seleccionado en la interfaz, sin archivarlo aquí. La retirada de DopMi se acotó al
+usuario0 y se comprobó ausencia antes de entrar por la URL pública canónica en
+Chrome. La página mostró la elección manual de tienda; Google Play para Android
+abrió la ficha nativa oficial y su botón Instalar entregó2.3.3(416), Vending,
+firstInstallTime20nov13:21:48CDMX. Se comprobó416 antes de abrirlo.
+
+Para un primer envío elegible se usó la otra identidad DopMi DEV de prueba,
+existente y sin fichas. La cuenta instaladora de Play permaneció personal; la
+identidad DopMi fue la de trabajo. Preflight: activa/confirmada1, legalesvigentes1,
+consentimiento1, fuentes0 y fichas0. Tras ingresar a19:28:28.293180UTC, el interruptor
+local estaba OFF y el servidor conservó consentimiento true y el timestamp previo
+03:57:13.391260UTC, sin escritura implícita del nuevo cliente. Se activó después
+la Analítica ya autorizada para esta cuenta de prueba; diagnóstico permaneció OFF.
+
+El SDK físico registró a13:30:07CDMX nativeOK/referrerAccepted, cuatro parámetros,
+guardas temporales y fuente/medio/campaña/contenido válidos, variantepersonal-a;
+sendSucceeded/completed. El preflight DEV real devolvió fuente1, lista-antes-del-
+primer-envío1 y fichas0. Clic19:21:27UTC, atribución19:30:07.779349UTC y elección
+explícita de medición19:30:07.450640UTC. Cuenta-creada-después-del-clic0.
+
+Se creó por UI un solo fixture para ese propietario: «Prueba DEV Samsung», dentro
+del límite de25caracteres, Perro/Macho/Chico/Cachorro, Monterrey/Nuevo León e
+historia que declara mascota ficticia y prueba DEV. La foto sintética con el hash
+ya documentado se puso en un álbum QA exclusivo. MediaStore confirmó que sólo
+contenía `dopmi-qa-416.jpg`; se eligió ese álbum/foto en el selector del teléfono.
+Se revisó la vista previa y el preflight confirmó fichas1, borrador privado exacto
+con foto1 y fuente lista1. Se pulsó Enviar a revisión una sola vez.
+
+El join de sólo consulta confirmó consentimiento1, personal-a1, primerobservable1,
+fixtureexacto-enviado1, fichastotales1, aprobaciones0 y cuenta-nueva0. El criterio
+incluye `first_adoption_id`, mismo propietario, nombre, foto, status submitted,
+submitted_at presente, published_at NULL y observación dentro336h posterior a
+atribución. Envío19:40:25.338025UTC y observación19:40:25.609617UTC (=13:40:25CDMX).
+Captura local `dopmi-personal-a-416-samsung-first-submitted-20261120.png` fuera de
+Git. Quedan dos fixtures privados distintos, uno por propietario; sólo el físico
+conserva una fuente. Ambos son QA, no rescatistas adquiridos ni resultados A/B.
+
+Se ejecutó una regresión adicional acotada, sin crear más fichas: retirar sólo la
+app del usuario0, comprobar ausencia y reinstalar desde el CTA de personal-a.
+Play volvió a entregar416, Vending, firstInstallTime13:42:11CDMX; se comprobó el
+código antes de abrir. Ingreso del mismo propietario a19:43:48.979190UTC. ANTES
+de activar Analítica se observó el interruptor local OFF y la consulta dio
+consentimiento1, timestamp-de-consentimiento-intacto1, fuente-y-primer-envío-
+exactos-intactos1 y fichastotales1. Permanecieron exactamente clic, atribución,
+first_adoption_id y ambos timestamps de envío del control físico anterior.
+Captura `dopmi-416-samsung-fresh-choice-absent-20261120.png` fuera de Git.
+
+Después de ese assert se restauró Analítica ON, con diagnóstico OFF. El SDK volvió
+a aceptar personal-a a13:45:21CDMX. La consulta final mantuvo fuente-y-primer-
+envío-exactos-intactos1/fichas1; sólo el timestamp de la elección explícita de
+medición cambió a19:45:21.218531UTC. La fuente anterior virtual seguía0 y su ficha
+privada retenida1. El teléfono quedó en Mis Casos, mostrando «Prueba DEV Samsung»,
+«En revisión», «Pendiente de aprobación»; captura local
+`dopmi-416-samsung-case-retained-20261120.png`. Ninguna ficha se aprobó o publicó.
+
+La auditoría independiente acotada consideró que la pérdida del415 reproduce el
+defecto conocido y no justifica otro cambio/candidato. El416 supera el escenario
+de instalación limpia y elección local ausente en teléfono físico. Esto no es un
+control simultáneo del mismo propietario en dos dispositivos; esa comprobación
+instalada permanece pendiente. La revocación explícita y las preferencias
+explícitas conflictivas entre dispositivos mantienen su semántica existente.
+La cuenta Workspace de DopMi no impidió el referrer entregado por Play personal;
+no confundir identidad de aplicación con cuenta de instalación. No hay prueba de
+la rama interna de Play que causó cada not_set anterior.
+
+Sin código nuevo, build adicional, migración, flags ni operaciones de producción
+en este corte. Se reutilizan los gates de953d3342/416 ya registrados. La revisión
+de sólo lectura para el siguiente tramo halló release
+`codex/adoption-409-store-nav@c9d9d03dc34ac99f743c15be8862788136b189be`, fuente del
+último412 de producción documentado, sin adquisición nativa/Dart/migración ni
+fix953d. No se reconsultó aquí la disponibilidad actual del canal público.
+[PR7](https://github.com/albertoquiroga-ctrl/dopmi-app/pull/7) sigue draft y no incluye
+esta continuación. La comparación tiene28commits de atribución y8 exclusivos de
+release: integrar sólo el diferencial pertinente, incluyendo sincronización de
+identidad17a42029, conservando esos cambios. No promover íntegra la rama395.
+Antes del A/B quedan contrato PROD real, candidato integrado/gates, distribución
+pública autorizada y prueba instalada de ese candidato. La autorización vigente
+de esta prueba sólo cubre el canal cerrado DEV; no se inició reclutamiento.
