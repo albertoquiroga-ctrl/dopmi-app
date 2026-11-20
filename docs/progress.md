@@ -9336,3 +9336,25 @@ personalmente esa pantalla hasta llegar a la barra de direcciones. No se aceptar
 las condiciones por él ni se vinculó Chrome a otra cuenta. Tampoco se abrió el
 enlace de campaña ni se instaló DopMi. La primera ficha sigue sin crearse para conservar la elegibilidad
 del primer envío. Retomar desde ese handoff, sin otra compilación ni publicación.
+
+### 19/11/2026 19:55 CDMX — 415 instalada en el control desde personal-a; acceso nativo pendiente
+
+Tras el aviso humano, Chrome mostró su barra de direcciones. Se abrió exactamente
+`https://www.dopmi.org/descargar/personal-a`, comprobando la entrada completa antes
+de enviarla. La página HTTPS cargó segura y su CTA «Abrir Google Play» abrió DopMi
+en Play con el aviso de tester. La verificación HTTP independiente conservó los
+cuatro UTM y `main` de landing en `aaec18e8`; sin cambios ni despliegues nuevos.
+Se comprobó ausencia del paquete justo antes de instalar. El AVD recibió de Play
+2.3.3 (415), instalación y actualización a las 19:52:00 CDMX, instalador
+`com.android.vending`. La foto sintética se preparó en Downloads y su SHA256
+coincidió con el asset del repositorio; aún no se adjuntó a una ficha.
+
+Se abrió DopMi, seleccionó Dar en adopción y el acceso Google con la cuenta de
+prueba, verificada explícitamente en el selector. Google presentó la política
+de la organización que exige un bloqueo de pantalla para acceder a esa cuenta
+de trabajo. Se pidió al titular configurar personalmente esa credencial y
+terminar el acceso; no se definió PIN, omitió la política ni capturó su entrada.
+El diagnóstico todavía no emitió una lectura de adquisición en esta sesión.
+No clasificar este intento como atribución fallida ni correcta hasta completar
+el acceso y comprobar el SDK junto con la fila DEV. Primera ficha aún ausente;
+el resultado del AVD no sustituirá la verificación pendiente del Samsung.
