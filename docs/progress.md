@@ -9542,3 +9542,89 @@ genérico «Prueba de adopcion DEV» para este control nuevo, aún sin crear; ve
 su ID/propietario/foto/status submitted y published_at NULL contra first_adoption_id.
 La identidad de la nueva corrida se comprobará después del acceso; no asumir que
 sea la anterior. Legales y medición deben resolverse en la identidad real usada.
+
+### 20/11/2026 — Reintento de ventana del control personal, acceso pendiente
+
+Al reintentar, el proceso del emulador ya no estaba ejecutándose; ADB sólo veía
+el Samsung. Se volvió a abrir el mismo AVD5582, sin borrar userdata. El runtime
+Windows devolvió la ventana actual, pero su captura falló con `FrameArrived timed
+out` / `window capture timed out`; la accesibilidad sí expuso el marco. El doble
+clic en la barra de título falló con `coordinate input geometry is unavailable`
+y Alt+Espacio no expuso un menú. No se verificó una reubicación de ventana.
+
+La ayuda local del SDK37.1.11 confirmó que `-scale` está obsoleto y se ignora.
+Se reinició normalmente el mismo AVD usando `-skin 540x1200` y
+`-lcd-scaling-factor 0.5`. ADB confirmó tamaño físico540x1200 y densidad210.
+La configuración guardada de ventana indicó x100/y100; esto no acredita su
+posición visible. Captura Windows aún expira. Se pidió al titular confirmar si
+puede usarla y, de ser así, completar Chrome y Play sólo con la cuenta personal.
+No leer pantallas de credenciales mientras esté pendiente ese handoff.
+
+El control seguía con cero cuentas Android. Una consulta DEV de sólo lectura
+confirmó que la identidad DopMi personal ya existe, con consentimiento de
+Analítica0, fuentes0, primeros envíos0 y fichas0; la identidad anterior mantiene
+consentimiento1 y los mismos tres ceros. No asumir que la identidad personal
+será nueva después del clic. No hubo instalación de DopMi ni fixture en este
+reintento. Continúa pendiente comprobar 416 desde Play, fuente real `personal-a`
+y el primer envío privado; el A/B sigue pendiente de ese resultado.
+
+### 20/11/2026 13:11 CDMX — 416: primera ficha atribuida automáticamente en control personal
+
+El titular confirmó que puede usar la ventana reducida y completó Chrome y Play.
+ADB verificó una sola cuenta Android, la personal proporcionada para el control,
+y ausencia de DopMi. Play Console volvió a confirmar release5/416 disponible en
+`attribution-dev-qa`, sin otra build. En Chrome del AVD5582 se escribió y comprobó
+la URL pública canónica `https://www.dopmi.org/descargar/personal-a`. Desde su CTA
+Abrir Google Play se abrió el halfsheet oficial, que reconoció al beta tester.
+Se instaló por su botón: paquete `com.mycompany.dopmi`, versión2.3.3(416), instalador
+`com.android.vending`, firstInstallTime20nov18:56:34GMT (=12:56:34CDMX).
+No había historial de instalación de DopMi en este AVD.
+
+Se ingresó mediante Google usando la única cuenta personal; el correo exacto se
+comprobó en Mi perfil, sin archivarlo aquí. El titular aceptó personalmente los
+legales y autorizó Analítica en DEV para esa identidad. Se activó sólo Analítica
+de uso; Diagnóstico de errores continuó OFF. El SDK registró a las19:04:08UTC
+`readStarted → native=OK → referrerAccepted → sendAttempted → sendSucceeded → completed`.
+Los checks fueron cuatro parámetros, fuentefacebook, medioorganic_comment,
+campaña/contenido esperados y variantepersonal-a; todas las guardas temporales
+fueron verdaderas. No se escribió una fuente ni un código de campaña manualmente.
+
+La lectura DEV de sólo consulta ANTES de crear el caso devolvió cuentas1,
+activa/confirmada1, legalesvigentes1, consentimiento1, fuente1, personal-a1,
+lista-antes-del-primer-envío1, primerosenvíos0 y fichas0. Clic18:55:42UTC;
+atribución19:04:09.749155UTC. La identidad DopMi ya existía antes del clic:
+cuenta-creada-después-del-clic0. Esta prueba no representa un rescatista nuevo.
+
+Se creó por la app un único fixture «Prueba de adopcion DEV», con historia que
+declara su naturaleza QA, Perro/Macho/Chico/Cachorro y Monterrey/Nuevo León. Se
+seleccionó por nombre exacto en Documents la foto sintética preparada en Downloads;
+su SHA256 coincidió con el asset del repositorio (`ce882101…dce925`). Se revisó
+la vista previa. El preflight de sólo consulta confirmó fichas1, borrador exacto
+privado con foto1 y fuente lista1. Se pulsó Enviar a revisión una sola vez; la
+app mostró «Enviado a revisión».
+
+El join final de sólo consulta por `first_adoption_id` comprobó cuentas1,
+consentimiento1, personal-a1, primerobservable1, fixtureexacto-enviado1,
+fichastotales1, aprobaciones0 y cuenta-nueva0. El criterio exacto incluye mismo
+propietario, nombre reservado, foto presente, status submitted, submitted_at
+presente y published_at NULL; observación posterior a atribución y dentro336h.
+Envío19:11:23.788363UTC y observación19:11:23.838230UTC (=13:11:23CDMX).
+La ficha sigue privada, sin aprobación ni publicación. Captura local fuera de
+Git: `dopmi-personal-a-416-first-submitted-20261120.png` en el directorio de
+visualizaciones de este chat. Fixture consumido: no crear de nuevo ni contarlo
+como resultado A/B. No se modificaron esquema, flags ni datos de producción.
+
+Se reutilizan fuente953d3342, [CI44663156603](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44663156603)
+con cuatro jobs aprobados y [CM6affb5832e508c1164afa966](https://codemagic.io/app/6ab062cf7e534c19e9884a3b/build/6affb5832e508c1164afa966)
+con13pasos correctos,1802PASS/4SKIP. La revisión acotada independiente del flujo
+confirmó que una RPCvoid no bastaba: se exigió el join real y no se consumió el
+primer envío antes de la fuente. El resultado positivo de la cuenta personal
+es coherente con la restricción de cuenta administrada observada en el APK de
+Play; no prueba qué rama interna produjo cada not_set anterior.
+
+SamsungSM-S938B vuelve a estar conectado, pero aún conserva415 de Play. Se pidió
+al titular seleccionar la cuenta personal en Play del teléfono antes de su control
+limpio. Pendientes: candidato corregido en teléfono, regresión real del
+consentimiento entre dispositivos y ruta de producción antes de abrir el A/B.
+El éxito anterior es Android virtual/DEV; no afirmar adquisición instalada en
+Samsung, aprobación humana integral, producción pública ni atribución iOS.
