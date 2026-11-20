@@ -7,6 +7,7 @@ import ModerationQueues, { type ModerationView } from './ModerationQueues';
 import StoreCatalog from './StoreCatalog';
 import VideoModeration from './VideoModeration';
 import Dashboard, { type DashboardDestination } from './Dashboard';
+import { adminQueueUrl, destinationForQueue, queueFromUrl } from './adminPushRoutes';
 
 function Brand() { return <a className="brand" href="/" aria-label="Dopmi, inicio"><img src="/dopmi-wordmark.png" alt="Dopmi" /><span>Administración</span></a>; }
 function Notice({ text }: { text: string }) { return <div className="notice" role="alert">{text}</div>; }
@@ -20,13 +21,20 @@ export default function App({ api }: { api: AdminApi | null }) {
   const [rescueKind, setRescueKind] = useState<'case' | 'verification'>('case');
   const main = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
-  function navigate(next: typeof section, kind: typeof rescueKind = 'case', view: ModerationView = 'updates') {
+  const applyNavigation = useCallback((next: typeof section, kind: typeof rescueKind = 'case', view: ModerationView = 'updates') => {
     setModerationView(view); setRescueKind(kind); setSection(next); setMenuOpen(false);
     requestAnimationFrame(() => main.current?.focus());
-  }
-  function openQueue(destination: DashboardDestination) {
-    navigate(destination.section, destination.section === 'rescues' ? destination.kind : 'case', destination.section === 'moderation' ? destination.view : undefined);
-  }
+  }, []);
+  const applyDestination = useCallback((destination: DashboardDestination) => {
+    applyNavigation(destination.section, destination.section === 'rescues' ? destination.kind : 'case', destination.section === 'moderation' ? destination.view : undefined);
+  }, [applyNavigation]);
+  const openNotificationRoute = useCallback(() => {
+    const queue = queueFromUrl(window.location.href);
+    if (!queue) return;
+    window.history.replaceState(window.history.state, '', adminQueueUrl(window.location.origin, null));
+    if ((queue === 'videos' && !api?.videoModeration) || (queue === 'support' && !api?.listSupportRequests)) return;
+    applyDestination(destinationForQueue(queue));
+  }, [api, applyDestination]);
   const generation = useRef(0);
   const refresh = useCallback(async () => {
     if (!api) return;
@@ -35,14 +43,17 @@ export default function App({ api }: { api: AdminApi | null }) {
     try {
       const loggedIn = await api.session();
       const allowed = loggedIn && await api.isAdmin();
-      if (current === generation.current) setAccess(loggedIn ? (allowed ? 'admin' : 'denied') : 'guest');
+      if (current === generation.current) {
+        if (allowed) openNotificationRoute();
+        setAccess(loggedIn ? (allowed ? 'admin' : 'denied') : 'guest');
+      }
     } catch (cause) {
       if (current === generation.current) {
         setError(errorMessage(cause));
         setAccess(typeof cause === 'object' && cause !== null && 'code' in cause && cause.code === 'google_sign_in_failed' ? 'guest' : 'error');
       }
     }
-  }, [api]);
+  }, [api, openNotificationRoute]);
   useEffect(() => {
     let active = true;
     void refresh();
@@ -79,13 +90,13 @@ export default function App({ api }: { api: AdminApi | null }) {
       <div className="sidebar-heading"><Brand /><button ref={menuButton} className="menu-toggle secondary" aria-expanded={menuOpen} aria-controls="admin-navigation" onClick={() => setMenuOpen(value => !value)}>{menuOpen ? 'Cerrar menú' : 'Menú'}</button></div>
       <p className="nav-label">Tu espacio de trabajo</p>
       <nav id="admin-navigation" className="admin-navigation" aria-label="Administración" onKeyDown={event => { if (event.key === 'Escape') { setMenuOpen(false); menuButton.current?.focus(); } }}>
-        {navigation.filter(item => !('available' in item) || item.available).map(item => <button key={item.key} className="nav-item" aria-current={section === item.key ? 'page' : undefined} onClick={() => navigate(item.key)}><NavIcon name={item.key}/><span>{item.label}</span></button>)}
+        {navigation.filter(item => !('available' in item) || item.available).map(item => <button key={item.key} className="nav-item" aria-current={section === item.key ? 'page' : undefined} onClick={() => applyNavigation(item.key)}><NavIcon name={item.key}/><span>{item.label}</span></button>)}
       </nav>
       <div className="sidebar-bottom"><span className="connection-label"><span className="status-dot" /> Acceso del equipo</span><button className="text-button" onClick={() => void logout()}>Cerrar sesión</button></div>
     </aside>
     <main id="admin-workspace" ref={main} className="workspace" tabIndex={-1}>
       {error && <Notice text={error} />}
-      {section === 'dashboard' ? <Dashboard api={api} onOpen={openQueue}/> : section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues key={rescueKind} api={api} initialKind={rescueKind} /> : section === 'contributions' ? <Contributions api={api} /> : section === 'store' && api.storeCatalog ? <StoreCatalog api={api.storeCatalog} /> : section === 'videos' && api.videoModeration ? <VideoModeration api={api.videoModeration} /> : <ModerationQueues key={moderationView} api={api} initialView={moderationView}/>}
+      {section === 'dashboard' ? <Dashboard api={api} onOpen={applyDestination}/> : section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues key={rescueKind} api={api} initialKind={rescueKind} /> : section === 'contributions' ? <Contributions api={api} /> : section === 'store' && api.storeCatalog ? <StoreCatalog api={api.storeCatalog} /> : section === 'videos' && api.videoModeration ? <VideoModeration api={api.videoModeration} /> : <ModerationQueues key={moderationView} api={api} initialView={moderationView}/>}
     </main>
   </div>;
 }

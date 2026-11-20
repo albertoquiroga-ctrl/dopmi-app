@@ -62,6 +62,44 @@ class RescueRecord {
   bool get pendingStripe => kind == 'case' && status == 'pending_stripe';
 }
 
+class RescuerSealStatus {
+  RescuerSealStatus.fromJson(Json data)
+    : status = data['status'] as String,
+      recordId = data['record_id'] as String?,
+      verificationMethod = data['verification_method'] as String?,
+      missing = List<String>.unmodifiable(data['missing'] as List),
+      feedback = data['feedback'] as String? ?? '' {
+    if (!const {
+          'not_started',
+          'draft',
+          'submitted',
+          'changes_requested',
+          'approved',
+          'rejected',
+        }.contains(status) ||
+        missing.any((field) => !requiredFields.containsKey(field))) {
+      throw const FormatException('Estado de verificación no reconocido.');
+    }
+  }
+
+  static const requiredFields = {
+    'name': 'Nombre',
+    'photo': 'Foto de perfil',
+    'email': 'Correo electrónico',
+    'phone': 'Teléfono',
+    'social': 'Red social (Instagram o Facebook)',
+  };
+
+  final String status, feedback;
+  final String? recordId, verificationMethod;
+  final List<String> missing;
+
+  bool get pending => status == 'submitted';
+  bool get approved => status == 'approved';
+  bool get needsCorrection =>
+      status == 'changes_requested' || status == 'rejected';
+}
+
 final rescueRepositoryProvider = Provider<RescueRepository>(
   (ref) => RescueRepository(Supabase.instance.client),
 );
@@ -73,6 +111,14 @@ class RescueRepository {
       Json.from(await client.rpc('dopmi_rescuer_dashboard'));
   Future<Json> dashboardV2() async =>
       Json.from(await client.rpc('dopmi_rescuer_dashboard_v2'));
+  Future<RescuerSealStatus> rescuerSealStatus() async =>
+      RescuerSealStatus.fromJson(
+        Json.from(await client.rpc('dopmi_rescuer_seal_status')),
+      );
+  Future<RescuerSealStatus> submitRescuerSeal() async =>
+      RescuerSealStatus.fromJson(
+        Json.from(await client.rpc('dopmi_submit_rescuer_seal')),
+      );
   Future<RescuerFunnelMetrics> funnel(String period) async =>
       RescuerFunnelMetrics.fromJson(
         Json.from(

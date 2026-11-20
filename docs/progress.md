@@ -8877,3 +8877,52 @@ con esas escalas. Flutter Analyze no reportó problemas y las 39 pruebas de
 configuración móvil pasaron.
 La comprobación instalada de este ajuste queda pendiente de distribuir
 un nuevo candidato.
+
+
+### 20/11/2026 — Integración de atribución sobre el release reciente
+
+El titular pide producción sin retirar arreglos/minifeatures y confirma eventos
+separados: ficha enviada/aprobada, saludo automático, compositor adoptante y
+primera respuesta del dueño. Base congelada c9d9d03d, rama
+codex/production-attribution-restored-20261120. Play Console verificado dos veces:
+producción4092.3.7 (no412); la base conserva optional-details, Tienda Amazon,
+funding y navegación centrada posteriores. Refs remotos c9 y atribución5a4
+siguen iguales al cotejo final de fuentes. No fusionar la rama395/PR7 antigua.
+
+Restaurados compartirHTTPS c3c04cca y visor d0da2aa1, conservar Store. Sello por
+perfil/revisión manual a95a44c9+342c5dd5, sin INE ni comprobante, según decisión
+17nov ya confirmada. AdminPROD Vercel comprobado bcf5e33b/dpl_G7Eb6puLnaEN7RXhBViUEnJ7S7c3;
+los53archivos se conservan, sólo cambian los4deltas del sello. WebPush y Primera
+Publicación no se retiraron. Admin174pruebas/17archivosPASS y buildPASS.
+
+Integrada atribución416 selectivamente, triestado953d y continuidad Firebase.
+Origen de mensajes prospectivo servidor, legado unknown; hitos privados por
+emisor/tipo,336h, opt-outCASCADE, sin contenido/interlocutor en reporte. Se
+mantienen UUID, roles, fotos y notificación única. Atribución intenta terminar
+antes de saludo/mensaje/foto/submit, con espera limitada y token renovado del
+mismo actor. No se activan Meta/TikTok ni dinero/gates financieros.
+
+Revisión independiente encontró/cerró: fuente desligada del primer evento;
+JWT viejo fijado tras refresh; OFF atascado detrás de ON; ON viejo reintentando
+sobre OFF de otro transport; SDK ON pendiente que reservaba intención obsoleta
+antes del guard y cancelaba OFF. Regresiones RED observadas y GREEN108/108 en
+5archivos actuales. CAS requiere revisión servidor, ON no reintenta conflictos,
+OFF vigente sí; no ID de dispositivo ni POST indeterminado repetido.
+
+Gates locales: backend1316PASS/0FAIL/11SKIP (1327total), configuración42PASS y
+Firebase26PASS. Primera suite móvil completa:1856PASS/4SKIP/1FAIL; único fallo
+aviso de eliminación pendiente fuera del viewport tras copy más alto. Corregido
+con reveal de Notice protegido por sesión/ruta y hitTestable; incluido en108GREEN.
+No extrapolar esa primera suite a una full final verde: CI del commit integrado
+es el gate completo pendiente. PostgreSQL local no disponible; runners CI54322
+preparados para contacto/UUID/consentimientoCAS en ambos órdenes y sello-submit
+contra DELETE real de Storage. El bootstrap serial PGlite no acredita carreras.
+
+Metadatos PROD leídos:68migraciones/historiaMD5f2d3664b9eae41b4f88b1e4a91de816b;
+12cuerpos afectados exactos,7guardas sello únicas; mensajesRLS y clienteSELECTonly.
+Preparación aditiva agrupada con guardas de historia/cuerpos/permisos. No apply,
+publicación, despliegueAdmin ni instalación nueva ejecutados en este corte.
+QADEV416 previa y dos fixtures privados consumidos se preservan, no se reutilizan.
+Plan/contrato: docs/superpowers/plans/2026-11-20-production-attribution.md y
+facebook-rescuer-experiment.md. Siguiente: CI/PG real, operación revisada única,
+candidato2.3.8 desde esta fuente con entornoPROD y QA instalada antes de A/B.

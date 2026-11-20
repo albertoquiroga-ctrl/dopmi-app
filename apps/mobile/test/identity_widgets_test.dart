@@ -543,9 +543,11 @@ void main() {
             '/account-privacy',
           );
           expect(
-            find.text(
-              'Tu cuenta quedó bloqueada y la eliminación requiere atención de soporte.',
-            ),
+            find
+                .text(
+                  'Tu cuenta quedó bloqueada y la eliminación requiere atención de soporte.',
+                )
+                .hitTestable(),
             findsOneWidget,
           );
           expect(find.text('Tu cuenta fue eliminada.'), findsNothing);

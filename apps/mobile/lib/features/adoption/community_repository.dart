@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/attribution_action_barrier.dart';
+import '../../core/measurement.dart';
 import '../../core/media/media_store.dart';
 import 'adoption_traits.dart';
 export '../../core/media/prepare_photo.dart' show preparePhoto;
@@ -73,7 +75,12 @@ class SavedEntry {
 }
 
 final communityRepositoryProvider = Provider<CommunityRepository>(
-  (ref) => SupabaseCommunityRepository(Supabase.instance.client),
+  (ref) => SupabaseCommunityRepository(
+    Supabase.instance.client,
+    beforeAttributableAction: ref
+        .watch(measurementControllerProvider.notifier)
+        ?.prepareAttributableAction,
+  ),
 );
 
 abstract class CommunityRepository {
@@ -131,13 +138,31 @@ abstract class CommunityRepository {
 }
 
 class SupabaseCommunityRepository implements CommunityRepository {
-  SupabaseCommunityRepository(this.client, {this.observeRealtime});
+  SupabaseCommunityRepository(
+    this.client, {
+    this.observeRealtime,
+    this.beforeAttributableAction,
+  });
   final SupabaseClient client;
   final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
+  final PrepareAttributableAction? beforeAttributableAction;
   @override
   String? get userId => client.auth.currentUser?.id;
-  Future<dynamic> rpc(String name, [Json params = const {}]) =>
-      client.rpc(name, params: params);
+  Future<dynamic> rpc(String name, [Json params = const {}]) async {
+    final attributable =
+        name == 'dopmi_start_adoption_contact' ||
+        name == 'dopmi_send_message' ||
+        (name == 'dopmi_transition_adoption' && params['action'] == 'submit');
+    if (!attributable) return client.rpc(name, params: params);
+    final token = await attributionActionToken(
+      client,
+      beforeAttributableAction,
+    );
+    return client
+        .rpc(name, params: params)
+        .setHeader('Authorization', 'Bearer $token');
+  }
+
   @override
   Future<DataPage<Adoption>> catalog(Json filters, int page) async {
     final result = await rpc('dopmi_catalog', {

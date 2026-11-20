@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
+import 'core/android_rescuer_acquisition.dart';
+import 'core/adoption_measurement_consent.dart';
 import 'core/config.dart';
 import 'core/storage.dart';
 import 'core/measurement.dart';
@@ -44,23 +46,83 @@ class _BootstrapState extends State<Bootstrap> {
     if (!config.isValid) throw StateError('missing_config');
     final preferences = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
-    final measurement = MeasurementController(
+    final namespace = Uri.parse(config.url).host;
+    final acquisitionDiagnostics = config.environment == 'test';
+    final acquisition = AndroidRescuerAcquisition(
       preferences,
-      Uri.parse(config.url).host,
+      namespace,
+      readInstall: () =>
+          readAndroidPlayInstall(diagnosticsEnabled: acquisitionDiagnostics),
+      onDiagnostic: acquisitionDiagnostics
+          ? (message) => debugPrint('DopmiAcquisition $message')
+          : null,
+    );
+    late final MeasurementController measurement;
+    AdoptionMeasurementConsent? consentTransport;
+    measurement = MeasurementController(
+      preferences,
+      namespace,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
-      adoptionConsent: (owner, consent) async {
+      prepareAdoptionConsent: (owner, consent) {
         final client = Supabase.instance.client;
-        final session = client.auth.currentSession;
-        if (session == null || session.user.id != owner) return;
-        await client
-            .rpc('dopmi_set_adoption_measurement', params: {'consent': consent})
-            .setHeader('Authorization', 'Bearer ${session.accessToken}');
+        final analyticsRevision = measurement.analyticsRevision;
+        final request =
+            (consentTransport ??= AdoptionMeasurementConsent(client)).prepare(
+              owner,
+              consent,
+              stillEligible: () =>
+                  measurement.ownerId == owner &&
+                  measurement.analyticsConsentCurrent &&
+                  measurement.analyticsRevision == analyticsRevision,
+            );
+        if (request == null) return null;
+
+        return () async {
+          final accepted = await request();
+          if (!accepted || !consent || !supportsPlayInstallReferrer) return;
+
+          // A stalled acquisition request must not hold a later explicit
+          // opt-out behind it. Its server-side consent lock also handles an
+          // already-dispatched request that arrives after this wait expires.
+          await acquisition
+              .record(
+                owner: owner,
+                sessionStillEligible: () =>
+                    measurement.ownerId == owner &&
+                    measurement.analyticsConsentCurrent &&
+                    measurement.analyticsRevision == analyticsRevision &&
+                    client.auth.currentSession?.user.id == owner,
+                send: (variant, clickedAt) async {
+                  final current = await client.auth.getSession();
+                  if (current == null ||
+                      current.user.id != owner ||
+                      client.auth.currentSession?.user.id != owner ||
+                      measurement.ownerId != owner ||
+                      !measurement.analyticsConsentCurrent ||
+                      measurement.analyticsRevision != analyticsRevision) {
+                    throw StateError('Acquisition session changed');
+                  }
+                  await client
+                      .rpc(
+                        'dopmi_record_android_rescuer_acquisition',
+                        params: {
+                          'p_variant': variant,
+                          'p_clicked_at': clickedAt.toIso8601String(),
+                        },
+                      )
+                      .setHeader(
+                        'Authorization',
+                        'Bearer ${current.accessToken}',
+                      );
+                },
+              )
+              .timeout(const Duration(seconds: 10), onTimeout: () {});
+        };
       },
     );
-    await measurement.owner(null);
+    await measurement.prepareStartup();
     {
-      final namespace = Uri.parse(config.url).host;
       final callback = Uri.parse(config.redirect);
       await Supabase.initialize(
         url: config.url,

@@ -48,6 +48,12 @@ body{min-width:280px}button,input,select,textarea{font:inherit}button{min-height
 .rescue-dialog { scroll-padding-top: 76px; }
 .rescue-dialog > .dialog-header { position: sticky; top: 0; z-index: 3; background: #fff; box-shadow: 0 -32px 0 #fff; padding-block: 8px; border-bottom: 1px solid #eee6df; }
 
+.admin-push-card { display: flex; align-items: center; justify-content: space-between; gap: 14px 22px; flex-wrap: wrap; margin-bottom: 14px; padding: 16px 20px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.admin-push-card h2 { margin-bottom: 4px; }
+.admin-push-card p { margin: 0; font-size: 14px; }
+.admin-push-card button { min-height: 44px; }
+.admin-push-card .admin-push-error { margin-top: 6px; color: #862923; }
+
 .first-publication { margin-top: 24px; }
 .first-publication p { margin: 0 0 12px; }
 .first-publication > button { align-self: flex-start; }

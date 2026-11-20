@@ -217,3 +217,36 @@ describe('administración de usuarios', () => {
     expect(client.isAdmin).not.toHaveBeenCalled(); expect(client.listUsers).not.toHaveBeenCalled();
   });
 });
+
+describe('rutas de avisos administrativos', () => {
+  it('abre el soporte después de comprobar el rol y consulta sólo la bandeja solicitada', async () => {
+    window.history.replaceState({}, '', '/?queue=support');
+    const listSupportRequests = vi.fn(async () => ({ items: [], total: 0 }));
+    const listRescue = vi.fn(async () => ({ items: [], total: 0 }));
+    const client = api({ listSupportRequests, listRescue });
+    try {
+      render(<App api={client} />);
+      expect(await screen.findByRole('heading', { name: 'Soporte' })).toBeInTheDocument();
+      await waitFor(() => expect(listSupportRequests).toHaveBeenCalledWith(1));
+      expect(window.location.search).toBe('');
+      expect(client.isAdmin).toHaveBeenCalled();
+      expect(client.listAdoptions).not.toHaveBeenCalled();
+      expect(client.listRescue).not.toHaveBeenCalled();
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
+  });
+
+  it('mantiene privados los reportes cuando se abre un aviso con una cuenta sin acceso', async () => {
+    window.history.replaceState({}, '', '/?queue=reports');
+    const listReports = vi.fn(async () => ({ items: [], total: 0 }));
+    try {
+      render(<App api={api({ isAdmin: async () => false, listReports })} />);
+      expect(await screen.findByRole('heading', { name: 'Esta cuenta no tiene acceso' })).toBeInTheDocument();
+      expect(listReports).not.toHaveBeenCalled();
+      expect(screen.queryByRole('heading', { name: 'Contenido y reportes' })).not.toBeInTheDocument();
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
+  });
+});

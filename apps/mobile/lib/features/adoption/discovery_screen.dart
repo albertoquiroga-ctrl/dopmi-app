@@ -236,7 +236,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         actor == post.data['owner_id'] ||
         measurement == null ||
         measurement.ownerId != actor ||
-        !measurement.analyticsEnabled ||
+        !measurement.analyticsConsentCurrent ||
         exiting != 0) {
       return;
     }
@@ -257,7 +257,7 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
         currentFront.id != post.id ||
         exiting != 0 ||
         measurement.ownerId != actor ||
-        !measurement.analyticsEnabled) {
+        !measurement.analyticsConsentCurrent) {
       reportedViews.remove(key);
       return;
     }

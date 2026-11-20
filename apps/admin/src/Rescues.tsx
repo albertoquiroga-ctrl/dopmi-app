@@ -7,7 +7,14 @@ import CaseRevisionReview from './CaseRevisionReview';
 
 export const rescueStatus: Record<string,string> = {submitted:'En revisión',changes_requested:'Con correcciones',approved:'Aprobados',rejected:'No aprobados',closed:'Casos cerrados'};
 const kinds: Record<string,string> = {verification:'Verificaciones',case:'Casos'};
-function message(cause: unknown) { if(typeof cause==='object'&&cause&&'code' in cause&&'message' in cause&&['22023','40001'].includes(String(cause.code))) return String(cause.message); return errorMessage(cause); }
+const selfReviewMessage='Otra persona del equipo debe revisar tu solicitud';
+function message(cause: unknown) {
+  if(typeof cause==='object'&&cause&&'code' in cause&&'message' in cause){
+    if(cause.code==='42501'&&cause.message===selfReviewMessage)return selfReviewMessage;
+    if(['22023','40001'].includes(String(cause.code)))return String(cause.message);
+  }
+  return errorMessage(cause);
+}
 type ReviewSelection = { id: string; revisionId?: string };
 export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKind?:'case'|'verification'}) {
   const [kind,setKind]=useState<string>(initialKind),[status,setStatus]=useState('submitted'),[page,setPage]=useState(1),[revision,setRevision]=useState(0);
@@ -32,10 +39,24 @@ export default function Rescues({api,initialKind='case'}:{api:AdminApi;initialKi
 
 type CommentAttempt = { requestId: string; record: { id: string; version: number }; comments: NeedCommentInput[] };
 type PacketAttempt = { record: { id: string; version: number }; decision: InitialCaseDecision };
+function isProfileSeal(record?: RescueRecord) {
+  return record?.kind==='verification'&&record.private_data.verification_method==='profile';
+}
+function socialProfileUrl(value: string|undefined, domain: string) {
+  if(!value)return null;
+  try {
+    const url=new URL(value);
+    return url.protocol==='https:'&&!url.port&&!url.username&&!url.password&&
+      [domain,`www.${domain}`].includes(url.hostname)&&url.pathname.length>1 ? url.href : null;
+  } catch {
+    return null;
+  }
+}
 function packetIdentity(detail: RescueDetail) {
   return JSON.stringify([detail.initial_packet,detail.expenses?.total,detail.expenses?.page,[detail.record,...(detail.expenses?.items??[])].map(record=>({
     id:record.id,owner:record.owner_id,parent:record.parent_id,kind:record.kind,
     version:record.version,status:record.status,
+    profilePhoto:isProfileSeal(record)?record.private_data.avatar_path:null,
     files:record.files.map(file=>`${file.role}:${file.path}`).sort(),
   })).sort((a,b)=>a.id.localeCompare(b.id))]);
 }
@@ -74,8 +95,15 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
     api.rescueDetail(id,expensePage).then(async value=>{
       if(current!==generation.current)return;
       const records=[value.record,...(value.expenses?.items??[])];
-      const paths=[...new Set(records.flatMap(record=>record.files.map(file=>file.path)))];
-      const signed=await Promise.allSettled(paths.map(path=>api.rescueFileUrl(path)));
+      const profileSeal=isProfileSeal(value.record);
+      const avatarPath=value.record.private_data.avatar_path;
+      const paths=profileSeal?(avatarPath?[avatarPath]:[]):[...new Set(records.flatMap(record=>record.files.map(file=>file.path)))];
+      const sign=profileSeal?api.profileAvatarUrl:api.rescueFileUrl;
+      const signed=await Promise.allSettled(paths.map(async path=>{
+        const url=await sign?.(path);
+        if(!url)throw new Error('missing_review_file');
+        return url;
+      }));
       if(current!==generation.current)return;
       if(signed.some(result=>result.status==='rejected'&&deniedFile(result.reason)))throw {code:'42501'};
       let verified=value;
@@ -95,17 +123,22 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
       setFileErrors(Object.fromEntries(signed.flatMap((result,index)=>result.status==='rejected'?[[paths[index],'Archivo no disponible. Puedes volver a intentarlo.']]:[])));
       const failed=paths.filter((_,index)=>signed[index].status==='rejected');
       setSeen(value=>value.filter(path=>!failed.includes(path)));setLoaded(value=>value.filter(path=>!failed.includes(path)));
-    }).catch(cause=>{if(current===generation.current){if(deniedFile(cause)&&cause?.message!=='Otra persona del equipo debe revisar tu solicitud'){purgePrivate();denied();}else{if(cause?.code==='40001')purgePrivate();setError(message(cause));}}}).finally(()=>{if(current===generation.current)setLoading(false);});
+    }).catch(cause=>{if(current===generation.current){if(deniedFile(cause)&&cause?.message!==selfReviewMessage){purgePrivate();denied();}else{if(cause?.code==='40001')purgePrivate();setError(message(cause));}}}).finally(()=>{if(current===generation.current)setLoading(false);});
     // Any actor/API change or unmount invalidates reads AND writes in flight.
     return()=>{generation.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[api,id,retry,expensePage]);
   const r=detail?.record;
+  const profileSeal=isProfileSeal(r);
+  const avatarPath=profileSeal?(r?.private_data.avatar_path??''):'';
   const initial=detail?.initial_packet;
+  const reviewUnavailable=profileSeal?!api.reviewRescuerSeal:!!initial&&!api.reviewInitialCasePacket;
   const commentsEnabled=!!r&&r.kind==='case'&&!!detail?.expenses&&Array.isArray(detail.need_comments)&&!!api.saveNeedComments;
   const fileReady=(path:string)=>loaded.includes(path)&&seen.includes(path)&&!fileErrors[path];
   const expenseReviews=initial?packetExpenseReviews(initial,packetRecords,expenseDrafts,fileReady):null;
-  const canApprove=!!r&&r.kind!=='expense'&&r.status==='submitted'&&published&&r.files.every(file=>!!urls[file.path]&&fileReady(file.path))&&(r.kind!=='case'||!!initial)&&(!initial||!!api.reviewInitialCasePacket&&expenseReviews!==null);
+  const canApprove=!!r&&r.kind!=='expense'&&r.status==='submitted'&&published&&!reviewUnavailable&&
+    (profileSeal?!!avatarPath&&!!urls[avatarPath]&&fileReady(avatarPath):r.files.every(file=>!!urls[file.path]&&fileReady(file.path)))&&
+    (r.kind!=='case'||!!initial)&&(!initial||expenseReviews!==null);
   function purgePrivate() {
     packetCache.current=null;setPacketRecords({});setExpenseDrafts({});setPacketAttempt(null);setDrafts({});setAttempt(null);setDetail(null);setUrls({});setFileErrors({});setSeen([]);setLoaded([]);setNote('');setPublished(false);
   }
@@ -152,7 +185,7 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
     }
   }
   async function decide(decision:string) {
-    if(!r||r.kind==='expense'||blocked||saving.current)return;
+    if(!r||r.kind==='expense'||blocked||saving.current||reviewUnavailable)return;
     if(protectedComments){setError('Guarda los comentarios antes de registrar la decisión.');return;}
     if(note.trim().length<5){setError('Escribe un motivo de al menos 5 caracteres.');return;}
     if(decision==='approved'&&!canApprove)return;
@@ -163,8 +196,24 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
     }
     const current=generation.current;
     setBusy(true);setError('');
-    try{await api.reviewRescue(r,{decision,note:note.trim(),amount_cents:0,is_urgent:false,urgency_note:'',publish_content:published});if(current===generation.current){updated();close();}}
-    catch(cause){if(current===generation.current){if((cause as {code?:string;message?:string})?.code==='42501'&&(cause as {message?:string})?.message!=='Otra persona del equipo debe revisar tu solicitud')denied();else{setError(message(cause));if((cause as {code?:string})?.code==='40001'){setDetail(null);setUrls({});}}}}
+    try {
+      if(profileSeal){
+        if(!api.reviewRescuerSeal)return;
+        await api.reviewRescuerSeal({id:r.id,version:r.version},decision,note.trim(),decision==='approved'&&canApprove);
+      } else {
+        await api.reviewRescue(r,{decision,note:note.trim(),amount_cents:0,is_urgent:false,urgency_note:'',publish_content:published});
+      }
+      if(current===generation.current){updated();close();}
+    } catch(cause) {
+      if(current!==generation.current)return;
+      const failure=cause as {code?:string;message?:string}|null;
+      if(deniedFile(cause)&&failure?.message!==selfReviewMessage){
+        purgePrivate();denied();
+      } else {
+        if(failure?.code==='40001')purgePrivate();
+        setError(message(cause));
+      }
+    }
     finally{if(current===generation.current)setBusy(false);}
   }
   async function sendPacket(batch:PacketAttempt) {
@@ -193,16 +242,40 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
     <h2 id="rescue-review-title">{r?title(r):'Solicitud'}</h2>
     {error&&<div className="notice" role="alert">{error}</div>}
     <button className="secondary" disabled={blocked} onClick={()=>leave(()=>{setSaved(false);setRetry(value=>value+1);})}>Recargar expediente y archivos</button>
-    {loading?<p role="status">Cargando documentos privados…</p>:r&&<>
+    {loading?<p role="status">Cargando expediente privado…</p>:r&&<>
       <p className="muted">Versión {r.version} · {rescueStatus[r.status]||r.status} · Enviado {date(r.submitted_at)}</p>
       <div className="notice">{detail.verified?'Sello Dopmi aprobado.':'Sin sello Dopmi. Esto no impide revisar esta solicitud.'}{r.parent_id&&<> Caso: {detail.case_status==='approved'?'aprobado y abierto':detail.case_status==='closed'?'cerrado':'requiere revisión'}. <button className="text-button" disabled={blocked} onClick={()=>leave(()=>openParent(r.parent_id!))}>Ver expediente del caso</button></>}</div>
       {r.feedback&&<p className="notice">Respuesta anterior: {r.feedback}</p>}
+      {profileSeal?<section aria-labelledby="seal-profile-heading">
+        <h3 id="seal-profile-heading">Perfil enviado a revisión privada</h3>
+        <dl className="rescue-fields">
+          <div><dt>Nombre del perfil</dt><dd>{text(r.public_data.public_name)}</dd></div>
+          <div><dt>Correo confirmado</dt><dd>{text(r.private_data.email)}</dd></div>
+          <div><dt>Teléfono confirmado</dt><dd>{text(r.private_data.phone)}</dd></div>
+          {([['Instagram','instagram.com',r.private_data.instagram_url],['Facebook','facebook.com',r.private_data.facebook_url]] as const).map(([label,domain,value])=>{
+            const url=socialProfileUrl(value,domain);
+            return url&&<div key={domain}><dt>{label}</dt><dd><a href={url} target="_blank" rel="noreferrer">Abrir perfil de {label}</a></dd></div>;
+          })}
+        </dl>
+        <div className="rescue-document">
+          <h4>Foto de perfil</h4>
+          {fileErrors[avatarPath]?unavailableFile(avatarPath):urls[avatarPath]?<a href={urls[avatarPath]} target="_blank" rel="noreferrer">
+            <img alt="Foto de perfil enviada" src={urls[avatarPath]} onLoad={()=>setLoaded(value=>[...new Set([...value,avatarPath])])} onError={()=>{
+              setSeen(value=>value.filter(path=>path!==avatarPath));setLoaded(value=>value.filter(path=>path!==avatarPath));
+              setFileErrors(value=>({...value,[avatarPath]:'No pudimos cargar la foto. Recárgala antes de aprobar.'}));
+            }}/>
+          </a>:<p role="alert">La foto enviada no está disponible.</p>}
+          {r.status==='submitted'&&<label className="check-label">
+            <input type="checkbox" disabled={blocked||!loaded.includes(avatarPath)||!!fileErrors[avatarPath]} checked={seen.includes(avatarPath)} onChange={event=>setSeen(value=>event.target.checked?[...new Set([...value,avatarPath])]:value.filter(path=>path!==avatarPath))}/>Revisé la foto de perfil
+          </label>}
+        </div>
+      </section>:<>
       <h3>Contenido para publicación</h3><p>Comprueba que los textos y fotos no expongan documentos, domicilios particulares ni otros datos privados.</p><Fields data={r.public_data} needFeedback={item=>typeof item.id==='string'?feedback('planned',item.id,r.version,text(item.title)):null}/>
       {Object.keys(r.private_data).length>0&&<><h3>Solo para revisión privada</h3><Fields data={r.private_data}/></>}
       <h3>Documentos y evidencia</h3><div className="rescue-documents">{r.files.map((file,index)=><section className="rescue-document" key={file.path}><h4>{roles[file.role]} · Archivo {index+1}</h4>
         {fileErrors[file.path]?unavailableFile(file.path):/\.pdf$/i.test(file.path)?<a href={urls[file.path]} target="_blank" rel="noreferrer" onClick={()=>setLoaded(value=>[...value,file.path])}>Abrir PDF {index+1}</a>:<a href={urls[file.path]} target="_blank" rel="noreferrer"><img alt={`${roles[file.role]} ${index+1}`} src={urls[file.path]} onLoad={()=>setLoaded(value=>[...value,file.path])} onError={()=>{setSeen(value=>value.filter(path=>path!==file.path));setLoaded(value=>value.filter(path=>path!==file.path));setError('Un archivo no pudo cargarse. Recarga los archivos antes de aprobar.');}}/></a>}
         <label className="check-label"><input type="checkbox" disabled={blocked||!loaded.includes(file.path)} checked={seen.includes(file.path)} onChange={event=>setSeen(value=>event.target.checked?[...value,file.path]:value.filter(path=>path!==file.path))}/>Revisé el archivo {index+1}</label>
-      </section>)}</div>
+      </section>)}</div></>}
       {(commentsEnabled||initial)&&<section className="case-expenses" aria-label="Gastos del caso">
         <h3>{initial?'Necesidades pagadas del caso':'Gastos enviados con este caso'}</h3><p>{initial?'Revisa todas las necesidades y sus archivos. Aprobar el caso autoriza los importes pagados completos que aparecen en esta versión. Si algo requiere corrección, devuelve el caso completo con tus comentarios.':'Consulta las necesidades, sus comprobantes y el historial del caso. La revisión se registra para el caso completo.'}</p>
         <p className="muted">{detail.expenses!.total} gastos accesibles · Página {detail.expenses!.page} de {Math.max(1,Math.ceil(detail.expenses!.total/20))}</p>
@@ -242,10 +315,10 @@ function RescueReview({api,id,close,updated,openParent,denied,lock}:{api:AdminAp
       {r.kind==='case'&&r.status==='submitted'&&!initial&&<p className="notice">Este envío anterior no tiene un conjunto capturado de necesidades. Devuelve el caso para que el rescatista lo reenvíe completo antes de aprobarlo.</p>}
       {r.kind!=='expense'&&['submitted','approved'].includes(r.status)&&<div className="rescue-decision">
         <label>Motivo de la decisión (visible para el rescatista)<textarea value={note} maxLength={2000} rows={3} disabled={blocked} onChange={event=>setNote(event.target.value)}/></label>
-        {r.status==='submitted'&&<label className="check-label"><input type="checkbox" checked={published} disabled={blocked} onChange={event=>setPublished(event.target.checked)}/>{initial?'Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete':'Autorizo los textos y las fotos marcadas para publicación'}</label>}
+        {r.status==='submitted'&&<label className="check-label"><input type="checkbox" checked={published} disabled={blocked} onChange={event=>setPublished(event.target.checked)}/>{profileSeal?'Confirmo que el perfil cumple los requisitos del sello Dopmi':initial?'Autorizo los textos y las fotos marcadas para publicación del caso y de todas las necesidades de este paquete':'Autorizo los textos y las fotos marcadas para publicación'}</label>}
         {initial&&<p className="muted">Para aprobar el caso, consulta todas las páginas y revisa cada archivo. Los importes pagados se autorizan completos. La prioridad urgente es opcional y requiere un motivo.</p>}
-        <div className="review-actions">{r.status==='submitted'&&<><button disabled={blocked||protectedComments||!canApprove} onClick={()=>void decide('approved')}>{r.kind==='case'?'Aprobar caso':'Aprobar solicitud'}</button><button className="secondary" disabled={blocked||protectedComments||!!initial&&!api.reviewInitialCasePacket} onClick={()=>void decide('rejected')}>No aprobar</button></>}
-          <button className="secondary" disabled={blocked||protectedComments||!!initial&&!api.reviewInitialCasePacket} onClick={()=>void decide('changes_requested')}>{r.status==='approved'?'Retirar aprobación y pedir correcciones':'Pedir correcciones'}</button>
+        <div className="review-actions">{r.status==='submitted'&&<><button disabled={blocked||protectedComments||!canApprove} onClick={()=>void decide('approved')}>{r.kind==='case'?'Aprobar caso':'Aprobar solicitud'}</button><button className="secondary" disabled={blocked||protectedComments||reviewUnavailable} onClick={()=>void decide('rejected')}>No aprobar</button></>}
+          <button className="secondary" disabled={blocked||protectedComments||reviewUnavailable} onClick={()=>void decide('changes_requested')}>{r.status==='approved'?'Retirar aprobación y pedir correcciones':'Pedir correcciones'}</button>
           {packetAttempt&&<button disabled={busy} onClick={()=>void sendPacket(packetAttempt)}>{busy?'Confirmando decisión…':'Reintentar la misma decisión del paquete'}</button>}</div>
         {r.status==='approved'&&<p className="muted">{r.kind==='verification'?'Pedir correcciones retira el sello Dopmi; los casos conservan su aprobación.':'Pedir correcciones retira la aprobación y oculta el caso hasta una nueva revisión.'}</p>}
       </div>}

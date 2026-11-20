@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../core/android_rescuer_acquisition.dart';
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
 import '../identity/identity_controller.dart';
@@ -20,11 +21,35 @@ class AccountPrivacyScreen extends ConsumerStatefulWidget {
 }
 
 class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
+  final contentController = ScrollController();
   bool busy = false;
   String? error, message;
 
+  @override
+  void dispose() {
+    contentController.dispose();
+    super.dispose();
+  }
+
+  void revealNotice(String? owner) {
+    if (error == null && message == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          !contentController.hasClients ||
+          ModalRoute.of(context)?.isCurrent != true ||
+          ref.read(identityRepositoryProvider).current?.id != owner ||
+          (error == null && message == null)) {
+        return;
+      }
+      // Mount the notice in the viewport so its live region can announce it.
+      // Immediate positioning also respects reduced-motion preferences.
+      contentController.jumpTo(0);
+    });
+  }
+
   Future<void> perform(Future<void> Function() action) async {
     if (busy) return;
+    final owner = ref.read(identityRepositoryProvider).current?.id;
     setState(() {
       busy = true;
       error = null;
@@ -35,7 +60,10 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
     } catch (cause) {
       if (mounted) setState(() => error = identityError(cause));
     } finally {
-      if (mounted) setState(() => busy = false);
+      if (mounted) {
+        setState(() => busy = false);
+        revealNotice(owner);
+      }
     }
   }
 
@@ -153,6 +181,7 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
       rescuer: rescuer,
       back: () => context.canPop() ? context.pop() : context.go('/profile'),
       child: ListView(
+        controller: contentController,
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
         children: [
           Text(
@@ -178,8 +207,10 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Analítica de uso'),
-            subtitle: const Text(
-              'Comparte navegación y conversiones básicas. No incluye mensajes, documentos, ubicación, correo ni datos financieros.',
+            subtitle: Text(
+              'Comparte navegación y conversiones básicas. '
+              '${supportsPlayInstallReferrer ? 'En Android, puede vincular la campaña de Google Play con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje escrito como adoptante y tu primera respuesta como rescatista. ' : ''}'
+              'Sólo registra que ocurrió cada acción; no incluye el contenido de mensajes, documentos, ubicación, correo ni datos financieros.',
             ),
             value: measurement?.analyticsEnabled ?? false,
             onChanged: measurement == null || measurement.loading

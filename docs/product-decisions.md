@@ -1,3 +1,30 @@
+## 20/11/2026 CDMX — Atribución en producción y recuperación del release reciente
+
+El titular pide integrar atribución en producción conservando arreglos y
+minifeatures recientes, específicamente ampliar fotos y recorrerlas como carrusel.
+Se parte de c9d9d03d, descendiente del release público409; no se publica la rama395
+como sustituto del release. Conservar Tienda Amazon, detalles opcionales,
+navegación y la decisión del sello por perfil/revisión manual.
+El titular confirma medir separadamente primera ficha enviada y aprobada,
+saludo automático, primer envío desde compositor del adoptante y primera
+respuesta del dueño. Texto o foto válidos cuentan como envío humano; abrir
+una conversación no es escribir. Medición consentida y prospectiva, sin
+clasificar textos antiguos ni activar transferencias/gasto en Meta o TikTok.
+Plan e inventario: `docs/superpowers/plans/2026-11-20-production-attribution.md`.
+
+## 17/11/2026 CDMX — Sello Dopmi con revisión del perfil
+
+El titular eligió usar sólo los datos del mock de Irlanda
+`f693c036` para solicitar el sello de rescatista. El equipo revisa
+manualmente el nombre, la foto y un enlace de Instagram o Facebook.
+La solicitud comprueba el correo y el teléfono confirmados en Auth.
+El nombre visible de la cuenta puede mostrarse con el sello aprobado.
+La foto y los datos de contacto y redes de la solicitud permanecen
+privados en el expediente.
+La nueva solicitud prescinde de identificación oficial y comprobante
+de domicilio. El historial documental previo conserva su protección.
+La verificación de pagos sigue su flujo vigente en Stripe.
+
 ## 16/11/2026 CDMX — Tienda Amazon en producción
 
 El titular informó que Amazon dio luz verde por teléfono y pidió publicar

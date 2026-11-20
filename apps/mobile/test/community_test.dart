@@ -92,6 +92,8 @@ class HistoryThreadCommunity extends DetailThreadCommunity {
 class CommunityAnalyticsSpy implements ProductAnalytics {
   final events = <String>[];
   @override
+  Future<void> pause() async {}
+  @override
   Future<void> enabled(bool value) async {}
   @override
   Future<void> event(String name, {Map<String, Object>? parameters}) async {

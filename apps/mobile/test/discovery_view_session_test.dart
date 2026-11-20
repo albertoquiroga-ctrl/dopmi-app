@@ -29,7 +29,7 @@ class ViewSessionCommunity extends FakeCommunity {
 }
 
 void main() {
-  for (final change in ['none', 'actor', 'front']) {
+  for (final change in ['none', 'actor', 'front', 'revoked']) {
     testWidgets('delayed view consent rechecks $change before writing', (
       tester,
     ) async {
@@ -42,7 +42,8 @@ void main() {
         'view-test',
         CommunityAnalyticsSpy(),
         CommunityDiagnosticsSpy(),
-        adoptionConsent: (_, _) => consent.future,
+        prepareAdoptionConsent: (_, _) =>
+            () => consent.future,
       );
       await measurement.owner('one');
       final repository = ViewSessionCommunity();
@@ -83,6 +84,7 @@ void main() {
       await tester.pump();
       if (change == 'actor') repository.actor = 'other';
       if (change == 'front') state.index = 1;
+      if (change == 'revoked') await measurement.setAnalytics(false);
       consent.complete();
       await pending;
       expect(repository.views, change == 'none' ? ['one:post:true'] : isEmpty);

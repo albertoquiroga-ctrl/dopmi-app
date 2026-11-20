@@ -1,95 +1,134 @@
-import 'package:dopmi_mobile/features/rescue/verification_intro.dart';
+import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_screens.dart';
+import 'package:dopmi_mobile/features/rescue/verification_intro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'community_test.dart' show FakeCommunity;
-import 'publication_frame_test.dart' show startPublication;
+import 'publication_frame_test.dart' show startPublication, tapPublication;
+import 'rescue_test.dart' show FakeRescue;
+
+class _SealRescue extends FakeRescue {
+  String status = 'not_started';
+  List<String> missing = [];
+  bool statusUnavailable = false;
+  bool failSubmit = false;
+  bool commitBeforeFailure = false;
+  int submitCalls = 0;
+
+  RescuerSealStatus get state => RescuerSealStatus.fromJson({
+    'status': status,
+    'record_id': status == 'not_started' ? null : 'request-one',
+    'verification_method': status == 'not_started' ? null : 'profile',
+    'missing': missing,
+    'feedback': '',
+  });
+
+  @override
+  Future<RescuerSealStatus> rescuerSealStatus() async {
+    if (statusUnavailable) throw StateError('RPC unavailable');
+    return state;
+  }
+
+  @override
+  Future<RescuerSealStatus> submitRescuerSeal() async {
+    submitCalls++;
+    if (!failSubmit || commitBeforeFailure) status = 'submitted';
+    if (failSubmit) throw StateError('Timed out');
+    return state;
+  }
+
+  @override
+  Future<Json> detail(String id) async {
+    if (id != 'request-one') return super.detail(id);
+    return {
+      'record': {
+        'id': id,
+        'owner_id': 'one',
+        'kind': 'verification',
+        'status': 'submitted',
+        'private_data': {'verification_method': 'profile'},
+      },
+      'history': <Json>[],
+    };
+  }
+}
+
+Future<GoRouter> _start(WidgetTester tester, _SealRescue rescue) async {
+  tester.view.physicalSize = const Size(320, 640);
+  tester.view.devicePixelRatio = 1;
+  tester.platformDispatcher.textScaleFactorTestValue = 2;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+  await startPublication(tester, FakeCommunity(), '/publish', rescue: rescue);
+  return GoRouter.of(tester.element(find.byType(Scaffold).first));
+}
 
 void main() {
-  setUpAll(() async {
-    final font = FontLoader('Inter')
-      ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
-    await font.load();
+  testWidgets('old start link shows only server profile gaps at 200%', (
+    tester,
+  ) async {
+    final repo = _SealRescue()..missing = ['photo', 'phone'];
+    final router = await _start(tester, repo);
+    final origin = router.routeInformationProvider.value.uri.path;
+    router.push<void>('/rescue/new?kind=verification').ignore();
+    await tester.pumpAndSettle();
+    expect(find.byType(RescuerSealScreen), findsOneWidget);
+    expect(find.text('Foto de perfil'), findsOneWidget);
+    expect(find.text('Teléfono'), findsOneWidget);
+    expect(find.text('Correo electrónico'), findsNothing);
+    expect(find.text('Enviar solicitud'), findsNothing);
+    expect(find.textContaining('INE'), findsNothing);
+    expect(find.byType(RescueEditorScreen), findsNothing);
+    expect(find.text('Completar mi información'), findsOneWidget);
+    await tester.tap(find.byTooltip('Cerrar'));
+    await tester.pumpAndSettle();
+    expect(router.routeInformationProvider.value.uri.path, origin);
+    expect(repo.submitCalls, 0);
+    expect(tester.takeException(), isNull);
   });
+
   testWidgets(
-    'verification introduction returns to its origin and continues to real private documents at 200 percent',
+    'failed status read can be retried, then sends only one request',
     (tester) async {
-      tester.view.physicalSize = const Size(320, 640);
-      tester.view.devicePixelRatio = 1;
-      tester.platformDispatcher.textScaleFactorTestValue = 2;
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      await startPublication(tester, FakeCommunity(), '/publish');
-      final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
-      for (final dismiss in ['Después', 'Cerrar']) {
-        router.push<void>('/rescue/new?kind=verification').ignore();
-        await tester.pumpAndSettle();
-        expect(find.byType(VerificationIntroScreen), findsOneWidget);
-        const title = 'Verificación Dopmi opcional';
-        final paragraph = tester.renderObject<RenderParagraph>(
-          find.text(title),
-        );
-        final start = title.indexOf('opcional');
-        expect(
-          paragraph.getBoxesForSelection(
-            TextSelection(baseOffset: start, extentOffset: title.length),
-          ),
-          hasLength(1),
-          reason: 'Text enlargement must keep opcional on one line',
-        );
-        if (dismiss == 'Después') {
-          final button = find.text('Después');
-          await Scrollable.ensureVisible(tester.element(button), alignment: .5);
-          await tester.pumpAndSettle();
-          await tester.tap(button);
-        } else {
-          await tester.tap(find.byTooltip('Cerrar'));
-        }
-        await tester.pumpAndSettle();
-        expect(find.byType(VerificationIntroScreen), findsNothing);
-        expect(router.routeInformationProvider.value.uri.path, '/publish');
-        expect(tester.takeException(), isNull);
-      }
-      router.push<void>('/rescue/new?kind=verification').ignore();
+      final repo = _SealRescue()..statusUnavailable = true;
+      final router = await _start(tester, repo);
+      router.push<void>('/rescuer/verification').ignore();
       await tester.pumpAndSettle();
-      final continueButton = find.text('Continuar a verificación');
-      await Scrollable.ensureVisible(
-        tester.element(continueButton),
-        alignment: .5,
-      );
+      expect(find.text('Enviar solicitud'), findsNothing);
+      expect(find.byType(RescueEditorScreen), findsNothing);
+      repo.statusUnavailable = false;
+      await tapPublication(tester, find.text('Volver a intentar'));
+      await tapPublication(tester, find.text('Enviar solicitud'));
+      expect(repo.submitCalls, 1);
+      expect(repo.status, 'submitted');
+      router.push<void>('/rescuer/verification').ignore();
       await tester.pumpAndSettle();
-      final button = find.ancestor(
-        of: continueButton,
-        matching: find.byType(FilledButton),
-      );
-      final labelRect = tester.getRect(continueButton);
-      final buttonRect = tester.getRect(button);
-      expect(labelRect.top, greaterThanOrEqualTo(buttonRect.top + 9.9));
-      expect(labelRect.bottom, lessThanOrEqualTo(buttonRect.bottom - 9.9));
-      await tester.tap(continueButton);
+      expect(find.text('Verificación en proceso'), findsOneWidget);
+      expect(find.text('Enviar solicitud'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'uncertain response reconciles an accepted request without resend',
+    (tester) async {
+      final repo = _SealRescue()
+        ..failSubmit = true
+        ..commitBeforeFailure = true;
+      final router = await _start(tester, repo);
+      router.push<void>('/rescuer/verification').ignore();
       await tester.pumpAndSettle();
-      expect(find.byType(VerificationIntroScreen), findsNothing);
-      expect(find.byType(RescueEditorScreen), findsOneWidget);
-      await tester.scrollUntilVisible(
-        find.text('Documentos'),
-        200,
-        maxScrolls: 20,
-        scrollable: find
-            .descendant(
-              of: find.byKey(const ValueKey('verification-form-body')),
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
+      await tapPublication(tester, find.text('Enviar solicitud'));
+      expect(repo.submitCalls, 1);
+      expect(repo.status, 'submitted');
+      router.push<void>('/rescue/request-one?kind=verification').ignore();
       await tester.pumpAndSettle();
-      expect(find.text('Documentos'), findsOneWidget);
-      expect(find.text('Formulario de verificación'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      expect(find.text('Verificación en proceso'), findsOneWidget);
+      expect(find.text('Consultar expediente'), findsNothing);
+      expect(find.textContaining('Identificación oficial'), findsNothing);
     },
   );
 }

@@ -1,4 +1,15 @@
-# Cola vigente — beta real por canales de prueba, 28/oct/2026
+# Cola vigente — integración de producción20/nov/2026
+
+Entrega autorizada en el chat: atribución y eventos separados sobre release
+reciente, recuperar visor/compartir y sello por perfil, conservar Tienda y fixes.
+Base congelada c9d9d03d; rama `codex/production-attribution-restored-20261120`.
+Única cola Flutter. Inventario, interfaces y gates en
+[plan de integración](superpowers/plans/2026-11-20-production-attribution.md).
+Implementación integrada; faltan gates finales, CI/PG real, operación SQL
+aditiva revisada, distribución y QA instalada. No retomar A/B antes de ese cierre.
+Las colas históricas inferiores no reinician trabajo consumido.
+
+# Cola histórica — beta real por canales de prueba, 28/oct/2026
 
 La paridad341/f693 está aceptada. Nuevo alcance LIVE autorizado, producción limpia,
 reserva declarada20,000MXN/sin tope agregado; decisiones en product-decisions.md.

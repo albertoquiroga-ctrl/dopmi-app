@@ -447,11 +447,28 @@ class VerificationStateCaptureRescue extends FakeRescue {
   VerificationStateCaptureRescue(this.status);
   final String status;
   @override
+  Future<RescuerSealStatus> rescuerSealStatus() async =>
+      RescuerSealStatus.fromJson({
+        'status': status == 'draft' ? 'not_started' : status,
+        'record_id': status == 'draft' ? null : 'verification-id',
+        'verification_method': status == 'draft' ? null : 'documents',
+        'missing': <String>[],
+        'feedback': '',
+      });
+  @override
   Future<Json> detail(String id) async {
     final data = await super.detail(id);
     return {
       ...data,
-      'record': {...Json.from(data['record']), 'status': status},
+      'record': {
+        ...Json.from(data['record']),
+        'owner_id': 'one',
+        'status': status,
+        'files': [
+          {'role': 'identity', 'path': 'one/verification-id/identity.pdf'},
+          {'role': 'address', 'path': 'one/verification-id/address.pdf'},
+        ],
+      },
     };
   }
 }
@@ -1682,18 +1699,34 @@ void main() {
       ('expense-description-footer-large', '/rescue/expense-one'),
       ('expense-private', '/rescue/expense-one'),
       ('expense-private-large', '/rescue/expense-one'),
-      ('verification-intro', '/rescue/new?kind=verification'),
-      ('verification-intro-large', '/rescue/new?kind=verification'),
-      ('verification-intro-footer', '/rescue/new?kind=verification'),
-      ('verification-intro-footer-large', '/rescue/new?kind=verification'),
-      ('verification-form', '/rescue/new?kind=verification'),
-      ('verification-form-large', '/rescue/new?kind=verification'),
-      ('verification-form-inputs-large', '/rescue/new?kind=verification'),
-      ('verification-form-experience-large', '/rescue/new?kind=verification'),
-      ('verification-form-documents', '/rescue/new?kind=verification'),
-      ('verification-form-documents-large', '/rescue/new?kind=verification'),
-      ('verification-form-progress', '/rescue/new?kind=verification'),
-      ('verification-form-progress-large', '/rescue/new?kind=verification'),
+      ('verification-intro', '/rescuer/verification'),
+      ('verification-intro-large', '/rescuer/verification'),
+      ('verification-intro-footer', '/rescuer/verification'),
+      ('verification-intro-footer-large', '/rescuer/verification'),
+      (
+        'verification-form',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
+      (
+        'verification-form-large',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
+      (
+        'verification-form-inputs-large',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
+      (
+        'verification-form-experience-large',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
+      (
+        'verification-form-documents',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
+      (
+        'verification-form-documents-large',
+        '/rescue/verification-id?kind=verification&record=1',
+      ),
       ('verification-approved', '/rescue/verification-id'),
       ('verification-approved-large', '/rescue/verification-id'),
       ('verification-review', '/rescue/verification-id'),
@@ -2302,12 +2335,16 @@ void main() {
                   : DraftExpenseRescue(),
             ),
           if (spec.$1.startsWith('verification-approved') ||
-              spec.$1.startsWith('verification-review'))
+              spec.$1.startsWith('verification-review') ||
+              spec.$1.startsWith('verification-form') ||
+              spec.$1.startsWith('verification-intro'))
             rescueRepositoryProvider.overrideWithValue(
               VerificationStateCaptureRescue(
                 spec.$1.startsWith('verification-approved')
                     ? 'approved'
-                    : 'submitted',
+                    : spec.$1.startsWith('verification-review')
+                    ? 'submitted'
+                    : 'draft',
               ),
             ),
 
@@ -4583,13 +4620,6 @@ void main() {
         scroll.position.jumpTo(scroll.position.maxScrollExtent);
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('verification-form')) {
-        final next = find.text('Continuar a verificación');
-        await Scrollable.ensureVisible(tester.element(next), alignment: .5);
-        await tester.pumpAndSettle();
-        await tester.tap(next);
-        await tester.pumpAndSettle();
-      }
       if (spec.$1 == 'verification-form-inputs-large' ||
           spec.$1 == 'verification-form-experience-large') {
         final target = find.byKey(
@@ -4629,36 +4659,7 @@ void main() {
         await Scrollable.ensureVisible(tester.element(documents), alignment: 0);
         await tester.pumpAndSettle();
       }
-      if (spec.$1.startsWith('verification-form-progress')) {
-        final heading = find.text('Progreso del formulario');
-        await tester.scrollUntilVisible(
-          heading,
-          250,
-          maxScrolls: 30,
-          scrollable: find
-              .descendant(
-                of: find.byKey(const ValueKey('verification-form-body')),
-                matching: find.byType(Scrollable),
-              )
-              .first,
-        );
-        await Scrollable.ensureVisible(tester.element(heading), alignment: 0);
-        await tester.pumpAndSettle();
-        expect(find.text('Incompleto').hitTestable(), findsOneWidget);
-        expect(
-          tester
-              .widget<LinearProgressIndicator>(
-                find.byType(LinearProgressIndicator),
-              )
-              .semanticsLabel,
-          'Progreso del formulario: 1 de 11 requisitos capturados',
-        );
-        final bar = find.byType(LinearProgressIndicator);
-        expect(
-          tester.widget<LinearProgressIndicator>(bar).value,
-          closeTo(1 / 11, .0001),
-        );
-      }
+
       if (spec.$1.startsWith('case-publication-header-focus')) {
         final name = find.byKey(const ValueKey('case-field-pet_name'));
         await tester.ensureVisible(name);

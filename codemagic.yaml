@@ -6,7 +6,7 @@ workflows:
     working_directory: apps/mobile
 
     environment:
-      flutter: stable
+      flutter: '3.47.4'
       java: 17
       android_signing:
         - dopmi_upload_2026
@@ -15,7 +15,7 @@ workflows:
         - dopmi_firebase
       vars:
         PACKAGE_NAME: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.3
+        RELEASE_NAME: 2.3.8
 
     cache:
       cache_paths:
@@ -40,7 +40,7 @@ workflows:
 
       - name: Build signed Android App Bundle
         script: |
-          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build appbundle \
             --release \
             --build-name="$RELEASE_NAME" \
@@ -61,7 +61,7 @@ workflows:
     working_directory: apps/mobile
 
     environment:
-      flutter: stable
+      flutter: '3.47.4'
       java: 17
       android_signing:
         - dopmi_upload_2026
@@ -71,7 +71,7 @@ workflows:
         - dopmi_google_play
       vars:
         PACKAGE_NAME: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.3
+        RELEASE_NAME: 2.3.8
 
     cache:
       cache_paths:
@@ -96,7 +96,7 @@ workflows:
 
       - name: Build signed Android App Bundle
         script: |
-          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 226))
+          BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 231))
           flutter build appbundle \
             --release \
             --build-name="$RELEASE_NAME" \
@@ -133,7 +133,7 @@ workflows:
         - dopmi_google_play
       vars: &android-signed-vars
         PACKAGE_NAME: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.3
+        RELEASE_NAME: 2.3.8
 
     cache:
       cache_paths:
@@ -286,7 +286,7 @@ workflows:
       app_store_connect: dopmi_app_store
 
     environment:
-      flutter: stable
+      flutter: '3.47.4'
       xcode: latest
       groups:
         - dopmi_supabase
@@ -296,7 +296,7 @@ workflows:
         bundle_identifier: com.mycompany.dopmi
       vars:
         BUNDLE_ID: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.3
+        RELEASE_NAME: 2.3.8
         BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
 
     cache:
@@ -367,7 +367,7 @@ workflows:
         bundle_identifier: com.mycompany.dopmi
       vars: &ios-signed-vars
         BUNDLE_ID: com.mycompany.dopmi
-        RELEASE_NAME: 2.3.3
+        RELEASE_NAME: 2.3.8
         BYPASS_PERMISSION_LOCATION_ALWAYS: '1'
 
     cache:

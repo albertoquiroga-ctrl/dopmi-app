@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import '../../core/ui.dart';
 import '../../core/media/photo_prefetch.dart';
 import '../../core/media/photo_runtime.dart';
 import '../../core/design_tokens.dart';
+import 'adoption_photo_viewer.dart';
 import 'community_repository.dart';
 import 'community_ui.dart';
 import 'adoption_traits.dart';
@@ -41,8 +43,11 @@ class AdoptionDetailLayout extends ConsumerStatefulWidget {
 class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   int galleryIndex = 0;
   final galleryController = PageController(keepPage: false);
+  MaterialPageRoute<void>? photoViewerRoute;
+
   @override
   void dispose() {
+    closePhotoViewer();
     galleryController.dispose();
     super.dispose();
   }
@@ -50,9 +55,11 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   @override
   void didUpdateWidget(AdoptionDetailLayout oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final previousPhotos = oldWidget.post.photos;
+    final currentPhotos = widget.post.photos;
     if (oldWidget.post.id == widget.post.id) {
-      for (final path in oldWidget.post.photos.where(
-        (path) => !widget.post.photos.contains(path),
+      for (final path in previousPhotos.where(
+        (path) => !currentPhotos.contains(path),
       )) {
         ref
             .read(photoRuntimeProvider)
@@ -64,9 +71,36 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
       }
     }
     if (oldWidget.post.id != widget.post.id ||
-        oldWidget.post.photos.join('|') != widget.post.photos.join('|')) {
+        !listEquals(previousPhotos, currentPhotos)) {
       galleryIndex = 0;
+      closePhotoViewer();
     }
+  }
+
+  void openPhotoViewer(List<String> photos, int index) {
+    if (photoViewerRoute != null) return;
+    final petName = widget.post.name;
+    final route = MaterialPageRoute<void>(
+      fullscreenDialog: true,
+      builder: (_) => AdoptionPhotoViewer(
+        petName: petName,
+        photos: photos,
+        initialIndex: index,
+      ),
+    );
+    photoViewerRoute = route;
+    Navigator.of(context).push(route).whenComplete(() {
+      if (identical(photoViewerRoute, route)) photoViewerRoute = null;
+    }).ignore();
+  }
+
+  void closePhotoViewer() {
+    final route = photoViewerRoute;
+    if (route == null) return;
+    // A moderation refresh can change the photos while the route is open.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (route.isActive) route.navigator?.removeRoute(route);
+    });
   }
 
   void back() {
@@ -95,6 +129,7 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
+    final photos = post.photos;
     final heartColor = widget.saved ? '#eb6425' : '#8a837c';
     // f693 gives the private preview the same crop/height as the public detail.
     final heroHeight = math.max(
@@ -112,7 +147,7 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                if (post.photos.isEmpty)
+                if (photos.isEmpty)
                   const ColoredBox(
                     color: yellow,
                     child: Center(
@@ -122,23 +157,35 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                 else
                   PhotoPrefetch(
                     sources: [
-                      if (galleryIndex + 1 < post.photos.length)
+                      if (galleryIndex + 1 < photos.length)
                         adoptionPhotoSource(
                           ref.read(communityRepositoryProvider),
-                          post.photos[galleryIndex + 1],
+                          photos[galleryIndex + 1],
                         ),
                     ],
                     child: PageView.builder(
                       controller: galleryController,
-                      key: ValueKey('${post.id}:${post.photos.join('|')}'),
-                      itemCount: post.photos.length,
+                      key: ValueKey('${post.id}:${photos.join('|')}'),
+                      itemCount: photos.length,
                       onPageChanged: (value) =>
                           setState(() => galleryIndex = value),
-                      itemBuilder: (_, index) => AdoptionPhoto(
-                        post.photos[index],
-                        height: heroHeight,
-                        radius: 0,
-                      ),
+                      itemBuilder: (_, index) {
+                        final photo = AdoptionPhoto(
+                          photos[index],
+                          height: heroHeight,
+                          radius: 0,
+                        );
+                        if (widget.preview) return photo;
+                        return Semantics(
+                          button: true,
+                          label: 'Ver foto ${index + 1} en pantalla completa',
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => openPhotoViewer(photos, index),
+                            child: photo,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 if (!widget.preview)
@@ -254,7 +301,24 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                     ),
                   ),
                 ),
-                if (post.photos.length > 1)
+                if (!widget.preview && photos.isNotEmpty)
+                  Positioned(
+                    right: 16,
+                    bottom: 32,
+                    child: IconButton.filled(
+                      tooltip: 'Ver foto en pantalla completa',
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.black54,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () => openPhotoViewer(
+                        photos,
+                        math.min(galleryIndex, photos.length - 1),
+                      ),
+                      icon: const Icon(Icons.fullscreen),
+                    ),
+                  ),
+                if (photos.length > 1)
                   Positioned(
                     bottom: 10,
                     left: 0,
@@ -263,11 +327,11 @@ class _AdoptionDetailLayoutState extends ConsumerState<AdoptionDetailLayout> {
                       container: true,
                       explicitChildNodes: true,
                       label:
-                          'Foto ${math.min(galleryIndex + 1, post.photos.length)} de ${post.photos.length}',
+                          'Foto ${math.min(galleryIndex + 1, photos.length)} de ${photos.length}',
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          for (var i = 0; i < post.photos.length; i++)
+                          for (var i = 0; i < photos.length; i++)
                             Semantics(
                               button: true,
                               selected: i == galleryIndex,

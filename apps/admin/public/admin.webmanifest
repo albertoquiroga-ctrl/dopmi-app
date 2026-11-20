@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "Dopmi · Administración",
+  "short_name": "Dopmi Admin",
+  "lang": "es-MX",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf8f2",
+  "theme_color": "#faf8f2",
+  "icons": [
+    { "src": "/admin-icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/admin-icon-large.png", "sizes": "1024x1024", "type": "image/png" }
+  ]
+}

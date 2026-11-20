@@ -6,6 +6,31 @@ import type { AdminApi, InitialCaseDecision, InitialCaseDecisionResult, NeedComm
 const record: RescueRecord={id:'expense',owner_id:'owner',kind:'expense',parent_id:'case',public_data:{title:'Comida de Luna',category:'food',round_label:'Primera ronda'},private_data:{amount_cents:'25050',vendor:'Veterinaria'},files:[{path:'private/receipt.jpg',role:'receipt'}],status:'submitted',version:9,feedback:'',reimbursable_cents:0,urgent:false,priority_reason:'',submitted_at:'2026-09-13T12:00:00Z',updated_at:'2026-09-13T12:00:00Z'};
 function api(overrides:Partial<AdminApi>={}):AdminApi { return {session:async()=>true,watch:()=>()=>{},login:async()=>{},logout:async()=>{},isAdmin:async()=>true,listUsers:async()=>({total:0,users:[]}),listAdoptions:async()=>({total:0,items:[]}),reviews:async()=>[],reviewAdoption:async p=>p,photoUrl:async()=>'',listContributions:async()=>({total:0,items:[]}),listRescue:vi.fn(async()=>({total:1,items:[record]})),rescueDetail:vi.fn(async()=>({record,verified:true,case_status:'approved',history:[]})),rescueFileUrl:vi.fn(async()=> 'https://example.test/signed'),reviewRescue:vi.fn(async r=>({...r,status:'approved'})),...overrides}; }
 async function open(client:AdminApi) { render(<Rescues api={client}/>);const user=userEvent.setup();await user.click(await screen.findByRole('button',{name:'Revisar Comida de Luna'}));await screen.findByText('Solo para revisión privada');return user; }
+const profileSeal: RescueRecord = {
+  ...record, id:'seal', kind:'verification', parent_id:null, files:[],
+  public_data:{public_name:'Refugio Nube'},
+  private_data:{
+    verification_method:'profile', avatar_path:'owner/photo.jpg',
+    email:'refugio@example.test', phone:'+525500000000',
+    instagram_url:'https://www.instagram.com/refugionube/',
+    identity_type:'passport',
+  },
+};
+function sealApi(overrides: Partial<AdminApi> = {}): AdminApi {
+  return api({
+    listRescue:vi.fn(async()=>({total:1,items:[profileSeal]})),
+    rescueDetail:vi.fn(async()=>({record:profileSeal,verified:false,case_status:null,history:[]})),
+    profileAvatarUrl:vi.fn(async()=> 'https://example.test/signed-avatar'),
+    reviewRescuerSeal:vi.fn(async()=>({...profileSeal,status:'approved'})),
+    ...overrides,
+  });
+}
+async function openSeal(client: AdminApi) {
+  render(<Rescues api={client} initialKind="verification"/>);
+  const user=userEvent.setup();
+  await user.click(await screen.findByRole('button',{name:'Revisar Refugio Nube'}));
+  return user;
+}
 describe('rescue review',()=>{
   it('opens cases first and renders structured planned needs without exposing raw JSON',async()=>{
     const planned={...record,kind:'case',parent_id:null,public_data:{pet_name:'Luna',city:'Monterrey',need_items:[{id:'need-one',type:'veterinary',title:'Consulta veterinaria',amount_cents:25000,detail:'Valoración inicial',urgent:true}]}};
@@ -31,6 +56,67 @@ describe('rescue review',()=>{
     await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Expediente revisado');
     expect(button).toBeEnabled();await user.click(button);
     await waitFor(()=>expect(client.reviewRescue).toHaveBeenCalledWith(ordinary,expect.objectContaining({decision:'approved',publish_content:true})));
+  });
+  it('reviews only the captured profile and requires a loaded photo and explicit checks before approving the seal',async()=>{
+    const client=sealApi();
+    const user=await openSeal(client);
+    const photo=await screen.findByAltText('Foto de perfil enviada');
+    const approve=screen.getByRole('button',{name:'Aprobar solicitud'});
+    const checkedPhoto=screen.getByLabelText('Revisé la foto de perfil');
+    const checkedProfile=screen.getByLabelText('Confirmo que el perfil cumple los requisitos del sello Dopmi');
+
+    expect(client.profileAvatarUrl).toHaveBeenCalledWith('owner/photo.jpg');
+    expect(client.rescueFileUrl).not.toHaveBeenCalled();
+    expect(screen.getByText('refugio@example.test')).toBeInTheDocument();
+    expect(screen.getByText('+525500000000')).toBeInTheDocument();
+    expect(screen.getByRole('link',{name:'Abrir perfil de Instagram'})).toHaveAttribute('href','https://www.instagram.com/refugionube/');
+    expect(screen.queryByText('Pasaporte')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading',{name:'Documentos y evidencia'})).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading',{name:'Contenido para publicación'})).not.toBeInTheDocument();
+    expect(checkedPhoto).toBeDisabled();
+    await user.click(checkedProfile);
+    expect(approve).toBeDisabled();
+    fireEvent.load(photo);
+    expect(approve).toBeDisabled();
+    await user.click(checkedPhoto);
+    expect(approve).toBeEnabled();
+    fireEvent.error(photo);
+    expect(approve).toBeDisabled();
+    expect(checkedPhoto).not.toBeChecked();
+
+    await user.click(screen.getByRole('button',{name:'Recargar expediente y archivos'}));
+    fireEvent.load(await screen.findByAltText('Foto de perfil enviada'));
+    await user.click(screen.getByLabelText('Revisé la foto de perfil'));
+    await user.click(screen.getByLabelText('Confirmo que el perfil cumple los requisitos del sello Dopmi'));
+    await user.type(screen.getByLabelText('Motivo de la decisión (visible para el rescatista)'),'Perfil revisado');
+    await user.click(screen.getByRole('button',{name:'Aprobar solicitud'}));
+    await waitFor(()=>expect(client.reviewRescuerSeal).toHaveBeenCalledExactlyOnceWith({id:profileSeal.id,version:profileSeal.version},'approved','Perfil revisado',true));
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+  it('requests corrections to a profile seal without acknowledging an unavailable photo',async()=>{
+    const client=sealApi({profileAvatarUrl:vi.fn().mockRejectedValue(new Error('offline'))});
+    const user=await openSeal(client);
+    await user.type(await screen.findByLabelText('Motivo de la decisión (visible para el rescatista)'),'Revisa tu foto de perfil');
+    await user.click(screen.getByRole('button',{name:'Pedir correcciones'}));
+    await waitFor(()=>expect(client.reviewRescuerSeal).toHaveBeenCalledExactlyOnceWith({id:profileSeal.id,version:profileSeal.version},'changes_requested','Revisa tu foto de perfil',false));
+    expect(client.reviewRescue).not.toHaveBeenCalled();
+  });
+  it('explains why an administrator cannot review their own seal request',async()=>{
+    const selfReview='Otra persona del equipo debe revisar tu solicitud';
+    const client=sealApi({reviewRescuerSeal:vi.fn().mockRejectedValue({code:'42501',message:selfReview})});
+    const user=await openSeal(client);
+    await user.type(await screen.findByLabelText('Motivo de la decisión (visible para el rescatista)'),'Revisa los datos');
+    await user.click(screen.getByRole('button',{name:'Pedir correcciones'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent(selfReview);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+  it('clears the profile seal when signing its private photo returns an access denial',async()=>{
+    const client=sealApi({profileAvatarUrl:vi.fn().mockRejectedValue({status:403})});
+    await openSeal(client);
+    expect(await screen.findByText('El acceso cambió. Actualiza la lista para volver a comprobarlo.')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(client.reviewRescuerSeal).not.toHaveBeenCalled();
+    expect(client.reviewRescue).not.toHaveBeenCalled();
   });
   it.each(['submitted','approved','changes_requested'])('keeps a historical expense read only without any individual decision (%s)',async status=>{
     const client=api({rescueDetail:vi.fn(async()=>({record:{...record,status},verified:false,case_status:'approved',history:[]}))});

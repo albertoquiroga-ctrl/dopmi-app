@@ -70,6 +70,16 @@ jobs:
         run: node tools/verification/guardian-concurrency.mjs
       - name: Adoption contact concurrent devices and lost response
         run: node tools/verification/adoption-contact-concurrency.mjs
+      - name: Acquisition messaging and consent races against PostgreSQL
+        env:
+          DOPMI_ACQUISITION_POSTGRES_TEST: 'true'
+          PGPASSWORD: postgres
+        run: node --test --test-concurrency=1 tools/verification/android-acquisition-messaging-sql.test.mjs tools/verification/adoption-measurement-consent-sql.test.mjs
+      - name: Profile seal and photo deletion races against PostgreSQL
+        env:
+          DOPMI_RESCUER_SEAL_POSTGRES_TEST: 'true'
+          PGPASSWORD: postgres
+        run: node tools/verification/rescuer-seal-profile-concurrency.mjs
   flutter:
     runs-on: ubuntu-latest
     steps:

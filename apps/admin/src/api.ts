@@ -2,6 +2,8 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { supportRequests, type SupportPage } from './supportApi';
 import { createStoreCatalogApi, type StoreCatalogApi } from './StoreCatalog';
 import { createVideoModerationApi, type VideoModerationApi } from './VideoModeration';
+import { createAdminPushApi, revokeAdminPushOnLogout, type AdminPushApi } from './adminPush';
+import { adminQueueUrl, queueFromUrl, storeOAuthQueue, takeOAuthQueue } from './adminPushRoutes';
 
 export type AdminUser = {
   id: string; display_name: string; email: string | null; phone: string; city: string;
@@ -84,6 +86,7 @@ export type AdminApi = {
   readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
   videoModeration?: VideoModerationApi;
+  pushNotifications?: AdminPushApi;
   listSupportRequests?: (page: number) => Promise<SupportPage>;
   supportAttachmentUrl?: (path: string) => Promise<string>;
   session: () => Promise<boolean>;
@@ -102,6 +105,7 @@ export type AdminApi = {
   rescueDetail: (id: string, expensePage?: number) => Promise<RescueDetail>;
   saveNeedComments?: (record: Pick<RescueRecord, 'id' | 'version'>, comments: NeedCommentInput[], requestId: string) => Promise<NeedCommentResult>;
   reviewRescue: (record: RescueRecord, decision: RescueDecision) => Promise<RescueRecord>;
+  reviewRescuerSeal?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: string, note: string, reviewedProfile: boolean) => Promise<RescueRecord>;
   reviewInitialCasePacket?: (record: Pick<RescueRecord, 'id' | 'version'>, decision: InitialCaseDecision) => Promise<InitialCaseDecisionResult>;
   caseRevisionDetail?: (revisionId: string, expensePage?: number) => Promise<CaseRevisionPacket>;
   reviewCaseRevision?: (revision: Pick<CaseRevision, 'id' | 'version'>, decision: CaseRevisionDecision) => Promise<CaseRevisionDecisionResult>;
@@ -137,6 +141,7 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     const fragment = new URLSearchParams(url.hash.slice(1));
     return callbackKeys.some(key => url.searchParams.has(key) || fragment.has(key));
   })();
+  const pushNotifications = createAdminPushApi(client, import.meta.env.VITE_ADMIN_PUSH_PUBLIC_KEY);
   let callbackHandled = !arrivedFromAuth;
   let callbackSession: Promise<boolean> | undefined;
   function callbackFailure() { return Object.assign(new Error('Google sign-in failed'), { code: 'google_sign_in_failed' }); }
@@ -149,11 +154,16 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
         const { data, error } = await client.auth.getSession();
         return !error && !!data.session;
       } catch { return false; }
-      finally { window.history.replaceState(window.history.state, '', new URL('/', window.location.origin)); }
+      finally {
+        const savedQueue = takeOAuthQueue();
+        const queue = queueFromUrl(window.location.href) ?? savedQueue;
+        window.history.replaceState(window.history.state, '', adminQueueUrl(window.location.origin, queue));
+      }
     })();
   }
   return {
     environment,
+    pushNotifications,
     storeCatalog: createStoreCatalogApi(client),
     videoModeration: createVideoModerationApi(client),
     listSupportRequests: supportRequests(client),
@@ -175,6 +185,13 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     async reviewRescue(record, decision) {
       if(record.kind==='expense'||record.review_kind==='revision'||record.kind==='case'&&decision.decision==='approved')throw {code:'22023',message:'La aprobación requiere la revisión conjunta del caso.'};
       const {data,error}=await client.rpc('dopmi_review_rescue',{record_id:record.id,expected_version:record.version,...decision}); if(error) throw error; return data;
+    },
+    async reviewRescuerSeal(record, decision, note, reviewedProfile) {
+      const { data, error } = await client.rpc('dopmi_review_rescuer_seal', {
+        record_id: record.id, expected_version: record.version, decision, note, reviewed_profile: reviewedProfile,
+      });
+      if (error) throw error;
+      return data;
     },
     async reviewInitialCasePacket(record, decision) {
       const session=await client.auth.getSession();
@@ -239,12 +256,22 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     async login(email, password) { callbackHandled = true; const { error } = await client.auth.signInWithPassword({ email, password }); if (error) throw error; },
     loginWithGoogle: environment === 'production' ? async () => {
       callbackHandled = true;
+      storeOAuthQueue(queueFromUrl(window.location.href));
       try {
         const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: new URL('/', window.location.origin).href } });
         if (error) throw callbackFailure();
-      } catch { throw callbackFailure(); }
+      } catch {
+        storeOAuthQueue(null);
+        throw callbackFailure();
+      }
     } : undefined,
-    async logout() { callbackHandled = true; const { error } = await client.auth.signOut({ scope: 'local' }); if (error) throw error; },
+    async logout() {
+      callbackHandled = true;
+      storeOAuthQueue(null);
+      if (pushNotifications) await revokeAdminPushOnLogout(pushNotifications);
+      const { error } = await client.auth.signOut({ scope: 'local' });
+      if (error) throw error;
+    },
     async isAdmin() { const { data, error } = await client.rpc('dopmi_is_admin'); if (error) throw error; return data === true; },
     async firstPublicationSummary() {
       const { data, error } = await client.rpc('dopmi_admin_first_publication');

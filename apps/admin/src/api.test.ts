@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import { configuredApi, createAdminApi, type RescueRecord, type RescuerPublicProfile } from './api';
+import { storeOAuthQueue } from './adminPushRoutes';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 test('case packets use server pagination and need comments retain destination versions and request ID', async()=>{
@@ -27,6 +28,15 @@ test('the initial case decision sends one atomic RPC with the frozen submission 
   const decision={submission_id:'submission',request_id:'request',decision:'approved',note:'Revisado completo',publish_content:true,expense_reviews:[{expense_id:'expense',expense_version:7,amount_cents:12500,is_urgent:false,urgency_note:'',publish_content:true}]};
   await api.reviewInitialCasePacket!({id:'case',version:12},decision);
   expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_initial_case_packet',{record_id:'case',expected_version:12,...decision});
+});
+
+test('a seal review sends the exact version and private profile acknowledgement with no legacy fallback',async()=>{
+  const rpc=vi.fn().mockResolvedValue({data:null,error:{code:'PGRST202'}});
+  const api=createAdminApi({rpc} as unknown as Parameters<typeof createAdminApi>[0]);
+  await expect(api.reviewRescuerSeal!({id:'seal',version:9},'approved','Perfil revisado',true)).rejects.toEqual({code:'PGRST202'});
+  expect(rpc).toHaveBeenCalledExactlyOnceWith('dopmi_review_rescuer_seal',{
+    record_id:'seal',expected_version:9,decision:'approved',note:'Perfil revisado',reviewed_profile:true,
+  });
 });
 
 test('the adapter refuses separate expense queues and all individual expense decisions, including historical ones',async()=>{
@@ -228,6 +238,7 @@ test('TEST and default admin clients cannot initiate Google OAuth', () => {
 
 test('real SDK PKCE callback exchanges once, clears the URL and still asks the server for membership', async () => {
   window.history.replaceState({}, '', '/?code=fixture-code&next=https://untrusted.example/#users');
+  storeOAuthQueue('support');
   const storageValues = new Map([['admin-callback-fixture-code-verifier', JSON.stringify('fixture-verifier')]]);
   const storage = { getItem: (key: string) => storageValues.get(key) ?? null, setItem: (key: string, value: string) => { storageValues.set(key, value); }, removeItem: (key: string) => { storageValues.delete(key); } };
   const accessToken = `e30.${btoa(JSON.stringify({ sub: 'fixture-user', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + 3600 }))}.fixture`;
@@ -246,7 +257,7 @@ test('real SDK PKCE callback exchanges once, clears the URL and still asks the s
   const [, request] = tokenCalls[0] as unknown as [string, RequestInit];
   expect(JSON.parse(request.body as string)).toMatchObject({ auth_code: 'fixture-code', code_verifier: 'fixture-verifier' });
   expect(fetcher.mock.calls.some(([url]) => String(url).includes('/rest/v1/rpc/dopmi_is_admin'))).toBe(true);
-  expect(window.location.href).toBe(`${window.location.origin}/`);
+  expect(window.location.href).toBe(`${window.location.origin}/?queue=support`);
 });
 
 test('failed OAuth callback clears secrets and remains retryable without accepting URL claims', async () => {

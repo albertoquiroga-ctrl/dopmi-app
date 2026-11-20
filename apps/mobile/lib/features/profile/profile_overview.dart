@@ -20,6 +20,7 @@ import 'account_profile_avatar.dart';
 import 'rescuer_profile_access.dart';
 import 'rescuer_logout_row.dart';
 import 'rescuer_settings_verification.dart';
+import '../rescue/verification_intro.dart';
 import '../adoption/community_repository.dart';
 import '../adoption/community_ui.dart';
 import '../identity/experience_controller.dart';
@@ -1924,7 +1925,7 @@ class RescuerAccountOptionsScreen extends ConsumerWidget {
             const ProfileRow(
               title: 'Verificación',
               icon: Icons.shield_outlined,
-              path: '/rescue/new?kind=verification',
+              path: RescuerSealScreen.path,
             ),
             const ProfileRow(
               title: 'Editar perfil público',
