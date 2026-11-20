@@ -9493,3 +9493,52 @@ personal; verificar el código instalado y Analítica; exigir fila real `persona
 antes de crear/enviar el fixture privado. Conservar la identidad DopMi de prueba
 existente para esa ficha y la aceptación/medición ya autorizadas. No sustituir
 este control por una fuente escrita mediante SQL ni publicar la ficha.
+
+### 19/11/2026 22:09 CDMX — Control con dos cuentas negativo; nuevo Android sólo personal preparado
+
+El titular completó el acceso de la cuenta personal en el primer AVD. AccountManager
+confirmó ambas cuentas. Play aún tenía seleccionada la de trabajo; se cambió y se
+verificó la personal. Chrome conservaba la cuenta de trabajo en la web de pruebas;
+también se seleccionó explícitamente la personal (`authuser=1`). Se pulsó Become
+a tester y se comprobó «You are a tester» en esa identidad. La ficha nativa siguió
+mostrando alta beta en progreso. Tres listas activas de Internal y Meta se revisaron
+sin cambios: cuatro, cuatro y una direcciones respectivamente, sin la personal.
+
+Se retiró únicamente DopMi del AVD5580 y se verificó ausencia. Tras reabrir una vez
+la tienda y volver a entrar por el CTA público exacto, se probó la entrega efectiva
+aunque persistía el aviso beta: Play sí entregó 2.3.3 (415), instalación nueva a las
+21:52:24 CDMX, instalador Vending. El SDK volvió a devolver los dos `not_set`, con
+campaña/contenido ausentes. La identidad DopMi fue la de prueba existente; Analítica
+ON y diagnóstico OFF. DEV confirmó consentimiento1, fuentes0, primeros envíos0 y
+fichas0. El avatar personal de Play no demuestra qué cuenta quedó en el registro
+de instalación por paquete. La inspección adicional de `bkov.k(cuenta)` confirmó
+que evalúa datos de esa cuenta del registro, no el avatar actual; no se identificó
+por nombre el enum ofuscado. No dar por probada la causa ejecutada de esta lectura.
+
+Para eliminar historial y fallback entre cuentas se creó un AVD nuevo e independiente
+`Dopmi_Attribution_Personal_20261119`, puerto5582, imagen oficial Google Play API35,
+pixel7, 2GB/2núcleos. El gestor dejó PlayStore.enabled=no pese a la imagen Play;
+se corrigió sólo esa configuración del AVD nuevo antes de arrancar. La PC tenía
+0.4GB libres de 7.4GB: se cerró normalmente el AVD5580 mediante su consola, conservando
+su userdata; no se borraron cuentas, AVD ni datos de ninguno. El nuevo confirmó
+boot completo, Phonesky instalado y AccountManager legible con cero cuentas.
+La misma foto sintética se preparó en Downloads y su SHA256 coincidió con el asset.
+
+El nuevo quedó en Welcome to Chrome con sus condiciones visibles. Se pidió al
+titular completar Chrome y Play usando sólo la cuenta personal; esperar su aviso
+antes de leer/interactuar con credenciales. El helper para ese entorno es
+`%TEMP%/dopmi-personal-avd-qa-helper.ps1`, siempre `adb -s emulator-5582`.
+El helper anterior sigue apuntando5580 y no debe usarse para el nuevo. Samsung ya
+no aparecía conectado en el último inventario. Ventana nueva ID2949742, título
+Android Emulator - Dopmi_Attribution_Personal_20261119:5582. CUA envió Raise;
+la captura nativa vuelve a expirar. Si el titular confirma que usó la ventana,
+cerrar ese segmento CUA con completion_summary antes de otra acción de herramientas.
+
+Play Console confirmó después el 416 DISPONIBLE en el canal cerrado, publicado a
+las 22:00 CDMX. No hubo otro build. Retomar el control limpio con esa versión y
+una sola cuenta instaladora. No crear ficha sin fuente real. Para mostrar que no
+depende de escribir el código de campaña en la ficha, se reserva ahora el nombre
+genérico «Prueba de adopcion DEV» para este control nuevo, aún sin crear; verificar
+su ID/propietario/foto/status submitted y published_at NULL contra first_adoption_id.
+La identidad de la nueva corrida se comprobará después del acceso; no asumir que
+sea la anterior. Legales y medición deben resolverse en la identidad real usada.
