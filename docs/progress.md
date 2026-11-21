@@ -9683,3 +9683,38 @@ Pendientes: mascota real sin publicar para primer envío privado (consultada al
 titular), eventos separados entre participantes QA legítimos y recorrido público
 CPP/App Store con cuenta/instalación reservadas. No publicador ni aprobación
 sintéticos, no contactos con desconocidos; ppid sigue sin activarse.
+
+### 21/11/2026 00:03CDMX — Favoritos distribuido por QA; aceptación física pendiente
+
+Misma fuente1441e295/taginmutable y CI44869286815 cuatroSUCCESS. Android
+CM6b012afc52531896647e44fe terminó14SUCCESS: AAB **2.3.9 (423)**, reporte runtime
+PROD/adopciones/AmazonON/GuardianOFF/mediciónTESTOFF/billeterasTESTOFF y
+readback Play internal/completed/423 cotejados en el mismo handle. Un envío.
+Primer intento Samsung23:40 aún pidió422; tras renovar la ficha nativa,
+23:48:06 pidió423 y repitió no-OK2/Status1010 antes de descargar. Captura real y
+paquete ausente cotejados; sin borrar datos/cuentas ni sideload. Se actualizó
+una vez el hilo Google3-8197000042220 con el nuevo target423, GmailSENT. Sigue
+sin acreditarse la causa; el ZFlip sólo tiene descarga reportada por el titular.
+
+Al liberar Android, un POST iOS23:39CDMX tras la ventana23:24:28–23:29:28:
+CM6b012e863e7818a35b07a3f1/ios-testflight/fuente1441 terminó15SUCCESS. IPA
+**2.3.9 (424)**,54,991,042bytes,SHA256
+45090e95ffa6e3ae6f84eefe21f4723368b2fab24c3ac02348d500fd990f7026.
+Reporte runtime y plist/bundle/scheme/Firebase PROD/ausencia marcador DEV,
+perfil AppStore estructural y guarda de ubicación foreground cotejados.
+Se mantuvo AppStoreSubmissionfalse y perfil adopciones/AmazonON; cliente
+Stripe/GuardianOFF. No se afirma verificar criptografíaCMS en Windows ni
+decodificar todas las constantes Dart. Verificación usó Python3.14 existente
+con TLS; el Python del NDK carecía de_ssl, sin descargas previas ni debilitar TLS.
+
+Tarea Apple6b01326fa14b9f22af0129c3 finalizada/sinerror. La pestaña anterior
+Chrome quedó sin debugger tras inactividad; se usó una pestaña nueva del mismo
+navegador por API documentada, sin cambiar mecanismo. Lectura DOM autenticada
+00:03CDMX:424/Lista para enviar/DopMi Inner Team/cinco invitaciones existentes.
+Captura y recibos privados en .tools/favorites-refresh/{android,ios}; no nuevas
+invitaciones ni envío a revisión pública. Se conservaron la revisión419 y
+producción418, servicios y datos. Local1940PASS/4SKIP y revisión independiente
+cubren código; **no sustituyen aceptación instalada**. Único teléfono conectado
+sigue SM-S938B; ZFlip solicitado, sin respuesta/conexión acreditada. Siguiente:
+integrador/titular comprueban Favoritos de423 en ese equipo; no otro build por
+espera. No se enviaron mensajes reales a la rescatista para esta prueba.

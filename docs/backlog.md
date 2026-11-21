@@ -3,9 +3,12 @@
 Prioridad de corrección: Favoritos de Mis match tras swipe derecho, incluida
 respuesta de guardado que llega después de abrir la pestaña. Cliente corregido,
 11regresionesPASS y revisión independiente cerrada; análisis0incidencias,
-suite1940PASS/4SKIP y CI44869286815/1441e295 cuatroSUCCESS. Codemagic Android
-6b012afc en curso; integrador sigue ese handle y después la misma fuente en
-TestFlight por la única cola. Artefactos/publicación e instalación aún pendientes.
+suite1940PASS/4SKIP y CI44869286815/1441e295 cuatroSUCCESS. Android423 publicado
+enPlayinterno/14SUCCESS y iOS424 procesado/TestFlightInnerTeam/15SUCCESS,
+artefactos/runtime cotejados; se conserva la misma fuente1441 y una cola.
+S25 pidió423 y repitió1010 antes de descargar; Google tiene la actualización
+en el caso existente/SENT. Integrador + titular: probar el favorito en ZFlip
+423 cuando se conecte o el titular confirme el recorrido; no nueva build por espera.
 Datos/permisos/SQL/servicios y regla de excluir después de mensaje conservados.
 
 Continuación autorizada: piloto individual iOS `personal-a` con descarga directa,

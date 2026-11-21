@@ -10,10 +10,16 @@ retrasada11PASS, análisis0incidencias y suite completa1940PASS/4SKIP/0FAIL.
 CI [44869286815](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44869286815)
 cuatro trabajos SUCCESS; revisión independiente de código/seguridad/UX sin
 hallazgos materiales finales. Codemagic Android único `6b012afc52531896647e44fe`
-en curso, `android-guardian-internal`, fuente1441 y runtime422 conservado con
-override2.3.9. Número real del artefacto aún pendiente. Después seguirá la misma
-fuente por TestFlight en la única cola. Instalación/aceptación nuevas pendientes;
-preserva la exclusión después del mensaje del adoptante y el piloto iOS inferior.
+terminó14SUCCESS: **2.3.9 (423)**, runtime PROD/adopciones/AmazonON cotejado y
+readback `internal/completed/423`. Después, en la misma cola, Codemagic
+`6b012e863e7818a35b07a3f1` terminó15SUCCESS: **iOS2.3.9 (424)**, IPA/runtime
+verificados. Tarea Apple6b01326fa14b9f22af0129c3 finished/sinerror; Chrome
+21nov00:03CDMX muestra424/Lista para enviar/DopMi Inner Team/cinco invitaciones
+existentes. Sin promoción pública ni cambios de servicios.
+Samsung pidió423 a23:48CDMX y volvió a fallar1010 antes de descargar; paquete
+ausente. El caso Google3-8197000042220 recibió la versión actual por el mismo
+hilo/SENT. ZFlip aún no conectado; instalación y aceptación física del favorito
+pendientes. Preserva la exclusión después del mensaje y el piloto iOS inferior.
 
 Preparación autorizada del piloto individual iOS `personal-a`: base e48a653b,
 incluyendo el arreglo reciente de compartir perfiles HTTPS de b278540d/420.
