@@ -1,5 +1,16 @@
 # Cola vigente — integración de producción20/nov/2026
 
+Continuación autorizada: piloto individual iOS `personal-a` con descarga directa,
+sin códigos ni login previo. Corte reciente e48a653b inventariado e integrado,
+incluye compartir perfil HTTPS de b278540d/build420 interno. Código cliente y
+contrato SQL aditivo implementados; revisión independiente sin P1/P2 tras
+corregir persistencia/cambio de propietario. CPP guardada en borrador, sin activar
+el `ppid`. La cola técnica sigue en [plan iOS](superpowers/plans/2026-11-20-ios-cpp-personal-a.md)
+y [runbook](ios-cpp-personal-a-runbook.md); consultar candidato/progress para
+resultados de CI, despliegue y carga. iPhone físico no disponible: primera ficha
+y mensajes instalados desde App Store pendientes. No sustituir esa aceptación
+por pruebas automatizadas. Aviso «mensaje escrito» ya actualizado a «enviado».
+
 Entrega autorizada en el chat: atribución y eventos separados sobre release
 reciente, recuperar visor/compartir y sello por perfil, conservar Tienda y fixes.
 Base congelada c9d9d03d; rama `codex/production-attribution-restored-20261120`.
@@ -25,9 +36,8 @@ miden descargas agregadas, no la cuenta/primera ficha ni mensajes. Conservar el
 contrato separado del piloto Android y no anunciar significancia por inspección.
 Excluir cuenta QA conocida del análisis, sin borrar el recibo de prueba.
 Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
-P3 posterior: precisar «primer mensaje escrito» del aviso de Analítica como
-«primer mensaje enviado como adoptante, de texto o foto»; no cambia el contrato
-del contador de compositor ya documentado/probado.
+P3 de copy resuelto en el piloto iOS: «primer mensaje enviado como adoptante»;
+no cambia el contrato de texto o foto del contador de compositor.
 Las colas históricas inferiores no reinician trabajo consumido.
 
 # Cola histórica — beta real por canales de prueba, 28/oct/2026

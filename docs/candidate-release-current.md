@@ -1,5 +1,26 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
+Preparación autorizada del piloto individual iOS `personal-a`: base e48a653b,
+incluyendo el arreglo reciente de compartir perfiles HTTPS de b278540d/420.
+Cliente temprano/persistente y RPC SQL aditiva implementados; primer contexto y
+propietario inmutables, revisión consentida exacta, cinco hitos independientes.
+No códigos, login previo a descarga ni matching de dispositivo. Revisión
+independiente sin P1/P2 después de corregir fallos de persistencia/reinicio.
+Pruebas de transporte conjunto12PASS, módulo30PASS y PostgreSQL real17PASS;
+suite backend1339PASS/12SKIP y configuración42PASS. Análisis integrado sin
+hallazgos; suite móvil integral1929PASS/4SKIP. Todavía no hay
+CI del nuevo SHA, migración PROD aplicada ni carga del nuevo candidato.
+
+CPP `personal-a · Publicar en adopción`, id público
+`f72ab3bc-1cd0-49b7-9220-cff726c86ffd`, creada desde2.3.8(419); destino
+`io.dopmi.app://acquire/personal-a` guardado y cotejado tras recargar Chrome.
+Borrador sin enviar a revisión, sin nuevo `ppid` en landing. El419 continúa
+Pendiente de revisión/publicación; no se retiró. Se prepara una carga2.3.9
+mediante `ios-testflight`, PROD/AmazonON, sin envío automático a revisión.
+El número final se leerá del artefacto. El titular no dispone de iPhone físico:
+primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
+CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).
+
 Corrección de compartir perfil preparada sobre este mismo release en
 `b278540d`, CI `44853201553` con cuatro trabajos aprobados. El botón usa
 `https://www.dopmi.org/people/<uuid>` en una línea propia. La página y portada

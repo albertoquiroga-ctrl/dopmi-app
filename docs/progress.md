@@ -9326,3 +9326,57 @@ billeteras TEST apagados. El correctivo queda distribuido para QA interna.
 La instalación de 420, la hoja de compartir real y el salto web→app en
 Samsung conservan su comprobación pendiente por el bloqueo de control
 registrado. No se atribuye disponibilidad pública ni aceptación instalada.
+
+### 20/11/2026 — Implementación acotada de personal-a mediante CPP iOS
+
+Autorizada descarga directa sobre la versión reciente, sin códigos ni login web
+previo. El titular no dispone de iPhone. Corte inicial1a9a83e3; inventario posterior
+identificó avance remoto e48a653b con b278540d (compartir perfil HTTPS) y dos
+registros de entrega. Se integró ese avance por fast-forward con reaplicación
+limpia del trabajo local, conservando visor/carrusel, enlaces de mascotas/perfil,
+Tienda/Amazon, detalles opcionales, navegación, sello y correctivo de perfil.
+No se retomaron ramas395/PR antiguos ni QA consumida.
+
+Captura iOS temprana del destino exacto io.dopmi.app://acquire/personal-a,
+pendiente24h y primer propietario inmutable. Barrera durable de primera recepción
+impide reasignar a otra cuenta tras reinicio y escritura fallida. Inscripción con
+revisión CAS aceptada, token del mismo actor y timeout; OFF invalida sin bloquear
+acciones normales. Tres módulos profundos separan captura, persistencia e
+inscripción. Pruebas RED reales precedieron implementación y regresiones de
+almacenamiento; módulo30PASS, pipeline conjunto12PASS y rutas9PASS en los cortes
+respectivos. Análisis sobre e48a653b sin hallazgos; suite integral en curso en este
+registro. Revisión independiente final de integración/seguridad sin P1/P2.
+
+Migración CLI20261121022319_ios_cpp_acquisition.sql: dos tablas privadas RLS,
+RPC autenticada y cuatro observadores aditivos. Cinco hitos separados: primera
+ficha enviada, aprobación de esa ficha, saludo, compositor adoptante y respuesta
+del dueño. Cohorte ios_cpp_open14d desde inscripción servidor; no clicked_at,
+prueba de instalación, nonce o falsa procedencia Facebook. Opt-out/eliminación
+purgan fuente y eventos. Funciones Android/contacto/envío existentes intactas.
+PostgreSQL real17PASS/0SKIP, suite backend1339PASS/12SKIP y configuración42PASS.
+Preflight PROD historia70/latest20261121013358 y333funciones con fingerprints
+iguales al corte anterior; objetos iOS ausentes. No se aplicó SQL en este corte.
+
+Extensión local de Chrome reconectada por el titular; App Store Connect confirmó
+4192.3.8 Pendiente de revisión y público2.3.7. CPP creada en borrador desde419,
+referencia personal-a · Publicar en adopción, idf72ab3bc-1cd0-49b7-9220-cff726c86ffd.
+Destino exacto guardado y releído tras reload; cero keywords, no enviada. Recibo
+privado apple-cpp-draft.private.json y captura apple-personal-a-draft.jpg. No se
+retiró419 ni activó ppid en landing. Nuevo candidato2.3.9 upload-only previsto por
+ios-testflight con PROD/AmazonON; todavía no iniciado ni número asignado.
+
+Plan y gates en superpowers/plans/2026-11-20-ios-cpp-personal-a.md; aceptación
+operativa en ios-cpp-personal-a-runbook.md. Bloqueos externos: cliente público
+compatible, CPP aprobada, iPhone18+ y participantes/mascota legítimos para ficha
+privada y mensajes. No atribuir esa aceptación a CI o TestFlight, publicar QA
+sintética, enviar mensajes a desconocidos ni afirmar significancia estadística.
+
+Cierre local del mismo corte: Dart format457archivos/0cambios, flutter analyze
+sin hallazgos78.6s y flutter test integral1929PASS/4SKIP, exit0/13m23s.
+Guardas de despliegue ensayadas en DB UUID vacía: tres negativos P0001 (historia,
+catálogo previo y MD5 nuevo posterior al DDL) revirtieron todo; positivo pasó
+postguard y COMMIT. Se corrigió únicamente un CASE sin paréntesis del payload
+privado, sin modificar la migración. Payload congelado SHA256
+5d411e8f5e946df239a6469bf1ab514feb7a725de6aa841de3f444bac3655639.
+Fixture local327funciones frente a333PROD; sólo se adaptaron fingerprints para
+probar la lógica. La guarda de producción conserva70/333 y sus hashes reales.

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,6 +12,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/android_rescuer_acquisition.dart';
+import 'core/ios_cpp_acquisition.dart';
+import 'core/ios_cpp_enrollment.dart';
+import 'core/ios_cpp_link_capture.dart';
 import 'core/adoption_measurement_consent.dart';
 import 'core/config.dart';
 import 'core/storage.dart';
@@ -37,14 +42,64 @@ class Bootstrap extends StatefulWidget {
 class _BootstrapState extends State<Bootstrap> {
   final config = AppConfig.environment();
   final contentLinks = PlatformContentLinkSource();
+  late final Future<SharedPreferences> preferencesFuture;
+  late final Future<IosCppAcquisition?> iosAcquisition;
+  IosCppLinkCapture? cppCapture;
+  MeasurementController? activeMeasurement;
+  bool cppReceived = false;
   late Future<
-    ({IdentityRepository identity, MeasurementController measurement})
+    ({
+      IdentityRepository identity,
+      MeasurementController measurement,
+      IosCppAcquisition? ios,
+    })
   >
-  connection = connect();
-  Future<({IdentityRepository identity, MeasurementController measurement})>
+  connection;
+
+  @override
+  void initState() {
+    super.initState();
+    preferencesFuture = SharedPreferences.getInstance();
+    iosAcquisition = preferencesFuture.then((preferences) {
+      if (!supportsIosCppAcquisition || !config.isValid) return null;
+      return IosCppAcquisition(preferences, Uri.parse(config.url).host);
+    });
+    if (supportsIosCppAcquisition) {
+      cppCapture = IosCppLinkCapture(
+        events: contentLinks.events,
+        readInitial: contentLinks.links.getInitialLink,
+        acquisition: iosAcquisition,
+        onCaptured: () {
+          cppReceived = true;
+          final measurement = activeMeasurement;
+          final owner = measurement?.ownerId;
+          if (owner != null && measurement!.analyticsConsentCurrent) {
+            unawaited(measurement.prepareAttributableAction(owner));
+          }
+        },
+      )..start();
+    }
+    connection = connect();
+  }
+
+  @override
+  void dispose() {
+    activeMeasurement = null;
+    unawaited(cppCapture?.dispose());
+    super.dispose();
+  }
+
+  Future<
+    ({
+      IdentityRepository identity,
+      MeasurementController measurement,
+      IosCppAcquisition? ios,
+    })
+  >
   connect() async {
     if (!config.isValid) throw StateError('missing_config');
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = await preferencesFuture;
+    final ios = await iosAcquisition;
     await Firebase.initializeApp();
     final namespace = Uri.parse(config.url).host;
     final acquisitionDiagnostics = config.environment == 'test';
@@ -59,12 +114,22 @@ class _BootstrapState extends State<Bootstrap> {
     );
     late final MeasurementController measurement;
     AdoptionMeasurementConsent? consentTransport;
+    IosCppEnrollment? iosEnrollment;
+
     measurement = MeasurementController(
       preferences,
       namespace,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
+      prepareAcquisition: ios == null
+          ? null
+          : (owner) async {
+              await iosEnrollment?.record(owner);
+            },
       prepareAdoptionConsent: (owner, consent) {
+        if (!consent) {
+          iosEnrollment?.revoke(owner);
+        }
         final client = Supabase.instance.client;
         final analyticsRevision = measurement.analyticsRevision;
         final request =
@@ -75,12 +140,26 @@ class _BootstrapState extends State<Bootstrap> {
                   measurement.ownerId == owner &&
                   measurement.analyticsConsentCurrent &&
                   measurement.analyticsRevision == analyticsRevision,
+              onAcceptedRevision: (revision) {
+                if (consent) {
+                  iosEnrollment?.consentAccepted(
+                    owner,
+                    localRevision: analyticsRevision,
+                    serverRevision: revision,
+                  );
+                }
+              },
             );
         if (request == null) return null;
 
         return () async {
           final accepted = await request();
-          if (!accepted || !consent || !supportsPlayInstallReferrer) return;
+          if (!accepted || !consent) return;
+          if (ios != null) {
+            await iosEnrollment?.record(owner);
+            return;
+          }
+          if (!supportsPlayInstallReferrer) return;
 
           // A stalled acquisition request must not hold a later explicit
           // opt-out behind it. Its server-side consent lock also handles an
@@ -121,6 +200,7 @@ class _BootstrapState extends State<Bootstrap> {
         };
       },
     );
+    activeMeasurement = measurement;
     await measurement.prepareStartup();
     {
       final callback = Uri.parse(config.redirect);
@@ -139,6 +219,17 @@ class _BootstrapState extends State<Bootstrap> {
         ),
       );
     }
+    if (ios != null) {
+      iosEnrollment = IosCppEnrollment(
+        client: Supabase.instance.client,
+        acquisition: ios,
+        measurement: () => measurement,
+        captureReady: () async {
+          await cppCapture?.ready;
+        },
+      );
+    }
+    await cppCapture?.ready;
     return (
       identity: SupabaseIdentityRepository(
         Supabase.instance.client,
@@ -146,13 +237,18 @@ class _BootstrapState extends State<Bootstrap> {
         preferences,
       ),
       measurement: measurement,
+      ios: ios,
     );
   }
 
   @override
   Widget build(BuildContext context) =>
       FutureBuilder<
-        ({IdentityRepository identity, MeasurementController measurement})
+        ({
+          IdentityRepository identity,
+          MeasurementController measurement,
+          IosCppAcquisition? ios,
+        })
       >(
         future: connection,
         builder: (_, snapshot) {
@@ -161,6 +257,11 @@ class _BootstrapState extends State<Bootstrap> {
               overrides: [
                 configProvider.overrideWithValue(config),
                 contentLinkSourceProvider.overrideWithValue(contentLinks),
+                iosCppAcquisitionProvider.overrideWithValue(snapshot.data!.ios),
+                if (cppReceived)
+                  routerInitialLocationProvider.overrideWithValue(
+                    '/my-adoptions',
+                  ),
                 identityRepositoryProvider.overrideWithValue(
                   snapshot.data!.identity,
                 ),

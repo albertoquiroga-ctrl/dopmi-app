@@ -110,8 +110,10 @@ class MeasurementController extends ChangeNotifier {
     this.analytics,
     this.diagnostics, {
     this.prepareAdoptionConsent,
+    this.prepareAcquisition,
   });
   final PrepareAdoptionConsent? prepareAdoptionConsent;
+  final Future<void> Function(String actor)? prepareAcquisition;
   Future<void> _consentSync = Future.value();
   Future<void> _settingsSync = Future.value();
   Future<void>? _ownerSync;
@@ -133,7 +135,23 @@ class MeasurementController extends ChangeNotifier {
     // the local SDK. Its consent task is queued before this settings task ends.
     await _settingsSync;
     if (ownerId != actor || !analyticsConsentCurrent) return;
+    final ownerRevision = _ownerRevision;
+    final analyticsRevision = _analyticsRevision;
     await consentReady;
+    if (ownerId != actor ||
+        !analyticsConsentCurrent ||
+        ownerRevision != _ownerRevision ||
+        analyticsRevision != _analyticsRevision) {
+      return;
+    }
+    final prepare = prepareAcquisition;
+    if (prepare == null) return;
+    try {
+      await prepare(actor)
+          .timeout(const Duration(seconds: 10), onTimeout: () {});
+    } catch (_) {
+      // Optional source resolution must not prevent a normal product action.
+    }
   }
 
   Future<void> _queueSettings(Future<void> Function() apply) {

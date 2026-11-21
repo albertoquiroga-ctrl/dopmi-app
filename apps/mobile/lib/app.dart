@@ -20,6 +20,7 @@ import 'core/config/adoption_only_build.dart';
 import 'core/splash.dart';
 import 'core/navigation.dart';
 import 'core/measurement.dart';
+import 'core/ios_cpp_acquisition.dart';
 import 'features/identity/experience_controller.dart';
 import 'features/identity/experience_landing.dart';
 import 'features/identity/auth_screens.dart';
@@ -758,6 +759,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
 final _measurementOwnerProvider = Provider<void>((ref) {
   final measurement = ref.watch(measurementControllerProvider.notifier);
+  final iosAcquisition = ref.watch(iosCppAcquisitionProvider);
   if (measurement == null) return;
   final identity = ref.watch(identityControllerProvider);
   var disposed = false;
@@ -766,6 +768,7 @@ final _measurementOwnerProvider = Provider<void>((ref) {
     if (disposed || identity.loading) return;
     // A failed initial restore does not establish sign-out.
     if (identity.error != null && measurement.loading) return;
+    unawaited(iosAcquisition?.observeOwner(identity.identity?.id));
     unawaited(
       measurement.owner(identity.identity?.id).catchError((Object _) {}),
     );

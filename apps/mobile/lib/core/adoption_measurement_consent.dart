@@ -21,6 +21,7 @@ class AdoptionMeasurementConsent {
     String owner,
     bool enabled, {
     required bool Function() stillEligible,
+    void Function(int revision)? onAcceptedRevision,
   }) {
     final captured = client.auth.currentSession;
     if (captured == null || captured.user.id != owner) return null;
@@ -79,7 +80,20 @@ class AdoptionMeasurementConsent {
           if (next == null || result is! Map || result['applied'] is! bool) {
             return false;
           }
-          if (result['applied'] == true) return result['consent'] == enabled;
+          if (result['applied'] == true) {
+            if (result['consent'] != enabled) return false;
+            // Only this response proves which CAS revision was accepted. OFF
+            // may finish for a captured actor after sign-out, but its revision
+            // must not become acquisition state for the next signed-in actor.
+            if (client.auth.currentSession?.user.id == owner) {
+              try {
+                onAcceptedRevision?.call(next);
+              } catch (_) {
+                // An optional observer cannot undo confirmed acceptance.
+              }
+            }
+            return true;
+          }
           // A different device may have made the newer decision. Local intent
           // counters cannot establish that ON should override it, even when
           // the returned consent is true. Skip attribution until a fresh sync.
