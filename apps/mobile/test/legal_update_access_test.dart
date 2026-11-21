@@ -129,6 +129,20 @@ void main() {
 
   for (final document in [const TermsScreen(), const PrivacyNoticeScreen()]) {
     testWidgets(
+      'optional analytics choice is explained in ${document.runtimeType}',
+      (tester) async {
+        await tester.pumpWidget(MaterialApp(home: document));
+        await tester.pumpAndSettle();
+        final copy = tester
+            .widgetList<LegalDocumentSection>(find.byType(LegalDocumentSection))
+            .map((section) => section.body)
+            .join(' ');
+        expect(copy, contains('preseleccionada'));
+        expect(copy, contains('no activa la analítica'));
+        expect(copy, contains('por separado'));
+      },
+    );
+    testWidgets(
       'native legal document exposes its exact current version: ${document.runtimeType}',
       (tester) async {
         await tester.pumpWidget(MaterialApp(home: document));

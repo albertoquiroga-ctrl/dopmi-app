@@ -1,3 +1,21 @@
+## 21/11/2026 CDMX — Elección inicial de Analítica
+
+El titular pide Analítica de uso inicialmente activada, declarada en términos y
+tiendas y con opción de retirarla. La implementación prepara ON como selección
+visible y editable; sólo una acción real la confirma antes de recopilar. Aceptar
+términos no equivale a esta elección opcional. Apple exige consentimiento para
+datos de uso ([5.1.1(ii)](https://developer.apple.com/app-store/review/guidelines/#privacy)).
+Se conservan los OFF anteriores, incluso en otra instalación/celular, y se
+distinguen de ausencia de decisión. Diagnóstico y medición de publicaciones
+siguen separados; no se activan publicidad, replay ni nuevos SDK.
+
+Aviso propio `usage-analytics-2026-11-21`, recibo de acción/version/fecha servidor
+y CAS; sin backfill ni reescritura de aceptaciones legales. Los textos generales
+conservan sus versiones; el aviso adicional tiene evidencia independiente. Un
+fallo de medición permite usar Dopmi sin recopilar. Código, SQL, publicación
+legal/fichas y aceptación instalada son pasos distintos. No interpretar esta
+preparación como consentimiento otorgado por los usuarios. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+
 ## 20/11/2026 CDMX — Piloto CPP personal-a autorizado
 
 El titular autoriza implementar la prueba iOS sobre el release reciente,

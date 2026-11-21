@@ -1,5 +1,12 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
+Preparación21/nov para elección inicial de Analítica, sobre35204afd/producto1441:
+ON sólo visual hasta guardar; elección opcional y OFF históricos conservados,
+incluida restauración/otro teléfono. Componente, transporte, recibo SQL y textos
+nativos implementados; SQLPROD/HTML/fichas/builds aún no ejecutados. Revisión
+independiente de código/seguridad/UI sin P1/P2 final. [Plan y validación](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+No sustituye el release QA423/424 ni acredita aceptación instalada.
+
 Corrección de Favoritos sobre esta continuación: al volver a
 Mis match, la rama retenida refresca su lista; al confirmarse un like tardío,
 el repositorio avisa localmente a sus observadores de favoritos de esa misma

@@ -32,6 +32,7 @@ import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/profile/help_center_screen.dart';
 import 'features/profile/account_privacy_screen.dart';
+import 'features/profile/usage_analytics_prompt.dart';
 import 'features/profile/impact_screen.dart';
 import 'features/profile/information_screens.dart';
 import 'features/profile/rescuer_profile_edit_screen.dart';
@@ -828,6 +829,7 @@ class _LegalAccessGate extends ConsumerWidget {
     final router = ref.read(routerProvider);
     final experience = ref.watch(experienceProvider);
     final identityController = ref.watch(identityControllerProvider);
+    final measurement = ref.watch(measurementControllerProvider);
     return ListenableBuilder(
       listenable: Listenable.merge([experience, identityController]),
       builder: (context, _) {
@@ -882,6 +884,24 @@ class _LegalAccessGate extends ConsumerWidget {
             );
           }
           if (experience.loading) return const DopmiSplash();
+        }
+        if (!exempt &&
+            currentIdentity?.verified == true &&
+            accepted &&
+            measurement?.analyticsChoices != null &&
+            !measurement!.preferencesReadyFor(currentIdentity!.id)) {
+          return const DopmiSplash();
+        }
+        if (!exempt &&
+            currentIdentity?.verified == true &&
+            accepted &&
+            measurement?.preferencesReadyFor(currentIdentity!.id) == true &&
+            measurement!.analyticsChoicePending) {
+          return UsageAnalyticsPrompt(
+            key: ValueKey('analytics-choice:${currentIdentity!.id}'),
+            onConfirm: measurement.setAnalytics,
+            onPrivacy: () => router.push('/privacy-notice'),
+          );
         }
         if (ref.read(configProvider).mapsEnabled &&
             currentIdentity?.verified == true &&

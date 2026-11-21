@@ -1,5 +1,15 @@
 # Cola vigente — integración de producción20/nov/2026
 
+Nueva petición21/nov: Analítica preseleccionada con acción explícita opcional,
+OFF anteriores conservados y avisos/fichas coherentes. Implementación y revisión
+de código/seguridad/UI cerradas localmente; SQL aditivo y textos exactos preparados,
+sin aplicar/publicar. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md)
+mantiene el paquete y gates. Integrador: cerrar CI del candidato y presentar la
+aplicación SQL/publicación legal concreta; después distribuir QA por la única
+cola y verificar instalación. El estado publicado423/424 y el problema de descarga
+S25 permanecen como abajo. No convertir la selección inicial en consentimiento
+ya otorgado ni activar diagnóstico/publicaciones.
+
 Prioridad de corrección: Favoritos de Mis match tras swipe derecho, incluida
 respuesta de guardado que llega después de abrir la pestaña. Cliente corregido,
 11regresionesPASS y revisión independiente cerrada; análisis0incidencias,

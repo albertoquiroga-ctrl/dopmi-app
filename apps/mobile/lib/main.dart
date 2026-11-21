@@ -39,7 +39,7 @@ class Bootstrap extends StatefulWidget {
   State<Bootstrap> createState() => _BootstrapState();
 }
 
-class _BootstrapState extends State<Bootstrap> {
+class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
   final config = AppConfig.environment();
   final contentLinks = PlatformContentLinkSource();
   late final Future<SharedPreferences> preferencesFuture;
@@ -59,6 +59,7 @@ class _BootstrapState extends State<Bootstrap> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     preferencesFuture = SharedPreferences.getInstance();
     iosAcquisition = preferencesFuture.then((preferences) {
       if (!supportsIosCppAcquisition || !config.isValid) return null;
@@ -84,9 +85,21 @@ class _BootstrapState extends State<Bootstrap> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     activeMeasurement = null;
     unawaited(cppCapture?.dispose());
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    final measurement = activeMeasurement;
+    final owner = measurement?.ownerId;
+    if (owner == null || measurement!.analyticsChoices == null) return;
+    unawaited(
+      measurement.owner(owner, refresh: true).catchError((Object _) {}),
+    );
   }
 
   Future<
@@ -113,7 +126,9 @@ class _BootstrapState extends State<Bootstrap> {
           : null,
     );
     late final MeasurementController measurement;
-    AdoptionMeasurementConsent? consentTransport;
+    final consentTransport = AdoptionMeasurementConsent.deferred(
+      () => Supabase.instance.client,
+    );
     IosCppEnrollment? iosEnrollment;
 
     measurement = MeasurementController(
@@ -121,6 +136,7 @@ class _BootstrapState extends State<Bootstrap> {
       namespace,
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
+      analyticsChoices: consentTransport,
       prepareAcquisition: ios == null
           ? null
           : (owner) async {
@@ -132,24 +148,28 @@ class _BootstrapState extends State<Bootstrap> {
         }
         final client = Supabase.instance.client;
         final analyticsRevision = measurement.analyticsRevision;
-        final request =
-            (consentTransport ??= AdoptionMeasurementConsent(client)).prepare(
-              owner,
-              consent,
-              stillEligible: () =>
-                  measurement.ownerId == owner &&
-                  measurement.analyticsConsentCurrent &&
-                  measurement.analyticsRevision == analyticsRevision,
-              onAcceptedRevision: (revision) {
-                if (consent) {
-                  iosEnrollment?.consentAccepted(
-                    owner,
-                    localRevision: analyticsRevision,
-                    serverRevision: revision,
-                  );
-                }
-              },
-            );
+        final request = consentTransport.prepare(
+          owner,
+          consent,
+          stillEligible: () =>
+              measurement.ownerId == owner &&
+              measurement.analyticsConsentCurrent &&
+              measurement.analyticsRevision == analyticsRevision,
+          onAcceptedRevision: (revision) {
+            if (consent) {
+              iosEnrollment?.consentAccepted(
+                owner,
+                localRevision: analyticsRevision,
+                serverRevision: revision,
+              );
+            }
+          },
+          restoreOnly: consent,
+          onRevoked: () => measurement.observeAnalyticsRevoked(
+            owner,
+            expectedRevision: analyticsRevision,
+          ),
+        );
         if (request == null) return null;
 
         return () async {

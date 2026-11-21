@@ -104,3 +104,38 @@ no requiere rehacer la declaración App Privacy ya publicada.
 - El buzón `soporte@dopmi.org`, Resend SMTP/Auth y Apple Private Relay tienen
   entrega real comprobada. Las claves y el alias privado permanecen fuera del
   repositorio.
+# Conciliación de Analítica — 21/11/2026
+
+Lectura real de Chrome, sin guardar/publicar cambios: App Store Connect muestra
+16 tipos vinculados. Interacción con el producto ya usa Análisis; ID de dispositivo
+usa Análisis y Funcionalidad. ID de usuario sólo Funcionalidad; Ubicación
+aproximada Funcionalidad/Personalización; Ubicación exacta ya declarada para
+Funcionalidad/Personalización. No inferir que la preselección cambia por sí misma
+el tratamiento o constituye consentimiento.
+
+Play, declaración del29/sep leída: Interacciones recopiladas, no compartidas,
+no efímeras, opcionales, finalidad Analytics. User IDs recopilados, no compartidos,
+no efímeros, requeridos por cuenta: Functionality/Security/Account management,
+sin Analytics. Ubicación aproximada opcional/no efímera, Functionality,
+sin Analytics. Precise location aparece sin seleccionar; la app vigente sí
+guarda el punto privado de mascotas. Resolver esta discrepancia antes de
+publicar el formulario actualizado, sin atribuir GPS a la medición propia.
+La audiencia declarada marca16–17 y18+; no se modificó la política de edad.
+
+Delta que preparar: Analytics en User ID por atribución propia de Supabase y en
+Coarse Location por la geografía que Firebase puede inferir de IP. Los eventos
+Dopmi no adjuntan GPS/contenido de mensajes, pero eso no vuelve anónimo al SDK.
+Evaluar y declarar captación/marketing propio para User ID y Product Interaction
+cuando comparan campañas; esta interpretación conservadora se distingue de una
+obligación textual específica para todo referrer orgánico. No significa activar
+tracking, anuncios personalizados ni transferir datos a Meta.
+
+Analítica seguirá siendo opcional: ON preseleccionado con acción real posterior,
+OFF previo respetado y retirada desde Cuenta y privacidad. No marcar todo User ID
+opcional: también sostiene la cuenta. Crashlytics y PostHog conservan sus controles.
+Las consolas no sustituyen la elección del usuario. Delta exacto/políticas en
+`.tools/analytics-choice-20261121/legal/REVIEW.md`; estado de implementación y
+gates en [plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+
+Fuentes: [Apple](https://developer.apple.com/app-store/app-privacy-details/),
+[Google Play](https://support.google.com/googleplay/android-developer/answer/10787469?hl=en).

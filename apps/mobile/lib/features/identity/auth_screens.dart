@@ -819,6 +819,10 @@ class TermsScreen extends StatelessWidget {
           'El uso de Dopmi está sujeto a estos términos. Proporciona información veraz y cuida la privacidad y seguridad de otras personas.',
         ),
         const LegalDocumentSection(
+          'Medición de uso opcional',
+          'La analítica ayuda a mejorar Dopmi y a evaluar qué difusión ayuda a que más personas publiquen o contacten. Si aún no tienes una elección registrada, puede aparecer preseleccionada, pero sólo se activa cuando guardas esa elección con la opción marcada. Puedes desmarcarla o continuar sin analítica. Aceptar estos términos no activa la analítica. Si ya la desactivaste, respetamos tu elección. Puedes cambiarla en Cuenta y privacidad sin perder las funciones principales. El diagnóstico de errores y la medición de publicaciones se eligen por separado.',
+        ),
+        const LegalDocumentSection(
           'Adopciones, casos y moderación',
           'Dopmi facilita el contacto y seguimiento. Una publicación puede requerir verificación, correcciones o retirarse. No garantizamos una adopción, atención veterinaria o resultado específico. Los borradores y correcciones son privados hasta su aprobación.',
         ),

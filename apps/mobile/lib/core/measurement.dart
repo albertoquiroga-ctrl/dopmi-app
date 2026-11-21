@@ -7,6 +7,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'usage_analytics_choice.dart';
+
 abstract interface class ProductAnalytics {
   Future<void> pause();
   Future<void> enabled(bool value);
@@ -111,9 +113,14 @@ class MeasurementController extends ChangeNotifier {
     this.diagnostics, {
     this.prepareAdoptionConsent,
     this.prepareAcquisition,
+    this.analyticsChoices,
   });
   final PrepareAdoptionConsent? prepareAdoptionConsent;
   final Future<void> Function(String actor)? prepareAcquisition;
+  final UsageAnalyticsChoiceStore? analyticsChoices;
+  UsageAnalyticsChoice? _analyticsChoice;
+  bool _analyticsChoicePending = false;
+  bool get analyticsChoicePending => ownerId != null && _analyticsChoicePending;
   Future<void> _consentSync = Future.value();
   Future<void> _settingsSync = Future.value();
   Future<void>? _ownerSync;
@@ -237,8 +244,8 @@ class MeasurementController extends ChangeNotifier {
     }
   }
 
-  Future<void> owner(String? value) {
-    if (_requestedOwner == value) {
+  Future<void> owner(String? value, {bool refresh = false}) {
+    if (!refresh && _requestedOwner == value) {
       final pending = _ownerSync;
       if (pending != null) return pending;
       if (!loading && _configuredOwnerRevision == _ownerRevision) {
@@ -260,7 +267,28 @@ class MeasurementController extends ChangeNotifier {
       final savedAnalytics = value == null
           ? null
           : preferences.getBool(preference);
-      final allowed = savedAnalytics ?? false;
+      var allowed = savedAnalytics ?? false;
+      UsageAnalyticsChoice? remote;
+      var pendingChoice = false;
+      if (analyticsChoices != null && value != null) {
+        // Never turn a restored preference into a new ON write. In particular,
+        // a remote OFF/revision0 must survive reinstall and another phone.
+        try {
+          remote = await analyticsChoices!.read(value);
+          if (revision != _ownerRevision) return;
+          allowed =
+              savedAnalytics != false && remote.hasChoice && remote.consent;
+          pendingChoice = !remote.hasChoice && savedAnalytics != false;
+          if (remote.hasChoice && !remote.consent) {
+            if (!await preferences.setBool(preference, false)) {
+              throw StateError('analytics_preference_not_saved');
+            }
+          }
+        } catch (_) {
+          // Uncertain state permits normal product use, with measurement OFF.
+          allowed = false;
+        }
+      }
       final diagnosticsAllowed =
           value != null &&
           (preferences.getBool(_preferenceKey(value, 'diagnostics')) ?? false);
@@ -287,6 +315,8 @@ class MeasurementController extends ChangeNotifier {
       if (diagnosticsAllowed) _installErrorHandler();
       _owner = value;
       _analyticsAllowed = allowed;
+      _analyticsChoice = remote;
+      _analyticsChoicePending = pendingChoice;
       diagnosticsEnabled = diagnosticsAllowed;
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;
@@ -294,8 +324,17 @@ class MeasurementController extends ChangeNotifier {
       _configuredAnalyticsRevision = analyticsRevision;
       loading = false;
       // A new device's default is not a revocation of the account's consent.
-      if (value != null && savedAnalytics != null) {
-        _syncConsent(value, savedAnalytics);
+      if (value != null) {
+        if (analyticsChoices == null && savedAnalytics != null) {
+          _syncConsent(value, savedAnalytics);
+        } else if (analyticsChoices != null && remote != null) {
+          if (allowed) {
+            _syncConsent(value, true);
+          } else if (savedAnalytics == false &&
+              (!remote.hasChoice || remote.consent)) {
+            _syncConsent(value, false);
+          }
+        }
       }
       notifyListeners();
     });
@@ -306,6 +345,7 @@ class MeasurementController extends ChangeNotifier {
   }
 
   Future<void> setAnalytics(bool value) {
+    if (analyticsChoices != null) return _setAnalyticsChoice(value);
     final owner = ownerId;
     if (owner == null) return Future.value();
     final preferenceKey = _preferenceKey(owner, 'analytics');
@@ -335,6 +375,118 @@ class MeasurementController extends ChangeNotifier {
         lastAnalyticsEvent = null;
         lastAnalyticsResult = null;
       }
+      notifyListeners();
+    });
+  }
+
+  Future<void> _setAnalyticsChoice(bool value) {
+    final actor = ownerId;
+    if (actor == null) return Future.value();
+    final ownerRevision = _ownerRevision;
+    final revision = ++_analyticsRevision;
+    final key = _preferenceKey(actor, 'analytics');
+    bool current() =>
+        ownerRevision == _ownerRevision && revision == _analyticsRevision;
+
+    // Start the authenticated intention now: a stalled ON must not block OFF
+    // behind the SDK settings queue. OFF is also saved locally while offline.
+    final known = _analyticsChoice;
+    final decision = known != null
+        ? analyticsChoices!.save(actor, value, known.revision)
+        : () async {
+            final before = await analyticsChoices!.read(actor);
+            if (!current()) throw StateError('analytics_owner_changed');
+            return analyticsChoices!.save(actor, value, before.revision);
+          }();
+    final localOff =
+        (value ? Future.value(true) : preferences.setBool(key, false)).then(
+          (saved) => saved,
+          onError: (Object _) => false,
+        );
+    final pause = analytics.pause().catchError((Object _) {});
+    // Register the error handler immediately, before this task reaches its
+    // place in the settings queue (a prior SDK call may still be pending).
+    final observed = decision
+        .then<({UsageAnalyticsChoiceResult? result, Object? error})>(
+          (result) => (result: result, error: null),
+          onError: (Object error) => (result: null, error: error),
+        );
+    return _queueSettings(() async {
+      await pause;
+      await analytics.pause();
+      final outcome = await observed;
+      final offSaved = await localOff;
+      if (!offSaved) throw StateError('analytics_preference_not_saved');
+      if (!current()) return;
+      _analyticsAllowed = false;
+      if (value && outcome.error != null) {
+        notifyListeners();
+        throw StateError('analytics_choice_not_confirmed');
+      }
+      final result = outcome.result;
+      if (result != null) _analyticsChoice = result.state;
+      if (value && (result?.applied != true || result!.state.consent != true)) {
+        notifyListeners();
+        throw StateError('analytics_choice_changed');
+      }
+      if (!await preferences.setBool(key, value)) {
+        await preferences.reload();
+        throw StateError('analytics_preference_not_saved');
+      }
+      if (!current()) return;
+      await _setAnalyticsOwner(value ? key : null);
+      if (!current()) return;
+      if (value) await analytics.enabled(true);
+      if (!current()) {
+        await analytics.pause();
+        return;
+      }
+      _analyticsAllowed = value;
+      _analyticsChoicePending = false;
+      _configuredAnalyticsRevision = revision;
+      if (value) {
+        _syncConsent(actor, true);
+      } else {
+        // An uncertain versioned OFF must not be repeated through legacy v2.
+        // The next state read reconciles it; local withdrawal is immediate.
+        lastAnalyticsEvent = null;
+        lastAnalyticsResult = null;
+      }
+      notifyListeners();
+    });
+  }
+
+  /// Apply an observed server OFF locally, without making another consent write.
+  Future<void> observeAnalyticsRevoked(
+    String actor, {
+    required int expectedRevision,
+  }) {
+    if (ownerId != actor || _analyticsRevision != expectedRevision) {
+      return Future.value();
+    }
+    final ownerRevision = _ownerRevision;
+    final revision = ++_analyticsRevision;
+    return _queueSettings(() async {
+      if (ownerRevision != _ownerRevision || revision != _analyticsRevision) {
+        return;
+      }
+      await analytics.pause();
+      await _setAnalyticsOwner(null);
+      if (!await preferences.setBool(
+        _preferenceKey(actor, 'analytics'),
+        false,
+      )) {
+        throw StateError('analytics_preference_not_saved');
+      }
+      if (ownerRevision != _ownerRevision || revision != _analyticsRevision) {
+        return;
+      }
+      _analyticsAllowed = false;
+      _analyticsChoice = null;
+      _analyticsChoicePending = false;
+      _configuredAnalyticsRevision = revision;
+      lastAnalyticsEvent = null;
+      lastAnalyticsResult = null;
       notifyListeners();
     });
   }
