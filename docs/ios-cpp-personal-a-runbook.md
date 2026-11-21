@@ -16,7 +16,7 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
 | Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin envío a revisión pública ni aceptación instalada. |
-| Dispositivo | No hay iPhone físico disponible. Instalación desde CPP, primera ficha y mensajes siguen pendientes de aceptación física. |
+| Dispositivo | El titular ofrece un iPad; modelo y versión de iPadOS pendientes de confirmar. IPA421 real declara UIDeviceFamily=[1,2], mínimo15.0 y arm64. Para CPP se requiere iPadOS18+. Instalación, primera ficha y mensajes siguen sin aceptación física. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
@@ -63,7 +63,8 @@ App Store ni sustituye esa puerta.
 
 ## Recorrido físico y evidencia requerida
 
-Usar un iPhone18+ y una cuenta QA autorizada sin envíos/revisiones anteriores
+Usar un iPhone con iOS18+ o un iPad con iPadOS18+, y una cuenta QA autorizada
+sin envíos/revisiones anteriores
 observables. El usuario completa acceso y aceptación legal personalmente. Registrar
 versión/build instalado, origen App Store y método de apertura. No consumir de
 nuevo fixtures anteriores ni limpiar historia para volver elegible una cuenta.
@@ -107,8 +108,9 @@ sumar cohortes. El [reporte iOS](../tools/verification/ios-cpp-acquisition.sql) 
 operativo y bruto: requiere exclusión privada de QA y cohortes maduras.
 
 Cerrar aceptación sólo con la unión exacta de actor/variante/ficha y los eventos
-permitidos, sin backfill ni reasignación. La ausencia de iPhone deja ese cierre
-pendiente aunque las verificaciones técnicas y la carga estén aprobadas.
+permitidos, sin backfill ni reasignación. La falta de un recorrido físico
+comprobado deja ese cierre pendiente aunque las verificaciones técnicas y la
+carga estén aprobadas.
 
 ## Recuperación
 

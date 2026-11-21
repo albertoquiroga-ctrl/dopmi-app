@@ -9488,3 +9488,17 @@ no inscripción autenticada de un iPhone. Fuente/eventos iOS no se insertaron po
 SQL ni se publicaron mascotas sintéticas. El ppid sigue inactivo; faltan cliente
 público compatible, CPP aprobada y teléfono iOS18+ para aceptar instalación limpia,
 primera ficha y mensajes. A/B iOS permanece sin aceptación ni significancia.
+
+### 20/11/2026 CDMX — iPad ofrecido para la aceptación Apple
+
+El titular indica que dispone de un iPad. Modelo y versión de iPadOS solicitados,
+aún pendientes; no atribuir conexión, instalación ni prueba de ese equipo.
+El IPA real421 del mismo handle6b0112f68d36bd30d38e3998 se releyó en memoria:
+SHA256f3fd0fe9…af90d7 coincide; UIDeviceFamily=[1,2], mínimo15.0 y arm64,
+cuatro orientaciones iPad, scheme io.dopmi.app y AppLinks conservados.
+Recibo privado cm-6b0112f68d36bd30d38e3998-ipad-compatibility.sanitized.private.json.
+Apple documenta CPP/Abrir también en iPadOS18+. Por tanto un iPad compatible puede
+cubrir la prueba de atribución Apple; no equivale a QA visual específica de iPhone.
+Runbook y cola aceptan ambos dispositivos. Sin código, build nuevo o cambios a
+Apple, campañas o SQL. Siguen pendientes cliente/CPP públicos aprobados y recorrido
+limpio desde App Store; TestFlight sólo cubre los pasos del candidato instalado.

@@ -11,12 +11,13 @@ Apple procesado/Lista para enviar/DopMi Inner Team confirmado en Chrome.
 CPP guardada en borrador, sin activar
 el `ppid`. La cola técnica sigue en [plan iOS](superpowers/plans/2026-11-20-ios-cpp-personal-a.md)
 y [runbook](ios-cpp-personal-a-runbook.md); consultar candidato/progress para
-resultados de CI, despliegue y carga. iPhone físico no disponible: primera ficha
+resultados de CI, despliegue y carga. El titular ofrece iPad; modelo/iPadOS
+pendientes de confirmar y el mismo421 admite iPad. Primera ficha
 y mensajes instalados desde App Store pendientes. No sustituir esa aceptación
 por pruebas automatizadas. Aviso «mensaje escrito» ya actualizado a «enviado».
 Pendientes del piloto: cliente público compatible tras la revisión vigente419,
 CPP aprobada y activación ppid; después instalación limpia desde CPP/Abrir en
-iPhone18+, primera ficha privada y eventos legítimos de mensajes. No enviar
+iPhone con iOS18+ o iPad con iPadOS18+, primera ficha privada y eventos legítimos de mensajes. No enviar
 campaña iOS nueva ni retomar A/B con atribución iOS como si ya estuviera aceptada.
 
 Entrega autorizada en el chat: atribución y eventos separados sobre release
