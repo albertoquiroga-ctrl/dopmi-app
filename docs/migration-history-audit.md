@@ -1,5 +1,34 @@
 # Auditoría del historial de migraciones
 
+## 21/11/2026 CDMX — Elección explícita de Analítica en PROD
+
+Fuenteaf0e2274f13a51c10a13e8579fd932f35f1ebf58, CI44878177593 cuatroSUCCESS.
+Tras autorización del titular, una aplicación `apply_migration` en
+ysaoeuidcvgtlmphmeyb como **20261121223246 /
+usage_analytics_explicit_choice_20261121**. Mapea la fuente local
+`20261121062012_usage_analytics_choice.sql`,4673B/SHA256
+`4028bc86dfe2e3f1f227112c7d197ae9bd1bc71962681bf790ec4c3434a13080`.
+No renombrar la fuente, reparar historia ni reaplicar para igualar timestamps.
+
+Wrapper aprobado18468B/SHA256
+`7bb6e22e4ea329760e46977da0ebefe84bff73279c701b114a30085d00fd9412`:
+transacción única con guardas antes/después. Ensayo local12/12PASS; fuente nueva
+12/12 con PostgreSQL real, incluidas contenciones de primera elección. Postflight
+remoto: cuatro conjuntos/16condicionesPASS, historia71→72 y prefijo71 MD5
+`7c11e252392ec5fd42f47a3ed8f4e871` intacto. Cuerpos/OID/ACL existentes,
+relaciones y contratos legacy cotejados; recibos inicialmente vacíos, sin backfill.
+
+La tabla nueva `private.dopmi_usage_analytics_choices` tiene RLS sin políticas y
+ningún CRUD cliente; la RPC nueva `public.dopmi_choose_usage_analytics` es
+SECURITY DEFINER deliberada, sólo authenticated y con actor activo/confirmado.
+Esos objetos aparecen en dos categorías de asesor: RLS sin política (INFO) y
+función definer autenticada (WARN). Son avisos nuevos intencionales con ACL
+verificadas, no hallazgos que puedan atribuirse todos a historia previa ni una
+afirmación de ausencia de avisos. Recibos privados en
+`.tools/analytics-choice-20261121/server/{apply.receipt,postflight.authorized.actual,security-advisors.actual}.private.json`.
+Este registro acredita SQL aplicado; no instalación, elección real de un usuario
+ni aceptación del candidato móvil.
+
 ## 20/11/2026 CDMX — Adopciones en perfiles sin sello
 
 Corrección solicitada por el titular sobre el release 2.3.8 (418).

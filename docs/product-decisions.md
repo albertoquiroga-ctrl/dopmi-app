@@ -16,6 +16,18 @@ fallo de medición permite usar Dopmi sin recopilar. Código, SQL, publicación
 legal/fichas y aceptación instalada son pasos distintos. No interpretar esta
 preparación como consentimiento otorgado por los usuarios. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
 
+El21/nov el titular autorizó aplicar el SQL y publicar los textos exactos del
+candidatoaf0e2274/CI44878177593. Se ejecutaron una aplicación SQLPROD
+20261121223246 y la publicación legalc95be7f, con readback verificado. Apple
+publicó las finalidades exactas de las tres categorías de este tratamiento,
+con16tipos y trackingNO. La evaluación interna de qué difusión produce fichas/
+contacto se declara también como captación/marketing propio en los datos usados
+para ese fin; no habilita anuncios dirigidos, envíos a Meta ni otro SDK.
+Play publicó ese único cambio Data Safety (Submission165) con las finalidades
+reales y ubicación precisa funcional; no se promovieron binarios públicos.
+Builds y QA instalada se concilian por separado en el candidato vigente;
+esta autorización y las fichas no conceden consentimiento en nombre del usuario.
+
 ## 20/11/2026 CDMX — Piloto CPP personal-a autorizado
 
 El titular autoriza implementar la prueba iOS sobre el release reciente,
