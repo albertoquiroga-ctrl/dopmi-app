@@ -12,8 +12,9 @@ Samsung ya instaló418/Vending desde personal-a y la primera ficha privada qued�
 atribuida automáticamente en PROD20nov18:22CDMX. Paso opcional/Tienda comprobados.
 QA de visor/carrusel/compartir, producto de Tienda y reinstalación cerrada en el
 Samsung; fuente/primer envío conservados. El mismo418 se promovió a producción/
-release43 y se envió como único cambio: revisión/comprobaciones previas en curso
-20nov18:44CDMX, alcance100% de países existentes, sin recompilar. Falta confirmar
+release43 y se envió como único cambio. Consulta20nov18:52CDMX: comprobaciones
+previas terminadas y revisión de Google en curso; alcance100% de países existentes,
+sin recompilar. Falta confirmar
 disponibilidad pública del418; hasta entonces público409 y A/B pendiente.
 Excluir cuenta QA conocida del análisis, sin borrar el recibo de prueba.
 Checkpoint operativo: [candidate-release-current](candidate-release-current.md).

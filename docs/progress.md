@@ -9155,3 +9155,11 @@ Pendiente único de Android para distribuir: aprobación y disponibilidad públi
 del418; comprobarlas antes de retomar A/B con exclusión QA. Los eventos separados
 de mensajes mantienen gate PostgreSQL/servicios reales CI, sin recorrido de
 mensajes PROD entre participantes atribuido. iOS equivalente continúa pendiente.
+
+Actualización20nov18:52CDMX: reload de Publishing overview confirma el único
+Production2.3.8/Start full rollout en Changes in review. Ya no muestra checks
+en curso ni temporizador; mensaje «Your changes are now in review. We may find
+additional issues when reviewing your app». No se volvió a enviar ni cambió el
+paquete. Aprobación/disponibilidad pública aún no confirmadas. Captura original
+play418-production-in-review.jpg58911B y recibo privado del mismo nombre;
+no confundir término de comprobaciones previas con publicación pública.

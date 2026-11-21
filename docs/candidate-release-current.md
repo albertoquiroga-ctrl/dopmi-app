@@ -59,7 +59,8 @@ reales por las cuatro variantes al corte. No confundir ese ensayo con adquisici�
 Promoción realizada en Play del **mismo código418**, sin otra compilación:
 producción/release43, nombre2.3.8 y notas es-419, alcance100% en los países ya
 seleccionados. Se envió únicamente ese cambio; Publishing overview confirma
-Changes in review/comprobaciones previas en curso20nov18:44CDMX. Managed
+Changes in review. Consulta20nov18:52CDMX: ya no aparecen comprobaciones previas
+en curso y el mensaje confirma «Your changes are now in review». Managed
 publishing ya estabaOFF y se conservó. Público sigue409 hasta aprobación y
 disponibilidad comprobadas. Siguiente: consultar release43 y verificar418
 disponible públicamente antes de retomar A/B. No disparar un workflow nuevo
