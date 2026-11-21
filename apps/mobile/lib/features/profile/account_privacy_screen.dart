@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/android_rescuer_acquisition.dart';
+import '../../core/ios_cpp_acquisition.dart';
 import '../../core/measurement.dart';
 import '../../core/ui.dart';
 import '../identity/identity_controller.dart';
@@ -209,7 +210,8 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
             title: const Text('Analítica de uso'),
             subtitle: Text(
               'Comparte navegación y conversiones básicas. '
-              '${supportsPlayInstallReferrer ? 'En Android, puede vincular la campaña de Google Play con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje escrito como adoptante y tu primera respuesta como rescatista. ' : ''}'
+              '${supportsPlayInstallReferrer ? 'En Android, puede vincular la campaña de Google Play con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje enviado como adoptante y tu primera respuesta como rescatista. ' : ''}'
+              '${supportsIosCppAcquisition ? 'En iPhone, puede vincular la página de App Store desde la que abriste Dopmi con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje enviado como adoptante y tu primera respuesta como rescatista. ' : ''}'
               'Sólo registra que ocurrió cada acción; no incluye el contenido de mensajes, documentos, ubicación, correo ni datos financieros.',
             ),
             value: measurement?.analyticsEnabled ?? false,

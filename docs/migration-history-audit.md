@@ -776,3 +776,32 @@ de Edge, cron, flags financieros o datos de usuarios/fixtures en esta operación
 Recibos privados: production-attribution-20261120/manifest,
 preflight.actual y postflight.actual/expected. Esto acredita SQL desplegado,
 no la instalación ni atribución automática del candidato Play418 todavía.
+
+## Piloto iOS CPP personal-a PROD — 20/11/2026
+
+Fuente55061f99f48c0b0b8e54ee628bc8faab553d0763, CI44860327579 cuatroSUCCESS.
+Proyecto ysaoeuidcvgtlmphmeyb. Registro remoto único **20261121034107**, nombre
+`ios_cpp_personal_a_acquisition_20261120`; corresponde a la fuente local
+`20261121022319_ios_cpp_acquisition.sql`, SHA256
+`0f9f388cb5f918c8ca18eebaa4e7dbac05a6df7f2fdc6e442a16df918a9af774`.
+No aplicar otra vez, renombrar timestamps, reparar historia ni ejecutar dbpush.
+
+Payload con una transacción y guardas antes/después del DDL, SHA256
+`5d411e8f5e946df239a6469bf1ab514feb7a725de6aa841de3f444bac3655639`.
+El ensayo en bases UUID vacías rechazó historia/catálogo errados y un MD5 nuevo
+errado después del DDL, revirtiendo todo; caso positivo aprobado. Fixture local
+327funciones previas: sólo fingerprints/conteos adaptados para probar lógica;
+no se intentó reconstruir ni alinear el catálogo333 de PROD.
+
+Postflight21nov03:41:19UTC: historia71, prefijo70MD5
+`4ba9473c12cb2bb5d90a554e3cbc0a22` intacto. Las333funciones previas conservan
+OID/owner/ACL/config/SECDEF/volatilidad/cuerpo, fingerprint
+`9c72a62cb9557de983027e96807c6e7e`. StatementsMD5 del registro nuevo
+`7248d2ea2488e67fb0ed5671ee39b29b`. Cinco cuerpos nuevos normalizados LF y
+permisos exactos al manifiesto aislado; RPC sólo authenticated, helpers privados
+sin EXECUTE cliente. Dos tablas privadas RLS, cero políticas/CRUD cliente,
+7+3columnas y cuatro triggers habilitados. Fuentes/eventos iniciales0.
+No backfill, publicación QA, envío de mensajes, cambios financieros o replay.
+Recibos privados production-ios-cpp.postflight.actual.private.json,
+production-ios-cpp.rehearsal.private.json y supabase-apply.private.json.
+Esto acredita esquema desplegado; no aceptación de instalación/App Store/iPhone.

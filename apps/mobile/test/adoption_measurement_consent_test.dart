@@ -243,6 +243,197 @@ void main() {
     },
   );
 
+  test('accepted consent exposes the revision returned by its own CAS', () async {
+    server.states[_alice] = (consent: false, revision: 8);
+    server.writeOverride = (request) async {
+      final accepted = server.apply(request);
+      // Another device can advance state before this response reaches the app.
+      server.states[_alice] = (consent: true, revision: 20);
+      return accepted;
+    };
+    final revisions = <int>[];
+
+    expect(
+      await transport.prepare(
+        _alice,
+        true,
+        stillEligible: () => true,
+        onAcceptedRevision: revisions.add,
+      )!(),
+      isTrue,
+    );
+
+    expect(revisions, [9]);
+    expect(server.state(_alice), {'consent': true, 'revision': 20});
+    expect(server.reads, hasLength(1));
+    expect(server.writes, hasLength(1));
+  });
+
+  test('a current actor can observe an accepted OFF revision', () async {
+    server.states[_alice] = (consent: true, revision: 3);
+    final revisions = <int>[];
+
+    expect(
+      await transport.prepare(
+        _alice,
+        false,
+        stillEligible: () => false,
+        onAcceptedRevision: revisions.add,
+      )!(),
+      isTrue,
+    );
+
+    expect(revisions, [4]);
+    expect(server.state(_alice), {'consent': false, 'revision': 4});
+  });
+
+  for (final result in <Map<String, Object>>[
+    {'applied': false, 'consent': true, 'revision': 1},
+    {'applied': true, 'consent': false, 'revision': 1},
+    {'applied': true, 'consent': true, 'revision': 'invalid'},
+  ]) {
+    test(
+      'a rejected or invalid CAS does not expose a revision: $result',
+      () async {
+        final revisions = <int>[];
+        server.writeOverride = (_) async => result;
+
+        expect(
+          await transport.prepare(
+            _alice,
+            true,
+            stillEligible: () => true,
+            onAcceptedRevision: revisions.add,
+          )!(),
+          isFalse,
+        );
+        expect(revisions, isEmpty);
+      },
+    );
+  }
+
+  for (final enabled in [true, false]) {
+    test(
+      'a response for the previous actor exposes no revision ($enabled)',
+      () async {
+        final revisions = <int>[];
+        server.writeOverride = (request) async {
+          final accepted = server.apply(request);
+          await login(_bob);
+          return accepted;
+        };
+
+        expect(
+          await transport.prepare(
+            _alice,
+            enabled,
+            stillEligible: () => true,
+            onAcceptedRevision: revisions.add,
+          )!(),
+          enabled ? isFalse : isTrue,
+        );
+
+        expect(server.actor(server.writes.single), _alice);
+        expect(revisions, isEmpty);
+      },
+    );
+  }
+
+  test(
+    'a newer intention suppresses the older accepted revision callback',
+    () async {
+      final revisions = <int>[];
+      server.writeOverride = (request) async {
+        final accepted = server.apply(request);
+        transport.prepare(_alice, false, stillEligible: () => false);
+        return accepted;
+      };
+
+      expect(
+        await transport.prepare(
+          _alice,
+          true,
+          stillEligible: () => true,
+          onAcceptedRevision: revisions.add,
+        )!(),
+        isFalse,
+      );
+      expect(revisions, isEmpty);
+    },
+  );
+
+  test(
+    'an ineligible ON response does not expose its accepted revision',
+    () async {
+      var eligible = true;
+      final revisions = <int>[];
+      server.writeOverride = (request) async {
+        final accepted = server.apply(request);
+        eligible = false;
+        return accepted;
+      };
+
+      expect(
+        await transport.prepare(
+          _alice,
+          true,
+          stillEligible: () => eligible,
+          onAcceptedRevision: revisions.add,
+        )!(),
+        isFalse,
+      );
+      expect(revisions, isEmpty);
+    },
+  );
+
+  test('a timed out CAS never exposes a late accepted revision', () async {
+    final release = Completer<void>();
+    final revisions = <int>[];
+    server.writeOverride = (request) async {
+      await release.future;
+      return server.apply(request);
+    };
+    transport = AdoptionMeasurementConsent(
+      client,
+      timeout: const Duration(milliseconds: 10),
+    );
+
+    try {
+      expect(
+        await transport.prepare(
+          _alice,
+          true,
+          stillEligible: () => true,
+          onAcceptedRevision: revisions.add,
+        )!(),
+        isFalse,
+      );
+      release.complete();
+      await Future<void>.delayed(Duration.zero);
+      expect(server.state(_alice), {'consent': true, 'revision': 1});
+      expect(revisions, isEmpty);
+    } finally {
+      if (!release.isCompleted) release.complete();
+    }
+  });
+
+  test(
+    'an observer failure does not undo confirmed consent acceptance',
+    () async {
+      expect(
+        await transport.prepare(
+          _alice,
+          true,
+          stillEligible: () => true,
+          onAcceptedRevision: (_) =>
+              throw StateError('optional observer failed'),
+        )!(),
+        isTrue,
+      );
+      expect(server.state(_alice), {'consent': true, 'revision': 1});
+    },
+  );
+
   test('a late ON POST cannot overwrite the newer OFF revision', () async {
     final started = Completer<void>();
     final release = Completer<void>();

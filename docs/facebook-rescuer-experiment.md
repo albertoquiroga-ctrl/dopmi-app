@@ -1,5 +1,23 @@
 # Atribución de campañas y acciones
 
+## Prueba CPP personal-a — corte20nov2026
+
+El piloto individual iOS se implementa por separado sobre el corte reciente
+e48a653b, conservando también compartir perfiles por HTTPS. Captura el destino
+estático `io.dopmi.app://acquire/personal-a` al abrir desde la CPP; después del
+login normal y del consentimiento inscribe la cuenta con revisión CAS exacta.
+No añade códigos, login previo a descarga, portapapeles ni SDK de matching.
+Primer contexto/propietario inmutables, pendiente local24h y observación iOS14d
+desde inscripción servidor. La fuente se identifica como `ios_cpp_open`, no
+como prueba de instalación o clic de Facebook. Los cinco hitos siguen separados.
+
+CPP `f72ab3bc-1cd0-49b7-9220-cff726c86ffd` guardada en borrador desde2.3.8(419).
+No se ha enviado ni activado su `ppid` en la landing. Las rutas públicas actuales
+siguen midiendo agregados Apple. No hay iPhone físico disponible: ni las pruebas
+automatizadas ni una carga TestFlight acreditan instalación desde CPP y eventos
+reales. Gates, límites y aceptación en el [runbook](ios-cpp-personal-a-runbook.md);
+estado de CI, despliegue y candidato en [candidate-release-current](candidate-release-current.md).
+
 ## Integración de producción20nov2026
 
 Alcance aprobado: recuperar mejoras recientes y llevar atribución a producción,

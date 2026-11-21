@@ -138,6 +138,201 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test(
+    'an attributable action waits for settings, consent and acquisition',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.test.alice.analytics': true,
+      });
+      final analytics = BlockingEnableAnalytics();
+      final consentStarted = Completer<void>();
+      final consentRelease = Completer<void>();
+      final acquisitionStarted = Completer<void>();
+      final acquisitionRelease = Completer<void>();
+      final acquiredFor = <String>[];
+      var actionFinished = false;
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAdoptionConsent: (_, enabled) => () async {
+          if (enabled) {
+            consentStarted.complete();
+            await consentRelease.future;
+          }
+        },
+        prepareAcquisition: (actor) async {
+          acquiredFor.add(actor);
+          acquisitionStarted.complete();
+          await acquisitionRelease.future;
+        },
+      );
+      final restoring = controller.owner('alice');
+      await analytics.started.future;
+      final action = controller.prepareAttributableAction('alice').then((_) {
+        actionFinished = true;
+      });
+
+      try {
+        await Future<void>.delayed(Duration.zero);
+        expect(acquiredFor, isEmpty);
+        expect(actionFinished, isFalse);
+        analytics.release.complete();
+        await restoring;
+        await consentStarted.future;
+        expect(acquiredFor, isEmpty);
+        consentRelease.complete();
+        await acquisitionStarted.future;
+        expect(acquiredFor, ['alice']);
+        expect(actionFinished, isFalse);
+        acquisitionRelease.complete();
+        await action;
+        expect(actionFinished, isTrue);
+      } finally {
+        if (!analytics.release.isCompleted) analytics.release.complete();
+        if (!consentRelease.isCompleted) consentRelease.complete();
+        if (!acquisitionRelease.isCompleted) acquisitionRelease.complete();
+        await Future.wait([restoring, action]);
+        controller.dispose();
+      }
+    },
+  );
+
+  test('attributable actions skip acquisition without consent or for another actor', () async {
+    SharedPreferences.setMockInitialValues({});
+    final actors = <String>[];
+    final controller = MeasurementController(
+      await SharedPreferences.getInstance(),
+      'test',
+      AnalyticsSpy(),
+      DiagnosticsSpy(),
+      prepareAcquisition: (actor) async => actors.add(actor),
+    );
+    addTearDown(controller.dispose);
+
+    await controller.owner('alice');
+    await controller.prepareAttributableAction('alice');
+    await controller.setAnalytics(true);
+    await controller.prepareAttributableAction('bob');
+
+    expect(actors, isEmpty);
+  });
+
+  for (final changedOwner in [false, true]) {
+    test(
+      'consent completion rechecks ${changedOwner ? 'actor' : 'opt-out'} before acquisition',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'dopmi.test.alice.analytics': true,
+        });
+        final consentStarted = Completer<void>();
+        final consentRelease = Completer<void>();
+        final actors = <String>[];
+        final controller = MeasurementController(
+          await SharedPreferences.getInstance(),
+          'test',
+          AnalyticsSpy(),
+          DiagnosticsSpy(),
+          prepareAdoptionConsent: (_, enabled) => () async {
+            if (enabled) {
+              consentStarted.complete();
+              await consentRelease.future;
+            }
+          },
+          prepareAcquisition: (actor) async => actors.add(actor),
+        );
+        await controller.owner('alice');
+        await consentStarted.future;
+        final action = controller.prepareAttributableAction('alice');
+        await Future<void>.delayed(Duration.zero);
+
+        try {
+          if (changedOwner) {
+            await controller.owner('bob');
+          } else {
+            await controller.setAnalytics(false);
+          }
+          consentRelease.complete();
+          await action;
+          expect(actors, isEmpty);
+        } finally {
+          if (!consentRelease.isCompleted) consentRelease.complete();
+          await action;
+          await controller.consentReady;
+          controller.dispose();
+        }
+      },
+    );
+  }
+
+  test(
+    'acquisition failure does not prevent the normal product action',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      var attempted = false;
+      final analytics = AnalyticsSpy();
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        prepareAcquisition: (_) async {
+          attempted = true;
+          throw StateError('optional attribution unavailable');
+        },
+      );
+      addTearDown(controller.dispose);
+      await controller.owner('alice');
+      await controller.setAnalytics(true);
+
+      await controller.prepareAttributableAction('alice');
+      await controller.event('contact_started');
+
+      expect(attempted, isTrue);
+      expect(analytics.events, ['contact_started']);
+    },
+  );
+
+  testWidgets(
+    'acquisition wait is bounded while the normal product action continues',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final acquisitionRelease = Completer<void>();
+      var acquisitionStarted = false;
+      var productAction = false;
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        AnalyticsSpy(),
+        DiagnosticsSpy(),
+        prepareAcquisition: (_) async {
+          acquisitionStarted = true;
+          await acquisitionRelease.future;
+        },
+      );
+      await controller.owner('alice');
+      await controller.setAnalytics(true);
+      final action = controller.prepareAttributableAction('alice').then((_) {
+        productAction = true;
+      });
+
+      try {
+        await tester.pump();
+        expect(acquisitionStarted, isTrue);
+        await tester.pump(const Duration(seconds: 9));
+        expect(productAction, isFalse);
+        await tester.pump(const Duration(seconds: 1));
+        await action;
+        expect(productAction, isTrue);
+      } finally {
+        acquisitionRelease.complete();
+        await tester.pump();
+        controller.dispose();
+      }
+    },
+  );
+
+  test(
     'Firebase pause preserves consent and stored Analytics identity',
     () async {
       final firebase = FirebaseAnalyticsSpy();

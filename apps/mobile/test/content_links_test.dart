@@ -8,6 +8,7 @@ import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +28,70 @@ class LinkFixture implements ContentLinkSource {
 const id = '11111111-2222-3333-4444-555555555555';
 
 void main() {
+  for (final platform in [TargetPlatform.iOS, TargetPlatform.android]) {
+    for (final cold in [true, false]) {
+      testWidgets(
+        'CPP opens adoption management only on iOS: $platform cold=$cold',
+        (tester) async {
+          debugDefaultTargetPlatformOverride = platform;
+          try {
+            final links = LinkFixture();
+            final identity = FakeIdentityRepository()
+              ..user = const Identity(
+                'one',
+                'fixture@example.test',
+                verified: true,
+              );
+            final container = ProviderContainer(
+              overrides: [
+                identityRepositoryProvider.overrideWithValue(identity),
+                communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+                contentLinkSourceProvider.overrideWithValue(links),
+                routerInitialLocationProvider.overrideWithValue('/adoptions'),
+              ],
+            );
+            addTearDown(() async {
+              container.dispose();
+              await links.stream.close();
+              await identity.changes.close();
+            });
+            if (cold) {
+              links.initial.complete(
+                Uri.parse('io.dopmi.app://acquire/personal-a'),
+              );
+            }
+            await tester.pumpWidget(
+              UncontrolledProviderScope(
+                container: container,
+                child: const ContentLinkListener(child: DopmiApp()),
+              ),
+            );
+            await tester.pumpAndSettle();
+            final previous = container.read(routerProvider).state.uri.path;
+            if (!cold) {
+              links.stream.add(Uri.parse('io.dopmi.app://acquire/personal-a'));
+              await tester.pumpAndSettle();
+            }
+            expect(
+              container.read(routerProvider).state.uri.path,
+              platform == TargetPlatform.iOS ? '/my-adoptions' : previous,
+            );
+            links.stream.add(Uri.parse('io.dopmi.app://acquire/pagina-a'));
+            await tester.pumpAndSettle();
+            expect(
+              container.read(routerProvider).state.uri.path,
+              platform == TargetPlatform.iOS ? '/my-adoptions' : previous,
+            );
+            if (!cold) links.initial.complete(null);
+            await tester.pumpWidget(const SizedBox());
+          } finally {
+            debugDefaultTargetPlatformOverride = null;
+          }
+        },
+      );
+    }
+  }
+
   test('the production adoption URL is canonical and opens the pet', () {
     final uri = Uri.parse('https://www.dopmi.org/adoptions/$id');
     expect(

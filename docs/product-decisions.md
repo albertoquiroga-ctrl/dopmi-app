@@ -1,3 +1,21 @@
+## 20/11/2026 CDMX — Piloto CPP personal-a autorizado
+
+El titular autoriza implementar la prueba iOS sobre el release reciente,
+conservando arreglos y descarga directa sin códigos ni login previo. Alcance:
+únicamente personal-a, mediante CPP de Apple y su destino estático al pulsar
+Abrir en esa página en iOS18+. Capturar antes del onboarding y asociar después
+del login normal/Analítica consentida; primer contexto y propietario inmutables.
+No clipboard, fingerprinting, SDK de matching o gasto nuevo. La URL autodeclarada
+no prueba instalación/clic de Facebook ni entrega su hora: cohorte ios_cpp_open,
+ventana14d desde inscripción servidor, separada de Android y agregados Apple.
+Conservar los cinco hitos separados y los guards de autorización/finanzas.
+
+El titular no dispone de iPhone ahora. Preparar código, SQL, candidato y CPP en
+borrador; no retirar419 de revisión ni activar ppid antes de cliente público/CPP
+compatibles y aprobados. Mantener pendiente la aceptación física de instalación,
+primera ficha y mensajes; TestFlight/CI no la sustituyen.
+[Operación y gates](ios-cpp-personal-a-runbook.md).
+
 ## 20/11/2026 CDMX — Publicación Apple y descarga directa
 
 El titular pide enviar esta misma versión 2.3.8 a Apple y que también permita

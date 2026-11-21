@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app.dart' show routerProvider;
+import 'ios_cpp_acquisition.dart';
 
 enum PublicContent { profile, adoption, rescueCase }
 
@@ -104,7 +105,9 @@ class _ContentLinkListenerState extends ConsumerState<ContentLinkListener> {
 
   void open(Uri uri) {
     if (!mounted) return;
-    final destination = contentLinkDestination(uri);
+    final destination = supportsIosCppAcquisition && iosCppVariant(uri) != null
+        ? '/my-adoptions'
+        : contentLinkDestination(uri);
     if (destination == null) return;
     final router = ref.read(routerProvider);
     if (router.routerDelegate.currentConfiguration.isEmpty ||
