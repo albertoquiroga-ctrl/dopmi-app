@@ -2,9 +2,10 @@
 
 Prioridad de corrección: Favoritos de Mis match tras swipe derecho, incluida
 respuesta de guardado que llega después de abrir la pestaña. Cliente corregido,
-11regresionesPASS y revisión independiente cerrada; análisis/suite completa y
-CI pendientes. Integrador: congelar candidato, verificar gates y distribuir
-por canales QA existentes; aceptación física del recorrido aún pendiente.
+11regresionesPASS y revisión independiente cerrada; análisis0incidencias,
+suite1940PASS/4SKIP y CI44869286815/1441e295 cuatroSUCCESS. Codemagic Android
+6b012afc en curso; integrador sigue ese handle y después la misma fuente en
+TestFlight por la única cola. Artefactos/publicación e instalación aún pendientes.
 Datos/permisos/SQL/servicios y regla de excluir después de mensaje conservados.
 
 Continuación autorizada: piloto individual iOS `personal-a` con descarga directa,

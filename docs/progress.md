@@ -9620,3 +9620,26 @@ exacto, Android y build allí no comprobados. Se localizó confirmación oficial
 Google3-8197000042220 y se respondió una vez en el mismo hilo con ese contraste
 y el fallo422/S25 Ultra. Gmail confirmó SENT; no se atribuye recepción humana,
 causa ni solución del proveedor. Recibos privados en .tools/play420-install.
+
+### 20/11/2026 23:24CDMX — Candidato de Favoritos aprobado y Android en curso
+
+Fuente final1441e2955e8d069ed9508083adb7bbbfa657ab0c, tag
+codex/match-favorites-refresh-1441e295. Sustituye6ca66320 únicamente por renombrar
+un campo privado del arnés; la CI anterior quedó supersedida, sin Codemagic.
+Análisis completo0incidencias; suite única1940PASS/4SKIP/0FAIL en10:41;
+foco11PASS. CI44869286815 terminó con cuatroSUCCESS, cotejada contra1441.
+Source móvil limpio y revisiones independientes de código/seguridad/UX y
+contrato de distribución cerradas. Los archivos de build y configuración
+permanecen iguales al release anterior; override2.3.9 requerido por YAML.
+
+Ventana Android23:04:44–23:09:44CDMX, nueva fuente de prueba incorporada y
+validada antes del envío. Una comprobación de fecha se corrigió en preflight,
+antes de reserva/POST. Reserva privada y un único POST aceptado23:24:14CDMX:
+CM6b012afc52531896647e44fe/android-guardian-internal, tag/fuente1441 cotejados.
+Runtime resuelto clonado en memoria de422, excepto RELEASE_NAME2.3.9;
+Play internal/submissionfalse y grupos/firmas conservados. Build en curso,
+sin número de artefacto ni publicación nueva atribuidos. Ventana iOS abierta
+23:24:28–23:29:28 para el mismo candidato, sin enviar hasta liberar la cola.
+Se reutilizará runtime421 con AppStoreSubmissionfalse, sin revisión pública.
+Prueba física del favorito pendiente; ZFlip solicitado para verificación,
+no se infiere conexión o instalación de ese equipo. Sin cambios de servidor.

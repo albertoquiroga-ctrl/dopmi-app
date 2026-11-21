@@ -1,14 +1,19 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
-Corrección de Favoritos en preparación sobre esta continuación: al volver a
+Corrección de Favoritos sobre esta continuación: al volver a
 Mis match, la rama retenida refresca su lista; al confirmarse un like tardío,
 el repositorio avisa localmente a sus observadores de favoritos de esa misma
 cuenta. Tres archivos Dart productivos, sin SQL ni cambios de servicios.
-Regresión real de navegación/swipe y escritura retrasada:11PASS, después de
-observar el fallo; revisión independiente de código/seguridad/UX sin hallazgos
-materiales finales. Análisis/suite completa y CI del candidato en curso;
-publicación e instalación nuevas aún pendientes. Preserva la exclusión después
-del mensaje del adoptante y los avances iOS descritos a continuación.
+Fuente inmutable `1441e2955e8d069ed9508083adb7bbbfa657ab0c`, tag
+`codex/match-favorites-refresh-1441e295`. Regresión de navegación/swipe y escritura
+retrasada11PASS, análisis0incidencias y suite completa1940PASS/4SKIP/0FAIL.
+CI [44869286815](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44869286815)
+cuatro trabajos SUCCESS; revisión independiente de código/seguridad/UX sin
+hallazgos materiales finales. Codemagic Android único `6b012afc52531896647e44fe`
+en curso, `android-guardian-internal`, fuente1441 y runtime422 conservado con
+override2.3.9. Número real del artefacto aún pendiente. Después seguirá la misma
+fuente por TestFlight en la única cola. Instalación/aceptación nuevas pendientes;
+preserva la exclusión después del mensaje del adoptante y el piloto iOS inferior.
 
 Preparación autorizada del piloto individual iOS `personal-a`: base e48a653b,
 incluyendo el arreglo reciente de compartir perfiles HTTPS de b278540d/420.
