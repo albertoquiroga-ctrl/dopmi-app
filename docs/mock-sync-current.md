@@ -1,9 +1,10 @@
 # Checkpoint vigente — atribución y restauraciones, 20/nov/2026
 
 Entrega actual en `codex/production-attribution-restored-20261120`.
-Fuente del binarioee3ef773/Play418; el
+Fuente del binarioee3ef773/Play418 activo en producción; Apple419/efcce99f conserva
+el mismo producto con notas de tienda distintas. El
 [candidato vigente](candidate-release-current.md) mantiene inventario, gates,
-QA física y siguiente comprobación de disponibilidad pública. Conservar esa
+QA física y siguiente comprobación del envío a Apple. Conservar esa
 continuación para los próximos builds y aplicar el protocolo estable a cualquier
 delta nuevo. La entrega actual recupera cambios concretos sobre c9d9d03d; no
 introduce una referencia de mock nueva ni reabre lotes históricos aceptados.

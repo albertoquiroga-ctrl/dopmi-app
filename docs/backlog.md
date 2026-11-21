@@ -14,8 +14,15 @@ QA de visor/carrusel/compartir, producto de Tienda y reinstalación cerrada en e
 Samsung; fuente/primer envío conservados. El mismo418 se promovió a producción/
 release43 y se envió como único cambio. Consulta20nov18:52CDMX: comprobaciones
 previas terminadas y revisión de Google en curso; alcance100% de países existentes,
-sin recompilar. Falta confirmar
-disponibilidad pública del418; hasta entonces público409 y A/B pendiente.
+sin recompilar. Consulta posterior20nov19:41CDMX de Production confirma Active,
+Latest release2.3.8 y métricas vinculadas a versionCode418: disponibilidad pública
+confirmada, sin segundo envío ni build.
+Apple2.3.8(419), fuenteefcce99f (sólo notas distintas respectoee3), ya cargó por
+Codemagic6b00f498/15SUCCESS; tareaApple6b00f7c1 terminada y WAITING_FOR_REVIEW
+confirmado20nov19:50CDMX. Pendientes aprobación/disponibilidad y QA de iPhone.
+Los cuatro enlaces iOS de campaña están publicados/verificados en la landing;
+miden descargas agregadas, no la cuenta/primera ficha ni mensajes. Conservar el
+contrato separado del piloto Android y no anunciar significancia por inspección.
 Excluir cuenta QA conocida del análisis, sin borrar el recibo de prueba.
 Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
 P3 posterior: precisar «primer mensaje escrito» del aviso de Analítica como
