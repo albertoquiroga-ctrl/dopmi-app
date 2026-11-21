@@ -9326,3 +9326,48 @@ billeteras TEST apagados. El correctivo queda distribuido para QA interna.
 La instalación de 420, la hoja de compartir real y el salto web→app en
 Samsung conservan su comprobación pendiente por el bloqueo de control
 registrado. No se atribuye disponibilidad pública ni aceptación instalada.
+
+### 20/11/2026 — Diagnóstico de entrega de Play interno 420
+
+El titular reportó que Play no puede descargar 420 y confirmó que reiniciar el
+Samsung tampoco resolvió el fallo. Logcat después del reinicio localiza el
+rechazo al solicitar metadatos de entrega: respuesta no-OK 2 y estado 1010, antes
+de descargar APK. Play valida espacio suficiente, 105 MB requeridos y unos 13 GB
+disponibles; hora automática activa. No hay paquete Dopmi instalado en el
+perfil principal. Caché de Play limpiada y proceso reiniciado en el intento
+previo, sin borrar datos o cuentas.
+
+Revisión independiente del envío Codemagic 6b01003f confirma carga y readback
+internal/completed 420; no identifica cambios nativos respecto a 418 ni motivo
+para otra build. Chrome local permitió leer Console: release 224 disponible
+para testers, 19,523 modelos compatibles y APK específico para SM-S938B/pa3q,
+Android 17 SDK 37. Grupo interno seleccionado y cuenta original incluida.
+Para aislar cuenta, se aceptó la invitación interna de la cuenta corporativa
+ya incluida en el mismo grupo; no se amplió la lista. El titular completó
+Verify it's you para la instalación remota en el Samsung exacto. Google aceptó
+la solicitud; a las 21:29 CDMX el teléfono pidió 420 desde esa segunda cuenta y
+recibió el mismo 1010. Comparación local de identificadores confirma cuentas
+distintas, sin publicar esos valores. Cuenta original de Play restaurada;
+a las 21:36 CDMX una última solicitud de 420 vuelve a fallar antes de descargar.
+
+Console descargó 420.zip específico del dispositivo, 30,151,900 bytes. AAPT verifica
+com.mycompany.dopmi/2.3.8/420 y target 36; apksigner valida base.apk y ARM64 con
+certificado coincidente. No se instaló por USB ni se atribuyó instalador Play.
+Este diagnóstico no modificó rollout, firma, producción o código ni inició otra build.
+El panel público de estado no declara incidentes, pero su cobertura no acredita
+la salud de descargas internas. La causa exacta del rechazo del proveedor sigue
+sin determinarse. Informe técnico saneado preparado fuera de Git y revisado de
+forma independiente. El titular autorizó abrir y dar seguimiento al caso.
+Un único Submit en la ayuda oficial de Console, App releases → App publishing
+→ Other, sin adjuntos. La lista Your support tickets confirma Pending,
+App publishing y Case ID pending; Google indica que las respuestas llegan por
+correo. Captura guardada fuera de Git y reserva de envío conciliada. No repetir
+el envío por faltar todavía el identificador ni renovar el permiso ya dado
+para el mismo expediente y sus datos técnicos autorizados.
+Siguiente: integrador sigue ese caso y verifica la misma 420 por Play al resolverse
+la entrega. Evidencia privada: .tools/play420-install.
+
+Durante el cierre, la rama de continuación avanzó a 19f4c38a con el piloto CPP
+iOS de otro alcance. Se conservan sus cambios y registros al conciliar esta nota;
+la fuente inmutable del Android 420 sigue siendo b278540d. Este diagnóstico no
+inicia, repite ni atribuye aceptación a ese trabajo de iOS.

@@ -11,6 +11,16 @@ son HTML 200 y JPEG 200 de 1200×630 sin EXIF. Codemagic
 confirmó el mismo runtime de producción con Tienda habilitada.
 Instalación y prueba física del nuevo botón pendientes.
 
+Seguimiento de descarga del 20/nov: Play Console
+confirma release 224 disponible para testers y APK para SM-S938B/Android 17.
+El paquete 420 no está instalado. Dos cuentas elegibles, incluida una solicitud
+remota reautenticada por el titular, reciben 1010 antes de descargar. Firmas del
+APK base y ARM64 descargados de Console válidas. Cuenta original de Play
+restaurada; sin sideload, otra build ni cambios de rollout. Informe autorizado
+y enviado una vez a Google; caso visible Pending, con Case ID pending.
+La autorización incluye seguimiento de ese mismo expediente. Evidencia en
+[progreso](progress.md); no atribuir resolución del problema a la publicación.
+
 La apertura de Chrome en el Samsung quedó pendiente. La revisión automática
 rechazó la apertura por ADB y Computer Use detuvo el control de Windows
 porque no pudo verificar la URL abierta del navegador. Se conservó esa
