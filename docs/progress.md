@@ -9516,3 +9516,40 @@ Windows no detectó un iPad conectado y no hay herramientas iOS de dispositivo
 ya disponibles. No se instaló software, emparejó equipo ni aceptaron términos.
 La siguiente acción es comprobar acceso al421 en TestFlight, conservando el
 recorrido completo CPP/App Store para cliente y página públicos aprobados.
+
+### 20/11/2026 CDMX — Reenvío único solicitado de Play interno: 422
+
+El titular pidió repetir Codemagic por si resolvía la descarga420. Se reutilizó
+la fuente inmutable b278540d0263eee4b33d5867d9be9f66dd440ad0 y tag
+codex/public-profile-share-b278540d, CI44853201553 y revisión previa del mismo
+código. Revisión independiente acotada cotejó tag remoto, firma dopmi_upload_2026,
+cuatro grupos y configuración resuelta de420. No se incorporó el piloto iOS
+55061f99 presente en la rama de continuidad. Ventana de cinco minutos abierta
+21:54:04–21:59:04CDMX; iOS6b0112f68 terminó21:55:14 y liberó la cola antes del
+reenvío. Reserva privada previa al POST; una sola solicitud aceptada.
+
+Codemagic6b01170eecb05f7db4ae068f, android-guardian-internal, terminó14SUCCESS.
+Artefacto real **2.3.8 (422)** y reporte del mismo bundle cotejados: fuente b278,
+SupabasePROD ysaoeuidcvgtlmphmeyb, adopciones/AmazonON,
+Guardian/mediciónTEST/billeterasTESTOFF. Publicación separada verificada en log
+con readback Play track internal/status completed/versionCode422. Mismo runtime
+y firma; no cambio de código, despliegue, esquema, servicios ni promoción pública.
+
+Prueba física autorizada en el Samsung conectado: primer intento22:14:54 aún
+pidió420 y falló1010. Se cerró únicamente el proceso Play y se abrió de nuevo
+su ficha nativa, sin borrar datos/caché/cuentas. Con la ficha actualizada,
+22:16:44 solicitó explícitamente422 y falló de nuevo antes de descargar:
+Delivery received non-OK response2; InstallerException Status1010. Captura real
+confirma «No se puede descargar DopMi» y dumpsys confirma paquete ausente.
+No sideload ni nueva compilación. **Publicado no equivale a instalado; el
+reenvío no resolvió la entrega y la causa exacta sigue sin acreditarse.**
+
+Recibos sin secretos/capturas en .tools/play420-resend, fuera de Git. La revisión
+del correo de soporte no produjo un identificador confirmable; último estado
+acreditado del expediente Google sigue Pending/Case ID pending. No se duplicó
+el caso ni se envió una ampliación sin disponer del seguimiento. Integrador:
+incorporar este resultado al mismo expediente cuando permita respuesta y volver
+a comprobar Play tras información nueva. Se preservaron los avances paralelos
+iOS/iPad hasta24767c7e al conciliar este resultado. Revisión independiente final
+sin hallazgos materiales; API volvió a confirmar14SUCCESS/fuenteb278/artefacto422
+y cero diferencias en variables/grupos respecto420.

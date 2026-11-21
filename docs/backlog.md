@@ -45,6 +45,12 @@ miden descargas agregadas, no la cuenta/primera ficha ni mensajes. Conservar el
 contrato separado del piloto Android y no anunciar significancia por inspección.
 Excluir cuenta QA conocida del análisis, sin borrar el recibo de prueba.
 Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
+Play interno: reenvío único autorizado **2.3.8 (422)**, fuente inmutable
+b278540d/configuración420, CM6b01170e/14SUCCESS; artefacto y readback
+internal/completed cotejados. Samsung pidió422 tras refrescar Play y repitió
+1010 antes de descargar; no instalado. Integrador: continuar el expediente
+Google ya abierto y adjuntar el resultado cuando permita seguimiento;
+no duplicar build/caso ni atribuir aceptación física a la publicación.
 P3 de copy resuelto en el piloto iOS: «primer mensaje enviado como adoptante»;
 no cambia el contrato de texto o foto del contador de compositor.
 Las colas históricas inferiores no reinician trabajo consumido.

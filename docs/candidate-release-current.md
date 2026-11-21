@@ -60,10 +60,24 @@ confirma release 224 disponible para testers y APK para SM-S938B/Android 17.
 El paquete 420 no está instalado. Dos cuentas elegibles, incluida una solicitud
 remota reautenticada por el titular, reciben 1010 antes de descargar. Firmas del
 APK base y ARM64 descargados de Console válidas. Cuenta original de Play
-restaurada; sin sideload, otra build ni cambios de rollout. Informe autorizado
+restaurada; ese diagnóstico no utilizó sideload, otra build ni cambios de rollout. Informe autorizado
 y enviado una vez a Google; caso visible Pending, con Case ID pending.
 La autorización incluye seguimiento de ese mismo expediente. Evidencia en
 [progreso](progress.md); no atribuir resolución del problema a la publicación.
+
+Reenvío adicional solicitado expresamente por el titular: misma fuente/tag
+`b278540d`, configuración resuelta de420, firma y cuatro grupos existentes;
+sin incorporar el piloto iOS55061f99. Ventana20nov21:54:04–21:59:04CDMX y cola
+libre tras terminar iOS421. Un único POST produjo Codemagic
+`6b01170eecb05f7db4ae068f`: **2.3.8 (422)**,14SUCCESS. AAB/reporte runtime
+PROD/adopciones/AmazonON, Guardian/mediciónTEST/billeterasTESTOFF y readback `internal/completed/422`
+verificados. Primer intento del teléfono aún pidió420; tras reiniciar sólo
+el proceso Play,22:16:44CDMX pidió422 y repitió respuesta no-OK2/estado1010
+antes de descargar. Paquete ausente; reenvío publicado, descarga aún sin resolver.
+Producción pública y configuración de servicios conservadas; sin sideload.
+Siguiente: integrador aporta este resultado al mismo expediente de Google
+cuando esté disponible su seguimiento, sin abrir duplicado. Recibos/capturas
+fuera de Git en `.tools/play420-resend`.
 
 La apertura de Chrome en el Samsung quedó pendiente. La revisión automática
 rechazó la apertura por ADB y Computer Use detuvo el control de Windows
