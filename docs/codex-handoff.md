@@ -5,8 +5,10 @@
 Para esta entrega, continuar en `codex/production-attribution-restored-20261120`.
 Después del checkpoint y protocolo de mock, leer
 [candidato vigente](candidate-release-current.md): concentra fuente del binario,
-base reciente, restauraciones, QA del Samsung y estado real de Play. El418 ya
-probado usa la fuenteee3ef773; producción pública está en revisión. Las entradas
+base reciente, restauraciones, QA del Samsung y estado real de las tiendas. El418
+probado usa la fuenteee3ef773 y ya aparece activo en producción pública. Apple419
+usa efcce99f (mismo producto, sólo notas distintas); seguir su posprocesamiento
+del mismo build y el contrato separado de campañas agregadas de iOS. Las entradas
 históricas siguientes no fijan la rama ni reabren QA consumida de este alcance.
 La autorización de esta entrega conserva los gates financieros existentes.
 

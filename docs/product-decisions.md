@@ -1,3 +1,22 @@
+## 20/11/2026 CDMX — Publicación Apple y descarga directa
+
+El titular pide enviar esta misma versión 2.3.8 a Apple y que también permita
+medición de adquisición allí. Rechaza el login Dopmi previo a App Store:
+«Prefiero descarga directa; investigar otra vía». No implementar ese paso ni
+pedir códigos manuales. La publicación Apple y la comprobación de atribución
+iOS son resultados separados.
+
+La vía preparada conserva el salto directo y usa cuatro campaign links oficiales
+de App Store, generados en una sesión autenticada: token público `pt=124107377` y
+`ct=resc_mty_personal_a`, `resc_mty_personal_b`, `resc_mty_pagina_a` y
+`resc_mty_pagina_b`. Mide descargas y uso de Apple agregados, con sus ventanas,
+umbrales y consentimiento de uso propios; no vincula campaña con primera ficha
+o mensajes de una cuenta Dopmi. Mantenerlos separados de la atribución Android
+de 14 días y esperar muestras maduras antes de declarar ganadores. No activa SDK ni
+transferencias publicitarias de Meta/TikTok ni cambia consentimientos Dopmi.
+Contrato, fuentes primarias y estado comprobado:
+[experimento de campañas](facebook-rescuer-experiment.md).
+
 ## 20/11/2026 CDMX — Atribución en producción y recuperación del release reciente
 
 El titular pide integrar atribución en producción conservando arreglos y

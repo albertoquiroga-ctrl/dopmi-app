@@ -9193,6 +9193,105 @@ La corrección está activa en el servidor. Evidencia privada ignorada en
 .tools/public-profile-adoptions-20261120. El envío de producción 418 sigue
 referenciado por su fuente original; esta operación actualiza el servidor.
 
+### 20/11/2026 19:52CDMX — Android activo, Apple419 enviado y enlaces iOS publicados
+
+Play Production consultado19:41CDMX: Track summary Active, Latest release2.3.8 y
+enlaces de métricas con versionCode418. Confirma el418 activo públicamente y
+supersede el pendiente409 de18:52. No segunda promoción ni compilación Android.
+La prueba privada de primera ficha y la regresión Samsung418 siguen vigentes;
+conservar exclusión QA y no repetir fixtures por la publicación.
+
+Titular pidió enviar también esta versión a Apple. Para iPhone prefirió descarga
+directa y rechazó login Dopmi previo a App Store; no se implementó ese gate. La
+atribución individual por Install Referrer continúa siendo Android. Investigación
+primaria: los campaign links de Apple permiten métricas agregadas con descarga
+directa; no entregan a Dopmi una campaña ligada a una cuenta tras instalación.
+SKAdNetwork web requiere red/firma/postbacks y Safari compatible, sin cobertura
+equivalente del navegador interno de Facebook; App Clip añade experiencia previa.
+No se implementó SDK publicitario, fingerprinting, portapapeles ni acceso nuevo.
+
+Fuente Apple `efcce99f7673e6ae74fa6613722cd6acaeaa42c8`, tag inmutable
+`codex/ios-2.3.8-production-efcce99f`. Comparación de lib/android/ios/pubspec/lock,
+Codemagic, SQL, herramientas, scripts y CI conee3ef773 sin cambios. Único delta
+de producto de tienda: notas JSON en español que describen visor/compartir,
+Tienda/detalles opcionales/sello/privacidad y no prometen atribución iOS ausente.
+No nueva CI completa por metadata; gates ee3 reutilizados y pipeline iOS propio.
+Rama/tag publicados juntos, fuentes recientes/restauraciones conservadas.
+
+Un solo Codemagic `6b00f498ff04049620c7e6d0`, workflow `ios-app-store`, iniciado
+19:32CDMX. Configuración efectiva clonada en memoria del último iOS410 exitoso
+`6afd1e9862cf879bfdadd2ce`, no del perfil Android: grupos Supabase/Firebase/maps
+PROD, versión2.3.8, adopciones/AmazonON y finanzas/mediciónTEST/billeterasTESTOFF.
+Identidad/firma `com.mycompany.dopmi` existentes preservadas.15accionesSUCCESS,
+analyze limpio y1858PASS/4SKIP. IPA2.3.8(419),54,993,583B, SHA256
+`64e833f43ce496ef8ed90a08e6e4a1b9b04668070a389d8f1a657de33340543b`.
+Info.plist/runtime/build-info y perfil AppStore sin debug cotejados; no se
+atribuye verificación criptográfica local de firma desde Windows.
+
+Carga IPA y posprocesamiento comprobados por separado. Tarea Apple
+`6b00f7c1a14b9f22af0120e5` terminó sin error19:50:17CDMX; log real creó AppStore
+Version2.3.8, actualizó es-MX, conservó AFTER_APPROVAL y envió ReviewSubmission
+19:50:16CDMX con estado WAITING_FOR_REVIEW. No aprobación/disponibilidad pública
+ni aceptación instalada en iPhone. Recibo saneado en directorio privado
+production-attribution-20261120/ios-production-2.3.8-20261120; sin IPA, credenciales
+ni URLs firmadas en Git. No otro build durante espera de Apple.
+
+Titular indicó usar Chrome LOCAL mediante extensión. La primera sesión nativa
+se detuvo al no poder verificar URL; no se sorteó esa restricción. Tras habilitar
+extensión, inventario devolvió Chrome/enlacenest.com y la sesión autenticada de
+App Store Connect. Generador oficial produjo `pt=124107377` (público, no secreto)
+y ct resc_mty_personal_a/b y resc_mty_pagina_a/b, mt8. Captura original
+apple-campaign-generated.jpg60916B y cuatro URLs guardadas fuera de Git.
+
+Landing: base real de main/PRODaaec18e84495b298f4b802b538e481ea3abad31d y blobs
+de handler/tests cotejados; no usar archivo generado antiguo.16pruebas HTTP
+aprobadas y revisión independiente sin P1/P2. Commit acotado
+`d9e842c3fd9c5a23f20a8d7fdc624ac29df32813`: sólo api/descargar.js y sus tests.
+Ref main movida con lease esperado aaec, sin force. Variable pública
+APPLE_CAMPAIGN_PROVIDER_TOKEN creada sólo en producción; sin credenciales nuevas.
+Despliegue automático único `dpl_GpUoMfppLmK1W6iJqQa1ebaj6iBz` READY y aliases
+www/apex confirmados. Postflight real: cuatro iOS GET/HEAD302 con pt/ct/mt exactos,
+crawlers HTML200 con enlace etiquetado y cuatro cuerpos Android SHA256 idénticos
+a antes del despliegue. Queries no sustituyen destino; plain ignora campaña.
+Primer harness esperaba302 para ruta desconocida; lectura vercel.json confirmó
+allowlist original/404. Se corrigió esa expectativa, no el producto, y el
+postflight final pasó. Recibo landing-production-postflight.private.json.
+
+Apple separa ventanas/umbrales/consentimiento de métricas. No hay instalación
+real iPhone ni métricas de estas campañas recibidas aún. No atribuir primera
+ficha/saludo/mensaje/respuesta a personal-a en iOS, ni mezclar su denominador
+agregado con Android14d. Contrato y fuentes en facebook-rescuer-experiment.md.
+No se retomaron comentarios Facebook ni gasto Meta/TikTok en este cierre.
+
+Antes del cierre documental, origin avanzó en paralelo a9d3e8ab9. Inventario
+acotado: correctivo de perfil público5fa23089, su prueba y registro d47f958e;
+9d3e8ab9 ya conserva las notas efcce99f. No cambió el código móvil del419 ni
+su fuente congelada. Se preservaron esas seis rutas remotas y su evidencia
+servidor/historia70, y se integraron estas notas con fast-forward y respaldo
+privado. No se reaplicó migración, reconstruyó candidato ni repitió QA del perfil.
+
+### 20/11/2026 — Investigación de atribución iPhone con descarga directa
+
+Titular pide investigar atribución automática de ficha/mensajes sin códigos ni
+login antes de descargar. Contraste paralelo de fuentes primarias Apple,
+Branch/Adjust/AppsFlyer y lectura acotada del código, sin implementación.
+Nueva opción preferida: Custom Product Pages con deep link por variante; Apple
+documenta entrega al pulsar Abrir en esa página en iOS/iPadOS18+, admite redes
+sociales y describe continuidad tras descarga. Corrige la conclusión demasiado
+amplia de la investigación previa, que no había contemplado esta vía.
+
+Es candidato condicionado al recorrido, no cobertura universal ni éxito real:
+apertura por icono, página genérica u OS anterior quedan sin garantía. URL
+estática no entrega hora fiable del clic web, nonce individual ni prueba de
+instalación; no falsificar p_clicked_at o reutilizar la cohorte Android14d.
+El419 actual ignora URLs de campaña; harían falta parser/pendiente persistente,
+contrato servidor aditivo, consentimiento/propietario y prueba física desde una
+CPP aprobada. SDKs de clipboard o matching probabilístico no resuelven todas
+las restricciones. Informe y fuentes: ios-direct-attribution-research.md.
+No CPP creadas/enviadas, binario, SQL, landing, SDK, permisos ni gasto modificados;
+la publicación419 en revisión y los enlaces pt/ct permanecen con su alcance
+agregado comprobado. No se repitieron suites o QA de los candidatos publicados.
+
 ### 20/11/2026 — Compartir perfiles mediante HTTPS
 
 El reporte mostró que el botón del perfil aún enviaba el esquema interno
@@ -9209,7 +9308,7 @@ mascota publicada del mismo dueño y comprueba otra vez el detalle antes de
 leer Storage. Reutiliza la plantilla de adopciones. Pasaron 32 pruebas Node,
 lint y build. Lecturas públicas reales con agente de crawler confirman
 HTML 200, nombre y destino correctos, JPEG 200 de 1200×630 sin EXIF y la página
-de adopción anterior disponible. Datos y claves sólo en memoria durante
+de adopción anterior disponible. La clave publicable se reutilizó en memoria durante
 la comprobación; HTML y portada públicos de evidencia quedan ignorados.
 
 El titular confirmó el Samsung conectado y pidió abrirlo por control remoto.

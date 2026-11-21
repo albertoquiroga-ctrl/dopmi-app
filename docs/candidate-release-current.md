@@ -51,8 +51,9 @@ HTTPS y visor ampliado/carrusel restaurados, sello manual por perfil recuperado.
   confirmó release6/2.3.8 **disponible para los testers seleccionados**, publicado
   el20nov17:27CDMX y consultado18:10CDMX. El Samsung instaló418 desde ese canal.
   El rótulo genérico «Google Play internal» del build-info no acredita el canal.
-  Público Android seguía4092.3.7 al enviar la promoción del418 a producción;
-  disponibilidad pública del418 pendiente de aprobación y comprobación.
+  Público Android seguía4092.3.7 al enviar la promoción. Consulta posterior
+  20nov19:41CDMX de Production confirma Active, Latest release2.3.8 y enlaces
+  de métricas versionCode418: el418 ya está activo en producción pública.
 
 Samsung: instalación limpia en el perfil principal desde `personal-a`, versión
 2.3.8(418) e instalador/iniciador Vending comprobados por ADB y versión visible
@@ -85,12 +86,36 @@ producción/release43, nombre2.3.8 y notas es-419, alcance100% en los países ya
 seleccionados. Se envió únicamente ese cambio; Publishing overview confirma
 Changes in review. Consulta20nov18:52CDMX: ya no aparecen comprobaciones previas
 en curso y el mensaje confirma «Your changes are now in review». Managed
-publishing ya estabaOFF y se conservó. Público sigue409 hasta aprobación y
-disponibilidad comprobadas. Siguiente: consultar release43 y verificar418
-disponible públicamente antes de retomar A/B. No disparar un workflow nuevo
-como forma de promoción; el paquete probado ya está enviado.
-Distribución iOS equivalente todavía no iniciada; no hay atribución automática
-de instalación iOS en este lote. Plan/contrato y evidencia: `progress.md`,
+publishing ya estabaOFF y se conservó. Consulta posterior20nov19:41CDMX confirma
+el418 activo en Production; supersede el pendiente público409 de los cortes
+anteriores. No disparar un workflow nuevo como forma de promoción.
+
+Apple: solicitud expresa del titular de enviar esta versión. Fuente inmutable
+`efcce99f7673e6ae74fa6613722cd6acaeaa42c8`, tag
+`codex/ios-2.3.8-production-efcce99f`; lib/android/ios/configuración/SQL idénticos
+a ee3ef773. Sólo `apps/mobile/release_notes.json` deja de prometer medición de
+campaña de instalación que iOS aún no implementa. Codemagic
+`6b00f498ff04049620c7e6d0`, `ios-app-store`,15accionesSUCCESS e IPA **2.3.8(419)**
+cargado; runtimePROD/adopciones/AmazonON y finanzasOFF cotejados. Configuración
+efectiva tomada del último iOS410 aprobado, con overrides explícitos de esta
+entrega; identidad/firma existentes conservadas. Tarea de distribución Apple
+`6b00f7c1a14b9f22af0120e5` terminó sin error20nov19:50CDMX. El log real confirma
+versión2.3.8 creada, notas es-MX actualizadas, AFTER_APPROVAL y ReviewSubmission
+enviado con estado **WAITING_FOR_REVIEW**. La publicación quedó programada tras
+aprobación, sin aprobación/disponibilidad pública ni instalación/QA de iPhone
+atribuidas.15accionesSUCCESS, analyze limpio y1858PASS/4SKIP; recibo saneado
+privado `release-receipt.sanitized.json` y hash IPA conservados fuera de Git.
+
+El titular prefiere descarga directa y rechaza login web previo a App Store.
+Chrome local, mediante su extensión, permitió generar los cuatro enlaces
+oficiales de campaña de Apple. Landing `d9e842c3fd9c5a23f20a8d7fdc624ac29df32813`,
+Vercel PROD `dpl_GpUoMfppLmK1W6iJqQa1ebaj6iBz` READY: cuatro rutas iOS GET/HEAD302
+con proveedor/campaña oficiales; fallback de crawlers conserva campaña. Las
+cuatro páginas Android mantienen SHA256 idénticos antes/después.16pruebas HTTP
+locales y revisión independiente sin bloqueantes. No login adicional ni SDK.
+Apple sólo mide descargas/uso agregado de campaña; no enlaza una cuenta Dopmi
+con su primera ficha/mensajes. No hay atribución automática de instalación
+iOS equivalente a Android en este lote. Plan/contrato y evidencia: `progress.md`,
 `facebook-rescuer-experiment.md` y
 `superpowers/plans/2026-11-20-production-attribution.md`.
 
