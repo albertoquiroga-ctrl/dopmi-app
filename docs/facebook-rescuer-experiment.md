@@ -73,6 +73,16 @@ rutas desconocidas conservan el 404 de la allowlist Vercel. Recibo privado:
 datos personales. Aún no hay instalación real de este recorrido en iPhone ni
 métricas de campaña recibidas de Apple.
 
+Investigación posterior20nov: Apple sí documenta una vía adicional mediante
+Custom Product Pages con deep links en iOS18+, al pulsar Abrir en esa página.
+La conclusión anterior no implica imposibilidad de toda atribución individual:
+la opción CPP permite proponer transportar la variante hasta la app y ligarla
+a la cuenta después de login/consentimiento. Todavía no está implementada ni
+probada en iPhone; abrir desde el icono no tiene la misma garantía documentada.
+La URL estática tampoco entrega hora del clic original ni prueba de instalación.
+Alcance, alternativas y prueba acotada en
+[investigación iOS de descarga directa](ios-direct-attribution-research.md).
+
 ## Resultados separados
 
 - Primera ficha original enviada a revisión dentro de14d, y aprobación posterior

@@ -9269,3 +9269,25 @@ acotado: correctivo de perfil público5fa23089, su prueba y registro d47f958e;
 su fuente congelada. Se preservaron esas seis rutas remotas y su evidencia
 servidor/historia70, y se integraron estas notas con fast-forward y respaldo
 privado. No se reaplicó migración, reconstruyó candidato ni repitió QA del perfil.
+
+### 20/11/2026 — Investigación de atribución iPhone con descarga directa
+
+Titular pide investigar atribución automática de ficha/mensajes sin códigos ni
+login antes de descargar. Contraste paralelo de fuentes primarias Apple,
+Branch/Adjust/AppsFlyer y lectura acotada del código, sin implementación.
+Nueva opción preferida: Custom Product Pages con deep link por variante; Apple
+documenta entrega al pulsar Abrir en esa página en iOS/iPadOS18+, admite redes
+sociales y describe continuidad tras descarga. Corrige la conclusión demasiado
+amplia de la investigación previa, que no había contemplado esta vía.
+
+Es candidato condicionado al recorrido, no cobertura universal ni éxito real:
+apertura por icono, página genérica u OS anterior quedan sin garantía. URL
+estática no entrega hora fiable del clic web, nonce individual ni prueba de
+instalación; no falsificar p_clicked_at o reutilizar la cohorte Android14d.
+El419 actual ignora URLs de campaña; harían falta parser/pendiente persistente,
+contrato servidor aditivo, consentimiento/propietario y prueba física desde una
+CPP aprobada. SDKs de clipboard o matching probabilístico no resuelven todas
+las restricciones. Informe y fuentes: ios-direct-attribution-research.md.
+No CPP creadas/enviadas, binario, SQL, landing, SDK, permisos ni gasto modificados;
+la publicación419 en revisión y los enlaces pt/ct permanecen con su alcance
+agregado comprobado. No se repitieron suites o QA de los candidatos publicados.
