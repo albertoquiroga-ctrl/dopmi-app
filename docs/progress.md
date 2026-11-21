@@ -9583,3 +9583,17 @@ adopción. Mantener app abierta para readback, sin URI/fichas/mensajes todavía.
 Primera lectura posterior sigue sin actor PROD de esa cuenta: acceso/consentimiento
 pendientes, ninguna inscripción ni éxito de atribución declarados. Baseline privado
 ipad421-native-trial-before.private.json y plan de lectura preparados.
+
+### 20/11/2026 22:44CDMX — Cuenta y consentimiento del iPad verificados
+
+El titular confirma acceso de la cuenta QA alternativa en421, legales aceptados y
+Analítica activada. Readback PROD21nov04:44:10UTC coteja un actor activo,
+correo confirmado, cero historia observable de fichas, consentimientoTRUE/revisión1,
+sin fuente iOS y cero eventos. UUID/fechas precisas quedan en recibo privado
+ipad421-authenticated-pre-uri.private.json, no en Git. No se escribió por SQL.
+Se solicitó cerrar app desde el selector y pulsar desde Notas la URI exacta
+io.dopmi.app://acquire/personal-a, confirmar Abrir y dejar la app abierta.
+Segunda lectura04:46:45UTC aún sin fuente/revisión1; no hay confirmación de apertura
+nativa todavía y no se interpreta esa espera como un fallo. Mantener sin fichas
+ni mensajes hasta comprobar la inscripción. Prueba etiquetada TestFlight+URI,
+no como instalación CPP/App Store. Fuente/candidato55061f99/421 conservados.
