@@ -13,8 +13,9 @@ el `ppid`. La cola técnica sigue en [plan iOS](superpowers/plans/2026-11-20-ios
 y [runbook](ios-cpp-personal-a-runbook.md); consultar candidato/progress para
 resultados de CI, despliegue y carga. Captura confirma iPad Pro12.9″/5.ªgeneración,
 iPadOS26.6.1, compatible con el mismo421. Titular confirma421 instalado desde
-TestFlight; cuenta QA alternativa activa/verificada y AnalíticaON/revisión1
-cotejadas en PROD. Apertura fría del URI y atribución pendientes de comprobar. Primera ficha
+TestFlight; fuente personal-a/ios_cpp_open automática cotejada en PROD tras
+apertura desde Safari, mismo actor y consentimiento vigente/revisión2.
+Una fuente técnica QA excluida del experimento; primera ficha/aprobaciónNULL y eventos0. Primera ficha
 y mensajes instalados desde App Store pendientes. No sustituir esa aceptación
 por pruebas automatizadas. Aviso «mensaje escrito» ya actualizado a «enviado».
 Pendientes del piloto: cliente público compatible tras la revisión vigente419,
