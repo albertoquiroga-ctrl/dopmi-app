@@ -16,7 +16,7 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
 | Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin envío a revisión pública ni aceptación instalada. |
-| Dispositivo | El titular ofrece un iPad; modelo y versión de iPadOS pendientes de confirmar. IPA421 real declara UIDeviceFamily=[1,2], mínimo15.0 y arm64. Para CPP se requiere iPadOS18+. Instalación, primera ficha y mensajes siguen sin aceptación física. |
+| Dispositivo | Captura del titular confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1, compatible con el requisito18+. IPA421 real declara UIDeviceFamily=[1,2], mínimo15.0 y arm64. Instalación, primera ficha y mensajes siguen sin aceptación física; acceso a421 desde TestFlight del iPad pendiente de confirmar. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
@@ -60,6 +60,12 @@ HTTPS y sus pruebas; no construir el candidato iOS desde el corte antiguo.
 TestFlight sirve para comprobar recepción de enlaces, inicio de sesión,
 consentimiento y transporte. No prueba la instalación limpia desde una CPP de
 App Store ni sustituye esa puerta.
+
+En el iPad confirmado, primero comprobar la instalación de2.3.9(421) y su UI.
+Conservar sin envíos/contactos/mensajes la cuenta reservada para la instalación
+definitiva. Un ensayo opcional de URI/consentimiento usa otra cuenta QA,
+se registra como TestFlight/enlace directo y se excluye del experimento; no
+necesita consumir una primera ficha ni se presenta como instalación desde CPP.
 
 ## Recorrido físico y evidencia requerida
 

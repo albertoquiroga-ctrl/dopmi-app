@@ -39,7 +39,7 @@ CPP `personal-a · Publicar en adopción`, id público
 Borrador sin enviar a revisión, sin nuevo `ppid` en landing. El419 continúa
 Pendiente de revisión/publicación, confirmado otra vez22:02CDMX; no se retiró.
 Público sigue2.3.7. La carga2.3.9(421) no envió revisión pública ni la CPP.
-El titular ofrece ahora un iPad, con modelo/iPadOS todavía por confirmar.
+Captura del titular confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1.
 El mismo IPA421 admite iPad arm64 (familias1,2 y mínimo15.0); CPP requiere18+.
 Primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
 CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).

@@ -9502,3 +9502,17 @@ cubrir la prueba de atribución Apple; no equivale a QA visual específica de iP
 Runbook y cola aceptan ambos dispositivos. Sin código, build nuevo o cambios a
 Apple, campañas o SQL. Siguen pendientes cliente/CPP públicos aprobados y recorrido
 limpio desde App Store; TestFlight sólo cubre los pasos del candidato instalado.
+
+### 20/11/2026 CDMX — Modelo e iPadOS confirmados por captura del titular
+
+iPad Pro de12.9pulgadas/5.ªgeneración, iPadOS26.6.1. Cumple el mínimo18 del
+recorrido CPP; no necesita actualizar el sistema para esta prueba. Sólo se
+registran modelo/OS de QA: no se copió la foto ni sus identificadores personales.
+El421 existente ya admite iPad; ninguna compilación, migración o prueba repetida.
+Chrome local confirmó otra vez421/Lista para enviar/DopMi Inner Team con cinco
+invitaciones existentes, sin cambios de testers. El acceso desde TestFlight del
+iPad se consultó al titular y sigue pendiente; no inferir instalación del equipo.
+Windows no detectó un iPad conectado y no hay herramientas iOS de dispositivo
+ya disponibles. No se instaló software, emparejó equipo ni aceptaron términos.
+La siguiente acción es comprobar acceso al421 en TestFlight, conservando el
+recorrido completo CPP/App Store para cliente y página públicos aprobados.
