@@ -9028,3 +9028,130 @@ documentada para siguiente delta: «primer mensaje escrito» debe decir «primer
 mensaje enviado como adoptante, de texto o foto», pues SQL cuenta ambos. No
 cambiar ni reconstruir418 por esa etiqueta; el reporte y contrato actuales ya
 explican el denominador. No se ha comprobado aquí una declaración nueva de tiendas.
+
+### 20/11/2026 — Play418 disponible y primera ficha atribuida en PROD
+
+Play Console consultado18:10CDMX: cerrado attribution-dev-qa/release6/2.3.8
+Available to selected testers, publicado17:27CDMX. Samsung conectado/416Vending;
+se consumió la autorización vigente de reinstalación sólo en el perfil principal.
+pm uninstall --user0 devolvió Success y lista de paquetes confirmó ausencia.
+Se abrió Chrome por su launcher, se escribió/verificó la URL canónica personal-a
+en la barra y se pulsó Google Play en la landing. La ficha nativa instaló418:
+ADB y UI confirman2.3.8(418), installer/initiating com.android.vending,
+firstInstallTime=lastUpdateTime20nov18:12:24, notLaunched antes de Abrir.
+No sideload, referrer sintético, escritura de preferencias privadas ni app de otro
+perfil retirada. Fuente del binario sigueee3ef773; ningún build adicional.
+
+Google login con la cuenta QA propia de Workspace abrió PROD correctamente,
+sin nuevo acuerdo legal. Preflight de la cuenta exacta: activa/confirmada,
+consentfalse/revision0/source0, una ficha borrador previa y0envíos/revisiones
+observables. El titular autorizó expresamente activar Analítica en esta cuenta
+PROD, distinguiéndola de su autorización DEV anterior. Se activó desde UI;
+diagnósticoOFF, ubicación precisa denegada. Lectura00:17:10UTC21nov:
+consenttrue/revision1, fuente única personal-a, click00:12:06, attributed_at
+00:16:54.555917, first_adoption/submitted/approved vacíos y ventana336h válida.
+
+Ficha privada NUEVA de prueba: foto del asset propio conocido, Perro/Macho/
+Mediano/Adulto, historia explícita de ensayo que no debe publicarse y búsqueda
+manual Monterrey en mapa. Validación de tamaño faltante se mostró antes de
+continuar. El teclado capitalizó/acentuó texto y añadió espacio; el helper de
+entrada se detuvo y el texto real fue inspeccionado antes de seguir, sin defecto
+de producto inferido. Paso2 muestra Detalles opcionales/Fotos adicionales
+(opcionales); Ir a vista previa permitió pasar sin completarlos. Enviar a revisión
+desde UI terminó en el modal correcto, sin aprobar/publicar el caso.
+
+Postflight00:22:53UTC: fuente personal-a única, misma cuenta y referencia exacta
+de primera ficha resuelta; submitted_at00:22:35.810621 y primer evento de envío
+00:22:35.911294, ambos posteriores a atribución y dentro de ventana. Statussubmitted,
+foto1, published_atNULL/first_approved_atNULL, fichas propias1→2. Hitos de
+mensajería{}: este recorrido no envió mensajes ni saludos. No se insertó,
+corrigió ni backfilleó la campaña por SQL; consultas sólo lectura. Se preservan
+el borrador previo, el nuevo envío privado y los dos fixtures DEV consumidos.
+Recibo privado samsung418-first-submission.private.json con pre/post sin
+correo, UUID, contenido o interlocutores. La cuenta QA se excluye del análisis
+real mediante pilot-with-qa-excluded.private.sql, fuera de Git; cuatro variantes
+con0cuentas/conversiones reales al corte. El reporte bruto sí incluye el ensayo:
+no usarlo sin esa exclusión para anunciar adquisición ni comparar mensajes.
+
+QA visual nativa: versión, paso opcional y modal de revisión capturados;
+revisión independiente no encontró P1/P2 en las dos últimas capturas. Escala115%
+del teléfono, no se atribuye una ejecución física200%. Home/regreso/sesión,
+estado de verificación por perfil y navegación preservados. Tienda Dopmi abre
+con catálogo/funding/comisión y Precio y pago en Amazon México. Al intentar
+revisar un producto el foco cambió a com.roku.remote. Entradas detenidas y
+disponibilidad de control consultada al titular; no atribuir ese cambio a un
+bug de Dopmi sin reproducción/evidencia. Sin compra, cobro o mensaje a usuarios.
+
+Visor público todavía pendiente. El catálogo solicita ubicación y no se otorgó
+GPS; se preparó la vía normal de un enlace público sin solicitarlo. Consulta
+con condiciones públicas + dopmi_adoption_detail identifica una ficha de
+Monterrey con4fotos. Su página HTTPS devuelve200 y botón Abrir en DopMi con
+schemeio.dopmi.app://content/adoptions/<mismoid>. Android418 no declara autoVerify
+HTTPS: el handoff esperado pasa por esa landing, no por un intent inventado.
+Todavía no se pulsó en el Samsung. No convertir el ensayo privado en público
+para probar su visor: la vista previa no permite fullscreen ni compartir real.
+
+Pendientes: control del teléfono libre, visor/carrusel/hoja de compartir,
+producto de Tienda y reinstalación sin revocación implícita del mismo418;
+después promover ese código existente a público y comprobar revisión/disponibilidad.
+Público Android409, A/B e iOS equivalente siguen pendientes. No reabrir CI/SQL/
+builds ya consumidos ni generar otro binario para promover. Evidencia nativa en
+production-attribution-20261120/samsung418-{version,optional,submitted,store}.png.
+
+### 20/11/2026 18:44CDMX — QA418 cerrada y mismo paquete enviado a producción
+
+Titular confirmó teléfono libre y Dopmi abierto; continuó sólo esta cola nativa.
+Tienda: tarjeta de producto abrió opciones de sabor/presentación, Ver producto
+en Amazon México abrió la explicación Tu compra continúa en Amazon y Seguir
+en DopMi regresó. Sin compra, datos de pago ni activación financiera.
+
+Enlace HTTPS de una ficha pública de Monterrey con4fotos abrió la landing y su
+botón Abrir en DopMi cargó el detalle correcto sin GPS. Visor fullscreen:
+flecha1→2, swipe2→3, contador3de4, anterior3→2 y Back al detalle comprobados;
+Cerrar fotos también probado. Hoja nativa de compartir contiene el HTTPS exacto
+de esa ficha y no el scheme nativo; se canceló sin elegir destinatario. Sin
+guardar, contactar ni enviar saludos/mensajes a personas reales.
+
+Una falsa alarma visual quedó descartada antes de cambiar producto: dos vistas
+de captura parecían perder controles al cargar la foto. Inspección independiente
+y análisis de los PNG originales muestran appbar/contador idénticos píxel por
+píxel en loading/loaded/recheck; la imagen completa sí carga. Root confirmó
+igualdad de regiones con controles blancos. No se demostró el mecanismo de la
+representación de imagen en herramientas/chat; no atribuirlo al renderer nativo.
+Sin fix, nueva suite ni candidato por esa observación. Evidencia cargada real:
+samsung418-viewer-loaded.png y recheck; la primera viewer.png aún mostraba carga.
+
+Regresión de reinstalación: segunda desinstalación sólo user0 confirmada, URL
+personal-a escrita/verificada en Chrome y nueva instalación Vending4182.3.8,
+firstInstallTime=lastUpdateTime18:38:43CDMX. Login de la misma cuenta, sin tocar
+los switches. UI: AnalíticaOFF/diagnósticoOFF por ausencia de preferencia local.
+Postflight00:40:34UTC21nov conserva15campos de consentimiento, fuente y primer
+envío exactos: personal-a/click/attributed/primera referencia/propietario/fechas/
+statussubmitted/foto1/publicadoNULL/dos fichas propias. La primera comparación
+incluyó equivocadamente la revisión como si fuera inmutable:1→2. Readback de
+updated_at00:23:50UTC demuestra que esa escrituraON antecede a la reinstalación;
+el contador aumenta incluso con mismo valor por diseño CAS. Consenttrue se
+conserva y no hubo escritura ni revocación al entrar sin preferencia local.
+No se recreó primera ficha, cambió su fuente ni simuló referrer. Recibo final
+samsung418-native-acceptance.private.json; teléfono devuelto a Inicio de Dopmi.
+
+Promoción por Play Console del MISMO418, sin Codemagic/build nuevo ni AAB distinto.
+Producción/release43, nombre2.3.8 y notas es-419 comprobados; anterior4092.3.7.
+Preview confirma API24+/target36 y0dispositivos perdidos respecto409. Alcance100%
+en los países ya seleccionados; Managed publishingOFF existente conservado.
+Publishing overview tenía exactamente1cambio: Production2.3.8/Start full rollout.
+Se guardó y confirmó Send1change for review. Readback18:44CDMX: Changes in review,
+comprobaciones previas en curso/hasta14min, envío a revisión tras checks exitosos.
+Esto no equivale a aprobación ni disponibilidad pública: público409 todavía al
+corte; no se enviaron otros cambios de Console. Captura original guardada en
+play418-production-submission.jpg (63076B), con estado y versión visibles.
+
+Fuente/firmas/identidad/gates se conservan enee3ef773/tag. Refs consultados antes
+de promover: base c9d9d03d y rama de continuación d7035601 sin drift. Actualizados
+los punteros de handoff/checkpoint hacia el candidato vigente para que el próximo
+build conserve esta integración; las colas/ramas antiguas quedan como historia.
+No expandir referencia de mock ni fusionar la rama395/PR7 por esa actualización.
+Pendiente único de Android para distribuir: aprobación y disponibilidad pública
+del418; comprobarlas antes de retomar A/B con exclusión QA. Los eventos separados
+de mensajes mantienen gate PostgreSQL/servicios reales CI, sin recorrido de
+mensajes PROD entre participantes atribuido. iOS equivalente continúa pendiente.

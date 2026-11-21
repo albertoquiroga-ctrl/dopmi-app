@@ -81,6 +81,8 @@
 - [x] Flutter analyze/test, Admin test/build, tools/verification npm test, Python configuración; DB y suites de aceptación afectadas en CI.
 - [x] Revisión independiente de código/seguridad y CI completa por SHA.
 - [x] Cotejo remoto, ensayo y aplicación aditiva única de SQL revisado; postflight.
-- [x] Un candidato reciente con configuración PROD correcta; publicación y readback del canal comprobados separadamente. Play418 en revisión, disponibilidad pendiente.
-- [ ] QA instalada en Samsung del candidato: atribución y eventos privados controlados, reinstalación, fotos/compartir, Store/nav/sello. No reciclar fixtures DEV416 consumidos.
-- [ ] Actualizar ledger con evidencia exacta y límites; completar distribución autorizada cuando sus gates pasen.
+- [x] Un candidato reciente con configuración PROD correcta; publicación y readback del canal comprobados separadamente. Play418 disponible e instalado desde Vending.
+- [x] Samsung418: instalación limpia desde personal-a, consentimiento PROD autorizado, campaña automática y primera ficha privada submitted unida a esa fuente; foto propia, Monterrey y paso opcional/vista previa comprobados. Fixtures DEV416 intactos.
+- [x] QA física de visor/carrusel/compartir, producto Store y reinstalación sin revocación implícita cerrada en Samsung. Fuente/primer envío del ensayo son QA y se excluyen del análisis A/B.
+- [x] Ledger actualizado y mismo418 promovido a producción/release43, sin recompilar. Único cambio enviado a revisión; países existentes/100% y Managed publishingOFF conservados.
+- [ ] Comprobar disponibilidad pública del418 tras revisión de Google antes de retomar A/B. iOS equivalente conserva su pendiente explícito.

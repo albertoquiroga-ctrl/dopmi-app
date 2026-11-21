@@ -57,10 +57,23 @@ acción, con espera limitada y continuidad del producto ante fallo de medición.
 Integración vigente: fuenteee3ef773/CI44823640872 cuatroSUCCESS; SQL PROD agrupado
 20261120221225 y Admin de esa fuente desplegados/cotejados. Candidato Android
 2.3.8(418) compilado/publicado por Codemagic6b00c856, backendPROD y mediciónTESTOFF;
-Play cerrado attribution-dev-qa/release6 en revisión20nov22:39UTC. Disponibilidad,
-Samsung/atribución real de esta fuente y promoción pública pendientes. Android
-público continúa409. No confundir pruebas de los nuevos eventos en PostgreSQL
-real con un recorrido de mensajes en el candidato instalado.
+Play cerrado attribution-dev-qa/release6 disponible20nov17:27CDMX. Samsung418/
+Vending instalado limpio desde personal-a: consentimiento PROD autorizado en UI,
+fuente atribuida18:16:54 y primera ficha enviada18:22:35CDMX. Unión exacta de
+fuente/cuenta/ficha comprobada, submitted/una foto/publicadoNULL; sin inserción
+o backfill SQL de atribución. La ficha QA permanece privada en revisión.
+QA de visor/compartir/Tienda y reinstalación cerrada en Samsung: fuente y primer
+envío preservados, sin revocar consentimiento por ausencia de preferencia local.
+El mismo418 se promovió a producción/release43 y se envió a revisión20nov18:44CDMX;
+comprobaciones de Google en curso, disponibilidad pública pendiente. Android
+público continúa409. Los nuevos hitos de mensajes tienen prueba PostgreSQL real, todavía
+no un recorrido de mensajes entre participantes en el candidato instalado.
+
+El reporte bruto incluye la cuenta QA utilizada para este ensayo. Excluirla de
+los denominadores y resultados antes de comparar variantes, mediante la consulta
+privada `pilot-with-qa-excluded.private.sql` del recibo de la entrega. Cotejo
+posterior al ensayo: cero cuentas/conversiones reales por las cuatro variantes.
+No borrar la prueba ni contar su primer envío como adquisición de un rescatista.
 
 La fuente953d3342 pasó en DEV416: instalación limpia del enlace personal-a,
 primera ficha privada en Samsung y reinstalación sin revocación implícita.
@@ -69,7 +82,9 @@ Esa prueba no acredita el candidato integrado de producción ni los eventos nuev
 Sus dos fixtures privados ya consumidos no se reutilizan ni se aprueban/publican.
 
 Antes de retomar A/B: gates por SHA, SQL revisado y cotejado, candidato instalado
-del mismo código y recorrido real. Separar clics, cuentas atribuidas y resultados;
+del mismo código y recorrido real, más disponibilidad pública del418. Gates,
+SQL y recorrido Android ya cerrados; falta esa disponibilidad. Separar clics,
+cuentas atribuidas y resultados;
 comparar cohortes maduras y no anunciar ganadores por inspecciones repetidas.
 Este lote no activa SDK/transferencias publicitarias de Meta/TikTok ni campañas
 pagadas. La atribución de esos proveedores requiere su contrato y consentimiento

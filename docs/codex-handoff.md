@@ -1,6 +1,16 @@
 # Dopmi — continuidad
 
-## Arranque vigente — cierre 9/10/2026
+## Arranque vigente — atribución y restauraciones, 20/11/2026
+
+Para esta entrega, continuar en `codex/production-attribution-restored-20261120`.
+Después del checkpoint y protocolo de mock, leer
+[candidato vigente](candidate-release-current.md): concentra fuente del binario,
+base reciente, restauraciones, QA del Samsung y estado real de Play. El418 ya
+probado usa la fuenteee3ef773; producción pública está en revisión. Las entradas
+históricas siguientes no fijan la rama ni reabren QA consumida de este alcance.
+La autorización de esta entrega conserva los gates financieros existentes.
+
+## Arranque histórico — cierre 9/10/2026
 
 Leer primero [checkpoint](mock-sync-current.md), después [protocolo](mock-sync-workflow.md)
 y [tablero](parity-current-review.md). ENTREGA_CONTINUA_EFICIENTE_VERIFICADA.

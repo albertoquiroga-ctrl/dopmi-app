@@ -24,20 +24,46 @@ HTTPS y visor ampliado/carrusel restaurados, sello manual por perfil recuperado.
   SHAee3ef773, Supabase/Firebase PROD, adopciones/AmazonON, Guardian/mediciónTEST/
   billeterasTESTOFF. Suite del candidato1858PASS/4SKIP. No cambiar sus gates.
 - Publishing y readback Codemagic confirman `attribution-dev-qa`; Play Console
-  verificó por separado release6/código418 **en revisión**20nov22:39UTC.
+  confirmó release6/2.3.8 **disponible para los testers seleccionados**, publicado
+  el20nov17:27CDMX y consultado18:10CDMX. El Samsung instaló418 desde ese canal.
   El rótulo genérico «Google Play internal» del build-info no acredita el canal.
-  Público Android sigue4092.3.7; no se ha promovido418.
+  Público Android seguía4092.3.7 al enviar la promoción del418 a producción;
+  disponibilidad pública del418 pendiente de aprobación y comprobación.
 
-Samsung reconectado y desbloqueado por el titular; ADB confirmó416/Vending en
-el perfil principal20nov22:43UTC. Pendientes: disponibilidad de418,
-instalación limpia desde `personal-a`, atribución automática de primera ficha
-privada y QA de restauraciones/reinstalación del candidato. No desinstalar416
-antes de que418 esté disponible. No reciclar fixtures DEV consumidos ni aprobar
-una mascota ficticia. A/B pausado hasta cerrar estos gates.
+Samsung: instalación limpia en el perfil principal desde `personal-a`, versión
+2.3.8(418) e instalador/iniciador Vending comprobados por ADB y versión visible
+en la app. El titular autorizó expresamente Analítica para esta cuenta QA en PROD;
+activada desde UI, diagnósticoOFF. Fuente personal-a registrada automáticamente
+18:16:54CDMX, antes del primer envío18:22:35CDMX: misma cuenta, referencia exacta,
+estado submitted, una foto y published_at NULL. No se insertó ni corrigió esa
+atribución por SQL. El borrador anterior y los fixtures DEV quedaron intactos.
 
-Tras QA, promover en Play **ese mismo código418**, sin recompilar con
-`android-play-production`. Ese workflow genera otro binario. No inferir que la
-entrega de servidor/Admin equivale a instalación, aceptación o publicación móvil.
+QA física cerrada: acceso Google, foto propia, búsqueda de zona Monterrey, paso
+opcional/Ir a vista previa y envío privado. Visor público con4fotos: flechas,
+swipe, contador, cerrar y Back comprobados; foto completa cargada y controles
+presentes en los PNG originales. Hoja de compartir contiene el enlace HTTPS
+correcto; se canceló sin destinatario. Tienda/producto/aviso de Amazon/regreso
+probados sin compra. La interrupción temporal por Roku se resolvió con el titular.
+
+Segunda instalación limpia de418/Vending18:38:43CDMX: login de la misma cuenta,
+Analítica/diagnóstico localesOFF sin pulsar switches. Fuente y primer envío
+conservaron15campos exactos. Consentimiento servidortrue/revisión2, cuya última
+escritura18:23:50 antecede a la reinstalación; no hubo revocación implícita.
+Recibo privado `samsung418-native-acceptance.private.json`. La ficha QA sigue
+en revisión, sin aprobación/publicación ni mensajes a personas reales.
+
+La cuenta QA debe excluirse del análisis del experimento; el reporte bruto la
+incluye. Consulta privada con exclusión comprobada: cero cuentas/conversiones
+reales por las cuatro variantes al corte. No confundir ese ensayo con adquisición.
+
+Promoción realizada en Play del **mismo código418**, sin otra compilación:
+producción/release43, nombre2.3.8 y notas es-419, alcance100% en los países ya
+seleccionados. Se envió únicamente ese cambio; Publishing overview confirma
+Changes in review/comprobaciones previas en curso20nov18:44CDMX. Managed
+publishing ya estabaOFF y se conservó. Público sigue409 hasta aprobación y
+disponibilidad comprobadas. Siguiente: consultar release43 y verificar418
+disponible públicamente antes de retomar A/B. No disparar un workflow nuevo
+como forma de promoción; el paquete probado ya está enviado.
 Distribución iOS equivalente todavía no iniciada; no hay atribución automática
 de instalación iOS en este lote. Plan/contrato y evidencia: `progress.md`,
 `facebook-rescuer-experiment.md` y

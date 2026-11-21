@@ -1,4 +1,14 @@
-# Checkpoint — beta real, 29/oct/2026 22:28 UTC (16:28 CDMX)
+# Checkpoint vigente — atribución y restauraciones, 20/nov/2026
+
+Entrega actual en `codex/production-attribution-restored-20261120`.
+Fuente del binarioee3ef773/Play418; el
+[candidato vigente](candidate-release-current.md) mantiene inventario, gates,
+QA física y siguiente comprobación de disponibilidad pública. Conservar esa
+continuación para los próximos builds y aplicar el protocolo estable a cualquier
+delta nuevo. La entrega actual recupera cambios concretos sobre c9d9d03d; no
+introduce una referencia de mock nueva ni reabre lotes históricos aceptados.
+
+# Checkpoint histórico — beta real, 29/oct/2026 22:28 UTC (16:28 CDMX)
 
 Producto dopmi-app; codex/finish-release-20261015; una cola Flutter.
 Candidato f20b27e6aa21a0d15a5af1bfd35249767c44d086/CI40936283326 cuatro SUCCESS.

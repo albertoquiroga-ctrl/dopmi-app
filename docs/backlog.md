@@ -7,10 +7,15 @@ Base congelada c9d9d03d; rama `codex/production-attribution-restored-20261120`.
 [plan de integración](superpowers/plans/2026-11-20-production-attribution.md).
 Implementación y CI44823640872/ee3ef773 cerradas; SQL PROD agrupado y Admin
 desplegados/cotejados. Codemagic6b00c856/14SUCCESS genera2.3.8(418), fuenteee3,
-entornoPROD/AmazonON/finanzasOFF; Play cerrado attribution-dev-qa/release6 en
-revisión20nov22:39UTC. Samsung ya reconectado/416Vending; faltan disponibilidad, QA instalada
-desde personal-a y promoción del mismo418 a público. No recompilar como forma
-de promoción, no desinstalar416 antes de disponibilidad y no retomar A/B todavía.
+entornoPROD/AmazonON/finanzasOFF; Play cerrado attribution-dev-qa/release6 disponible.
+Samsung ya instaló418/Vending desde personal-a y la primera ficha privada quedó
+atribuida automáticamente en PROD20nov18:22CDMX. Paso opcional/Tienda comprobados.
+QA de visor/carrusel/compartir, producto de Tienda y reinstalación cerrada en el
+Samsung; fuente/primer envío conservados. El mismo418 se promovió a producción/
+release43 y se envió como único cambio: revisión/comprobaciones previas en curso
+20nov18:44CDMX, alcance100% de países existentes, sin recompilar. Falta confirmar
+disponibilidad pública del418; hasta entonces público409 y A/B pendiente.
+Excluir cuenta QA conocida del análisis, sin borrar el recibo de prueba.
 Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
 P3 posterior: precisar «primer mensaje escrito» del aviso de Analítica como
 «primer mensaje enviado como adoptante, de texto o foto»; no cambia el contrato
