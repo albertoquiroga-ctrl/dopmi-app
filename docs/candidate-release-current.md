@@ -1,10 +1,19 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
 Preparación21/nov para elección inicial de Analítica, sobre35204afd/producto1441:
+fuente inmutable `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
+`codex/usage-analytics-choice-af0e2274`, CI44878177593 cuatro trabajos SUCCESS.
 ON sólo visual hasta guardar; elección opcional y OFF históricos conservados,
 incluida restauración/otro teléfono. Componente, transporte, recibo SQL y textos
 nativos implementados; SQLPROD/HTML/fichas/builds aún no ejecutados. Revisión
 independiente de código/seguridad/UI sin P1/P2 final. [Plan y validación](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+Regresiones finales95PASS, configuración42PASS, análisis0incidencias; suite
+completa local1965PASS/4SKIP anterior al último copy/gate. CI validó la fuente
+final completa, compilaciones Android/iOS simulator, permisos PostgreSQL e
+integración real de identidad/adopción, privacidad nativa y capturas estándar.
+Paquete SQL18468B7bb6e22e…fd9412 y textos exactos preparados/revisados; autorización
+específica solicitada al titular, sin respuesta al corte. No aplicar ni distribuir
+este candidato antes de resolver el paquete y comprobarlo en PROD.
 No sustituye el release QA423/424 ni acredita aceptación instalada.
 
 Corrección de Favoritos sobre esta continuación: al volver a

@@ -3,9 +3,11 @@
 Nueva petición21/nov: Analítica preseleccionada con acción explícita opcional,
 OFF anteriores conservados y avisos/fichas coherentes. Implementación y revisión
 de código/seguridad/UI cerradas localmente; SQL aditivo y textos exactos preparados,
-sin aplicar/publicar. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md)
-mantiene el paquete y gates. Integrador: cerrar CI del candidato y presentar la
-aplicación SQL/publicación legal concreta; después distribuir QA por la única
+sin aplicar/publicar. Fuenteaf0e2274, CI44878177593 cuatro SUCCESS.
+[Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md)
+mantiene el paquete y gates. Titular: responder la aplicación SQL/publicación
+legal concreta ya solicitada; integrador: tras autorización conciliar/aplicar,
+actualizar declaraciones exactas y después distribuir QA por la única
 cola y verificar instalación. El estado publicado423/424 y el problema de descarga
 S25 permanecen como abajo. No convertir la selección inicial en consentimiento
 ya otorgado ni activar diagnóstico/publicaciones.

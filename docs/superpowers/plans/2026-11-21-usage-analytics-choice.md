@@ -45,22 +45,29 @@
 - [x] Escribir regresiones de no colección inicial, ON confirmado, OFF previos, otra cuenta/dispositivo, conflicto/timeout y retirada.
 - [x] Implementar lectura/elección y restauración sin escrituras ON; bloquear operaciones obsoletas por generación y pausar al retirar.
 - [x] Implementar aviso accesible y prueba a320px/texto200%; integrar gate sin alterar aceptación legal ni rutas exentas.
-- [ ] Ejecutar pruebas enfocadas, análisis y suite Flutter por la única cola; revisar UI/UX/código/seguridad.
+- [x] Ejecutar pruebas enfocadas, análisis y suite Flutter por la única cola; revisar UI/UX/código/seguridad.
 
 ### Task3: Transparencia y distribución
 
 **Files:** Delta exacto de términos/privacidad en el sitio existente; matriz de categorías Apple/Play; continuidad en documentos existentes.
 
-- [ ] Contrastar eventos/identificadores reales con los avisos y fichas, sin asumir que declaraciones históricas son actuales.
+- [x] Contrastar eventos/identificadores reales con los avisos y fichas, sin asumir que declaraciones históricas son actuales.
 - [ ] Preparar diffs y paquetes revisables; aplicar sólo operaciones concretamente autorizadas y verificar readback.
-- [ ] Congelar fuente y CI de cuatro trabajos; ventana de cinco minutos antes de cada build QA, sin duplicar.
+- [x] Congelar fuente y CI de cuatro trabajos.
+- [ ] Ventana de cinco minutos antes de cada build QA, sin duplicar.
 - [ ] Comprobar artefactos/publicación por separado; mantener pendientes instalación/aceptación que aún no estén observadas.
 
 ## Evidencia del corte local
 
 - SQL4673B4028bc86…a13080:12/12 pruebas nuevas con PostgreSQL real; Node1354PASS/0FAIL/9SKIP. Wrapper PROD18468B7bb6e22e…fd9412,12/12 guardas/rollback local. Revisión independiente sin P1/P2; no aplicación remota.
-- Flutter92 pruebas enfocadas PASS, después suite completa1965PASS/4SKIP. El último delta de copy legal y orden previo a Nearby tiene17 comprobaciones enfocadas/render PASS; CI final verificará toda la fuente. Configuración42PASS y análisis0incidencias. No equiparar ese primer full local al SHA posterior.
+- Flutter92 pruebas enfocadas PASS, después suite completa1965PASS/4SKIP. El último delta de copy legal y orden previo a Nearby tiene17 comprobaciones enfocadas/render PASS y regresiones finales95PASS; CI final verificará toda la fuente. Configuración42PASS y análisis0incidencias. No equiparar ese primer full local al SHA posterior.
 - Cinco capturas de widget real sintético390×844 y320×640/texto200%, cero callbacks al capturar. Revisión UI/UX independiente sin P1/P2; no equivalen a aceptación física ni TalkBack/VoiceOver.
 - La revisión halló y corrigió dos P2 antes de publicar: error de lectura no revoca globalmente y OFF incierto no genera segundo POST v2. Regresiones combinadas cubren OFF leído después del primer ON y retirada con disco demorado/cambio de cuenta. No incidente remoto.
 - HTML propuesto revisado: privacidad28811B5df1686a…9a741cb; términos3955Bad358012…cdb0054c.18 validaciones locales, baselines públicos conservados. Consolas sólo leídas; deltas en `docs/h10-store-privacy-declarations.md`.
-- Pendiente: CI final, autorización propia del paquete SQL/publicación legal, aplicación/readback, distribución QA y aceptación instalada. Fichas se publican con finalidades exactas comprobadas; no cambiar edades ni activar SDK publicitario.
+- CI44878177593 terminó cuatro trabajos SUCCESS paraaf0e2274: fuente final completa, Android/iOSsimulator, privacidad nativa, capturas, PostgreSQL e integración Auth/Storage/Realtime. Sin builds Codemagic ni modificación de producción por esta CI.
+- Pendiente: autorización propia del paquete SQL/publicación legal ya solicitada, aplicación/readback, distribución QA y aceptación instalada. Fichas se publican con finalidades exactas comprobadas; no cambiar edades ni activar SDK publicitario.
+
+Fuente congelada `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
+`codex/usage-analytics-choice-af0e2274`, CI
+[44878177593](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44878177593).
+La publicación de esta rama no aplica SQL ni cambia servicios o fichas.

@@ -9718,3 +9718,49 @@ cubren código; **no sustituyen aceptación instalada**. Único teléfono conect
 sigue SM-S938B; ZFlip solicitado, sin respuesta/conexión acreditada. Siguiente:
 integrador/titular comprueban Favoritos de423 en ese equipo; no otro build por
 espera. No se enviaron mensajes reales a la rescatista para esta prueba.
+
+## 21/11/2026 CDMX — Analítica preseleccionada, elección real y paquete preparado
+
+Petición directa del titular: Analítica inicialON con retirada y declaraciones
+coherentes. Se implementó ON visual y confirmación opcional antes de colección;
+no se registra consentimiento por ausencia ni se reactivan OFF previos. Aviso
+separado de términos, después de legal y antes de ubicación; controladores leen
+estado por cuenta/entorno, conservan OFF/rev0 y fallan sin recopilar ante
+incertidumbre. Crashlytics/publicaciones/ads permanecen independientes.
+
+Fuente congelada `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
+`codex/usage-analytics-choice-af0e2274`, sobre35204afd/producto1441. CI
+[44878177593](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44878177593)
+**cuatro SUCCESS**: fuente final completa y sus capturas, Androiddev/iOSsimulator,
+privacidad nativa, PostgreSQL real e identidad/adopción/Auth/Storage/Realtime.
+Local95 regresiones finalesPASS,42configPASS y análisis0incidencias. Full local
+1965PASS/4SKIP anterior al último copy/gate; ese delta tiene17 pruebas enfocadas/
+renderPASS y quedó incluido en la CI final. No trasladar el primer conteo a un
+SHA posterior ni equiparar compilación con publicación/instalación.
+
+SQLaditivo4673B4028bc86…a13080: distingue ausencia/OFF y registra elección/aviso/
+fecha servidor por revisión.12 pruebas PostgreSQL nuevasPASS; Node1354PASS/
+0FAIL/9SKIP. WrapperexactoPROD18468B7bb6e22e…fd9412 y12 guardas/rollback locales
+PASS. Sólo lectura de catálogosPROD: historia71; no usuarios ni nuevas escrituras.
+Revisión independiente código/seguridad/SQL/UI sin P1/P2 finales. Antes del
+cierre se corrigieron dos P2 locales: timeout de lectura no revoca y OFF
+incierto no repite POST; tres carreras combinadas cubren relecturaOFF y cambio
+de cuenta con almacenamiento demorado. No incidente remoto ni repetición QA real.
+Cinco capturas sintéticas390×844/320×640texto200%, sinSDK/cuenta/callbacks;
+opciones completas/alcanzables. No prueba física ni TalkBack/VoiceOver.
+
+HTMLprivacidad28811B5df1686a…9a741cb y términos3955Bad358012…cdb0054c revisados,
+18 validacionesPASS. Versiones generales conservadas; elección con aviso propio
+usage-analytics-2026-11-21. Consolas leídas en Chrome: faltan finalidades de
+Analytics en UserID/coarse; Play tiene preciso sin seleccionar, aunque la app
+guarda el punto privado. AudienciaPlay16–17/18+ conservada. No fichas guardadas,
+publicación legal, servicio nuevo, cambios financieros ni Codemagic por este lote.
+El formulario exacto se concilia con el tratamiento real antes de publicar.
+
+**Pendiente del titular:** autorización específica SQL/textos ya solicitada;
+sin respuesta al corte. Integrador aplica/concilia sólo al recibirla, actualiza
+fichas y distribuye QA por una cola/ventana5min antes de cada envío. Conservar
+QA423/424, estado público y el casoGoogle1010; no nueva build por espera ni
+sideload. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md) y artefactos
+ignorados `.tools/analytics-choice-20261121/{server,legal,ui}`. El código está
+verificado, **no publicado, instalado ni aceptado**. Sin otro tablero.
