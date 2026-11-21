@@ -1,5 +1,21 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
+Corrección de compartir perfil preparada sobre este mismo release en
+`b278540d`, CI `44853201553` con cuatro trabajos aprobados. El botón usa
+`https://www.dopmi.org/people/<uuid>` en una línea propia. La página y portada
+están publicadas desde landing `17fafda`, Vercel
+`dpl_9QdrSqU7NuNGjH2nGSRUUsoJtU6Q` READY. Sus respuestas públicas verificadas
+son HTML 200 y JPEG 200 de 1200×630 sin EXIF. Codemagic
+`6b01003f9e3cad7e76b08946` completó 14 pasos y el readback de Play confirmó
+2.3.8 (420), canal interno, estado completed. El reporte del artefacto
+confirmó el mismo runtime de producción con Tienda habilitada.
+Instalación y prueba física del nuevo botón pendientes.
+
+La apertura de Chrome en el Samsung quedó pendiente. La revisión automática
+rechazó la apertura por ADB y Computer Use detuvo el control de Windows
+porque no pudo verificar la URL abierta del navegador. Se conservó esa
+limitación al solicitar el titular que el integrador hiciera la prueba.
+
 Correctivo de perfil público aplicado el 20 de noviembre a las 19:33 CDMX
 desde `5fa23089`.
 La respuesta de `dopmi_public_profile` incluye las adopciones publicadas del

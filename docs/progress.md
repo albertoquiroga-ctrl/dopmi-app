@@ -9192,3 +9192,38 @@ muestra la foto; pulsarla abre la misma mascota y Back vuelve al perfil.
 La corrección está activa en el servidor. Evidencia privada ignorada en
 .tools/public-profile-adoptions-20261120. El envío de producción 418 sigue
 referenciado por su fuente original; esta operación actualiza el servidor.
+
+### 20/11/2026 — Compartir perfiles mediante HTTPS
+
+El reporte mostró que el botón del perfil aún enviaba el esquema interno
+io.dopmi.app; el sitio devolvía 404 para /people/<uuid>. El candidato
+b278540d añade el HTTPS de perfiles, mantiene las validaciones de destino
+y coloca la URL en su propia línea. Prueba del botón real y recepción de
+enlaces en arranque frío/activo aprobadas, junto con 48 pruebas dirigidas
+de Flutter y análisis sin hallazgos. CI 44853201553 completó cuatro trabajos
+con éxito. Revisión independiente de código y seguridad sin bloqueos.
+
+Landing 17fafda publicada como dpl_9QdrSqU7NuNGjH2nGSRUUsoJtU6Q READY.
+La ruta nueva consulta únicamente el perfil público, elige una foto de una
+mascota publicada del mismo dueño y comprueba otra vez el detalle antes de
+leer Storage. Reutiliza la plantilla de adopciones. Pasaron 32 pruebas Node,
+lint y build. Lecturas públicas reales con agente de crawler confirman
+HTML 200, nombre y destino correctos, JPEG 200 de 1200×630 sin EXIF y la página
+de adopción anterior disponible. Datos y claves sólo en memoria durante
+la comprobación; HTML y portada públicos de evidencia quedan ignorados.
+
+El titular confirmó el Samsung conectado y pidió abrirlo por control remoto.
+La revisión automática rechazó la apertura de Chrome mediante ADB.
+La alternativa de Enlace Móvil estaba sin vincular y no se configuró.
+El control de Chrome en Windows se detuvo al no poder determinar con
+suficiente certeza la URL abierta. No se atribuye QA de navegador móvil
+ni vista previa física de WhatsApp. La página y sus metadatos sí están
+verificados por HTTP. Compilación interna 6b01003f9e3cad7e76b08946 reservada
+y enviada una sola vez tras la ventana de cinco minutos. Terminó con 14
+pasos aprobados. Artefacto 2.3.8 (420) y readback de Play internal/completed
+del mismo handle cotejados. El informe del paquete confirma la fuente b278540d,
+Supabase PROD, adopciones y Tienda activas, Guardián, medición TEST y
+billeteras TEST apagados. El correctivo queda distribuido para QA interna.
+La instalación de 420, la hoja de compartir real y el salto web→app en
+Samsung conservan su comprobación pendiente por el bloqueo de control
+registrado. No se atribuye disponibilidad pública ni aceptación instalada.
