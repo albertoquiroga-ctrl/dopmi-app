@@ -73,6 +73,7 @@ class _MatchFavoritesState extends ConsumerState<MatchFavorites> {
   Widget build(BuildContext context) => LiveSection<DataPage<SavedEntry>>(
     key: ValueKey(widget.all),
     tables: const ['dopmi_favorites', 'dopmi_adoptions', 'dopmi_threads'],
+    refreshOnActivate: true,
     load: load,
     builder: (result, refresh) {
       final items = result.items.where((item) => item.available).toList();

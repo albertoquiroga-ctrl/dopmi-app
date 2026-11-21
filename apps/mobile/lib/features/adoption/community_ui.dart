@@ -120,12 +120,16 @@ class LiveSection<T> extends ConsumerStatefulWidget {
     this.tables = const [],
     this.errorMessage,
     this.statusFrame,
+    this.refreshOnActivate = false,
   });
   final Future<T> Function() load;
   final Widget Function(T data, VoidCallback refresh) builder;
   final List<String> tables;
   final String Function(Object)? errorMessage;
   final Widget Function(Widget content)? statusFrame;
+
+  /// Re-read when a retained navigation branch becomes active again.
+  final bool refreshOnActivate;
   @override
   ConsumerState<LiveSection<T>> createState() => _LiveSectionState<T>();
 }
@@ -135,6 +139,7 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
   T? data;
   Object? error;
   bool loading = true, foreground = true;
+  bool? branchActive;
   int generation = 0;
   Timer? timer;
   VoidCallback? cancel;
@@ -149,6 +154,17 @@ class _LiveSectionState<T> extends ConsumerState<LiveSection<T>>
     timer = Timer.periodic(const Duration(seconds: 30), (_) {
       if (foreground) refresh();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.refreshOnActivate) {
+      final active = TickerMode.valuesOf(context).enabled;
+      final reactivated = branchActive == false && active;
+      branchActive = active;
+      if (reactivated) unawaited(refresh());
+    }
   }
 
   Future<void> refresh() async {

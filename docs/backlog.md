@@ -1,5 +1,12 @@
 # Cola vigente — integración de producción20/nov/2026
 
+Prioridad de corrección: Favoritos de Mis match tras swipe derecho, incluida
+respuesta de guardado que llega después de abrir la pestaña. Cliente corregido,
+11regresionesPASS y revisión independiente cerrada; análisis/suite completa y
+CI pendientes. Integrador: congelar candidato, verificar gates y distribuir
+por canales QA existentes; aceptación física del recorrido aún pendiente.
+Datos/permisos/SQL/servicios y regla de excluir después de mensaje conservados.
+
 Continuación autorizada: piloto individual iOS `personal-a` con descarga directa,
 sin códigos ni login previo. Corte reciente e48a653b inventariado e integrado,
 incluye compartir perfil HTTPS de b278540d/build420 interno. Código cliente y
@@ -50,9 +57,10 @@ Checkpoint operativo: [candidate-release-current](candidate-release-current.md).
 Play interno: reenvío único autorizado **2.3.8 (422)**, fuente inmutable
 b278540d/configuración420, CM6b01170e/14SUCCESS; artefacto y readback
 internal/completed cotejados. Samsung pidió422 tras refrescar Play y repitió
-1010 antes de descargar; no instalado. Integrador: continuar el expediente
-Google ya abierto y adjuntar el resultado cuando permita seguimiento;
-no duplicar build/caso ni atribuir aceptación física a la publicación.
+1010 antes de descargar; no instalado. Google confirmó caso3-8197000042220;
+seguimiento422 + descarga reportada en ZFlip enviado en el mismo hilo/SENT.
+Integrador: analizar respuesta del expediente, sin duplicar build/caso ni
+atribuir aceptación física del Samsung a la publicación.
 P3 de copy resuelto en el piloto iOS: «primer mensaje enviado como adoptante»;
 no cambia el contrato de texto o foto del contador de compositor.
 Las colas históricas inferiores no reinician trabajo consumido.

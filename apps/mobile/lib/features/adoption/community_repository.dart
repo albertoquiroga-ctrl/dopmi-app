@@ -146,6 +146,7 @@ class SupabaseCommunityRepository implements CommunityRepository {
   final SupabaseClient client;
   final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
   final PrepareAttributableAction? beforeAttributableAction;
+  final _favoriteListeners = <VoidCallback>{};
   @override
   String? get userId => client.auth.currentUser?.id;
   Future<dynamic> rpc(String name, [Json params = const {}]) async {
@@ -261,8 +262,27 @@ class SupabaseCommunityRepository implements CommunityRepository {
     ),
   );
   @override
-  Future<void> favorite(String id, bool saved) async =>
-      await rpc('dopmi_set_favorite', {'post_id': id, 'saved': saved});
+  Future<void> favorite(String id, bool saved) async {
+    final actor = userId;
+    await rpc('dopmi_set_favorite', {'post_id': id, 'saved': saved});
+    if (actor == null || userId != actor) return;
+    for (final refresh in List<VoidCallback>.of(_favoriteListeners)) {
+      try {
+        refresh();
+      } catch (cause, stack) {
+        // A refresh failure must not make an already committed write retry.
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: cause,
+            stack: stack,
+            library: 'DopMi',
+            context: ErrorDescription('while refreshing saved pets'),
+          ),
+        );
+      }
+    }
+  }
+
   Future<DataPage<SavedEntry>> savedPage(String name, int page) async {
     final result = await rpc(name, {'page_number': page});
     return DataPage(
@@ -489,8 +509,12 @@ class SupabaseCommunityRepository implements CommunityRepository {
     channel.subscribe((status, error) {
       observeRealtime?.call(status, error);
     });
+    if (tables.contains('dopmi_favorites')) {
+      _favoriteListeners.add(refreshCurrentAccount);
+    }
     return () {
       disposed = true;
+      _favoriteListeners.remove(refreshCurrentAccount);
       unawaited(client.removeChannel(channel));
     };
   }

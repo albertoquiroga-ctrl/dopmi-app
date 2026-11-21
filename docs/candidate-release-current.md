@@ -1,5 +1,15 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
+Corrección de Favoritos en preparación sobre esta continuación: al volver a
+Mis match, la rama retenida refresca su lista; al confirmarse un like tardío,
+el repositorio avisa localmente a sus observadores de favoritos de esa misma
+cuenta. Tres archivos Dart productivos, sin SQL ni cambios de servicios.
+Regresión real de navegación/swipe y escritura retrasada:11PASS, después de
+observar el fallo; revisión independiente de código/seguridad/UX sin hallazgos
+materiales finales. Análisis/suite completa y CI del candidato en curso;
+publicación e instalación nuevas aún pendientes. Preserva la exclusión después
+del mensaje del adoptante y los avances iOS descritos a continuación.
+
 Preparación autorizada del piloto individual iOS `personal-a`: base e48a653b,
 incluyendo el arreglo reciente de compartir perfiles HTTPS de b278540d/420.
 Cliente temprano/persistente y RPC SQL aditiva implementados; primer contexto y
@@ -77,9 +87,13 @@ verificados. Primer intento del teléfono aún pidió420; tras reiniciar sólo
 el proceso Play,22:16:44CDMX pidió422 y repitió respuesta no-OK2/estado1010
 antes de descargar. Paquete ausente; reenvío publicado, descarga aún sin resolver.
 Producción pública y configuración de servicios conservadas; sin sideload.
-Siguiente: integrador aporta este resultado al mismo expediente de Google
-cuando esté disponible su seguimiento, sin abrir duplicado. Recibos/capturas
-fuera de Git en `.tools/play420-resend`.
+Confirmación por correo localizada: caso Google **3-8197000042220**.
+El titular informa descarga correcta en un Samsung Z Flip; modelo exacto,
+Android y build instalado allí aún sin cotejar. Se respondió una sola vez en
+el mismo hilo con esa comparación y el fallo422 del S25 Ultra, sin adjuntos
+ni nuevo caso. Gmail confirmó SENT y el hilo original. Pendiente respuesta
+técnica; el contraste acota la investigación, no acredita la causa.
+Recibos/capturas fuera de Git en `.tools/play420-resend` y `.tools/play420-install`.
 
 La apertura de Chrome en el Samsung quedó pendiente. La revisión automática
 rechazó la apertura por ADB y Computer Use detuvo el control de Windows

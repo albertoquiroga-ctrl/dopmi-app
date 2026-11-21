@@ -9583,3 +9583,40 @@ adopción. Mantener app abierta para readback, sin URI/fichas/mensajes todavía.
 Primera lectura posterior sigue sin actor PROD de esa cuenta: acceso/consentimiento
 pendientes, ninguna inscripción ni éxito de atribución declarados. Baseline privado
 ipad421-native-trial-before.private.json y plan de lectura preparados.
+
+### 20/11/2026 CDMX — Favoritos: reactivación y confirmación tardía del swipe
+
+El titular confirma que marcó con swipe derecho al gato y, con la misma cuenta,
+abrió inmediatamente Mis match para escribir y recibió el estado vacío. Lecturas
+PROD acotadas y sin escrituras verifican favorito persistido, ficha publicada,
+dueño activo y ningún mensaje del adoptante. El RPC real de esa cuenta devuelve
+total1/gato1/disponible1. dopmi_favorites no está en supabase_realtime. El fallo
+es cliente: la rama se conserva al cambiar pestaña y no refrescaba al reactivarse.
+
+Se añade refreshOnActivate opt-in a LiveSection, activado sólo por MatchFavorites.
+go_router18.0.1 conserva ramas mediante Offstage/TickerMode; se usa la API del
+SDK instalado valuesOf(context).enabled. Tres regresiones de swipe/regreso,
+unlike y mensaje fallaron antes y pasaron tras el cambio, sin esperar30s.
+La revisión independiente identificó además una carrera válida: persistFavorite
+es asíncrono y la lectura puede preceder al commit. Se corrigió antes de publicar:
+SupabaseCommunityRepository notifica observadores locales de favoritos sólo tras
+éxito del RPC y con el mismo actor. La cancelación y el cambio de cuenta cierran
+esas notificaciones; un listener defectuoso no convierte el commit en fallo.
+
+Pruebas finales focales11PASS/0FAIL: cuatro widgets, incluido RPC retenido con
+Completer y favorite/watch productivos reales, y siete unitarios del repositorio
+con HTTP controlado. RED de carrera acreditó tres fallos funcionales; ese runner
+se canceló por teardown de un fixture SDK. Se simplificó el arnés para separar
+HTTP del FakeAsync de widgets; GREEN final es terminal, sin timers pendientes.
+Código/seguridad/UX revisados independientemente, P2 cerrado, sin otros hallazgos
+materiales. Análisis/suite completa y CI aún pendientes. No se cambiaron SQL,
+API, favoritos reales, reglas de contacto, permisos ni servicios. Tres archivos
+productivos y dos de pruebas; no nueva referencia de mock ni rediseño visual.
+Publicación QA y aceptación física siguen pendientes de los gates vigentes.
+Recibos saneados fuera de Git en .tools/favorites-refresh.
+
+El titular también informa que DopMi sí descarga en un Samsung Z Flip. Modelo
+exacto, Android y build allí no comprobados. Se localizó confirmación oficial
+Google3-8197000042220 y se respondió una vez en el mismo hilo con ese contraste
+y el fallo422/S25 Ultra. Gmail confirmó SENT; no se atribuye recepción humana,
+causa ni solución del proveedor. Recibos privados en .tools/play420-install.
