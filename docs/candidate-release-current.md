@@ -6,16 +6,28 @@ Cliente temprano/persistente y RPC SQL aditiva implementados; primer contexto y
 propietario inmutables, revisión consentida exacta, cinco hitos independientes.
 No códigos, login previo a descarga ni matching de dispositivo. Revisión
 independiente sin P1/P2 después de corregir fallos de persistencia/reinicio.
-Pruebas de transporte conjunto12PASS, módulo30PASS y PostgreSQL real17PASS;
-suite backend1339PASS/12SKIP y configuración42PASS. Análisis integrado sin
-hallazgos; suite móvil integral1929PASS/4SKIP. Todavía no hay
-CI del nuevo SHA, migración PROD aplicada ni carga del nuevo candidato.
+Fuente inmutable `55061f99f48c0b0b8e54ee628bc8faab553d0763`, tag
+`codex/ios-cpp-personal-a-2.3.9-55061f99`. CI
+[44860327579](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44860327579)
+cuatro trabajos SUCCESS: Flutter1929PASS/4SKIP, análisis, compilaciones Android/
+iOS simulator y capturas aprobados; backend1339PASS/12SKIP, PostgreSQL real
+adquisición/CAS/iOS42PASS/0SKIP y Auth/Storage/Realtime5PASS. Pruebas locales de
+transporte conjunto12PASS, módulo30PASS, PostgreSQL iOS17PASS y configuración42PASS.
+
+SQL PROD aplicado una vez: `20261121034107 /
+ios_cpp_personal_a_acquisition_20261120`. Historia70→71 con prefijo intacto;
+333funciones previas/OID/ACL/configuración exactos, cinco funciones nuevas
+cotejadas, dos tablas RLS sin CRUD cliente y cuatro triggers. Fuentes/eventos0;
+sin backfill ni cambios a datos QA. Mapeo en migration-history-audit.md.
+Codemagic único `6b0112f68d36bd30d38e3998`, `ios-testflight`, iniciado21:41CDMX
+con fuente55061f99, PROD/adopciones/AmazonON y submissionfalse comprobados.
+Compilación/carga en curso; número real pendiente de leer del artefacto.
 
 CPP `personal-a · Publicar en adopción`, id público
 `f72ab3bc-1cd0-49b7-9220-cff726c86ffd`, creada desde2.3.8(419); destino
 `io.dopmi.app://acquire/personal-a` guardado y cotejado tras recargar Chrome.
 Borrador sin enviar a revisión, sin nuevo `ppid` en landing. El419 continúa
-Pendiente de revisión/publicación; no se retiró. Se prepara una carga2.3.9
+Pendiente de revisión/publicación; no se retiró. La carga2.3.9 se realiza
 mediante `ios-testflight`, PROD/AmazonON, sin envío automático a revisión.
 El número final se leerá del artefacto. El titular no dispone de iPhone físico:
 primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o

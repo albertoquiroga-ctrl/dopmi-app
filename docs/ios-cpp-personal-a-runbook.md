@@ -1,7 +1,7 @@
 # Operación de la prueba iOS CPP personal-a
 
 Corte de preparación20/11/2026, CDMX. Este documento guía la aceptación futura;
-no acredita CI, despliegue SQL, binario nuevo ni recorrido instalado. El estado y
+no acredita por sí mismo el recorrido instalado. El estado y
 los recibos vigentes se registran en [candidato](candidate-release-current.md) y
 [progress](progress.md). Alcance en el [plan](superpowers/plans/2026-11-20-ios-cpp-personal-a.md)
 y fundamento en la [investigación](ios-direct-attribution-research.md).
@@ -14,7 +14,8 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | CPP | Borrador `f72ab3bc-1cd0-49b7-9220-cff726c86ffd`, guardado desde la ficha2.3.8(419). No enviado a revisión. |
 | Destino | Únicamente `io.dopmi.app://acquire/personal-a`. No códigos ni login antes de descargar. |
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
-| Candidato previsto |2.3.9 mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. No iniciado en este corte; no asignar un número de build por anticipado. |
+| Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
+| Candidato |2.3.9 mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998 en curso; no asignar un número de build por anticipado. |
 | Dispositivo | No hay iPhone físico disponible. Instalación desde CPP, primera ficha y mensajes siguen pendientes de aceptación física. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige

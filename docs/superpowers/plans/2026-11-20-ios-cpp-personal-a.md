@@ -87,9 +87,9 @@ medición no debe impedirlos ni generarlos por recibir el enlace.
 
 ### 3. Integración, distribución y aceptación
 
-- [ ] Analyze + suiteFlutter, backend y configuración; CI completa por SHA.
+- [x] Analyze + suiteFlutter, backend y configuración; CI completa por SHA.
 - [x] Revisión independiente de UI/UX/código/seguridad; corregir defectos concretos.
-- [ ] Pre/postflight de historia, funciones, permisos y guardas; aplicar una vez.
+- [x] Pre/postflight de historia, funciones, permisos y guardas; aplicar una vez.
 - [ ] Cargar candidato desde fuente inmutable reciente con entorno PROD verificado.
 - [x] Preparar una CPP en borrador con destino real de adopciones y personal-a;
   no publicar landing ppid antes de tener cliente compatible.

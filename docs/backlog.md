@@ -4,7 +4,10 @@ Continuación autorizada: piloto individual iOS `personal-a` con descarga direct
 sin códigos ni login previo. Corte reciente e48a653b inventariado e integrado,
 incluye compartir perfil HTTPS de b278540d/build420 interno. Código cliente y
 contrato SQL aditivo implementados; revisión independiente sin P1/P2 tras
-corregir persistencia/cambio de propietario. CPP guardada en borrador, sin activar
+corregir persistencia/cambio de propietario. CI44860327579/55061f99 cuatroSUCCESS;
+SQL PROD20261121034107 aplicado y cotejado sin alterar333funciones previas.
+Codemagic6b0112f68d36bd30d38e3998 compila2.3.9 upload-only; número real pendiente.
+CPP guardada en borrador, sin activar
 el `ppid`. La cola técnica sigue en [plan iOS](superpowers/plans/2026-11-20-ios-cpp-personal-a.md)
 y [runbook](ios-cpp-personal-a-runbook.md); consultar candidato/progress para
 resultados de CI, despliegue y carga. iPhone físico no disponible: primera ficha
