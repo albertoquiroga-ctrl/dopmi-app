@@ -1,5 +1,25 @@
 # Auditoría del historial de migraciones
 
+## 20/11/2026 CDMX — Adopciones en perfiles sin sello
+
+Corrección solicitada por el titular sobre el release 2.3.8 (418).
+Fuente `5fa23089810ee9befe9373ec836a3e7a75a1c0fc`.
+Archivo `20261121012608_public_profile_adoptions.sql`, 1278 bytes,
+SHA256 `43c969cc77573dee2bed7dfd1b5f7676f9950ff05be41e42aad2a441ff905dbe`.
+Una aplicación MCP como `20261121013358 / public_profile_adoptions_20261120`.
+Postflight confirmó historia 69→70 con prefijo íntegro, OID 17774 y permisos
+de la función preservados. Coincidieron los hashes del resto de funciones,
+las fichas del propietario, sus ediciones privadas y su cuenta.
+
+La función de respaldo añade `adoptions` con estado publicado y dueño
+coincidente mediante la proyección pública existente. Las siete regresiones
+pasaron localmente y en el trabajo de base de datos de CI 44850391244.
+El trabajo de integración Auth/Storage/adopciones también aprobó. Móvil
+conserva las fuentes de 418; sus trabajos repetidos del pipeline seguían en curso
+al comprobar esta aplicación. Revisión de código y seguridad sin bloqueos.
+API pública devuelve una ficha y Samsung 418 muestra la foto en el perfil,
+la abre en el detalle correcto y permite regresar.
+
 ## 29/10/2026 — Foundation PROD aplicada y verificada, sin LIVE activado
 
 Autoridad técnica: beta de producción limpia solicitada por titular; ejecución

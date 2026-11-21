@@ -9163,3 +9163,32 @@ additional issues when reviewing your app». No se volvió a enviar ni cambió e
 paquete. Aprobación/disponibilidad pública aún no confirmadas. Captura original
 play418-production-in-review.jpg58911B y recibo privado del mismo nombre;
 no confundir término de comprobaciones previas con publicación pública.
+
+### 20/11/2026 19:35 CDMX — Mascota publicada visible en el perfil
+
+El titular pidió conservar el release enviado a producción y corregir su
+pestaña Adopción. Se fijó como base 6f4d17c3, fuente del binario ee3ef773,
+2.3.8 (418). ADB confirmó 418/Vending en Samsung. La lectura pública reprodujo
+una mascota publicada y el perfil de respaldo disponible sin campo adoptions.
+La causa estaba en dopmi_public_profile, que sólo devolvía la identidad.
+
+Correctivo 5fa23089 añade exclusivamente la proyección pública de las mascotas
+publicadas del propietario al perfil de respaldo. La regresión reprodujo la ausencia
+del listado; siete pruebas aprobadas cubren anónimo/autenticado, estados privados, otro dueño,
+ediciones pendientes, suspensión/eliminación, orden y OID/ACL/configuración.
+CI 44850391244 aprobó web-and-database y identity-and-adoption-backend,
+incluidos permisos PostgreSQL nativos. Las fuentes móviles son idénticas
+a 418 y mantienen su aceptación anterior; los otros trabajos repetidos de CI
+seguían en curso al aplicar. Revisión independiente de código/seguridad cerrada.
+
+Una migración PROD 20261121013358 aplicada y cotejada. Historia 69→70 con las
+69 previas exactas, mismo OID/owner/ACL/STABLE/definer/search_path, resto de
+funciones y datos del propietario con hashes iguales. El resumen de avisos
+de seguridad coincidió antes/después. API pública ahora devuelve exactamente
+la ficha publicada esperada, sin coordenadas. Mapeo en migration-history-audit.
+
+QA física de la misma 418 mediante detalle→nombre del propietario→perfil→Adopción
+muestra la foto; pulsarla abre la misma mascota y Back vuelve al perfil.
+La corrección está activa en el servidor. Evidencia privada ignorada en
+.tools/public-profile-adoptions-20261120. El envío de producción 418 sigue
+referenciado por su fuente original; esta operación actualiza el servidor.

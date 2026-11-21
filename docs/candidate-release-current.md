@@ -1,5 +1,13 @@
 ## Candidato vigente — atribución y restauraciones, 20/11/2026
 
+Correctivo de perfil público aplicado el 20 de noviembre a las 19:33 CDMX
+desde `5fa23089`.
+La respuesta de `dopmi_public_profile` incluye las adopciones publicadas del
+propietario también cuando usa el perfil sin sello. Migración remota
+`20261121013358`, historia 70. Samsung 2.3.8 (418)/Vending comprobado con
+detalle→perfil→Adopción→foto→mismo detalle y regreso. La fuente del binario
+continúa en `ee3ef773`. La corrección está en el servidor que usa ese cliente.
+
 Este corte sustituye las instrucciones operativas históricas inferiores para
 la entrega actual. Rama `codex/production-attribution-restored-20261120`;
 base reciente congelada `c9d9d03dc34ac99f743c15be8862788136b189be`.
