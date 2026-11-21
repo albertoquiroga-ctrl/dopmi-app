@@ -15,8 +15,8 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Destino | Únicamente `io.dopmi.app://acquire/personal-a`. No códigos ni login antes de descargar. |
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
-| Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin envío a revisión pública ni aceptación instalada. |
-| Dispositivo | Captura confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1. El titular reporta421 instalado desde TestFlight y DopMi cerrado. No hay lectura USB ni control remoto del iPad. Cuenta QA alternativa elegida; acceso y AnalíticaON pendientes de confirmar antes de abrir URI. Inscripción y eventos aún sin comprobar. |
+| Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin revisión pública ni aceptación del recorrido CPP/App Store. |
+| Dispositivo | iPad Pro12.9″/5.ªgeneración, iPadOS26.6.1,421/TestFlight reportado por titular. Safari abrió la URI con su sesión. PROD coteja el mismo actor: sin fuente22:44→personal-a/ios_cpp_open22:53:37CDMX, una fuente, AnalíticaON/revisión2, ficha/aprobaciónNULL y eventos0. No hay lectura USB/control remoto ni prueba de muerte del proceso. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
@@ -66,6 +66,15 @@ Conservar sin envíos/contactos/mensajes la cuenta reservada para la instalació
 definitiva. Un ensayo opcional de URI/consentimiento usa otra cuenta QA,
 se registra como TestFlight/enlace directo y se excluye del experimento; no
 necesita consumir una primera ficha ni se presenta como instalación desde CPP.
+
+El transporte TestFlight421 + Safari ya tiene evidencia positiva del20/nov:
+registro automático consentido para la sesión correcta. Notas no reconoció el
+texto como enlace; el titular usó la barra de direcciones de Safari. No se
+atribuyó el fallo de detección de Notas al cliente. Recibo privado
+`ipad421-safari-registration.verified.private.json`. Consulta operativa con
+exclusión QA: bruto1/técnico1/noQA0; el reporte bruto sigue incluyendo el ensayo.
+Primera ficha y mensajes aún sin verificar. El titular fue consultado sobre una
+mascota real sin publicar para continuar con un envío privado a revisión.
 
 ## Recorrido físico y evidencia requerida
 

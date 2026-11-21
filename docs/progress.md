@@ -9643,3 +9643,43 @@ sin número de artefacto ni publicación nueva atribuidos. Ventana iOS abierta
 Se reutilizará runtime421 con AppStoreSubmissionfalse, sin revisión pública.
 Prueba física del favorito pendiente; ZFlip solicitado para verificación,
 no se infiere conexión o instalación de ese equipo. Sin cambios de servidor.
+
+### 20/11/2026 22:44CDMX — Cuenta y consentimiento del iPad verificados
+
+El titular confirma acceso de la cuenta QA alternativa en421, legales aceptados y
+Analítica activada. Readback PROD21nov04:44:10UTC coteja un actor activo,
+correo confirmado, cero historia observable de fichas, consentimientoTRUE/revisión1,
+sin fuente iOS y cero eventos. UUID/fechas precisas quedan en recibo privado
+ipad421-authenticated-pre-uri.private.json, no en Git. No se escribió por SQL.
+Se solicitó cerrar app desde el selector y pulsar desde Notas la URI exacta
+io.dopmi.app://acquire/personal-a, confirmar Abrir y dejar la app abierta.
+Segunda lectura04:46:45UTC aún sin fuente/revisión1; no hay confirmación de apertura
+nativa todavía y no se interpreta esa espera como un fallo. Mantener sin fichas
+ni mensajes hasta comprobar la inscripción. Prueba etiquetada TestFlight+URI,
+no como instalación CPP/App Store. Fuente/candidato55061f99/421 conservados.
+
+### 20/11/2026 23:13CDMX — personal-a automático en iPad/TestFlight + Safari
+
+El titular informa que la URI abrió DopMi desde Safari con su sesión QA y dejó
+la app abierta. Notas no había reconocido el texto como enlace; se cambió el
+emisor a Safari, sin diagnosticar ni modificar el cliente a partir de ese síntoma.
+Readback PROD21nov05:13:35UTC: mismo actor que el preflight04:44:10,
+personal-a/ios_cpp_open, atribuida04:53:37.370649UTC (20nov22:53:37CDMX),
+una fuente por actor y una global. Antes no existía fuente; consentimientoTRUE,
+revisión1→2. Ficha/envío/aprobaciónNULL, eventos0. No fuente insertada/corregida
+manualmente por SQL, RPC administrativo, backfill o simulación de evento.
+
+Recibo privado ipad421-safari-registration.verified.private.json conserva antes/
+después y controles; UUID/correo fuera de Git. Revisión independiente limpia
+para el alcance: enlace técnico→cliente nativo→CAS aceptado→inscripción servidor
+con sesión correcta. No afirma muerte real del proceso, instalación CPP/App Store,
+primera ficha, mensajes o QA física de iPhone. Sin código o build nuevo.
+Consulta operativa05:16:33UTC excluye explícitamente la cuenta técnica: bruto1,
+QA1, noQA0. El SQL de reporte bruto sigue incluyendo el ensayo; la exclusión es
+privada y no borra/modifica el recibo. Cero cuentas iOS atribuidas fuera de QA
+en ese reporte; no mide todas las descargas ni permite una conclusión estadística.
+
+Pendientes: mascota real sin publicar para primer envío privado (consultada al
+titular), eventos separados entre participantes QA legítimos y recorrido público
+CPP/App Store con cuenta/instalación reservadas. No publicador ni aprobación
+sintéticos, no contactos con desconocidos; ppid sigue sin activarse.
