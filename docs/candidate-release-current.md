@@ -41,6 +41,8 @@ Pendiente de revisión/publicación, confirmado otra vez22:02CDMX; no se retiró
 Público sigue2.3.7. La carga2.3.9(421) no envió revisión pública ni la CPP.
 Captura del titular confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1.
 El mismo IPA421 admite iPad arm64 (familias1,2 y mínimo15.0); CPP requiere18+.
+El titular confirma instalación421 desde TestFlight y app cerrada; no lectura USB.
+Cuenta QA alternativa elegida; antes de abrir URI, comprobar acceso y consentimiento.
 Primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
 CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).
 

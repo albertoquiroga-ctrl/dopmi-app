@@ -9553,3 +9553,33 @@ a comprobar Play tras información nueva. Se preservaron los avances paralelos
 iOS/iPad hasta24767c7e al conciliar este resultado. Revisión independiente final
 sin hallazgos materiales; API volvió a confirmar14SUCCESS/fuenteb278/artefacto422
 y cero diferencias en variables/grupos respecto420.
+
+### 20/11/2026 CDMX — iPad421 instalado reportado; preflight de cuenta para URI
+
+El titular confirma421 instalado desde TestFlight en el iPad y DopMi cerrado.
+No hay iPad USB/herramienta de control disponible; acciones físicas se guían al
+usuario. Se prepara sólo transporte nativo TestFlight+URI, no prueba de instalación
+CPP/App Store ni publicación/contactos/mensajes de QA.
+Lectura PROD21nov04:30:55UTC: cero fuentes iOS, cero primeros envíos y cero eventos.
+Se cotejaron exclusivamente las dos cuentas QA ya proporcionadas: la usada en
+Android tiene historia observable y no es elegible; la alternativa no existe aún
+en PROD. Elección de cuenta alternativa consultada al titular y pendiente.
+Sin creación de actores, escrituras de consentimiento, fuente o eventos por SQL.
+Revisión nativa acotada: app_links7.2.1 registra delegado de escenas y recibe
+connectionOptions.urlContexts; Flutter3.47.4 conserva/reenvía la conexión.
+No se demuestra brecha que justifique cambiar código, SDK o candidato.
+Orden preparado: apertura genérica/cuenta correcta/legales personales/AnalíticaON;
+readback de actor y consentimiento; cerrar; pulsar URI desde Notas; comprobar
+una fuente personal-a/ios_cpp_open con ficha/aprobaciónNULL y cero eventos.
+No usar OFF→ON como reset, ni la cuenta reservada de la futura CPP, ni afirmar
+recepción nativa a partir de la sola navegación. No se abrió URI todavía.
+Avance remoto61f5bbdb sólo registra otro alcance Android422/soporte; inventario
+acotado de3docs y fast-forward, producto idéntico al55061f99 del Apple421.
+
+El titular eligió la cuenta QA alternativa para este ensayo técnico. Se le guía
+para abrir normalmente, iniciar Google con esa cuenta, completar los legales
+personalmente y activar Analítica de uso sin OFF→ON. Si pregunta modo, Dar en
+adopción. Mantener app abierta para readback, sin URI/fichas/mensajes todavía.
+Primera lectura posterior sigue sin actor PROD de esa cuenta: acceso/consentimiento
+pendientes, ninguna inscripción ni éxito de atribución declarados. Baseline privado
+ipad421-native-trial-before.private.json y plan de lectura preparados.

@@ -16,7 +16,7 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
 | Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin envío a revisión pública ni aceptación instalada. |
-| Dispositivo | Captura del titular confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1, compatible con el requisito18+. IPA421 real declara UIDeviceFamily=[1,2], mínimo15.0 y arm64. Instalación, primera ficha y mensajes siguen sin aceptación física; acceso a421 desde TestFlight del iPad pendiente de confirmar. |
+| Dispositivo | Captura confirma iPad Pro12.9″/5.ªgeneración con iPadOS26.6.1. El titular reporta421 instalado desde TestFlight y DopMi cerrado. No hay lectura USB ni control remoto del iPad. Cuenta QA alternativa elegida; acceso y AnalíticaON pendientes de confirmar antes de abrir URI. Inscripción y eventos aún sin comprobar. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
