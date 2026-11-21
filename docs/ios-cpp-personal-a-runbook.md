@@ -15,7 +15,7 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Destino | Únicamente `io.dopmi.app://acquire/personal-a`. No códigos ni login antes de descargar. |
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
-| Candidato |2.3.9 mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998 en curso; no asignar un número de build por anticipado. |
+| Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin envío a revisión pública ni aceptación instalada. |
 | Dispositivo | No hay iPhone físico disponible. Instalación desde CPP, primera ficha y mensajes siguen pendientes de aceptación física. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
@@ -46,6 +46,9 @@ HTTPS y sus pruebas; no construir el candidato iOS desde el corte antiguo.
    `ios-app-store` sí envía automáticamente; no usarlo como simple carga.
    Comprobar el estado actual antes de crear una versión nueva: Apple exige
    Ready for Distribution. [Versiones](https://developer.apple.com/help/app-store-connect/update-your-app/create-a-new-version/).
+   Al preparar2.3.9, actualizar las notas de revisión al421 y sus funciones:
+   las notas heredadas del419 todavía mencionan2.3.3(369)/Tienda no disponible.
+   Esta prueba no editó esa revisión pendiente ni sus credenciales.
 5. Presentar cliente compatible y CPP por la ruta de revisión adecuada. La CPP
    puede acompañar una versión o revisarse por separado; su destino debe existir
    en el cliente que se entregue. [Revisión CPP](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-a-custom-product-page).

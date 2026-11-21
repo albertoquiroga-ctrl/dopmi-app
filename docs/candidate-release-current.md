@@ -19,17 +19,27 @@ ios_cpp_personal_a_acquisition_20261120`. Historia70→71 con prefijo intacto;
 333funciones previas/OID/ACL/configuración exactos, cinco funciones nuevas
 cotejadas, dos tablas RLS sin CRUD cliente y cuatro triggers. Fuentes/eventos0;
 sin backfill ni cambios a datos QA. Mapeo en migration-history-audit.md.
-Codemagic único `6b0112f68d36bd30d38e3998`, `ios-testflight`, iniciado21:41CDMX
-con fuente55061f99, PROD/adopciones/AmazonON y submissionfalse comprobados.
-Compilación/carga en curso; número real pendiente de leer del artefacto.
+Codemagic único `6b0112f68d36bd30d38e3998`, `ios-testflight`, terminó15/15SUCCESS;
+suite real1929PASS/4SKIP. IPA **2.3.9 (421)**, fuente55061f99, PROD/adopciones/
+AmazonON y submissionfalse cotejados. Bundle/scheme/App Links, Firebase plist
+exacto contra419, perfil App Store y marcadores PROD verificados en el IPA.
+SHA256 `f3fd0fe90b59c6e898a308e0112f66336b6eaa109bc6fc47367d2b8921af90d7`.
+OFF de mediciónTEST/nativewalletsTEST se deriva de los guards del perfil;
+no se afirma decodificar todas las constantes Dart ni verificar Stripe servidor.
+Publishing y tarea Apple `6b01161fa14b9f22af0125ac` finalizaron sin error.
+Chrome22:03CDMX confirmó2.3.9/421 procesado, **Lista para enviar**, grupo interno
+DopMi Inner Team/cinco invitaciones existentes. No nuevas invitaciones manuales,
+envío a revisión pública2.3.9, instalación o aceptación de iPhone atribuidos.
+Recibos saneados de artefactos/publishing/posprocesamiento y screenshot
+apple-build421-ready.jpg fuera de Git. HTTP PROD sin sesión401/42501, sin fuente.
 
 CPP `personal-a · Publicar en adopción`, id público
 `f72ab3bc-1cd0-49b7-9220-cff726c86ffd`, creada desde2.3.8(419); destino
 `io.dopmi.app://acquire/personal-a` guardado y cotejado tras recargar Chrome.
 Borrador sin enviar a revisión, sin nuevo `ppid` en landing. El419 continúa
-Pendiente de revisión/publicación; no se retiró. La carga2.3.9 se realiza
-mediante `ios-testflight`, PROD/AmazonON, sin envío automático a revisión.
-El número final se leerá del artefacto. El titular no dispone de iPhone físico:
+Pendiente de revisión/publicación, confirmado otra vez22:02CDMX; no se retiró.
+Público sigue2.3.7. La carga2.3.9(421) no envió revisión pública ni la CPP.
+El titular no dispone de iPhone físico:
 primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
 CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).
 

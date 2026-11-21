@@ -9453,3 +9453,38 @@ Durante el cierre, la rama de continuación avanzó a 19f4c38a con el piloto CPP
 iOS de otro alcance. Se conservan sus cambios y registros al conciliar esta nota;
 la fuente inmutable del Android 420 sigue siendo b278540d. Este diagnóstico no
 inicia, repite ni atribuye aceptación a ese trabajo de iOS.
+
+### 20/11/2026 22:03CDMX — iOS2.3.9(421) cotejado y procesado por Apple
+
+Mismo Codemagic6b0112f68d36bd30d38e3998/source55061f99/tag inmutable;
+15/15accionesSUCCESS, pruebas reales1929PASS/4SKIP/0FAIL. IPA54994632B,
+SHA256f3fd0fe90b59c6e898a308e0112f66336b6eaa109bc6fc47367d2b8921af90d7.
+Bundle com.mycompany.dopmi, scheme/AppLinks, Firebaseplist exacto contra el419
+PROD, perfil AppStore y marcadores Supabase PROD/DEVausente verificados en bytes.
+Reporte real: adopciones/AmazonON, StoreReview/Guardian/GuardianTEST/client
+StripeOFF. MediciónTEST/nativewalletsTESTOFF se deriva de guards del perfil;
+no se decodificaron todas las constantes Dart ni se verificó Stripe servidor.
+No se afirma validación criptográfica independiente de la firma en Windows.
+
+Publishing confirma carga exitosa. Tarea Apple6b01161fa14b9f22af0125ac terminó
+03:59:01UTC sin error y actualizó Beta Build Localization. Recibos privados
+cm-6b0112f68d36bd30d38e3998-artifacts.verified, publishing.sanitized y
+apple-postprocess.sanitized. Ninguna solicitud adicional de build o AppReview.
+
+La extensión volvió a agotar el control de pestaña después del tiempo inactiva;
+no se usaron native/CDP/IAB alternativos. El titular reconectó y la misma sesión
+Chrome3 volvió a leer Apple. CPP conserva destino exacto y Guardar deshabilitado,
+sin envío. TestFlight primero mostró421Procesando; después lista2.3.9/421,
+Lista para enviar, DopMi Inner Team y cinco invitaciones existentes. Screenshot
+apple-build421-ready.jpg leído también desde el executor y recibo privado
+apple-build421-readback.private.json. No nuevas invitaciones manuales ni QA física.
+Distribución confirmó2.3.8(419) Pendiente de revisión y público2.3.7; no se retiró
+ni editó esa revisión. Sus notas heredadas369 se registran para corregir al
+preparar2.3.9; no se tocaron credenciales o información de acceso del review.
+
+HTTP real del nuevo RPC en PROD sin sesión:401/42501 permiso denegado, sólo
+apikey público en memoria, sin crear actor/fuente. Esto prueba cierre anónimo,
+no inscripción autenticada de un iPhone. Fuente/eventos iOS no se insertaron por
+SQL ni se publicaron mascotas sintéticas. El ppid sigue inactivo; faltan cliente
+público compatible, CPP aprobada y teléfono iOS18+ para aceptar instalación limpia,
+primera ficha y mensajes. A/B iOS permanece sin aceptación ni significancia.

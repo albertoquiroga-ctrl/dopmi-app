@@ -90,13 +90,13 @@ medición no debe impedirlos ni generarlos por recibir el enlace.
 - [x] Analyze + suiteFlutter, backend y configuración; CI completa por SHA.
 - [x] Revisión independiente de UI/UX/código/seguridad; corregir defectos concretos.
 - [x] Pre/postflight de historia, funciones, permisos y guardas; aplicar una vez.
-- [ ] Cargar candidato desde fuente inmutable reciente con entorno PROD verificado.
+- [x] Cargar candidato desde fuente inmutable reciente con entorno PROD verificado.
 - [x] Preparar una CPP en borrador con destino real de adopciones y personal-a;
   no publicar landing ppid antes de tener cliente compatible.
 - [ ] iPhone18+: enlace Safari/Facebook → CPP → instalación limpia → Abrir;
   login/legal/Analítica → primera ficha privada → eventos de mensajes de QA legítimos.
 - [ ] Negativos: icono, ficha genérica, OFF, cuentaB, reintento y reinstalación.
-- [ ] Registrar bloqueos externos y evidencia; ningún éxito instalado por simulador.
+- [x] Registrar bloqueos externos y evidencia; ningún éxito instalado por simulador.
 
 ## Review Focus
 

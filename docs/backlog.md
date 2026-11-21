@@ -6,13 +6,18 @@ incluye compartir perfil HTTPS de b278540d/build420 interno. Código cliente y
 contrato SQL aditivo implementados; revisión independiente sin P1/P2 tras
 corregir persistencia/cambio de propietario. CI44860327579/55061f99 cuatroSUCCESS;
 SQL PROD20261121034107 aplicado y cotejado sin alterar333funciones previas.
-Codemagic6b0112f68d36bd30d38e3998 compila2.3.9 upload-only; número real pendiente.
+Codemagic6b0112f68d36bd30d38e3998 terminó15SUCCESS; IPA2.3.9(421) cotejado y
+Apple procesado/Lista para enviar/DopMi Inner Team confirmado en Chrome.
 CPP guardada en borrador, sin activar
 el `ppid`. La cola técnica sigue en [plan iOS](superpowers/plans/2026-11-20-ios-cpp-personal-a.md)
 y [runbook](ios-cpp-personal-a-runbook.md); consultar candidato/progress para
 resultados de CI, despliegue y carga. iPhone físico no disponible: primera ficha
 y mensajes instalados desde App Store pendientes. No sustituir esa aceptación
 por pruebas automatizadas. Aviso «mensaje escrito» ya actualizado a «enviado».
+Pendientes del piloto: cliente público compatible tras la revisión vigente419,
+CPP aprobada y activación ppid; después instalación limpia desde CPP/Abrir en
+iPhone18+, primera ficha privada y eventos legítimos de mensajes. No enviar
+campaña iOS nueva ni retomar A/B con atribución iOS como si ya estuviera aceptada.
 
 Entrega autorizada en el chat: atribución y eventos separados sobre release
 reciente, recuperar visor/compartir y sello por perfil, conservar Tienda y fixes.
