@@ -65,9 +65,20 @@ El mismo IPA421 admite iPad arm64 (familias1,2 y mínimo15.0); CPP requiere18+.
 El titular confirma instalación421 desde TestFlight y apertura de URI desde Safari.
 Registro automático personal-a/ios_cpp_open cotejado en PROD22:53:37CDMX:
 mismo actor del preflight22:44, consentimientoTRUE/revisión1→2 y una fuente.
-Primera ficha/aprobaciónNULL y eventos0. Revisión independiente de recibo limpia
+En ese corte, primera ficha/aprobaciónNULL y eventos0. Revisión independiente de recibo limpia
 para captura/inscripción; no prueba de muerte del proceso ni de instalación CPP.
 QA excluida en consulta operativa privada: bruto1/técnico1/noQA0; no borrar el recibo.
+Actualización21nov16:37CDMX: el titular envió una mascota real desde el iPad y
+vio «Enviado a revisión». Lectura PROD16:37:58: misma cuenta y fuente original,
+primera ficha propia submitted16:37:27.809 y `first_submitted_at`16:37:27.856;
+la referencia fuente→ficha coincide exactamente. Dos fotos almacenadas en bucket
+privado, rutas correctas y archivos válidos no vacíos. AnalíticaTRUE/revisión3,
+una sola fuente/ficha; sin aprobación/publicación ni eventos de mensajes. No
+escrituras administrativas, backfill o ajuste de campaña. Recibo privado
+ipad421-first-listing.verified.private.json y revisión independiente favorables.
+Agregado16:41:48CDMX: fuentes1/QA1/noQA0 y primeros envíos1/QA1/noQA0, mediante
+filtro privado sin borrar datos. Prueba real421/55061f99, TestFlight+Safari;
+no acredita el424 posterior ni instalación CPP, aprobación o mensajes.
 Primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
 CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).
 

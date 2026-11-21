@@ -9679,10 +9679,10 @@ QA1, noQA0. El SQL de reporte bruto sigue incluyendo el ensayo; la exclusión es
 privada y no borra/modifica el recibo. Cero cuentas iOS atribuidas fuera de QA
 en ese reporte; no mide todas las descargas ni permite una conclusión estadística.
 
-Pendientes: mascota real sin publicar para primer envío privado (consultada al
-titular), eventos separados entre participantes QA legítimos y recorrido público
-CPP/App Store con cuenta/instalación reservadas. No publicador ni aprobación
-sintéticos, no contactos con desconocidos; ppid sigue sin activarse.
+Pendientes en ese corte: mascota real sin publicar para primer envío privado
+(consultada al titular), eventos separados entre participantes QA legítimos y
+recorrido público CPP/App Store con cuenta/instalación reservadas. No publicador
+ni aprobación sintéticos, no contactos con desconocidos; ppid sigue sin activarse.
 
 ### 21/11/2026 00:03CDMX — Favoritos distribuido por QA; aceptación física pendiente
 
@@ -9718,3 +9718,44 @@ cubren código; **no sustituyen aceptación instalada**. Único teléfono conect
 sigue SM-S938B; ZFlip solicitado, sin respuesta/conexión acreditada. Siguiente:
 integrador/titular comprueban Favoritos de423 en ese equipo; no otro build por
 espera. No se enviaron mensajes reales a la rescatista para esta prueba.
+
+### 21/11/2026 16:42CDMX — Primera ficha real atribuida automáticamente en iPad421
+
+El titular confirmó mascota real sin publicar, pidió guía y completó el formulario
+desde su iPad/TestFlight421: Mis publicaciones → Publicar una adopción → Continuar
+→ Ir a vista previa → Enviar a revisión. Informó «Enviado a revisión».
+Preflight22:31:23UTC: actor activo, AnalíticaTRUE/revisión2, fuente original
+personal-a/ios_cpp_open del21nov04:53:37.370649UTC, ventana14d vigente y cero fichas.
+Readback22:37:58UTC: mismo actor, una fuente original intacta y una ficha propia
+submitted22:37:27.809256UTC (16:37:27CDMX). Su id coincide exactamente con
+`first_adoption_id` de la fuente; `first_submitted_at`22:37:27.856556UTC,
+47.3ms después del envío y17h43m50 desde inscripción, dentro de336h.
+AnalíticaTRUE/revisión3. Dos fotos declaradas y dos objetos existentes con bytes,
+MIME permitido y rutas del dueño/ficha; bucket privado. Sin publicación ni
+aprobación, revisiones0 y eventos de mensajes0. Ninguna escritura SQL/RPC
+administrativa, backfill o reasignación del operador: la app y los triggers
+registraron automáticamente el vínculo durante el envío real del titular.
+
+Recibo privado ipad421-first-listing.verified.private.json guarda antes/después y
+doce controlesTRUE, sin datos personales en Git. Revisión independiente sólo
+lectura de ios_cpp_release_readiness limpia/sin P1/P2 para ese alcance.
+Consulta operativa22:41:48UTC: fuentes bruto1/QA1/noQA0; primeros envíos
+bruto1/QA1/noQA0; primeras aprobaciones0 y eventos0. Exclusión por filtro privado,
+sin borrar/cambiar fuente o ficha; reporte bruto conserva el ensayo. No mide
+todas las descargas iOS ni permite significancia estadística.
+
+Avance remoto aab7ef03→35204afd inventariado antes del fast-forward: tres Dart
+de favoritos, dos pruebas y tres documentos, incluidos6ca66320/1441e295.
+Inventario independiente ios_cpp_client_review confirma que no modifica captura
+CPP, consentimiento, RPC/SQL de atribución ni envío de fichas. Se preserva la
+continuación ajena Android423/iOS424 y sus gates. La evidencia física de hoy
+pertenece exclusivamente a421/55061f99; no se declara aceptación de424.
+Este registro cambia sólo documentación: sin código, build, migración ni suites
+repetidas. Archivo local scripts/__pycache__ conservado y fuera del commit.
+
+Primer envío técnico421/TestFlight+Safari cerrado. Aprobación ordinaria de la
+mascota, saludo automático, primer envío humano y primera respuesta del dueño
+siguen como hitos separados pendientes. No aprobar/publicar para forzar QA ni
+contactar desconocidos. CPP/App Store requiere cliente público compatible y CPP
+aprobada, ppid oficial activo, instalación/cuenta reservadas y Abrir en esa CPP;
+ese recorrido y el iPhone físico no se han probado. A/B iOS no reanudado.

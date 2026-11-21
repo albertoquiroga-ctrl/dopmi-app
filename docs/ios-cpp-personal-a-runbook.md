@@ -15,8 +15,8 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Destino | Únicamente `io.dopmi.app://acquire/personal-a`. No códigos ni login antes de descargar. |
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
-| Candidato |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. Sin revisión pública ni aceptación del recorrido CPP/App Store. |
-| Dispositivo | iPad Pro12.9″/5.ªgeneración, iPadOS26.6.1,421/TestFlight reportado por titular. Safari abrió la URI con su sesión. PROD coteja el mismo actor: sin fuente22:44→personal-a/ios_cpp_open22:53:37CDMX, una fuente, AnalíticaON/revisión2, ficha/aprobaciónNULL y eventos0. No hay lectura USB/control remoto ni prueba de muerte del proceso. |
+| Candidato del ensayo |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. La continuación posterior de favoritos/424 está registrada en candidato; no sustituye la versión421 de este ensayo. Sin revisión pública ni aceptación del recorrido CPP/App Store. |
+| Dispositivo | iPad Pro12.9″/5.ªgeneración, iPadOS26.6.1,421/TestFlight reportado por titular. Safari abrió la URI con su sesión. PROD coteja el mismo actor: sin fuente20nov22:44→personal-a/ios_cpp_open22:53:37CDMX. Primera ficha real enviada21nov16:37:27CDMX, referencia exacta en la fuente original, estado submitted, dos fotos privadas y AnalíticaON/revisión3. Sin aprobación/publicación ni eventos de mensajes. No hay lectura USB/control remoto ni prueba de muerte del proceso. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
@@ -73,8 +73,25 @@ texto como enlace; el titular usó la barra de direcciones de Safari. No se
 atribuyó el fallo de detección de Notas al cliente. Recibo privado
 `ipad421-safari-registration.verified.private.json`. Consulta operativa con
 exclusión QA: bruto1/técnico1/noQA0; el reporte bruto sigue incluyendo el ensayo.
-Primera ficha y mensajes aún sin verificar. El titular fue consultado sobre una
-mascota real sin publicar para continuar con un envío privado a revisión.
+
+El21/nov el titular confirmó una mascota real sin publicar y completó desde el
+iPad **Mis publicaciones → Publicar una adopción → Continuar → Ir a vista previa
+→ Enviar a revisión**; informó «Enviado a revisión». Preflight16:31CDMX:
+misma cuenta activa, fuente original y cero fichas. Readback16:37:58CDMX:
+una ficha propia submitted a16:37:27.809, y la fuente apunta exactamente a ella
+con `first_submitted_at`16:37:27.856, dentro de336h. La inscripción original
+personal-a/ios_cpp_open del20nov22:53:37 permanece intacta. Las dos fotos existen
+en el bucket privado, con rutas del dueño/ficha y archivos válidos no vacíos.
+Sin publicación, aprobación, revisiones ni eventos de mensajes; ninguna escritura
+SQL, reasignación o backfill por el operador. Recibo privado
+`ipad421-first-listing.verified.private.json`, revisado independientemente.
+Consulta16:41:48CDMX: fuentes bruto1/QA1/noQA0 y primeros envíos bruto1/QA1/noQA0;
+la exclusión es un filtro privado, sin borrar ni modificar datos.
+
+Este resultado verifica **la primera ficha automática en421/TestFlight + Safari**.
+Aprobación, saludos y mensajes continúan pendientes, al igual que la instalación
+real desde CPP/App Store con una cuenta reservada. No volver a consumir esta
+primera ficha ni presentar el ensayo como QA de iPhone o del424 posterior.
 
 ## Recorrido físico y evidencia requerida
 
