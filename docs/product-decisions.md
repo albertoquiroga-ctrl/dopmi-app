@@ -14,6 +14,36 @@ El factorial inicial, piloto60, potencia80% y etapas son propuestas de Codex,
 no resultados ni cuotas aprobadas por el titular. No asumir que respuesta propia
 o instalación CPP pasaron; no cambiar gasto ni desplegar medición en este corte.
 
+## 21/11/2026 CDMX — Elección inicial de Analítica
+
+El titular pide Analítica de uso inicialmente activada, declarada en términos y
+tiendas y con opción de retirarla. La implementación prepara ON como selección
+visible y editable; sólo una acción real la confirma antes de recopilar. Aceptar
+términos no equivale a esta elección opcional. Apple exige consentimiento para
+datos de uso ([5.1.1(ii)](https://developer.apple.com/app-store/review/guidelines/#privacy)).
+Se conservan los OFF anteriores, incluso en otra instalación/celular, y se
+distinguen de ausencia de decisión. Diagnóstico y medición de publicaciones
+siguen separados; no se activan publicidad, replay ni nuevos SDK.
+
+Aviso propio `usage-analytics-2026-11-21`, recibo de acción/version/fecha servidor
+y CAS; sin backfill ni reescritura de aceptaciones legales. Los textos generales
+conservan sus versiones; el aviso adicional tiene evidencia independiente. Un
+fallo de medición permite usar Dopmi sin recopilar. Código, SQL, publicación
+legal/fichas y aceptación instalada son pasos distintos. No interpretar esta
+preparación como consentimiento otorgado por los usuarios. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+
+El21/nov el titular autorizó aplicar el SQL y publicar los textos exactos del
+candidatoaf0e2274/CI44878177593. Se ejecutaron una aplicación SQLPROD
+20261121223246 y la publicación legalc95be7f, con readback verificado. Apple
+publicó las finalidades exactas de las tres categorías de este tratamiento,
+con16tipos y trackingNO. La evaluación interna de qué difusión produce fichas/
+contacto se declara también como captación/marketing propio en los datos usados
+para ese fin; no habilita anuncios dirigidos, envíos a Meta ni otro SDK.
+Play publicó ese único cambio Data Safety (Submission165) con las finalidades
+reales y ubicación precisa funcional; no se promovieron binarios públicos.
+Builds y QA instalada se concilian por separado en el candidato vigente;
+esta autorización y las fichas no conceden consentimiento en nombre del usuario.
+
 ## 20/11/2026 CDMX — Piloto CPP personal-a autorizado
 
 El titular autoriza implementar la prueba iOS sobre el release reciente,

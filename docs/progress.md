@@ -9845,3 +9845,128 @@ NIST, Apple, GoogleResearch y Minitab consultadas; cálculo normal propio reprod
 2→4%=1141porbrazo y5→10%=435, sólo ejemplos binarios sin ajustes, no N final.
 Documentación sola: ningún comentario, cambio de anuncio/gasto/automatización,
 deploy, migración, nuevo build o suite repetida. Preservar los demás alcances.
+
+## 21/11/2026 CDMX — Analítica preseleccionada, elección real y paquete preparado
+
+Petición directa del titular: Analítica inicialON con retirada y declaraciones
+coherentes. Se implementó ON visual y confirmación opcional antes de colección;
+no se registra consentimiento por ausencia ni se reactivan OFF previos. Aviso
+separado de términos, después de legal y antes de ubicación; controladores leen
+estado por cuenta/entorno, conservan OFF/rev0 y fallan sin recopilar ante
+incertidumbre. Crashlytics/publicaciones/ads permanecen independientes.
+
+Fuente congelada `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
+`codex/usage-analytics-choice-af0e2274`, sobre35204afd/producto1441. CI
+[44878177593](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44878177593)
+**cuatro SUCCESS**: fuente final completa y sus capturas, Androiddev/iOSsimulator,
+privacidad nativa, PostgreSQL real e identidad/adopción/Auth/Storage/Realtime.
+Local95 regresiones finalesPASS,42configPASS y análisis0incidencias. Full local
+1965PASS/4SKIP anterior al último copy/gate; ese delta tiene17 pruebas enfocadas/
+renderPASS y quedó incluido en la CI final. No trasladar el primer conteo a un
+SHA posterior ni equiparar compilación con publicación/instalación.
+
+SQLaditivo4673B4028bc86…a13080: distingue ausencia/OFF y registra elección/aviso/
+fecha servidor por revisión.12 pruebas PostgreSQL nuevasPASS; Node1354PASS/
+0FAIL/9SKIP. WrapperexactoPROD18468B7bb6e22e…fd9412 y12 guardas/rollback locales
+PASS. Sólo lectura de catálogosPROD: historia71; no usuarios ni nuevas escrituras.
+Revisión independiente código/seguridad/SQL/UI sin P1/P2 finales. Antes del
+cierre se corrigieron dos P2 locales: timeout de lectura no revoca y OFF
+incierto no repite POST; tres carreras combinadas cubren relecturaOFF y cambio
+de cuenta con almacenamiento demorado. No incidente remoto ni repetición QA real.
+Cinco capturas sintéticas390×844/320×640texto200%, sinSDK/cuenta/callbacks;
+opciones completas/alcanzables. No prueba física ni TalkBack/VoiceOver.
+
+HTMLprivacidad28811B5df1686a…9a741cb y términos3955Bad358012…cdb0054c revisados,
+18 validacionesPASS. Versiones generales conservadas; elección con aviso propio
+usage-analytics-2026-11-21. Consolas leídas en Chrome: faltan finalidades de
+Analytics en UserID/coarse; Play tiene preciso sin seleccionar, aunque la app
+guarda el punto privado. AudienciaPlay16–17/18+ conservada. No fichas guardadas,
+publicación legal, servicio nuevo, cambios financieros ni Codemagic por este lote.
+El formulario exacto se concilia con el tratamiento real antes de publicar.
+
+**Pendiente del titular:** autorización específica SQL/textos ya solicitada;
+sin respuesta al corte. Integrador aplica/concilia sólo al recibirla, actualiza
+fichas y distribuye QA por una cola/ventana5min antes de cada envío. Conservar
+QA423/424, estado público y el casoGoogle1010; no nueva build por espera ni
+sideload. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md) y artefactos
+ignorados `.tools/analytics-choice-20261121/{server,legal,ui}`. El código está
+verificado, **no publicado, instalado ni aceptado**. Sin otro tablero.
+
+
+## 21/11/2026 CDMX — Analítica distribuida425/426; iOS confirma retirada y sesión
+
+El titular autorizó el paquete exactoaf0e2274/CI44878177593 (cuatroSUCCESS).
+SQLwrapper18468B7bb6e22e…fd9412 aplicado una vez por apply_migration como
+20261121223246/usage_analytics_explicit_choice_20261121 en PROD. Postflight
+cuatro conjuntos/16condicionesPASS: historia71→72, prefijo71MD5
+7c11e252392ec5fd42f47a3ed8f4e871 intacto, contratos/catálogos/ACL cotejados y
+recibos nuevos vacíos. Local20261121062012 queda mapeado sin replay/rename/repair.
+Los objetos nuevos añaden avisos intencionales de tabla privada RLS sin política
+y RPC definer authenticated; ACL/actor verificados. No atribuir todos los avisos
+a historia previa ni declarar los asesores limpios. Recibos server privados.
+
+Publicación legal única por Git: main remoto tenía tres cambios ajenos de
+descargas/perfiles públicos, conservados mediante fast-forward17fafdaf; ambos
+baselines legales seguían exactos. Un push produjo landingc95be7f, sólo2HTML,
+y Verceldpl_6w6vWZdwDGecMSBEnqaGRPonMzGb READY/production. HTTP200 y bytes/hash
+exactos autorizados en ambas rutas: privacidad28811B5df1686a…9a741cb y
+terms3955Bad358012…cdb0054c. Versiones generales intactas; cero deploymanual,
+credenciales nuevas o cambios de activos. Revisión independiente de Git/recibos/
+readbacks sin P1/P2; no repitió tráfico. Gate legal con verified:true y sourceaf0e.
+
+Apple publicó y cotejó tres categorías de App Privacy: UserID agrega Analytics/
+marketing propio; CoarseLocation agrega Analytics; ProductInteraction agrega
+marketing propio. Se mantienen16 tipos y declaraciones de vinculación conservados y trackingNO. Play Data Safety
+guardado y enviado una vez; actividad/detalle confirman Submission165 Published,
+21/nov16:49→16:59 según Play, exactamente un cambio Data Safety y ninguna otra
+release pública. Ya no está en revisión. UserIDs/Interacciones añaden
+Analytics/Advertising or marketing; CoarseLocation Functionality/Analytics;
+PreciseLocation recopilada/no compartida/opcional/no efímera para Functionality/
+Personalization, corrigiendo la omisión previa del punto privado. Audiencia
+16–17/18+ conservada. Recibo stores/play-published.private.json: fichas Apple/Play
+publicadas; no conceden consentimiento ni promueven un binario público.
+
+Único Android Codemagic6b021e276328dae170dd4245, fuenteaf0e2274, terminó
+14SUCCESS22:56:22UTC; metadata2.3.9(425). Publishing confirma Version code425,
+Updated release internal, readbackStatuscompleted y Successfully published;
+Play interno publicado y AAB/runtime/firma verificados; recibo consolidado
+android/shipping.verified.private.json. AAB SHA256
+b5fd334daf6c7227d60ef610fbcf1705f738bd6edcb0be92439f96910789a919;
+identidad/Firebase/backendPROD, minSDK24/targetSDK≥36, configuración/aviso/RPC y
+bootOFFPASS. Firma JAR válida con pin previo; strict_exit4 por upload autofirmado
+esperado, no una cadena CA pública validada. Sin instalación/aceptación. Ventana
+iOS22:50:46.648–22:55:46.648UTC; un único POST
+22:56UTC, después de Android terminal, recibió6b02219da77af65f4a2437b1 para
+misma fuente/CI, workflowios-testflight. Terminó15SUCCESS/2.3.9(426); IPA
+55006025B/SHA256a408e42aec6a35b64a3b058457d3734ffaeec83be69b751bb25b4aa9b814247c
+verificado en ios/verification.private.json. Runtime adopciones/TiendaON y
+finanzas/mediciónTEST/walletsTESTOFF, arranque Analytics/CrashlyticsOFF;
+identidad/FirebasePROD y ubicación foreground sin Always/backgroundPASS.
+Firma/perfil válidos estructuralmente; no CMS criptográfico acreditado. Apple
+mostró426 Procesando y después cerró la tarea sin error23:16:17UTC. Chrome
+23:17:40UTC confirma2.3.9(426), Lista para enviar/Caduca90d/DopMi Inner Team/
+5invitaciones. Disponible para el grupo interno. Titular confirmó actualización
+426, sesión conservada y navegación correcta; observó AnalíticaON sin recordar
+la preferencia previa. Después apagó, esperó guardar y cerró/reabrió: «Sigue
+apagada y conserva el inicio de sesión». Alcance iOS confirmado: instalación,
+sesión/navegación y retirada con OFF persistente. Conservar esa elección finalOFF;
+no acredita primera elección ni un OFF anterior desconocido, onboarding nuevo
+o eventos del SDK en red. Recibo ios/testflight-readback.private.json y captura
+privada acreditan disponibilidad; la aceptación citada es reporte humano. Cola única sin
+reenvío ni promoción de binarios públicos. El runtime del cliente adopciones/
+TiendaON y finanzas/mediciónTEST/walletsTESTOFF no significa apagar servidores:
+no se apagaron servicios remotos ni se cambiaron sus flags financieros en este lote.
+
+ADB confirma Samsung conectado y paquete Dopmi ausente; titular eligió ese
+Samsung en lugar del ZFlip. Un intento real: Play «Eres verificador interno» →
+Instalar → «No se puede descargar DopMi»; paquete sigue ausente. No se localizaron
+logs actuales: no atribuir1010 ni versión solicitada425 al teléfono por este
+intento, aunque el release interno425 sí está publicado. Recibo y capturas/XML
+privados android/phone-attempt.private.json. No se repitió descarga, limpieza,
+credenciales o sideload. Pendiente externo: integrador sigue el expediente
+Google existente para esa descarga, sin otra build o repetición por espera.
+No queda QA humana solicitada para el alcance iOS de este delta, confirmado
+como arriba; los límites de primera elección/SDK en red/Android no se dan por
+verificados. Data Safety publicado y caso Google anterior conservado.
+Sin nuevas pruebas de usuarios/casos, cobros o cambios de servicios por esta
+actualización documental.

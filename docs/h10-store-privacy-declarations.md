@@ -104,3 +104,69 @@ no requiere rehacer la declaración App Privacy ya publicada.
 - El buzón `soporte@dopmi.org`, Resend SMTP/Auth y Apple Private Relay tienen
   entrega real comprobada. Las claves y el alias privado permanecen fuera del
   repositorio.
+# Conciliación y publicación de Analítica — 21/11/2026
+
+Este corte supersede las declaraciones históricas anteriores para el delta de
+medición; no equivale a consentimiento de los usuarios. Fuenteaf0e2274,
+CI44878177593 cuatroSUCCESS. La elección opcional puede aparecer preseleccionada,
+pero el SDK sólo se habilita después de una acción real. OFF previos respetados;
+Crashlytics y publicaciones conservan controles separados.
+
+## Apple: publicado y cotejado
+
+App Store Connect confirmó publicación de tres categorías. Se mantienen16tipos
+vinculados y trackingNO:
+
+| Categoría | Finalidades publicadas |
+|---|---|
+| ID de usuario | Funcionalidad de la app, Publicidad o marketing del desarrollador, Análisis de datos. |
+| Ubicación aproximada | Funcionalidad de la app, Personalización del producto, Análisis de datos. |
+| Interacción con el producto | Análisis de datos, Publicidad o marketing del desarrollador. |
+
+ID de dispositivo ya conservaba Análisis/Funcionalidad; ubicación exacta funcional
+ya estaba declarada. La captación se declara por evaluar difusión/campañas y
+primeros hitos, sin activar tracking, anuncios personalizados ni envíos a Meta.
+Recibo privado `.tools/analytics-choice-20261121/stores/apple-published.private.json`.
+La publicación de App Privacy no publica por sí misma el binario iOS ni acredita
+TestFlight instalado.
+
+## Play: publicado y cotejado
+
+Se guardó y envió un único cambio Data Safety. La actividad y el detalle de Play
+confirman **Submission165 → Published**,21/nov16:49→16:59 según horas mostradas,
+con exactamente un cambio Data Safety. La publicación ya está cotejada; no sigue
+en revisión. No se creó ni promovió otra release pública. Recibo y capturas en
+`.tools/analytics-choice-20261121/stores/play-published.private.json`; envío y
+preview se conservan como evidencia anterior, no como estado vigente.
+
+| Categoría publicada | Tratamiento/finalidades |
+|---|---|
+| User IDs | Requeridos/no efímeros; conserva Functionality/Security/Account management y añade Analytics/Advertising or marketing. |
+| App interactions | Recopiladas/no compartidas/opcionales/no efímeras; Analytics y Advertising or marketing. |
+| Approximate location | Opcional/no efímera; Functionality y Analytics por la geografía general del SDK. |
+| Precise location | Nueva declaración: recopilada, no compartida, no efímera, opcional; Functionality y Personalization para el punto privado de mascota y cercanía. |
+
+La ubicación precisa sin seleccionar era una discrepancia previa; se corrigió en
+el formulario enviado, sin atribuir GPS a los eventos propios. Las coordenadas
+no se publican; el mapa es una acción del usuario y los proveedores del servicio
+se clasifican según las excepciones aplicables de Data Safety, no como una
+exención de declarar su recopilación. Audiencia16–17/18+ conservada.
+No marcar todo User ID opcional: sigue sosteniendo la cuenta. La finalidad de
+captación en el piloto orgánico es una interpretación conservadora del uso, no
+una regla que convierta cualquier referrer en publicidad. Publicar el formulario
+no concede consentimiento ni promueve la nueva versión de la app.
+
+## Textos públicos
+
+Landingc95be7f56b877f84a9e52e5fac628b61c4ceb11b, Vercel
+dpl_6w6vWZdwDGecMSBEnqaGRPonMzGb READY. `/privacy-policy` HTTP200,
+28811B/SHA2565df1686a…9a741cb; `/terms` HTTP200,3955B/SHA256ad358012…cdb0054c,
+exactos a los textos autorizados. Versiones generales conservadas y aviso de
+elección propio usage-analytics-2026-11-21. Recibo estable privado
+`.tools/analytics-choice-20261121/legal/publication.receipt.private.json` y
+revisión independiente sin P1/P2. No se promete anonimato del SDK: los eventos
+Dopmi no añaden contenido de mensajes/GPS, pero Firebase puede estimar zona
+aproximada por conexión y usa identificadores técnicos.
+
+Fuentes de clasificación: [Apple](https://developer.apple.com/app-store/app-privacy-details/),
+[Google Play](https://support.google.com/googleplay/android-developer/answer/10787469?hl=en).

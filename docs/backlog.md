@@ -1,4 +1,39 @@
-# Cola vigente — integración de producción20/nov/2026
+# Cola vigente — integración de producción21/nov/2026
+
+Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;
+CI44878177593 cuatroSUCCESS. Titular autorizó el paquete exacto. SQLPROD
+20261121223246 aplicado una vez y cotejado (historia72/prefijo71intacto/16PASS),
+textos públicos c95be7f/READY/HTTP200hash exacto y tres categorías de App Privacy
+Apple publicadas (16tipos/trackingNO). Play Data Safety publicado por Submission165
+con un solo cambio; no promoción de binarios públicos. iOS426 tiene QA humana
+de sesión/navegación y retirada/OFF persistente confirmada; Android sin instalar.
+[Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+
+Android6b021e276328dae170dd4245 terminó14SUCCESS; Play interno425
+completed/publicado y AAB/runtime/firma cotejados. No repetir build ni auditoría
+completa por la espera de instalación. Las fichas Apple/Play ya están publicadas;
+audiencia16–17/18+ conservada. iOS6b02219da77af65f4a2437b1 terminó15SUCCESS/426;
+IPA/runtime cotejados y posprocesamiento Apple terminado sin error. Chrome
+confirma Lista para enviar/DopMi Inner Team/5invitaciones: TestFlight disponible.
+El titular ya actualizó426 y aceptó sesión/navegación correctas. Analítica aparece
+ON con preferencia previa desconocida; no es prueba de primera elección ni de
+preservación de un OFF anterior. Flags del cliente separados de servicios remotos,
+que no se apagaron en este lote.
+
+El titular apagó Analítica en426, esperó guardar y cerró/reabrió: confirma OFF
+persistente e inicio de sesión conservado. El estado final es OFF y debe
+respetarse. No se conoce la preferencia anterior al primer ON observado; no es
+prueba de primera elección, onboarding nuevo ni tráfico real del SDK.
+
+Pendiente externo finito de esta entrega:
+- Integrador: continuar el expediente Google existente para la descarga del
+  Samsung. Un intento desde Play interno mostró «No se puede descargar DopMi»,
+  paquete ausente; no se acreditó código de error ni versión solicitada. No otra
+  build, sideload o prueba repetida sin información nueva. No queda otra QA humana
+  solicitada para el alcance iOS de este delta.
+
+La selección inicial no es consentimiento ya otorgado. Errores/publicaciones
+siguen independientes. No otro build por espera ni reaplicar la migración.
 
 Campañas21nov: contrato operativo en [handoff](campaign-attribution-handoff.md) y
 [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
@@ -14,8 +49,11 @@ suite1940PASS/4SKIP y CI44869286815/1441e295 cuatroSUCCESS. Android423 publicado
 enPlayinterno/14SUCCESS y iOS424 procesado/TestFlightInnerTeam/15SUCCESS,
 artefactos/runtime cotejados; se conserva la misma fuente1441 y una cola.
 S25 pidió423 y repitió1010 antes de descargar; Google tiene la actualización
-en el caso existente/SENT. Integrador + titular: probar el favorito en ZFlip
-423 cuando se conecte o el titular confirme el recorrido; no nueva build por espera.
+en el caso existente/SENT. El titular eligió ahora el Samsung conectado, paquete
+ausente: el intento actual desde Play interno también falló, pero sin logs nuevos
+que permitan asignar1010 o un número solicitado. Integrador + titular comprueban
+el favorito tras instalar el candidato; caso Google y QA anterior conservados,
+sin nueva build por espera.
 Datos/permisos/SQL/servicios y regla de excluir después de mensaje conservados.
 
 Continuación autorizada: piloto individual iOS `personal-a` con descarga directa,

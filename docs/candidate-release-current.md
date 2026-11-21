@@ -1,4 +1,70 @@
-## Candidato vigente — atribución y restauraciones, 20/11/2026
+## Candidato vigente — Analítica opcional, 21/11/2026
+
+Elección inicial de Analítica, corte21/nov: fuente inmutable
+`af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
+`codex/usage-analytics-choice-af0e2274`, CI44878177593 cuatro trabajos SUCCESS.
+ON sólo visual hasta guardar; elección opcional, OFF históricos y diagnóstico/
+publicaciones separados. Código, transporte, recibos y textos nativos verificados;
+no equivalen a instalación ni aceptación física. Regresiones finales95PASS,
+configuración42PASS y análisis0incidencias; full local1965PASS/4SKIP anterior al
+último copy/gate, incluido después en la CI final completa. Revisión independiente
+final de código/seguridad/UI sin P1/P2. [Plan](superpowers/plans/2026-11-21-usage-analytics-choice.md).
+
+El titular autorizó el paquete exacto. SQLPROD aplicado una vez como
+`20261121223246 / usage_analytics_explicit_choice_20261121`: historia71→72,
+prefijo71 MD5 `7c11e252392ec5fd42f47a3ed8f4e871` intacto, cuatro conjuntos de
+postflight/16condicionesPASS. Mapeo local20261121062012 en migration-history-audit.
+Recibos privados `.tools/analytics-choice-20261121/server`. Los objetos nuevos
+producen avisos deliberados de RLS privado sin políticas y RPC authenticated
+SECURITY DEFINER; ACL/actor revisados. No atribuir todos los avisos a historia previa.
+
+Términos/privacidad públicos desde landing
+`c95be7f56b877f84a9e52e5fac628b61c4ceb11b`, Vercel
+`dpl_6w6vWZdwDGecMSBEnqaGRPonMzGb` READY: HTTP200 y hashes exactos,
+privacidad28811B5df1686a…9a741cb/términos3955Bad358012…cdb0054c.
+Versiones generales conservadas; aviso propio usage-analytics-2026-11-21.
+App Privacy Apple publicado:16tipos, trackingNO; User ID añade Analytics y
+marketing del desarrollador, Coarse Location añade Analytics, Product Interaction
+añade marketing propio. Play Data Safety **publicado**: Submission165 del21/nov,
+envío16:49/publicación16:59 según la consola, detalle de un solo cambio Data Safety.
+Incluye Analytics/captación y ubicación precisa funcional; recibo
+stores/play-published.private.json. No se promovió ningún binario público.
+
+Android: único Codemagic `6b021e276328dae170dd4245`, fuenteaf0e2274, terminó
+**14SUCCESS** el21nov22:56:22UTC. Metadata **2.3.9 (425)**; publishing confirma
+Version code425, Updated release internal, readbackStatuscompleted y Successfully
+published. **Play interno publicado y AAB/runtime/firma verificados**,
+SHA256 `b5fd334daf6c7227d60ef610fbcf1705f738bd6edcb0be92439f96910789a919`.
+Identidad/Firebase/backendPROD, configuración, minSDK24/targetSDK≥36, aviso/RPC y
+arranque nativoOFF cotejados. Firma JAR válida con pin existente; strict_exit4
+corresponde al certificado upload autofirmado esperado, sin afirmar cadena CA
+pública. Recibos android/{verification,shipping.verified}.private.json.
+Instalación y aceptación siguen pendientes.
+Después de Android terminal y de la ventana22:50:46.648–22:55:46.648UTC, un solo
+POST22:56UTC envió iOS `6b02219da77af65f4a2437b1`, workflowios-testflight,
+misma fuente/CI. **2.3.9 (426)** terminó15SUCCESS; IPA55006025B verificado,
+SHA256 `a408e42aec6a35b64a3b058457d3734ffaeec83be69b751bb25b4aa9b814247c`.
+Runtime adopciones/TiendaON, finanzas/mediciónTEST/walletsTESTOFF; bootstrap
+Analytics/CrashlyticsOFF, identidad/FirebasePROD y ubicación sólo foreground
+cotejados. Perfil/firma iOS válidos estructuralmente, sin validación CMS criptográfica.
+Recibo ios/verification.private.json. El posprocesamiento Apple terminó sin error
+el21nov23:16:17UTC. Chrome23:17:40UTC confirmó426 **Lista para enviar**, Caduca90d,
+DopMi Inner Team/5invitaciones: **disponible en TestFlight interno**. Recibo
+ios/testflight-readback.private.json y captura privada. El titular confirma426
+actualizada/instalada, sesión conservada y navegación correcta. Veía Analítica
+ON sin recordar su preferencia previa; después la apagó, esperó el guardado y
+cerró/reabrió. Confirmó «Sigue apagada y conserva el inicio de sesión».
+**iOS426: sesión/navegación y retirada con OFF persistente confirmados**; conservar
+esa elección finalOFF. No acredita primera elección, un OFF anterior desconocido,
+onboarding de una cuenta nueva ni eventos del SDK en red. Cola única, sin reenvío.
+Los flags citados son del cliente; esta entrega no apagó servicios remotos ni
+cambió sus flags financieros. No hubo promoción pública de estos binarios.
+Samsung elegido por el titular, paquete Dopmi ausente. Un intento real desde
+la ficha «Eres verificador interno» → Instalar terminó en «No se puede descargar
+DopMi». No hay logs actuales que acrediten1010 ni qué número solicitó el teléfono;
+la publicación425 sí está cotejada. No se repitió descarga, limpieza, acceso ni
+sideload. Evidencia privada android/phone-attempt.private.json. Android sigue sin
+instalación; esa descarga bloqueada no invalida el reporte humano de iOS426.
 
 Corrección de Favoritos sobre esta continuación: al volver a
 Mis match, la rama retenida refresca su lista; al confirmarse un like tardío,

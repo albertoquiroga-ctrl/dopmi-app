@@ -212,12 +212,13 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
               'Comparte navegación y conversiones básicas. '
               '${supportsPlayInstallReferrer ? 'En Android, puede vincular la campaña de Google Play con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje enviado como adoptante y tu primera respuesta como rescatista. ' : ''}'
               '${supportsIosCppAcquisition ? 'En iPhone, puede vincular la página de App Store desde la que abriste Dopmi con tu primera ficha enviada y aprobada, tu primer saludo automático, tu primer mensaje enviado como adoptante y tu primera respuesta como rescatista. ' : ''}'
-              'Sólo registra que ocurrió cada acción; no incluye el contenido de mensajes, documentos, ubicación, correo ni datos financieros.',
+              'Los eventos definidos por Dopmi no incluyen el contenido de mensajes, documentos, ubicación, correo ni datos financieros. '
+              'Firebase puede estimar una zona aproximada a partir de tu conexión. Puedes desactivarla sin perder las funciones de Dopmi.',
             ),
             value: measurement?.analyticsEnabled ?? false,
-            onChanged: measurement == null || measurement.loading
+            onChanged: measurement == null || measurement.loading || busy
                 ? null
-                : measurement.setAnalytics,
+                : (value) => perform(() => measurement.setAnalytics(value)),
           ),
           if (config.measurementTestEnabled &&
               measurement?.lastAnalyticsEvent != null) ...[

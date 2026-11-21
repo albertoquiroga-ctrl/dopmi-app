@@ -3,16 +3,42 @@ import 'dart:convert';
 
 import 'package:dopmi_mobile/core/adoption_measurement_consent.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
+import 'package:dopmi_mobile/core/usage_analytics_choice.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// Tests deliberately replace the legacy plugin's storage with a delayed fake.
+// ignore: depend_on_referenced_packages
+import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'measurement_test.dart' show BlockingEnableAnalytics, DiagnosticsSpy;
+import 'measurement_test.dart'
+    show AnalyticsSpy, BlockingEnableAnalytics, DiagnosticsSpy;
 
 const _alice = '79000000-0000-4000-8000-000000000001';
 const _bob = '79000000-0000-4000-8000-000000000002';
+
+class _DelayedAnalyticsOffStore extends InMemorySharedPreferencesStore {
+  _DelayedAnalyticsOffStore()
+    : super.withData({'flutter.dopmi.test.$_alice.analytics': true});
+
+  bool holdOff = false;
+  final started = Completer<void>();
+  final release = Completer<void>();
+
+  @override
+  Future<bool> setValue(String valueType, String key, Object value) async {
+    if (holdOff &&
+        key == 'flutter.dopmi.test.$_alice.analytics' &&
+        value == false &&
+        !started.isCompleted) {
+      started.complete();
+      await release.future;
+    }
+    return super.setValue(valueType, key, value);
+  }
+}
 
 Map<String, Object> _session(
   String owner,
@@ -62,12 +88,12 @@ class _Server {
         as String;
   }
 
-  Map<String, Object> state(String owner) {
+  Map<String, Object?> state(String owner) {
     final saved = states[owner] ?? (consent: false, revision: 0);
     return {'consent': saved.consent, 'revision': saved.revision};
   }
 
-  Map<String, Object> apply(http.Request request) {
+  Map<String, Object?> apply(http.Request request) {
     final owner = actor(request);
     final body = jsonDecode(request.body) as Map<String, dynamic>;
     final saved = states[owner] ?? (consent: false, revision: 0);
@@ -89,17 +115,33 @@ class _Server {
     } else if (request.url.path.endsWith('dopmi_adoption_measurement_state')) {
       reads.add(request);
       result = readOverride == null
-          ? state(actor(request))
+          ? {
+              ...state(actor(request)),
+              'has_choice': states.containsKey(actor(request)),
+              'notice_version': null,
+            }
           : await readOverride!(request);
     } else {
       expect(
         request.url.path,
-        '/rest/v1/rpc/dopmi_set_adoption_measurement_v2',
+        anyOf(
+          '/rest/v1/rpc/dopmi_set_adoption_measurement_v2',
+          '/rest/v1/rpc/dopmi_choose_usage_analytics',
+        ),
       );
       writes.add(request);
       result = writeOverride == null
           ? apply(request)
           : await writeOverride!(request);
+      if (request.url.path.endsWith('dopmi_choose_usage_analytics') &&
+          result is Map &&
+          result['applied'] == true) {
+        result = {
+          ...result,
+          'has_choice': true,
+          'notice_version': usageAnalyticsNoticeVersion,
+        };
+      }
     }
     return http.Response(
       jsonEncode(result),
@@ -136,6 +178,196 @@ void main() {
     transport = AdoptionMeasurementConsent(client);
   });
   tearDown(() => client.dispose());
+
+  test(
+    'choice state distinguishes no decision from legacy OFF revision zero',
+    () async {
+      expect((await transport.read(_alice)).hasChoice, isFalse);
+      server.states[_alice] = (consent: false, revision: 0);
+      final state = await transport.read(_alice);
+      expect(state.hasChoice, isTrue);
+      expect(state.consent, isFalse);
+    },
+  );
+
+  test(
+    'explicit analytics choice sends version and expected revision once',
+    () async {
+      final result = await transport.save(_alice, true, 0);
+      expect(result.applied, isTrue);
+      expect(result.state.consent, isTrue);
+      expect(result.state.noticeVersion, usageAnalyticsNoticeVersion);
+      expect(server.writes, hasLength(1));
+      expect(jsonDecode(server.writes.single.body), {
+        'consent': true,
+        'expected_revision': 0,
+        'notice_version': usageAnalyticsNoticeVersion,
+      });
+    },
+  );
+
+  test('restoring attribution consent cannot overwrite remote OFF', () async {
+    server.states[_alice] = (consent: false, revision: 7);
+    final restore = transport.prepare(
+      _alice,
+      true,
+      stillEligible: () => true,
+      restoreOnly: true,
+    )!;
+    expect(await restore(), isFalse);
+    expect(server.writes, isEmpty);
+  });
+
+  test(
+    'restored ON is paused when the next consent read observes remote OFF',
+    () async {
+      SharedPreferences.setMockInitialValues({
+        'dopmi.test.$_alice.analytics': true,
+      });
+      server.states[_alice] = (consent: true, revision: 1);
+      final analytics = AnalyticsSpy();
+      var stateReads = 0;
+      server.readOverride = (request) async {
+        if (++stateReads == 2) {
+          // Another phone withdraws between owner restoration and attribution.
+          server.states[_alice] = (consent: false, revision: 2);
+        }
+        return {
+          ...server.state(server.actor(request)),
+          'has_choice': true,
+          'notice_version': usageAnalyticsNoticeVersion,
+        };
+      };
+      late final MeasurementController controller;
+      controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        analyticsChoices: transport,
+        prepareAdoptionConsent: (owner, enabled) {
+          final revision = controller.analyticsRevision;
+          final request = transport.prepare(
+            owner,
+            enabled,
+            stillEligible: () =>
+                controller.ownerId == owner &&
+                controller.analyticsConsentCurrent &&
+                controller.analyticsRevision == revision,
+            restoreOnly: enabled,
+            onRevoked: () => controller.observeAnalyticsRevoked(
+              owner,
+              expectedRevision: revision,
+            ),
+          );
+          return request == null
+              ? null
+              : () async {
+                  await request();
+                };
+        },
+      );
+      addTearDown(controller.dispose);
+
+      await controller.owner(_alice);
+      await controller.consentReady;
+      await controller.event('contact_started');
+
+      expect(stateReads, 2);
+      expect(controller.analyticsEnabled, isFalse);
+      expect(analytics.enabledValue, isFalse);
+      expect(analytics.events, isEmpty);
+      expect(server.writes, isEmpty);
+      expect(
+        controller.preferences.getBool('dopmi.test.$_alice.analytics'),
+        isFalse,
+      );
+      expect(server.state(_alice), {'consent': false, 'revision': 2});
+    },
+  );
+
+  for (final nextOwner in <String?>[null, _bob]) {
+    test('explicit OFF captures its actor before delayed local storage and '
+        '${nextOwner == null ? 'sign-out' : 'an account switch'}', () async {
+      final previousStore = SharedPreferencesStorePlatform.instance;
+      final storage = _DelayedAnalyticsOffStore();
+      SharedPreferences.resetStatic();
+      SharedPreferencesStorePlatform.instance = storage;
+      addTearDown(() {
+        SharedPreferencesStorePlatform.instance = previousStore;
+        SharedPreferences.resetStatic();
+      });
+      server.states[_alice] = (consent: true, revision: 1);
+      final analytics = AnalyticsSpy();
+      final controller = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        analytics,
+        DiagnosticsSpy(),
+        analyticsChoices: transport,
+      );
+      addTearDown(controller.dispose);
+      await controller.owner(_alice);
+      expect(controller.analyticsEnabled, isTrue);
+      storage.holdOff = true;
+      final postStarted = Completer<void>();
+      final releasePost = Completer<void>();
+      server.writeOverride = (request) async {
+        postStarted.complete();
+        await releasePost.future;
+        return server.apply(request);
+      };
+
+      final off = controller.setAnalytics(false);
+      Future<void>? changedOwner;
+      try {
+        await storage.started.future;
+        // This must happen before local storage completes: otherwise a
+        // subsequent session could replace the actor before save captures it.
+        await postStarted.future.timeout(const Duration(seconds: 2));
+        if (nextOwner == null) {
+          await client.auth.signOut(scope: SignOutScope.local);
+        } else {
+          await login(nextOwner);
+        }
+        changedOwner = controller.owner(nextOwner);
+        releasePost.complete();
+        storage.release.complete();
+        await off;
+        await changedOwner;
+
+        expect(server.writes, hasLength(1));
+        expect(server.actor(server.writes.single), _alice);
+        expect(jsonDecode(server.writes.single.body), {
+          'consent': false,
+          'expected_revision': 1,
+          'notice_version': usageAnalyticsNoticeVersion,
+        });
+        expect(server.state(_alice), {'consent': false, 'revision': 2});
+        expect(server.states.containsKey(_bob), isFalse);
+        expect(controller.ownerId, nextOwner);
+        expect(controller.analyticsEnabled, isFalse);
+        expect(analytics.enabledValue, isFalse);
+        expect(
+          controller.preferences.getBool('dopmi.test.$_alice.analytics'),
+          isFalse,
+        );
+      } finally {
+        if (!storage.release.isCompleted) storage.release.complete();
+        if (!releasePost.isCompleted) releasePost.complete();
+        await off;
+        await changedOwner;
+      }
+    });
+  }
+
+  test(
+    'choice for another actor is rejected before sending anything',
+    () async {
+      await expectLater(transport.save(_bob, true, 0), throwsStateError);
+      expect(server.writes, isEmpty);
+    },
+  );
 
   test(
     'a queued SDK opt-in cannot invalidate the active transport revocation',
