@@ -555,6 +555,15 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
   bool busy = false;
   String? error;
 
+  Future<void> shareProfile() async {
+    final link = publicContentLink(
+      PublicContent.profile,
+      widget.id,
+      production: ref.read(configProvider).environment == 'production',
+    );
+    await shareContent(context, 'Conoce este perfil en DopMi.\n$link');
+  }
+
   Future<void> reportProfile() async {
     if (busy) return;
     final repo = ref.read(communityRepositoryProvider);
@@ -593,10 +602,7 @@ class _PublicProfileState extends ConsumerState<PublicProfileScreen> {
 
   @override
   Widget build(BuildContext context) => PublicProfileFrame(
-    share: () => shareContent(
-      context,
-      'Conoce este perfil en Dopmi. ${publicContentLink(PublicContent.profile, widget.id)}',
-    ),
+    share: shareProfile,
     child: LiveSection<Json?>(
       key: ValueKey(
         '${widget.id}:${ref.read(communityRepositoryProvider).userId}',

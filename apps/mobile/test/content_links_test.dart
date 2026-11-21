@@ -39,16 +39,22 @@ void main() {
       'io.dopmi.app://content/adoptions/$id',
     );
     expect(
-      publicContentLink(PublicContent.profile, id, production: true).toString(),
-      'io.dopmi.app://content/people/$id',
-    );
-    expect(
       publicContentLink(
         PublicContent.rescueCase,
         id,
         production: true,
       ).toString(),
       'io.dopmi.app://content/rescue-cases/$id',
+    );
+  });
+
+  test('the production profile URL is canonical and opens the owner', () {
+    final uri = Uri.parse('https://www.dopmi.org/people/$id');
+    expect(publicContentLink(PublicContent.profile, id, production: true), uri);
+    expect(contentLinkDestination(uri), '/people/$id');
+    expect(
+      publicContentLink(PublicContent.profile, id).toString(),
+      'io.dopmi.app://content/people/$id',
     );
   });
 
@@ -69,15 +75,58 @@ void main() {
       'io.dopmi.app://content/people/$id/extra',
       'http://www.dopmi.org/adoptions/$id',
       'https://www.dopmi.org.evil.test/adoptions/$id',
-      'https://www.dopmi.org/people/$id',
       'https://www.dopmi.org/adoptions/$id?token=private',
       'https://www.dopmi.org/adoptions/$id#private',
       'https://user@www.dopmi.org/adoptions/$id',
       'https://www.dopmi.org:8443/adoptions/$id',
       'https://www.dopmi.org/adoptions/not-a-uuid',
+      'http://www.dopmi.org/people/$id',
+      'https://www.dopmi.org.evil.test/people/$id',
+      'https://www.dopmi.org/people/$id?token=private',
+      'https://www.dopmi.org/people/$id#private',
+      'https://user@www.dopmi.org/people/$id',
+      'https://www.dopmi.org:8443/people/$id',
+      'https://www.dopmi.org/people/not-a-uuid',
     ]) {
       expect(contentLinkDestination(Uri.parse(value)), isNull);
     }
+  });
+
+  testWidgets('Compartir perfil sends an HTTPS URL on its own line', (
+    tester,
+  ) async {
+    const channel = MethodChannel('dev.fluttercommunity.plus/share');
+    final calls = <MethodCall>[];
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call);
+      return 'dev.fluttercommunity.plus/share/dismissed';
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          configProvider.overrideWithValue(
+            const AppConfig(
+              url: 'https://ysaoeuidcvgtlmphmeyb.supabase.co',
+              key: 'sb_publishable_fixture',
+              redirect: 'io.dopmi.app://auth/callback',
+              environment: 'production',
+            ),
+          ),
+          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        ],
+        child: const MaterialApp(home: PublicProfileScreen(id)),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Compartir'));
+    await tester.pumpAndSettle();
+    expect(
+      calls.single.arguments['text'],
+      'Conoce este perfil en DopMi.\nhttps://www.dopmi.org/people/$id',
+    );
   });
 
   testWidgets('Compartir sends an HTTPS URL on its own line', (tester) async {
@@ -118,51 +167,74 @@ void main() {
   });
 
   for (final cold in [true, false]) {
-    testWidgets('public link routes through actual app, cold=$cold', (
-      tester,
-    ) async {
-      final links = LinkFixture();
-      final identity = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final container = ProviderContainer(
-        overrides: [
-          identityRepositoryProvider.overrideWithValue(identity),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          contentLinkSourceProvider.overrideWithValue(links),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
+    for (final production in [true, false]) {
+      testWidgets(
+        'public link routes through actual app, cold=$cold production=$production',
+        (tester) async {
+          final links = LinkFixture();
+          final identity = FakeIdentityRepository()
+            ..user = const Identity(
+              'one',
+              'fixture@example.test',
+              verified: true,
+            );
+          final container = ProviderContainer(
+            overrides: [
+              identityRepositoryProvider.overrideWithValue(identity),
+              communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+              contentLinkSourceProvider.overrideWithValue(links),
+              routerInitialLocationProvider.overrideWithValue('/adoptions'),
+            ],
+          );
+          addTearDown(() async {
+            container.dispose();
+            await links.stream.close();
+            await identity.changes.close();
+          });
+          if (cold) {
+            links.initial.complete(
+              publicContentLink(
+                PublicContent.profile,
+                id,
+                production: production,
+              ),
+            );
+          }
+          await tester.pumpWidget(
+            UncontrolledProviderScope(
+              container: container,
+              child: const ContentLinkListener(child: DopmiApp()),
+            ),
+          );
+          await tester.pumpAndSettle();
+          if (!cold) {
+            links.stream.add(
+              publicContentLink(
+                PublicContent.profile,
+                id,
+                production: production,
+              ),
+            );
+            await tester.pumpAndSettle();
+            links.initial.complete(
+              publicContentLink(PublicContent.adoption, id),
+            );
+            await tester.pumpAndSettle();
+          }
+          expect(container.read(routerProvider).state.uri.path, '/people/$id');
+          expect(find.text('Refugio Luna'), findsOneWidget);
+          links.stream.add(
+            Uri.parse('io.dopmi.app://auth/callback?code=secret'),
+          );
+          links.stream.add(Uri.parse('io.dopmi.app://content/messages/$id'));
+          await tester.pumpAndSettle();
+          expect(container.read(routerProvider).state.uri.path, '/people/$id');
+          await tester.pumpWidget(const SizedBox());
+          links.stream.add(publicContentLink(PublicContent.adoption, id));
+          await tester.pump();
+          expect(tester.takeException(), isNull);
+        },
       );
-      addTearDown(() async {
-        container.dispose();
-        await links.stream.close();
-        await identity.changes.close();
-      });
-      if (cold) {
-        links.initial.complete(publicContentLink(PublicContent.profile, id));
-      }
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const ContentLinkListener(child: DopmiApp()),
-        ),
-      );
-      await tester.pumpAndSettle();
-      if (!cold) {
-        links.stream.add(publicContentLink(PublicContent.profile, id));
-        await tester.pumpAndSettle();
-        links.initial.complete(publicContentLink(PublicContent.adoption, id));
-        await tester.pumpAndSettle();
-      }
-      expect(container.read(routerProvider).state.uri.path, '/people/$id');
-      expect(find.text('Refugio Luna'), findsOneWidget);
-      links.stream.add(Uri.parse('io.dopmi.app://auth/callback?code=secret'));
-      links.stream.add(Uri.parse('io.dopmi.app://content/messages/$id'));
-      await tester.pumpAndSettle();
-      expect(container.read(routerProvider).state.uri.path, '/people/$id');
-      await tester.pumpWidget(const SizedBox());
-      links.stream.add(publicContentLink(PublicContent.adoption, id));
-      await tester.pump();
-      expect(tester.takeException(), isNull);
-    });
+    }
   }
 }

@@ -22,7 +22,8 @@ Uri publicContentLink(
   bool production = false,
 }) {
   final path = [_segment(kind), id];
-  if (production && kind == PublicContent.adoption) {
+  if (production &&
+      (kind == PublicContent.adoption || kind == PublicContent.profile)) {
     return Uri(scheme: 'https', host: _publicShareHost, pathSegments: path);
   }
   return Uri(scheme: 'io.dopmi.app', host: 'content', pathSegments: path);
@@ -44,11 +45,11 @@ String? contentLinkDestination(Uri uri) {
       uri.scheme == 'io.dopmi.app' &&
       uri.host == 'content' &&
       ['people', 'adoptions', 'rescue-cases'].contains(parts.first);
-  final adoptionShare =
+  final publicShare =
       uri.scheme == 'https' &&
       uri.host == _publicShareHost &&
-      parts.first == 'adoptions';
-  if (!legacy && !adoptionShare) return null;
+      ['adoptions', 'people'].contains(parts.first);
+  if (!legacy && !publicShare) return null;
   return '/${parts.first}/${parts.last}';
 }
 
