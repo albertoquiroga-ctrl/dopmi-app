@@ -16,7 +16,7 @@ y fundamento en la [investigación](ios-direct-attribution-research.md).
 | Landing | El nuevo `ppid` no está activado. Las rutas publicadas mantienen el alcance agregado `pt/ct` anterior. |
 | Validación y servidor | Fuente55061f99, CI44860327579 cuatroSUCCESS; SQL PROD20261121034107 aplicado y cotejado, historia71/prefijo70 y333funciones previas intactos. Recibos en candidato/progress. |
 | Candidato del ensayo |2.3.9(421) mediante `ios-testflight`, PROD/adopciones/AmazonON, sólo carga. Handle único6b0112f68d36bd30d38e3998/15SUCCESS; IPA cotejado y Apple procesado/Lista para enviar/DopMi Inner Team confirmado22:03CDMX. La continuación posterior de favoritos/424 está registrada en candidato; no sustituye la versión421 de este ensayo. Sin revisión pública ni aceptación del recorrido CPP/App Store. |
-| Dispositivo | iPad Pro12.9″/5.ªgeneración, iPadOS26.6.1,421/TestFlight reportado por titular. Safari abrió la URI con su sesión. PROD coteja el mismo actor: sin fuente20nov22:44→personal-a/ios_cpp_open22:53:37CDMX. Primera ficha real enviada21nov16:37:27CDMX, referencia exacta en la fuente original, estado submitted, dos fotos privadas y AnalíticaON/revisión3. Sin aprobación/publicación ni eventos de mensajes. No hay lectura USB/control remoto ni prueba de muerte del proceso. |
+| Dispositivo | iPad Pro12.9″/5.ªgeneración, iPadOS26.6.1,421/TestFlight reportado por titular. Safari abrió la URI con su sesión. PROD coteja el mismo actor: sin fuente20nov22:44→personal-a/ios_cpp_open22:53:37CDMX. Primera ficha real enviada21nov16:37:27CDMX, referencia exacta en la fuente original y dos fotos privadas; ficha ahora archivada/sin aprobación. AnalíticaON/revisión3. Saludo automático16:58:58 y primer mensaje16:59:59CDMX atribuidos por separado. Primera respuesta como dueño pendiente por elección del titular. No hay lectura USB/control remoto ni prueba de muerte del proceso. |
 
 La existencia del borrador no demuestra aprobación ni disponibilidad. Apple exige
 iOS/iPadOS18+ y pulsar **Abrir en esa CPP** para entregar su deep link. No promete
@@ -89,9 +89,30 @@ Consulta16:41:48CDMX: fuentes bruto1/QA1/noQA0 y primeros envíos bruto1/QA1/noQ
 la exclusión es un filtro privado, sin borrar ni modificar datos.
 
 Este resultado verifica **la primera ficha automática en421/TestFlight + Safari**.
-Aprobación, saludos y mensajes continúan pendientes, al igual que la instalación
-real desde CPP/App Store con una cuenta reservada. No volver a consumir esta
-primera ficha ni presentar el ensayo como QA de iPhone o del424 posterior.
+Aprobación e instalación real desde CPP/App Store con una cuenta reservada
+continúan pendientes. No volver a consumir esta primera ficha ni presentar el
+ensayo como QA de iPhone o del424 posterior.
+
+El21/nov17:00CDMX se verificaron separadamente saludo y primer mensaje en el
+mismo iPad421. El titular aclaró que busca adoptar un gato y eligió una ficha
+pública de otra cuenta para un contacto real. Antes: consentimientoON/revisión3,
+fuente original intacta, cero hilos/eventos y ninguna conversación con esa ficha.
+Al pulsar **Quiero saber más → Sí, contactar rescatista** apareció un único
+saludo, sin compositor; PROD registró sólo `automatic_greeting`16:58:58.577CDMX.
+Tras escribir su consulta y enviarla desde el mismo chat, PROD registró
+`first_user_message`16:59:59.971CDMX. Permanecieron el mismo hilo/actor/fuente,
+un solo saludo, un solo envío humano y dos eventos distintos, dentro de336h.
+Recibos privados `ipad421-automatic-greeting.verified.private.json` y
+`ipad421-first-user-message.verified.private.json`, con revisión independiente.
+Sin leer cuerpos ni conversaciones ajenas y sin escrituras administrativas.
+El reporte privado17:01CDMX excluye ambos eventos QA: bruto1/QA1/noQA0 por tipo.
+
+La ficha propia está ahora archivada, sin publicación/aprobación. El titular
+eligió expresamente **dejar pendiente la primera respuesta del rescatista**;
+no reactivar ni reenviar para forzar esa prueba. La eventual respuesta del dueño
+de la ficha contactada no es `first_rescuer_reply` de nuestro actor adoptante.
+Ese tercer hito requiere que el actor atribuido sea dueño de una publicación
+contactable y responda a una entrada legítima de otra cuenta.
 
 ## Recorrido físico y evidencia requerida
 
@@ -114,8 +135,9 @@ Analítica de uso. Antes de enviar, comprobar por lectura privada que existe una
 | Primer envío humano como adoptante | Texto o foto válidos desde el compositor producen `first_user_message`; lectura y saludo no cuentan. |
 | Primera respuesta del dueño | El actor es dueño y hay entrada previa del adoptante; su envío desde compositor produce `first_rescuer_reply`. No atribuirle el envío de la contraparte. |
 
-Los mensajes requieren dos participantes QA legítimos y un escenario contactable
-permitido. Una cuenta con fichas antiguas no sirve para una nueva inscripción.
+Los mensajes requieren dos participantes legítimos y un escenario contactable
+permitido: ensayo acordado o interés real de adopción. Una cuenta con fichas
+antiguas no sirve para una nueva inscripción.
 La aprobación y la respuesta como dueño pueden requerir una mascota real y su
 moderación normal; si falta ese escenario, mantener esos gates pendientes. No
 publicar mascotas sintéticas ni contactar desconocidos para forzar resultados.

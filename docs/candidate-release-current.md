@@ -79,6 +79,16 @@ ipad421-first-listing.verified.private.json y revisión independiente favorables
 Agregado16:41:48CDMX: fuentes1/QA1/noQA0 y primeros envíos1/QA1/noQA0, mediante
 filtro privado sin borrar datos. Prueba real421/55061f99, TestFlight+Safari;
 no acredita el424 posterior ni instalación CPP, aprobación o mensajes.
+Actualización21nov17:00CDMX en421: saludo automático y primer mensaje humano
+verificados como eventos separados para la fuente original personal-a.
+Contacto real de adopción elegido por el titular: hilo nuevo, saludo1/compositor0
+→saludo1/compositor1; eventos `automatic_greeting`16:58:58.577 y
+`first_user_message`16:59:59.971CDMX. Mismo actor/hilo/consentimientoON/revisión3,
+dentro336h y primera ficha intacta. Lecturas sólo de metadatos, recibos privados
+independientes favorables; sin cuerpos ni escrituras administrativas. Ambos
+eventos QA excluidos por filtro privado17:01CDMX, noQA0 por tipo.
+Ficha propia ahora archivada/sin aprobación; titular deja expresamente pendiente
+`first_rescuer_reply`. La respuesta del dueño externo no se atribuye al adoptante.
 Primera ficha y mensajes desde CPP/App Store siguen pendientes; TestFlight o
 CI no equivalen a esa aceptación. Operación en [runbook](ios-cpp-personal-a-runbook.md).
 

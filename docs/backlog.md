@@ -28,7 +28,12 @@ TestFlight; fuente personal-a/ios_cpp_open automática cotejada en PROD tras
 apertura desde Safari. Primera ficha real enviada desde el iPad21nov16:37:27CDMX:
 PROD coteja misma cuenta/fuente original personal-a, referencia exacta a esa ficha
 submitted, dos fotos privadas, AnalíticaON/revisión3 y una sola ficha/fuente.
-Aprobación/publicaciónNULL y eventos de mensajes0; sin ajuste administrativo.
+Aprobación/publicaciónNULL; ficha ahora archivada. Saludo automático16:58:58 y
+primer mensaje16:59:59CDMX verificados por separado21nov en contacto real de
+adopción elegido por titular, mismo actor/fuente/hilo y sin ajuste administrativo.
+Eventos QA excluidos; respuesta como dueño pendiente por decisión expresa del
+titular. No reactivar/publicar para forzar ese tercer hito ni atribuirle la
+respuesta del dueño externo al actor adoptante.
 Fuente y primer envío QA excluidos del experimento por filtro privado, noQA0.
 Recibo independiente favorable de421/55061f99; no acredita QA del424 posterior.
 Primera ficha y mensajes instalados desde App Store pendientes. No sustituir esa aceptación

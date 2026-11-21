@@ -9759,3 +9759,45 @@ siguen como hitos separados pendientes. No aprobar/publicar para forzar QA ni
 contactar desconocidos. CPP/App Store requiere cliente público compatible y CPP
 aprobada, ppid oficial activo, instalación/cuenta reservadas y Abrir en esa CPP;
 ese recorrido y el iPhone físico no se han probado. A/B iOS no reanudado.
+
+### 21/11/2026 17:01CDMX — Saludo y primer mensaje atribuidos por separado en iPad421
+
+El titular pidió continuar los tres hitos de mensajes. Preflight22:55:56UTC:
+actor personal-a original activo, AnalíticaTRUE/revisión3, dentro de336h,
+primera ficha/envío conservados, aprobaciónNULL, cero hilos y eventos. Su ficha
+está ahora archived/publishedNULL; no se restaura ni publica por el ensayo.
+El titular aclaró que no tiene una contraparte controlada con mascota publicada,
+pero busca adoptar un gato y desea contactar una ficha real. Eligió una ficha
+pública de otra cuenta; detalle público/RPC cotejado22:58:41UTC: especiecat,
+published, dueño distinto y cero hilos actor+ficha. La apertura web devolvió error;
+la comprobación de disponibilidad usó la RPC pública real, no esa respuesta web.
+IDs/nombres/ubicación/contraparte sólo en recibos privados, no en Git.
+
+Guía del421 comprobada en fuente55061f99: Perfil/Consulta los casos en adopción
+→Adoptar→ficha→Quiero saber más→Sí, contactar rescatista. El titular vio el saludo
+y se detuvo sin escribir. Readback22:59:27UTC: un hilo nuevo activo, saludo1,
+compositor0, sólo `automatic_greeting`22:58:58.577961UTC (16:58:58CDMX).
+Después escribió su consulta real y confirmó el envío. Readback23:00:12UTC:
+mismo actor/hilo/fuente original, saludo1 intacto, compositor0→1 y sólo dos
+eventos distintos: saludo original y `first_user_message`22:59:59.971992UTC
+(16:59:59CDMX), posterior al mensaje22:59:59.963467UTC. Ambos dentro de336h;
+sin `first_rescuer_reply`, sin cambios a la primera ficha ni al consentimiento.
+El operador sólo leyó metadatos del hilo elegido y eventos del propio actor:
+sin cuerpos, otras conversaciones, escrituras SQL, envíos, backfill o resets.
+
+Recibos privados ipad421-automatic-greeting.verified.private.json e
+ipad421-first-user-message.verified.private.json conservan pausas/controles.
+Revisión independiente sólo lectura de ios_cpp_backend_design favorable.
+Reporte privado23:01:17UTC: fuente1/QA1; por cada uno de los dos eventos,
+bruto1/QA1/noQA0; respuesta del dueño0. Exclusión por filtro, sin borrar datos.
+El contacto es una consulta de adopción real; la cuenta técnica permanece
+excluida del A/B. No se infieren instalaciones ni significancia estadística.
+
+La respuesta del rescatista de la ficha contactada pertenece a su propio actor,
+no al personal-a adoptante. Para probar nuestro `first_rescuer_reply`, ese actor
+debe ser dueño de una ficha contactable y responder a una entrada legítima.
+El titular eligió expresamente dejar pendiente este tercer hito; no reactivar,
+reenviar, aprobar ni publicar su ficha por esta prueba. Primera aprobación
+también pendiente. Alcance físico421/TestFlight+Safari, no424, iPhone ni
+instalación desde CPP/App Store. Sin código/build/migración o suites repetidas;
+refs remotos sin avance frente a bc639097. Trabajo ajeno/pycache conservados.
