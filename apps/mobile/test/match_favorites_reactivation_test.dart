@@ -45,7 +45,7 @@ class ReactivatedFavoritesCommunity extends FakeCommunity {
 
 class PendingFavoritesCommunity extends ReactivatedFavoritesCommunity {
   PendingFavoritesCommunity() {
-    transport = _PendingFavoriteRepository(client, (params) async {
+    _transport = _PendingFavoriteRepository(client, (params) async {
       await allowFavorite.future;
       await super.favorite(
         params['post_id'] as String,
@@ -57,17 +57,17 @@ class PendingFavoritesCommunity extends ReactivatedFavoritesCommunity {
   final allowFavorite = Completer<void>();
   final favoriteFinished = Completer<void>();
   final client = SilentFavoriteSocketClient();
-  late final _PendingFavoriteRepository transport;
+  late final _PendingFavoriteRepository _transport;
 
   @override
   Future<void> favorite(String id, bool saved) async {
-    await transport.favorite(id, saved);
+    await _transport.favorite(id, saved);
     favoriteFinished.complete();
   }
 
   @override
   VoidCallback watch(List<String> tables, VoidCallback refresh) =>
-      transport.watch(tables, refresh);
+      _transport.watch(tables, refresh);
 }
 
 class _PendingFavoriteRepository extends FavoriteRefreshRepository {
