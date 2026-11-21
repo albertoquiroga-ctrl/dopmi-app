@@ -1,5 +1,28 @@
 # Atribución de campañas y acciones
 
+## Corte operativo21nov2026: entrega a campañas
+
+Leer primero el [contrato para el chat de campañas](campaign-attribution-handoff.md)
+y el [diseño experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
+El usuario confirma como comparador principal las campañas pagadas Meta/Google.
+Objetivo: primera ficha por cuenta elegible; no sustituirla por descargas o chats.
+Los apartados inferiores conservan historia técnica; este corte y los recibos
+fechados posteriores gobiernan el estado conocido.
+
+Android418/Play ya verificó fuente y primera ficha en PROD. iPad421/TestFlight+
+Safari verificó personal-a y primera ficha21nov16:37:27, saludo16:58:58 y primer
+mensaje16:59:59CDMX separadamente. Aprobación y respuesta propia como rescatista
+siguen pendientes; no inferirlas por analogía. CPP/App Store aún sin instalación
+validada/ppid activo. No confundir el transporte técnico iOS con disponibilidad
+individual en las campañas públicas actuales.
+
+Sólo existen cuatro variantes Android y una iOS técnica; no hay atribución por
+comentario/autora, unión de identidades sociales ni múltiples campañas libres.
+El namespace/colocación del nuevo experimento es trabajo pendiente. No reciclar
+textos de rutas históricas ni tratar sin enlace/bio común como cero conversiones.
+Supabase no alimenta automáticamente Meta/Google; sus puentes, consentimientos y
+recepción se verifican por separado. Diseño/documentación no activan gasto nuevo.
+
 ## Prueba CPP personal-a — corte20nov2026
 
 El piloto individual iOS se implementa por separado sobre el corte reciente

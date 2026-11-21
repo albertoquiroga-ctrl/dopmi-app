@@ -1,3 +1,19 @@
+## 21/11/2026 CDMX — Documentar atribución y diseñar prueba contra anuncios
+
+El titular pide dejar el método de atribución documentado para el chat de
+campañas y probar su hipótesis de que comentarios pertinentes a rescatistas
+independientes de los grupos que sigue captan más publicadores. Confirma como
+comparador principal las campañas pagadas Meta/Google. Solicita variables de
+mensaje, origen de post, plataforma, enlaces y acceso por perfil, además de las
+que ayuden a aprender con significancia estadística.
+
+Contrato en [handoff](campaign-attribution-handoff.md); protocolo propuesto en
+[diseño](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
+Objetivo recomendado: primera ficha única enviada, calidad y costo/tiempo.
+El factorial inicial, piloto60, potencia80% y etapas son propuestas de Codex,
+no resultados ni cuotas aprobadas por el titular. No asumir que respuesta propia
+o instalación CPP pasaron; no cambiar gasto ni desplegar medición en este corte.
+
 ## 20/11/2026 CDMX — Piloto CPP personal-a autorizado
 
 El titular autoriza implementar la prueba iOS sobre el release reciente,

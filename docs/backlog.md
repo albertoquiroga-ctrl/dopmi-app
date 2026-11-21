@@ -1,5 +1,12 @@
 # Cola vigente — integración de producción20/nov/2026
 
+Campañas21nov: contrato operativo en [handoff](campaign-attribution-handoff.md) y
+[protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
+Comparador confirmado Meta/Google pagados; objetivo primera ficha por cuenta.
+Siguiente: medición/namespace nuevos, baseline pagado y piloto operativo antes
+de congelar muestra/contrastes. Diseño listo, sin ensayo confirmatorio ni cambios
+de presupuesto/trackers. Conservar gates y evidencia técnica del piloto inferior.
+
 Prioridad de corrección: Favoritos de Mis match tras swipe derecho, incluida
 respuesta de guardado que llega después de abrir la pestaña. Cliente corregido,
 11regresionesPASS y revisión independiente cerrada; análisis0incidencias,

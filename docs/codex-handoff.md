@@ -2,6 +2,13 @@
 
 ## Arranque vigente — atribución y restauraciones, 20/11/2026
 
+Entrega a campañas21nov: [contrato de atribución](campaign-attribution-handoff.md)
+y [experimento de adquisición](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
+El usuario quiere comparar comentarios a independientes de MTY con Meta/Google
+pagados, usando primera ficha como objetivo. Fuentes/eventos internos no activan
+automáticamente optimización publicitaria. Leer capacidades actuales y extensión
+de instrumentación pendiente antes de lanzar nuevos brazos o alterar anuncios.
+
 Para esta entrega, continuar en `codex/production-attribution-restored-20261120`.
 Después del checkpoint y protocolo de mock, leer
 [candidato vigente](candidate-release-current.md): concentra fuente del binario,

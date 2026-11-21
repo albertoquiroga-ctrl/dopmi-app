@@ -9801,3 +9801,47 @@ reenviar, aprobar ni publicar su ficha por esta prueba. Primera aprobación
 también pendiente. Alcance físico421/TestFlight+Safari, no424, iPhone ni
 instalación desde CPP/App Store. Sin código/build/migración o suites repetidas;
 refs remotos sin avance frente a bc639097. Trabajo ajeno/pycache conservados.
+
+### 21/11/2026 17:26CDMX — Contrato para campañas y diseño experimental multivariable
+
+El titular pide documentar atribución para el chat de campañas y diseñar un
+experimento robusto sobre comentarios a independientes de grupos de MTY.
+Aclara que el comparador principal son las campañas pagadas Meta/Google.
+Se crea docs/campaign-attribution-handoff.md para «Revisar campañas de Google y
+Facebook» y docs/superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md.
+Entradas enlazadas desde handoff/backlog/registro técnico/product-decisions.
+
+Contrato cotejado contra cliente, migraciones, reportes y evidencia real ya
+consumida: Android4variantes/primer envío público418; iPad421 fuente/primera
+ficha/saludo/primer mensaje verificados. Respuesta propia y aprobación pendientes;
+CPP/App Store no validado. Supabase no envía automáticamente esos eventos a
+Meta/Google. Auditoría readonly del checkout del chat de campañas encuentra
+MetaContact/SubmitApplication preparado en otra rama, pero el último registro
+revisado18nov aún deja recepción instalada/publicitaria pendiente. No se declara
+instalación, recepción nueva ni conversiones importadas a Google verificadas.
+No se envió mensaje al otro chat: se deja el contrato persistente en Git y sus
+puntos de entrada. Lectura de metadata/historial fue sólo contexto de entrega.
+
+El diseño separa benchmark concurrente de CPA/horas/calidad y futuro estudio
+causal por mercados con base/organic/paid bajo dosis definidas. Propone piloto60,
+factorial2×2mensaje/identidad, oleadas posteriores de enlaces/personalización/
+CTA/bio/plataforma y18variables candidatas observadas o aleatorizadas. Primera
+ficha única es el resultado principal; no clics/adoptantes o saludos. Registra
+deduplicación de autoras, contaminación, grupos/bloques, madurez, MDE/potencia,
+multiplicidad, confirmación y cierre inconcluso si no alcanza inventario/señal.
+
+Límites explícitos: fuente por variante no identifica a autora contactada; lectores
+pueden convertir. Sin enlace/bio común no equivale a cero. Namespace/placement
+nuevos y medición comparable requieren implementación futura, no queries nuevas
+sobre las cuatro rutas. OFF cambia denominadores; exclusión QA en ambos lados,
+no sumar cuentas Android/iOS/proveedores. Retención30/60d y métricas geográficas
+comunes tampoco se presentan como funciones entregadas.
+
+Revisión estadística independiente experiment_statistics y builder check fresco
+campaign_design_review: sin errores materiales ni preguntas importantes restantes.
+Auditorías acotadas ios_cpp_backend_design y ios_cpp_client_review respaldan
+capacidades actuales y separación de la integración publicitaria. Fuentes primarias
+NIST, Apple, GoogleResearch y Minitab consultadas; cálculo normal propio reproducido
+2→4%=1141porbrazo y5→10%=435, sólo ejemplos binarios sin ajustes, no N final.
+Documentación sola: ningún comentario, cambio de anuncio/gasto/automatización,
+deploy, migración, nuevo build o suite repetida. Preservar los demás alcances.
