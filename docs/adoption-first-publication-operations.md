@@ -17,14 +17,25 @@ procesamiento, subida y guardado. Si aumenta la antigüedad de la cola, abrir
 la revisión de adopciones desde la tarjeta.
 
 En la [exploración de GA4 Producción](https://analytics.google.com/analytics/web/#/analysis/a273408500p561295536/edit/oKrPe-LmQQO0_c3Hgr051w),
-abre **Primera publicación**. La vista compartida con quienes ya tienen
-acceso a la propiedad muestra conteos de eventos por plataforma. Las señales
-describen las visitas y los intentos de personas con medición activada.
-Android reutiliza el nombre 2.3.3 para varios builds. El primer corte con
-tráfico de clientes debe tomar como referencia la fecha de disponibilidad
-pública de la 383. La inicialización actual de Analytics puede reiniciar
-el identificador del dispositivo. Usa los conteos para diagnóstico y
-evita usar usuarios únicos entre arranques como denominador.
+abre **DopMi · Actividad y adopciones**, compartida con quienes ya tienen
+acceso a la propiedad. La pestaña de **actividad medida (no cuentas)** cruza
+**App version** y **Platform** con seis métricas de actividad. Las pestañas
+de pasos y errores de publicación conservan sus nombres de eventos y las
+métricas configuradas, incluida **Total users**. La tabla siguiente mantiene
+el mapa de señales del formulario.
+
+Las cuentas de Auth son registros del producto; los usuarios activos de GA
+describen actividad medida en una ventana concreta. **Total users** tampoco
+es un conteo de cuentas ni garantiza personas únicas o deduplicación entre
+dispositivos. Los eventos pueden repetirse en un mismo recorrido y una
+misma **App version** puede agrupar varios builds. Comparar siempre periodo,
+plataforma y versión, sin forzar igualdad con las altas del backend.
+
+La pestaña de **valor confirmado** filtra exclusivamente
+`adoption_contact_created`, `rescuer_first_reply` y
+`adoption_marked_adopted`. Al corte del 22 de noviembre todavía no hay
+eventos entrantes de estos tres nombres. La configuración del informe no
+acredita recepción de eventos ni distribución del código nuevo.
 
 | Paso | Eventos para revisar |
 | --- | --- |
@@ -45,6 +56,55 @@ ubican la caída en ese paso. Hace falta observar el recorrido para identificar
 el requisito concreto. Una foto se registra como adjunta cuando su
 referencia ya se guardó. El envío aceptado requiere respuesta del servidor
 con estado en revisión. Todos los eventos son nombres fijos.
+
+## Corte del 22 de noviembre de 2026
+
+La lectura actual del backend registra **393 cuentas Auth**. Sus preferencias
+vigentes son **31 ON, 297 OFF y 65 sin elección registrada**. Este corte
+describe el estado actual del consentimiento, no su cobertura histórica ni
+cuántas personas estuvieron activas en GA durante otro periodo.
+
+Para el 25 de octubre al 21 de noviembre, GA mostró **40 usuarios activos,
+40 sesiones y 0 usuarios recurrentes**. Esas cifras no son una base fiable
+para inferir personas únicas, regreso o retención: una consulta de
+consentimiento fallida podía borrar la identidad de Analytics incluso al
+reanudar la misma cuenta con ON previo. La corrección está **validada
+localmente y aún no distribuida**: la incertidumbre pausa la colección y
+conserva sólo la identidad del mismo propietario y entorno; un OFF explícito
+o confirmado, el cambio de propietario o la salida real siguen borrándola.
+No se unen cuentas ni se envía el identificador de la cuenta a Firebase.
+
+La identidad de informes de GA quedó en **Observed**; el modelado no está
+disponible. Este ajuste no reconstruye identificadores, no recupera eventos
+omitidos y no repara los conteos históricos. Tampoco convierte los usuarios
+medidos en una deduplicación de personas entre dispositivos.
+
+| Señal nueva | Resultado confirmado que representa |
+| --- | --- |
+| `adoption_contact_created` | El servidor creó un contacto nuevo y su conversación. Reabrir una conversación existente no cuenta como otro contacto. |
+| `rescuer_first_reply` | El servidor guardó la primera respuesta del rescatista a un contacto previo en esa conversación. Un saludo automático o un reintento del mismo mensaje no acredita otra respuesta. |
+| `adoption_marked_adopted` | El servidor guardó por primera vez el cierre declarado como adopción realizada. No acredita que Dopmi causó la adopción ni que la familia se encontró por la app. |
+
+Los tres nombres requieren éxito del servidor y consentimiento ON vigente
+antes del despacho y al aceptar la respuesta, para el mismo propietario,
+entorno y revisión. Sólo se envía el nombre, sin payload. Una respuesta sin
+señal, un contrato legado o una elección ON posterior no reconstruyen una
+conversión. `contact_started` conserva su función auxiliar histórica y no
+equivale a un contacto nuevo confirmado.
+
+Contacto y respuesta pertenecen a actores distintos. Esta tabla no es un embudo
+de una sola persona: dividir respuestas de un periodo entre contactos del mismo
+periodo puede mezclar conversaciones y tiempos distintos. Una tasa de respuesta
+requiere una cohorte de conversaciones y su ventana de seguimiento en el backend.
+Los conteos GA son los resultados recibidos con medición consentida; una respuesta
+perdida o una entrega fallida al SDK puede omitir una señal. No son un censo de todas
+las operaciones guardadas.
+
+Al corte, la validación local reúne **180 pruebas Flutter**, análisis sin
+incidencias y **23 pruebas en PostgreSQL real**; la revisión independiente
+cerró sin P1/P2. CI todavía no se ha iniciado. Esta evidencia local no
+acredita distribución, aplicación remota del contrato ni llegada de las
+señales nuevas a GA.
 
 ## Corte del lanzamiento
 

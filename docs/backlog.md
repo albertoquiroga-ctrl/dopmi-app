@@ -1,3 +1,23 @@
+# Cola vigente — calidad de Analytics, 22/nov/2026 CDMX
+
+GA configurado y persistencia verificada: actividad/publicación/valor confirmado,
+tres eventos clave sin importe monetario y sin cambios de Ads. Fuentea24408be,
+CI45065888007 cuatroSUCCESS. SQL PROD aplicado una vez como20261122204434,
+wrapper61bafe61…c708e, diez comprobaciones postflightPASS; mapeo y runtime en
+[auditoría](migration-history-audit.md). No volver a aplicar ni reparar historia.
+
+Android2.3.10 enCM6b0354d59ee19bef90f484db, un solo POST tras ventana y cola libre;
+aún no se afirma publicación Play. iOS preparado, ventana20:47:33–20:52:33UTC,
+sin envío hasta quedar libre la misma cola. Números de build se leen del artefacto,
+no se predicen. Samsung433Play conectado al corte previo a la distribución.
+
+Siguiente integrador: seguir estos mismos trabajos, verificar artefactos/publicación
+y QA instalada de identidad/consentimiento; comprobar recepción de las señales en
+el primer uso legítimo, sin fabricar contactos/adopciones en producción. No unir
+usuarios GA con cuentas/personas ni inferir adopciones causadas por Dopmi.
+Conservar servicios/piloto actuales y las solicitudes públicas433/434 sin repetirlas.
+Detalle: [candidato](candidate-release-current.md), [informe](adoption-first-publication-operations.md).
+
 # Cola vigente — revisión pública 433/434, 21/nov/2026 CDMX
 
 El titular autorizó expresamente publicar los fixes acumulados. Android433 e

@@ -1,3 +1,25 @@
+## 22/11/2026 CDMX — Actividad medida y resultados de adopción
+
+El titular pide configurar Analytics con eventos/métricas de valor y corregir la
+fiabilidad del conteo de usuarios activos. Conserva los tres resultados elegidos:
+contacto nuevo, primera respuesta de rescatista y adopción marcada como realizada;
+esta última no prueba que Dopmi originó el encuentro.
+
+Implementación: mantener GA/Firebase y decisiones de medición vigentes; confirmar
+las transiciones desde PostgreSQL y medir sólo nombres fijos con ON antes y después
+de la operación, sin parámetros ni identificadores de cuentas. No forzar las cifras
+para que coincidan con Auth, reconstruir históricos ni interpretar first_open como
+registro. Una falla temporal pausa colección conservando identidad del mismo
+propietario; OFF/cambio real de cuenta/entorno siguen limpiándola. El tablero separa
+actividad medida, pasos/errores de publicación y valor confirmado. Sin nuevos SDK,
+Ads, gasto ni acuerdos. RELEASE_NAME2.3.10 identifica los clientes corregidos.
+
+El SQL aditivo necesario, revisado y compatible se ejecuta bajo esta petición
+vigente, con paquete exacto/CI/preflight/reserva/readback. No se renuevan permisos
+consumidos ni se elevan restricciones de fixtures históricos a una regla universal.
+Los estados de implementación, aplicación, distribución y recepción permanecen
+separados en [candidato vigente](candidate-release-current.md).
+
 ## 21/11/2026 CDMX — Publicar los arreglos acumulados en ambas tiendas
 
 El titular solicita expresamente empujar a producción los fixes que no ve en la

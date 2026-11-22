@@ -10238,3 +10238,59 @@ iPad426, perfilPROD/adopciones/TiendaON/finanzasOFF y gates del piloto; último
 corte0/60 contactos y60tokens noQAOFF conservado, sin nueva auditoría remota.
 
 Revisión independiente acotada del diff de seis documentos y tres recibos cerrada sin P1/P2: estados, alcance, horarios, fuentes y gates coherentes. Sin suites nuevas por el cambio exclusivamente documental.
+
+## Analytics — configuración verificada y candidato local, 22/11/2026 CDMX
+
+GA4 Producción561295536 ya tiene la exploración existente «DopMi · Actividad y
+adopciones»: actividad medida por versión/plataforma, pasos/errores de publicación
+y valor confirmado. Se registraron `adoption_contact_created`,
+`rescuer_first_reply` y `adoption_marked_adopted` como eventos clave, una vez por
+evento, sin valor monetario predeterminado. Todavía no reciben datos de estas
+señales nuevas. Identidad de informes Observed; Blended no tenía modelado
+disponible, por lo que ese cambio no explica ni corrige la discrepancia histórica.
+No se cambió Ads, campañas, permisos ni la audiencia ya compartida del informe.
+
+Fuente técnica `a24408beeb664d48f15b1bd90e9a8c578602659e`, rama
+`codex/analytics-quality-20261122`, base94fa2088/productoefc3277a y mockf693
+conservados. Corrige el reinicio del identificador ante lectura incierta de
+consentimiento del mismo propietario: pausa colección, conserva identidad y
+respeta OFF/cambio de cuenta/entorno. Tres RPC aditivos confirman las transiciones
+antes de medir; contratos anteriores compatibles. Sin User-ID, parámetros de
+usuario, backfill ni nuevos SDK.
+
+Verificado local:180 pruebas Flutter enfocadas; analyzer sin incidencias;23 pruebas
+PostgreSQL real sin skips, incluyendo concurrencia y revocación de consentimiento;
+Node completo1389PASS/15SKIP; configuración móvil42 y Firebase26PASS. Suite Flutter
+local completa cancelada para delegar la regresión al gate integrado; no es PASS.
+Revisión independiente sinP1/P2. CI45065888007 en curso al preparar este corte.
+Sin aplicación SQL PROD ni build nueva. Los envíos públicos433/434 del21/nov no se
+han cancelado ni repetido; su último estado observado sigue siendo revisión.
+
+Corte interno22/nov19:28UTC:393 cuentas Auth y393 perfiles activos; preferencias
+actuales31ON/297OFF/65sin fila. GA25/oct–21/nov:40 activos/40 usuarios medidos,
+40sesiones/0 recurrentes; para ese periodo hubo386altas, frente a393cuentas actuales.
+No son poblaciones equivalentes ni personas únicas. El histórico de identificadores
+reiniciados no se reconstruye. La adopción marcada es resultado declarado, no
+prueba de atribución causal a Dopmi. Ver [operación del informe](adoption-first-publication-operations.md).
+
+Pendientes finitos: integrador concilia CI y aplica el paquete SQL aditivo revisado cubierto por la
+petición vigente; después distribuye QA
+con una cola y ventana5min y comprueba recepción/consentimiento en versión instalada.
+La configuración GA ya está publicada, el código está implementado, la nueva
+colección todavía no está publicada ni aceptada físicamente. Preservar el último
+estado autorizado de servicios y piloto; no imponer estados históricos por QA.
+Evidencia privada `.tools/qa-analytics-quality-20261122`, incluidos readbacks,
+pruebas y capturas. No otro tablero.
+
+
+## 22/11/2026 CDMX — Analytics: CI completa y servidor aplicado
+
+Candidatoa24408be/CI45065888007:cuatroSUCCESS. Reserva y una aplicación
+PROD20261122204434, wrapper41802B/61bafe61…c708e; readback diezPASS,
+73migraciones anteriores, permisos y runtime exactos. Sin QA de negocio ni
+backfill. [Mapeo](migration-history-audit.md). Android2.3.10 enviado una vez a
+CM6b0354d59ee19bef90f484db tras ventana20:23:36–20:28:36UTC y cola libre.
+Primer preflight de CM se detuvo sin reserva porque otra tarea ocupaba la cola;
+esa tarea terminó y se comprobó ausencia de envío antes del único POST. iOS
+ventana20:47:33–20:52:33UTC, todavía sin envío. No repetir builds ni estados de
+servicios históricos. Colección instalada y recepción GA siguen pendientes.

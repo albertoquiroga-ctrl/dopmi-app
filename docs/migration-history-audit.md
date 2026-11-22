@@ -1,5 +1,31 @@
 # Auditoría del historial de migraciones
 
+## 22/11/2026 — Señales de valor de adopción confirmadas en PROD
+
+Fuente `a24408beeb664d48f15b1bd90e9a8c578602659e`, CI45065888007 cuatroSUCCESS.
+Una aplicación `apply_migration` en `ysaoeuidcvgtlmphmeyb`:
+**20261122204434 / confirmed_adoption_value_signals_20261122**.
+Mapea la fuente local `20261122194736_confirmed_adoption_value_signals.sql`,
+11051B/SHA256 `669dd8fa5b3bfd809d85cffa270ac37a3d07c6a557d37021076f80f3a5ddd23d`.
+Wrapper41802B/SHA256 `61bafe61bce76184fa05776f281ae0ee5aaf5ec090f616a610563e4ae2bc708e`;
+SQL concatenado en historia41802B/MD5 `9751b40c90518f4032ba2c633779622b` exactos.
+No renombrar/reparar/reaplicar para igualar el timestamp local.
+
+Readback20:44:44UTC:74migraciones, las73 anteriores exactas; seis funciones nuevas,
+tres cuerpos anteriores con OID/defaults/ACL conservados, resto de funciones y
+esquema/RLS sin cambios. Columna nullable `is_adoption_reply` sin default/backfill;
+NULL conserva incertidumbre histórica. Nuevas RPC sólo autenticadas y helpers
+privados sin acceso de cliente. RuntimeSQL, cron3activos y registro actual de
+campañas idénticos al preflight. Al corte había60filas noQA habilitadas en ese
+registro; son configuración, no contactos/instalaciones/actividad. Esta operación
+no activa ni apaga campañas o servicios.
+
+Reserva única/recibo y diez comprobaciones postflightPASS en
+`.tools/qa-analytics-quality-20261122/server`. Fuente23pruebasPostgreSQL real y
+wrapper18pruebaslocales, revisión independiente sinP1/P2. Sin llamadas de negocio
+ni eventos de QA en PROD para comprobarlo. La recepción GA y distribución móvil
+son comprobaciones separadas.
+
 ## 21/11/2026 CDMX — Elección explícita de Analítica en PROD
 
 Fuenteaf0e2274f13a51c10a13e8579fd932f35f1ebf58, CI44878177593 cuatroSUCCESS.

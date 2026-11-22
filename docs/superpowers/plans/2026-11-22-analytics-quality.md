@@ -20,7 +20,7 @@
 - OFF históricos, iPad426OFF, servicios financieros, Tienda, territorios y gates del piloto se conservan. Sin activar anuncios, nuevas integraciones ni SDK.
 - Reutilizar checkout y pruebas; no recopilar actividad de usuarios sin decisión, no backfill, no generar casos/chats/adopciones reales de QA.
 - Lectura de GA por Chrome externo. Una desconexión no autoriza crear claves ni ampliar permisos. Configuración GA/reportes y cambios de código son entregas verificables distintas.
-- SQL de producción requiere paquete concreto y permiso propio según product-decisions. La corrección local no aplica migraciones. Si se requiere contrato nuevo, conservar compatibilidad con clientes antiguos y omitir eventos no confirmables.
+- La petición vigente de corregir Analytics autoriza el SQL aditivo necesario y revisado para estas señales. Preparar paquete concreto, preflight y readback antes de aplicarlo; los permisos consumidos de otros lotes no se reutilizan. No hay contrato, acceso sensible nuevo ni cambio financiero. Conservar compatibilidad con clientes anteriores y omitir eventos no confirmables.
 
 ## Tareas finitas
 
@@ -52,8 +52,8 @@
 
 ### 4. Entrega
 
-- [ ] Revisión independiente acotada, gates CI del candidato exacto, inventario de cambios y continuidad.
-- [ ] Cambios remotos sólo según permisos aplicables; no duplicar publicación433/434 actualmente en revisión.
+- [x] Revisión independiente acotada, gates CI del candidato exacto, inventario de cambios y continuidad.
+- [x] SQL aplicado una vez20261122204434, diez comprobaciones postflightPASS; conservar las solicitudes públicas433/434 sin duplicarlas.
 - [ ] Si el código requiere nueva distribución, una cola y ventana de cinco minutos por Codemagic, QA instalada y estados separados de recepción GA.
 - [ ] Informar qué quedó configurado, implementado, publicado y medido realmente, y los límites históricos de usuarios únicos.
 
@@ -69,3 +69,11 @@ La pausa por estado incierto conserva identidad local, nunca fuerza ON. Un fallo
 - Periodo25/oct–21/nov:40 activos/40 usuarios/40 sesiones/0 recurrentes/38 sesiones con interacción/95%;260eventos generales. Vistas por versión/plataforma. Publicación:79eventos/15usuarios medidos; envío aceptado4eventos/4usuarios. No equivalen a personas ni a cuentas; no reconstruir históricos.
 - Las nuevas conversiones aún muestran ausencia de datos: registro/configuración no acredita recepción. No se generó tráfico de QA en producción ni se importaron conversiones a Ads.
 - SQL:20261122194736_confirmed_adoption_value_signals.sql,11.051bytes,SHA256669dd8fa5b3bfd809d85cffa270ac37a3d07c6a557d37021076f80f3a5ddd23d; paquete remoto en preparación. Sin aplicación PROD ni nueva build.
+
+### Evaluación de autorización
+
+La petición humana del22/nov de configurar métricas y corregir su fiabilidad cubre este SQL aditivo necesario. Se revisaron los textos históricos: las restricciones de paquetes del17–24/oct pertenecen a sus operaciones/fixtures y no se convierten en una prohibición universal de cualquier migración posterior. La frase inicial del plan que exigía permiso propio era una interpretación de Codex, no una decisión nueva del titular; queda corregida. Se aplicará sólo tras el gate CI, paquete/fingerprints actuales y revisión independiente, sin modificar servicios, acceso a mensajes ni datos de usuarios para probar.
+
+## Aplicación y distribución en curso
+
+CI45065888007 cuatroSUCCESS paraa24408be. SQL una aplicación20261122204434, wrapper41802B/61bafe61…c708e y fuente11051B/669dd8fa…ddd23d: diezPASS de readback, previas73migraciones y runtimeSQL intactos. Android2.3.10 enviado una vezCM6b0354d59ee19bef90f484db; iOS preparado con ventana20:47:33–20:52:33UTC, no se enviará en paralelo. No se afirma instalación ni recepción GA de las nuevas señales.
