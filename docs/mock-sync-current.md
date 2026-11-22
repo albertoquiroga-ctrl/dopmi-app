@@ -1,3 +1,19 @@
+# Checkpoint vigente — Meta439 interna, 22/nov/2026 CDMX
+
+Continuar `codex/meta-production-events-20261122`, fuente/tagb471bdaf,
+CI45080438018 cuatroSUCCESS y CM6b037b2b3b42a788f941ec41/14SUCCESS.
+Play2.3.11(439) disponible interna; artefacto/firma/perfilPROD verificados,
+sin QA Samsung aún. Base3e52c871/productoa24408be/mockf693 conservados.
+ServidorPROD20261122232424 aplicado/verificado, worker1, purgaON y entregaOFF;
+gateMetaOFF/grants0/outbox0. Aviso publicado, DataSafetyMeta en revisión.
+Play437 ya Active; no cancelar ni repetir solicitudes ajenas ni tocar Apple438.
+
+Esperando conexiónUSB del Samsung y confirmación adicional legal de Meta que pide
+su panel. Mantener campañas intactas hasta probar439/PROD y ver ambos eventos en
+Meta. Luego conciliar publicación y públicos/ocho anuncios/gasto de las copias.
+La recepción1+1 de435/DEV queda separada; no reutilizar sus fixtures consumidos.
+Leer [candidato](candidate-release-current.md). No otro build/migración.
+
 # Checkpoint vigente — Analytics437/438, 22/nov/2026 CDMX
 
 Candidatoa24408be/CI45065888007 cuatroSUCCESS, mockf693 conservado sin delta visual.

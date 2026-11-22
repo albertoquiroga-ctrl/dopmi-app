@@ -1,3 +1,14 @@
+## Continuación vigente — Meta439 de producción, 22/nov/2026 CDMX
+
+Reanudar en `codex/meta-production-events-20261122` y leer inmediatamente
+[checkpoint](mock-sync-current.md), [protocolo](mock-sync-workflow.md) y
+[candidato](candidate-release-current.md). Fuente b471bdaf/CI45080438018 cuatro
+SUCCESS, Android2.3.11(439) disponible interna, backendPROD aplicado/verificado.
+GateMetaOFF; no campañas nuevas activadas. Esperando SamsungUSB y confirmación
+adicional que solicita Meta para revisar eventos. QA de439/PROD, recepción visible,
+publicación y cotejo final de campañas pendientes. No repetir build/SQL ni atribuir
+la recepción previa DEV a producción. Preservar decisiones de medición y finanzas.
+
 # Dopmi — continuidad
 
 ## Arranque vigente — envío público 433/434, 21/11/2026 CDMX

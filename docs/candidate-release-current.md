@@ -1,3 +1,38 @@
+## Meta PROD — 2.3.11 (439) interna, 22/nov/2026 CDMX
+
+Continuar en `codex/meta-production-events-20261122`, producto congelado
+`b471bdafbac8e092915601c4155d04ffe3979f50`, tag
+`codex/meta-production-b471bdaf-20261122`. CI45080438018 cuatro SUCCESS;
+Codemagic6b037b2b3b42a788f941ec41 terminó14SUCCESS. Play confirmó la pista interna
+activa, versión2.3.11 «Available to internal testers», publicada22/nov17:43CDMX,
+release233. AAB96860402B/SHA256
+`519cca91a2606c1f53f27553da86048692d2d3e50b9fdd79eef468d6a2c25257`.
+Firma/pin, identidad, PROD/Supabase/Firebase, adopciones/Amazon/MetaON,
+finanzasOFF, AD_ID, Firebase sin colección automática de AAID e Install Referrer
+comprobados en el artefacto. No equivale a instalación o aceptación en Samsung.
+
+Servidor aplicado una vez y verificado:20261122232424; workerPRODv1; cron de purga
+ON/15min y entrega OFF/2min, gate Meta OFF/preferencias0/outbox0. Aviso público
+Meta publicado y HTTP200/cuerpo exacto comprobados; landingf855224b/Vercel
+`dpl_FYfcymzakCy1aWaAZpWQ2JFJisaF`. AD_ID añade Advertising/marketing.
+Data Safety conserva categorías previas y declara Device/other IDs e interacciones
+compartidos para publicidad, opcionales/no efímeros. Play muestra ese cambio en
+revisión; no se afirma aprobado.437 ya está Active en producción; su revisión
+concluyó antes de iniciar439, sin cancelarla. Apple438 no se intervino.
+
+Pendientes concretos: Samsung no aparece por USB; se pidió reconectarlo/desbloquearlo.
+Meta solicita una aceptación adicional de condiciones al abrir «Administrar bloqueo
+de eventos»; confirmación en ese momento pendiente del titular. No pulsar «Sí,
+acepto» hasta recibirla. QA435/DEV y panel Contact1/SubmitApplication1 no acreditan
+PROD. Falta instalar439 desde Play conservando datos/sesión, probar OFF/revocación
+y ambas acciones consentidas, comprobar ACK/contexto eliminado y recepción visible
+PROD; después conciliar publicación del mismo binario y selección de eventos.
+Los borradores siguen OFF/sin publicar: dos conjuntos Android y ocho anuncios.
+La comparación final con los originales y la decisión de sustituir/agregar gasto
+siguen pendientes. No volver a compilar ni reaplicar SQL para reanudar.
+Evidencia privada en `.tools/meta-production-20261122`.
+[Plan](superpowers/plans/2026-11-22-meta-production.md) · [Prueba](meta-samsung-qa-20261122.md).
+
 ## Analytics — corte verificado del 22/nov/2026, 22:09 UTC
 
 Producto `a24408beeb664d48f15b1bd90e9a8c578602659e`, tag

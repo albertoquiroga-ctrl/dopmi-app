@@ -45,9 +45,10 @@ utilizó exclusivamente la ficha y los participantes ficticios de QA.
 | Entregas reconocidas | 1 | 1 |
 | Contextos publicitarios retenidos | 0 | 0 |
 
-La recepción visible de ambos eventos en el Administrador de eventos de
-Meta sigue pendiente de comprobar en el conjunto DopMi
-`1839761860506617`, vinculado a la app `1156849688851390`.
+La recepción visible se comprobó posteriormente el mismo día en el conjunto DopMi
+`1839761860506617`, vinculado a la app `1156849688851390`: «Contactar» y «Enviar
+solicitud» activos, API de conversiones, una recepción cada uno. Esa lectura sigue
+correspondiendo a esta prueba DEV.
 La atribución a anuncios requiere una interacción publicitaria atribuible.
 Este ensayo acredita las acciones nativas de QA en DEV, su captura y el
 reconocimiento de recepción de la API.
@@ -77,3 +78,25 @@ el mismo teléfono. Al detectar la operación simultánea se detuvieron
 los controles nativos de esta prueba. No se desinstaló Dopmi ni se
 borraron sus datos. La comprobación de la sesión de producción corresponde
 al recorrido de ese chat y no se da por verificada en este recibo.
+
+## Continuación PROD — 439 disponible interna, aún sin prueba física
+
+El porte aditivo b471bdaf conserva los contratos de437 y ya está desplegado en
+PROD20261122232424/worker1, gateMetaOFF, preferencias0 y outbox0. Aviso público
+publicado y declaraciones Play preparadas/en revisión. CI45080438018 cuatroSUCCESS;
+CM6b037b2b3b42a788f941ec41/14SUCCESS, 2.3.11(439), disponible a testers internos.
+AAB/firma/pin/perfilPROD/Meta/InstallReferrer verificados estáticamente.
+
+No se instaló439 ni se generaron eventos PROD: el Samsung no aparece por USB.
+Se pidió al titular conectarlo y dejarlo desbloqueado. Se conserva la sesión437;
+no borrar datos ni reinstalar. Analítica y diagnóstico deben permanecer como los
+dejó el titular; para QA autorizada de Meta, mantener GAOFF y cambiar sólo Meta.
+La ficha ficticia debe quedarse privada/en revisión, nunca aprobarse públicamente.
+
+El panel de Meta pide una aceptación adicional al abrir revisión de eventos;
+confirmación de ese acuerdo en el momento pendiente. No se cambió el handler por
+el aviso de Ads Manager «Acaba de configurar tu aplicación»: app1156849688851390
+y cuenta773207924311457 están vinculadas al conjunto; categoríaNinguna y ajuste
+básicoOFF. Las lecturas del inventario Graph con tokenCAPI devolvieron permisos
+100/3000 y no prueban ausencia de eventos. Falta revisar estado/diagnóstico tras
+la aceptación y seleccionar los eventos antes de publicar los pilotos.

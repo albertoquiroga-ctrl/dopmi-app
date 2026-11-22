@@ -29,20 +29,20 @@
 
 ## Lote 1 — código y contratos
 
-- [ ] Auditar historia y catálogo real de PROD antes de preparar el SQL. No replay, repair ni db push.
-- [ ] Escribir y observar pruebas fallar para el contrato Meta sobre `dopmi_send_message_v3`, su envelope `message/signals`, la ficha nueva y el aislamiento de consentimiento.
-- [ ] Añadir wrapper `dopmi_send_message_meta_v2` y wrapper de envío de ficha sin sustituir contratos anteriores. Conservar autorización y token atribuible en la operación canónica.
-- [ ] Adaptar Dart, privacidad y pruebas sobre esta base; mantener el fallback limitado a `PGRST202`.
-- [ ] Incorporar el canal Android conservando `registerPlayInstallReferrer`, dependencia de AAID y colección automática de AAID en Firebase apagada.
-- [ ] Probar el opt-in explícito en el generador móvil y los perfiles de Codemagic; conservar valores financieros y Amazon.
+- [x] Auditar historia y catálogo real de PROD antes de preparar el SQL. No replay, repair ni db push.
+- [x] Escribir y observar pruebas fallar para el contrato Meta sobre `dopmi_send_message_v3`, su envelope `message/signals`, la ficha nueva y el aislamiento de consentimiento.
+- [x] Añadir wrapper `dopmi_send_message_meta_v2` y wrapper de envío de ficha sin sustituir contratos anteriores. Conservar autorización y token atribuible en la operación canónica.
+- [x] Adaptar Dart, privacidad y pruebas sobre esta base; mantener el fallback limitado a `PGRST202`.
+- [x] Incorporar el canal Android conservando `registerPlayInstallReferrer`, dependencia de AAID y colección automática de AAID en Firebase apagada.
+- [x] Probar el opt-in explícito en el generador móvil y los perfiles de Codemagic; conservar valores financieros y Amazon.
 
 ## Lote 2 — revisión, servidor y distribución
 
-- [ ] Ejecutar Flutter analyze/test, verificación Node, SQL local disponible, configuración móvil y revisión independiente del diff. Registrar SHA y CI integrada.
-- [ ] Publicar el aviso de privacidad y conciliar las declaraciones de Play para la finalidad Meta antes de abrir la medición a usuarios.
-- [ ] Aplicar una migración exacta revisada con preflight/postflight de historia, cuerpos, ACL y datos preservados; gate de Meta cerrado al desplegar.
-- [ ] Desplegar worker de PROD y secretos por canales privados. Programar entrega y purga; no exponer credenciales ni modificar cron ajeno.
-- [ ] Con cola libre y reserva vigente, compilar una vez el SHA/tag aprobado en `android-guardian-internal`, con Meta explícito y perfil PROD. Verificar el recibo, firma y publicación de Play por separado.
+- [x] Ejecutar Flutter analyze/test, verificación Node, SQL local disponible, configuración móvil y revisión independiente del diff. Registrar SHA y CI integrada.
+- [x] Publicar el aviso de privacidad y conciliar las declaraciones de Play para la finalidad Meta antes de abrir la medición a usuarios.
+- [x] Aplicar una migración exacta revisada con preflight/postflight de historia, cuerpos, ACL y datos preservados; gate de Meta cerrado al desplegar.
+- [x] Desplegar worker de PROD y secretos por canales privados. Programar entrega y purga; no exponer credenciales ni modificar cron ajeno.
+- [x] Con cola libre y reserva vigente, compilar una vez el SHA/tag aprobado en `android-guardian-internal`, con Meta explícito y perfil PROD. Verificar el recibo, firma y publicación de Play por separado.
 
 ## Lote 3 — Samsung, Meta y campañas
 
@@ -56,3 +56,12 @@
 ## Cierre y recuperación
 
 Ante un fallo de medición, cerrar el gate Meta y detener sólo su programación. El cierre elimina preferencias y contextos pendientes, una acción irreversible documentada; las marcas de deduplicación se conservan. El fallo de Meta no revierte mensajes o fichas ya guardados. Los contratos viejos y la versión de producción anterior siguen siendo compatibles con el SQL aditivo. No ejecutar una restauración ni cancelar solicitudes de tienda ajenas sin causa concreta.
+
+## Corte de ejecución del 22/nov/2026 CDMX
+
+Lotes1–2 verificados y desplegados según el candidato vigente. Las declaraciones
+Play se consideran conciliadas/en revisión, todavía no aprobadas. Lote3 pendiente:
+439 disponible interna pero Samsung desconectado; aceptación adicional de Meta
+pendiente del titular. GateMetaOFF y campañas conservadas. La comprobación de
+públicos/anuncios y definición del gasto se completarán antes de activar, junto
+con QA/recepciónPROD/publicación; no se sustituyen por la prueba DEV1+1.

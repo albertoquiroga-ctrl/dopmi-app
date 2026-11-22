@@ -5,11 +5,13 @@ activar los pilotos con públicos/anuncios de descargas conservados. Base congel
 `3e52c871` / producto437 `a24408be`. Contratos aditivos preservan V3, las señales
 confirmadas, tokens de atribución y Play Install Referrer.
 
-Código y SQL en verificación. Meta ya muestra las dos señales de la prueba DEV,
-una de cada tipo, recibidas por la API de conversiones. Falta desplegar el candidato
-PROD, aviso/declaraciones, verificar sus dos acciones en Samsung y su recepción
-visible y conciliar distribución antes de activar. No se confunde la prueba DEV
-con la integración de producción ni con una conversión atribuida a anuncios.
+Código b471bdaf y SQL PROD aplicados/verificados; CI45080438018 cuatroSUCCESS.
+Android2.3.11(439) disponible interna, CM6b037b2b3b42a788f941ec41/14SUCCESS,
+artefacto/firma/perfil comprobados. Aviso público publicado y DataSafetyMeta en
+revisión; gateMetaOFF/purgaON/entregaOFF. Esperando SamsungUSB y confirmación de
+la aceptación adicional que solicita Meta para revisar eventos. Falta QA439/PROD,
+recepción visible, publicación del mismo binario y cotejo final públicos/ocho
+anuncios/gasto antes de activar. El panel1+1 previo corresponde a435/DEV.
 [Plan finito](superpowers/plans/2026-11-22-meta-production.md).
 
 # Corte anterior — Analytics 437/438, 22/nov/2026 CDMX

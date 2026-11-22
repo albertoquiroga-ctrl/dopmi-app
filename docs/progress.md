@@ -10389,3 +10389,82 @@ Vista previaVercel `dpl_C6jv7jahyfdRSnhi4Uww2cyzihot` READY. HashHTML normalizad
 `4c044b756c62082c747cef20a47a2e57092c3dad068bd49d4945fa3aedb0a716`.
 Publicación del aviso aún pendiente. Chrome permite lectura pero falla al enviar
 entrada; se pidió al titular reiniciarlo mientras continúa el trabajo independiente.
+
+## 22/11/2026 CDMX — Servidor Meta PROD verificado y candidato en compilación
+
+Fuente congelada `b471bdafbac8e092915601c4155d04ffe3979f50`;
+[CI45080438018](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45080438018)
+cerró con cuatro SUCCESS: ios, flutter, identity-and-adoption-backend y
+web-and-database. Node completo: 1400 PASS/16 SKIP/0 FAIL; SQL: 111 pgTAP en PGlite,
+PostgreSQL 17.6 y CLI, carreras reales y Deno check PASS. El CI validó la compilación
+Android de desarrollo y la regresión completa.
+
+Root aplicó una vez el wrapper de 44077 B/SHA256
+`8c64747539c36204e871e520cc842873beadfd736f101edbdeabd5a849e635fb` en PROD:
+**20261122232424 / meta_production_adoption_events_20261122**, fuente local
+`20261122222303_meta_production_adoption_events.sql`/SHA256
+`a887670ec4fe8940725fe27187bf67a2149d9c0fc4d50579841258d5dea30ddf`.
+La lectura independiente a las 23:36 UTC confirma todas las comprobaciones TRUE,
+historia 75, 347 funciones y 94 tablas. Prefijo 74, 335 funciones previas, 91 tablas y `profiles`
+intactos, incluidos OID/cuerpos/permisos/propietarios, defaults, RLS y contratos
+de V3/atribución/valor confirmado. Mapeo exacto en `migration-history-audit.md`.
+
+Worker PROD `meta-ads-worker` v1 ACTIVE con autorización propia; recibos: 401 sin
+credencial, 405 GET y 200 con gate cerrado/0 entregados/0 omitidos/0 fallidos.
+Configuración privada de Edge y pareja Vault dedicada guardadas por root.
+Cron instalado con paquete SHA256
+`9d1518bf03025e03486776c51dad3e7348a18f1d855b2a044edd56e71015b90f`:
+purga activa cada 15 min y entrega pausada con frecuencia cada 2 min. Readiness
+independiente confirma los tres jobs anteriores, extensiones y privilegios
+conservados; gate Meta OFF, preferencias 0 y outbox 0. Aviso Meta fijo e independiente
+del consentimiento general; el ACK/revocación/purga eliminan contexto y conservan
+deduplicación. Wrapper 24/24 y control cron 15/15 PASS locales; no equivalen a una
+entrega real de eventos de producción.
+
+Codemagic `6b037b2b3b42a788f941ec41`, iniciado a las 23:30:59 UTC con tag
+`codex/meta-production-b471bdaf-20261122`, figura building en el recibo consultado.
+Evidencia privada en `.tools/meta-production-20261122`. Pendientes: terminar la
+compilación, verificar publicación Play e instalación en Samsung, ejecutar las
+dos acciones controladas y confirmar ambos eventos PROD en el panel de Meta.
+La activación de pilotos con los públicos y creativos originales sigue pendiente
+de esas comprobaciones. La recepción DEV anterior conserva su alcance separado.
+
+## 22/11/2026 CDMX — Meta439 disponible interna; QA y aceptación pendientes
+
+CM6b037b2b3b42a788f941ec41 terminó14SUCCESS, exacto b471bdaf/tag congelado.
+Play confirmó2.3.11(439) «Available to internal testers», release233,
+22/nov17:43CDMX. AAB96860402B/SHA256
+`519cca91a2606c1f53f27553da86048692d2d3e50b9fdd79eef468d6a2c25257`.
+Verificación independiente de firma/pin/manifest/FirebasePROD y hostSupabasePROD
+en las tresABI; Meta y adopciones/AmazonON, finanzas/measurementTestOFF,
+FirebaseAAIDautomáticoOFF e InstallReferrer conservado. No aceptación de dispositivo.
+Flutter final2121PASS/4SKIP/0FAIL y analyze sin incidencias; skips de perfil
+adoptionOnly explícitos. Todos los resultados anteriores de CI/local conservados.
+
+Aviso público f855224b publicado/Vercel dpl_FYfcymzakCy1aWaAZpWQ2JFJisaF READY;
+HTTP200/cuerpo exacto normalizado4c044b75…a716. Chrome reiniciado por el titular
+permitió guardar cuatro secretos nuevos de Edge, luego Vault/cron propios.
+AD_ID conserva usos previos y añade Advertising/marketing. DataSafety conserva
+categorías existentes; añade Device/other IDs e interacciones compartidos con
+finalidad publicitaria, opcionales/no efímeros. Tras publicación interna Play
+muestra DataSafety en revisión y AD_IDactualizado; sin cancelar revisión ajena.
+437 ya está Active en producción; Apple438 no se intervino.
+
+No se instaló439 ni se generaron acciones PROD. Samsung ausente por USB; se pidió
+reconectarlo/desbloquearlo. Meta muestra app1156849688851390 y cuenta773207924311457
+vinculadas al conjunto1839761860506617, categoríaNinguna/básicoOFF. El aviso del
+selector de app persiste. Al revisar bloqueos pide «Aceptar para continuar» y
+comprometerse a revisar eventos/no enviar datos confidenciales; confirmación
+adicional en el momento pendiente del titular, sin aceptar todavía. Graph con
+tokenCAPI devolvió permisos100/3000, no acredita eventos ausentes. No se modificó
+payload/SDK ni se amplió acceso por ese aviso.
+
+Campañas sin cambios: dos copias Android siguen borrador/OFF, dos conjuntos y ocho
+anuncios. Inventario confirma originales Android activos/$30diarios cada uno y
+copias con $30diarios heredados. En copia120250491806060619: NuevoLeón, 18–65+,
+todos géneros/idiomas, sugerencias visitantesweb/interacciónFB/IG, Advantage+ON.
+OriginalAndroid identificado120210816186330619/conjunto120210816186350619;
+cotejo completo de ambos originales y creativos aún pendiente, no se afirma igualdad
+final ni activación. Falta decidir sustitución/agregado de gasto antes de publicar.
+Control de Chrome vuelve a presentar fallos de entrada/foco en algunas pestañas;
+no se sortearon aceptaciones ni se repitieron operaciones sin lectura del resultado.

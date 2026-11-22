@@ -1,5 +1,54 @@
 # Auditoría del historial de migraciones
 
+## 22/11/2026 — Eventos Meta de adopción aplicados en PROD, medición cerrada
+
+Fuente `b471bdafbac8e092915601c4155d04ffe3979f50`,
+[CI45080438018](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45080438018)
+con cuatro SUCCESS: ios, flutter, identity-and-adoption-backend y web-and-database.
+Una aplicación `apply_migration` en `ysaoeuidcvgtlmphmeyb` como
+**20261122232424 / meta_production_adoption_events_20261122**.
+Mapea `20261122222303_meta_production_adoption_events.sql`, 18561 B/SHA256
+`a887670ec4fe8940725fe27187bf67a2149d9c0fc4d50579841258d5dea30ddf`.
+Wrapper de 44077 B/SHA256
+`8c64747539c36204e871e520cc842873beadfd736f101edbdeabd5a849e635fb`;
+SQL concatenado en historia: 44077 B/MD5 `f1aa7597c5d536c9601de9b4220e67d9`
+exactos. No renombrar, reparar ni reaplicar para igualar el timestamp local.
+
+Lectura independiente a las 23:36 UTC: historia 75, 347 funciones y 94 tablas;
+todas las comprobaciones postflight TRUE. Las 74 entradas previas conservan MD5
+`bf001b9255ec180600bd968295d77f58`. Las 335 funciones anteriores conservan
+OID/cuerpos/ACL/owner/proconfig/SECURITY DEFINER y demás atributos;
+las 91 tablas y `profiles` conservan columnas, defaults, restricciones, índices,
+triggers, políticas, RLS, ACL y propietarios. Fingerprints previos de funciones
+`545252f697e3a26dc2f9f67e0819d2fa` y tablas `fad2e1fcc12878a56b32d8520e477262`
+intactos. `is_adoption_reply` sigue nullable y sin default/backfill.
+
+Doce funciones y tres tablas privadas nuevas; RLS sin políticas públicas ni
+CRUD directo de cliente o worker. Las RPC de producto quedan autenticadas;
+gate/claim/ACK/purga, sólo servicio. `dopmi_send_message_meta_v2` delega a V3
+conservando `message/signals`; el submit conserva la transición canónica y
+excluye correcciones privadas. La preferencia propia fija en servidor la adenda
+`meta-ads-2026-11-22`, independiente del consentimiento general. Gate OFF,
+preferencias 0 y outbox 0 comprobados; recepción de eventos PROD pendiente.
+
+`meta-ads-worker` v1, ID `b0161e74-5a33-41d0-b8c7-3788a03fefe7`, ACTIVE y
+verify_jwt=false con autorización propia. Recibo operativo: POST sin credencial 401,
+GET 405 y POST autorizado con gate cerrado 200/0 entregados/0 omitidos/0 fallidos.
+Par Vault dedicado configurado. Instalador cron SHA256
+`9d1518bf03025e03486776c51dad3e7348a18f1d855b2a044edd56e71015b90f`:
+`dopmi-meta-ads-purge` activo cada 15 min; `dopmi-meta-ads-worker` pausado,
+frecuencia cada 2 min. Readiness independiente confirma los tres jobs anteriores,
+extensiones y privilegios intactos, pareja Vault única/URL PROD correcta y
+gate OFF/preferencias 0/outbox 0. La purga se programa independientemente de la entrega.
+
+Evidencia privada en `.tools/meta-production-20261122`: recibos del servidor,
+postflight, instalación y verificaciones. SQL: 111 pgTAP en PGlite/PostgreSQL 17.6/CLI;
+wrapper 24/24 y control cron 15/15 locales; estos últimos usan adaptadores sintéticos,
+no acreditan entrega real. Codemagic `6b037b2b3b42a788f941ec41` terminó14SUCCESS;
+2.3.11(439) disponible interna en Play, artefacto/firma/perfilPROD comprobados.
+QA Samsung, recepción visible de ambos eventos PROD y publicación pública del
+mismo binario siguen pendientes antes de activar los pilotos.
+
 ## 22/11/2026 — Señales de valor de adopción confirmadas en PROD
 
 Fuente `a24408beeb664d48f15b1bd90e9a8c578602659e`, CI45065888007 cuatroSUCCESS.
