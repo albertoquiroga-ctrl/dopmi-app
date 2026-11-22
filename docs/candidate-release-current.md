@@ -1,4 +1,4 @@
-## Candidato en distribución QA — Adoptar con aumento, 21/11/2026 CDMX
+## Candidato publicado en QA — Adoptar con aumento, 21/11/2026 CDMX
 
 Fuente `efc3277a7c11f8633235584a4cf2c95c7d471181`, tag
 `codex/discovery-zoom-efc3277a`, sobre9ff6fa08/968e6d7d: conserva clip y campañas.
@@ -14,12 +14,23 @@ independientes sin P1/P2. Sólo un archivo productivo y dos de prueba/captura.
 No SQL, configuración, servicios, consentimientos ni escrituras de usuarios.
 Referencia visualf693c036 conservada; adaptación autorizada por el defecto reportado.
 
-Android único `6b0264a98a656efc66c206b5` enviado tras ventana de cinco minutos y
-preflight de fuente/último Android432/cola libre. Compilación en curso; artefacto,
-publicación e instalación pendientes. iOS seguirá después en la misma cola,
-heredando el runtime430; aún sin envío. Últimos publicados:432/430 del corte inferior.
-Evidencia privada `.tools/discovery-zoom-20261121`. QA física pendiente; versión
-del teléfono con aumento consultada sin bloquear la reproducción local.
+Android único `6b0264a98a656efc66c206b5` terminó14SUCCESS: **2.3.9 (433)**,
+AAB96783038B/SHA256`b95ecd782253f4220c82d1a6f8aadca1f778686b8d63a20f8670244c44815b57`.
+Firma/pin, identidad, runtimePROD/adopciones/Tienda y marcadores cotejados;
+Publishing confirma433/internal/completed en el log del publicador. Console
+independiente e instalación pendientes. Un único iOS
+`6b0269376a61881b3ef5d093` terminó15SUCCESS: **2.3.9 (434)**, misma fuente,
+IPA55001686B/SHA256`360717ba754f962cba73092c3e33190c054e5ff701e6db3c86256f485dc4b914`.
+Identidad/FirebasePROD, perfil nativo y ubicación sólo foreground cotejados;
+perfil de provisión verificado estructuralmente, sin validación CMS afirmada.
+Apple terminó la tarea6b026c17a14b9f22af016cd2 sin error04:19:11UTC. Chrome externo
+04:21:42UTC confirmó434 Lista para enviar/DopMi Inner Team/90d, invitaciones«–»:
+**disponible en TestFlight interno**. No otro envío. Últimos candidatos433/434.
+Evidencia privada `.tools/discovery-zoom-20261121`. QA física y aceptación pendientes;
+ADB04:22:16UTC:0dispositivos/0sin autorizar. Sin instalación o apertura forzada.
+Versión del teléfono con aumento consultada; confirmación humana de433 pendiente.
+Revisar también el clip en un chat existente en433/434, sin mensajes ni fotos;
+esa misma comprobación sustituye instalar los candidatos anteriores432/430.
 Conservar OFF del iPad426, gates y último corte0/60 del piloto. Sin promoción pública.
 
 ## Corte anterior — Clip del chat integrado, 21/11/2026 CDMX

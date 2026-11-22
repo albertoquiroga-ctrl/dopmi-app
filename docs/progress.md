@@ -10158,3 +10158,39 @@ recibos SQL/legal vigentes sin reaplicar. Un solo POST creó Android
 Android terminal en la misma cola. Últimos publicados432/430, ambos sin aceptación
 física del clip; no atribuirles este arreglo. No servidor, credenciales nuevas,
 finanzas, publicaciones públicas, datos QA nuevos ni contactos del piloto.
+
+## 21/11/2026 CDMX — Distribución433/434 del ajuste de aumento
+
+Misma fuenteefc3277a/tagcodex/discovery-zoom-efc3277a/CI44980552352 cuatroSUCCESS.
+Android único6b0264a98a656efc66c206b5 terminó14SUCCESS. AAB2.3.9(433),96783038B,
+SHA256b95ecd78…815b57; metadata728B/e5ee80e3…8b6a5. Firma/pin de upload vigente,
+identidad, backend/FirebasePROD y perfil adopciones/TiendaON cotejados. Bootstrap
+Analytics/CrashOFF, SDK/notice/RPC y ausencia DEV verificados. Strict4 es el
+certificado upload autofirmado previsto; no una cadena CA pública. No se afirma
+decodificar todas las constantes Dart. Publicador04:01:52UTC confirma cuatro
+marcas433/internal/completed/publicado; Console independiente y QA física pendientes.
+
+Tras Android terminal y verificado, ventana iOS03:48:43–03:53:43UTC consumida y
+un único POST creó6b0269376a61881b3ef5d093. Hereda runtime430/source6aa, con
+efc como fuente unificada y968e como ancestro obligatorio. Terminó15SUCCESS:
+iOS2.3.9(434), IPA55001686B/SHA256360717ba…c4b914; metadata512B/d026b25f…ae9571.
+Runtime, bundle/scheme/versiones, FirebasePROD, bootstrapOFF y ubicación sólo
+foreground cotejados. Perfil App Store válido estructuralmente, sin validación
+CMS criptográfica. El primer postflight04:14:38UTC dejó tarea Apple
+6b026c17a14b9f22af016cd2 pending/errorFALSE. Chrome externo confirmó recepción434
+en Procesando; se siguió la misma carga, sin repetir build. A04:19:11UTC la tarea
+terminó finished/errorFALSE. Chrome04:21:42UTC confirmó434 Lista para enviar,
+DopMi Inner Team,90d e invitaciones«–»: TestFlight interno disponible. Recibo
+ios/testflight-readback.private.json y captura testflight-434.png. Browser externo
+recuperado con pestaña nueva después de timeout de foco, sin credenciales, cambios
+web ni alternar al navegador integrado. No atribuir disponibilidad a la carga inicial.
+
+Recibos privados .tools/discovery-zoom-20261121/{android,ios}. Fuente productiva
+sin cambios posteriores; commits documentales con skipCI. Revisiones anteriores
+reutilizadas por equivalencia; no otras suites por documentación ni promoción
+pública, consultas nuevas de campañas, mensajes, likes o casos reales.
+ADB04:22:16UTC:0dispositivos/0sin autorizar, sin lectura de paquete ni instalación/
+apertura. Quedan titular/integrador: sesión, acciones Adoptar con aumento y clip
+en un chat existente de433/434, sin enviar mensajes/fotos. Esta QA sustituye
+instalar432/430; no marca aceptada la entrega anterior. Preservar OFF del iPad426,
+gates y último corte0/60/60tokensOFF. No promoción pública ni aceptación física nueva.

@@ -1,16 +1,30 @@
-# Cola vigente — chat integrado y campañas, 21/nov/2026 CDMX
+# Cola vigente — Adoptar con aumento y campañas, 21/nov/2026 CDMX
 
-Prioridad: corregir botones de Adoptar tapados por navbar con aumento. Implementado
-en efc3277a/tagcodex/discovery-zoom-efc3277a, CI44980552352 cuatroSUCCESS;
-perfil PROD3/4pestañas6PASS, regresiones108PASS, análisis0 y revisión independiente
-sin P1/P2. Android6b0264a98a656efc66c206b5 en compilación; integrador verifica
-artefacto/publicación del mismo handle y después envía iOS en cola única.
-Titular/integrador comprueban botones/sesión al instalar, sin crear mensajes,
-likes o casos. Si Samsung no tiene paquete, coordinar la primera apertura con
-QA de atribución. Ver [candidato](candidate-release-current.md). No reabrir
-el piloto0/60 ni alterar el OFF del iPad426. Últimos publicados432/430 abajo.
+La corrección de botones de Adoptar tapados por navbar con aumento usa la misma
+fuente `efc3277a7c11f8633235584a4cf2c95c7d471181` en ambas plataformas, tag
+`codex/discovery-zoom-efc3277a`, CI44980552352 cuatro SUCCESS. Perfil PROD de
+3/4 pestañas: 6 PASS; regresiones 108 PASS, análisis 0 y revisión independiente
+sin P1/P2. Android 433 / `6b0264a98a656efc66c206b5` terminó con 14 SUCCESS;
+AAB firmado verificado y log 433 / internal / completed cotejado. iOS 434 /
+`6b0269376a61881b3ef5d093` terminó con 15 SUCCESS; IPA de 55,001,686 B verificado.
+Apple task `6b026c17a14b9f22af016cd2` terminó sin error el 22/nov a las
+04:19:11 UTC. Chrome confirmó 434 «Lista para enviar», DopMi Inner Team,
+90 días e invitaciones «–» a las 04:21:42 UTC: disponible en TestFlight.
+Recibo privado del corte: `ios/testflight-readback.private.json`.
 
-El clip del chat queda integrado en Android **2.3.9 (432)**, fuente
+**Pendiente: QA física en Android 433 e iOS 434.** No hay aceptación física nueva.
+ADB del 22/nov a las 04:22:16 UTC: cero conectados y cero no autorizados; paquete
+no leído, sin instalación ni apertura solicitadas. Titular/integrador comprueban
+botones de Adoptar, sesión y clip en un chat existente, sin enviar mensajes ni
+fotos ni crear likes o casos. Si Samsung no tiene paquete, coordinar su primera
+instalación/apertura con la QA de atribución pendiente. Ver [candidato](candidate-release-current.md).
+No generar otra build, promoción pública, cambios de servidor ni SQL por esta
+espera. Conservar el OFF del iPad 426 y los gates del piloto. El corte 432/430
+se mantiene abajo como evidencia anterior; la siguiente instalación es 433/434.
+
+## Historial del clip — corte 432/430
+
+El clip del chat quedó integrado en Android **2.3.9 (432)**, fuente
 `968e6d7de31efb36450c4ad6b9482780a740167f`, conservando la base de campañas
 `1544a852`. CI44975634368 terminó con cuatro SUCCESS y Codemagic
 `6b0257e42985c05978fa8aab` con 14 SUCCESS. El integrador verificó firma del AAB,
@@ -18,27 +32,25 @@ SVG del clip y marcadores de campaña en los tres ABI. El log de Publishing
 cotejado confirma 432 / internal / completed; la lectura independiente de Console
 permanece separada.
 
-iOS **2.3.9 (430)** conserva fuente
+iOS **2.3.9 (430)** conservó fuente
 `6aa34db85f0d26c57cc9281d948533fb90c957f1`: IPA y SVG verificados, disponible
 en TestFlight. Las fuentes por plataforma quedan registradas por separado;
-se reutiliza 430, con el comportamiento iOS conservado, para este corte.
+se reutilizó 430, con el comportamiento iOS conservado, para ese corte.
 
-**Pendiente: QA física del clip en ambos candidatos.** La lectura ADB del
-22/nov a las 03:00:57 UTC registró cero dispositivos conectados. Siguiente acción
-del titular/integrador: actualizar Android 432 e iOS 430 cuando haya dispositivo,
-y revisar el clip en un chat existente sin enviar mensajes ni fotos, conservando
-sesión y el OFF elegido en iPad 426. Si Samsung sigue sin paquete instalado,
-coordinar su primera instalación/apertura con la QA de atribución pendiente.
-No generar otra build, cuenta QA ni casos por la espera de esta corrección.
+**Evidencia anterior del clip, corte 432/430.** Su QA física quedó pendiente;
+la lectura ADB del 22/nov a las 03:00:57 UTC registró cero dispositivos conectados.
+Ese pendiente continúa en 433/434 según el corte superior, conservando sesión
+y el OFF elegido en iPad 426. No instalar versiones anteriores ni generar otra
+build, cuenta QA o casos por la espera de esta corrección.
 
-## Campañas — corte 429 conservado y continuación 432
+## Campañas — corte 429 conservado y continuación 433
 
 Etiquetas por comentario y piloto60 autorizados: cliente/servidor implementados,
 landing pública y revisión independiente limpia. Continuar [gates del piloto](campaign-placement-pilot.md):
 Fuente1544a852/CI44966371479 cuatroSUCCESS y SQLPROD20261122004520/31PASS.
 429/CM6b02411ebc3b31211424b493 terminó14SUCCESS; AAB/runtime/firma verificados y
-logCLI confirma publicación interna. Esa base está conservada en 432 integrado;
-continuar lectura Console y entrega 432, QA real con consentimiento personal y
+logCLI confirma publicación interna. Esa base y el clip se conservan en 433;
+continuar lectura Console y entrega 433, QA real con consentimiento personal y
 cliente público compatible antes de habilitar tokens y comentar. El titular
 necesita otra mascota real; no reusar primeras fichas consumidas. La evidencia
 SQL se reutiliza sin reaplicar y el último estado registrado conserva **0/60
