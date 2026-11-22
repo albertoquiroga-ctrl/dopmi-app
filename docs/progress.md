@@ -10017,3 +10017,32 @@ cliente firmado compatible, instalación/primera ficha y disponibilidad pública
 Clientes anteriores rechazan el nuevo formato: no consumir60contactos antes del
 cliente público. iOS sigue agregado por brazo en estas rutas, no etiqueta individual
 postinstalación. Detalles y siguiente acción en campaign-placement-pilot.md.
+
+## 21/11/2026 18:50CDMX — Etiquetas: CI y SQLPROD verificados
+
+Fuente integrada1544a85236ee96a89eda576bda35fb2a5b9b140c, tag remoto
+codex/campaign-placement-p60-1544a852 exacto. Conserva el delta de navegación
+b08f040f inventariado: confirmación del envío lleva a Casos/En revisión.
+CI44966371479 cuatroSUCCESS, incluyendo stack limpio de base de datos, integración
+identity/adoption, móvil/Android/capturas y compilación de simulador iOS. Ese gate
+limpio supera el fallo del stack local antiguo documentado, sin resetearlo.
+
+PROD immediate00:44:31UTC conserva72migraciones/339funciones exactas. Aplicación
+única del archivo39f549f0… por MCP como20261122004520:
+android_campaign_placements_pilot60_20261121. Postflight00:46:37UTC31/31PASS;
+prefijo72 y339funciones existentes intactos; ocho conteos/hashes de fuentes y
+eventos preservados. Registry61exacto/60noQAOFF/QA1ON, cero backfill. RPC sólo
+authenticated, HTTP anónimo401/42501. Advisors añade únicamente dos INFO de RLS
+privado y RPCauthenticatedSECDEF esperado; sin ampliar permisos para ocultarlos.
+Evidencia privada .tools/campaign-placement-pilot/prod-after.verified.private.json
+y mapeo de migración en migration-history-audit.
+
+El Samsung sigue conectado y el paquete está ausente en user0 (consulta exit0).
+El intento general de pm list packages encontró una restricción del perfil150;
+no se usó como evidencia de ausencia. AliasQA nuevo recibido, cuenta no creada.
+Codemagic lecturas .NET conIPv6 agotaron timeout; transporte nuevo conIPv4 verificó
+el perfil425. No se emitióPOST: la guarda detectó otra entrega ios-testflight
+b08f040f en curso y conserva una sola cola. Esperar ese mismo handle antes del
+único candidato Android. Sin contactos, sin habilitar los60 y sin aceptación de
+dispositivo/cliente público atribuida. Chrome extensión sigue enumerando Facebook
+pero no permite DOM/captura; reconexión solicitada, sin comentarios enviados.

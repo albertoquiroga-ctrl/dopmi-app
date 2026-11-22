@@ -1,9 +1,12 @@
 ## Candidato vigente — Etiquetas de campaña, 21/11/2026
 
 Extensión por comentario sobre la base reciente af0e2274/425–426, integrada con
-campañas en f0e6521a. Cliente/servidor implementados y landing2179f1c6 pública/
-HTTP18PASS. CI final, migración, candidato y QA real todavía pendientes;0/60
-contactos hasta cliente público compatible. [Estado operativo](campaign-placement-pilot.md).
+campañas en f0e6521a, incluyendo el arreglo de navegación b08f040f inventariado.
+Fuente1544a852/tag codex/campaign-placement-p60-1544a852; CI44966371479 cuatroSUCCESS.
+Landing2179f1c6 pública/HTTP18PASS. SQLPROD20261122004520 aplicado una vez,
+31/31postflightPASS/prefijo72y339funciones conservados. Candidato y QA real
+todavía pendientes;0/60 contactos hasta cliente público compatible.
+[Estado operativo](campaign-placement-pilot.md).
 Preservar elOFF elegido en iPad426 y los arreglos recientes del corte siguiente.
 
 ## Analítica opcional — corte anterior21/11/2026

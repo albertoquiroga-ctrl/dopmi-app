@@ -66,24 +66,27 @@ retener una identidad retirada para reconstruir atribución. Android e iOS puede
 registrar la misma cuenta en sus respectivos métodos: no sumar sus reportes como
 si fueran personas distintas ni como un first-touch global.
 
-## Uso permitido hoy y extensión necesaria
+## Variantes históricas y extensión del piloto
 
 Las cuatro URLs de `/descargar/` sirven para la atribución agregada de sus variantes
 Android existentes. No cambiarles significado mientras haya enlaces antiguos
 publicados o cohortes abiertas. No añadir `?mensaje=...` o UTM y asumir que eso
-se guarda: los parsers/allowlists actuales no ofrecen un registro libre por campaña,
+se guarda: los parsers/allowlists no ofrecen un registro libre por campaña,
 comentario o autora. Un enlace de biografía compartido tampoco identifica la variante.
 
-Un experimento nuevo necesita un namespace y registro versionado de brazos;
-para resultados por tipo de post, necesita además un identificador de colocación
-que llegue realmente a la fuente. Son requisitos **pendientes**, no funciones
-ya entregadas. La etiqueta automática del enlace no es un código que la persona
-tenga que escribir. El diseño conserva fuera del backend los identificadores de
-Facebook/Instagram y prohíbe unir identidades por conjeturas.
+El namespace dopmi_rescatistas_mty_p60_v1 y su registro finito por comentario ya
+están implementados en fuente1544a852/CI44966371479 cuatroSUCCESS; SQLPROD
+20261122004520 pasó31condiciones. Landing2179f1c6 transporta los tokens canónicos.
+Faltan candidato, instalación/primera ficha real y cliente público compatible:
+los60 tokens noQA siguen deshabilitados. Consultar el [runbook](campaign-placement-pilot.md)
+antes de usarlos; los clientes anteriores rechazan esta gramática.
 
-Sin esa extensión se puede hacer un piloto acotado con el contrato actual, con
-historia/contaminación declaradas, pero no atribuir una ficha a cada comentario
-ni proclamar ganadores entre todas las variables propuestas.
+La etiqueta automática no requiere escribir códigos. Una vez validada, une la
+fuente consentida y los recibos originales por mascota con experimento/brazo/token.
+El ledger privado añade el comentario/post real; no demuestra que la cuenta que
+convierte sea la misma autora de Facebook. Los identificadores sociales permanecen
+fuera del backend. iOS conserva medición agregada por brazo y cobertura desconocida
+a nivel comentario tras instalar; no imputar cero ni atribución individual.
 
 ## Meta y Google Ads son otra integración
 

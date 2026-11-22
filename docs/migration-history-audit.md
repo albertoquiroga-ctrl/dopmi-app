@@ -834,3 +834,31 @@ No backfill, publicación QA, envío de mensajes, cambios financieros o replay.
 Recibos privados production-ios-cpp.postflight.actual.private.json,
 production-ios-cpp.rehearsal.private.json y supabase-apply.private.json.
 Esto acredita esquema desplegado; no aceptación de instalación/App Store/iPhone.
+
+## Etiquetas por comentario Android PROD — 21/11/2026 CDMX
+
+Fuente1544a85236ee96a89eda576bda35fb2a5b9b140c, CI44966371479 cuatroSUCCESS.
+Archivo20261121233958_android_campaign_placements.sql, SHA256
+39f549f08aee7a2b9147beb700c97728e89da0cc104b2b370fc2ced7355ae07e, aplicado
+una sola vez por MCP como **20261122004520 / android_campaign_placements_pilot60_20261121**.
+No replay, dbpush, renombrado ni reparación para igualar timestamps.
+
+Preflight22nov00:44:31UTC:72migraciones/339funciones exactas al corte anterior,
+registro ausente. Postflight00:45:40UTC:73entradas/prefijo72 intacto y339funciones
+previas conservanOID/cuerpo/ACL/configuración/SECDEF. StatementsMD5 nuevo
+618efbf52b3eba4ca47dfb2513d61495. Fuentes y eventos Android/iOS conservan los
+ocho conteos/hashes previos, excluyendo sólo la columna nullable nueva al comparar.
+
+Postflight00:46:37UTC:31/31condicionesPASS;61tokens exactos al manifiesto,
+60noQA deshabilitados y1QA habilitado. Dos tablas privadasRLS sin políticas ni
+CRUD de anon/authenticated/service_role; FK/cascadas/índices/trigger exactos,
+dos cuerpos nuevos con hashesLF esperados yRPC sóloauthenticated. HTTP anónimo
+real401/42501. Sin fuentes etiquetadas ni recibos rellenados como QA/backfill.
+Advisors añade exactamente dos avisos INFO de RLS privado sin políticas y el
+RPC authenticated SECURITY DEFINER deliberado; demás hallazgos conservados.
+
+Recibos privados en .tools/campaign-placement-pilot: supabase-apply,
+prod-immediate-before, prod-after-catalog, prod-data-before/after,
+prod-postflight.actual, advisors-comparison y prod-after.verified.
+Esto acredita esquema y autorización; instalación limpia, primera ficha y
+disponibilidad pública del cliente se comprueban por separado antes del piloto.

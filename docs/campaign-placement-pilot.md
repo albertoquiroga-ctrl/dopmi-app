@@ -13,12 +13,15 @@ compartir HTTPS y Tienda. El iPad426 mantiene elOFF elegido por el titular.
 Cliente/servidor implementados; revisión independiente integrada sin hallazgos
 materiales.113 pruebas móviles enfocadasPASS, análisis0incidencias, backend
 1367PASS/14SKIP,18dirigidas con PostgreSQL realPASS/0SKIP, configuración42PASS y
-admin174PASS/buildPASS. Suite móvil1991PASS/4SKIP de etiquetas; después se incorporó el fix de navegación b08f040f y pasaron sus6regresiones. CI final del conjunto todavía pendiente.
+admin174PASS/buildPASS. Suite móvil1991PASS/4SKIP de etiquetas; después se incorporó el fix de navegación b08f040f y pasaron sus6regresiones. Fuente integrada1544a85236ee96a89eda576bda35fb2a5b9b140c, tag codex/campaign-placement-p60-1544a852; CI44966371479 terminó con cuatroSUCCESS.
 
 Landing2179f1c6c3bc544fd31a078812eeabbbd7475353, Vercel
 dpl_CE3DQ25R3fhuhSGJyby2qRd5iFuv READY/production;18HTTP postflightPASS.
-Rutas antiguas y legales conservan hashes. Migración nueva no aplicada todavía:
-preflight PROD23:42:11UTC,72migraciones/339funciones/registro ausente. Candidato,
+Rutas antiguas y legales conservan hashes. SQLPROD aplicado una vez como
+20261122004520/android_campaign_placements_pilot60_20261121; postflight22nov00:46:37UTC
+31/31PASS, prefijo72 y339funciones previas intactos. Fuentes/eventos conservan
+conteos y hashes; RPC sin sesión rechazaHTTP401/42501. Registro61exacto:60deshabilitados
+y1QA habilitado, sin atribuciones ni recibos insertados como prueba. Candidato,
 QA limpia y cliente público pendientes. **Contactos enviados:0/60.**
 
 ## Contrato y operación
