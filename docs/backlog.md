@@ -3,7 +3,10 @@
 Etiquetas por comentario y piloto60 autorizados: cliente/servidor implementados,
 landing pública y revisión independiente limpia. Continuar [gates del piloto](campaign-placement-pilot.md):
 Fuente1544a852/CI44966371479 cuatroSUCCESS y SQLPROD20261122004520/31PASS.
-Continuar candidato/QA/cliente público antes de habilitar tokens y comentar.
+429/CM6b02411ebc3b31211424b493 terminó14SUCCESS; AAB/runtime/firma verificados y
+logCLI confirma publicación interna. Continuar lectura Console/entrega429,
+QA real y cliente público antes de habilitar tokens y comentar. El titular necesita
+otra mascota real; Samsung desconectado y control de Chrome aún no responde.
 Mantener AnalíticaOFF del iPad426; no reusar primeras fichas consumidas.
 
 Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;

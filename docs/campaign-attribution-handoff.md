@@ -77,7 +77,8 @@ comentario o autora. Un enlace de biografía compartido tampoco identifica la va
 El namespace dopmi_rescatistas_mty_p60_v1 y su registro finito por comentario ya
 están implementados en fuente1544a852/CI44966371479 cuatroSUCCESS; SQLPROD
 20261122004520 pasó31condiciones. Landing2179f1c6 transporta los tokens canónicos.
-Faltan candidato, instalación/primera ficha real y cliente público compatible:
+El candidato429 tiene artefacto verificado y publicación interna reportada porCM;
+faltan entrega comprobada, instalación/primera ficha real y cliente público compatible:
 los60 tokens noQA siguen deshabilitados. Consultar el [runbook](campaign-placement-pilot.md)
 antes de usarlos; los clientes anteriores rechazan esta gramática.
 
@@ -91,6 +92,11 @@ a nivel comentario tras instalar; no imputar cero ni atribución individual.
 ## Meta y Google Ads son otra integración
 
 Los hitos privados de Supabase **no se envían automáticamente** a Meta/Google.
+Los tokens del piloto p60 pertenecen sólo a comentarios orgánicos. No colocarlos
+en anuncios ni reutilizar personal-a como identificador de un anuncio: mezclaría
+los orígenes. El chat de campañas debe conservar el transporte y contrato de
+consentimiento, pero preparar un namespace pagado y verificar su recorrido antes
+de atribuir resultados a Meta/Google/TikTok o compararlos con este piloto.
 El chat destinatario conserva su integración Meta Android en otra rama:
 permiso publicitario separado, trabajador/CAPI y eventos Contact/SubmitApplication.
 Último registro revisado del18/nov: recepción instalada/publicitaria todavía

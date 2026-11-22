@@ -10046,3 +10046,37 @@ b08f040f en curso y conserva una sola cola. Esperar ese mismo handle antes del
 único candidato Android. Sin contactos, sin habilitar los60 y sin aceptación de
 dispositivo/cliente público atribuida. Chrome extensión sigue enumerando Facebook
 pero no permite DOM/captura; reconexión solicitada, sin comentarios enviados.
+
+## 21/11/2026 CDMX — Candidato429 verificado; piloto pendiente de QA real
+
+Terminó la cola ajena b08f040f (iOS y luego Android), sin cancelarla ni lanzar
+builds paralelos. Única solicitud propia01:10:57UTC:CM6b02411ebc3b31211424b493,
+tagcodex/campaign-placement-p60-1544a852/fuente1544a852 exacta. Terminó14SUCCESS.
+Android2.3.9(429), paquetecom.mycompany.dopmi; AAB96785875B/SHA256
+f2330e84b019d58d9371e1e502da9f04e5dbe853637f97e9a27f118414c7b71f.
+Manifest/reporte/metadatos coinciden; PROD/Firebase/Amazon y marcadores del nuevo
+campaign/RPC en todos losABI, sinDEV/claveStripe. Firma criptográfica1184entradas/
+0sin firmar contra pinupload existente. Configuración conserva adopciones,
+elección de Analítica y guardas; no activación financiera ni SDK publicitario.
+
+La primera descarga falló en el helper local: Python cerró el socket al completar
+la respuestaHTTP200 y el siguiente ajuste de timeout produjoOSError10038. Repro
+dirigida confirmó cuerpo22218B completo/responseclosed; guardaEOF corregida sólo
+en dos helpers privados. Descarga posterior y verificación realPASS sobre elMISMO
+build; no código app, CI ni compilación repetidos por ese problema de lectura.
+
+PublishingSUCCESS y log observado del429 muestraninternal/Statuscompleted/
+Successfullypublished. El log es texto humano, no objeto de track: recibo
+cm_log_passed_console_readback_pending/exit2 distingue esa evidencia de una
+lectura independiente Console y de disponibilidad pública. Recibos privados
+artifacts-6b02411ebc3b31211424b493, android-artifact.verified y play-publishing.
+
+El titular confirmó reconexión Chrome, pero DOM/claimTab siguieron agotando
+tiempo antes de controlar Facebook; sin bypass nativo/IAB ni comentarios.
+Confirmó necesitar conseguir otra mascota real: primera ficha nueva pendiente,
+sin reusar fixtures o fabricar publicaciones. Samsung ya no está conectado.
+PROD01:28:39UTC:60tokens noQA deshabilitados/1QA habilitado,0fuentes etiquetadas/
+0recibos; cuentaQA nueva aún no creada. Ledger60reservas/15porbrazo/0contactos.
+No promoción a producción ni inicio del piloto antes de esa QA y cliente público.
+El contrato de campañas aclara que p60 es sólo orgánico: anuncios requieren su
+namespace/verificación separados, sin contaminar el comparador pagado.

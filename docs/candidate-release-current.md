@@ -4,8 +4,11 @@ Extensión por comentario sobre la base reciente af0e2274/425–426, integrada c
 campañas en f0e6521a, incluyendo el arreglo de navegación b08f040f inventariado.
 Fuente1544a852/tag codex/campaign-placement-p60-1544a852; CI44966371479 cuatroSUCCESS.
 Landing2179f1c6 pública/HTTP18PASS. SQLPROD20261122004520 aplicado una vez,
-31/31postflightPASS/prefijo72y339funciones conservados. Candidato y QA real
-todavía pendientes;0/60 contactos hasta cliente público compatible.
+31/31postflightPASS/prefijo72y339funciones conservados. Android2.3.9(429),
+6b02411ebc3b31211424b493:14SUCCESS; AAB/runtime/marcadores y firma1184/0
+verificados. LogCLI confirma429/internal/completed/publicado; lectura independiente
+Console y entrega al dispositivo pendientes. No promoción pública ni QA real:
+faltan mascota nueva y Samsung conectado.0/60 contactos/60tokens noQAOFF.
 [Estado operativo](campaign-placement-pilot.md).
 Preservar elOFF elegido en iPad426 y los arreglos recientes del corte siguiente.
 

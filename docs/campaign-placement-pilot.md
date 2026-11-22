@@ -21,8 +21,23 @@ Rutas antiguas y legales conservan hashes. SQLPROD aplicado una vez como
 20261122004520/android_campaign_placements_pilot60_20261121; postflight22nov00:46:37UTC
 31/31PASS, prefijo72 y339funciones previas intactos. Fuentes/eventos conservan
 conteos y hashes; RPC sin sesión rechazaHTTP401/42501. Registro61exacto:60deshabilitados
-y1QA habilitado, sin atribuciones ni recibos insertados como prueba. Candidato,
-QA limpia y cliente público pendientes. **Contactos enviados:0/60.**
+y1QA habilitado, sin atribuciones ni recibos insertados como prueba.
+
+Android2.3.9(429), Codemagic6b02411ebc3b31211424b493:14SUCCESS desde fuente
+exacta1544a852. AAB96785875B, SHA256
+f2330e84b019d58d9371e1e502da9f04e5dbe853637f97e9a27f118414c7b71f;
+1184entradas firmadas/0sin firma/pinupload esperado. Manifest/reporte/versiones,
+PROD/Firebase/Amazon y marcadores de campaña/RPC en todos losABI verificados.
+El log observado de Publishing confirma429/internal/Statuscompleted/Successfully
+published. Es salida humana delCLI: no se encontró objeto de track estructurado;
+lectura independiente en Console/entrega al dispositivo todavía pendientes.
+
+QA limpia y cliente público pendientes. El titular necesita conseguir otra
+mascota real y el Samsung dejó de estar conectado; no reutilizar fixtures
+consumidos. La extensión de Chrome enumera Facebook pero el control siguió
+fallando después de la reconexión confirmada, sin inventario ni comentarios.
+Última lecturaPROD22nov01:28:39UTC:60noQAOFF/QA1ON,0fuentes etiquetadas/
+0recibos y cuentaQA nueva aún inexistente. **Contactos enviados:0/60.**
 
 ## Contrato y operación
 
