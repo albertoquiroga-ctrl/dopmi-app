@@ -603,6 +603,9 @@ class _ThreadState extends ConsumerState<ThreadScreen>
       final coverPath = thread?['photo'];
       final participant = thread?['participant_name'] as String? ?? '';
       final textScaler = MediaQuery.textScalerOf(context);
+      final composerControlHeight = (textScaler.scale(16) * 1.25 + 28)
+          .clamp(48.0, double.infinity)
+          .toDouble();
       final compactDetail =
           showPetCover &&
           MediaQuery.sizeOf(context).width < 360 &&
@@ -854,11 +857,7 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                                     hintText: 'Escribe un mensaje...',
                                     hintMaxLines: 1,
                                     constraints: BoxConstraints(
-                                      minHeight:
-                                          MediaQuery.textScalerOf(context)
-                                                  .scale(16) *
-                                              1.25 +
-                                          26,
+                                      minHeight: composerControlHeight,
                                     ),
                                     hintStyle: TextStyle(
                                       color: textMuted,
@@ -890,14 +889,14 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                               const SizedBox(width: 8),
                               IconButton(
                                 key: const ValueKey('chat-attach-photo'),
-                                constraints: const BoxConstraints.tightFor(
-                                  width: 40,
-                                  height: 40,
+                                constraints: BoxConstraints.tightFor(
+                                  width: 48,
+                                  height: composerControlHeight,
                                 ),
                                 padding: EdgeInsets.zero,
                                 style: IconButton.styleFrom(
-                                  minimumSize: const Size(40, 40),
-                                  maximumSize: const Size(40, 40),
+                                  minimumSize: Size(48, composerControlHeight),
+                                  maximumSize: Size(48, composerControlHeight),
                                   tapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
@@ -919,12 +918,8 @@ class _ThreadState extends ConsumerState<ThreadScreen>
                               ValueListenableBuilder<TextEditingValue>(
                                 valueListenable: composer,
                                 builder: (context, value, _) => SizedBox(
-                                  width: 40,
-                                  height:
-                                      MediaQuery.textScalerOf(context)
-                                              .scale(16) *
-                                          1.25 +
-                                      26,
+                                  width: 48,
+                                  height: composerControlHeight,
                                   child: IconButton(
                                     tooltip: pendingId == null
                                         ? 'Enviar mensaje'
