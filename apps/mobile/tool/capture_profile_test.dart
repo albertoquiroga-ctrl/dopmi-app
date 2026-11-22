@@ -57,6 +57,12 @@ import 'fixture_photo_client.dart';
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
+import 'package:dopmi_mobile/core/navigation.dart';
+import 'package:dopmi_mobile/features/adoption/discovery_screen.dart';
+import 'package:dopmi_mobile/features/store/store_repository.dart';
+
+import '../test/store_screen_test.dart' show StoreFake;
+
 import 'package:dopmi_mobile/features/adoption/public_profile_layout.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
@@ -1179,6 +1185,9 @@ void main() {
       ('bccd-messages-all-samsung', '/messages'),
       ('adoption-swipe', '/adoptions'),
       ('adoption-large', '/adoptions'),
+      ('adoption-display-zoom', '/adoptions'),
+      ('adoption-display-zoom-store', '/adoptions'),
+      ('adoption-display-zoom-large', '/adoptions'),
       ('adoption-q38-09-large', '/adoptions'),
       ('adoption-q38-09-samsung', '/adoptions'),
       ('adoption-drag', '/adoptions'),
@@ -1834,7 +1843,26 @@ void main() {
           !spec.$1.startsWith('adoption-empty') &&
           !spec.$1.startsWith('adoption-support');
       final large = spec.$1.endsWith('-large');
-      tester.view.physicalSize = large && spec.$1 != 'adoption-empty-wide-large'
+      final displayZoom = spec.$1.startsWith('adoption-display-zoom');
+      if (sourceAdoptionReference &&
+          const String.fromEnvironment('DOPMI_ENVIRONMENT') == 'production') {
+        final profile = repo.profile;
+        repo.profile = Profile(
+          id: profile.id,
+          name: profile.name,
+          phone: profile.phone,
+          city: profile.city,
+          mode: profile.mode,
+          intent: profile.intent,
+          status: profile.status,
+          termsVersion: productionTermsVersion,
+          privacyVersion: productionPrivacyVersion,
+          adultConfirmed: profile.adultConfirmed,
+        );
+      }
+      tester.view.physicalSize = displayZoom && !large
+          ? const Size(320, 690)
+          : large && spec.$1 != 'adoption-empty-wide-large'
           ? const Size(320, 640)
           : spec.$1 == 'rescuer-profile-reference-wide'
           ? const Size(384, 852)
@@ -1843,10 +1871,22 @@ void main() {
           : const Size(377, 852);
       tester.platformDispatcher.textScaleFactorTestValue = large
           ? 2
+          : displayZoom
+          ? 1.3
           : spec.$1.endsWith('-samsung')
           ? 1.15
           : 1;
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      tester.view.padding = FakeViewPadding(
+        top: displayZoom ? 24 : 0,
+        bottom: displayZoom ? 24 : 0,
+      );
+      tester.view.viewPadding = FakeViewPadding(
+        top: displayZoom ? 24 : 0,
+        bottom: displayZoom ? 24 : 0,
+      );
+      addTearDown(tester.view.resetPadding);
+      addTearDown(tester.view.resetViewPadding);
       if (sourceAdoptionReference ||
           spec.$1.startsWith('rescuer-home') ||
           spec.$1.startsWith('rescuer-messages') ||
@@ -2211,8 +2251,14 @@ void main() {
                 },
               ];
       }
+      final captureStore = displayZoom
+          ? (StoreFake()..enabled = spec.$1.endsWith('-store'))
+          : null;
+      if (captureStore != null) addTearDown(captureStore.changes.close);
       final container = ProviderContainer(
         overrides: [
+          if (captureStore != null)
+            storeRepositoryProvider.overrideWithValue(captureStore),
           if (spec.$1 == 'publish-information-location' ||
               spec.$1 == 'case-publication-information-location')
             configProvider.overrideWithValue(
@@ -3594,6 +3640,48 @@ void main() {
             matching: find.byKey(const ValueKey('reference-keyboard-outline')),
           ),
           findsOneWidget,
+        );
+      }
+      if (displayZoom) {
+        if (large) {
+          await tester.drag(
+            find
+                .descendant(
+                  of: find.byType(DiscoveryScreen),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+            const Offset(0, -600),
+          );
+          await tester.pumpAndSettle();
+        }
+        final nav = tester.getRect(find.byType(DopmiBottomBar));
+        final controls = find.descendant(
+          of: find.byKey(const ValueKey('discovery-motion-post')),
+          matching: find.byType(DiscoveryControl),
+        );
+        expect(controls, findsNWidgets(3));
+        final metrics = <String, Object>{
+          'navigation_top': nav.top,
+          'text_scale': large ? 2 : 1.3,
+          'actions': [
+            for (var index = 0; index < 3; index++)
+              {
+                'label': tester
+                    .widget<DiscoveryControl>(controls.at(index))
+                    .label,
+                'top': tester.getRect(controls.at(index)).top,
+                'bottom': tester.getRect(controls.at(index)).bottom,
+                'overlaps_navigation': tester
+                    .getRect(controls.at(index))
+                    .overlaps(nav),
+              },
+          ],
+        };
+        await tester.runAsync(
+          () =>
+              File('${out.path}/${spec.$1}-metrics.json')
+                  .writeAsString(jsonEncode(metrics)),
         );
       }
       if (spec.$1.startsWith('chat-bubbles')) {

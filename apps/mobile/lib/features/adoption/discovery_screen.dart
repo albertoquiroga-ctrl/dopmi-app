@@ -32,10 +32,28 @@ import 'discovery_card_motion.dart';
 import 'discovery_drag_surface.dart';
 import 'discovery_history.dart';
 
-double discoveryMediaHeight(BuildContext context) => math.max(
+double discoveryMediaHeight(BuildContext context) =>
+    context
+        .dependOnInheritedWidgetOfExactType<_DiscoveryMediaExtent>()
+        ?.height ??
+    _preferredDiscoveryMediaHeight(context);
+
+double _preferredDiscoveryMediaHeight(BuildContext context) => math.max(
   (MediaQuery.sizeOf(context).height - 220).clamp(340, 560) - 128,
   MediaQuery.textScalerOf(context).scale(200),
 );
+
+double _discoveryFooterHeight(BuildContext context, double minimum) =>
+    math.max(minimum, MediaQuery.textScalerOf(context).scale(64) + 64);
+
+class _DiscoveryMediaExtent extends InheritedWidget {
+  const _DiscoveryMediaExtent({required this.height, required super.child});
+  final double height;
+
+  @override
+  bool updateShouldNotify(_DiscoveryMediaExtent oldWidget) =>
+      height != oldWidget.height;
+}
 
 String cardIdentity(Object item) => item is Adoption
     ? 'adoption:${item.id}'
@@ -666,185 +684,237 @@ class _DiscoveryScreenState extends ConsumerState<DiscoveryScreen> {
     }
     return PhotoPrefetch(
       sources: upcoming,
-      child: Scaffold(
-        extendBody: true,
-        backgroundColor: Colors.white,
-        bottomNavigationBar: const CommunityNav(0),
-        body: DonorCanvas(
-          child: SafeArea(
+      child: DonorCanvas(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          bottomNavigationBar: const CommunityNav(0),
+          body: SafeArea(
             bottom: false,
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 110),
-              children: [
-                SizedBox(
-                  height: 42,
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        'assets/dopmi-wordmark.png',
-                        semanticLabel: 'Dopmi',
-                        width: 108,
-                        height: 36,
-                        fit: BoxFit.contain,
-                      ),
-                      const Spacer(),
-                      const DonorNotificationButton(),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Wrap(
-                        spacing: 18,
-                        children: [
-                          for (final species in const [
-                            ('dog', 'Perros'),
-                            ('cat', 'Gatos'),
-                          ])
-                            TextButton(
-                              onPressed: acting
-                                  ? null
-                                  : () => chooseSpecies(species.$1),
-                              style: TextButton.styleFrom(
-                                minimumSize: const Size(0, 48),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 2,
-                                ),
-                                foregroundColor:
-                                    filters['species'] == species.$1
-                                    ? ink
-                                    : const Color(0xff9a9289),
-                                textStyle: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: filters['species'] == species.$1
-                                      ? 28
-                                      : 22,
-                                  fontWeight: filters['species'] == species.$1
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  letterSpacing: 0,
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          height: 42,
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                'assets/dopmi-wordmark.png',
+                                semanticLabel: 'Dopmi',
+                                width: 108,
+                                height: 36,
+                                fit: BoxFit.contain,
+                              ),
+                              const Spacer(),
+                              const DonorNotificationButton(),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Wrap(
+                                spacing: 18,
+                                children: [
+                                  for (final species in const [
+                                    ('dog', 'Perros'),
+                                    ('cat', 'Gatos'),
+                                  ])
+                                    TextButton(
+                                      onPressed: acting
+                                          ? null
+                                          : () => chooseSpecies(species.$1),
+                                      style: TextButton.styleFrom(
+                                        minimumSize: const Size(0, 48),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 2,
+                                        ),
+                                        foregroundColor:
+                                            filters['species'] == species.$1
+                                            ? ink
+                                            : const Color(0xff9a9289),
+                                        textStyle: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize:
+                                              filters['species'] == species.$1
+                                              ? 28
+                                              : 22,
+                                          fontWeight:
+                                              filters['species'] == species.$1
+                                              ? FontWeight.w700
+                                              : FontWeight.w500,
+                                          letterSpacing: 0,
+                                        ),
+                                      ),
+                                      child: Text(species.$2),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            IconButton(
+                              tooltip: 'Filtros',
+                              onPressed: acting ? null : openFilters,
+                              icon: SvgPicture.string(
+                                discoveryFilterSvg,
+                                width: 22,
+                                height: 22,
+                                colorFilter: ColorFilter.mode(
+                                  filters.keys.any(
+                                        (key) => [
+                                          'sex',
+                                          'size',
+                                          'personality',
+                                        ].contains(key),
+                                      )
+                                      ? ink
+                                      : const Color(0xff9a9289),
+                                  BlendMode.srcIn,
                                 ),
                               ),
-                              child: Text(species.$2),
                             ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      tooltip: 'Filtros',
-                      onPressed: acting ? null : openFilters,
-                      icon: SvgPicture.string(
-                        discoveryFilterSvg,
-                        width: 22,
-                        height: 22,
-                        colorFilter: ColorFilter.mode(
-                          filters.keys.any(
-                                (key) => [
-                                  'sex',
-                                  'size',
-                                  'personality',
-                                ].contains(key),
-                              )
-                              ? ink
-                              : const Color(0xff9a9289),
-                          BlendMode.srcIn,
+                          ],
                         ),
-                      ),
+                        SizedBox(height: current == null && !loading ? 20 : 36),
+                        for (final failed in failedFavorites.values) ...[
+                          Notice(
+                            'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
+                            isError: true,
+                          ),
+                          TextButton(
+                            onPressed: pendingFavorites.contains(failed.id)
+                                ? null
+                                : () => persistFavorite(failed),
+                            child: const Text('Volver a intentar'),
+                          ),
+                        ],
+                        if (error != null) ...[
+                          Notice(error!, isError: true),
+                          TextButton(
+                            onPressed: () => load(reset: cards.isEmpty),
+                            child: const Text('Volver a intentar'),
+                          ),
+                        ],
+                        if ((loading || locating) && current == null)
+                          SizedBox(
+                            height: 420,
+                            child: Center(
+                              child: nearby != null
+                                  ? const Text('Cargando…')
+                                  : const CircularProgressIndicator(),
+                            ),
+                          )
+                        else if (current == null && error != null)
+                          const SizedBox.shrink()
+                        else if (current == null)
+                          needsNearbyLocation
+                              ? _NearbyLocationRequired(
+                                  busy: nearby!.busy,
+                                  error: nearby!.error,
+                                  onActivate: nearby!.isAdopter && !nearby!.busy
+                                      ? () =>
+                                            requestNearbyLocation(context, ref)
+                                      : null,
+                                )
+                              : cards.isEmpty && total == 0
+                              ? DiscoveryEmpty(
+                                  filtered: filters.keys.any(
+                                    (key) => key != 'species',
+                                  ),
+                                  global: allSpeciesEmpty,
+                                  species: filters['species'] as String,
+                                  clear: () {
+                                    filters.removeWhere(
+                                      (key, _) => key != 'species',
+                                    );
+                                    load(reset: true);
+                                  },
+                                  switchSpecies: () {
+                                    filters['species'] =
+                                        filters['species'] == 'dog'
+                                        ? 'cat'
+                                        : 'dog';
+                                    load(reset: true);
+                                  },
+                                )
+                              : DiscoveryEnd(
+                                  restart: restartDiscovery,
+                                  minimumHeight:
+                                      MediaQuery.textScalerOf(context)
+                                              .scale(28) >
+                                          40
+                                      ? 0
+                                      : math.max(
+                                          0.0,
+                                          MediaQuery.sizeOf(context).height -
+                                              MediaQuery.paddingOf(context)
+                                                  .vertical -
+                                              240,
+                                        ),
+                                  photos: cards
+                                      .where((post) => post.photos.isNotEmpty)
+                                      .take(4)
+                                      .map((post) => post.photos.first)
+                                      .toList(),
+                                ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: current == null && !loading ? 20 : 36),
-                for (final failed in failedFavorites.values) ...[
-                  Notice(
-                    'No pudimos guardar a ${failed.name}. Intenta de nuevo.',
-                    isError: true,
-                  ),
-                  TextButton(
-                    onPressed: pendingFavorites.contains(failed.id)
-                        ? null
-                        : () => persistFavorite(failed),
-                    child: const Text('Volver a intentar'),
-                  ),
-                ],
-                if (error != null) ...[
-                  Notice(error!, isError: true),
-                  TextButton(
-                    onPressed: () => load(reset: cards.isEmpty),
-                    child: const Text('Volver a intentar'),
-                  ),
-                ],
-                if ((loading || locating) && current == null)
-                  SizedBox(
-                    height: 420,
-                    child: Center(
-                      child: nearby != null
-                          ? const Text('Cargando…')
-                          : const CircularProgressIndicator(),
+                if (current != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+                    sliver: SliverLayoutBuilder(
+                      builder: (context, constraints) {
+                        final footerHeight =
+                            (current is SupportOpportunity ||
+                                    next is SupportOpportunity) &&
+                                MediaQuery.textScalerOf(context).scale(16) > 22
+                            ? 256.0
+                            : 128.0;
+                        // The scaffold already reserves the real navigation
+                        // height. Keep this budget stable while scrolling.
+                        final mediaSpace =
+                            constraints.viewportMainAxisExtent -
+                            constraints.precedingScrollExtent -
+                            16 -
+                            _discoveryFooterHeight(context, footerHeight);
+                        final mediaHeight = math.max(
+                          MediaQuery.textScalerOf(context).scale(200),
+                          math.min(
+                            _preferredDiscoveryMediaHeight(context),
+                            mediaSpace,
+                          ),
+                        );
+                        return SliverToBoxAdapter(
+                          child: _DiscoveryMediaExtent(
+                            height: mediaHeight,
+                            child: DiscoveryStack(
+                              key: deckKey,
+                              hintRevision: hintRevision,
+                              hintEnabled: !acting && !dragging && exiting == 0,
+                              currentIdentity: cardIdentity(current),
+                              nextIdentity: next == null
+                                  ? null
+                                  : cardIdentity(next),
+                              footerHeight: footerHeight,
+                              next: next == null
+                                  ? null
+                                  : cardBody(next, preview: true),
+                              child: cardBody(current, preview: false),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   )
-                else if (current == null && error != null)
-                  const SizedBox.shrink()
-                else if (current == null)
-                  needsNearbyLocation
-                      ? _NearbyLocationRequired(
-                          busy: nearby!.busy,
-                          error: nearby!.error,
-                          onActivate: nearby!.isAdopter && !nearby!.busy
-                              ? () => requestNearbyLocation(context, ref)
-                              : null,
-                        )
-                      : cards.isEmpty && total == 0
-                      ? DiscoveryEmpty(
-                          filtered: filters.keys.any((key) => key != 'species'),
-                          global: allSpeciesEmpty,
-                          species: filters['species'] as String,
-                          clear: () {
-                            filters.removeWhere((key, _) => key != 'species');
-                            load(reset: true);
-                          },
-                          switchSpecies: () {
-                            filters['species'] = filters['species'] == 'dog'
-                                ? 'cat'
-                                : 'dog';
-                            load(reset: true);
-                          },
-                        )
-                      : DiscoveryEnd(
-                          restart: restartDiscovery,
-                          minimumHeight:
-                              MediaQuery.textScalerOf(context).scale(28) > 40
-                              ? 0
-                              : math.max(
-                                  0.0,
-                                  MediaQuery.sizeOf(context).height -
-                                      MediaQuery.paddingOf(context).vertical -
-                                      240,
-                                ),
-                          photos: cards
-                              .where((post) => post.photos.isNotEmpty)
-                              .take(4)
-                              .map((post) => post.photos.first)
-                              .toList(),
-                        )
                 else
-                  DiscoveryStack(
-                    key: deckKey,
-                    hintRevision: hintRevision,
-                    hintEnabled: !acting && !dragging && exiting == 0,
-                    currentIdentity: cardIdentity(current),
-                    nextIdentity: next == null ? null : cardIdentity(next),
-                    footerHeight:
-                        (current is SupportOpportunity ||
-                                next is SupportOpportunity) &&
-                            MediaQuery.textScalerOf(context).scale(16) > 22
-                        ? 256
-                        : 128,
-                    next: next == null ? null : cardBody(next, preview: true),
-                    child: cardBody(current, preview: false),
-                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
               ],
             ),
           ),
@@ -880,10 +950,7 @@ class DiscoveryStack extends StatelessWidget {
       SizedBox(
         height:
             discoveryMediaHeight(context) +
-            math.max(
-              footerHeight,
-              MediaQuery.textScalerOf(context).scale(64) + 64,
-            ),
+            _discoveryFooterHeight(context, footerHeight),
         child: Stack(
           clipBehavior: Clip.none,
           children: [

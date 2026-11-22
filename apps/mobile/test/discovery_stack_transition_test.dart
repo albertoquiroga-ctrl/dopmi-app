@@ -3,17 +3,21 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:dopmi_mobile/app.dart';
+import 'package:dopmi_mobile/core/config/adoption_only_build.dart';
 import 'package:dopmi_mobile/core/media/photo_runtime.dart';
 import 'package:dopmi_mobile/core/media/photo_store.dart';
 import 'package:dopmi_mobile/core/media/remote_photo.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
+import 'package:dopmi_mobile/core/navigation.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/adoption/community_ui.dart';
 import 'package:dopmi_mobile/features/adoption/discovery_card_motion.dart';
+import 'package:dopmi_mobile/features/adoption/discovery_screen.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_public_photo.dart';
 import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
+import 'package:dopmi_mobile/features/store/store_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +27,7 @@ import 'package:image/image.dart' as img;
 import 'community_test.dart' show FakeCommunity;
 import 'fake_identity_repository.dart';
 import 'rescue_test.dart' show FakeRescue;
+import 'store_screen_test.dart' show StoreFake;
 
 class CardPhotoCommunity extends FakeCommunity {
   final signed = <String>[];
@@ -114,6 +119,8 @@ Future<CardFixture> openCards(
   bool reduced = false,
   Size size = const Size(377, 852),
   double textScale = 1,
+  double safeInset = 0,
+  StoreRepository? storeRepository,
   MeasurementController? measurement,
 }) async {
   tester.view.physicalSize = size;
@@ -125,6 +132,15 @@ Future<CardFixture> openCards(
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+  if (safeInset > 0) {
+    tester.view.padding = FakeViewPadding(top: safeInset, bottom: safeInset);
+    tester.view.viewPadding = FakeViewPadding(
+      top: safeInset,
+      bottom: safeInset,
+    );
+    addTearDown(tester.view.resetPadding);
+    addTearDown(tester.view.resetViewPadding);
+  }
   for (final family in ['Inter', 'Fraunces']) {
     final loader = FontLoader(family)
       ..addFont(rootBundle.load('assets/fonts/$family.ttf'));
@@ -132,6 +148,19 @@ Future<CardFixture> openCards(
   }
   final identity = FakeIdentityRepository()
     ..user = const Identity('one', 'fixture@example.test', verified: true);
+  if (const String.fromEnvironment('DOPMI_ENVIRONMENT') == 'production') {
+    identity.profile = const Profile(
+      id: 'one',
+      name: 'Ana',
+      phone: '',
+      city: '',
+      mode: 'donor',
+      intent: 'adopt',
+      status: 'active',
+      termsVersion: productionTermsVersion,
+      privacyVersion: productionPrivacyVersion,
+    );
+  }
   addTearDown(identity.changes.close);
   final repo = repository ?? CardPhotoCommunity();
   repo.post = Adoption({
@@ -210,6 +239,8 @@ Future<CardFixture> openCards(
         communityRepositoryProvider.overrideWithValue(repo),
         rescueRepositoryProvider.overrideWithValue(rescue),
         photoRuntimeProvider.overrideWithValue(runtime),
+        if (storeRepository != null)
+          storeRepositoryProvider.overrideWithValue(storeRepository),
         if (measurement != null)
           measurementControllerProvider.overrideWith((ref) => measurement),
         routerInitialLocationProvider.overrideWithValue('/adoptions'),
@@ -222,6 +253,137 @@ Future<CardFixture> openCards(
 }
 
 void main() {
+  void expectUnobscuredActions(
+    WidgetTester tester, {
+    required String postId,
+    required Size viewport,
+    required double safeInset,
+    required bool storeEnabled,
+  }) {
+    final navigation = find.byType(DopmiBottomBar);
+    expect(navigation, findsOneWidget);
+    final navRect = tester.getRect(navigation);
+    final controls = within(card(postId), find.byType(DiscoveryControl));
+    expect(controls, findsNWidgets(3));
+    for (var index = 0; index < 3; index++) {
+      final control = controls.at(index);
+      final label = tester.widget<DiscoveryControl>(control).label;
+      final bounds = tester.getRect(control);
+      expect(bounds.isEmpty, isFalse);
+      expect(bounds.left, greaterThanOrEqualTo(0), reason: label);
+      expect(bounds.right, lessThanOrEqualTo(viewport.width), reason: label);
+      expect(bounds.top, greaterThanOrEqualTo(safeInset), reason: label);
+      expect(
+        bounds.bottom,
+        lessThanOrEqualTo(viewport.height - safeInset),
+        reason: label,
+      );
+      expect(
+        bounds.bottom,
+        lessThanOrEqualTo(navRect.top),
+        reason: '$label must remain wholly above the floating navigation.',
+      );
+      expect(bounds.overlaps(navRect), isFalse, reason: label);
+      expect(control.hitTestable(), findsOneWidget, reason: label);
+    }
+    if (adoptionOnlyBuild) {
+      final showStore = storeEnabled && storeAmazonAvailable;
+      expect(
+        within(navigation, find.byType(InkWell)),
+        findsNWidgets(showStore ? 4 : 3),
+      );
+      expect(
+        within(navigation, find.bySemanticsLabel('Tienda')),
+        showStore ? findsOneWidget : findsNothing,
+      );
+      expect(within(navigation, find.bySemanticsLabel('Apoyar')), findsNothing);
+    }
+    expect(tester.takeException(), isNull);
+  }
+
+  for (final size in [const Size(365, 790), const Size(320, 690)]) {
+    for (final storeEnabled in [false, true]) {
+      testWidgets(
+        'compact discovery keeps all actions clear of navigation on opening '
+        '${size.width}x${size.height}, store=$storeEnabled',
+        (tester) async {
+          final semantics = tester.ensureSemantics();
+          try {
+            final store = StoreFake()..enabled = storeEnabled;
+            addTearDown(store.changes.close);
+            await openCards(
+              tester,
+              support: false,
+              reduced: true,
+              size: size,
+              textScale: 1.3,
+              safeInset: 24,
+              storeRepository: store,
+            );
+            // These controls must be usable immediately, without scrolling a
+            // zoomed phone's initial card out from behind the navigation.
+            expectUnobscuredActions(
+              tester,
+              postId: 'post',
+              viewport: size,
+              safeInset: 24,
+              storeEnabled: storeEnabled,
+            );
+          } finally {
+            semantics.dispose();
+          }
+        },
+      );
+    }
+  }
+
+  for (final storeEnabled in [false, true]) {
+    testWidgets('large-text discovery keeps scrolled actions clear and usable '
+        'at 320x640, store=$storeEnabled', (tester) async {
+      const size = Size(320, 640);
+      final semantics = tester.ensureSemantics();
+      try {
+        final store = StoreFake()..enabled = storeEnabled;
+        addTearDown(store.changes.close);
+        await openCards(
+          tester,
+          support: false,
+          reduced: true,
+          size: size,
+          textScale: 2,
+          safeInset: 24,
+          storeRepository: store,
+        );
+        final scroll = within(
+          find.byType(DiscoveryScreen),
+          find.byType(Scrollable),
+        ).first;
+        await tester.drag(scroll, const Offset(0, -600));
+        await tester.pumpAndSettle();
+        expectUnobscuredActions(
+          tester,
+          postId: 'post',
+          viewport: size,
+          safeInset: 24,
+          storeEnabled: storeEnabled,
+        );
+        await tester.tap(within(card('post'), find.byTooltip('Pasar')));
+        await tester.pumpAndSettle();
+        expect(card('post'), findsNothing);
+        expect(card('second'), findsOneWidget);
+        expectUnobscuredActions(
+          tester,
+          postId: 'second',
+          viewport: size,
+          safeInset: 24,
+          storeEnabled: storeEnabled,
+        );
+      } finally {
+        semantics.dispose();
+      }
+    });
+  }
+
   testWidgets(
     'complete mixed cards keep photo text and provider identity on promotion',
     (tester) async {
