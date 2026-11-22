@@ -28,6 +28,9 @@ class FirebaseProductAnalytics implements ProductAnalytics {
   static const allowed = {
     'sign_up_completed',
     'contact_started',
+    'adoption_contact_created',
+    'rescuer_first_reply',
+    'adoption_marked_adopted',
     'publication_submitted',
     'adoption_form_opened',
     'adoption_draft_resumed',
@@ -289,11 +292,20 @@ class MeasurementController extends ChangeNotifier {
           allowed = false;
         }
       }
+      if (revision != _ownerRevision) return;
+      // A failed state read is not an opt-out. Keep an already-scoped identity
+      // paused only for this account/environment and without an explicit OFF.
+      final keepPausedIdentity =
+          analyticsChoices != null &&
+          value != null &&
+          remote == null &&
+          savedAnalytics != false &&
+          preferences.getString(_analyticsOwnerKey) == preference;
       final diagnosticsAllowed =
           value != null &&
           (preferences.getBool(_preferenceKey(value, 'diagnostics')) ?? false);
       await _setAnalyticsOwner(
-        revision == _ownerRevision && allowed ? preference : null,
+        allowed || keepPausedIdentity ? preference : null,
       );
       if (revision != _ownerRevision) return;
       if (allowed) {

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/attribution_action_barrier.dart';
+import '../../core/confirmed_value_analytics.dart';
 import '../../core/measurement.dart';
 import '../../core/media/media_store.dart';
 import '../adoption/community_repository.dart';
@@ -14,6 +15,7 @@ final chatPhotoRepositoryProvider = Provider<ChatPhotoRepository>(
     beforeAttributableAction: ref
         .watch(measurementControllerProvider.notifier)
         ?.prepareAttributableAction,
+    readMeasurement: () => ref.read(measurementControllerProvider.notifier),
   ),
 );
 
@@ -31,9 +33,14 @@ abstract class ChatPhotoRepository {
 }
 
 class SupabaseChatPhotoRepository implements ChatPhotoRepository {
-  SupabaseChatPhotoRepository(this.client, {this.beforeAttributableAction});
+  SupabaseChatPhotoRepository(
+    this.client, {
+    this.beforeAttributableAction,
+    this.readMeasurement,
+  });
   final SupabaseClient client;
   final PrepareAttributableAction? beforeAttributableAction;
+  final ReadValueMeasurement? readMeasurement;
   @override
   String? get userId => client.auth.currentUser?.id;
   @override
@@ -45,26 +52,30 @@ class SupabaseChatPhotoRepository implements ChatPhotoRepository {
     String messageId,
     String body,
     String attachmentPath,
-  ) async {
-    final token = await attributionActionToken(
-      client,
-      beforeAttributableAction,
-    );
-    return Json.from(
-      await client
-              .rpc(
-                'dopmi_send_message_v2',
-                params: {
-                  'thread_id': threadId,
-                  'message_id': messageId,
-                  'message_body': body,
-                  'attachment_path': attachmentPath,
-                },
-              )
-              .setHeader('Authorization', 'Bearer $token')
-          as Map,
-    );
-  }
+  ) => confirmedValueAction<Json>(
+    currentActor: () => userId,
+    readMeasurement: readMeasurement,
+    operation: ConfirmedValueOperation.reply,
+    dispatch: () async {
+      final result = await confirmedValueRpc(
+        client,
+        primary: 'dopmi_send_message_v3',
+        legacy: 'dopmi_send_message_v2',
+        params: {
+          'thread_id': threadId,
+          'message_id': messageId,
+          'message_body': body,
+          'attachment_path': attachmentPath,
+        },
+        beforeAttributableAction: beforeAttributableAction,
+      );
+      final envelope = Json.from(result.value as Map);
+      return ConfirmedValueResult(
+        result.confirmed ? Json.from(envelope['message'] as Map) : envelope,
+        signals: result.confirmed ? envelope['signals'] : null,
+      );
+    },
+  );
 
   @override
   Future<String> photoUrl(String path) =>

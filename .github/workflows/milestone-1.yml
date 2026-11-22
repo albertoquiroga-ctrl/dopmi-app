@@ -70,6 +70,11 @@ jobs:
         run: node tools/verification/guardian-concurrency.mjs
       - name: Adoption contact concurrent devices and lost response
         run: node tools/verification/adoption-contact-concurrency.mjs
+      - name: Confirmed adoption value and consent races against PostgreSQL
+        env:
+          DOPMI_VALUE_SIGNALS_POSTGRES_TEST: 'true'
+          PGPASSWORD: postgres
+        run: node --test tools/verification/adoption-value-signals-sql.test.mjs
       - name: Acquisition messaging and consent races against PostgreSQL
         env:
           DOPMI_ACQUISITION_POSTGRES_TEST: 'true'

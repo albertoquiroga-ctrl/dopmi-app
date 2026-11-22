@@ -5,6 +5,7 @@ import 'package:dopmi_mobile/core/attribution_action_barrier.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/communication/chat_photo_repository.dart';
+import 'package:dopmi_mobile/features/rescue/rescue_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -28,6 +29,11 @@ class _Community extends SupabaseCommunityRepository {
 
 class _Photos extends SupabaseChatPhotoRepository {
   _Photos(super.client, PrepareAttributableAction prepare)
+    : super(beforeAttributableAction: prepare);
+}
+
+class _Rescue extends RescueRepository {
+  _Rescue(super.client, PrepareAttributableAction prepare)
     : super(beforeAttributableAction: prepare);
 }
 
@@ -86,9 +92,19 @@ void main() {
           );
         } else {
           actions.add(request);
-          result = request.url.path.endsWith('dopmi_start_adoption_contact')
-              ? _thread
-              : {'id': _post, 'version': 2, 'status': 'submitted'};
+          result = switch (request.url.pathSegments.last) {
+            'dopmi_start_adoption_contact' => _thread,
+            'dopmi_start_adoption_contact_v2' => {
+              'thread_id': _thread,
+              'created_new': true,
+              'signals': ['adoption_contact_created'],
+            },
+            'dopmi_send_message_v3' => {
+              'message': {'id': _message, 'thread_id': _thread},
+              'signals': ['rescuer_first_reply'],
+            },
+            _ => {'id': _post, 'version': 2, 'status': 'submitted'},
+          };
         }
         return http.Response(
           jsonEncode(result),
@@ -117,10 +133,14 @@ void main() {
           prepare,
         ).transition(Adoption({'id': _post, 'version': 1}), 'submit'),
         'photo' => _Photos(client, prepare).send(_thread, _message, '', _photo),
+        'close' =>
+          _Rescue(client, prepare)
+              .closeAdoption(_post, 1, 'adopted', dopmiSupport: false)
+              .then<Object?>((_) => null),
         _ => throw ArgumentError.value(kind),
       };
 
-  for (final kind in ['greeting', 'message', 'submission', 'photo']) {
+  for (final kind in ['greeting', 'message', 'submission', 'photo', 'close']) {
     test(
       '$kind refreshes an expired session before pinning Authorization',
       () async {
@@ -174,6 +194,12 @@ void main() {
         await operation;
       }
       expect(actions, hasLength(1));
+      expect(actions.single.url.pathSegments.last, switch (kind) {
+        'greeting' => 'dopmi_start_adoption_contact_v2',
+        'message' || 'photo' => 'dopmi_send_message_v3',
+        'close' => 'dopmi_close_adoption_v2',
+        _ => 'dopmi_transition_adoption',
+      });
       expect(
         actions.single.headers['authorization'],
         'Bearer ${_session(_actor)['access_token']}',
@@ -193,6 +219,15 @@ void main() {
           'post_id': _post,
           'expected_version': 1,
           'action': 'submit',
+        });
+      }
+      if (kind == 'close') {
+        expect(payload, {
+          'post_id': _post,
+          'expected_version': 1,
+          'reason': 'adopted',
+          'dopmi_support': false,
+          'description': '',
         });
       }
     });

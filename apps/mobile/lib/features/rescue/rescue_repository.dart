@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../core/attribution_action_barrier.dart';
+import '../../core/confirmed_value_analytics.dart';
+import '../../core/measurement.dart';
 import '../../core/media/media_store.dart';
 
 import '../adoption/community_repository.dart';
@@ -101,12 +104,24 @@ class RescuerSealStatus {
 }
 
 final rescueRepositoryProvider = Provider<RescueRepository>(
-  (ref) => RescueRepository(Supabase.instance.client),
+  (ref) => RescueRepository(
+    Supabase.instance.client,
+    beforeAttributableAction: ref
+        .watch(measurementControllerProvider.notifier)
+        ?.prepareAttributableAction,
+    readMeasurement: () => ref.read(measurementControllerProvider.notifier),
+  ),
 );
 
 class RescueRepository {
-  RescueRepository(this.client);
+  RescueRepository(
+    this.client, {
+    this.beforeAttributableAction,
+    this.readMeasurement,
+  });
   final SupabaseClient client;
+  final PrepareAttributableAction? beforeAttributableAction;
+  final ReadValueMeasurement? readMeasurement;
   Future<Json> dashboard() async =>
       Json.from(await client.rpc('dopmi_rescuer_dashboard'));
   Future<Json> dashboardV2() async =>
@@ -166,14 +181,37 @@ class RescueRepository {
     bool? dopmiSupport,
     String description = '',
   }) async {
-    await client.rpc(
-      'dopmi_close_adoption',
-      params: {
-        'post_id': id,
-        'expected_version': version,
-        'reason': reason,
-        'dopmi_support': dopmiSupport,
-        'description': description,
+    await confirmedValueAction<bool>(
+      currentActor: () => client.auth.currentUser?.id,
+      readMeasurement: readMeasurement,
+      operation: ConfirmedValueOperation.adoption,
+      dispatch: () async {
+        final result = await confirmedValueRpc(
+          client,
+          primary: 'dopmi_close_adoption_v2',
+          legacy: 'dopmi_close_adoption',
+          params: {
+            'post_id': id,
+            'expected_version': version,
+            'reason': reason,
+            'dopmi_support': dopmiSupport,
+            'description': description,
+          },
+          beforeAttributableAction: beforeAttributableAction,
+        );
+        final envelope = result.value;
+        final adoption = envelope is Map ? envelope['adoption'] : null;
+        return ConfirmedValueResult(
+          true,
+          signals:
+              result.confirmed &&
+                  reason == 'adopted' &&
+                  adoption is Map &&
+                  adoption['status'] == 'adopted' &&
+                  envelope is Map
+              ? envelope['signals']
+              : null,
+        );
       },
     );
   }

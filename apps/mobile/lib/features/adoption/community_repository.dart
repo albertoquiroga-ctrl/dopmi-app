@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../core/attribution_action_barrier.dart';
+import '../../core/confirmed_value_analytics.dart';
 import '../../core/measurement.dart';
 import '../../core/media/media_store.dart';
 import 'adoption_traits.dart';
@@ -80,6 +81,7 @@ final communityRepositoryProvider = Provider<CommunityRepository>(
     beforeAttributableAction: ref
         .watch(measurementControllerProvider.notifier)
         ?.prepareAttributableAction,
+    readMeasurement: () => ref.read(measurementControllerProvider.notifier),
   ),
 );
 
@@ -142,10 +144,12 @@ class SupabaseCommunityRepository implements CommunityRepository {
     this.client, {
     this.observeRealtime,
     this.beforeAttributableAction,
+    this.readMeasurement,
   });
   final SupabaseClient client;
   final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
   final PrepareAttributableAction? beforeAttributableAction;
+  final ReadValueMeasurement? readMeasurement;
   final _favoriteListeners = <VoidCallback>{};
   @override
   String? get userId => client.auth.currentUser?.id;
@@ -352,8 +356,28 @@ class SupabaseCommunityRepository implements CommunityRepository {
   Future<String> photoUrl(String path) =>
       MediaStore(client).signedUrl(path, MediaPurpose.adoptionPhoto);
   @override
-  Future<String> startThread(String postId) async =>
-      await rpc('dopmi_start_adoption_contact', {'post_id': postId}) as String;
+  Future<String> startThread(String postId) => confirmedValueAction<String>(
+    currentActor: () => userId,
+    readMeasurement: readMeasurement,
+    operation: ConfirmedValueOperation.contact,
+    dispatch: () async {
+      final result = await confirmedValueRpc(
+        client,
+        primary: 'dopmi_start_adoption_contact_v2',
+        legacy: 'dopmi_start_adoption_contact',
+        params: {'post_id': postId},
+        beforeAttributableAction: beforeAttributableAction,
+      );
+      if (!result.confirmed) {
+        return ConfirmedValueResult(result.value as String);
+      }
+      final envelope = Json.from(result.value as Map);
+      return ConfirmedValueResult(
+        envelope['thread_id'] as String,
+        signals: envelope['created_new'] == true ? envelope['signals'] : null,
+      );
+    },
+  );
   @override
   Future<void> recordAdoptionView(
     String postId, {
@@ -437,17 +461,32 @@ class SupabaseCommunityRepository implements CommunityRepository {
         'before_id': before?['id'],
       }) as List).map((e) => Json.from(e)).toList();
   @override
-  Future<Json> sendMessage(
-    String threadId,
-    String messageId,
-    String body,
-  ) async => Json.from(
-    await rpc('dopmi_send_message', {
-      'thread_id': threadId,
-      'message_id': messageId,
-      'message_body': body,
-    }),
-  );
+  Future<Json> sendMessage(String threadId, String messageId, String body) =>
+      confirmedValueAction<Json>(
+        currentActor: () => userId,
+        readMeasurement: readMeasurement,
+        operation: ConfirmedValueOperation.reply,
+        dispatch: () async {
+          final params = {
+            'thread_id': threadId,
+            'message_id': messageId,
+            'message_body': body,
+          };
+          final result = await confirmedValueRpc(
+            client,
+            primary: 'dopmi_send_message_v3',
+            legacy: 'dopmi_send_message',
+            params: {...params, 'attachment_path': null},
+            legacyParams: params,
+            beforeAttributableAction: beforeAttributableAction,
+          );
+          final envelope = Json.from(result.value as Map);
+          return ConfirmedValueResult(
+            result.confirmed ? Json.from(envelope['message'] as Map) : envelope,
+            signals: result.confirmed ? envelope['signals'] : null,
+          );
+        },
+      );
   @override
   Future<void> closeThread(String id) async =>
       await rpc('dopmi_close_thread', {'thread_id': id});
