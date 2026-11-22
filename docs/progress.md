@@ -9015,3 +9015,53 @@ activa en ese teléfono. La prueba de Meta espera que termine ese
 recorrido. Después se requiere un candidato con la integración y un
 código superior al instalado, o una instalación limpia del candidato
 elegible. Se conservaron el teléfono y los datos del ensayo en curso.
+
+## 22/11/2026 CDMX — Continuación autónoma de la prueba de Meta
+
+El titular autorizó completar ambas acciones sin asistencia, con cuentas
+y datos de prueba, incluyendo producción si hiciera falta, y usar las
+cuentas de Google disponibles en el Samsung. ADB confirmó 433 instalado
+por Google Play en SM-S938B. El recibo de Codemagic
+`6b0264a98a656efc66c206b5`, fuente
+`efc3277a7c11f8633235584a4cf2c95c7d471181`, confirmó producción sin
+integración de Meta. Se inició el candidato privado
+`6b03456147e5658aabda40e9` desde el SHA de QA congelado
+`dda575c1a00da14483d156a5c7767f90627ab0ba`, con perfil DEV y Meta activo.
+
+Las dos cuentas QA, el borrador privado y la conversación vacía siguen
+disponibles en DEV. Se renovó únicamente la credencial del invocador de
+`meta-ads-worker`, con copia local cifrada por DPAPI. El POST autenticado
+respondió HTTP 200 con cero entregas, omisiones y fallos, y el gate sigue
+cerrado. La lista privada Samsung Meta QA tiene ahora dos cuentas del
+titular, incluyendo la asociada a la instalación del teléfono. Se
+confirmó la inscripción y se seleccionó en Play una cuenta elegible.
+
+Codemagic terminó con el código 435. Se cotejaron el manifiesto,
+el certificado de carga y el recibo de configuración. SHA-256 del AAB
+`ef687135d852543c192d07e9c35dca2e4a347078d62e09c76914874e746acd39`.
+Play validó el archivo y aceptó un solo cambio de `samsung-meta-qa`.
+El panel confirmó «Changes in review» para el 435. Sigue pendiente
+la instalación desde la tienda y el envío de ambas señales a Meta.
+
+Play publicó el 435 para los probadores seleccionados y el Samsung lo
+instaló el 22 de noviembre a las 15:14 CDMX desde `com.android.vending`.
+El recorrido nativo produjo un mensaje privado y el primer envío de la
+ficha ficticia a revisión. Antes de entregar se verificaron ambas filas
+con build 435, app 2.3.6, Android 17 y contexto presente. A las 15:27 CDMX
+el worker respondió HTTP 200, dos entregas, cero omisiones y cero fallos.
+Meta reconoció cada evento y la base confirmó `Contact` y
+`SubmitApplication`, un intento por evento, con sus identificadores ya
+purgados. El postflight independiente confirmó gate apagado, cero
+preferencias y cero contextos retenidos. La ficha sigue privada en
+`submitted`, sin publicación. La evidencia y sus límites se conservan en
+[el recibo de Samsung](meta-samsung-qa-20261122.md).
+
+La comprobación visible del panel de Meta está en curso. El ensayo es
+DEV y no acredita una conversión atribuida a anuncios. La versión de
+producción 2.3.10 (437), fuente
+`a24408beeb664d48f15b1bd90e9a8c578602659e`, fue publicada en Play interno
+por Codemagic `6b0354d59ee19bef90f484db`, en otro chat. Conserva el
+almacenamiento de sesión separado por host, pero aún carece de Meta.
+Se usa como regreso del teléfono a producción después del ensayo. Los
+pilotos siguen pendientes de portar la integración al producto actual,
+comprobar sus declaraciones y validar la medición de producción.
