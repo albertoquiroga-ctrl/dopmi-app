@@ -70,6 +70,11 @@ jobs:
         run: node tools/verification/guardian-concurrency.mjs
       - name: Adoption contact concurrent devices and lost response
         run: node tools/verification/adoption-contact-concurrency.mjs
+      - name: Report moderation scope and action retries against PostgreSQL
+        env:
+          DOPMI_REPORT_CONTEXT_POSTGRES_TEST: 'true'
+          PGPASSWORD: postgres
+        run: node --test tools/verification/admin-report-context-sql.test.mjs
       - name: Confirmed adoption value and consent races against PostgreSQL
         env:
           DOPMI_VALUE_SIGNALS_POSTGRES_TEST: 'true'

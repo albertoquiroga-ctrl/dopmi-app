@@ -1,3 +1,16 @@
+# Cola vigente — expediente de reportes,22/nov/2026 CDMX
+
+Implementación acotada autorizada de contexto y acciones administrativas; el titular
+aprobó chat sólo por reporte/adopción/pareja/cutoff. Sin mensajes generales ni archivos
+privados. [Plan](superpowers/plans/2026-11-22-admin-report-context.md).
+
+Código/SQL y pruebas dirigidas listos; validación integrada y paquete remoto en curso.
+No aplicado ni publicado aún. Integrador: cerrar CI por SHA, guardas de paquete y
+publicación exacta; después sólo leer expediente real, sin sanciones de QA. Preservar
+servicios/push/finanzas/clientes actuales. Reviewer cerró P2historial y borrador archivado.
+QAvisual375/320 con datos sintéticos; no aceptación instalada. La cola móvil inferior
+437/438 espera resolución de tiendas y uso legítimo; este lote no crea otra build.
+
 # Cola vigente — Analytics 437/438, 22/nov/2026 CDMX
 
 GA y SQLPROD20261122204434 verificados. Candidatoa24408be/CI45065888007 cuatro

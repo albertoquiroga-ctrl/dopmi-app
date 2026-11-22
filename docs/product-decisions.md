@@ -1,3 +1,26 @@
+## 22/11/2026 CDMX — Expediente de reportes y moderación acotada
+
+El titular pide contexto de publicación, reportante, persona reportada y conversación,
+y controles reales para actuar desde Administración. Autoriza expresamente en este
+chat el acceso administrativo auditado sólo al hilo inequívoco de esa adopción y esas
+dos personas, hasta la fecha del reporte. Si no existe ese vínculo, se muestra su
+ausencia; perfiles/casos no abren una bandeja de chats. Los adjuntos quedan como
+marcador, sin descargar archivos privados en este lote.
+
+Decisiones de implementación: resolver/descartar, retirar adopción y suspender/reactivar
+cuenta son acciones separadas, con motivo, confirmación, CAS, recibo idempotente e
+historial. La reactivación sólo desde el reporte que originó la suspensión aún vigente,
+sin cambios externos posteriores; no repone publicaciones retiradas. Proteger cuentas
+administrativas, actor y eliminadas. El retiro individual de casos queda deshabilitado
+con explicación financiera; reportes de perfil usan suspensión, sin revocar sellos.
+
+El contenido archivado sin procedencia pública verificable se omite; nunca exponer un
+borrador rearchivado como evidencia pública. La conversación histórica puede seguir
+vinculada aunque el contenido público ya no esté disponible. No hacer sanciones,
+contactos, cierres de reportes o fixtures reales como QA. Conservar RLS, archivos,
+finanzas, servicios, push, campañas y clientes nativos. Alcance, pruebas y despliegue
+se concilian en [el plan](superpowers/plans/2026-11-22-admin-report-context.md).
+
 ## 22/11/2026 CDMX — Actividad medida y resultados de adopción
 
 El titular pide configurar Analytics con eventos/métricas de valor y corregir la

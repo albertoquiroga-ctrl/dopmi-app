@@ -1,3 +1,4 @@
+import { createReportModerationApi, type ReportModerationApi } from './reportModeration';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { supportRequests, type SupportPage } from './supportApi';
 import { createStoreCatalogApi, type StoreCatalogApi } from './StoreCatalog';
@@ -82,7 +83,7 @@ export type FirstPublicationSummary = {
   oldest_first_review_hours: number | null;
   stalled_draft_authors: number;
 };
-export type AdminApi = {
+export type AdminApi = Partial<ReportModerationApi> & {
   readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
   videoModeration?: VideoModerationApi;
@@ -219,6 +220,7 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     },
     async rescueFileUrl(path) { const {data,error}=await client.storage.from('dopmi-rescue-evidence').createSignedUrl(path,60); if(error) throw error; return data.signedUrl; },
     async listContributions(status, page) { const {data,error}=await client.rpc('dopmi_admin_donations',{status_filter:status,page_number:page}); if(error) throw error; if (!data || !Array.isArray(data.items) || typeof data.total !== 'number') throw new Error('invalid_response'); return data; },
+    ...createReportModerationApi(client),
     async listReports(status,page) { const {data,error}=await client.rpc('dopmi_admin_reports',{status_filter:status,page_number:page}); if(error) throw error; return data; },
     async resolveReport(id,status,resolution) { const {error}=await client.rpc('dopmi_admin_resolve_report',{report_id:id,next_status:status,resolution_note:resolution}); if(error) throw error; },
     async listCaseUpdates(status,page) { const {data,error}=await client.rpc('dopmi_admin_case_updates',{status_filter:status,page_number:page}); if(error) throw error; return data; },

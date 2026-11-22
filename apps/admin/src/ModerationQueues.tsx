@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { errorMessage, validateProfileFieldFeedback, type AdminApi, type CaseUpdate, type ContentReport, type RescuerPublicProfile, type ProfileFeedbackField, type ProfileFieldFeedback } from './api';
 import SupportInbox from './SupportInbox';
+import ReportDetail from './ReportDetail';
 
 type Page<T> = { items: T[]; total: number };
 
@@ -101,22 +102,14 @@ function Profiles({ api }: { api: AdminApi }) {
   const load = useCallback(async (page: number) => { const data = await api.listRescuerProfiles!('submitted', page); return { ...data, items: data.items.map(item => ({ ...item, id: item.owner_id })) }; }, [api]);
   return <Queue load={load} empty="No hay perfiles públicos esperando revisión." render={(item, refresh) => <ProfileReview key={`${item.id}:${item.version}`} item={item} api={api} refresh={refresh} />} />;
 }
-function ReportReview({ item, api, refresh }: { item: ContentReport; api: AdminApi; refresh: () => void }) {
-  const [note, setNote] = useState(''), [error, setError] = useState(''), [busy, setBusy] = useState(false);
-  const pending = useRef(false);
-  async function resolve(status: string) {
-    if (pending.current) return;
-    if (!note.trim()) { setError('Describe la revisión y la acción realizada.'); return; }
-    pending.current = true; setBusy(true); setError('');
-    try { await api.resolveReport!(item.id, status, note.trim()); refresh(); } catch (e) { setError(errorMessage(e)); }
-    finally { pending.current = false; setBusy(false); }
-  }
+function ReportReview({ item, open }: { item: ContentReport; open: () => void }) {
   const types: Record<string, string> = { adoption: 'Adopción', case: 'Caso', rescuer: 'Rescatista' };
   const reasons: Record<string, string> = { incorrect: 'Información incorrecta', unsafe: 'Riesgo', fraud: 'Posible fraude', privacy: 'Privacidad', other: 'Otro' };
-  return <><div><p>{types[item.target_type]} · {reasons[item.reason]}</p><h2>{item.target_id}</h2><p>{item.details || 'Sin detalles adicionales.'}</p><p>{item.resolution}</p></div><div><label>Resolución<textarea maxLength={1000} value={note} onChange={e => setNote(e.target.value)} /></label>{error && <p role="alert">{error}</p>}<button disabled={busy} onClick={() => void resolve('resolved')}>Resolver</button><button disabled={busy} onClick={() => void resolve('dismissed')}>Descartar</button></div></>;
+  const statuses: Record<string, string> = { open: 'Abierto', reviewing: 'En revisión', resolved: 'Resuelto', dismissed: 'Descartado' };
+  return <><div><p>{types[item.target_type]} · {reasons[item.reason]} · <span className="badge">{statuses[item.status] || item.status}</span></p><h2>Reporte de {types[item.target_type]?.toLocaleLowerCase('es-MX') || 'contenido'}</h2><p className="authored-text">{item.details || 'Sin detalles adicionales.'}</p><p className="muted">Registro inicial: {new Date(item.created_at).toLocaleString('es-MX')}</p>{item.resolution && <p>{item.resolution}</p>}</div><button className="secondary" onClick={open}>Abrir expediente</button></>;
 }
 function Reports({ api }: { api: AdminApi }) {
-  const [status, setStatus] = useState('open');
-  const load = useCallback((page: number) => api.listReports!(status, page), [api, status]);
-  return <><label>Estado del reporte<select value={status} onChange={e => setStatus(e.target.value)}><option value="open">Abiertos</option><option value="reviewing">En revisión</option><option value="resolved">Resueltos</option><option value="dismissed">Descartados</option></select></label><Queue key={status} load={load} empty="No hay reportes en este estado." render={(item, refresh) => <ReportReview item={item} api={api} refresh={refresh} />} /></>;
+  const [status, setStatus] = useState('open'), [selected, setSelected] = useState<string | null>(null), [revision, setRevision] = useState(0);
+  const load = useCallback(async (page: number) => { if (!api.listReports) throw new Error('reports_unavailable'); return api.listReports(status, page); }, [api, status]);
+  return <><label>Estado del reporte<select value={status} onChange={e => { setSelected(null); setStatus(e.target.value); }}><option value="open">Abiertos</option><option value="reviewing">En revisión</option><option value="resolved">Resueltos</option><option value="dismissed">Descartados</option></select></label><Queue key={`${status}:${revision}`} load={load} empty="No hay reportes en este estado." render={item => <ReportReview item={item} open={() => setSelected(item.id)} />} />{selected && <ReportDetail key={selected} reportId={selected} api={api} close={() => setSelected(null)} changed={() => setRevision(value => value + 1)} />}</>;
 }

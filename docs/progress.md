@@ -10351,3 +10351,43 @@ histórico no reconstruible. [Estado vigente](candidate-release-current.md).
 
 Revisión independiente final de los siete documentos: sin P1/P2. Diff check limpio;
 sólo continuidad documental después de congelar a24408be, sin repetir suites o CI.
+
+
+## 22/11/2026 CDMX — Expediente de reportes implementado; integración en validación
+
+Se reprodujo en AdminPROD un reporte con sólo UUID/motivo/texto y Resolver/Descartar.
+Dos auditorías independientes de código confirmaron proyección incompleta y ausencia
+de acciones; resolver no retiraba ni suspendía. VercelPROD verificado:
+dpl_8MLN3k2TThpEZA6DtH8eGLJh7kiz/ee3ef773 READY; apps/admin idéntico a la base3e52c871.
+Titular aprobó acceso a mensajes limitado al reporte. Rama nueva
+codex/admin-report-context-20261122 sobre3e52c871; mockf693 conservado.
+
+Implementados: expediente/publicación/personas/historial, chat explícito por versión y
+cutoff; adjuntos sólo marcador. Acciones separadas con confirmación/CAS/UUID. Servidor
+deriva objetivos, conserva RLS, audita lecturas y decisiones; suspende noadmin/noactor,
+reactiva únicamente suspensión vigente del mismo reporte y sin otra escritura de
+perfil. Retiro adopción reutiliza archivo/revisión/notificación, incluso tras suspensión;
+casos/perfil explican la limitación. No datos de usuarios reales utilizados como fixtures.
+
+Migración nueva CLI20261122222843_admin_report_context.sql:29521B,
+SHA25657f52fc182795c15d7322a992cd0d14ea817e5a8ee12ce3dc74097864383833f. No aplicada.
+TDD: RED de RPC ausente, de Abrir expediente ausente, de historial anidado/orden de
+microsegundos y de contenido privado rearchivado. Últimos backend25PASS/0SKIP con
+PostgreSQL real y tres carreras. UI37dirigidasPASS; adaptador/API41PASS. Corte completo
+intermedio:207AdminPASS/buildPASS y1412NodePASS/16SKIP; dos correcciones finales
+requieren gates finales, no atribuirles aquel corte anterior. Dependencias admin
+instaladas mediante npm ci sin modificar lockfile; Vitest ausente inicial no cuenta RED.
+
+Revisión independiente cerró los P2 de historial anidado y borrador rearchivado.
+UI validada con datos sintéticos en375/320px: scroll, teclado, confirmación y botones
+alcanzables, sin overflow horizontal en320. Chrome externo perdió conexión; fallback
+local en navegador integrado, sin accesos productivos adicionales. Capturas privadas
+mostradas al titular. Fixture local retirado, sin publicar historias ni sanciones reales.
+No prueba de fuente/aprobación de fotos productivas ni aceptación instalada atribuida.
+
+Lectura remota23:00:42UTC: historia74/latest20261122204434 y ausencia de objetos nuevos.
+Trigger push de reportes es INSERT/UPDATEOFstatus y descarta estado sin cambio; backfill
+reported_at no lo dispara. Paquete transaccional local en preparación/validación,
+preservando SQL/cron/runtime actuales. CI, SQL aplicado, Vercel publicado y comprobación
+real del expediente permanecen estados separados. No Flutter/Codemagic/Play/TestFlight.
+Evidencia .tools/admin-report-context-20261122. No se cerró ni sancionó el reporte real.

@@ -66,3 +66,56 @@ body{min-width:280px}button,input,select,textarea{font:inherit}button{min-height
 .first-publication-counts > div { padding: 12px; border-radius: 12px; background: #faf7f4; }
 .first-publication-counts dt { font-size: 13px; color: var(--muted); }
 .first-publication-counts dd { margin: 5px 0 0; font-size: 24px; font-weight: 650; }
+
+.report-dialog { width: min(940px, calc(100% - 32px)); max-width: 940px; max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain; padding: 0 28px 28px; scroll-padding-top: 100px; }
+.report-dialog-header { position: sticky; top: 0; z-index: 2; background: #fff; margin: 0 -4px 18px; padding: 18px 4px; gap: 16px; border-bottom: 1px solid var(--line); }
+.report-dialog-header h2 { font-size: 24px; line-height: 1.3; }
+.report-dialog-header .eyebrow { margin-bottom: 6px; }
+.report-dialog button, .report-public-link { min-height: 44px; white-space: normal; overflow-wrap: anywhere; }
+.report-dialog p, .report-dialog dd, .report-dialog h4 { overflow-wrap: anywhere; }
+.report-dialog h3 { font-size: 20px; line-height: 1.35; margin: 0 0 16px; }
+.report-dialog h4 { font-size: 17px; line-height: 1.4; margin: 0 0 12px; }
+.report-section { padding: 24px 0; border-bottom: 1px solid var(--line); }
+.report-section p { margin: 12px 0; }
+.report-section dl { margin: 16px 0 0; grid-template-columns: minmax(105px, .8fr) minmax(0, 1.5fr); gap: 10px 18px; line-height: 1.5; }
+.report-summary-line { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+.report-public-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 12px; margin: 16px 0; }
+.report-public-photos img { width: 100%; height: 200px; object-fit: contain; background: #faf7f4; border: 1px solid var(--line); border-radius: 12px; }
+.report-public-photos + .notice button { display: block; margin-top: 12px; }
+.report-public-link { display: inline-flex; align-items: center; color: var(--purple); font-weight: 650; }
+.report-people-grid, .report-action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.report-person { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fcfbf8; }
+.report-person h3 { font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.report-person h4 { font-size: 19px; }
+.report-person dl { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); font-size: 13px; }
+.report-messages, .report-history { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 12px; }
+.report-messages li, .report-history li { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #fcfbf8; }
+.report-message-heading { display: flex; justify-content: space-between; align-items: start; gap: 8px 16px; flex-wrap: wrap; }
+.report-message-heading time, .report-history time { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.report-attachment { display: inline-block; margin-top: 10px; padding: 6px 10px; border-radius: 8px; background: #eeeae4; color: #534c45; font-size: 13px; }
+.report-actions { border-bottom: 0; }
+.report-action-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 20px 0 26px; }
+.report-action-grid button { width: 100%; }
+.report-danger { background: #fff0ed; color: #862923; border: 1px solid #efb5ab; }
+.report-status-actions, .report-confirmation-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.report-status-actions button, .report-confirmation-buttons button { flex: 1 1 160px; }
+.report-confirmation { margin-top: 24px; padding: 20px; border: 2px solid #dcc568; border-radius: 16px; background: #fffaf0; }
+.report-confirmation label { display: block; margin-top: 18px; }
+.report-confirmation-buttons { margin-top: 18px; }
+.report-status-note { padding: 14px; border: 1px solid #c5dbcf; border-radius: 12px; background: #f0f8f3; line-height: 1.5; }
+@media (max-width: 700px) {
+  .report-dialog { width: calc(100% - 16px); max-height: calc(100dvh - 16px); padding: 0 16px 20px; border-radius: 16px; }
+  .report-dialog-header { align-items: start; gap: 10px; }
+  .report-dialog-header h2 { font-size: 20px; }
+  .report-dialog-header button { max-width: 120px; flex-shrink: 0; padding: 8px; }
+  .report-people-grid, .report-action-grid { grid-template-columns: minmax(0, 1fr); }
+  .report-person { padding: 16px; }
+  .report-section { padding: 22px 0; }
+  .report-confirmation { padding: 16px; }
+}
+@media (max-width: 360px) {
+  .report-dialog-header { flex-wrap: wrap; }
+  .report-dialog-header button { max-width: none; }
+  .report-section dl { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .report-section dd { margin-bottom: 10px; }
+}

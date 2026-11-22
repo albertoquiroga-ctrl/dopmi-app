@@ -4,6 +4,16 @@ import { expect, test, vi } from 'vitest';
 import ModerationQueues from './ModerationQueues';
 import type { AdminApi, CaseUpdate, ContentReport, RescuerPublicProfile } from './api';
 
+test('opens a report dossier instead of offering a context-free resolution', async () => {
+  const client = api(); const user = userEvent.setup();
+  render(<ModerationQueues api={client} initialView="reports" />);
+  await user.click(await screen.findByRole('button', { name: 'Abrir expediente' }));
+  expect(await screen.findByRole('dialog', { name: 'Expediente del reporte' })).toBeInTheDocument();
+  expect(screen.getByText('El expediente no está disponible en esta versión del panel.')).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Resolver' })).not.toBeInTheDocument();
+  expect(client.resolveReport).not.toHaveBeenCalled();
+});
+
 const update: CaseUpdate = {
   id: 'update-one', case_id: 'case-one', owner_id: 'owner-one',
   body: 'Luna respondió bien al tratamiento.', photos: [], status: 'submitted',
@@ -23,7 +33,7 @@ function api(): AdminApi {
   };
 }
 
-test('publishes a reviewed update and resolves a persisted report', async()=>{
+test('publishes a reviewed update and opens a report without legacy resolution controls', async()=>{
   const client=api(); const user=userEvent.setup(); render(<ModerationQueues api={client}/>);
   expect(await screen.findByText('Luna respondió bien al tratamiento.')).toBeInTheDocument();
   await user.click(screen.getByRole('button',{name:'Publicar'}));
@@ -35,9 +45,9 @@ test('publishes a reviewed update and resolves a persisted report', async()=>{
   expect(client.reviewRescuerProfile).toHaveBeenCalledWith(expect.objectContaining({owner_id:'owner-one'}),'published','',{});
   await user.click(screen.getByRole('button',{name:'Reportes'}));
   expect(await screen.findByText('Revisar')).toBeInTheDocument();
-  await user.type(screen.getByLabelText('Resolución'),'Contenido revisado y atendido.');
-  await user.click(screen.getByRole('button',{name:'Resolver'}));
-  expect(client.resolveReport).toHaveBeenCalledWith('report-one','resolved','Contenido revisado y atendido.');
+  await user.click(screen.getByRole('button',{name:'Abrir expediente'}));
+  expect(await screen.findByText('El expediente no está disponible en esta versión del panel.')).toBeInTheDocument();
+  expect(client.resolveReport).not.toHaveBeenCalled();
 });
 
 test('requires actual media loading before approval and retries signing failures', async () => {
@@ -64,18 +74,17 @@ test('loads later pages and returns after the last item is resolved', async () =
   await waitFor(() => expect(client.listCaseUpdates).toHaveBeenLastCalledWith('submitted', 1));
 });
 
-test('failed decisions preserve notes and require an explicit resolution', async () => {
+test('failed report context reads can be retried without resolving the report', async () => {
   const client = api(); const user = userEvent.setup();
-  client.resolveReport = vi.fn().mockRejectedValueOnce(new Error('offline')).mockResolvedValue(undefined);
+  client.reportDetail = vi.fn().mockRejectedValue(new Error('offline'));
   render(<ModerationQueues api={client} />);
   await user.click(screen.getByRole('button', { name: 'Reportes' }));
-  await user.click(await screen.findByRole('button', { name: 'Resolver' }));
+  await user.click(await screen.findByRole('button', { name: 'Abrir expediente' }));
+  expect(await screen.findByText('No pudimos cargar el expediente. Recárgalo antes de tomar una decisión.')).toBeInTheDocument();
   expect(client.resolveReport).not.toHaveBeenCalled();
-  await user.type(screen.getByLabelText('Resolución'), 'Se retiró la publicación después de revisar su evidencia.');
-  await user.click(screen.getByRole('button', { name: 'Resolver' }));
-  expect(screen.getByLabelText('Resolución')).toHaveValue('Se retiró la publicación después de revisar su evidencia.');
-  await user.click(screen.getByRole('button', { name: 'Resolver' }));
-  expect(client.resolveReport).toHaveBeenCalledTimes(2);
+  await user.click(screen.getByRole('button', { name: 'Recargar expediente' }));
+  await waitFor(() => expect(client.reportDetail).toHaveBeenCalledTimes(2));
+  expect(client.resolveReport).not.toHaveBeenCalled();
 });
 
 
