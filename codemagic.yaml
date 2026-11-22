@@ -508,3 +508,100 @@ workflows:
         submit_to_app_store: true
         cancel_previous_submissions: false
         release_type: AFTER_APPROVAL
+
+  android-samsung-prod-private-restore:
+    name: Dopmi Samsung production restore artifact
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    working_directory: apps/mobile
+
+    environment:
+      <<: *android-signed-environment
+      groups:
+        - dopmi_supabase
+        - dopmi_firebase
+        - dopmi_production_maps
+      vars:
+        <<: *android-signed-vars
+        RELEASE_NAME: 2.3.9
+        DOPMI_ENVIRONMENT: production
+        DOPMI_ADOPTION_ONLY: 'true'
+        DOPMI_STORE_REVIEW: 'false'
+        DOPMI_STORE_AMAZON_PUBLIC: 'true'
+        ENABLE_GOOGLE_AUTH: 'true'
+        ENABLE_APPLE_AUTH: 'false'
+        ENABLE_GOOGLE_MAPS: 'true'
+        ENABLE_NATIVE_WALLETS_TEST: 'false'
+
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+
+    scripts:
+      - name: Require the exact 433 production profile
+        script: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = efc3277a7c11f8633235584a4cf2c95c7d471181
+          git -C "$CM_BUILD_DIR" diff --quiet HEAD^ HEAD -- . ':(exclude)codemagic.yaml'
+          test "$((PROJECT_BUILD_NUMBER + 231))" -gt 435
+          PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
+          test "$PROFILE" = production:true:false:true
+          test "$RELEASE_NAME" = 2.3.9
+          unset DOPMI_GUARDIAN_ACCEPTANCE_BUILD
+          python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public
+      - name: Create matching Guardian Firebase configuration
+        script: *android-signed-firebase
+      - name: Configure native Google Maps
+        script: *android-signed-maps
+      - name: Install dependencies
+        script: *android-signed-dependencies
+      - name: Static analysis
+        script: *android-signed-analysis
+      - name: Unit and widget tests
+        script: *android-signed-tests
+      - name: Build signed production Android App Bundle
+        script: *android-signed-bundle
+      - name: Verify the private restoration receipt
+        script: |
+          set -euo pipefail
+          python3 - <<'PYINFO'
+          import hashlib, json
+          from pathlib import Path
+          config = json.loads(Path('config.json').read_text())
+          expected = {
+              'DOPMI_ENVIRONMENT': 'production',
+              'DOPMI_ADOPTION_ONLY': 'true',
+              'DOPMI_STORE_REVIEW': 'false',
+              'DOPMI_STORE_AMAZON_PUBLIC': 'true',
+              'SUPABASE_URL': 'https://ysaoeuidcvgtlmphmeyb.supabase.co',
+              'ENABLE_GOOGLE_AUTH': 'true',
+              'ENABLE_APPLE_AUTH': 'false',
+              'ENABLE_GOOGLE_MAPS': 'true',
+              'ENABLE_GUARDIAN': 'false',
+              'ENABLE_GUARDIAN_TEST': 'false',
+              'ENABLE_MEASUREMENT_TEST': 'false',
+              'ENABLE_NATIVE_WALLETS_TEST': 'false',
+              'STRIPE_PUBLISHABLE_KEY': '',
+          }
+          if any(config.get(key) != value for key, value in expected.items()):
+              raise SystemExit('The restoration configuration differs from version 433.')
+          firebase = json.loads(Path('android/app/google-services.json').read_text())
+          if firebase['project_info']['project_id'] != 'dopmi-production':
+              raise SystemExit('The restoration Firebase environment must be production.')
+          receipt = Path('build/guardian-build-info.txt')
+          lines = receipt.read_text().splitlines()
+          lines = [line for line in lines if not line.startswith('Distribution: ')]
+          lines.extend([
+              'Product commit: efc3277a7c11f8633235584a4cf2c95c7d471181',
+              'Distribution: private Codemagic artifact',
+              'Meta ads measurement: unavailable in this product source',
+              'AAB SHA256: ' + hashlib.sha256(Path('build/app/outputs/bundle/release/app-release.aab').read_bytes()).hexdigest(),
+          ])
+          receipt.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          PYINFO
+
+    artifacts:
+      - build/guardian-build-info.txt
+      - build/app/outputs/bundle/release/app-release.aab
