@@ -1,4 +1,41 @@
-## Candidato publicado en QA — Adoptar con aumento, 21/11/2026 CDMX
+## Envío público autorizado — 2.3.9 (433/434), 21/11/2026 CDMX
+
+El titular pide llevar a producción los arreglos acumulados, incluidos enlaces y
+carrusel de fotos. Se promovieron los binarios existentes de la misma fuente
+`efc3277a7c11f8633235584a4cf2c95c7d471181`, tag
+`codex/discovery-zoom-efc3277a`, CI44980552352 cuatro SUCCESS. No recompilación ni
+cambio de producto. Continuación documental en `codex/discovery-zoom-clearance-20261121`.
+
+Chrome externo confirmó antes del envío: Play público 2.3.8 (418), activo al100%
+en su país/región vigente, y Apple 2.3.8 (419), Listo para distribución. Esta lectura
+de Apple sustituye el pendiente histórico del419. Play interno433 y TestFlight434
+ya estaban disponibles; no confundirlos con distribución pública.
+
+- **Google Play:** 433 (2.3.9) añadido desde la biblioteca a Producción, rollout100%,
+  países vigentes conservados, sin dispositivos perdidos respecto al418. Se envió
+  un único cambio. Readback: «Changes in review», «433 (2.3.9) Start full rollout»;
+  comprobaciones rápidas aún en curso. Managed publishing OFF: publicación automática
+  tras aprobación. No se afirma que433 esté disponible públicamente.
+- **Apple:** nueva versión2.3.9 con la compilación existente434. Notas de revisión
+  corregidas para reflejar Tienda/Amazon externo y finanzas ocultas, conservando cuenta
+  y contacto de revisión. Envío `b75e9093-3d90-451c-aefd-888180ece1fb`,21/nov22:34CDMX,
+  readback «Pendiente de revisión». Publicación automática al aprobar, para todos los
+  usuarios. No se afirma aprobación ni disponibilidad pública de434.
+
+Inventario independiente confirma HTTPS de mascotas/perfiles, carrusel a pantalla
+completa, favoritos/elección de analítica, clip y ajuste de aumento. El visor no
+promete pellizco para zoom. Mantiene PROD/adopciones/TiendaON y cliente financieroOFF.
+No SQL, servicios, acuerdos, claves, pagos ni cambios del piloto. Último corte0/60
+contactos y60tokens noQAOFF conservado; esta publicación no activa campañas.
+
+Evidencia privada `.tools/public-fixes-20261121`: propuesta, reservas/recibos por
+tienda y capturas de ambos envíos. Siguiente: conciliar resolución de las tiendas y
+disponibilidad pública de estos mismos433/434, sin repetir envíos ni builds. La QA
+física de sesión/botones con aumento/clip sigue pendiente; la autorización de publicar
+no la acepta. Conservar OFF del iPad426. El corte técnico siguiente conserva firmas,
+hashes y pruebas de estos binarios.
+
+## Corte técnico QA — Adoptar con aumento, 21/11/2026 CDMX
 
 Fuente `efc3277a7c11f8633235584a4cf2c95c7d471181`, tag
 `codex/discovery-zoom-efc3277a`, sobre9ff6fa08/968e6d7d: conserva clip y campañas.

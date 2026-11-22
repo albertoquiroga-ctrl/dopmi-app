@@ -1,4 +1,23 @@
-# Cola vigente — Adoptar con aumento y campañas, 21/nov/2026 CDMX
+# Cola vigente — revisión pública 433/434, 21/nov/2026 CDMX
+
+El titular autorizó expresamente publicar los fixes acumulados. Android433 e
+iOS434, misma fuenteefc3277a/CI44980552352 cuatro SUCCESS, se enviaron desde sus
+binarios existentes a producción pública. Play aceptó un único cambio433/rollout100%
+y muestra «Changes in review», con comprobaciones rápidas pendientes; Apple muestra
+2.3.9 «Pendiente de revisión», envío b75e9093-3d90-451c-aefd-888180ece1fb.
+Ambas tiendas tienen publicación automática tras aprobación. Últimos públicos
+verificados antes del envío: Android418 e iOS419 (Apple ya Listo para distribución).
+
+Siguientes acciones finitas: integrador concilia el resultado de las mismas
+solicitudes y disponibilidad pública; titular/integrador comprueban sesión, acciones
+de Adoptar con aumento y clip en433/434 cuando haya dispositivo. No repetir builds,
+subidas ni envíos durante la revisión. La autorización de promoción sustituye la
+exclusión de promoción del corte anterior; no acepta la QA física ni activa finanzas
+o campañas. Preservar OFF del iPad426,0/60 contactos y60tokens noQAOFF. Ver
+[candidato vigente](candidate-release-current.md) y recibos privados
+`.tools/public-fixes-20261121`.
+
+# Corte anterior — Adoptar con aumento y campañas, 21/nov/2026 CDMX
 
 La corrección de botones de Adoptar tapados por navbar con aumento usa la misma
 fuente `efc3277a7c11f8633235584a4cf2c95c7d471181` en ambas plataformas, tag

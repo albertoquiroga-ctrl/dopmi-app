@@ -10194,3 +10194,47 @@ apertura. Quedan titular/integrador: sesión, acciones Adoptar con aumento y cli
 en un chat existente de433/434, sin enviar mensajes/fotos. Esta QA sustituye
 instalar432/430; no marca aceptada la entrega anterior. Preservar OFF del iPad426,
 gates y último corte0/60/60tokensOFF. No promoción pública ni aceptación física nueva.
+## 21/11/2026 CDMX — Envío público de los fixes acumulados, 433/434
+
+El titular solicita producción porque la descarga pública aún carece de los
+arreglos recientes; cita enlaces y carrusel. Inventario independiente confirmó
+HTTPS de mascotas/perfiles, visor de fotos a pantalla completa, favoritos,
+elección de Analítica, clip y clearance por aumento en efc3277a. CI44980552352
+cuatroSUCCESS, hashes/firmas/runtime433/434 reutilizados sin recompilar. Sin
+pellizco de zoom prometido. Las guardas DOPMI_*_SUBMISSION pertenecen a publicación
+Codemagic y no son flags del cliente Dart: no exigieron reconstruir para promover.
+
+Chrome externo confirmó Play público2.3.8(418)/activo100%/país vigente, interno
+2.3.9(433), y Apple2.3.8(419) Listo para distribución. Se creó una sola release
+Play y versiónApple2.3.9. Play añadió433 desde biblioteca, sin excluir dispositivos
+respecto418, conservó100%/territorios. Guardó y envió un único cambio tras revisar
+el resumen. Readback04:36UTC: «Changes in review», «433 (2.3.9) Start full rollout»;
+quick checks pendientes, Managed publishingOFF. Envío aceptado y publicación
+automática tras aprobación; no disponibilidad pública nueva afirmada.
+
+Apple seleccionó434 ya cargado y conservó cuenta/contacto de revisión. Corrigió
+notas obsoletas369/shopOFF para describir Tienda/Amazon físico externo,25km,
+privacidad, revisión manual y cliente financieroOFF. Notas públicas cotejadas por
+revisor independiente sin errores materiales. Guardó, añadió y envió una sola vez.
+Readback «2.3.9 Pendiente de revisión», envío
+b75e9093-3d90-451c-aefd-888180ece1fb,21/nov22:34CDMX. Automática al aprobar/todos
+los usuarios seleccionados; no aprobación ni distribución pública434 afirmadas.
+
+Evidencia privada .tools/public-fixes-20261121: operación preparada antes de
+mutaciones, reservas y recibos independientes, capturas play-433-submitted.jpg y
+apple-434-submitted.jpg. Selector Play cambió aria-label al marcar433; una llamada
+informó timeout después de aplicar. Readback comprobó sólo433 marcado y continuó
+sin repetir la selección. Estados de carga se conciliaron sin repetir Create,
+Save ni Submit. No nuevas credenciales, contratos, declaraciones legales,
+subidas, Codemagic, SQL o cambios de servicios. No ampliar permisos CI por usar
+el Chrome del titular. Una sesión/cola ya existente; fuentes remotas conservadas.
+
+Pendientes finitos: integrador concilia resolución de ambas solicitudes y misma
+versión pública; titular/integrador comprueban433/434 en dispositivo, incluida
+sesión, botones con aumento y clip sin enviar mensajes/fotos. La autorización de
+publicar no sustituye esa QA. Sin dispositivo nuevo comprobado en este corte,
+sin aceptación instalada ni contactos/likes/casos de prueba. Mantener OFF del
+iPad426, perfilPROD/adopciones/TiendaON/finanzasOFF y gates del piloto; último
+corte0/60 contactos y60tokens noQAOFF conservado, sin nueva auditoría remota.
+
+Revisión independiente acotada del diff de seis documentos y tres recibos cerrada sin P1/P2: estados, alcance, horarios, fuentes y gates coherentes. Sin suites nuevas por el cambio exclusivamente documental.

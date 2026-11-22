@@ -1,3 +1,15 @@
+## 21/11/2026 CDMX — Publicar los arreglos acumulados en ambas tiendas
+
+El titular solicita expresamente empujar a producción los fixes que no ve en la
+descarga pública, citando enlaces y carrusel a pantalla completa. Autoriza promover
+los binarios existentes2.3.9 Android433/iOS434, fuenteefc3277a, que además contienen
+el ajuste de Adoptar para aumento y conservan los arreglos recientes. Esta decisión
+sustituye la limitación previa a canales QA para estos binarios. No modifica acuerdos,
+servicios, finanzas, territorios ni gates operativos de campañas; tampoco equivale a
+aceptar la QA física pendiente. Promoción a100% de los territorios vigentes y salida
+automática después de la aprobación de cada tienda. Estado efectivo y evidencia en
+[candidato vigente](candidate-release-current.md).
+
 ## 21/11/2026 CDMX — Documentar atribución y diseñar prueba contra anuncios
 
 El titular pide dejar el método de atribución documentado para el chat de

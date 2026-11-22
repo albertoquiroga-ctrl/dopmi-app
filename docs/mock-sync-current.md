@@ -1,4 +1,15 @@
-# Checkpoint vigente — atribución y restauraciones, 20/nov/2026
+# Checkpoint vigente — envío público 433/434, 21/nov/2026 CDMX
+
+Por solicitud expresa del titular se enviaron a producción los mismos binarios
+2.3.9 Android433/iOS434, productoefc3277a/CI44980552352 cuatro SUCCESS. Play aceptó
+Producción433/rollout100%, países vigentes y comprobaciones rápidas en curso;
+Apple434 Pendiente de revisión. Salida automática al aprobar. No se afirma aún
+disponibilidad pública. Continuar en `codex/discovery-zoom-clearance-20261121` y leer
+[candidato vigente](candidate-release-current.md) para conciliación y QA pendiente.
+Mockf693c036 congelado; sin nuevo delta, build, SQL ni activación financiera/piloto.
+Conservar OFF del iPad426 y último corte0/60/60tokens noQAOFF.
+
+# Checkpoint anterior — atribución y restauraciones, 20/nov/2026
 
 Entrega actual en `codex/production-attribution-restored-20261120`.
 Fuente del binarioee3ef773/Play418 activo en producción; Apple419/efcce99f conserva

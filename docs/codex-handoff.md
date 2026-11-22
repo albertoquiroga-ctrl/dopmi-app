@@ -1,5 +1,17 @@
 # Dopmi — continuidad
 
+## Arranque vigente — envío público 433/434, 21/11/2026 CDMX
+
+Continuar en `codex/discovery-zoom-clearance-20261121`, productoefc3277a y tag
+`codex/discovery-zoom-efc3277a`. El titular autorizó producción pública de los fixes
+acumulados. Play2.3.9(433) e iOS2.3.9(434) se promovieron sin recompilar: Google
+aceptó el cambio de Producción/rollout100% y ejecuta comprobaciones rápidas; Apple
+está Pendiente de revisión. Publicación automática tras aprobación en ambas.
+Leer [candidato vigente](candidate-release-current.md) para recibos y límites;
+no reenviar builds o solicitudes mientras se concilia el resultado. Públicos
+anteriores verificados418/419. QA física con aumento/clip continúa pendiente;
+conservar OFF del iPad426 y gates financieros/del piloto0/60/60tokensOFF.
+
 ## Arranque vigente — atribución y restauraciones, 20/11/2026
 
 Entrega a campañas21nov: [contrato de atribución](campaign-attribution-handoff.md)
