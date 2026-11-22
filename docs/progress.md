@@ -10391,3 +10391,26 @@ reported_at no lo dispara. Paquete transaccional local en preparación/validaci�
 preservando SQL/cron/runtime actuales. CI, SQL aplicado, Vercel publicado y comprobación
 real del expediente permanecen estados separados. No Flutter/Codemagic/Play/TestFlight.
 Evidencia .tools/admin-report-context-20261122. No se cerró ni sancionó el reporte real.
+
+## 22/11/2026 23:28UTC — Paquete de reportes congelado; activación pendiente
+
+Producto ca9fff2c2b4fefa1d8770cb6d1cb3d88cf4a3797 empujado en
+codex/admin-report-context-20261122. Corte local final71PASS/4archivos y buildAdmin
+PASS; paquete SQL78497B/SHA2295186d61c58488b260f4142054157505cf2c58979d08ba5580cdae8c31b944,
+20 guardas locales PASS y revisión operativa independiente sinP1/P2. Fuente29521B/
+57f52fc1…83833f. Preflight fresco23:19:04UTC igual al baseline salvo captured_at;
+historia74, runtime videoON/3cronactivos/84campañas noQA habilitadas preservado.
+
+CI45081992493 del mismo SHA: web-and-database SUCCESS (incluido PGreal reportes),
+identity-and-adoption-backend SUCCESS e iOS SUCCESS; Flutter aún Analyze and verify
+the selected scope, Android dev build/privacidad PASS. No fallos observados, tampoco
+cuatroSUCCESS atribuidos. No rerun ni build Codemagic adicional.
+
+Chrome externo reconectado por el titular; panel real autenticado con un reporte
+pendiente, aún UI anterior. Se solicitó una confirmación agrupada para activar el
+SQL exacto y publicar ca9fff2c en el proyecto Vercel existente, condicionada a4/4CI.
+Pendiente respuesta; no reserva/aplicación/despliegue ejecutados. El permiso anterior
+definió diseño y alcance del acceso al chat, sin presentarlo como activación remota.
+El servidor local de la fixture ya no escucha5189 y los archivos de fixture fueron
+retirados. Próximo: conciliar aprobación+mismaCI, preflight/hash/reserva, aplicar una
+vez y comprobar por separado SQL/Vercel/expediente real sin decisiones de moderación.

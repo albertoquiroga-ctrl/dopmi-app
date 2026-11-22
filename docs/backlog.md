@@ -4,9 +4,14 @@ Implementación acotada autorizada de contexto y acciones administrativas; el ti
 aprobó chat sólo por reporte/adopción/pareja/cutoff. Sin mensajes generales ni archivos
 privados. [Plan](superpowers/plans/2026-11-22-admin-report-context.md).
 
-Código/SQL y pruebas dirigidas listos; validación integrada y paquete remoto en curso.
-No aplicado ni publicado aún. Integrador: cerrar CI por SHA, guardas de paquete y
-publicación exacta; después sólo leer expediente real, sin sanciones de QA. Preservar
+Producto ca9fff2c publicado en rama codex/admin-report-context-20261122; paquete
+transaccional revisado listo (78497B/SHA2295186d…31b944),20 guardas locales PASS.
+CI45081992493 a las23:28UTC: web/database, backend e iOS SUCCESS; Flutter aún en
+análisis/pruebas, sin fallos observados. No es cuatroSUCCESS todavía.
+No aplicado ni publicado aún. Confirmación agrupada de activación SQL/panel enviada
+al titular; su aprobación del diseño no se presenta como activación. Integrador:
+conciliar esa respuesta y cerrar la misma CI, preflight fresco y una reserva por
+operación; después sólo leer expediente real, sin sanciones de QA. Preservar
 servicios/push/finanzas/clientes actuales. Reviewer cerró P2historial y borrador archivado.
 QAvisual375/320 con datos sintéticos; no aceptación instalada. La cola móvil inferior
 437/438 espera resolución de tiendas y uso legítimo; este lote no crea otra build.

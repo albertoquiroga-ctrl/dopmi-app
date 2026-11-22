@@ -1,3 +1,12 @@
+# Checkpoint vigente — expediente de reportes,22/nov/2026 CDMX
+
+Continuar en codex/admin-report-context-20261122, producto ca9fff2c, mockf693
+conservado. Implementación/contexto/acciones y paquete SQL revisados; sin aplicación
+ni despliegue. CI45081992493 a23:28UTC con3SUCCESS/Flutterenprogreso; confirmación
+agrupada de activación pendiente del titular. [Cola](backlog.md) y
+[plan](superpowers/plans/2026-11-22-admin-report-context.md). No sancionar el reporte
+real como QA ni crear builds móviles. Preservar estado437/438 siguiente y servicios.
+
 # Checkpoint vigente — Analytics437/438, 22/nov/2026 CDMX
 
 Candidatoa24408be/CI45065888007 cuatroSUCCESS, mockf693 conservado sin delta visual.

@@ -102,3 +102,14 @@ contentnull; el hilo histórico se valida contra report.target_id y puede consul
 sin exponer el borrador. Se rechazaron hilo futuro y reactivación desde otro reporte.
 Nuevos negativos RED→GREEN, última fuente SQL29521B/57f52fc1…83833f,25PASSsinSKIP
 con PGreal; UI37PASS. La publicación remota sigue sin ejecutarse.
+
+## Corte operativo23:28UTC,22nov
+
+Producto congelado ca9fff2c; CI45081992493 en curso: web/database, backend e iOS
+SUCCESS, Flutter análisis/pruebas pendiente. Última selección integrada Admin71PASS
+y buildPASS. Paquete revisado78497B/SHA2295186d…31b944 con20 guardas locales PASS;
+preflight remoto fresco23:19 igual al baseline salvo hora. Revisión independiente
+del paquete sinP1/P2. Confirmación SQL+Vercel enviada al titular y pendiente; no
+aplicación ni publicación, ni sanciones. Chrome externo recuperado y panel legado
+autenticado. Continuar con esa aprobación y mismaCI; no repetir pruebas/builds ya
+válidas, aplicar una vez con reserva y conciliar antes de reintentar incertidumbres.
