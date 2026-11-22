@@ -275,7 +275,8 @@ void main() {
         );
         await tester.pumpAndSettle();
         final attachment = find.byKey(const ValueKey('chat-attach-photo'));
-        expect(tester.getSize(attachment), const Size(40, 40));
+        expect(tester.getSize(attachment).width, greaterThanOrEqualTo(48));
+        expect(tester.getSize(attachment).height, greaterThanOrEqualTo(48));
         expect(attachment.hitTestable(), findsOneWidget);
         await tester.tap(attachment);
         await tester.pumpAndSettle();
