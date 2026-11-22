@@ -1,4 +1,28 @@
-## Candidato vigente — Clip del chat integrado, 21/11/2026 CDMX
+## Candidato en distribución QA — Adoptar con aumento, 21/11/2026 CDMX
+
+Fuente `efc3277a7c11f8633235584a4cf2c95c7d471181`, tag
+`codex/discovery-zoom-efc3277a`, sobre9ff6fa08/968e6d7d: conserva clip y campañas.
+CI [44980552352](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44980552352)
+cuatroSUCCESS. Scaffold reserva la navbar real; tarjeta/foto usan el espacio
+restante tras el encabezado y controles. Conserva la escala del usuario; al200%
+puede desplazarse el contenido sin invadir la barra. Fondo/acciones preservados.
+
+RED real:4PASS/2FAIL por solapamiento al130%/320×690, con3/4pestañas. Tras corregir:
+6PASS del perfil PROD/adopciones/Amazon,108regresionesPASS y análisis0incidencias.
+Capturas sintéticas antes/después y normal/200% revisadas; UI/UX/código/seguridad
+independientes sin P1/P2. Sólo un archivo productivo y dos de prueba/captura.
+No SQL, configuración, servicios, consentimientos ni escrituras de usuarios.
+Referencia visualf693c036 conservada; adaptación autorizada por el defecto reportado.
+
+Android único `6b0264a98a656efc66c206b5` enviado tras ventana de cinco minutos y
+preflight de fuente/último Android432/cola libre. Compilación en curso; artefacto,
+publicación e instalación pendientes. iOS seguirá después en la misma cola,
+heredando el runtime430; aún sin envío. Últimos publicados:432/430 del corte inferior.
+Evidencia privada `.tools/discovery-zoom-20261121`. QA física pendiente; versión
+del teléfono con aumento consultada sin bloquear la reproducción local.
+Conservar OFF del iPad426, gates y último corte0/60 del piloto. Sin promoción pública.
+
+## Corte anterior — Clip del chat integrado, 21/11/2026 CDMX
 
 Clip corregido dentro de su lienzo, controles de adjuntar/enviar de al menos48px
 y alineación conservada con texto grande. Tres archivos sobre la base de campañas

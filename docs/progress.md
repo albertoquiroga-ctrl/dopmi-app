@@ -10129,3 +10129,32 @@ ADB03:00:57UTC:0conectados/0sin autorizar; sin instalación, apertura o descarga
 forzada. Preguntas de QA física ya pendientes; no atribuir aceptación. Mantener
 OFF del iPad426, gates y último corte del piloto0/60/60noQAOFF, sin nueva lectura
 de campañas, contactos, fixtures ni promoción pública. No otro build por espera.
+
+## 21/11/2026 CDMX — Adoptar con aumento: reproducción y candidato en distribución
+
+Titular reporta botones ocultos por la navbar en un Android con aumento. Base
+conciliada por GET: últimos432/968e y430/6aa,30builds terminales; remoto9ff6fa08
+limpio, sin otro delta. Se conserva mockf693c036 y se corrige el defecto concreto.
+Layout previo usaba extendBody y foto/pie por altura global, sin descontar barra
+ni encabezado. Reproducción130%/320×690: controles606/609 contra navbar600.
+RED limpio4PASS/2FAIL, con y sin Tienda; primer intento del fixture se detuvo en
+consentimiento TEST/PROD y luego en limpieza de SemanticsHandle, corregidos sólo
+en el harness antes de acreditar el fallo real. Capturador movido después del
+pump; no tratar esos errores de preparación como fallos de la app.
+
+Scaffold ahora reserva la barra medida y conserva el canvas exterior. Presupuesto
+estable viewport−encabezado−pie para compartir altura entre foto/current/next;
+no depende del scrollOffset. Tamaño mínimo de texto/foto preservado y scroll
+legítimo al200%. Acciones, arrastre, autoría, medición y datos conservados.
+Seis regresiones del perfil PROD3/4pestañasPASS y108regresionesPASS; análisis0.
+Capturas después: controles524.8/527.8 frente navbar600; al200%,430/433 frente550.
+Revisión independiente UI/UX/código/seguridad sin P1/P2; no QA física atribuida.
+
+Producto efc3277a7c11f8633235584a4cf2c95c7d471181, tagcodex/discovery-zoom-efc3277a,
+CI44980552352 cuatroSUCCESS. Tres archivos: discovery_screen, test/capturador
+existentes. Ventana Android03:26:05–03:31:05UTC consumida; preflight reutiliza
+recibos SQL/legal vigentes sin reaplicar. Un solo POST creó Android
+6b0264a98a656efc66c206b5; compilación en curso. iOS aún no enviado; sigue tras
+Android terminal en la misma cola. Últimos publicados432/430, ambos sin aceptación
+física del clip; no atribuirles este arreglo. No servidor, credenciales nuevas,
+finanzas, publicaciones públicas, datos QA nuevos ni contactos del piloto.

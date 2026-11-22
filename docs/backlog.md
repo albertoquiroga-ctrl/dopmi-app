@@ -1,5 +1,15 @@
 # Cola vigente — chat integrado y campañas, 21/nov/2026 CDMX
 
+Prioridad: corregir botones de Adoptar tapados por navbar con aumento. Implementado
+en efc3277a/tagcodex/discovery-zoom-efc3277a, CI44980552352 cuatroSUCCESS;
+perfil PROD3/4pestañas6PASS, regresiones108PASS, análisis0 y revisión independiente
+sin P1/P2. Android6b0264a98a656efc66c206b5 en compilación; integrador verifica
+artefacto/publicación del mismo handle y después envía iOS en cola única.
+Titular/integrador comprueban botones/sesión al instalar, sin crear mensajes,
+likes o casos. Si Samsung no tiene paquete, coordinar la primera apertura con
+QA de atribución. Ver [candidato](candidate-release-current.md). No reabrir
+el piloto0/60 ni alterar el OFF del iPad426. Últimos publicados432/430 abajo.
+
 El clip del chat queda integrado en Android **2.3.9 (432)**, fuente
 `968e6d7de31efb36450c4ad6b9482780a740167f`, conservando la base de campañas
 `1544a852`. CI44975634368 terminó con cuatro SUCCESS y Codemagic
