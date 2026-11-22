@@ -1,4 +1,41 @@
-## Candidato vigente — Etiquetas de campaña, 21/11/2026
+## Candidato vigente — Clip del chat integrado, 21/11/2026 CDMX
+
+Clip corregido dentro de su lienzo, controles de adjuntar/enviar de al menos48px
+y alineación conservada con texto grande. Tres archivos sobre la base de campañas
+1544a852/c2ef6c69, que ya incluye navegación b08f040f. Mockf693c036 congelado;
+esta mejora visual fue pedida por el titular. Callback de foto, texto, mensajes,
+permisos y estados de carga conservados. No SQL ni cambios de servicios.
+
+Android: fuente inmutable `968e6d7de31efb36450c4ad6b9482780a740167f`, tag
+`codex/chat-attachment-integrated-968e6d7d`, CI
+[44975634368](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44975634368)
+cuatroSUCCESS. Análisis local0incidencias,78regresionesPASS y revisión independiente
+sin P1/P2. Codemagic único integrado `6b0257e42985c05978fa8aab` terminó14SUCCESS:
+**2.3.9 (432)**. AAB96786684B, SHA256
+`2e911a1c61438fff72b7f7491acf469a502d4d3a6517012c9e901485fe703210`.
+Firma/pin, identidad, Firebase/backendPROD y perfil adopciones/TiendaON cotejados;
+clip exacto y marcadores de campañas preservados en los tresABI. El log de
+Publishing confirma432/internal/completed/publicado; Console independiente y
+entrega al dispositivo siguen separadas. Evidencia privada
+`.tools/chat-attachment-integrated-20261121/android`.
+
+iOS conserva la entrega ya validada **2.3.9 (430)**, fuente
+`6aa34db85f0d26c57cc9281d948533fb90c957f1`, CI44971463631 cuatroSUCCESS y
+Codemagic `6b024a5160bd7db7c6e8f959`15SUCCESS. IPA55009631B/SHA256
+`510be1368af78934efd19290140083e19a30d3ab51b1e2e01a4680267c852c9d`,
+runtime/identidad y clip exacto cotejados. Chrome externo confirmó430 Lista para
+enviar/DopMi Inner Team: disponible en TestFlight interno. Invitaciones observadas
+«–». El delta de campañas1544 afecta Android; compatibilidad iOS revisada, sin
+repetir su build. Los tres archivos visuales son idénticos entre ambas fuentes.
+
+QA física y aceptación del clip pendientes en ambas plataformas; ADB03:00:57UTC
+sin dispositivos. Solicitudes humanas ya hechas, sin cerrar sesiones ni crear
+mensajes/fotos/casos. Conservar el OFF del iPad426, los gates del piloto y su último
+corte0/60; esta entrega no volvió a consultar ni modificó sus datos. No promoción
+pública. El Android inicial6b024e46 fue cancelado antes de Publishing al conciliar
+la entrega429; no debe reenviarse. Detalle y guarda nueva en progress.
+
+## Corte anterior — Etiquetas de campaña, 21/11/2026
 
 Extensión por comentario sobre la base reciente af0e2274/425–426, integrada con
 campañas en f0e6521a, incluyendo el arreglo de navegación b08f040f inventariado.

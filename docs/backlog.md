@@ -1,13 +1,39 @@
-# Cola vigente — integración de producción21/nov/2026
+# Cola vigente — chat integrado y campañas, 21/nov/2026 CDMX
+
+El clip del chat queda integrado en Android **2.3.9 (432)**, fuente
+`968e6d7de31efb36450c4ad6b9482780a740167f`, conservando la base de campañas
+`1544a852`. CI44975634368 terminó con cuatro SUCCESS y Codemagic
+`6b0257e42985c05978fa8aab` con 14 SUCCESS. El integrador verificó firma del AAB,
+SVG del clip y marcadores de campaña en los tres ABI. El log de Publishing
+cotejado confirma 432 / internal / completed; la lectura independiente de Console
+permanece separada.
+
+iOS **2.3.9 (430)** conserva fuente
+`6aa34db85f0d26c57cc9281d948533fb90c957f1`: IPA y SVG verificados, disponible
+en TestFlight. Las fuentes por plataforma quedan registradas por separado;
+se reutiliza 430, con el comportamiento iOS conservado, para este corte.
+
+**Pendiente: QA física del clip en ambos candidatos.** La lectura ADB del
+22/nov a las 03:00:57 UTC registró cero dispositivos conectados. Siguiente acción
+del titular/integrador: actualizar Android 432 e iOS 430 cuando haya dispositivo,
+y revisar el clip en un chat existente sin enviar mensajes ni fotos, conservando
+sesión y el OFF elegido en iPad 426. Si Samsung sigue sin paquete instalado,
+coordinar su primera instalación/apertura con la QA de atribución pendiente.
+No generar otra build, cuenta QA ni casos por la espera de esta corrección.
+
+## Campañas — corte 429 conservado y continuación 432
 
 Etiquetas por comentario y piloto60 autorizados: cliente/servidor implementados,
 landing pública y revisión independiente limpia. Continuar [gates del piloto](campaign-placement-pilot.md):
 Fuente1544a852/CI44966371479 cuatroSUCCESS y SQLPROD20261122004520/31PASS.
 429/CM6b02411ebc3b31211424b493 terminó14SUCCESS; AAB/runtime/firma verificados y
-logCLI confirma publicación interna. Continuar lectura Console/entrega429,
-QA real y cliente público antes de habilitar tokens y comentar. El titular necesita
-otra mascota real; Samsung desconectado y control de Chrome aún no responde.
-Mantener AnalíticaOFF del iPad426; no reusar primeras fichas consumidas.
+logCLI confirma publicación interna. Esa base está conservada en 432 integrado;
+continuar lectura Console y entrega 432, QA real con consentimiento personal y
+cliente público compatible antes de habilitar tokens y comentar. El titular
+necesita otra mascota real; no reusar primeras fichas consumidas. La evidencia
+SQL se reutiliza sin reaplicar y el último estado registrado conserva **0/60
+contactos** y **60 tokens no QA OFF**; este cierre no atribuye una auditoría remota nueva.
+Mantener Analítica OFF del iPad 426.
 
 Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;
 CI44878177593 cuatroSUCCESS. Titular autorizó el paquete exacto. SQLPROD

@@ -10080,3 +10080,52 @@ PROD01:28:39UTC:60tokens noQA deshabilitados/1QA habilitado,0fuentes etiquetadas
 No promoción a producción ni inicio del piloto antes de esa QA y cliente público.
 El contrato de campañas aclara que p60 es sólo orgánico: anuncios requieren su
 namespace/verificación separados, sin contaminar el comparador pagado.
+
+## 21/11/2026 21:06CDMX — Clip del chat publicado en QA, integrado con campañas
+
+Petición visual del titular: sustituir el clip cuyo trazo salía del viewBox24px.
+SVG continuo y completo, misma tinta/22px; adjuntar/enviar comparten alto mínimo48px
+y crecen con el texto. Conserva tooltip, picker, borrador, carga y autorización.
+Sólo SVG, compositor y mantenimiento de la aserción de tamaño del test existente;
+sin nuevas funciones, SQL, credenciales, flags remotos ni datos de usuarios.
+Capturas sintéticas de adoptante/rescatista y320px/200% revisadas sin desbordes;
+revisión independiente de UI/código/seguridad sin P1/P2. Mockf693c036 congelado.
+
+Fuente inicial6aa34db8/CI44971463631 cuatroSUCCESS, análisis0 y55regresionesPASS.
+iOS430/CM6b024a5160bd7db7c6e8f959 terminó15SUCCESS; IPA55009631B verificado,
+SHA256510be136…52c9d, clip exacto0dfd5d8e…7db22. Chrome externo02:24:34UTC
+confirmó Lista para enviar/DopMi Inner Team/90d e invitaciones«–». QA física aún
+pendiente. Perfil iOS verificado estructuralmente, sin afirmar validación CMS.
+
+Incidente de base: otra entrega había terminado Android429/source1544 mientras
+el clip partía de b08. Faltó conciliar esa entrega antes del primer envío Android.
+CM6b024e46d3ec0f4469eabe09 cancelado02:17UTC, Publishing no iniciado; primer
+cancel incierto, GET confirmó ejecución y segundo cancelHTTP200/canceled. No otro
+POST de creación para esa fuente. Clip integrado por cherry-pick sobrec2ef6c69,
+conservando1544 como ancestro y exactamente los mismos tres blobs visuales.
+Revisión independiente confirmó compatibilidad iOS, sin repetir su entrega430.
+
+Fuente final968e6d7de31efb36450c4ad6b9482780a740167f/tag
+codex/chat-attachment-integrated-968e6d7d; análisis0/78regresionesPASS,
+CI44975634368 cuatroSUCCESS. Ventana02:20:55–02:25:55UTC consumida. Mejora de
+proceso única: cotejar último Android terminado y su fuente, además de ancestría
+y cola libre, antes de reservar. La guarda detuvo sin reserva/POST por finishedAt
+tipado DateTime; normalización UTC corregida,24regresionesPASS/revisión cerrada.
+Efecto comprobado en el envío necesario:429/source1544 seguía siendo la última
+base y se aceptó un único POST02:48:07UTC del candidato integrado.
+
+CM6b0257e42985c05978fa8aab terminó14SUCCESS. Android2.3.9(432), AAB96786684B,
+SHA2562e911a1c…703210; metadata727B/9c36023e…de605. Firma criptográfica/pin
+upload vigente verificados; strict4 corresponde al certificado autofirmado
+esperado, sin afirmar cadena CA pública. Backend/FirebasePROD, identidad,
+arranque Analytics/CrashOFF, perfil adopciones/TiendaON y finanzas clienteOFF
+cotejados; no se afirman todas las constantes Dart decodificadas. Clip exacto y
+tres marcadores de campañas presentes en los tresABI. Publishing03:06:14UTC
+confirma432/internal/completed/publicado; evidencia es log del publicador,
+Console independiente y QA física pendientes. Recibos privados en
+.tools/chat-attachment-integrated-20261121/android.
+
+ADB03:00:57UTC:0conectados/0sin autorizar; sin instalación, apertura o descarga
+forzada. Preguntas de QA física ya pendientes; no atribuir aceptación. Mantener
+OFF del iPad426, gates y último corte del piloto0/60/60noQAOFF, sin nueva lectura
+de campañas, contactos, fixtures ni promoción pública. No otro build por espera.
