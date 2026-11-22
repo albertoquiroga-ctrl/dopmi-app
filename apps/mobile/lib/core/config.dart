@@ -17,6 +17,7 @@ class AppConfig {
     this.googleServerClientId = '',
     this.googleIosClientId = '',
     this.measurementTestEnabled = false,
+    this.metaAdsMeasurementEnabled = false,
     this.releaseName = 'desarrollo',
     this.buildNumber = 'local',
   });
@@ -33,6 +34,9 @@ class AppConfig {
     googleServerClientId: String.fromEnvironment('GOOGLE_SERVER_CLIENT_ID'),
     googleIosClientId: String.fromEnvironment('GOOGLE_IOS_CLIENT_ID'),
     measurementTestEnabled: bool.fromEnvironment('ENABLE_MEASUREMENT_TEST'),
+    metaAdsMeasurementEnabled: bool.fromEnvironment(
+      'ENABLE_META_ADS_MEASUREMENT',
+    ),
     releaseName: String.fromEnvironment(
       'DOPMI_RELEASE_NAME',
       defaultValue: 'desarrollo',
@@ -51,6 +55,7 @@ class AppConfig {
   final String environment;
   final String googleServerClientId, googleIosClientId;
   final bool measurementTestEnabled;
+  final bool metaAdsMeasurementEnabled;
   final String releaseName, buildNumber;
   String get versionLabel => '$releaseName ($buildNumber)';
   bool get appleNativeAvailable =>

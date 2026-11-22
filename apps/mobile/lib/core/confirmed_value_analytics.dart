@@ -81,6 +81,8 @@ Future<T> confirmedValueAction<T>({
 
 /// A missing additive RPC is the only safe reason to call its legacy contract.
 /// Both requests retain the actor checked by the attribution/session barrier.
+/// An optional primary transport receives that same actor and token, and must
+/// preserve the primary envelope before this helper reports confirmed signals.
 Future<({Object? value, bool confirmed})> confirmedValueRpc(
   SupabaseClient client, {
   required String primary,
@@ -88,13 +90,19 @@ Future<({Object? value, bool confirmed})> confirmedValueRpc(
   required Map<String, dynamic> params,
   Map<String, dynamic>? legacyParams,
   PrepareAttributableAction? beforeAttributableAction,
+  Future<Object?> Function(String owner, String accessToken)? dispatchPrimary,
 }) async {
   final actor = client.auth.currentSession?.user.id;
   final token = await attributionActionToken(client, beforeAttributableAction);
   try {
-    final value = await client
-        .rpc(primary, params: params)
-        .setHeader('Authorization', 'Bearer $token');
+    if (actor == null || client.auth.currentSession?.user.id != actor) {
+      throw StateError('La sesión cambió. Vuelve a intentarlo.');
+    }
+    final value = dispatchPrimary == null
+        ? await client
+              .rpc(primary, params: params)
+              .setHeader('Authorization', 'Bearer $token')
+        : await dispatchPrimary(actor, token);
     return (value: value, confirmed: true);
   } on PostgrestException catch (error) {
     if (error.code != 'PGRST202') rethrow;

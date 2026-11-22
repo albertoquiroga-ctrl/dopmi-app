@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/attribution_action_barrier.dart';
 import '../../core/confirmed_value_analytics.dart';
 import '../../core/measurement.dart';
+import '../../core/meta_ads_measurement.dart';
 import '../../core/media/media_store.dart';
 import '../adoption/community_repository.dart';
 
@@ -16,6 +17,7 @@ final chatPhotoRepositoryProvider = Provider<ChatPhotoRepository>(
         .watch(measurementControllerProvider.notifier)
         ?.prepareAttributableAction,
     readMeasurement: () => ref.read(measurementControllerProvider.notifier),
+    metaAds: ref.watch(metaAdsMeasurementProvider),
   ),
 );
 
@@ -37,10 +39,12 @@ class SupabaseChatPhotoRepository implements ChatPhotoRepository {
     this.client, {
     this.beforeAttributableAction,
     this.readMeasurement,
+    this.metaAds,
   });
   final SupabaseClient client;
   final PrepareAttributableAction? beforeAttributableAction;
   final ReadValueMeasurement? readMeasurement;
+  final MetaAdsMeasurement? metaAds;
   @override
   String? get userId => client.auth.currentUser?.id;
   @override
@@ -57,17 +61,30 @@ class SupabaseChatPhotoRepository implements ChatPhotoRepository {
     readMeasurement: readMeasurement,
     operation: ConfirmedValueOperation.reply,
     dispatch: () async {
+      final params = {
+        'thread_id': threadId,
+        'message_id': messageId,
+        'message_body': body,
+        'attachment_path': attachmentPath,
+      };
+      final measurement = metaAds;
       final result = await confirmedValueRpc(
         client,
         primary: 'dopmi_send_message_v3',
         legacy: 'dopmi_send_message_v2',
-        params: {
-          'thread_id': threadId,
-          'message_id': messageId,
-          'message_body': body,
-          'attachment_path': attachmentPath,
-        },
+        params: params,
         beforeAttributableAction: beforeAttributableAction,
+        dispatchPrimary: measurement == null
+            ? null
+            : (owner, token) => measurement.runProductRpc(
+                owner: owner,
+                accessToken: token,
+                legacy: 'dopmi_send_message_v3',
+                measured: 'dopmi_send_message_meta_v2',
+                params: params,
+                action: MetaAdsAction.adoptionMessage,
+                targetId: threadId,
+              ),
       );
       final envelope = Json.from(result.value as Map);
       return ConfirmedValueResult(

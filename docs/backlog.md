@@ -1,4 +1,18 @@
-# Cola vigente — Analytics 437/438, 22/nov/2026 CDMX
+# Cola vigente — Meta de producción, 22/nov/2026 CDMX
+
+Petición expresa de integrar los eventos de valor, comprobarlos en Meta y después
+activar los pilotos con públicos/anuncios de descargas conservados. Base congelada
+`3e52c871` / producto437 `a24408be`. Contratos aditivos preservan V3, las señales
+confirmadas, tokens de atribución y Play Install Referrer.
+
+Código y SQL en verificación. Meta ya muestra las dos señales de la prueba DEV,
+una de cada tipo, recibidas por la API de conversiones. Falta desplegar el candidato
+PROD, aviso/declaraciones, verificar sus dos acciones en Samsung y su recepción
+visible y conciliar distribución antes de activar. No se confunde la prueba DEV
+con la integración de producción ni con una conversión atribuida a anuncios.
+[Plan finito](superpowers/plans/2026-11-22-meta-production.md).
+
+# Corte anterior — Analytics 437/438, 22/nov/2026 CDMX
 
 GA y SQLPROD20261122204434 verificados. Candidatoa24408be/CI45065888007 cuatro
 SUCCESS. Android2.3.10(437) instalado desde Play en Samsung: misma sesión, cuatro

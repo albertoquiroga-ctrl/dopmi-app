@@ -91,3 +91,7 @@ verify_jwt = false
 # Separate server-only secret is checked by the cleanup handler.
 [functions.video-cleanup]
 verify_jwt = false
+
+# Authenticated with a dedicated server-only worker secret.
+[functions.meta-ads-worker]
+verify_jwt = false

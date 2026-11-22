@@ -1,3 +1,21 @@
+## 22/11/2026 CDMX — Eventos de valor de Meta en producción
+
+El titular ordena continuar la integración en producción y verificar ambos
+eventos en el panel de Meta antes de activar las campañas. Los pilotos conservan
+los públicos y anuncios de las campañas de descargas. La prueba en Samsung con
+datos y cuentas ficticios, incluso en producción, está autorizada en esta
+conversación. La ficha de QA sigue privada y no se aprueba para publicar.
+
+Se parte de `3e52c871`, producto 437 / `a24408be`, conservando las correcciones de
+atribución y señales confirmadas de Analytics. Meta tiene un consentimiento
+opcional propio y apagado inicialmente, adenda `meta-ads-2026-11-22`, independiente
+de Analítica de uso y diagnóstico. No se modifica el consentimiento general de
+noviembre ni se atribuye una nueva aceptación legal al titular. Se mantiene la
+identidad de distribución, el perfil de adopciones/Amazon y los gates financieros.
+La medición no envía el contenido de mensajes o fichas a Meta. La recepción en
+la API, el panel, la disponibilidad pública y la atribución de anuncios se
+comprueban por separado. [Plan](superpowers/plans/2026-11-22-meta-production.md).
+
 ## 22/11/2026 CDMX — Actividad medida y resultados de adopción
 
 El titular pide configurar Analytics con eventos/métricas de valor y corregir la

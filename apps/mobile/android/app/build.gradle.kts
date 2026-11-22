@@ -84,6 +84,7 @@ tasks.matching { it.name == "packageDebugUnitTestForUnitTest" }.configureEach {
 
 dependencies {
     implementation("com.android.installreferrer:installreferrer:2.2")
+    implementation("com.google.android.gms:play-services-ads-identifier:18.0.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.17")
 }

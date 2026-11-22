@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/attribution_action_barrier.dart';
 import '../../core/confirmed_value_analytics.dart';
 import '../../core/measurement.dart';
+import '../../core/meta_ads_measurement.dart';
 import '../../core/media/media_store.dart';
 import 'adoption_traits.dart';
 export '../../core/media/prepare_photo.dart' show preparePhoto;
@@ -82,6 +83,7 @@ final communityRepositoryProvider = Provider<CommunityRepository>(
         .watch(measurementControllerProvider.notifier)
         ?.prepareAttributableAction,
     readMeasurement: () => ref.read(measurementControllerProvider.notifier),
+    metaAds: ref.watch(metaAdsMeasurementProvider),
   ),
 );
 
@@ -145,11 +147,13 @@ class SupabaseCommunityRepository implements CommunityRepository {
     this.observeRealtime,
     this.beforeAttributableAction,
     this.readMeasurement,
+    this.metaAds,
   });
   final SupabaseClient client;
   final void Function(RealtimeSubscribeStatus, Object?)? observeRealtime;
   final PrepareAttributableAction? beforeAttributableAction;
   final ReadValueMeasurement? readMeasurement;
+  final MetaAdsMeasurement? metaAds;
   final _favoriteListeners = <VoidCallback>{};
   @override
   String? get userId => client.auth.currentUser?.id;
@@ -256,15 +260,38 @@ class SupabaseCommunityRepository implements CommunityRepository {
         ),
       );
   @override
-  Future<Adoption> transition(Adoption post, String action) async => Adoption(
-    Json.from(
-      await rpc('dopmi_transition_adoption', {
-        'post_id': post.id,
-        'expected_version': post.version,
-        'action': action,
-      }),
-    ),
-  );
+  Future<Adoption> transition(Adoption post, String action) async {
+    final params = {
+      'post_id': post.id,
+      'expected_version': post.version,
+      'action': action,
+    };
+    final measurement = metaAds;
+    if (action != 'submit' || measurement == null) {
+      return Adoption(
+        Json.from(await rpc('dopmi_transition_adoption', params)),
+      );
+    }
+    final actor = userId;
+    final token = await attributionActionToken(
+      client,
+      beforeAttributableAction,
+    );
+    if (actor == null || userId != actor) {
+      throw StateError('La sesión cambió. Vuelve a intentarlo.');
+    }
+    final value = await measurement.runProductRpc(
+      owner: actor,
+      accessToken: token,
+      legacy: 'dopmi_transition_adoption',
+      measured: 'dopmi_transition_adoption_meta',
+      params: params,
+      action: MetaAdsAction.adoptionSubmission,
+      targetId: post.id,
+    );
+    return Adoption(Json.from(value));
+  }
+
   @override
   Future<void> favorite(String id, bool saved) async {
     final actor = userId;
@@ -472,13 +499,26 @@ class SupabaseCommunityRepository implements CommunityRepository {
             'message_id': messageId,
             'message_body': body,
           };
+          final confirmedParams = {...params, 'attachment_path': null};
+          final measurement = metaAds;
           final result = await confirmedValueRpc(
             client,
             primary: 'dopmi_send_message_v3',
             legacy: 'dopmi_send_message',
-            params: {...params, 'attachment_path': null},
+            params: confirmedParams,
             legacyParams: params,
             beforeAttributableAction: beforeAttributableAction,
+            dispatchPrimary: measurement == null
+                ? null
+                : (owner, token) => measurement.runProductRpc(
+                    owner: owner,
+                    accessToken: token,
+                    legacy: 'dopmi_send_message_v3',
+                    measured: 'dopmi_send_message_meta_v2',
+                    params: confirmedParams,
+                    action: MetaAdsAction.adoptionMessage,
+                    targetId: threadId,
+                  ),
           );
           final envelope = Json.from(result.value as Map);
           return ConfirmedValueResult(

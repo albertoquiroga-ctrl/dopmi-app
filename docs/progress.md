@@ -10351,3 +10351,41 @@ histórico no reconstruible. [Estado vigente](candidate-release-current.md).
 
 Revisión independiente final de los siete documentos: sin P1/P2. Diff check limpio;
 sólo continuidad documental después de congelar a24408be, sin repetir suites o CI.
+# 22/11/2026 CDMX — Integración Meta de producción en verificación
+
+Petición expresa de continuar en producción y comprobar ambos eventos en el panel
+antes de activar pilotos con los mismos públicos y anuncios de descargas. Nueva
+rama `codex/meta-production-events-20261122`, base congelada `3e52c871`, producto
+437 `a24408be`. Se conserva la QA DEV previa en `meta-samsung-qa-20261122.md`.
+El panel de Meta ya muestra «Contactar» y «Enviar solicitud», una recepción de
+cada uno por API de conversiones, ambos activos. Esta recepción corresponde a DEV.
+
+Implementación aditiva: wrapper Meta del mensaje conserva el envelope V3 y sus
+señales, barrera/token de atribución y fallback exclusivo PGRST202. Android conserva
+Play Install Referrer. Meta tiene preferencia y adenda propias, apagada inicialmente,
+independientes de Analítica de uso. No se cambia la versión del consentimiento
+general. El aviso móvil y el HTML público propuesto describen los mismos datos,
+finalidad, revocación y purga periódica. Un hallazgo de Auth soft-deleted quedó
+corregido con RED/GREEN sin alterar la operación canónica del producto.
+
+SQL local `20261122222303_meta_production_adoption_events.sql`, SHA256
+`a887670ec4fe8940725fe27187bf67a2149d9c0fc4d50579841258d5dea30ddf`.
+PROD sólo leído: historia74,335funciones y91tablas previas; Meta ausente. Sin
+aplicación, secretos, Edge nuevos ni apertura de gate PROD todavía. Recibos privados
+en `.tools/meta-production-20261122`; guardas de aplicación preparándose.
+
+Verificación local:133 Flutter enfocados y analyzer inicial limpio;44 configuración
+móvil y26 Firebase PASS; Node completo congelado1400PASS/16SKIP/0FAIL;111 pgTAP en
+PGlite, PostgreSQL17.6 y CLI, carreras reales y Deno check PASS. Revisión estática
+independiente sinP1/P2. La verificación Gradle local fue cancelada y no es PASS;
+compilación nativa y regresión completa se verificarán en CI exacta. Flutter final
+continúa tras incorporar el espejo del aviso. No se ha creado una build de Play.
+
+Landing base9f8cf944 inventariada: sólo incorpora los tres archivos de la segunda
+ola de difusión sobre2179f1c6 y no modifica privacidad. Se conservó íntegra y se
+reutilizó el checkout ya limpio en rama `codex/meta-privacy-20261122`. Candidato
+`f855224b2c3318054eaffc3177537b654cdfdd71`, sólo HTML de privacidad, buildVite PASS.
+Vista previaVercel `dpl_C6jv7jahyfdRSnhi4Uww2cyzihot` READY. HashHTML normalizadoLF
+`4c044b756c62082c747cef20a47a2e57092c3dad068bd49d4945fa3aedb0a716`.
+Publicación del aviso aún pendiente. Chrome permite lectura pero falla al enviar
+entrada; se pidió al titular reiniciarlo mientras continúa el trabajo independiente.

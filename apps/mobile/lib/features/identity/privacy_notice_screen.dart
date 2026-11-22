@@ -47,6 +47,28 @@ class PrivacyNoticeScreen extends StatelessWidget {
           'La Analítica de uso es opcional. Si aún no tienes una elección registrada, puede aparecer preseleccionada; sólo se activa cuando guardas esa elección con la opción marcada. Puedes desmarcarla y continuar sin activarla. Aceptar este aviso no activa la analítica; si ya la desactivaste, respetamos tu elección. Firebase (Google) mide eventos de uso e identificadores técnicos para mejorar la app y puede estimar una zona aproximada por tu conexión. Los eventos de Dopmi no adjuntan mensajes, documentos, coordenadas, correo ni datos financieros. Dopmi puede vincular campañas con tu cuenta y primeros hitos para evaluar qué difusión ayuda a que más personas publiquen o contacten; no envía el contenido de mensajes a Firebase. La elección, el aviso y la fecha se registran en el servidor. Puedes cambiarla en Cuenta y privacidad. Crashlytics para errores y la medición de publicaciones se eligen por separado y no se activan con Analítica. Estos servicios no sustituyen a Supabase como autenticación o base del producto. Los permisos de fotos, cámara y ubicación se solicitan para la función que los necesita; puedes negarlos o cambiarlos en los ajustes del dispositivo. Al publicar una mascota puedes colocar su punto manualmente en el mapa. Aceptar este aviso no autoriza un cobro ni activa Guardián.',
         ),
         const LegalDocumentSection(
+          'Medición de anuncios con Meta en Android',
+          'Adenda meta-ads-2026-11-22 · 22 de noviembre de 2026. '
+              'Si activas «Medición de anuncios con Meta», Dopmi comparte con Meta '
+              'el identificador de publicidad de Android, las versiones de Dopmi y '
+              'de Android, y el tipo y la hora de tu primer mensaje elegible como '
+              'adoptante o de tu primera ficha nueva y válida enviada a revisión '
+              'desde que activaste esta preferencia. El envío incluye un código '
+              'aleatorio del evento y el identificador de la app. Meta utiliza estos '
+              'datos para atribuir resultados y optimizar la entrega de anuncios de '
+              'Dopmi. La elección comienza apagada y se controla por separado de '
+              'Analítica de uso, del diagnóstico de errores y de la medición de '
+              'publicaciones. Puedes desactivarla en Cuenta y privacidad y seguir '
+              'usando las funciones principales. Dopmi elimina de la cola el '
+              'identificador publicitario y las versiones técnicas al completar la '
+              'entrega o retirar el permiso. Las señales pendientes con más de '
+              '24 horas se descartan y sus contextos se eliminan mediante la '
+              'limpieza periódica. Se conserva una marca por cuenta y tipo de '
+              'evento para evitar repetir la señal. Una solicitud ya despachada '
+              'puede completarse después de desactivar la preferencia. Meta trata '
+              'los datos que ya recibió conforme a su propia política.',
+        ),
+        const LegalDocumentSection(
           'Ubicación y mapas',
           'Dopmi solicita ubicación precisa mientras usas la app para mostrar adopciones a 25 km de tu ubicación actual. Esta ubicación se mantiene sólo en memoria y se envía para calcular cercanía, sin guardarse en tu perfil. Si niegas el permiso o apagas la ubicación, el listado de adopciones queda vacío y los demás apartados siguen disponibles. En modo Rescatista también explicamos y solicitamos el permiso al entrar: ayuda a encontrar adoptantes cercanos y propone tu ubicación actual como punto inicial de las mascotas nuevas. Puedes cambiar ese punto en Google Maps; si no das permiso, puedes elegirlo manualmente. El punto preciso de la mascota se guarda de forma privada para calcular distancias; públicamente se muestran ciudad y estado. No hacemos seguimiento en segundo plano. Google Maps puede procesar la vista del mapa, el punto preciso, tu consulta, dirección IP y datos técnicos; la geocodificación nativa de Google o Apple recibe el punto para identificar ciudad y estado. Puedes cambiar los permisos en los ajustes del dispositivo.',
         ),

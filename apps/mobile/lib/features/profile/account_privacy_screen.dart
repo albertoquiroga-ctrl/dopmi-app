@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/android_rescuer_acquisition.dart';
 import '../../core/ios_cpp_acquisition.dart';
 import '../../core/measurement.dart';
+import '../../core/meta_ads_measurement.dart';
 import '../../core/ui.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
@@ -170,9 +171,76 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
     confirmation.dispose();
   }
 
+  Widget metaAdsControl(
+    MetaAdsMeasurement measurement, {
+    required bool captureAvailable,
+  }) {
+    final identity = ref.watch(identityControllerProvider);
+    return ListenableBuilder(
+      listenable: identity,
+      builder: (context, _) => Consumer(
+        builder: (context, ref, _) {
+          final owner = identity.identity?.id;
+          if (identity.loading || identity.error != null || owner == null) {
+            return const SizedBox.shrink();
+          }
+          final preference = ref.watch(metaAdsPreferenceProvider(owner));
+          final granted = preference.value == true;
+          if (!captureAvailable && !granted) return const SizedBox.shrink();
+          return Column(
+            children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Medición de anuncios con Meta'),
+                subtitle: captureAvailable
+                    ? const Text(
+                        'Si la activas, Dopmi comparte con Meta tu identificador de publicidad de Android y las versiones de la app y de Android. Comparte también el evento y la hora de tu primer mensaje como adoptante o de tu primera ficha nueva enviada a revisión desde que la activaste. Meta usa estos datos para medir y optimizar anuncios. Puedes desactivarla aquí en cualquier momento.',
+                      )
+                    : const Text(
+                        'Tu cuenta tiene esta preferencia activa para Dopmi en Android. Puedes desactivarla aquí.',
+                      ),
+                value: granted,
+                onChanged: busy || (!granted && preference.asData == null)
+                    ? null
+                    : (value) {
+                        if (value && !captureAvailable) return;
+                        perform(() async {
+                          try {
+                            if (await measurement.setPreference(owner, value) !=
+                                value) {
+                              throw StateError(
+                                'No pudimos guardar la medición de anuncios.',
+                              );
+                            }
+                          } finally {
+                            if (context.mounted) {
+                              ref.invalidate(metaAdsPreferenceProvider(owner));
+                            }
+                          }
+                        });
+                      },
+              ),
+              if (preference.hasError)
+                TextButton(
+                  onPressed: () =>
+                      ref.invalidate(metaAdsPreferenceProvider(owner)),
+                  child: const Text(
+                    'Reintentar consulta de medición de anuncios',
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final measurement = ref.watch(measurementControllerProvider);
+    final metaAds = ref.watch(metaAdsPreferenceServiceProvider);
+    final metaAdsCaptureAvailable =
+        ref.watch(metaAdsMeasurementProvider) != null;
     final config = ref.watch(configProvider);
     final linked = ref.read(identityRepositoryProvider).linkedProviders;
     final rescuer =
@@ -233,6 +301,8 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
               isError: measurement.lastAnalyticsResult != 'aceptado_por_sdk',
             ),
           ],
+          if (metaAds != null)
+            metaAdsControl(metaAds, captureAvailable: metaAdsCaptureAvailable),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Diagnóstico de errores'),
