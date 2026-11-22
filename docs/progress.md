@@ -10080,3 +10080,126 @@ PROD01:28:39UTC:60tokens noQA deshabilitados/1QA habilitado,0fuentes etiquetadas
 No promoción a producción ni inicio del piloto antes de esa QA y cliente público.
 El contrato de campañas aclara que p60 es sólo orgánico: anuncios requieren su
 namespace/verificación separados, sin contaminar el comparador pagado.
+
+## 22/11/2026 — Android433 público y activación del piloto60
+
+Lectura fresca de Google Play Console confirma Submission166 Published,
+Production2.3.9(433) y «Start full rollout». La etiqueta mostrada21nov22:54
+carece de zona horaria acreditada; no se convierte aUTC ni se le asigna offset.
+CM6b0264a98a656efc66c206b5 terminó14SUCCESS desde
+efc3277a7c11f8633235584a4cf2c95c7d471181/tag codex/discovery-zoom-efc3277a.
+Metadata AAB2.3.9(433)/96783038B y perfilPROD/adopciones/Amazon cotejados.
+Su workflow publicó inicialmente ainternal; la disponibilidad enProduction
+procede de la lectura posterior en Console, no de inferirla de ese log.
+
+La comparación remota1544a852…efc3277a devuelve ahead5/behind0 y merge-base
+1544a85236ee96a89eda576bda35fb2a5b9b140c. Parser, enrollment y hook de claim
+Android no cambiaron:433 conserva p60, consentimiento explícito y los arreglos
+recientes, incluidos adjuntos del chat y controles con pantalla ampliada.
+La firma/AAB429 verificados en el corte anterior son evidencia separada;
+no se realizó aquí una inspección criptográfica del AAB433 ni QA física nueva.
+
+El titular ordenó arrancar. Activación atómica enPROD22nov19:07:54UTC de las60
+colocaciones noQA del manifiesto autorizado, sin regenerar ni reasignar etiquetas.
+Piloto operativo en curso; contactos y exclusiones se conservan en ledger privado,
+sin fijar todavía el total final de envíos ni incluir identidades sociales enGit.
+La publicación compatible433 y esta activación superseden los pendientes de
+cliente público y60OFF del corte anterior.
+
+**Sigue pendiente la QA manual p60:** instalación limpia desde tokenQA → primera
+ficha real privada → comprobación exacta de fuente/brazo y receipt.post_id con su
+dueño. La instrucción de comenzar no constituye un resultado de esa prueba.
+No reutilizar fixtures consumidos ni insertar atribución porSQL. Conservar
+AnalíticaOFF del iPad426; iOS mantiene descarga directa y medición agregada,
+sin atribución individual p60 verificada. No hay conclusión de significancia
+ni activación de gasto Meta/Google por este arranque.
+[Estado operativo](campaign-placement-pilot.md).
+
+### 22/11/2026 — Observaciones del muestreo orgánico en curso
+
+La propuesta original de hasta7d no se cumplió en dos publicaciones contactadas,
+de8d y9d al seleccionar. Quedan como desviación observable, sin borrar registros
+ni cambiar asignaciones después de ver resultados. Los textos, identidades y
+bloques congelados se conservan. No hubo una restricción original a sólo gatos
+ni a un grupo único; gatos son la prioridad operativa.
+
+El inventario incluye rescate y particulares que reubican a su mascota; el
+segmento desconocido sigue separado y no se atribuye a todas las autoras la
+condición de rescatistas independientes. Parte del contexto geográfico procede
+sólo del grupo local: sin municipio explícito debe tratarse como desconocido,
+sin deducir ubicación de una lada. Distinguir envíos, visibilidad y moderación
+pendiente en el cierre. Estas observaciones no fijan un conteo final del piloto
+ni acreditan conversiones o significancia.
+
+### 22/11/2026 — Ajuste prospectivo a gatos y perros
+
+El titular autoriza aproximadamente50/50gatos/perros y observar diferencias por
+especie. Se conservan las60 colocaciones fijas; por el avance ya realizado con
+gatos, se adopta como objetivo32gatos/28perros y completar el resto con perros.
+No se crean tokens ni se alteran textos, identidades o bloques. Es un objetivo
+prospectivo, sin declarar cerrado el total de60 envíos.
+
+El análisis por especie del post contactado usará tasas y denominadores reales
+de asignación, envío y visibilidad, con primeras fichas atribuidas maduras. La
+especie no fue aleatorizada y su cambio puede coincidir con otros grupos/horarios;
+el resultado describe respuesta al outreach, sin atribuir causalidad o tendencia
+natural de la app. El orgánico nativo queda como observación separada, y fuentes
+desconocidas no se convierten por defecto en orgánico confirmado.
+
+### 22/11/2026 — Enmienda de antigüedad antes de la colocación55
+
+Ante el inventario reciente deduplicado limitado, se comunicó al titular una
+ampliación prospectiva a avisos activos de hasta14d antes de seleccionar la
+colocación55. No se consultaron conversiones para tomar esa decisión. Se aplica
+a las seis colocaciones restantes; no reescribe como conformes los casos previos
+que excedían la propuesta de7d. El resto será de perros para conservar la meta
+32gatos/28perros dentro del manifiesto60, con textos, identidades y bloques fijos.
+
+Preservar expuestos y antigüedad observada, sin sustituciones. Reportar el análisis
+por asignación (ITT), visibilidad y moderación, con sensibilidad≤7d y desglose
+por antigüedad; no escoger exclusiones según el resultado. La población ampliada
+y su coincidencia con el cambio de especie limitan las comparaciones. Datos y
+conteo final del piloto aún abiertos; esta nota no declara60 envíos completados.
+
+### 22/11/2026 — Fase de contacto completada; seguimiento y aprendizaje abiertos
+
+Último envío21:39:03UTC. Ledger final:60 envíos,59 comentarios visibles y1 pendiente
+de moderación;30personal/30DopMi,15porR1–R4 y32gatos/28perros. Un comentario
+antes pendiente fue observado visible en la revisión final con su referencia.
+Auditoría local de lectura21:40:24UTC contra el manifiesto:60 ordinales, claves
+de autora, posts y tokens distintos; brazos, variantes, bloques, identidades,
+copyVersion, URLs y sustitución exacta de textos conformes, sin discrepancias.
+Los contadores finales distinguen60enviados/59visibles/1pendiente. Sin modificar
+ledger durante la auditoría ni consultar conversiones en esta revisión documental.
+
+La fase de contacto está cerrada, no el experimento. No sustituir exposiciones
+para obtener60 visibles. Siguen pendientes observación de moderación, lectura
+autorizada de fuentes/recibos, madurez y análisis por asignación (ITT), con
+sensibilidad≤7d/antigüedad y límites de geografía/tipo de post. No se informa cero
+conversiones, aprendizaje significativo ni QA manual p60 aprobada por estos envíos.
+
+Son60 contactos, sin acreditar60 rescatistas independientes verificadas. Hay
+propietarias que reubican, rescate, difusión/eventos y reportes, además de contexto
+desconocido. El tramo final contiene avisos del10,12 y15nov y una republicación
+del18nov con original14nov: conservar ambos tiempos. También incluye crías de
+un mes anunciadas20nov, sin afirmar aptitud para separación, y un reporte22nov
+de perra observada por su reportante original, sin resguardo propio.
+Conservar estas limitaciones y las desviaciones previas8d/9d, sin borrar casos
+según resultados. El balance32/28 describe outreach; orgánico nativo y tendencia
+natural de la app requieren observación separada. El cierre no cambia la QA
+pendiente de instalación limpia → primera ficha p60 ni los límites individuales
+de iOS. [Estado operativo](campaign-placement-pilot.md).
+
+### 22/11/2026 — Primer corte agregado p60 después de los60 envíos
+
+ConsultaPROD de sólo lectura21:40:10UTC, sin DDL/DML:15 colocaciones noQA
+habilitadas por brazo;0 fuentes Android consentidas retenidas,0 primeras fichas,
+0 aprobaciones,0 recibos de mascotas y0 hitos de mensajes etiquetados p60.
+QA permanece separada y en cero;0 cuentas maduras336h. Evidencia agregada
+conservada fuera deGit. Esta lectura complementa la auditoría documental del
+ledger: no transforma cero fuentes observadas en cero descargas/clics, ni mide
+todos los resultados de iOS o con AnalíticaOFF, ni reemplaza la QA manual pendiente.
+No hay ganador ni conclusión de significancia. Cortes de seguimiento sugeridos
+23nov/29nov/6dic; los clics tardíos conservan su propia ventana de336h y no deben
+declararse maduros sólo porque pasaron14d desde el comentario. No se creó una
+automatización ni se autorizó gasto pagado por esta lectura.

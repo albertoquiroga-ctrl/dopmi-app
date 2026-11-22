@@ -1,16 +1,32 @@
-## Candidato vigente — Etiquetas de campaña, 21/11/2026
+## Candidato vigente — Android público433 y piloto60, 22/11/2026
 
-Extensión por comentario sobre la base reciente af0e2274/425–426, integrada con
-campañas en f0e6521a, incluyendo el arreglo de navegación b08f040f inventariado.
-Fuente1544a852/tag codex/campaign-placement-p60-1544a852; CI44966371479 cuatroSUCCESS.
-Landing2179f1c6 pública/HTTP18PASS. SQLPROD20261122004520 aplicado una vez,
-31/31postflightPASS/prefijo72y339funciones conservados. Android2.3.9(429),
-6b02411ebc3b31211424b493:14SUCCESS; AAB/runtime/marcadores y firma1184/0
-verificados. LogCLI confirma429/internal/completed/publicado; lectura independiente
-Console y entrega al dispositivo pendientes. No promoción pública ni QA real:
-faltan mascota nueva y Samsung conectado.0/60 contactos/60tokens noQAOFF.
+Google Play Console confirma Submission166 Published y Production2.3.9(433),
+con «Start full rollout». La etiqueta mostrada es21nov22:54; su zona horaria
+no está acreditada. Fuente efc3277a7c11f8633235584a4cf2c95c7d471181,
+tag codex/discovery-zoom-efc3277a; CM6b0264a98a656efc66c206b5 terminó14SUCCESS.
+La metadata AAB coincide con433 y el perfilPROD/adopciones/Amazon esperado.
+
+433 contiene1544a85236ee96a89eda576bda35fb2a5b9b140c: comparación de fuentes
+ahead5/behind0, sin cambios en parser, enrollment ni hook de adquisición.
+Conserva p60, la elección explícita de Analítica y los arreglos recientes de
+navegación, adjuntos del chat y controles de descubrimiento con pantalla ampliada.
+La verificación criptográfica del AAB429 es evidencia anterior separada;
+no se atribuye al binario433 una inspección de firma ni QA física nuevas.
+
+Landing2179f1c6 pública/HTTP18PASS y SQLPROD20261122004520/31PASS conservados.
+El22nov se activaron atómicamente las60 colocaciones noQA del manifiesto exacto
+enPROD. **Fase de contacto cerrada22nov:**60 envíos,59 visibles y1 pendiente
+de moderación;30 desde perfil personal/30 desde DopMi,15porR1–R4 y32gatos/28perros.
+Auditoría de lectura del ledger:60 claves de autora/post/token distintas,
+asignaciones y textos conformes al manifiesto. Son contactos, no60 rescatistas
+independientes verificadas ni60 comentarios publicados. Seguimiento y análisis
+siguen abiertos. LecturaPROD22nov21:40:10UTC:0 fuentes Android consentidas p60,
+0 primeras fichas etiquetadas y0 cohortes maduras; no son conteos de descargas
+ni evidencia de ausencia de resultados en iOS o con AnalíticaOFF.
+**QA manual p60 de instalación limpia → primera ficha atribuida sigue pendiente.**
+Disponibilidad pública y activación no equivalen a esa aceptación.
 [Estado operativo](campaign-placement-pilot.md).
-Preservar elOFF elegido en iPad426 y los arreglos recientes del corte siguiente.
+Preservar elOFF elegido en iPad426; iOS no tiene atribución individual p60 verificada.
 
 ## Analítica opcional — corte anterior21/11/2026
 

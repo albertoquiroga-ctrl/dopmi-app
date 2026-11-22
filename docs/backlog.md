@@ -1,13 +1,27 @@
-# Cola vigente — integración de producción21/nov/2026
+# Cola vigente — integración de producción22/nov/2026
 
-Etiquetas por comentario y piloto60 autorizados: cliente/servidor implementados,
-landing pública y revisión independiente limpia. Continuar [gates del piloto](campaign-placement-pilot.md):
-Fuente1544a852/CI44966371479 cuatroSUCCESS y SQLPROD20261122004520/31PASS.
-429/CM6b02411ebc3b31211424b493 terminó14SUCCESS; AAB/runtime/firma verificados y
-logCLI confirma publicación interna. Continuar lectura Console/entrega429,
-QA real y cliente público antes de habilitar tokens y comentar. El titular necesita
-otra mascota real; Samsung desconectado y control de Chrome aún no responde.
-Mantener AnalíticaOFF del iPad426; no reusar primeras fichas consumidas.
+Etiquetas por comentario y piloto60: cliente/servidor implementados, landing
+pública y revisión independiente limpia. Google Play Console confirma
+Production2.3.9(433)/Submission166 Published; etiqueta21nov22:54 con zona horaria
+no verificada. Fuente efc3277a contiene1544a852 p60 sin cambios en su parser ni
+claim hook; CM6b0264a98a656efc66c206b5 terminó14SUCCESS. Se conservan
+CI44966371479 cuatroSUCCESS, SQLPROD20261122004520/31PASS y evidencia del AAB429.
+El22nov se habilitaron las60 colocaciones noQA y, por instrucción del titular,
+se completó la fase de contacto:60 envíos/59 visibles/1 pendiente de moderación,
+30personal/30DopMi,15porR1–R4 y32gatos/28perros. Ledger auditado de lectura,
+sin duplicados ni diferencias de asignación/texto. No sustituir a quien ya fue
+contactada para obtener60 visibles. Continuar observación de moderación y lectura
+autorizada de fuentes/recibos, madurez y análisis por asignación con sensibilidad
+≤7d/antigüedad. Tipos de autora/post y geografía desconocida siguen separados;
+no afirmar60 rescatistas verificadas, significancia ni tendencia natural de la app.
+Corte de lecturaPROD22nov21:40:10UTC:0 fuentes Android consentidas con etiqueta,
+0 primeras fichas/recibos y0 cohortes maduras. No equivale a0 descargas ni mide
+todo iOS; conservar seguimiento e incertidumbre de instrumentación hasta la QA real.
+**Pendiente: QA manual p60 de instalación limpia y primera ficha privada con
+su recibo atribuido.** Completar con cuenta y mascota reales elegibles, sin
+reusar primeras fichas consumidas ni insertar atribución porSQL.
+[Estado y límites del piloto](campaign-placement-pilot.md).
+Mantener AnalíticaOFF del iPad426 y separar iOS agregado de atribución individual.
 
 Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;
 CI44878177593 cuatroSUCCESS. Titular autorizó el paquete exacto. SQLPROD
