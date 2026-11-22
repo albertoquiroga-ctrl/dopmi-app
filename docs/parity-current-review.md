@@ -1,3 +1,17 @@
+## 22/nov — Analytics: revisión acotada y QA instalada
+
+Fuentea24408be/mockf693, CI45065888007 cuatroSUCCESS. Sin cambios de widgets;
+UI/UX y navegación de la base conservados. Android437 instalado desde Play en
+Samsung: misma sesión, cuatro pestañas funcionales y cierre frío; analítica y
+diagnóstico OFF persisten, sin escrituras de negocio. No aceptación humana inferida.
+Código y seguridad:180 Flutter enfocados, regresión completaCI,23 PostgreSQL real,
+18 guardswrapper y revisión independiente sinP1/P2. GA configurado y SQLPROD
+20261122204434 verificados. TestFlight438 «En pruebas», Inner Team/cinco testers;
+QA física iOS y recepción GA de señales nuevas siguen pendientes de uso legítimo.
+437 y438 enviados a revisión pública desde los binarios existentes, sin build nueva;
+Play433 activo y Apple434 Listo para distribución conciliados previamente.
+[Corte y límites](candidate-release-current.md).
+
 # Beta real — cambios de entorno posteriores al corte aceptado
 
 28/oct/2026: nueva entrega de preparación LIVE; la paridad341/f693/warm-trust

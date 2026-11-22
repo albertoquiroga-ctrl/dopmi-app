@@ -1,3 +1,18 @@
+# Checkpoint vigente — Analytics437/438, 22/nov/2026 CDMX
+
+Candidatoa24408be/CI45065888007 cuatroSUCCESS, mockf693 conservado sin delta visual.
+GA configurado y SQLPROD20261122204434 aplicado/verificado una vez. Samsung437
+instalado desde Play: sesión, cuatro pestañas y cierre frío correctos; medición y
+diagnóstico OFF conservados. TestFlight438 En pruebas en Inner Team/cinco testers;
+QA física iOS e ingesta real de nuevas señales siguen pendientes.
+
+Play433 activo y Apple434 Listo para distribución conciliados antes de enviar los
+mismos437/438 a revisión pública, sin nueva build ni retirar solicitudes. Play
+Changes in review/comprobaciones rápidas pendientes; Apple Pendiente de revisión.
+Conservar servicios, piloto, finanzas y consentimientos. Continuar en
+codex/analytics-quality-20261122 y leer [candidato vigente](candidate-release-current.md);
+conciliar resolución/uso legítimo sin repetir SQL, builds ni conversiones de QA.
+
 # Checkpoint vigente — envío público 433/434, 21/nov/2026 CDMX
 
 Por solicitud expresa del titular se enviaron a producción los mismos binarios

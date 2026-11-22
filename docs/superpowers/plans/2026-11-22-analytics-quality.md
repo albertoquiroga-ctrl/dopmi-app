@@ -54,8 +54,8 @@
 
 - [x] Revisión independiente acotada, gates CI del candidato exacto, inventario de cambios y continuidad.
 - [x] SQL aplicado una vez20261122204434, diez comprobaciones postflightPASS; conservar las solicitudes públicas433/434 sin duplicarlas.
-- [ ] Si el código requiere nueva distribución, una cola y ventana de cinco minutos por Codemagic, QA instalada y estados separados de recepción GA.
-- [ ] Informar qué quedó configurado, implementado, publicado y medido realmente, y los límites históricos de usuarios únicos.
+- [x] Si el código requiere nueva distribución, una cola y ventana de cinco minutos por Codemagic, QA instalada y estados separados de recepción GA.
+- [x] Informar qué quedó configurado, implementado, publicado y medido realmente, y los límites históricos de usuarios únicos.
 
 ## Recuperación
 
@@ -77,3 +77,25 @@ La petición humana del22/nov de configurar métricas y corregir su fiabilidad c
 ## Aplicación y distribución en curso
 
 CI45065888007 cuatroSUCCESS paraa24408be. SQL una aplicación20261122204434, wrapper41802B/61bafe61…c708e y fuente11051B/669dd8fa…ddd23d: diezPASS de readback, previas73migraciones y runtimeSQL intactos. Android2.3.10 enviado una vezCM6b0354d59ee19bef90f484db; iOS preparado con ventana20:47:33–20:52:33UTC, no se enviará en paralelo. No se afirma instalación ni recepción GA de las nuevas señales.
+
+## Corte técnico437/438
+
+Android437Playinterno/AABverificado; iOS438IPAverificado/cargado y postprocesoCMfinished/errorfalse. Una solicitud por plataforma, sin otro productoSHA. Añadida cuarta vista2.3.10 para aislar clientes corregidos, sin cambiar las tres existentes ni audiencia/periodo. QA física y disponibilidad de grupo no aceptadas: Samsungúltimo435 y ApplewebAuthFailed, con preguntas ya pendientes. La recepciónGA espera uso legítimo consentido; no se generaron conversiones de prueba. No envío público nuevo; conciliar433/434 y requisitos antes de reutilizar437/438.
+
+
+## Cierre de implementación y distribución — 22/nov,22:09UTC
+
+Este corte sustituye los estados intermedios anteriores. CI45065888007 cuatroSUCCESS,
+SQL una vez20261122204434/diezPASS y binarios437/438 verificados. Samsung437 actualizado
+por Play y probado con sesión conservada, cuatro pestañas y cierre frío; analítica y
+diagnóstico OFF antes/después, sin cambios de decisión ni datos de negocio de QA.
+438 En pruebas en Inner Team/cinco testers, confirmado tras el login Apple del titular;
+QA física iOS no acreditada. Cuatro vistas GA; recepción de señales aún pendiente.
+
+Tras comprobar Play433 activo y Apple434 Listo para distribución se promovieron los
+mismos437/438, sin nuevas builds ni retirar envíos anteriores. Play Changes in review,
+rollout100%/países conservados/cero dispositivos perdidos/comprobaciones rápidas
+pendientes; Apple Pendiente de revisión,7fe3bc72-b510-4119-995a-67230b73a672.
+Publicación automática tras aprobación en ambas. Límites y siguiente conciliación
+en candidate-release-current.md. No atribuir disponibilidad pública de2.3.10 ni
+recepción GA a estas operaciones; esperar resolución y uso legítimo consentido.

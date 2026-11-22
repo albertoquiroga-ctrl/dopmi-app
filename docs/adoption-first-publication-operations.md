@@ -24,6 +24,14 @@ de pasos y errores de publicación conservan sus nombres de eventos y las
 métricas configuradas, incluida **Total users**. La tabla siguiente mantiene
 el mapa de señales del formulario.
 
+**Clientes corregidos · 2.3.10** conserva esas seis métricas con filtro exacto
+**App version = 2.3.10**. Separa las instalaciones corregidas del histórico
+afectado. El rango relativo original termina el día anterior; al crear la vista
+25/oct–21/nov aún no podía contener esta versión del22/nov. «Sin datos» describe
+esa combinación de versión/fechas, no la actividad de todo Dopmi. Los días
+completos se comparan después de su procesamiento; la disponibilidad de la build
+y una llamada al SDK no acreditan recepción en los informes.
+
 Las cuentas de Auth son registros del producto; los usuarios activos de GA
 describen actividad medida en una ventana concreta. **Total users** tampoco
 es un conteo de cuentas ni garantiza personas únicas o deduplicación entre
@@ -68,8 +76,9 @@ Para el 25 de octubre al 21 de noviembre, GA mostró **40 usuarios activos,
 40 sesiones y 0 usuarios recurrentes**. Esas cifras no son una base fiable
 para inferir personas únicas, regreso o retención: una consulta de
 consentimiento fallida podía borrar la identidad de Analytics incluso al
-reanudar la misma cuenta con ON previo. La corrección está **validada
-localmente y aún no distribuida**: la incertidumbre pausa la colección y
+reanudar la misma cuenta con ON previo. La corrección está **verificada en CI y
+distribuida como Android437/iOS438 (2.3.10)**, con Android probado físicamente y
+las dos tiendas en revisión pública. La incertidumbre pausa la colección y
 conserva sólo la identidad del mismo propietario y entorno; un OFF explícito
 o confirmado, el cambio de propietario o la salida real siguen borrándola.
 No se unen cuentas ni se envía el identificador de la cuenta a Firebase.

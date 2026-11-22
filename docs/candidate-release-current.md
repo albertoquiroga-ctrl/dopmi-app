@@ -1,46 +1,54 @@
-## Analytics — configuración verificada y candidato local, 22/11/2026 CDMX
+## Analytics — corte verificado del 22/nov/2026, 22:09 UTC
 
-GA4 Producción561295536 ya tiene la exploración existente «DopMi · Actividad y
-adopciones»: actividad medida por versión/plataforma, pasos/errores de publicación
-y valor confirmado. Se registraron `adoption_contact_created`,
-`rescuer_first_reply` y `adoption_marked_adopted` como eventos clave, una vez por
-evento, sin valor monetario predeterminado. Todavía no reciben datos de estas
-señales nuevas. Identidad de informes Observed; Blended no tenía modelado
-disponible, por lo que ese cambio no explica ni corrige la discrepancia histórica.
-No se cambió Ads, campañas, permisos ni la audiencia ya compartida del informe.
+Producto `a24408beeb664d48f15b1bd90e9a8c578602659e`, tag
+`codex/analytics-quality-a24408be`, CI45065888007 cuatro SUCCESS. Base94fa2088,
+productoefc3277a y mockf693 conservados; sin delta visual ni nuevo SDK.
+La corrección pausa la colección ante consentimiento incierto del mismo propietario,
+conservando su identidad; OFF, salida y cambio de cuenta/entorno siguen borrándola.
+Dopmi envía nombres fijos de transiciones confirmadas, sin parámetros de negocio ni
+User-ID personalizado. Firebase conserva sus identificadores técnicos de instancia.
 
-Fuente técnica `a24408beeb664d48f15b1bd90e9a8c578602659e`, rama
-`codex/analytics-quality-20261122`, base94fa2088/productoefc3277a y mockf693
-conservados. Corrige el reinicio del identificador ante lectura incierta de
-consentimiento del mismo propietario: pausa colección, conserva identidad y
-respeta OFF/cambio de cuenta/entorno. Tres RPC aditivos confirman las transiciones
-antes de medir; contratos anteriores compatibles. Sin User-ID, parámetros de
-usuario, backfill ni nuevos SDK.
+- **GA configurado y verificado:** propiedad561295536, exploración existente
+  «DopMi · Actividad y adopciones», cuatro vistas: actividad medida, publicación,
+  valor confirmado y clientes corregidos con App version = 2.3.10. Tres eventos
+  clave, una vez por evento y sin valor monetario. Identidad Observed; antes no
+  había modelado disponible. Audiencia compartida y Ads conservados. El rango
+  original25/oct–21/nov excluye la versión nueva del22/nov: ausencia de datos en
+  ese filtro no significa cero actividad de Dopmi.
+- **Servidor publicado y verificado:** una aplicación20261122204434; wrapper41802B /
+  61bafe61…c708e, fuente11051B/669dd8fa…ddd23d. Diez comprobaciones postflight PASS,
+  historia74 con previas73, permisos y runtime conservados. [Mapeo](migration-history-audit.md).
+- **Android interno e instalación verificados:**2.3.10(437), CM6b0354d59ee19bef90f484db,
+  14SUCCESS; AABc21db2e4…8682d, firma/pin/perfilPROD comprobados. SamsungSM-S938B
+  actualizado por Play; sesión y cuatro pestañas conservadas. Analítica y diagnóstico
+  OFF antes y después del cierre frío, sin alterar decisiones ni crear conversiones.
+  Quedó en Adoptar. El enlace interno correcto reconoció al tester y permitió actualizar;
+  el enlace genérico apps/testing no correspondía a este canal. No hubo reinstalación.
+- **TestFlight verificado:**2.3.10(438), CM6b03599f9623296b04e5f173,15SUCCESS;
+  IPA3b6e90d5…76db0. Postproceso finished/errorfalse y Chrome confirmó «En pruebas»
+  en DopMi Inner Team, cinco testers. QA física iOS y aceptación humana no inferidas.
+- **Envío público verificado:** reutilizados437/438, sin builds/subidas nuevas.
+  Play «Changes in review»,437/rollout100%, países existentes y dispositivos compatibles
+  conservados; comprobaciones rápidas pendientes. Apple «Pendiente de revisión»,
+  envío7fe3bc72-b510-4119-995a-67230b73a672,438/2.3.10. Publicación automática al
+  aprobar en ambas tiendas. No se afirma aprobación ni disponibilidad pública de2.3.10.
+  Antes de promover se conciliaron los envíos anteriores: Play433 activo y Apple434
+  «Listo para distribución». No se cancelaron ni repitieron solicitudes anteriores.
 
-Verificado local:180 pruebas Flutter enfocadas; analyzer sin incidencias;23 pruebas
-PostgreSQL real sin skips, incluyendo concurrencia y revocación de consentimiento;
-Node completo1389PASS/15SKIP; configuración móvil42 y Firebase26PASS. Suite Flutter
-local completa cancelada para delegar la regresión al gate integrado; no es PASS.
-Revisión independiente sinP1/P2. CI45065888007 cuatroSUCCESS. Una aplicación SQL PROD20261122204434, paquete
-41802B/61bafe61…c708e y postflight diezPASS; historia74, previas73 y runtime conservados.
-Android2.3.10 en compilación internaCM6b0354d59ee19bef90f484db; iOS aún sin envío. Los envíos públicos433/434 del21/nov no se
-han cancelado ni repetido; su último estado observado sigue siendo revisión.
+Verificación:180 Flutter enfocados/analyzer limpio,1389 Node PASS/15 SKIP,
+23 PostgreSQL real sin skips,42 config móvil/26 Firebase. Wrapper18 PASS y revisión
+independiente sinP1/P2; suite Flutter local completa cancelada y regresión completa
+aprobada en CI exacta. El adapter real distingue pause() de enabled(false)/reset.
 
-Corte interno22/nov19:28UTC:393 cuentas Auth y393 perfiles activos; preferencias
-actuales31ON/297OFF/65sin fila. GA25/oct–21/nov:40 activos/40 usuarios medidos,
-40sesiones/0 recurrentes; para ese periodo hubo386altas, frente a393cuentas actuales.
-No son poblaciones equivalentes ni personas únicas. El histórico de identificadores
-reiniciados no se reconstruye. La adopción marcada es resultado declarado, no
-prueba de atribución causal a Dopmi. Ver [operación del informe](adoption-first-publication-operations.md).
-
-Pendientes finitos: integrador concilia CI y aplica el paquete SQL aditivo revisado cubierto por la
-petición vigente; después distribuye QA
-con una cola y ventana5min y comprueba recepción/consentimiento en versión instalada.
-La configuración GA y el servidor ya están publicados, el código está implementado;
-la nueva colección móvil todavía no está publicada ni aceptada físicamente. Preservar el último
-estado autorizado de servicios y piloto; no imponer estados históricos por QA.
-Evidencia privada `.tools/qa-analytics-quality-20261122`, incluidos readbacks,
-pruebas y capturas. No otro tablero.
+Pendientes finitos: tiendas resuelven437/438; integrador concilia esas mismas solicitudes
+sin reenviar. Recepción de las tres señales GA espera uso legítimo consentido; no
+activar la medición del Samsung ni crear contactos/adopciones de QA. QA física438 por
+el titular cuando esté disponible, sin atribuir aceptación por telemetría de testers.
+Cuentas Auth y activos GA son poblaciones distintas; el histórico no se reconstruye y
+GA no garantiza personas únicas entre dispositivos. Adopción marcada es resultado
+reportado, sin prueba causal de Dopmi. [Operación](adoption-first-publication-operations.md).
+Conservar servicios, piloto, identidad de distribución y guardas financieras vigentes.
+Evidencia privada `.tools/qa-analytics-quality-20261122`; ninguna migración o build por repetir.
 
 ## Envío público autorizado — 2.3.9 (433/434), 21/11/2026 CDMX
 

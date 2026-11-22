@@ -10294,3 +10294,60 @@ Primer preflight de CM se detuvo sin reserva porque otra tarea ocupaba la cola;
 esa tarea terminó y se comprobó ausencia de envío antes del único POST. iOS
 ventana20:47:33–20:52:33UTC, todavía sin envío. No repetir builds ni estados de
 servicios históricos. Colección instalada y recepción GA siguen pendientes.
+
+## 22/11/2026 CDMX — Analytics437/438 distribuidos técnicamente; QA externa pendiente
+
+AndroidCM6b0354d59ee19bef90f484db:14SUCCESS,2.3.10(437), AAB96798820B/c21db2e4…8682d,
+Publishinginternal/completed comprobado por lectura separada del log. iOSCM6b03599f9623296b04e5f173:
+15SUCCESS,2.3.10(438), IPA55009387B/3b6e90d5…76db0; postproceso6b035e27a14b9f22af01a183
+finished/errorfalse21:33UTC. Un POST por plataforma, fuentesa24408be/taginmutable,
+ventanas5min y cola única. ObservadoriOS encontró metadata aún vacía al iniciar;
+se concilió el mismoID/app/workflow/SHA y continuó sin otro envío.
+
+Cuarta vista GA «Clientes corregidos ·2.3.10» duplica las seis métricas con filtro
+exacto de versión; conserva las tres vistas, audiencia y rango. Captura/readback
+privados; al rango25/oct–21/nov no puede contener este cliente del22/nov. No ingesta
+verificada de nuevas conversiones ni personas únicas inferidas.
+
+Apple webcaducó/authResultFAILED. Handoff de login pendiente; no leer esa pestaña
+hasta confirmación. Samsung por Play mostró2.3.6(435),últimalectura21:18UTC, en vez
+de437; actualización/sesión/navegación siguen pendientes de respuesta humana.
+No prometer disponibilidad del grupo TestFlight ni aceptación instalada. Preguntas
+asíncronas ya planteadas; completar esas comprobaciones al recibir respuestas.
+No nuevo envío público ni cancelación de433/434. [Estado y acciones](candidate-release-current.md).
+
+
+## 22/11/2026 CDMX — Analytics: Samsung verificado y envío público437/438
+
+El titular autorizó controlar el Samsung y confirmó el login Apple. Play interno
+437/2.3.10 quedó instalado por com.android.vending. La ruta genérica apps/testing
+no correspondía a este programa; el enlace interno existente reconoció al tester
+y ofreció Actualizar sin cambiar cuentas, inscripción ni datos. Dopmi conservó
+la sesión y abrió Adoptar, Mis matches, Tienda y Perfil. Analítica y diagnóstico
+estaban OFF; tras cierre frío siguen OFF. No se pulsaron mensajes, likes, altas,
+aceptaciones ni controles de medición. Teléfono dejado en Adoptar; temporal propio
+XML retirado. Recibo phone437-qa.receipt.private.json y captura Tienda conservados.
+
+Chrome confirmó438/2.3.10 «En pruebas» en DopMi Inner Team, cinco testers.
+No se infiere QA física iOS ni aceptación por sesiones acumuladas de TestFlight.
+La sesión caducada ya no es un bloqueo; no hubo nuevas claves/acuerdos.
+
+Conciliación pública previa: Play433 activo y Apple434/2.3.9 Listo para distribución.
+Se enviaron los mismos437/438 de a24408be/CI45065888007, sin otra build ni subida.
+Play: un cambio437/rollout100%, países existentes y cero dispositivos perdidos;
+«Changes in review» con comprobaciones rápidas pendientes. Apple:2.3.10/438,
+«Pendiente de revisión»,7fe3bc72-b510-4119-995a-67230b73a672. Ambas conservan salida
+automática al aprobar; no se afirma aprobación de2.3.10. Cuenta de revisión,
+declaraciones de privacidad, fichas y servicios conservados. No se retiraron envíos
+anteriores. Recibos y capturas public-play-437/public-ios-438 en la misma carpeta
+privada, mostradas al titular. La revisión independiente documental corrigió la
+frase absoluta sobre identificadores: no User-ID personalizado ni parámetros de
+negocio; el SDK mantiene identificadores técnicos de instancia.
+
+Pendientes: resolución de tiendas e ingesta legítima consentida de las tres nuevas
+conversiones; integrador concilia sin reenviar ni crear datos de QA. Titular puede
+comprobar438 en iPhone/iPad. GA no es censo de cuentas ni prueba de personas únicas;
+histórico no reconstruible. [Estado vigente](candidate-release-current.md).
+
+Revisión independiente final de los siete documentos: sin P1/P2. Diff check limpio;
+sólo continuidad documental después de congelar a24408be, sin repetir suites o CI.

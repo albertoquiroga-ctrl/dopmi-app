@@ -1,22 +1,23 @@
-# Cola vigente — calidad de Analytics, 22/nov/2026 CDMX
+# Cola vigente — Analytics 437/438, 22/nov/2026 CDMX
 
-GA configurado y persistencia verificada: actividad/publicación/valor confirmado,
-tres eventos clave sin importe monetario y sin cambios de Ads. Fuentea24408be,
-CI45065888007 cuatroSUCCESS. SQL PROD aplicado una vez como20261122204434,
-wrapper61bafe61…c708e, diez comprobaciones postflightPASS; mapeo y runtime en
-[auditoría](migration-history-audit.md). No volver a aplicar ni reparar historia.
+GA y SQLPROD20261122204434 verificados. Candidatoa24408be/CI45065888007 cuatro
+SUCCESS. Android2.3.10(437) instalado desde Play en Samsung: misma sesión, cuatro
+pestañas y cierre frío correctos; analítica y diagnóstico OFF conservados. iOS438
+«En pruebas» en DopMi Inner Team, cinco testers; QA física y aceptación pendientes.
 
-Android2.3.10 enCM6b0354d59ee19bef90f484db, un solo POST tras ventana y cola libre;
-aún no se afirma publicación Play. iOS preparado, ventana20:47:33–20:52:33UTC,
-sin envío hasta quedar libre la misma cola. Números de build se leen del artefacto,
-no se predicen. Samsung433Play conectado al corte previo a la distribución.
+Reutilizados los mismos437/438 para envío público, sin nuevas builds: Play
+«Changes in review», rollout100% y comprobaciones rápidas pendientes; Apple
+«Pendiente de revisión»,7fe3bc72-b510-4119-995a-67230b73a672. Publicación automática
+al aprobar. Antes de promover se comprobaron Play433 activo y Apple434 Listo para
+distribución; no se cancelaron sus envíos. [Corte](candidate-release-current.md).
 
-Siguiente integrador: seguir estos mismos trabajos, verificar artefactos/publicación
-y QA instalada de identidad/consentimiento; comprobar recepción de las señales en
-el primer uso legítimo, sin fabricar contactos/adopciones en producción. No unir
-usuarios GA con cuentas/personas ni inferir adopciones causadas por Dopmi.
-Conservar servicios/piloto actuales y las solicitudes públicas433/434 sin repetirlas.
-Detalle: [candidato](candidate-release-current.md), [informe](adoption-first-publication-operations.md).
+Pendientes finitos: tiendas resuelven esas solicitudes; integrador concilia su
+resultado sin reenviar. Titular comprueba438 en iPhone/iPad cuando esté disponible.
+La recepción GA de las tres señales espera uso legítimo consentido; no crear
+contactos/adopciones de QA ni activar medición para poblar informes. Cuentas y
+activos medidos tienen poblaciones distintas, sin reconstrucción del histórico.
+Conservar servicios, piloto y decisiones; no repetir SQL, builds o publicaciones.
+[Operación](adoption-first-publication-operations.md).
 
 # Cola vigente — revisión pública 433/434, 21/nov/2026 CDMX
 
