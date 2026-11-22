@@ -1,4 +1,25 @@
-# Cola vigente — integración de producción21/nov/2026
+# Cola vigente — envío de adopción a Mis casos, 21/nov/2026
+
+Corregido y distribuido en QA: b08f040f/CI44964254241, cuatroSUCCESS;
+TestFlight427 disponible para DopMi Inner Team y Play interno428/completed.
+Análisis0incidencias,1974PASS/4SKIP, seis regresiones de envío y seis con perfil
+adopciones; artefactos/runtime/firma cotejados. Tras «Entendido» abre Mis casos
+en En revisión, sin conservar archivados/página anteriores. Los errores mantienen
+el formulario. [Evidencia y límites](candidate-release-current.md).
+
+Pendientes finitos:
+
+- Titular: actualizar427 y confirmar sesión, navegación y AnalíticaOFF conservada;
+  pregunta ya enviada. No repetir acceso ni crear una publicación sólo para QA.
+- Titular + integrador: observar la salida a Mis casos en el próximo envío legítimo
+  de adopción. La navegación está verificada automáticamente, no en un envío real.
+- Integrador: conservar el expediente Google3-8197000042220 por la descarga del
+  Samsung;428 no se ha intentado instalar. Sin sideload, limpieza ni builds por espera.
+
+No SQL, cambios de servicios, publicación legal ni promoción pública en este delta.
+No repetir suites/builds aprobadas mientras se espera la comprobación humana.
+
+## Corte anterior — integración de producción21/nov/2026
 
 Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;
 CI44878177593 cuatroSUCCESS. Titular autorizó el paquete exacto. SQLPROD

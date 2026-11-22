@@ -9843,3 +9843,64 @@ como arriba; los límites de primera elección/SDK en red/Android no se dan por
 verificados. Data Safety publicado y caso Google anterior conservado.
 Sin nuevas pruebas de usuarios/casos, cobros o cambios de servicios por esta
 actualización documental.
+
+## 21/11/2026 CDMX — Adopción enviada abre Mis casos; QA427/428 publicada
+
+El titular reportó que el formulario seguía visible después del envío a revisión.
+Causa comprobada: la confirmación sólo cerraba el diálogo. La corrección navega
+tras el resultado submitted y «Entendido», con guardas de actor/ruta/montaje.
+Otra regresión demostró filtros de archivados retenidos al reabrir la misma URI;
+la clave de pantalla incluye actor/publicación/versión confirmada para reconstruir
+la lista en Adopción/En revisión/página1, consultando datos propios del servidor.
+El extra de navegación no es catálogo ni autorización. Los fallos y el guardado
+de borrador conservan el formulario. Sin cambios de RPC, moderación ni propiedad.
+
+Fuente `b08f040f0e685f1097e64f867269590355cc1b5b`, tag
+`codex/adoption-review-navigation-b08f040f`, sobre la continuación425/426.
+Mock congeladof693; petición explícita del titular sin expansión de paridad.
+RED inicial4PASS/2FAIL; navegación mínima5PASS/1FAIL mostró el filtro obsoleto;
+final6PASS y6PASS con DOPMI_ADOPTION_ONLY=true. Análisis0incidencias, suite
+completa1974PASS/4SKIP/0FAIL. CI44964254241 del mismo SHA: ios/flutter/
+web-and-database/identity-and-adoption-backend cuatroSUCCESS. Revisión independiente
+de código/navegación/seguridad sin P1/P2 finales. La espera del observador de CI
+no originó otra ejecución ni invalida el resultado consultado de esa misma CI.
+
+Dos preflights Codemagic se detuvieron antes de reserva/POST por timeout del
+cliente HTTP. El mismo GET con curl funcionó en0.5s. Cambio acotado del transporte,
+pruebas sintéticas y revisión independiente: secretos sólo en memoria/stdin,
+TLS normal, sin redirects/retries, límites y CreateNew antes del único POST.
+Después urllib falló al descargar desde Storage (HTTP400); curl obtuvo el mismo
+artefacto con API302→Storage200 sin token externo, tamaño exacto y hash. Los
+verificadores inspeccionaron esos archivos. No se diagnosticó una caída global
+de Codemagic ni se cambió TLS, proxy, firewall o configuración del equipo.
+Mejora de proceso acotada: reutilizar el transporte curl ya probado para estas
+lecturas; efecto verificado en el envío y descargas necesarios, sin otro build.
+
+Ventana iOS23:57:15–00:02:15UTC; POST único00:37:25UTC recibió
+6b0239434e2867e499a1de4d/ios-testflight. **2.3.9(427)** terminó15SUCCESS;
+IPA55006516B/SHA256a18f2436bdd51c94ae3368197c9094de1cb87cd3ec9fa86c068fda446ad5d4a1.
+Identidad/Firebase/backendPROD/runtime/foreground cotejados; perfil estructural
+válido, sin validación CMS criptográfica atribuida. Apple cerró tarea sin error.
+Chrome externo01:01:08UTC confirmó Lista para enviar/Caduca90d/DopMi Inner Team/
+5invitaciones. TestFlight disponible; prueba física solicitada, aún sin respuesta.
+
+Sólo después de iOS terminal y ventana Android00:36:33–00:41:33UTC, POST único
+00:55:28UTC recibió6b023d7e4dfe717e17203ab3/android-guardian-internal.
+**2.3.9(428)** terminó14SUCCESS. AAB96781121B/SHA256
+0a7a401fd20bdbfd6a0fb795df2ab96f3955babbf8236e86d10f442b38540170 cotejado:
+bundle válido, identidad/versiones/SDK/PROD, firma JAR y pin existentes válidos.
+strict_exit4 corresponde al upload autofirmado esperado, sin cadena CA pública
+acreditada. Publishing leído01:13:28UTC confirma Version code428,
+Updated release internal, Statuscompleted y Successfully published. Play interno
+publicado; sin nueva instalación del Samsung. Artefactos, recibos de publicación,
+ventanas y shipping.verified en `.tools/adoption-review-navigation-20261121`.
+
+Los runtime conservan adopciones/TiendaON, finanzas/mediciónTEST/walletsTESTOFF;
+arranque nativo de Analytics/CrashlyticsOFF. Se heredaron entornos/grupos resueltos
+de425/426. No SQL, flags/servicios remotos, textos legales, altas, cobros ni promoción
+pública. Tampoco se creó/envió un caso real para probar. Queda observar el próximo
+envío legítimo, además de sesión/navegación/OFF de Analítica de427. La elección OFF
+final de426 debe conservarse. Samsung mantiene el bloqueo previo de descarga y
+el casoGoogle3-8197000042220, sin intento nuevo, limpieza, sideload o build por espera.
+Publicado en QA y verificado automáticamente; instalación y aceptación del delta
+siguen pendientes, con dueños y siguiente acción en backlog.

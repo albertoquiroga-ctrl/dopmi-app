@@ -1,4 +1,40 @@
-## Candidato vigente — Analítica opcional, 21/11/2026
+## Candidato vigente — envío de adopción a Mis casos, 21/11/2026
+
+Fuente `b08f040f0e685f1097e64f867269590355cc1b5b`, tag inmutable
+`codex/adoption-review-navigation-b08f040f`, sobre la continuación de425/426.
+CI [44964254241](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/44964254241):
+cuatro trabajos SUCCESS. Tras confirmar el servidor el envío de una adopción y
+cerrar «Entendido», abre Mis casos → Adopción → En revisión y consulta la lista
+vigente. Se reinician filtros retenidos de archivados y página; un fallo conserva
+el formulario. No cambia guardado de borradores, moderación ni autorización.
+
+Seis regresiones PASS, incluidas respuesta tardía/doble toque y la misma ruta
+retenida con archivados; seis PASS también con DOPMI_ADOPTION_ONLY=true.
+Análisis0incidencias y suite completa1974PASS/4SKIP/0FAIL. Revisión independiente
+de navegación/código/seguridad sin P1/P2. Mock f693 conservado; alcance fijado por
+la petición del titular, sin inventario nuevo de paridad.
+
+Un envío por plataforma, ventanas5min y cola única, primero iOS:
+
+- TestFlight **2.3.9 (427)**, Codemagic `6b0239434e2867e499a1de4d`,15SUCCESS.
+  IPA55006516B, SHA256 `a18f2436bdd51c94ae3368197c9094de1cb87cd3ec9fa86c068fda446ad5d4a1`.
+  Apple terminó sin error; Chrome externo confirma Lista para enviar,
+  DopMi Inner Team/5invitaciones. Disponible; instalación aún no confirmada.
+- Play interno **2.3.9 (428)**, Codemagic `6b023d7e4dfe717e17203ab3`,14SUCCESS.
+  AAB96781121B, SHA256 `0a7a401fd20bdbfd6a0fb795df2ab96f3955babbf8236e86d10f442b38540170`.
+  Publishing confirma Version code428/internal/completed/Successfully published.
+
+Artefactos, identidad, Firebase/backendPROD y runtime cotejados. Conserva
+adopciones/TiendaON y guardas cliente anteriores; no modifica servicios remotos,
+SQL, textos legales ni preferencias. Firma Android/pin válidos, certificado upload
+autofirmado esperado; perfil iOS validado estructuralmente, sin CMS criptográfico.
+Recibos privados `.tools/adoption-review-navigation-20261121/{ios,android}`.
+Instalación/sesión/OFF de Analítica solicitados para427; el envío físico queda
+para la próxima publicación legítima, sin crear casos de prueba. Samsung conserva
+el bloqueo de descarga previo/casoGoogle3-8197000042220; no se repitió instalación.
+Publicado en QA; **no promoción pública ni aceptación física de este delta**.
+
+## Corte anterior — Analítica opcional, 21/11/2026
 
 Elección inicial de Analítica, corte21/nov: fuente inmutable
 `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag
