@@ -1,5 +1,10 @@
 # Cola vigente — integración de producción21/nov/2026
 
+Etiquetas por comentario y piloto60 autorizados: cliente/servidor implementados,
+landing pública y revisión independiente limpia. Continuar [gates del piloto](campaign-placement-pilot.md):
+CI final/migración/candidato/QA/cliente público antes de habilitar tokens y comentar.
+Mantener AnalíticaOFF del iPad426; no reusar primeras fichas consumidas.
+
 Elección inicial de Analítica21/nov: implementada y revisada en af0e2274;
 CI44878177593 cuatroSUCCESS. Titular autorizó el paquete exacto. SQLPROD
 20261121223246 aplicado una vez y cotejado (historia72/prefijo71intacto/16PASS),

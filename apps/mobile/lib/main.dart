@@ -12,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
 import 'core/android_rescuer_acquisition.dart';
+import 'core/android_experiment_enrollment.dart';
 import 'core/ios_cpp_acquisition.dart';
 import 'core/ios_cpp_enrollment.dart';
 import 'core/ios_cpp_link_capture.dart';
@@ -130,6 +131,7 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
       () => Supabase.instance.client,
     );
     IosCppEnrollment? iosEnrollment;
+    AndroidExperimentEnrollment? androidEnrollment;
 
     measurement = MeasurementController(
       preferences,
@@ -137,16 +139,18 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
       FirebaseProductAnalytics(FirebaseAnalytics.instance),
       FirebaseErrorDiagnostics(FirebaseCrashlytics.instance),
       analyticsChoices: consentTransport,
-      prepareAcquisition: ios == null
-          ? null
-          : (owner) async {
-              await iosEnrollment?.record(owner);
-            },
+      prepareAcquisition: (owner) async {
+        if (ios != null) {
+          await iosEnrollment?.record(owner);
+        } else if (supportsPlayInstallReferrer) {
+          await androidEnrollment?.record(owner);
+        }
+      },
       prepareAdoptionConsent: (owner, consent) {
         if (!consent) {
           iosEnrollment?.revoke(owner);
+          androidEnrollment?.revoke(owner);
         }
-        final client = Supabase.instance.client;
         final analyticsRevision = measurement.analyticsRevision;
         final request = consentTransport.prepare(
           owner,
@@ -158,6 +162,11 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
           onAcceptedRevision: (revision) {
             if (consent) {
               iosEnrollment?.consentAccepted(
+                owner,
+                localRevision: analyticsRevision,
+                serverRevision: revision,
+              );
+              androidEnrollment?.consentAccepted(
                 owner,
                 localRevision: analyticsRevision,
                 serverRevision: revision,
@@ -184,38 +193,8 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
           // A stalled acquisition request must not hold a later explicit
           // opt-out behind it. Its server-side consent lock also handles an
           // already-dispatched request that arrives after this wait expires.
-          await acquisition
-              .record(
-                owner: owner,
-                sessionStillEligible: () =>
-                    measurement.ownerId == owner &&
-                    measurement.analyticsConsentCurrent &&
-                    measurement.analyticsRevision == analyticsRevision &&
-                    client.auth.currentSession?.user.id == owner,
-                send: (variant, clickedAt) async {
-                  final current = await client.auth.getSession();
-                  if (current == null ||
-                      current.user.id != owner ||
-                      client.auth.currentSession?.user.id != owner ||
-                      measurement.ownerId != owner ||
-                      !measurement.analyticsConsentCurrent ||
-                      measurement.analyticsRevision != analyticsRevision) {
-                    throw StateError('Acquisition session changed');
-                  }
-                  await client
-                      .rpc(
-                        'dopmi_record_android_rescuer_acquisition',
-                        params: {
-                          'p_variant': variant,
-                          'p_clicked_at': clickedAt.toIso8601String(),
-                        },
-                      )
-                      .setHeader(
-                        'Authorization',
-                        'Bearer ${current.accessToken}',
-                      );
-                },
-              )
+          await androidEnrollment
+              ?.record(owner)
               .timeout(const Duration(seconds: 10), onTimeout: () {});
         };
       },
@@ -247,6 +226,13 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
         captureReady: () async {
           await cppCapture?.ready;
         },
+      );
+    }
+    if (supportsPlayInstallReferrer) {
+      androidEnrollment = AndroidExperimentEnrollment(
+        client: Supabase.instance.client,
+        acquisition: acquisition,
+        measurement: () => measurement,
       );
     }
     await cppCapture?.ready;

@@ -74,7 +74,7 @@ jobs:
         env:
           DOPMI_ACQUISITION_POSTGRES_TEST: 'true'
           PGPASSWORD: postgres
-        run: node --test --test-concurrency=1 tools/verification/android-acquisition-messaging-sql.test.mjs tools/verification/adoption-measurement-consent-sql.test.mjs tools/verification/ios-cpp-acquisition-sql.test.mjs
+        run: node --test --test-concurrency=1 tools/verification/android-acquisition-messaging-sql.test.mjs tools/verification/adoption-measurement-consent-sql.test.mjs tools/verification/ios-cpp-acquisition-sql.test.mjs tools/verification/android-campaign-placement-sql.test.mjs
       - name: Profile seal and photo deletion races against PostgreSQL
         env:
           DOPMI_RESCUER_SEAL_POSTGRES_TEST: 'true'

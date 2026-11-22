@@ -9970,3 +9970,50 @@ como arriba; los límites de primera elección/SDK en red/Android no se dan por
 verificados. Data Safety publicado y caso Google anterior conservado.
 Sin nuevas pruebas de usuarios/casos, cobros o cambios de servicios por esta
 actualización documental.
+
+### 21/11/2026 18:21CDMX — Etiquetas implementadas, landing pública y gates del candidato
+
+El titular autoriza implementar etiquetas por comentario sobre la versión reciente,
+verificarlas e iniciar60MTY después. Inventario af0e2274/fda91c1f integrado por
+merge f0e6521a; producto idéntico a la última elección de Analítica425/426.
+Preserva favoritos, visor/carrusel, compartirHTTPS, Tienda yOFF explícito del iPad.
+Después apareció b08f040f: inventario acotado de3archivos, incorporado sin colisión
+para que Entendido lleve aCasos/En revisión tras envío. Seis regresionesPASS y
+revisión independiente del delta sin hallazgos materiales; CI integrada pendiente.
+
+Manifest público sinPII:60tokens/15porR1–R4 y1QA, hashEDCF94D92AA3AF4E17E98A73797B20C15AD96DF5B9742608342018A50ADA7E5A.
+Nueva migración creada porCLI20261121233958, hash39F549F08AEE7A2B9147BEB700C97728E89DA0CC104B2B370FC2CED7355AE07E:
+registro privado, placement nullable en fuente Android existente, RPCauthenticated
+con revisiónCAS servidor y recibos inmutables por mascota. Sin backfill, nueva
+primera fuente ni modificación a observers previos; cascadasOFF/delete. Nuevos
+reportes60+QA y detalle privado exacto de primera ficha/mascotas adicionales.
+
+TDD observado antes de producto en móvil ySQL. Root113focalesPASS; análisis0;
+full1991PASS/4SKIP antes del deltaUI y6regresiones nuevasPASS después. Backend
+npm1367PASS/14SKIP; suite dirigida con PostgreSQL real18PASS/0SKIP, incluyendo
+carreras legacy/nuevo, dos tokens, OFF y correcciones/recibos. Admin174PASS/build,
+configuración42PASS y formatos limpios. Revisión estática independiente conjunta
+Android/SQL/landing y posterior deltaUI sin P1/P2/P3. No actualizar dependencias.
+
+Supabase test db --local ejecutado: FAIL sobre stack antiguo existente. Lectura
+verifica44migraciones/última20260927154814, age_band ausente y registro nuevo
+inexistente; testsSQL no cambian frente a la base. Fallos incluyen columnas y
+funciones antiguas ausentes. No resetear/reparar esos datos/fixtures. El gate
+reproducible CI crea el esquema actual limpio y debe aprobar antes de aplicarPROD.
+PreflightPROD21nov23:42:11UTC conservó72migraciones/
+339funciones/registro ausente; recibo privado de historia y funciones guardado.
+Todavía no hayDDL hosted de esta extensión.
+
+Landingmain2179f1c6c3bc544fd31a078812eeabbbd7475353 publicada porGit, Vercel
+ dpl_CE3DQ25R3fhuhSGJyby2qRd5iFuv READY/production;18HTTP postflightPASS:
+QAAndroid200/referrer4UTM/intentfallback,crawlers200,iOS302ctQA,unknown404.
+Cuatro rutas legacy y legales conservan hashes. Sin ppid/cookies/fingerprinting
+ni cambiodeadspend. Recibos privados centralcampaign-placement-pilot-20261121.
+
+El titular pidió un correo de prueba y confirmó recepción del alias nuevo;
+reservado para una cuentaQA limpia, sin cuenta creada ni consentimiento asumido.
+Ledger privado60reservas/0contactos. Faltan CI exacta, migración/postflight,
+cliente firmado compatible, instalación/primera ficha y disponibilidad pública.
+Clientes anteriores rechazan el nuevo formato: no consumir60contactos antes del
+cliente público. iOS sigue agregado por brazo en estas rutas, no etiqueta individual
+postinstalación. Detalles y siguiente acción en campaign-placement-pilot.md.

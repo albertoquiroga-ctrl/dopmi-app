@@ -49,7 +49,7 @@ import 'features/payments/payment_screens.dart';
 import 'features/payments/guardian_screen.dart';
 import 'features/payments/guardian_history_screen.dart';
 import 'features/payments/guardian_legal_access_screen.dart';
-import 'features/adoption/community_repository.dart' show Json;
+import 'features/adoption/community_repository.dart' show Adoption, Json;
 
 final routerInitialLocationProvider = Provider<String>((ref) => '/welcome');
 
@@ -280,12 +280,24 @@ final routerProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: '/my-cases',
-                    builder: (_, state) => MyRescueCasesScreen(
-                      key: ValueKey(identity.identity?.id),
-                      initialProgram:
-                          state.uri.queryParameters['program'] ?? 'adoption',
-                      initialStatus: state.uri.queryParameters['status'],
-                    ),
+                    builder: (_, state) {
+                      final submission = state.extra;
+                      final submitted =
+                          submission is Adoption &&
+                              submission.status == 'submitted'
+                          ? submission
+                          : null;
+                      return MyRescueCasesScreen(
+                        key: ValueKey((
+                          identity.identity?.id,
+                          submitted?.id,
+                          submitted?.version,
+                        )),
+                        initialProgram:
+                            state.uri.queryParameters['program'] ?? 'adoption',
+                        initialStatus: state.uri.queryParameters['status'],
+                      );
+                    },
                   ),
                 ],
               ),

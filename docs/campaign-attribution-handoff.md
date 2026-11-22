@@ -2,6 +2,9 @@
 
 Corte:21/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
 Este es el contrato operativo compartido; no declara activadas campañas nuevas.
+Implementación autorizada21nov: consultar el [runbook de etiquetas y piloto](campaign-placement-pilot.md)
+para el nuevo registro por comentario y sus gates. Cliente público y aceptación
+real permanecen separados; los apartados históricos inferiores no activan tokens.
 El [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md)
 define la hipótesis, las variables, el análisis y la cola de preparación.
 

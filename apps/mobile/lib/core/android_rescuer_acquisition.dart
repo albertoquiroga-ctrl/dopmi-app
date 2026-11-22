@@ -11,6 +11,14 @@ typedef PlayInstall = ({
 bool get supportsPlayInstallReferrer =>
     !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
+enum AndroidExperimentClaimResult {
+  recorded,
+  alreadyRecorded,
+  ineligible,
+  consentChanged,
+  invalidPlacement,
+}
+
 Future<PlayInstall?> readAndroidPlayInstall({
   bool diagnosticsEnabled = false,
 }) async {
@@ -47,6 +55,7 @@ enum _AcquisitionState {
   sendAttempted,
   sendSucceeded,
   sendError,
+  consentChanged,
   completed,
   completionNotSaved,
   processingError,
@@ -72,6 +81,8 @@ class AndroidRescuerAcquisition {
   String get _completedKey => 'dopmi.$namespace.play_acquisition_processed';
 
   static const _variants = {'personal-a', 'personal-b', 'pagina-a', 'pagina-b'};
+  static const _placementCampaign = 'dopmi_rescatistas_mty_p60_v1';
+  static final _placementPattern = RegExp(r'^[0-9a-f]{32}$');
   static const _utmKeys = {
     'utm_source',
     'utm_medium',
@@ -133,6 +144,7 @@ class AndroidRescuerAcquisition {
     final campaignClass = category('utm_campaign', {
       for (final variant in _variants)
         'dopmi_rescatistas_mty_$variant': 'expected',
+      _placementCampaign: 'experiment',
     });
     final contentClass = category('utm_content', {
       for (final variant in _variants) variant: 'expected',
@@ -141,6 +153,10 @@ class AndroidRescuerAcquisition {
     final variant = content?.length == 1 && _variants.contains(content!.single)
         ? content.single
         : null;
+    final placement =
+        matches('utm_campaign', _placementCampaign) &&
+        content?.length == 1 &&
+        _validPlacement(content!.single);
     // Counts saturate at 16. Neither parameter names nor arbitrary values leave.
     final unknown = params.keys
         .where((key) => !_utmKeys.contains(key))
@@ -166,10 +182,17 @@ class AndroidRescuerAcquisition {
         'campaignPresent=${params.containsKey('utm_campaign')} '
         'contentPresent=${params.containsKey('utm_content')} '
         'sourceClass=$sourceClass mediumClass=$mediumClass '
-        'campaignClass=$campaignClass contentClass=$contentClass';
+        'campaignClass=$campaignClass contentClass=$contentClass '
+        'placement=$placement';
   }
 
-  static String? _variant(PlayInstall install, DateTime now) {
+  static bool _validPlacement(String value) =>
+      value.length == 32 && _placementPattern.hasMatch(value);
+
+  static ({String? variant, String? placementToken})? _claim(
+    PlayInstall install,
+    DateTime now,
+  ) {
     final currentSeconds = now.millisecondsSinceEpoch ~/ 1000;
     final clickedAt = install.clickedAtSeconds;
     final installedAt = install.installedAtSeconds;
@@ -189,20 +212,33 @@ class AndroidRescuerAcquisition {
       return null;
     }
 
-    final variant = params['utm_content']?.single;
-    if (!_variants.contains(variant) ||
-        params['utm_source']?.single != 'facebook' ||
-        params['utm_medium']?.single != 'organic_comment' ||
-        params['utm_campaign']?.single != 'dopmi_rescatistas_mty_$variant') {
+    if (params['utm_source']?.single != 'facebook' ||
+        params['utm_medium']?.single != 'organic_comment') {
       return null;
     }
-    return variant;
+    final content = params['utm_content']?.single;
+    final campaign = params['utm_campaign']?.single;
+    if (campaign == _placementCampaign &&
+        content != null &&
+        _validPlacement(content)) {
+      return (variant: null, placementToken: content);
+    }
+    if (_variants.contains(content) &&
+        campaign == 'dopmi_rescatistas_mty_$content') {
+      return (variant: content, placementToken: null);
+    }
+    return null;
   }
 
   Future<void> record({
     required String owner,
     required bool Function() sessionStillEligible,
     required Future<void> Function(String variant, DateTime clickedAt) send,
+    Future<AndroidExperimentClaimResult> Function(
+      String placementToken,
+      DateTime clickedAt,
+    )?
+    sendPlacement,
   }) {
     _pending = _pending
         .then((_) async {
@@ -244,20 +280,20 @@ class AndroidRescuerAcquisition {
             final checks = onDiagnostic == null
                 ? null
                 : _installChecks(install, current);
-            String? variant;
+            ({String? variant, String? placementToken})? claim;
             try {
-              variant = _variant(install, current);
+              claim = _claim(install, current);
             } catch (_) {
               _diagnose(_AcquisitionState.referrerRejected, checks: checks);
               rethrow;
             }
             _diagnose(
-              variant == null
+              claim == null
                   ? _AcquisitionState.referrerRejected
                   : _AcquisitionState.referrerAccepted,
               checks: checks,
             );
-            if (variant != null) {
+            if (claim != null) {
               // Keep an ambiguous network retry tied to the same opted-in account.
               if (claimedBy == null &&
                   !await preferences.setString(_claimedByKey, owner)) {
@@ -270,13 +306,25 @@ class AndroidRescuerAcquisition {
               }
               _diagnose(_AcquisitionState.sendAttempted);
               try {
-                await send(
-                  variant,
-                  DateTime.fromMillisecondsSinceEpoch(
-                    install.clickedAtSeconds * 1000,
-                    isUtc: true,
-                  ),
+                final clickedAt = DateTime.fromMillisecondsSinceEpoch(
+                  install.clickedAtSeconds * 1000,
+                  isUtc: true,
                 );
+                final placement = claim.placementToken;
+                if (placement != null) {
+                  final dispatch = sendPlacement;
+                  if (dispatch == null) {
+                    _diagnose(_AcquisitionState.sendError);
+                    return;
+                  }
+                  final result = await dispatch(placement, clickedAt);
+                  if (result == AndroidExperimentClaimResult.consentChanged) {
+                    _diagnose(_AcquisitionState.consentChanged);
+                    return;
+                  }
+                } else {
+                  await send(claim.variant!, clickedAt);
+                }
               } catch (_) {
                 _diagnose(_AcquisitionState.sendError);
                 return;

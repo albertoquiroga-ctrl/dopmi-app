@@ -1,4 +1,12 @@
-## Candidato vigente — Analítica opcional, 21/11/2026
+## Candidato vigente — Etiquetas de campaña, 21/11/2026
+
+Extensión por comentario sobre la base reciente af0e2274/425–426, integrada con
+campañas en f0e6521a. Cliente/servidor implementados y landing2179f1c6 pública/
+HTTP18PASS. CI final, migración, candidato y QA real todavía pendientes;0/60
+contactos hasta cliente público compatible. [Estado operativo](campaign-placement-pilot.md).
+Preservar elOFF elegido en iPad426 y los arreglos recientes del corte siguiente.
+
+## Analítica opcional — corte anterior21/11/2026
 
 Elección inicial de Analítica, corte21/nov: fuente inmutable
 `af0e2274f13a51c10a13e8579fd932f35f1ebf58`, tag

@@ -693,6 +693,11 @@ class _PublicationState extends ConsumerState<PublicationScreen> {
       if (action == 'submit' && result.status == 'submitted') {
         setState(() => busy = false);
         await showPublicationSubmittedDialog(context);
+        if (!mounted) return;
+        if (_currentPublicationActor(source, actor) &&
+            ModalRoute.isCurrentOf(context) != false) {
+          context.go('/my-cases?program=adoption&status=review', extra: result);
+        }
       }
     }
   });
