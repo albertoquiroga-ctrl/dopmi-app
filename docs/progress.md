@@ -9065,3 +9065,8 @@ almacenamiento de sesión separado por host, pero aún carece de Meta.
 Se usa como regreso del teléfono a producción después del ensayo. Los
 pilotos siguen pendientes de portar la integración al producto actual,
 comprobar sus declaraciones y validar la medición de producción.
+
+ADB confirmó el regreso del Samsung a 437, instalado por Google Play,
+tras la actualización completada por el otro chat de Dopmi. Se conservó
+la instalación sin desinstalar ni borrar datos de Dopmi. Se eliminó la
+automatización horaria antigua del 406 una vez recibidos ambos eventos.

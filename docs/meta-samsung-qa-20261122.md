@@ -69,3 +69,11 @@ de `dopmi_send_message_v3`, junto con `confirmedValueAction` y el token
 atribuible. Copiar los repositorios o la actividad Android de 435 sobre
 437 retiraría correcciones posteriores. No se realizó ese porte ni una
 migración de producción durante esta prueba.
+
+El Samsung volvió a 2.3.10 (437) de producción por Google Play. La
+lectura independiente de ADB confirmó código 437 e instalador
+`com.android.vending`. Otro chat de Dopmi completó la actualización en
+el mismo teléfono. Al detectar la operación simultánea se detuvieron
+los controles nativos de esta prueba. No se desinstaló Dopmi ni se
+borraron sus datos. La comprobación de la sesión de producción corresponde
+al recorrido de ese chat y no se da por verificada en este recibo.
