@@ -10517,3 +10517,23 @@ mismofuente/tag, versiónprevista2.3.12 sin número anticipado. En preparación,
 sin IPA/carga/disponibilidad acreditados. Observador único root74800.
 ADB21:38UTC sin dispositivos; no instalación/QA física/aceptación atribuidas.
 Recibos/fuentes en mismo paquete distribution, sin repetir solicitudes.
+
+
+## 23/11/2026 22:00UTC — Tienda440/441, artefactos y publicación QA conciliados
+
+Producto97af3893 y CI45262749872 se conservan sin cambios ni nuevas suites. Android440
+mantiene su recibo de publicación interna21:36UTC. iOS6b04b236418a2b03a8c9e893 terminó
+15 SUCCESS; versión2.3.12(441), IPA55037391B/SHA256
+b6fac5fd2da0c541bab602418d6b15c1c6be3d6678b2b8dbfabd13de62ef3d60. Descarga única y
+verificación21:57UTC: bundle/versión, provisionamiento estructural, FirebasePROD,
+perfil adopciones/Amazon y arranque privado de medición/diagnóstico conservados.
+Verificación criptográfica de firma iOS en macOS no atribuida. Carga Apple correcta;
+tarea6b04b646a14b9f22af01fe36 finished/error=false22:00:11UTC. No equivale a lectura
+del grupo ni instalación física. Una build por plataforma, sin repetir POST/artefactos.
+
+Chrome volvió a agotar tiempo leyendo Play; ADB21:50UTC sin dispositivos. Titular
+avisado para Samsung y TestFlight441. QA instalada y aceptación quedan pendientes;
+no nueva publicación pública. Mock remoto al cierre sigue d9f9aa43; no expansión.
+Se conciliaron estados de los seis grupos visuales en el tablero único y el paquete
+privado desde recibos reales, conservando propuestas/reservas y preparación histórica.
+Sin SQL, flags, campañas, sanciones, pagos, cambios de consentimiento ni servicio.

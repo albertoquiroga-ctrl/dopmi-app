@@ -1,24 +1,27 @@
-# Cola vigente — Tienda de Irlanda,23/nov/2026 CDMX
+# Cola vigente — Tienda de Irlanda, 23/nov/2026 CDMX
 
-Referencia d9f9aa43 sólo Tienda, seis grupos implementados y revisados en
-codex/store-irlanda-current-20261123. Base fe378773/b471 preserva Android439 y
-mantiene fuera el Admin pendiente. [Plan](superpowers/plans/2026-11-23-store-irlanda.md).
-39 pruebas dirigidas PASS; capturas Flutter con perfil adoption-only/Amazon,
-cuatro pestañas, normal/115%/320px200% PASS. Fotos de captura:15 fixtures de URL
-exacta, sin llamadas de compra ni cuentas reales. Revisión independiente cerró
-marca incompatible al cambiar especie y altura intrínseca del collar; sinP1/P2.
+Seis grupos implementados: cabecera/banner, especie/búsqueda/orden, filtros,
+tarjetas, kit y detalle. Referencia d9f9aa43 sólo Tienda; base fe378773/b471
+conserva Android439 y mantiene fuera el Admin pendiente.
+[Plan](superpowers/plans/2026-11-23-store-irlanda.md),
+[candidato y recibos](candidate-release-current.md).
 
-Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS;
-analyze limpio y2125FlutterPASS/4SKIP. Android2.3.12(440), CM6b04ab73d21ef35dc1e45a9a,
-14SUCCESS; AAB/firma/config verificados y logPublishing internal/completed correcto.
-iOS aceptado una vez21:37UTC:6b04b236418a2b03a8c9e893, en preparación, versión
-prevista2.3.12 sin número anticipado; ventana21:09–21:14UTC completada.
-Pendientes finitos: root concilia IPA/carga iOS y disponibilidad; paquete
-QA nuevo, sin reutilizar reservas anteriores. Antes de cada envío5min, una sola
-cola Flutter/Codemagic. Samsung no detectado, titular avisado; Chrome lee DOM del
-mock pero captura/viewport/control nativo agotaron tiempo, reconexión solicitada.
-No atribuir comparación por screenshot del mock, QA física ni aceptación humana.
-Conservar Meta y campaña/servidorOFF vigentes; no SQL ni publicación pública.
+Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatro SUCCESS;
+analyze limpio, 2125 Flutter PASS/4 SKIP y 39 dirigidas PASS. Capturas del perfil
+real con cuatro pestañas, normal/115%/320px200%, revisadas independientemente.
+Cerrados dos P2: marca incompatible al cambiar especie y altura del collar.
+Fotos de captura:15 fixtures de URL exacta, sin compras ni cuentas reales.
+
+Android440: 14 SUCCESS, AAB/firma/configuración y log de publicación interna
+verificados. iOS441: 15 SUCCESS, IPA/configuración y carga verificados; tarea Apple
+finished/error=false22:00UTC. Una cola, una ventana de5min y un envío por plataforma.
+
+Pendientes finitos: root confirma canales y prueba instalada cuando vuelvan Chrome
+estable y Samsung USB; titular prueba TestFlight441 y acepta o señala diferencias.
+ADB sin dispositivos; Chrome lee DOM del mock, pero captura/viewport/control nativo
+y lectura posterior de Play agotaron tiempo. No atribuir screenshot del mock,
+instalación, disponibilidad de grupo TestFlight ni aceptación humana.
+Sin nuevo SQL, servicios, campañas o publicación pública por este lote.
 
 # Cola vigente — Meta de producción, 22/nov/2026 CDMX
 

@@ -1,26 +1,34 @@
-## Tienda Irlanda — candidato23/nov/2026, distribución QA en curso
+## Tienda Irlanda — 23/nov/2026, binarios QA publicados
 
-Producto97af38935422230079c3f14f212f54851c71f6a8/tagcodex/store-irlanda-97af3893,
-rama codex/store-irlanda-current-20261123, basefe378773/b471 conserva Android439.
-Mockd9f9aa43 sólo Tienda; otros gruposf693. CI45262749872 cuatroSUCCESS, análisis
-limpio y2125FlutterPASS/4SKIP. Revisión independiente código/capturas sinP1/P2.
-Capturas normal/115%/200% de perfiladoption-only/Amazon muestran4tabs; no QA física.
+Producto `97af38935422230079c3f14f212f54851c71f6a8`, tag
+`codex/store-irlanda-97af3893`, rama `codex/store-irlanda-current-20261123`.
+Base fe378773/b471 conserva Android439. Mock d9f9aa43 sólo Tienda; otros grupos f693.
+[CI45262749872](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45262749872):
+cuatro SUCCESS, analyze sin incidencias, 2125 Flutter PASS/4 SKIP y 39 dirigidas PASS.
+Revisión independiente de código y capturas sin P1/P2 pendientes. Capturas con
+perfil adoption-only/Amazon, cuatro pestañas y texto normal/115%/200%; no QA física.
 
-Android:2.3.12(440), CM6b04ab73d21ef35dc1e45a9a/14SUCCESS, fuente97af3893.
-AAB96855148B/SHA2561e7792c2cee3052316556b2dcfa0886009df6d5f832706b684d452754211ae52;
-firma/pin/configuración verificados21:36UTC. Publishing log confirma internal/completed
-y Successfully published. No lectura independiente de PlayConsole o instalación.
-Ventana20:53–20:58UTC cerrada, un solo POST y artefacto/recibo conservados.
-iOS: ventana21:09–21:14UTC cerrada; un POST aceptado21:37UTC creó
-6b04b236418a2b03a8c9e893/ios-testflight, fuente97af3893, versiónprevista2.3.12.
-En preparación, sin número nativo/IPA/carga/disponibilidad acreditados todavía.
-Hereda runtime438/a244 sin capturaMeta; Androidhereda439/b471 y su selectorMeta,
-sin tocar gate de servidor ni preferencias. SinSQL/Admin/finanzas/campañas nuevas.
-Paquete .tools/store-irlanda-20261123/distribution; no repetir POST o reservas.
+| Plataforma | Compilación y artefacto | Publicación acreditada | Pendiente |
+|---|---|---|---|
+| Android 2.3.12 (440) | CM6b04ab73d21ef35dc1e45a9a, 14 SUCCESS; AAB/firma/pin/configuración verificados 21:36UTC | Log Publishing: internal/completed, Successfully published | Lectura de Play Console, instalación Samsung y aceptación |
+| iOS 2.3.12 (441) | CM6b04b236418a2b03a8c9e893, 15 SUCCESS; IPA/configuración/provisionamiento verificados 21:57UTC | Carga correcta; tarea Apple6b04b646a14b9f22af01fe36 finished/error=false a las22:00UTC | Disponibilidad en grupo TestFlight, instalación y aceptación |
 
-Pendientes: verificar artefacto/carga iOS y disponibilidad en tiendas,
-SamsungUSB (ADB sin dispositivos21:38UTC) y contraste gráfico con mock si Chrome vuelve a capturar. DOM/CSS sí
-consultados; no screenshot de referencia inventado ni aceptación humana atribuida.
+AAB: 96855148 bytes, SHA256 `1e7792c2cee3052316556b2dcfa0886009df6d5f832706b684d452754211ae52`.
+IPA: 55037391 bytes, SHA256 `b6fac5fd2da0c541bab602418d6b15c1c6be3d6678b2b8dbfabd13de62ef3d60`.
+Ventanas de cinco minutos cumplidas por plataforma; un POST por build, cola secuencial,
+artefactos descargados y verificados una vez. No repetir reservas, envíos ni descargas.
+Paquete: `.tools/store-irlanda-20261123/distribution`.
+
+Android hereda runtime439/b471 y su selector Meta; iOS hereda438/a244 sin captura
+Meta. Ambos conservan PROD/adopciones/Amazon y finanzas cliente OFF. No se cambian
+SQL, flags, campañas, servicios ni preferencias; no hay envío público de este lote.
+Admin de reportes sigue separado y sin activar.
+
+Root: comprobar canales/QA cuando el control esté disponible. Chrome volvió a agotar
+el tiempo al leer Play; ADB sin dispositivos21:50UTC. El titular tiene solicitudes
+pendientes de Samsung y TestFlight441. El mock vivo sigue en d9f9aa43, comprobado al
+cierre; DOM/CSS consultados, captura gráfica de referencia bloqueada. No atribuir
+comparación con una imagen no obtenida, instalación ni aceptación humana.
 [Plan y evidencia](superpowers/plans/2026-11-23-store-irlanda.md).
 
 ## Meta PROD — 2.3.11 (439) interna, 22/nov/2026 CDMX

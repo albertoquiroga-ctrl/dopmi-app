@@ -8,12 +8,12 @@ codex/store-irlanda-current-20261123; Admin pendiente no se incorpora ni se acti
 
 | Grupo | Diferencia comprobada | Estado y criterio |
 |---|---|---|
-| Cabecera/banner | Logo y título separados, misión compacta e imagen42% | Inventariado; contrastar tamaños normales/aumento |
-| Especie/búsqueda/orden | Especie antes del buscador, filtro en misma fila, orden junto a sección | Inventariado; acciones accesibles y estado conservado |
-| Filtros | Opciones contextuales y multiselección de sabores/presentaciones | Inventariado; variantes reales, borrador/aplicar/limpiar |
-| Tarjetas | Jerarquía marca/título/sabor/meta y Ver opciones | Inventariado; empaque visible sin cortar, catálogo completo |
-| Kit | Entrada celeste y tarjetas horizontales | Inventariado; compra separada, ASIN/foto reales |
-| Detalle | Header fijo, título/foto/chips refinados | Inventariado; combinación exacta y handoff seguro conservados |
+| Cabecera/banner | Logo y título separados, misión compacta e imagen42% | Implementado; capturas normales y con aumento revisadas |
+| Especie/búsqueda/orden | Especie antes del buscador, filtro en misma fila, orden junto a sección | Implementado; acciones accesibles y estado conservado |
+| Filtros | Opciones contextuales y multiselección de sabores/presentaciones | Implementado; variantes reales y aplicar/limpiar verificados |
+| Tarjetas | Jerarquía marca/título/sabor/meta y Ver opciones | Implementado; empaque sin recorte y catálogo conservado |
+| Kit | Entrada celeste y tarjetas horizontales | Implementado; imagen compacta y compra separada con ASIN/foto reales |
+| Detalle | Header fijo, título/foto/chips refinados | Implementado; combinación exacta y confirmación Amazon conservadas |
 
 Implementación local y revisión independiente cerradas:39 pruebas dirigidas PASS;
 capturas Flutter de perfil adoption-only/Amazon con4pestañas, normal/115%/200%
@@ -25,8 +25,11 @@ integrada agotaron tiempo. No se atribuye screenshot de referencia ni contraste
 visual con una imagen no obtenida. QA física y aceptación siguen separadas.
 
 La simulación no abre Amazon y usa fotos genéricas; esas dos limitaciones no se
-copian. No inventar precios, descuentos ni donación garantizada. QA publicada,
-instalada y aceptación todavía no acreditadas para este delta.
+copian. No inventar precios, descuentos ni donación garantizada. Android440 tiene
+publicación interna acreditada por el log de Publishing; instalación y aceptación
+siguen pendientes. iOS441: IPA y carga verificados, posproceso Apple finalizado sin
+error22:00UTC; disponibilidad de grupo/instalación/aceptación pendientes. El
+[candidato vigente](candidate-release-current.md) conserva los recibos nativos.
 
 ## 22/nov — Analytics: revisión acotada y QA instalada
 

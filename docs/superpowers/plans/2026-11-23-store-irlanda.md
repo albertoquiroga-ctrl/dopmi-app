@@ -40,7 +40,7 @@ Files: `apps/mobile/lib/features/store/store_screen.dart`, `apps/mobile/test/sto
 
 Files: `apps/mobile/tool/capture_store_test.dart` si requiere ampliar cobertura; continuidad en el tablero/cola/ledger existentes.
 
-- [ ] Ejecutar referencia congelada; comparar visualmente inicio, filtros, kit y detalle. Registrar excepciones funcionales reales y dimensiones.
+- [x] Ejecutar referencia congelada; contrastar DOM/CSS de inicio, filtros, kit y detalle con capturas Flutter. Excepciones y dimensiones registradas; captura gráfica del mock bloqueada, sin comparación de imágenes atribuida.
 - [x] Reutilizar capturadores Flutter: normal, Samsung115% y320px/200%, datos controlados y sin escrituras productivas.
 - [x] Revisión independiente acotada UI/UX/código/seguridad; cotejar diff con superficie prevista y corregir hallazgos materiales.
 - [x] Congelar SHA de producto, ejecutar gates y registrar resultados por SHA. No repetir suites válidas por documentación.
@@ -56,8 +56,13 @@ gate de entregaOFF; no lo activa Tienda. iOS no captura IDFA/ATT ni activa el pe
 desde esta integración. Revisión acotada encontró una marca oculta incompatible al
 cambiar especie/edad; negativo RED y normalización local, sin modificar contratos.
 
-Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS;
-analyze limpio,2125FlutterPASS/4SKIP y39dirigidasPASS. Revisión/capturas cerradas,
-salvo screenshot de referencia bloqueado por control gráfico. Android único
-6b04ab73d21ef35dc1e45a9a en curso; iOS aún sin envío, ventana21:09UTC abierta.
-Publicación/instalación/aceptación son estados pendientes y separados.
+Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatro SUCCESS;
+analyze limpio, 2125 Flutter PASS/4 SKIP y 39 dirigidas PASS. Revisión independiente
+y capturas cerradas, salvo screenshot de referencia bloqueado por control gráfico.
+Android440/CM6b04ab73d21ef35dc1e45a9a:14 SUCCESS, AAB/firma/configuración y log
+Publishing internal/completed verificados. iOS441/CM6b04b236418a2b03a8c9e893:
+15 SUCCESS, IPA/configuración y carga verificados; posproceso Apple finished sin
+error22:00UTC. Ventanas de5min y un POST por plataforma; cola secuencial sin replay.
+Disponibilidad de canales, instalación y aceptación siguen pendientes y separadas.
+El mock permanece d9f9aa43 al cierre. Root probará Samsung cuando vuelva ADB; titular
+recibió solicitud TestFlight441. No cambios públicos, SQL, flags ni servicios.

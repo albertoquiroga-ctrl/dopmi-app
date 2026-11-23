@@ -1,18 +1,24 @@
-# Checkpoint vigente — Tienda Irlanda,23/nov/2026 CDMX
+# Checkpoint vigente — Tienda Irlanda, 23/nov/2026 CDMX
 
-Continuar codex/store-irlanda-current-20261123 sobre fe378773/b471bdaf para conservar
-Android439. Referencia nueva d9f9aa43 sólo Tienda/warm-trust, otras seccionesf693.
-Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS,
-analyze limpio y2125FlutterPASS/4SKIP. Seis grupos implementados;39 pruebas dirigidas
-y captura de perfil real con4tabs normal/115%/200% PASS, revisión independiente sinP1/P2.
-Android2.3.12(440), CM6b04ab73d21ef35dc1e45a9a/14SUCCESS, AAB/firma/perfil verificados,
-logPublishing internal/completed. iOS6b04b236418a2b03a8c9e893 en preparación; ventana
-21:09–21:14UTC cerrada, un POST21:37UTC. Disponibilidad/instalación/aceptación pendientes. [Cola](backlog.md),
-[plan](superpowers/plans/2026-11-23-store-irlanda.md). Samsung no detectado y control
-gráfico de Chrome bloqueado por timeout; el titular tiene solicitudes de conexión.
-No SQL/flags/campañas, compras ni envío público por esta tarea. Admin de reportes
-sigue en codex/admin-report-context-20261122 sin activar; su paquete anterior debe
-reconciliarse con el estado posterior de Meta antes de cualquier aplicación.
+Continuar `codex/store-irlanda-current-20261123`, base fe378773/b471 conserva
+Android439. Referencia d9f9aa43 sólo Tienda/warm-trust; otras secciones f693.
+Producto97af3893/tagcodex/store-irlanda-97af3893; CI45262749872 cuatro SUCCESS,
+analyze limpio, 2125 Flutter PASS/4 SKIP. Seis grupos implementados y revisados,
+39 dirigidas PASS; capturas reales de widgets con cuatro pestañas y aumentos.
+Sin P1/P2 pendientes tras revisión independiente.
+
+Android2.3.12(440): CM6b04ab73d21ef35dc1e45a9a/14SUCCESS, artefacto y log de
+publicación interna verificados. iOS2.3.12(441): CM6b04b236418a2b03a8c9e893/
+15SUCCESS, IPA/carga verificados, posproceso Apple finished/error=false22:00UTC.
+Conservar esos envíos; no repetir builds. Disponibilidad de canales, instalación
+y aceptación humana pendientes. [Cola](backlog.md),
+[plan](superpowers/plans/2026-11-23-store-irlanda.md).
+
+Samsung no detectado y Chrome vuelve a agotar tiempo. DOM/CSS del mock sí leídos;
+screenshot de referencia no obtenido. Solicitudes de conexión y TestFlight441 al
+titular pendientes. Sin SQL/flags/campañas, compras ni envío público por esta tarea.
+Admin de reportes sigue separado en codex/admin-report-context-20261122 sin activar;
+su paquete anterior necesita conciliación con el estado posterior de Meta.
 
 # Checkpoint vigente — Meta439 interna, 22/nov/2026 CDMX
 
