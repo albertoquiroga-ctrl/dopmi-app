@@ -10537,3 +10537,20 @@ no nueva publicación pública. Mock remoto al cierre sigue d9f9aa43; no expansi
 Se conciliaron estados de los seis grupos visuales en el tablero único y el paquete
 privado desde recibos reales, conservando propuestas/reservas y preparación histórica.
 Sin SQL, flags, campañas, sanciones, pagos, cambios de consentimiento ni servicio.
+
+
+## 23/11/2026 23:43UTC — Consulta sobre medición por defecto y producción
+
+Titular pregunta por disponibilidad y diferencia con GA. Lectura agregada real
+439Auth/65ON/305OFF/69sin fila, frente al corte22/nov393/31/297/65; no es actividad
+ni cobertura histórica.295OFFsin recibo actual no se etiquetan como rechazos
+explícitos. Auditoría independiente confirma preselección pendiente de confirmar
+y conservación deliberada de OFF; no defecto nuevo demostrado. No se fuerza ON.
+
+API pública iTunes confirma2.3.10 y publicación23/nov18:49:40UTC; lookup sin número
+nativo, HTML Apple cacheado2.3.9. Play437Active conserva su evidencia22/nov.
+Chrome agotó tiempo; GA de hoy e ingesta por versión aún no leídos. Sin nueva
+implementación, pruebas, builds ni cambios productivos. Candidato vigente y
+coverage-20261123.private.json contienen el corte y los límites. Referencias de
+Google sobre usuarios activos y latencia consultadas; no se atribuye el desfase
+completo a la latencia ni se promete igualdad entre GA y Auth.

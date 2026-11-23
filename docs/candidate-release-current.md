@@ -66,6 +66,33 @@ siguen pendientes. No volver a compilar ni reaplicar SQL para reanudar.
 Evidencia privada en `.tools/meta-production-20261122`.
 [Plan](superpowers/plans/2026-11-22-meta-production.md) · [Prueba](meta-samsung-qa-20261122.md).
 
+## Analytics — cobertura y publicación, 23/nov/2026 23:43UTC
+
+Consulta agregada de PRODUCCIÓN, sin identificadores personales ni escrituras:
+439 cuentas Auth, 65 con medición ON, 305 OFF y 69 sin fila de preferencia. Entre
+las preferencias actuales hay41 recibos ON y10 OFF del aviso nuevo;295OFF no
+cuentan con ese recibo actual. Su ausencia no demuestra rechazo ni activación
+implícita: se conservan los estados históricos, incluso revisión0.
+
+La implementación desde425/426 ofrece ON preseleccionado sólo cuando falta
+preferencia y espera confirmación; no habilita colección automáticamente ni
+reescribe OFF anteriores. Revisión independiente de código vigente sin defecto
+nuevo confirmado.437/438 añade pausa ante incertidumbre conservando identidad;
+no rellena datos históricos. Cuentas Auth no equivalen a actividad reciente ni
+a usuarios únicos medidos de GA.
+
+Publicación: Android437 ya figuraba Active en Play en el corte22/nov de Meta.
+La consulta fresca a la API pública oficial iTunes confirma com.mycompany.dopmi
+2.3.10, currentVersionReleaseDate2026-11-23T18:49:40Z. El lookup no acredita
+número de build ni actualizaciones instaladas; la página HTML Apple conservaba
+2.3.9 en caché. La solicitud previa438 se conserva sin reenviar.
+
+Pendiente: lectura de GA actual por fecha/plataforma/versión e ingesta legítima.
+El inventario del control de Chrome agotó tiempo; no se atribuye lectura de GA
+hoy ni conciliación integral del desfase. No nuevos builds, SQL de cambio,
+preferencias, anuncios o publicación por esta consulta. Readback privado:
+`.tools/qa-analytics-quality-20261122/coverage-20261123.private.json`.
+
 ## Analytics — corte verificado del 22/nov/2026, 22:09 UTC
 
 Producto `a24408beeb664d48f15b1bd90e9a8c578602659e`, tag
