@@ -1,3 +1,20 @@
+# Cola vigente — Tienda de Irlanda,23/nov/2026 CDMX
+
+Referencia d9f9aa43 sólo Tienda, seis grupos implementados y revisados en
+codex/store-irlanda-current-20261123. Base fe378773/b471 preserva Android439 y
+mantiene fuera el Admin pendiente. [Plan](superpowers/plans/2026-11-23-store-irlanda.md).
+39 pruebas dirigidas PASS; capturas Flutter con perfil adoption-only/Amazon,
+cuatro pestañas, normal/115%/320px200% PASS. Fotos de captura:15 fixtures de URL
+exacta, sin llamadas de compra ni cuentas reales. Revisión independiente cerró
+marca incompatible al cambiar especie y altura intrínseca del collar; sinP1/P2.
+
+Pendientes finitos: root cierra analyze/regresión completa y CI exacta; paquete
+QA nuevo, sin reutilizar reservas anteriores. Antes de cada envío5min, una sola
+cola Flutter/Codemagic. Samsung no detectado, titular avisado; Chrome lee DOM del
+mock pero captura/viewport/control nativo agotaron tiempo, reconexión solicitada.
+No atribuir comparación por screenshot del mock, QA física ni aceptación humana.
+Conservar Meta y campaña/servidorOFF vigentes; no SQL ni publicación pública.
+
 # Cola vigente — Meta de producción, 22/nov/2026 CDMX
 
 Petición expresa de integrar los eventos de valor, comprobarlos en Meta y después

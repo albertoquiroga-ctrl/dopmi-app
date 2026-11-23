@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/design_tokens.dart';
 import '../../core/donor_canvas.dart';
 import '../../core/donor_notification_button.dart';
+import '../../core/ui.dart' show Brand;
 import '../../core/warm_filter_dialog.dart';
 import 'store_kit_item.dart';
 import 'store_repository.dart';
@@ -73,43 +74,37 @@ class _StoreScreenState extends ConsumerState<StoreScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 12, 4),
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                 child: Row(
                   children: [
-                    SvgPicture.asset(
-                      'assets/profile/logo-paw-naranja.svg',
-                      width: 30,
-                      height: 30,
-                      excludeFromSemantics:
-                          resolved?.enabled == true && actorCurrent,
-                      semanticsLabel: 'Dopmi',
-                    ),
-                    const SizedBox(width: 10),
-                    if (resolved != null && resolved.enabled && actorCurrent)
-                      Expanded(
-                        child: Semantics(
-                          header: true,
-                          child: Text(
-                            resolved.preview
-                                ? 'Vista previa de Tienda'
-                                : 'Tienda Dopmi',
-                            style: const TextStyle(
-                              fontFamily: DopmiTokens.bodyFont,
-                              fontSize: 24,
-                              height: 1.12,
-                              letterSpacing: -.6,
-                              fontWeight: FontWeight.w800,
-                              color: DopmiTokens.ink,
-                            ),
-                          ),
-                        ),
-                      )
-                    else
-                      const Spacer(),
+                    const Brand(),
+                    const Spacer(),
                     const DonorNotificationButton(),
                   ],
                 ),
               ),
+              if (resolved != null && resolved.enabled && actorCurrent)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        resolved.preview
+                            ? 'Vista previa de Tienda'
+                            : 'Tienda Dopmi',
+                        style: const TextStyle(
+                          fontFamily: DopmiTokens.bodyFont,
+                          fontSize: 28,
+                          height: 1.1,
+                          fontWeight: FontWeight.w600,
+                          color: DopmiTokens.ink,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: catalog.when(
                   skipLoadingOnRefresh: false,
@@ -184,9 +179,10 @@ bool _hasStoreFamily(StoreProductGroup group) =>
 class _StoreSelection {
   String species = 'dog';
   String query = '';
-  String? age, size, flavor;
-  double? weightKg;
+  String? age, size;
   Set<String> brands = {};
+  Set<String> flavors = {};
+  Set<double> weights = {};
   bool descending = false;
   double offset = 0;
 }
@@ -216,10 +212,10 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
   set age(String? value) => widget.selection.age = value;
   String? get size => widget.selection.size;
   set size(String? value) => widget.selection.size = value;
-  String? get flavor => widget.selection.flavor;
-  set flavor(String? value) => widget.selection.flavor = value;
-  double? get weightKg => widget.selection.weightKg;
-  set weightKg(double? value) => widget.selection.weightKg = value;
+  Set<String> get flavors => widget.selection.flavors;
+  set flavors(Set<String> value) => widget.selection.flavors = value;
+  Set<double> get weights => widget.selection.weights;
+  set weights(Set<double> value) => widget.selection.weights = value;
   Set<String> get brands => widget.selection.brands;
   set brands(Set<String> value) => widget.selection.brands = value;
   bool get descending => widget.selection.descending;
@@ -404,38 +400,61 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
   Future<void> showFilters() async {
     if (catalogOverlay != null) return;
     final filterSpecies = species;
-    String? draftAge = age, draftSize = size, draftFlavor = flavor;
-    double? draftWeight = weightKg;
-    final draftBrands = {...brands};
-    final speciesProducts = widget.catalog.products.where(
-      (item) => item.species == filterSpecies,
+    String? draftAge = age, draftSize = size;
+    var draftBrands = {...brands};
+    var draftFlavors = {...flavors};
+    var draftWeights = {...weights};
+    List<StoreProduct> baseProducts() => filterStoreProducts(
+      widget.catalog.products,
+      species: filterSpecies,
+      age: draftAge,
+      size: filterSpecies == 'dog' ? draftSize : null,
     );
-    final availableBrands =
-        speciesProducts.map((item) => item.brand).toSet().toList()..sort();
-    final availableFlavors =
-        speciesProducts
-            .map((item) => item.flavor)
-            .whereType<String>()
-            .where((value) => value.isNotEmpty)
-            .toSet()
-            .toList()
-          ..sort();
-    final availableWeights =
-        speciesProducts.map((item) => item.weightKg).toSet().toList()..sort();
-    if (!availableFlavors.contains(draftFlavor)) draftFlavor = null;
-    if (!availableWeights.contains(draftWeight)) draftWeight = null;
-    final weightsByFlavor = <String, Set<double>>{};
-    for (final item in speciesProducts) {
-      final itemFlavor = item.flavor;
-      if (itemFlavor != null) {
-        weightsByFlavor.putIfAbsent(itemFlavor, () => {}).add(item.weightKg);
-      }
+    List<StoreProduct> flavorProducts() => baseProducts()
+        .where(
+          (item) => draftBrands.isEmpty || draftBrands.contains(item.brand),
+        )
+        .toList();
+    List<StoreProduct> weightProducts() => flavorProducts()
+        .where(
+          (item) => draftFlavors.isEmpty || draftFlavors.contains(item.flavor),
+        )
+        .toList();
+    void normalizeDraft() {
+      draftBrands = draftBrands.intersection(
+        baseProducts().map((item) => item.brand).toSet(),
+      );
+      draftFlavors = draftFlavors.intersection(
+        flavorProducts().map((item) => item.flavor).whereType<String>().toSet(),
+      );
+      draftWeights = draftWeights.intersection(
+        weightProducts().map((item) => item.weightKg).toSet(),
+      );
     }
+
+    normalizeDraft();
     final route = DialogRoute<bool>(
       context: context,
       barrierColor: const Color(0x29000000),
       builder: (context) => StatefulBuilder(
         builder: (context, update) {
+          void updateDraft(VoidCallback change) => update(() {
+            change();
+            normalizeDraft();
+          });
+          final availableBrands =
+              baseProducts().map((item) => item.brand).toSet().toList()..sort();
+          final availableFlavors =
+              flavorProducts()
+                  .map((item) => item.flavor)
+                  .whereType<String>()
+                  .where((value) => value.isNotEmpty)
+                  .toSet()
+                  .toList()
+                ..sort();
+          final availableWeights =
+              weightProducts().map((item) => item.weightKg).toSet().toList()
+                ..sort();
           Widget choices(
             Map<String, String> labels,
             String? selected,
@@ -479,32 +498,31 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                 maxHeight: MediaQuery.sizeOf(context).height * .88,
               ),
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'Filtros',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          tooltip: 'Cerrar filtros',
-                          onPressed: () => Navigator.pop(context, false),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        tooltip: 'Cerrar filtros',
+                        onPressed: () => Navigator.pop(context, false),
+                        icon: const Icon(Icons.close_rounded, size: 22),
+                      ),
                     ),
-                    const SizedBox(height: 12),
+                    Semantics(
+                      header: true,
+                      child: const Text(
+                        'Filtros',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
                     const Text(
                       'Edad',
                       style: TextStyle(
@@ -518,7 +536,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                           ? _storeCatAgeLabels
                           : storeAgeLabels,
                       draftAge,
-                      (value) => update(() => draftAge = value),
+                      (value) => updateDraft(() => draftAge = value),
                     ),
                     if (filterSpecies == 'dog') ...[
                       const SizedBox(height: 20),
@@ -533,35 +551,24 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                       choices(
                         storeSizeLabels,
                         draftSize,
-                        (value) => update(() => draftSize = value),
+                        (value) => updateDraft(() => draftSize = value),
                         sizes: true,
                       ),
                     ],
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Marca',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: availableBrands
-                          .map(
-                            (brand) => _StoreFilterChoice(
-                              label: brand,
-                              selected: draftBrands.contains(brand),
-                              onPressed: () => update(
-                                () => draftBrands.contains(brand)
-                                    ? draftBrands.remove(brand)
-                                    : draftBrands.add(brand),
-                              ),
+                    _StoreOptionSection(
+                      title: 'Marca',
+                      options: [
+                        for (final brand in availableBrands)
+                          _StoreFilterChoice(
+                            label: brand,
+                            selected: draftBrands.contains(brand),
+                            onPressed: () => updateDraft(
+                              () => draftBrands.contains(brand)
+                                  ? draftBrands.remove(brand)
+                                  : draftBrands.add(brand),
                             ),
-                          )
-                          .toList(),
+                          ),
+                      ],
                     ),
                     if (availableFlavors.isNotEmpty)
                       _StoreOptionSection(
@@ -570,48 +577,37 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                           for (final option in availableFlavors)
                             _StoreFilterChoice(
                               label: option,
-                              selected: draftFlavor == option,
-                              onPressed: () => update(() {
-                                draftFlavor = draftFlavor == option
-                                    ? null
-                                    : option;
-                                if (draftFlavor != null &&
-                                    weightsByFlavor[draftFlavor]?.contains(
-                                          draftWeight,
-                                        ) !=
-                                        true) {
-                                  draftWeight = null;
-                                }
-                              }),
+                              selected: draftFlavors.contains(option),
+                              onPressed: () => updateDraft(
+                                () => draftFlavors.contains(option)
+                                    ? draftFlavors.remove(option)
+                                    : draftFlavors.add(option),
+                              ),
                             ),
                         ],
                       ),
-                    if (availableWeights.length > 1)
+                    if (availableWeights.isNotEmpty)
                       _StoreOptionSection(
                         title: 'Presentación',
                         options: [
                           for (final option in availableWeights)
-                            if (draftFlavor == null ||
-                                weightsByFlavor[draftFlavor]?.contains(
-                                      option,
-                                    ) ==
-                                    true)
-                              _StoreFilterChoice(
-                                label: storeWeightLabel(option),
-                                selected: draftWeight == option,
-                                onPressed: () => update(() {
-                                  draftWeight = draftWeight == option
-                                      ? null
-                                      : option;
-                                }),
+                            _StoreFilterChoice(
+                              label: storeWeightLabel(option),
+                              selected: draftWeights.contains(option),
+                              onPressed: () => updateDraft(
+                                () => draftWeights.contains(option)
+                                    ? draftWeights.remove(option)
+                                    : draftWeights.add(option),
                               ),
+                            ),
                         ],
                       ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: DopmiTokens.orangeButton,
                         foregroundColor: Colors.white,
+                        minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -623,6 +619,7 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         foregroundColor: DopmiTokens.ink,
+                        minimumSize: const Size(0, 48),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -630,9 +627,9 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
                       onPressed: () {
                         draftAge = null;
                         draftSize = null;
-                        draftFlavor = null;
-                        draftWeight = null;
                         draftBrands.clear();
+                        draftFlavors.clear();
+                        draftWeights.clear();
                         Navigator.pop(context, true);
                       },
                       child: const Text('Limpiar filtros'),
@@ -650,9 +647,9 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
       setState(() {
         age = draftAge;
         if (filterSpecies == 'dog') size = draftSize;
-        flavor = draftFlavor;
-        weightKg = draftWeight;
         brands = draftBrands;
+        flavors = draftFlavors;
+        weights = draftWeights;
       });
     }
   }
@@ -662,36 +659,42 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
     setState(() {
       species = value;
       brands = brands.intersection(
-        widget.catalog.products
-            .where((item) => item.species == value)
-            .map((item) => item.brand)
-            .toSet(),
+        filterStoreProducts(
+          widget.catalog.products,
+          species: value,
+          age: age,
+          size: value == 'dog' ? size : null,
+        ).map((item) => item.brand).toSet(),
       );
-      flavor = null;
-      weightKg = null;
+      flavors = {};
+      weights = {};
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final products = filterStoreProducts(
-      widget.catalog.products,
+      widget.catalog.products
+          .where(
+            (product) =>
+                (flavors.isEmpty || flavors.contains(product.flavor)) &&
+                (weights.isEmpty || weights.contains(product.weightKg)),
+          )
+          .toList(),
       species: species,
       age: age,
       size: species == 'dog' ? size : null,
       brands: brands,
       descending: descending,
       query: widget.selection.query,
-      flavor: flavor,
-      weightKg: weightKg,
     );
     final groups = groupStoreProducts(products);
     final activeFilters =
         age != null ||
         (species == 'dog' && size != null) ||
         brands.isNotEmpty ||
-        flavor != null ||
-        weightKg != null;
+        flavors.isNotEmpty ||
+        weights.isNotEmpty;
     final resultLabel = groups.length == 1
         ? '1 producto'
         : '${groups.length} productos';
@@ -707,136 +710,126 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         'store-scroll-${widget.actor}-${widget.catalog.preview}',
       ),
       controller: scroll,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _StoreHero(amazonProductLinks: widget.catalog.amazonProductLinks),
-          const SizedBox(height: 12),
-          TextField(
-            key: const ValueKey('store-search'),
-            controller: search,
-            textInputAction: TextInputAction.search,
-            onChanged: (value) =>
-                setState(() => widget.selection.query = value),
-            style: const TextStyle(fontSize: 14, color: DopmiTokens.ink),
-            decoration: InputDecoration(
-              labelText: species == 'dog'
-                  ? 'Buscar para perros'
-                  : 'Buscar para gatos',
-              hintText: 'Nombre, marca, sabor o peso',
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: search.text.isEmpty
-                  ? null
-                  : IconButton(
-                      tooltip: 'Limpiar búsqueda',
-                      onPressed: () {
-                        search.clear();
-                        setState(() => widget.selection.query = '');
-                      },
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-              filled: true,
-              fillColor: Colors.white,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: _storeBorder),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
           const SizedBox(height: 12),
           _StoreCatalogNotice(
             preview: widget.catalog.preview,
             externalLinksEnabled: widget.catalog.externalLinksEnabled,
             amazonProductLinks: widget.catalog.amazonProductLinks,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final choice in const [('dog', 'Perros'), ('cat', 'Gatos')])
+                Semantics(
+                  selected: species == choice.$1,
+                  button: true,
+                  child: TextButton(
+                    key: ValueKey('store-species-${choice.$1}'),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(0, 44),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      backgroundColor: species == choice.$1
+                          ? DopmiTokens.orangeButton
+                          : Colors.white,
+                      foregroundColor: species == choice.$1
+                          ? Colors.white
+                          : DopmiTokens.ink,
+                      side: const BorderSide(color: Colors.transparent),
+                      textStyle: const TextStyle(
+                        fontFamily: DopmiTokens.bodyFont,
+                        fontSize: 14,
+                        height: 1.1,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    onPressed: () => selectSpecies(choice.$1),
+                    child: Text(choice.$2),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    for (final choice in const [
-                      ('dog', 'Perros'),
-                      ('cat', 'Gatos'),
-                    ])
-                      Semantics(
-                        selected: species == choice.$1,
-                        button: true,
-                        child: TextButton(
-                          key: ValueKey('store-species-${choice.$1}'),
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 8,
-                            ),
-                            minimumSize: const Size(0, 44),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            backgroundColor: species == choice.$1
-                                ? DopmiTokens.cafeStrong
-                                : Colors.white,
-                            foregroundColor: species == choice.$1
-                                ? Colors.white
-                                : DopmiTokens.ink,
-                            side: BorderSide(
-                              color: species == choice.$1
-                                  ? DopmiTokens.cafeStrong
-                                  : _storeBorder,
-                            ),
-                            textStyle: TextStyle(
-                              fontFamily: DopmiTokens.bodyFont,
-                              fontSize: 14,
-                              height: 1.1,
-                              fontWeight: species == choice.$1
-                                  ? FontWeight.w700
-                                  : FontWeight.w600,
-                            ),
+                child: TextField(
+                  key: const ValueKey('store-search'),
+                  controller: search,
+                  textInputAction: TextInputAction.search,
+                  onChanged: (value) =>
+                      setState(() => widget.selection.query = value),
+                  style: const TextStyle(fontSize: 15, color: DopmiTokens.ink),
+                  decoration: InputDecoration(
+                    labelText: species == 'dog'
+                        ? 'Buscar para perros'
+                        : 'Buscar para gatos',
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    hintText: 'Nombre, marca, sabor o peso',
+                    prefixIcon: const Icon(Icons.search_rounded, size: 21),
+                    suffixIcon: search.text.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: 'Limpiar búsqueda',
+                            onPressed: () {
+                              search.clear();
+                              setState(() => widget.selection.query = '');
+                            },
+                            icon: const Icon(Icons.close_rounded, size: 18),
                           ),
-                          onPressed: () => selectSpecies(choice.$1),
-                          child: Text(choice.$2),
-                        ),
-                      ),
-                  ],
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: const BorderSide(color: _storeBorder),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
-              IconButton(
-                key: const ValueKey('store-sort'),
-                tooltip:
-                    'Ordenar: ${descending ? 'Mayor a menor kg' : 'Menor a mayor kg'}',
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: DopmiTokens.ink,
-                  side: const BorderSide(color: _storeBorder),
-                ),
-                onPressed: () => setState(() => descending = !descending),
-                icon: const Icon(Icons.swap_vert_rounded, size: 21),
-              ),
-              const SizedBox(width: 6),
+              const SizedBox(width: 10),
               IconButton(
                 tooltip: activeFilters ? 'Filtros activos' : 'Filtros',
+                constraints: const BoxConstraints.tightFor(
+                  width: 48,
+                  height: 48,
+                ),
                 style: IconButton.styleFrom(
                   backgroundColor: activeFilters
-                      ? DopmiTokens.saffronSoft
-                      : Colors.white,
-                  foregroundColor: DopmiTokens.ink,
-                  side: BorderSide(
-                    color: activeFilters ? DopmiTokens.ink : _storeBorder,
+                      ? const Color(0xffe2e6eb)
+                      : const Color(0xffeceff3),
+                  foregroundColor: activeFilters
+                      ? DopmiTokens.orangeButton
+                      : const Color(0xff5c6570),
+                  side: const BorderSide(color: Color(0xffd8dde3)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 onPressed: showFilters,
-                icon: const Icon(Icons.tune_rounded, size: 20),
+                icon: const Icon(Icons.tune_rounded, size: 22),
               ),
             ],
           ),
           if (kitItems.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             _StoreKitEntry(
               title: kitTitle,
               onTap: () => showCatalogPage(
@@ -851,45 +844,55 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
               ),
             ),
           ],
-          const SizedBox(height: 20),
-          Wrap(
-            spacing: 12,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          const SizedBox(height: 18),
+          Row(
             children: [
-              Semantics(
-                header: true,
-                child: Text(
-                  species == 'dog'
-                      ? 'Alimento para perros'
-                      : 'Alimento para gatos',
-                  style: const TextStyle(
-                    fontFamily: DopmiTokens.legacyDisplayFont,
-                    fontSize: 21,
-                    fontWeight: FontWeight.w600,
-                    height: 1.16,
-                    color: DopmiTokens.ink,
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    species == 'dog'
+                        ? 'Alimento para perros'
+                        : 'Alimento para gatos',
+                    style: const TextStyle(
+                      fontFamily: DopmiTokens.bodyFont,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                      color: DopmiTokens.ink,
+                    ),
                   ),
                 ),
               ),
-              Text(
-                showVariantCount
-                    ? '$resultLabel · ${products.length == 1 ? '1 variante' : '${products.length} variantes'}'
-                    : resultLabel,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: DopmiTokens.muted,
-                ),
+              const SizedBox(width: 10),
+              IconButton(
+                key: const ValueKey('store-sort'),
+                tooltip:
+                    'Ordenar: ${descending ? 'Mayor a menor kg' : 'Menor a mayor kg'}',
+                style: IconButton.styleFrom(foregroundColor: DopmiTokens.muted),
+                onPressed: () => setState(() => descending = !descending),
+                icon: const Icon(Icons.unfold_more_rounded, size: 22),
               ),
             ],
+          ),
+          Text(
+            showVariantCount
+                ? '$resultLabel · ${products.length == 1 ? '1 variante' : '${products.length} variantes'}'
+                : resultLabel,
+            style: const TextStyle(fontSize: 12, color: DopmiTokens.muted),
           ),
           const SizedBox(height: 12),
           if (products.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Text(
-                'No encontramos alimentos. Cambia la búsqueda o ajusta los filtros.',
+                'No hay productos con estos filtros. Prueba otra combinación o limpia los filtros.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.45,
+                  color: DopmiTokens.muted,
+                ),
               ),
             ),
           LayoutBuilder(
@@ -935,17 +938,26 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
 
 class _StoreKitEntry extends StatelessWidget {
   const _StoreKitEntry({required this.title, required this.onTap});
-
   final String title;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: _storeCream,
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x1f3a6d8c),
+          blurRadius: 22,
+          offset: Offset(0, 8),
+        ),
+      ],
+    ),
+    child: Material(
+      color: DopmiTokens.sky,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: _storeBorder),
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: Color(0x243a6d8c)),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -955,25 +967,38 @@ class _StoreKitEntry extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             children: [
-              const Icon(Icons.inventory_2_outlined, color: DopmiTokens.ink),
+              const CircleAvatar(
+                radius: 20,
+                backgroundColor: Color(0xb8ffffff),
+                child: Icon(
+                  Icons.storefront_outlined,
+                  size: 20,
+                  color: DopmiTokens.skyInk,
+                ),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   title,
                   style: const TextStyle(
                     fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: DopmiTokens.ink,
+                    fontWeight: FontWeight.w600,
+                    color: DopmiTokens.skyInk,
                   ),
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: DopmiTokens.ink),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: DopmiTokens.skyInk,
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class _StoreKitScreen extends StatefulWidget {
@@ -1016,6 +1041,11 @@ class _StoreKitScreenState extends State<_StoreKitScreen> {
         surfaceTintColor: Colors.transparent,
         foregroundColor: DopmiTokens.ink,
         leading: const BackButton(),
+        title: Text(
+          widget.title,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        shape: const Border(bottom: BorderSide(color: DopmiTokens.line)),
       ),
       body: DonorCanvas(
         child: SafeArea(
@@ -1027,29 +1057,19 @@ class _StoreKitScreenState extends State<_StoreKitScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(18, 4, 18, 24),
                 children: [
-                  Semantics(
-                    header: true,
-                    child: Text(
-                      widget.title,
-                      style: const TextStyle(
-                        fontFamily: DopmiTokens.legacyDisplayFont,
-                        fontSize: 27,
-                        height: 1.15,
-                        fontWeight: FontWeight.w600,
-                        color: DopmiTokens.ink,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
                   const Text(
                     'Cada artículo se compra por separado en Amazon México. '
                     'Como afiliado de Amazon, DopMi puede recibir una '
                     'comisión por compras elegibles.',
-                    style: TextStyle(height: 1.4, color: DopmiTokens.muted),
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.5,
+                      color: DopmiTokens.muted,
+                    ),
                   ),
                   for (final item in widget.items)
                     Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 14),
                       child: _StoreKitCard(
                         item: item,
                         opening: openingId == item.id,
@@ -1074,7 +1094,6 @@ class _StoreKitCard extends StatelessWidget {
     required this.opening,
     required this.onTap,
   });
-
   final StoreKitItem item;
   final bool opening;
   final VoidCallback? onTap;
@@ -1086,79 +1105,105 @@ class _StoreKitCard extends StatelessWidget {
       Icons.image_not_supported_outlined,
       color: DopmiTokens.muted,
     );
+    final artwork = Padding(
+      padding: const EdgeInsets.all(8),
+      child: image == null
+          ? missingImage
+          : Image.network(
+              image.toString(),
+              fit: BoxFit.contain,
+              excludeFromSemantics: true,
+              errorBuilder: (_, _, _) => missingImage,
+            ),
+    );
+    final copy = Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            item.brand,
+            style: const TextStyle(fontSize: 12, color: DopmiTokens.muted),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            item.name,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: DopmiTokens.ink,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            item.presentation,
+            style: const TextStyle(fontSize: 13, color: DopmiTokens.muted),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            key: ValueKey('store-kit-amazon-${item.id}'),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(0, 48),
+              foregroundColor: DopmiTokens.orangeButton,
+              side: const BorderSide(color: DopmiTokens.line),
+              shape: const StadiumBorder(),
+              textStyle: const TextStyle(
+                fontFamily: DopmiTokens.bodyFont,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onPressed: onTap,
+            child: Text(
+              opening ? 'Abriendo Amazon México…' : 'Ver en Amazon México',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Enlace de afiliado',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 11, color: DopmiTokens.muted),
+          ),
+        ],
+      ),
+    );
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: _storeBorder),
-        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: DopmiTokens.line),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                SizedBox.square(
-                  dimension: 76,
-                  child: image == null
-                      ? missingImage
-                      : Image.network(
-                          image.toString(),
-                          fit: BoxFit.contain,
-                          excludeFromSemantics: true,
-                          errorBuilder: (_, _, _) => missingImage,
-                        ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.brand,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: DopmiTokens.muted,
-                        ),
-                      ),
-                      Text(
-                        item.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: DopmiTokens.ink,
-                        ),
-                      ),
-                      Text(
-                        item.presentation,
-                        style: const TextStyle(color: DopmiTokens.muted),
-                      ),
-                    ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(19),
+        child: LayoutBuilder(
+          builder: (context, bounds) {
+            if (MediaQuery.textScalerOf(context).scale(14) > 21 ||
+                bounds.maxWidth < 280) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(height: 160, child: artwork),
+                  copy,
+                ],
+              );
+            }
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: Center(
+                      child: SizedBox.square(dimension: 100, child: artwork),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            OutlinedButton(
-              key: ValueKey('store-kit-amazon-${item.id}'),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, 48),
-                foregroundColor: DopmiTokens.cafeStrong,
-                side: const BorderSide(color: _storeBorder),
+                  Expanded(child: copy),
+                ],
               ),
-              onPressed: onTap,
-              child: Text(
-                opening ? 'Abriendo Amazon México…' : 'Ver en Amazon México',
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const Text(
-              'Enlace de afiliado',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: DopmiTokens.muted),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -1167,117 +1212,102 @@ class _StoreKitCard extends StatelessWidget {
 
 class _StoreHero extends StatelessWidget {
   const _StoreHero({required this.amazonProductLinks});
-
   final bool amazonProductLinks;
 
   @override
-  Widget build(BuildContext context) {
-    final largeText = MediaQuery.textScalerOf(context).scale(14) > 21;
-    return LayoutBuilder(
-      builder: (context, bounds) {
-        final photoWidth = largeText ? 0.0 : bounds.maxWidth * .43;
-        final funding = DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: largeText
-                ? const Border(bottom: BorderSide(color: _storeBorder))
-                : const Border(top: BorderSide(color: _storeBorder)),
-          ),
-          child: const _StoreAdoptionFunding(),
-        );
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            color: _storeCream,
-            border: Border.all(color: _storeBorder),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(1),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(23),
-              child: Column(
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, bounds) {
+      final largeText = MediaQuery.textScalerOf(context).scale(14) > 21;
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: DopmiTokens.saffronSoft,
+          border: Border.all(color: const Color(0x0f46281d)),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x1446281d),
+              blurRadius: 22,
+              offset: Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(23),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 148),
+            child: IntrinsicHeight(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (amazonProductLinks && largeText) funding,
-                  Stack(
-                    children: [
-                      if (photoWidth > 0)
-                        Positioned(
-                          top: 0,
-                          bottom: 0,
-                          right: 0,
-                          width: photoWidth,
-                          child: Image.asset(
-                            'assets/store/store-home.png',
-                            fit: BoxFit.cover,
-                            excludeFromSemantics: true,
-                            errorBuilder: (_, _, _) => const ColoredBox(
-                              color: Color(0xffead8c6),
-                              child: Center(
-                                child: Icon(
-                                  Icons.pets_rounded,
-                                  size: 36,
-                                  color: DopmiTokens.ink,
-                                ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 16, 10, 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              amazonProductLinks
+                                  ? 'Más hogares para más mascotas'
+                                  : 'Lo esencial para su nueva casa',
+                              style: const TextStyle(
+                                fontFamily: DopmiTokens.bodyFont,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: -.36,
+                                height: 1.2,
+                                color: DopmiTokens.ink,
                               ),
                             ),
                           ),
-                        ),
-                      Container(
-                        constraints: const BoxConstraints(minHeight: 132),
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.fromLTRB(
-                          16,
-                          18,
-                          photoWidth + 12,
-                          18,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Semantics(
-                              header: true,
-                              child: Text(
-                                amazonProductLinks
-                                    ? 'Más hogares para más mascotas'
-                                    : 'Lo esencial para su nueva casa',
-                                style: const TextStyle(
-                                  fontFamily: DopmiTokens.legacyDisplayFont,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: -.5,
-                                  height: 1.02,
-                                  color: DopmiTokens.ink,
-                                ),
-                              ),
+                          const SizedBox(height: 8),
+                          Text(
+                            amazonProductLinks
+                                ? 'Elige un producto y compra en Amazon MX.'
+                                : 'Alimento para cada etapa.',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              height: 1.4,
+                              color: DopmiTokens.ink,
                             ),
+                          ),
+                          if (amazonProductLinks) ...[
                             const SizedBox(height: 8),
-                            Text(
-                              amazonProductLinks
-                                  ? 'DopMi acerca a rescatistas y familias que quieren adoptar.'
-                                  : 'Alimento para cada etapa.',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                height: 1.3,
-                                color: DopmiTokens.muted,
+                            const Text(
+                              'Las comisiones ayudan a sostener la app de adopción',
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.45,
+                                color: Color(0xff6b5748),
                               ),
                             ),
                           ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  if (amazonProductLinks && !largeText) funding,
+                  if (!largeText)
+                    SizedBox(
+                      width: bounds.maxWidth * .42,
+                      child: Image.asset(
+                        'assets/welcome-pets.png',
+                        fit: BoxFit.cover,
+                        alignment: const Alignment(.24, 0),
+                        excludeFromSemantics: true,
+                      ),
+                    ),
                 ],
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }
 
 class _StoreAdoptionFunding extends StatelessWidget {
@@ -1366,12 +1396,19 @@ class _StoreCatalogNotice extends StatelessWidget {
       const SizedBox(width: 7),
       Expanded(
         child: amazonProductLinks
-            ? Text(
-                'Precio y pago en Amazon México',
-                style: _noticeStyle.copyWith(
-                  color: DopmiTokens.ink,
-                  fontWeight: FontWeight.w700,
-                ),
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Precio y pago en Amazon México',
+                    style: _noticeStyle.copyWith(
+                      color: DopmiTokens.ink,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  const Text(_amazonAffiliateDisclosure, style: _noticeStyle),
+                ],
               )
             : Text(
                 preview
@@ -1489,7 +1526,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
           widget.preview ? 'Vista previa TEST' : 'Tienda Dopmi',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
       body: DonorCanvas(
@@ -1519,8 +1556,8 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       child: Text(
                         widget.group.name,
                         style: const TextStyle(
-                          fontFamily: DopmiTokens.legacyDisplayFont,
-                          fontSize: 29,
+                          fontFamily: DopmiTokens.bodyFont,
+                          fontSize: 28,
                           fontWeight: FontWeight.w600,
                           height: 1.12,
                           color: DopmiTokens.ink,
@@ -1528,11 +1565,21 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    _StoreProductArtwork(
-                      product: selected,
-                      useCatalogArtwork:
-                          widget.preview || widget.amazonProductLinks,
-                      detail: true,
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: DopmiTokens.line),
+                        borderRadius: BorderRadius.circular(22),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: _StoreProductArtwork(
+                          product: selected,
+                          useCatalogArtwork:
+                              widget.preview || widget.amazonProductLinks,
+                          detail: true,
+                        ),
+                      ),
                     ),
                     if (variantsByFlavor.keys.any((value) => value != null))
                       _StoreOptionSection(
@@ -1540,6 +1587,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                         options: [
                           for (final option in variantsByFlavor.keys)
                             _StoreFilterChoice(
+                              productOption: true,
                               key: ValueKey('store-flavor-$option'),
                               label: option ?? 'Sin sabor especificado',
                               selected: flavor == option,
@@ -1567,6 +1615,7 @@ class _StoreProductDetailState extends State<_StoreProductDetail> {
                       options: [
                         for (final option in options)
                           _StoreFilterChoice(
+                            productOption: true,
                             key: ValueKey('store-variant-${option.id}'),
                             label: sameWeight
                                 ? '${storeWeightLabel(option.weightKg)} · ${option.name}'
@@ -1881,7 +1930,9 @@ class _StoreFilterChoice extends StatelessWidget {
     required this.selected,
     required this.onPressed,
     this.sizeIcon,
+    this.productOption = false,
   });
+  final bool productOption;
   final String label;
   final bool selected;
   final VoidCallback? onPressed;
@@ -1893,12 +1944,20 @@ class _StoreFilterChoice extends StatelessWidget {
     child: OutlinedButton(
       style: OutlinedButton.styleFrom(
         backgroundColor: selected ? DopmiTokens.saffronSoft : Colors.white,
-        foregroundColor: DopmiTokens.ink,
+        foregroundColor: selected && productOption
+            ? DopmiTokens.orangeButton
+            : DopmiTokens.ink,
         minimumSize: const Size(48, 44),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        side: BorderSide(color: selected ? DopmiTokens.ink : DopmiTokens.line),
+        side: BorderSide(
+          color: selected
+              ? (productOption ? DopmiTokens.orangeButton : DopmiTokens.ink)
+              : DopmiTokens.line,
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(sizeIcon == null ? 14 : 20),
+          borderRadius: BorderRadius.circular(
+            productOption ? 999 : (sizeIcon == null ? 14 : 20),
+          ),
         ),
         textStyle: const TextStyle(
           fontFamily: 'Inter',
@@ -1977,7 +2036,7 @@ class _StoreCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(9, 9, 9, 10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -1986,12 +2045,12 @@ class _StoreCard extends StatelessWidget {
                 useCatalogArtwork: useCatalogArtwork,
                 artworkAlternatives: group.variants.skip(1),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Text(
                 product.brand,
                 style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                   height: 1.25,
                   color: DopmiTokens.muted,
                 ),
@@ -2000,13 +2059,13 @@ class _StoreCard extends StatelessWidget {
               Text(
                 group.name,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  height: 1.25,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  height: 1.22,
                   color: DopmiTokens.ink,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               if (grouped && flavors.isNotEmpty) ...[
                 Text(
                   flavorSummary,
@@ -2054,11 +2113,11 @@ class _StoreCard extends StatelessWidget {
                         color: onTap == null
                             ? DopmiTokens.muted
                             : DopmiTokens.orangeButton,
-                        fontSize: 12,
+                        fontSize: 14,
                         fontWeight: onTap == null
                             ? FontWeight.w500
-                            : FontWeight.w700,
-                        height: 1.3,
+                            : FontWeight.w600,
+                        height: 1.2,
                       ),
                     ),
                   ),
@@ -2139,14 +2198,16 @@ class _StoreProductArtwork extends ConsumerWidget {
         children: [
           SizedBox(
             height: detail
-                ? (bounds.maxWidth * .69).clamp(170.0, 260.0).toDouble()
-                : (bounds.maxWidth * .8).clamp(106.0, 164.0).toDouble(),
+                ? (bounds.maxWidth * .69).clamp(170.0, 220.0).toDouble()
+                : bounds.maxWidth,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(detail ? 20 : 13),
               child: ColoredBox(
-                color: product.species == 'cat'
-                    ? const Color(0xffedf0e8)
-                    : _storeCream,
+                color: detail
+                    ? Colors.white
+                    : (product.species == 'cat'
+                          ? const Color(0xffedf0e8)
+                          : _storeCream),
                 child: image == null
                     ? const _StoreCategoryArtwork()
                     : usesTemplate

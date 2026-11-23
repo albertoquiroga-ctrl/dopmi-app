@@ -1,3 +1,19 @@
+## 23/11/2026 CDMX — Igualar Tienda al mock de Irlanda
+
+El titular pide igualar la Tienda de la app al mock. Se congela únicamente este
+alcance en irlanda/apoyar-detalle-perfil@d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c,
+paleta warm-trust. Incluye portada, especies/búsqueda/orden, filtros contextuales con
+multiselección, tarjetas, kit y detalle. No actualiza otras pantallas a ese SHA.
+Conservar catálogo completo, fotos/ASIN por variante, divulgación de afiliación y
+confirmación previa a Amazon; no copiar botones simulados, fotos genéricas ni
+inventar precios, carritos o donación garantizada. El kit conserva compra separada.
+
+La base se concilia con fe378773/b471bdaf para conservar Android439. Tienda no
+activa Meta, Stripe, campañas ni servicios; respeta sus consentimientos y gates.
+El expediente Admin ca9fff2c sigue preparado en otra rama y su activación permanece
+pendiente. La publicación pública no se infiere de este ajuste; QA mantiene el
+protocolo vigente. [Plan y límites](superpowers/plans/2026-11-23-store-irlanda.md).
+
 ## 22/11/2026 CDMX — Eventos de valor de Meta en producción
 
 El titular ordena continuar la integración en producción y verificar ambos

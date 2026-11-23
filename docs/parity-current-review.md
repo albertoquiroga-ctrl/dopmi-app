@@ -1,3 +1,33 @@
+## 23/nov — Tienda de Irlanda, inventario acotado
+
+Solicitud: igualar Tienda al mock. Referencia congelada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c
+de irlanda/apoyar-detalle-perfil; warm-trust. No cambia f693 en otras secciones.
+Base conciliada fe378773/b471bdaf (conserva Android439), rama
+codex/store-irlanda-current-20261123; Admin pendiente no se incorpora ni se activa.
+[Plan finito](superpowers/plans/2026-11-23-store-irlanda.md).
+
+| Grupo | Diferencia comprobada | Estado y criterio |
+|---|---|---|
+| Cabecera/banner | Logo y título separados, misión compacta e imagen42% | Inventariado; contrastar tamaños normales/aumento |
+| Especie/búsqueda/orden | Especie antes del buscador, filtro en misma fila, orden junto a sección | Inventariado; acciones accesibles y estado conservado |
+| Filtros | Opciones contextuales y multiselección de sabores/presentaciones | Inventariado; variantes reales, borrador/aplicar/limpiar |
+| Tarjetas | Jerarquía marca/título/sabor/meta y Ver opciones | Inventariado; empaque visible sin cortar, catálogo completo |
+| Kit | Entrada celeste y tarjetas horizontales | Inventariado; compra separada, ASIN/foto reales |
+| Detalle | Header fijo, título/foto/chips refinados | Inventariado; combinación exacta y handoff seguro conservados |
+
+Implementación local y revisión independiente cerradas:39 pruebas dirigidas PASS;
+capturas Flutter de perfil adoption-only/Amazon con4pestañas, normal/115%/200%
+PASS. Fotografías exactas de catálogo descargadas sólo como fixtures de imagen,
+sin comprobar red productiva ni sustituir variantes. Dos hallazgos cerrados:
+marca oculta al cambiar especie/edad y collar que imponía altura intrínseca.
+Referencia viva leída por DOM y CSS; screenshot/viewport de Chrome y alternativa
+integrada agotaron tiempo. No se atribuye screenshot de referencia ni contraste
+visual con una imagen no obtenida. QA física y aceptación siguen separadas.
+
+La simulación no abre Amazon y usa fotos genéricas; esas dos limitaciones no se
+copian. No inventar precios, descuentos ni donación garantizada. QA publicada,
+instalada y aceptación todavía no acreditadas para este delta.
+
 ## 22/nov — Analytics: revisión acotada y QA instalada
 
 Fuentea24408be/mockf693, CI45065888007 cuatroSUCCESS. Sin cambios de widgets;

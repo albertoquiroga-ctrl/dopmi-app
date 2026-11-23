@@ -156,7 +156,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Más hogares para más mascotas'), findsOneWidget);
       expect(
-        find.text('DopMi acerca a rescatistas y familias que quieren adoptar.'),
+        find.text('Elige un producto y compra en Amazon MX.'),
         findsOneWidget,
       );
       expect(find.text('Precio y pago en Amazon México'), findsOneWidget);
@@ -412,6 +412,199 @@ void main() {
   }
 
   testWidgets(
+    'Irlanda storefront separates branding and puts species before search',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await open(tester, StoreFake());
+      final wordmark = find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image is AssetImage &&
+            (widget.image as AssetImage).assetName ==
+                'assets/dopmi-wordmark.png',
+      );
+      expect(wordmark, findsOneWidget);
+      final title = find.text('Tienda Dopmi');
+      final dogs = find.byKey(const ValueKey('store-species-dog'));
+      final cats = find.byKey(const ValueKey('store-species-cat'));
+      final search = find.byKey(const ValueKey('store-search'));
+      final filters = find.byTooltip('Filtros');
+      expect(
+        tester.getBottomLeft(wordmark).dy,
+        lessThanOrEqualTo(tester.getTopLeft(title).dy),
+      );
+      expect(
+        tester.getBottomLeft(dogs).dy,
+        lessThanOrEqualTo(tester.getTopLeft(search).dy),
+      );
+      expect(
+        tester.getBottomLeft(cats).dy,
+        lessThanOrEqualTo(tester.getTopLeft(search).dy),
+      );
+      expect(
+        tester.getCenter(filters).dy,
+        closeTo(tester.getCenter(search).dy, 1),
+      );
+      expect(tester.getSize(filters).width, greaterThanOrEqualTo(48));
+      expect(tester.getSize(filters).height, greaterThanOrEqualTo(48));
+    },
+  );
+  testWidgets(
+    'Irlanda storefront keeps product sorting with the catalog heading',
+    (tester) async {
+      tester.view.physicalSize = const Size(377, 852);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await open(tester, StoreFake());
+      final sort = find.byKey(const ValueKey('store-sort'));
+      final heading = find.text('Alimento para perros');
+      final search = find.byKey(const ValueKey('store-search'));
+      expect(
+        tester.getCenter(sort).dy,
+        closeTo(tester.getCenter(heading).dy, 1),
+      );
+      expect(
+        tester.getTopLeft(sort).dy,
+        greaterThan(tester.getBottomLeft(search).dy),
+      );
+      await tester.tap(sort);
+      await tester.pumpAndSettle();
+      expect(
+        tester.getTopLeft(find.text('Alimento uno')).dy,
+        closeTo(tester.getTopLeft(find.text('Alimento dos')).dy, 1),
+      );
+      expect(
+        tester.getTopLeft(find.text('Alimento uno')).dx,
+        lessThan(tester.getTopLeft(find.text('Alimento dos')).dx),
+      );
+    },
+  );
+  testWidgets(
+    'Irlanda product filters narrow brand flavor and presentation choices',
+    (tester) async {
+      final repo = StoreFake()
+        ..products = [
+          ..._foodVariants,
+          const StoreProduct(
+            id: 'res-2000',
+            name: 'Adulto res',
+            brand: 'Marca B',
+            species: 'dog',
+            age: 'adult',
+            size: 'medium',
+            weightKg: 2,
+            imageUrl: '',
+            merchantName: 'Comercio de prueba',
+            flavor: 'Res',
+          ),
+          const StoreProduct(
+            id: 'puppy-3000',
+            name: 'Cachorro pollo',
+            brand: 'Marca C',
+            species: 'dog',
+            age: 'puppy',
+            size: 'medium',
+            weightKg: 3,
+            imageUrl: '',
+            merchantName: 'Comercio de prueba',
+            flavor: 'Pollo',
+          ),
+        ];
+      await open(tester, repo);
+      await tester.tap(find.byTooltip('Filtros'));
+      await tester.pumpAndSettle();
+      Future<void> choose(String label) async {
+        final option = find.widgetWithText(OutlinedButton, label);
+        await tester.ensureVisible(option);
+        await tester.tap(option);
+        await tester.pumpAndSettle();
+      }
+
+      await choose('Adulto');
+      expect(find.widgetWithText(OutlinedButton, 'Marca C'), findsNothing);
+      await choose('Marca A');
+      expect(find.widgetWithText(OutlinedButton, 'Res'), findsNothing);
+      expect(find.widgetWithText(OutlinedButton, '2 kg'), findsNothing);
+      await choose('Salmón');
+      expect(find.widgetWithText(OutlinedButton, '15 kg'), findsNothing);
+      expect(find.widgetWithText(OutlinedButton, '1.5 kg'), findsOneWidget);
+      await choose('Pollo');
+      expect(find.widgetWithText(OutlinedButton, '1.5 kg'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, '15 kg'), findsOneWidget);
+      await choose('1.5 kg');
+      await choose('15 kg');
+      await tester.ensureVisible(find.text('Aplicar filtros'));
+      await tester.tap(find.text('Aplicar filtros'));
+      await tester.pumpAndSettle();
+      expect(find.text('2 variantes'), findsOneWidget);
+      expect(find.text('Adulto res'), findsNothing);
+      expect(find.text('Cachorro pollo'), findsNothing);
+      await tester.ensureVisible(find.text('Alimento adulto'));
+      await tester.tap(find.text('Alimento adulto'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('store-flavor-Salmón')));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('store-variant-salmon-1500')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('store-variant-pollo-15000')),
+        findsNothing,
+      );
+    },
+  );
+  testWidgets('Irlanda species changes discard incompatible brand filters', (
+    tester,
+  ) async {
+    final repo = StoreFake()
+      ..products = [
+        ...storeFixtureProducts.where((item) => item.species == 'dog'),
+        const StoreProduct(
+          id: 'cat-puppy',
+          name: 'Alimento felino cachorro',
+          brand: 'Marca A',
+          species: 'cat',
+          age: 'puppy',
+          size: 'small',
+          weightKg: 1,
+          imageUrl: '',
+          merchantName: 'Comercio de prueba',
+        ),
+        const StoreProduct(
+          id: 'cat-adult',
+          name: 'Alimento felino adulto',
+          brand: 'Marca B',
+          species: 'cat',
+          age: 'adult',
+          size: 'small',
+          weightKg: 2,
+          imageUrl: '',
+          merchantName: 'Comercio de prueba',
+        ),
+      ];
+    await open(tester, repo);
+    await tester.tap(find.byTooltip('Filtros'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Adulto'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.widgetWithText(OutlinedButton, 'Marca A'));
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Marca A'));
+    await tester.ensureVisible(find.text('Aplicar filtros'));
+    await tester.tap(find.text('Aplicar filtros'));
+    await tester.pumpAndSettle();
+    final cats = find.byKey(const ValueKey('store-species-cat'));
+    await tester.ensureVisible(cats);
+    await tester.tap(cats);
+    await tester.pumpAndSettle();
+    expect(find.text('Alimento felino adulto'), findsOneWidget);
+    expect(find.text('Alimento felino cachorro'), findsNothing);
+  });
+  testWidgets(
     'private TEST catalog labels the preview and cannot open an external link while closed',
     (tester) async {
       final repo = StoreFake()
@@ -555,12 +748,12 @@ void main() {
     },
   );
   testWidgets(
-    'storefront keeps its compact paw header visible and opens a centered filter dialog',
+    'storefront keeps its branded header visible and opens a centered filter dialog',
     (tester) async {
       await open(tester, StoreFake());
       final title = tester.widget<Text>(find.text('Tienda Dopmi'));
       expect(title.style?.fontFamily, 'Inter');
-      expect(title.style?.fontSize, 24);
+      expect(title.style?.fontSize, 28);
       expect(find.byTooltip('Regresar'), findsNothing);
       expect(find.text('Perros'), findsOneWidget);
       expect(find.text('Gatos'), findsOneWidget);
@@ -695,8 +888,10 @@ void main() {
           return true;
         },
       );
+      await tester.ensureVisible(find.byTooltip('Ordenar: Menor a mayor kg'));
       await tester.tap(find.byTooltip('Ordenar: Menor a mayor kg'));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byTooltip('Filtros'));
       await tester.tap(find.byTooltip('Filtros'));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(OutlinedButton, 'Marca A'));
@@ -796,7 +991,7 @@ void main() {
           ?.textStyle
           ?.resolve({})
           ?.fontWeight,
-      FontWeight.w700,
+      FontWeight.w600,
     );
   });
   testWidgets(
