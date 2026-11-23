@@ -2,9 +2,11 @@
 
 Continuar codex/store-irlanda-current-20261123 sobre fe378773/b471bdaf para conservar
 Android439. Referencia nueva d9f9aa43 sólo Tienda/warm-trust, otras seccionesf693.
-Seis grupos implementados;39 pruebas dirigidas y captura de perfil real con4tabs
-normal/115%/200% PASS, revisión independiente sinP1/P2 pendientes. Analyze/regresión
-completa y CI/publicación aún pendientes. [Cola](backlog.md),
+Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS,
+analyze limpio y2125FlutterPASS/4SKIP. Seis grupos implementados;39 pruebas dirigidas
+y captura de perfil real con4tabs normal/115%/200% PASS, revisión independiente sinP1/P2.
+Android CM6b04ab73d21ef35dc1e45a9a en curso; iOS aún sin enviar, ventana21:09UTC.
+Publicación/instalación y aceptación pendientes. [Cola](backlog.md),
 [plan](superpowers/plans/2026-11-23-store-irlanda.md). Samsung no detectado y control
 gráfico de Chrome bloqueado por timeout; el titular tiene solicitudes de conexión.
 No SQL/flags/campañas, compras ni envío público por esta tarea. Admin de reportes

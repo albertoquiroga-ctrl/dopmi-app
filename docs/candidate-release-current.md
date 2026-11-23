@@ -1,3 +1,24 @@
+## Tienda Irlanda — candidato23/nov/2026, distribución QA en curso
+
+Producto97af38935422230079c3f14f212f54851c71f6a8/tagcodex/store-irlanda-97af3893,
+rama codex/store-irlanda-current-20261123, basefe378773/b471 conserva Android439.
+Mockd9f9aa43 sólo Tienda; otros gruposf693. CI45262749872 cuatroSUCCESS, análisis
+limpio y2125FlutterPASS/4SKIP. Revisión independiente código/capturas sinP1/P2.
+Capturas normal/115%/200% de perfiladoption-only/Amazon muestran4tabs; no QA física.
+
+Android: una solicitud aceptada21:09UTC, CM6b04ab73d21ef35dc1e45a9a, workflow
+android-guardian-internal, fuente97af3893, versiónprevista2.3.12. Compilación en curso,
+sin número/artefacto/publicación/instalación acreditados. Ventana20:53–20:58UTC cerrada.
+iOS: ventana21:09UTC abierta, sin solicitud; esperar Android terminal y mantenercola.
+Hereda runtime438/a244 sin capturaMeta; Androidhereda439/b471 y su selectorMeta,
+sin tocar gate de servidor ni preferencias. SinSQL/Admin/finanzas/campañas nuevas.
+Paquete .tools/store-irlanda-20261123/distribution; no repetir POST o reservas.
+
+Pendientes: verificar cada artefacto/publicación y fuente, disponibilidad en tiendas,
+SamsungUSB y contraste gráfico con mock si Chrome vuelve a capturar. DOM/CSS sí
+consultados; no screenshot de referencia inventado ni aceptación humana atribuida.
+[Plan y evidencia](superpowers/plans/2026-11-23-store-irlanda.md).
+
 ## Meta PROD — 2.3.11 (439) interna, 22/nov/2026 CDMX
 
 Continuar en `codex/meta-production-events-20261122`, producto congelado

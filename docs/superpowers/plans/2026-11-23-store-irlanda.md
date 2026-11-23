@@ -30,20 +30,20 @@
 
 Files: `apps/mobile/lib/features/store/store_screen.dart`, `apps/mobile/test/store_screen_test.dart`.
 
-- [ ] Escribir negativos de multiselección/opciones contextuales y recuperación; root ejecuta RED antes de producto.
-- [ ] Home: logo/notificación, título separado, banner compacto con foto42%, especie naranja, buscador+filtro48, kitceleste, encabezado con orden y grid de tarjetas.
-- [ ] Filtros: estado borrador, multiselección de marcas/sabores/presentaciones derivadas del catálogo real; aplicar/limpiar conservados.
-- [ ] Kit: tarjetas horizontales con imagen, especificación y CTA; detalle con marca/título/foto contain y chips como referencia. Mantener CTA seguro y aviso afiliado.
-- [ ] Root: pruebas dirigidas, analyze y suite móvil consolidada; resolver únicamente regresiones de este delta.
+- [x] Escribir negativos de multiselección/opciones contextuales y recuperación; root ejecuta RED antes de producto.
+- [x] Home: logo/notificación, título separado, banner compacto con foto42%, especie naranja, buscador+filtro48, kitceleste, encabezado con orden y grid de tarjetas.
+- [x] Filtros: estado borrador, multiselección de marcas/sabores/presentaciones derivadas del catálogo real; aplicar/limpiar conservados.
+- [x] Kit: tarjetas horizontales con imagen, especificación y CTA; detalle con marca/título/foto contain y chips como referencia. Mantener CTA seguro y aviso afiliado.
+- [x] Root: pruebas dirigidas, analyze y suite móvil consolidada; resolver únicamente regresiones de este delta.
 
 ## Tarea2 — Contraste e integración (root + revisión independiente)
 
 Files: `apps/mobile/tool/capture_store_test.dart` si requiere ampliar cobertura; continuidad en el tablero/cola/ledger existentes.
 
 - [ ] Ejecutar referencia congelada; comparar visualmente inicio, filtros, kit y detalle. Registrar excepciones funcionales reales y dimensiones.
-- [ ] Reutilizar capturadores Flutter: normal, Samsung115% y320px/200%, datos controlados y sin escrituras productivas.
-- [ ] Revisión independiente acotada UI/UX/código/seguridad; cotejar diff con superficie prevista y corregir hallazgos materiales.
-- [ ] Congelar SHA de producto, ejecutar gates y registrar resultados por SHA. No repetir suites válidas por documentación.
+- [x] Reutilizar capturadores Flutter: normal, Samsung115% y320px/200%, datos controlados y sin escrituras productivas.
+- [x] Revisión independiente acotada UI/UX/código/seguridad; cotejar diff con superficie prevista y corregir hallazgos materiales.
+- [x] Congelar SHA de producto, ejecutar gates y registrar resultados por SHA. No repetir suites válidas por documentación.
 - [ ] Si se distribuye: ventana5min, una cola Codemagic, verificar publicación y versión instalada antes de afirmar QA del teléfono. Aceptación humana permanece separada.
 
 ## Inventario y límites iniciales
@@ -55,3 +55,9 @@ Preflight de distribución descubrió439/b471 posterior a437 y se conservó ese 
 gate de entregaOFF; no lo activa Tienda. iOS no captura IDFA/ATT ni activa el permiso
 desde esta integración. Revisión acotada encontró una marca oculta incompatible al
 cambiar especie/edad; negativo RED y normalización local, sin modificar contratos.
+
+Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS;
+analyze limpio,2125FlutterPASS/4SKIP y39dirigidasPASS. Revisión/capturas cerradas,
+salvo screenshot de referencia bloqueado por control gráfico. Android único
+6b04ab73d21ef35dc1e45a9a en curso; iOS aún sin envío, ventana21:09UTC abierta.
+Publicación/instalación/aceptación son estados pendientes y separados.

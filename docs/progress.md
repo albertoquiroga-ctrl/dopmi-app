@@ -10468,3 +10468,34 @@ cotejo completo de ambos originales y creativos aún pendiente, no se afirma igu
 final ni activación. Falta decidir sustitución/agregado de gasto antes de publicar.
 Control de Chrome vuelve a presentar fallos de entrada/foco en algunas pestañas;
 no se sortearon aceptaciones ni se repitieron operaciones sin lectura del resultado.
+
+## 23/11/2026 21:09UTC — Tienda Irlanda implementada y verificada; distribución QA
+
+Titular pide igualar Tienda al mock. Referencia congelada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c,
+warm-trust, sólo seis grupos de Tienda. Inventarios independientes de mock/app;
+clon correcto en.tools del checkoutoriginal, sin tocar el directorio histórico que
+apunta a otro repo. Base conciliada a fe378773/b471 para conservar Android439;
+Admin de reportes pendiente queda fuera. SinSQL/flags/credenciales/campañas nuevas.
+
+Producto97af38935422230079c3f14f212f54851c71f6a8, tagcodex/store-irlanda-97af3893,
+CI45262749872 cuatroSUCCESS. Analyze limpio;2125FlutterPASS/4SKIP y39TiendaPASS.
+RED por distribución/orden y filtros contextuales, GREEN tras implementación.
+P2 independiente: marca incompatible al cambiar especie/edad y altura intrínseca
+del collar, corregidos y comprobados; revisión final sinP1/P2. Fotos y ASIN reales,
+aviso afiliado/handoff, guards y estado de navegación conservados. No checkout ni
+compra real. Capturas Flutter normal/115%/320px200%, perfiladoption-only/Amazon y4tabs
+PASS;15 fotos de URI exacta descargadas sólo como fixture, sin probar red productiva.
+
+Retrabajo acotado del capturador: cleanup de cliente HTTP antes de invariantes y
+perfil/plataforma/consentimientos sintéticos congruentes antes de capturar. Mejora
+de proceso comprobada en el siguiente trabajo necesario: la captura final muestra
+4tabs en vez de5, fotos correspondientes y gates de scroll/CTA verdes. Sin otra
+mejora agregada. DOM/CSS del mock vivos consultados; screenshot/viewport/ventana e
+intento integrado agotaron tiempo. Titular avisado; no screenshot ficticio atribuido.
+
+VentanaAndroid20:53:39–20:58:39UTC cerrada sin nuevo cambio de producto. Un POST
+creó6b04ab73d21ef35dc1e45a9a/android-guardian-internal; todavía en preparación,
+sin artefacto, publicación o instalación acreditados. Ventana iOS21:09:41UTC abierta,
+sin POST; esperar Android terminal. Versiones previstas2.3.12, números no anticipados.
+Samsung no detectado y petición de conexión pendiente. Paquete nuevo reutiliza sólo
+helpers revisados, no reservas/recibos consumidos; una cola y conciliación sin replay.

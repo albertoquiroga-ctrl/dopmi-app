@@ -8,7 +8,11 @@ cuatro pestañas, normal/115%/320px200% PASS. Fotos de captura:15 fixtures de UR
 exacta, sin llamadas de compra ni cuentas reales. Revisión independiente cerró
 marca incompatible al cambiar especie y altura intrínseca del collar; sinP1/P2.
 
-Pendientes finitos: root cierra analyze/regresión completa y CI exacta; paquete
+Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS;
+analyze limpio y2125FlutterPASS/4SKIP. Android aceptado una vez por Codemagic,
+6b04ab73d21ef35dc1e45a9a, todavía en preparación/compilación. Ventana iOS abierta
+21:09UTC, sin POSTiOS; esperar Android terminal. Versión prevista2.3.12, sin números.
+Pendientes finitos: root concilia artefacto/publicación Android y luego iOS; paquete
 QA nuevo, sin reutilizar reservas anteriores. Antes de cada envío5min, una sola
 cola Flutter/Codemagic. Samsung no detectado, titular avisado; Chrome lee DOM del
 mock pero captura/viewport/control nativo agotaron tiempo, reconexión solicitada.
