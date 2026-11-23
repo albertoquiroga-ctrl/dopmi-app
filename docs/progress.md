@@ -10203,3 +10203,50 @@ No hay ganador ni conclusión de significancia. Cortes de seguimiento sugeridos
 23nov/29nov/6dic; los clics tardíos conservan su propia ventana de336h y no deben
 declararse maduros sólo porque pasaron14d desde el comentario. No se creó una
 automatización ni se autorizó gasto pagado por esta lectura.
+
+### 22/11/2026 CDMX — Ampliación prospectiva24 completada; seguimiento abierto
+
+El titular pidió más contactos para ampliar evidencia. Se fijó antes de enviar
+un manifiesto separado de24, experimento `resc_mty_20261122_wave2_v1`,6 por
+R1–R4,12 gatos/12 perros y12 contactos por identidad. Textosv1/afiliación/CTA
+conservados. Se seleccionaron cuatro candidatas por especie antes de enlazarlas
+con el orden congelado del bloque; el operador conocía el manifiesto, sin
+acreditar selección ciega. No se modificó código móvil ni publicó otro build.
+
+Landing desde9f8cf94430b2f3ed505c5cce2f0ee8cc5fb5c7bb, Vercel
+dpl_8qGe9jQLCRFJPgr6vj9pMq4Q8jZwREADY/PROD;47/47 pruebasPASS. Postflight
+22nov22:35:05UTC:13 rutas anteriores iguales al baseline de ese corte y24
+tokens nuevos conformes Android/desktop/iOS agregado/404. Conservar actualizaciones
+posteriores ajenas, incluida privacidadf855224; no redesplegar una base anterior.
+Registro aditivo sin DDL persistente: readback22:35:30UTC24 habilitados exactos,
+6 por brazo,0QA; guardas preservaron61 registros previos y fuentes/eventos/recibos.
+Separar por experimento servidor: UTM de transporte compartido conp60 sólo por
+compatibilidad, sin mezclar denominadores ni convertirlos en anuncios pagados.
+
+Último envío23nov00:57:27UTC:24 enviados/22 visibles/2 pendientes;R1yR2 seis
+visibles cada uno,R3yR4 cinco visibles/un pendiente cada uno. Los pendientes no
+se reemplazaron ni reenviaron y sus grupos quedaron retenidos para más contactos
+con ambas identidades. Auditoría01:06:47UTC0errores:24 claves de autora/post/token
+distintas contra índices disponibles, asignaciones/textos correctos y24 pruebas.
+Se repusieron seis capturas después de que Facebook quitó «Publicando…», sin
+reenviar. Pruebas del validador local de URLs4/4PASS. Los60 originales mantienen
+SHA256d600c33786a6deca699187c5acdde0792f9a72cf14218365d9d4e6690a4510c6.
+Ledger nuevoSHA2569e680926903131479ff8fc11fa282f29c41f069bc7d699c9249543a6be172025;
+respaldo privado fuera deGit,45 archivos cotejados por hash.
+
+Son84 envíos acumulados,42 por identidad/21 por brazo/44gatos40perros, en dos
+olas que se reportan por separado. Nueva muestra:14 municipios declarados y10
+desconocidos, tipos de rescate/propietario/difusión separados y fechas aproximadas
+de0–13 días de calendario con zona horaria deFacebook no acreditada. No24
+rescatistas independientes verificadas ni una prueba confirmatoria/potenciada.
+Tarjeta/miniatura varían visualmente; no fueron un tratamiento aleatorio.
+
+CortePROD de sólo lectura23nov00:58:58UTC (22nov18:58CDMX): ambas olas0 cuentas
+Android consentidas retenidas,0 primeras fichas/aprobaciones/recibos/saludos/
+primeros textos/respuestas propias y0 cuentas maduras336h;QA aparte en cero.
+No equivale a cero clics/descargas ni prueba de fallo; no declarar ganador,
+significancia ni superioridad frente a pagados. QA física p60 sigue pendiente,
+iOS conserva medición agregada. Seguir moderación/cortes23nov29nov6dic y ventana
+por clic. No se creó automatización/cuota diaria ni activó gasto. Ver
+[runbook de la segunda ola](campaign-placement-wave2.md) y reporte de sólo lectura
+`tools/verification/android-campaign-wave2.sql`.

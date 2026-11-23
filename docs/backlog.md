@@ -1,5 +1,13 @@
 # Cola vigente — integración de producción22/nov/2026
 
+Segunda ola orgánica: [24 envíos/22 visibles/2 pendientes](campaign-placement-wave2.md),
+12personal/12DopMi,12gatos/12perros y6porbrazo; seguir moderación de9/R4 y20/R3
+y resultados maduros por `resc_mty_20261122_wave2_v1`. Mantener los60 originales
+separados aunque compartan transporteUTM. QA física p60 sigue pendiente e iOS
+sólo tiene cobertura agregada de estos tokens; rendimiento por token no demuestra
+conversión de la autora contactada ni significancia. Meta/Google pagados conservan
+cohorte/instrumentación propias y no reutilizan estos enlaces orgánicos.
+
 Etiquetas por comentario y piloto60: cliente/servidor implementados, landing
 pública y revisión independiente limpia. Google Play Console confirma
 Production2.3.9(433)/Submission166 Published; etiqueta21nov22:54 con zona horaria

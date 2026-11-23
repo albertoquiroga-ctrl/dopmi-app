@@ -1,10 +1,12 @@
 # Atribución para el chat de campañas
 
-Corte:21/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
-Este es el contrato operativo compartido; no declara activadas campañas nuevas.
+Corte:22/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
+Este es el contrato operativo compartido; los contactos orgánicos autorizados
+se distinguen de las campañas pagadas y de su aceptación técnica.
 Implementación autorizada21nov: consultar el [runbook de etiquetas y piloto](campaign-placement-pilot.md)
-para el nuevo registro por comentario y sus gates. Cliente público y aceptación
-real permanecen separados; los apartados históricos inferiores no activan tokens.
+para el registro original y la [segunda ola de24](campaign-placement-wave2.md)
+para su cohorte separada. Cliente público y aceptación real permanecen separados;
+los apartados históricos inferiores no sustituyen el estado vigente de esos runbooks.
 El [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md)
 define la hipótesis, las variables, el análisis y la cola de preparación.
 
@@ -42,7 +44,7 @@ mediante filtro privado; nunca borrar fuentes/fichas o reusar fixtures consumido
 | Elemento | Android | iOS CPP piloto |
 | --- | --- | --- |
 | Transporte | Play Install Referrer de las rutas canónicas. | URI recibida por la app; Apple documenta Abrir desde la CPP en iOS/iPadOS18+. |
-| Etiquetas admitidas hoy | personal-a, personal-b, pagina-a, pagina-b. | Sólo personal-a/ios_cpp_open. |
+| Etiquetas admitidas hoy | Cuatro variantes históricas y tokens32hex registrados de los pilotos, con cliente público433 compatible. | Sólo personal-a/ios_cpp_open; tokens de comentarios con cobertura agregada separada. |
 | Reloj de los hitos |336h desde el clic validado. |336h desde la inscripción servidor; no recupera la fecha del clic. |
 | Requisitos | Cuenta activa, elegibilidad observable, Analítica consentida y revisión de consentimiento vigente. | Mismos principios de cuenta/consentimiento; captura local pendiente hasta24h y sin historia previa de envíos/revisiones observable al inscribirse. |
 | Propietario/fuente | Primera fuente elegible aceptada por cuenta; no last-touch ni reasignación. | Primer contexto y propietario inmutables. |
@@ -76,11 +78,18 @@ comentario o autora. Un enlace de biografía compartido tampoco identifica la va
 
 El namespace dopmi_rescatistas_mty_p60_v1 y su registro finito por comentario ya
 están implementados en fuente1544a852/CI44966371479 cuatroSUCCESS; SQLPROD
-20261122004520 pasó31condiciones. Landing2179f1c6 transporta los tokens canónicos.
-El candidato429 tiene artefacto verificado y publicación interna reportada porCM;
-faltan entrega comprobada, instalación/primera ficha real y cliente público compatible:
-los60 tokens noQA siguen deshabilitados. Consultar el [runbook](campaign-placement-pilot.md)
-antes de usarlos; los clientes anteriores rechazan esta gramática.
+20261122004520 pasó31condiciones. Play público2.3.9(433), fuenteefc3277a,
+conserva parser/enrollment p60; los60 tokens noQA se habilitaron22nov y su fase
+de contacto cerró con60 envíos/59 visibles/1 pendiente. La QA física con token
+p60 y primera ficha válida sigue pendiente; disponibilidad pública no la sustituye.
+
+La [segunda ola](campaign-placement-wave2.md), `resc_mty_20261122_wave2_v1`,
+tiene24 etiquetas distintas y24 envíos/22 visibles/2 pendientes,12personal/
+12DopMi,12gatos/12perros y6porbrazo. Landing9f8cf944 conserva los enlaces
+originales y añade los nuevos. Ambas olas usan el transporte Android
+`dopmi_rescatistas_mty_p60_v1` para compatibilidad; separar sus resultados por
+`experiment_id` del registro y ledger, sin cambiar los denominadores originales.
+Los clientes anteriores rechazan esta gramática.
 
 La etiqueta automática no requiere escribir códigos. Una vez validada, une la
 fuente consentida y los recibos originales por mascota con experimento/brazo/token.
@@ -88,11 +97,13 @@ El ledger privado añade el comentario/post real; no demuestra que la cuenta que
 convierte sea la misma autora de Facebook. Los identificadores sociales permanecen
 fuera del backend. iOS conserva medición agregada por brazo y cobertura desconocida
 a nivel comentario tras instalar; no imputar cero ni atribución individual.
+El rendimiento de primeras fichas por token/contacto puede incluir lectores;
+no presentarlo como tasa de conversión de las rescatistas contactadas.
 
 ## Meta y Google Ads son otra integración
 
 Los hitos privados de Supabase **no se envían automáticamente** a Meta/Google.
-Los tokens del piloto p60 pertenecen sólo a comentarios orgánicos. No colocarlos
+Los tokens del piloto p60 y de la segunda ola pertenecen sólo a comentarios orgánicos. No colocarlos
 en anuncios ni reutilizar personal-a como identificador de un anuncio: mezclaría
 los orígenes. El chat de campañas debe conservar el transporte y contrato de
 consentimiento, pero preparar un namespace pagado y verificar su recorrido antes

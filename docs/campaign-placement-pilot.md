@@ -4,6 +4,10 @@ Corte22/11/2026. El titular autorizó implementar etiquetas y un piloto de60;
 el22nov ordenó arrancar los contactos. [Plan técnico](superpowers/plans/2026-11-21-campaign-placement-pilot.md)
 y [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
 
+La [segunda ola de24 contactos](campaign-placement-wave2.md) tiene registro,
+tokens y seguimiento separados. Este documento y su manifiesto conservan los
+60 originales y sus denominadores; no ampliar ni regenerar sus etiquetas.
+
 ## Estado de aceptación
 
 Base reciente af0e2274/425–426 y metadata fda91c1f, integrados con campañas en

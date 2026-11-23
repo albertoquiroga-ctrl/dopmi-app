@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "resc_mty_20261122_wave2_v1",
+  "utmCampaign": "dopmi_rescatistas_mty_p60_v1",
+  "appleCampaignPrefix": "resc_mty_wave2_v1",
+  "assignmentSeed": 22112026,
+  "copyVersion": "v1",
+  "placements": [
+    {
+      "token": "6149eb59540bf64ed6e43a2053767342",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 1,
+      "species": "cat"
+    },
+    {
+      "token": "396a885165d241cd1c27c7a8077c1fc5",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 1,
+      "species": "cat"
+    },
+    {
+      "token": "d5508385a2ac90137db4cd5f483915ac",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 1,
+      "species": "cat"
+    },
+    {
+      "token": "f715cdbb795c29b41a543d841ef7ab13",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 1,
+      "species": "cat"
+    },
+    {
+      "token": "5e45e40bd07943f246fb6696bf89b75d",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 2,
+      "species": "dog"
+    },
+    {
+      "token": "1b54806fdbd63b7f4547daf3812f2eda",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 2,
+      "species": "dog"
+    },
+    {
+      "token": "0acaaaec34b5f65712ca55ff6da4d919",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 2,
+      "species": "dog"
+    },
+    {
+      "token": "085457350d326856a732b1167a52554e",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 2,
+      "species": "dog"
+    },
+    {
+      "token": "82b2a3908abcc247e8ff9e3fca14bcc7",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 3,
+      "species": "cat"
+    },
+    {
+      "token": "110403dde07815ec71efb81eb097c18a",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 3,
+      "species": "cat"
+    },
+    {
+      "token": "42f51c2f6913d8e7db9f0e6a7d4fee73",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 3,
+      "species": "cat"
+    },
+    {
+      "token": "dc436e203dff064614471894b0441c23",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 3,
+      "species": "cat"
+    },
+    {
+      "token": "345c3439d2ed589765c6faa412d66be7",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 4,
+      "species": "dog"
+    },
+    {
+      "token": "35366aa0c03c828f120d393982f2cc5c",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 4,
+      "species": "dog"
+    },
+    {
+      "token": "39e1422835693fc945a0f5755d072386",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 4,
+      "species": "dog"
+    },
+    {
+      "token": "c647ca6b2054dc5aa24ffdefd4a3278f",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 4,
+      "species": "dog"
+    },
+    {
+      "token": "365b828c26710261a6d69a1164bb0fd8",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 5,
+      "species": "cat"
+    },
+    {
+      "token": "a0bea027f4bacee58f201c869536eb93",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 5,
+      "species": "cat"
+    },
+    {
+      "token": "2de9193b88eeee6eb38b21a9a218124c",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 5,
+      "species": "cat"
+    },
+    {
+      "token": "955a0a79d64d728875f0c9554ddd907d",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 5,
+      "species": "cat"
+    },
+    {
+      "token": "ecf6b8f9433dc02d1a3aba17d99844ff",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 6,
+      "species": "dog"
+    },
+    {
+      "token": "ac4b633de59cbde43ee8a7d48a4808c5",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 6,
+      "species": "dog"
+    },
+    {
+      "token": "338831ca1c7ae2d340c757d8fc27b22c",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 6,
+      "species": "dog"
+    },
+    {
+      "token": "34d4deb740ff96f03b9bd79321dcee8a",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 6,
+      "species": "dog"
+    }
+  ]
+}
