@@ -6,16 +6,20 @@ Mockd9f9aa43 sólo Tienda; otros gruposf693. CI45262749872 cuatroSUCCESS, análi
 limpio y2125FlutterPASS/4SKIP. Revisión independiente código/capturas sinP1/P2.
 Capturas normal/115%/200% de perfiladoption-only/Amazon muestran4tabs; no QA física.
 
-Android: una solicitud aceptada21:09UTC, CM6b04ab73d21ef35dc1e45a9a, workflow
-android-guardian-internal, fuente97af3893, versiónprevista2.3.12. Compilación en curso,
-sin número/artefacto/publicación/instalación acreditados. Ventana20:53–20:58UTC cerrada.
-iOS: ventana21:09UTC abierta, sin solicitud; esperar Android terminal y mantenercola.
+Android:2.3.12(440), CM6b04ab73d21ef35dc1e45a9a/14SUCCESS, fuente97af3893.
+AAB96855148B/SHA2561e7792c2cee3052316556b2dcfa0886009df6d5f832706b684d452754211ae52;
+firma/pin/configuración verificados21:36UTC. Publishing log confirma internal/completed
+y Successfully published. No lectura independiente de PlayConsole o instalación.
+Ventana20:53–20:58UTC cerrada, un solo POST y artefacto/recibo conservados.
+iOS: ventana21:09–21:14UTC cerrada; un POST aceptado21:37UTC creó
+6b04b236418a2b03a8c9e893/ios-testflight, fuente97af3893, versiónprevista2.3.12.
+En preparación, sin número nativo/IPA/carga/disponibilidad acreditados todavía.
 Hereda runtime438/a244 sin capturaMeta; Androidhereda439/b471 y su selectorMeta,
 sin tocar gate de servidor ni preferencias. SinSQL/Admin/finanzas/campañas nuevas.
 Paquete .tools/store-irlanda-20261123/distribution; no repetir POST o reservas.
 
-Pendientes: verificar cada artefacto/publicación y fuente, disponibilidad en tiendas,
-SamsungUSB y contraste gráfico con mock si Chrome vuelve a capturar. DOM/CSS sí
+Pendientes: verificar artefacto/carga iOS y disponibilidad en tiendas,
+SamsungUSB (ADB sin dispositivos21:38UTC) y contraste gráfico con mock si Chrome vuelve a capturar. DOM/CSS sí
 consultados; no screenshot de referencia inventado ni aceptación humana atribuida.
 [Plan y evidencia](superpowers/plans/2026-11-23-store-irlanda.md).
 

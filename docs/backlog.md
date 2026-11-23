@@ -9,10 +9,11 @@ exacta, sin llamadas de compra ni cuentas reales. Revisión independiente cerró
 marca incompatible al cambiar especie y altura intrínseca del collar; sinP1/P2.
 
 Producto97af3893/tagcodex/store-irlanda-97af3893, CI45262749872 cuatroSUCCESS;
-analyze limpio y2125FlutterPASS/4SKIP. Android aceptado una vez por Codemagic,
-6b04ab73d21ef35dc1e45a9a, todavía en preparación/compilación. Ventana iOS abierta
-21:09UTC, sin POSTiOS; esperar Android terminal. Versión prevista2.3.12, sin números.
-Pendientes finitos: root concilia artefacto/publicación Android y luego iOS; paquete
+analyze limpio y2125FlutterPASS/4SKIP. Android2.3.12(440), CM6b04ab73d21ef35dc1e45a9a,
+14SUCCESS; AAB/firma/config verificados y logPublishing internal/completed correcto.
+iOS aceptado una vez21:37UTC:6b04b236418a2b03a8c9e893, en preparación, versión
+prevista2.3.12 sin número anticipado; ventana21:09–21:14UTC completada.
+Pendientes finitos: root concilia IPA/carga iOS y disponibilidad; paquete
 QA nuevo, sin reutilizar reservas anteriores. Antes de cada envío5min, una sola
 cola Flutter/Codemagic. Samsung no detectado, titular avisado; Chrome lee DOM del
 mock pero captura/viewport/control nativo agotaron tiempo, reconexión solicitada.

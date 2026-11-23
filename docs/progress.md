@@ -10499,3 +10499,21 @@ sin artefacto, publicación o instalación acreditados. Ventana iOS21:09:41UTC a
 sin POST; esperar Android terminal. Versiones previstas2.3.12, números no anticipados.
 Samsung no detectado y petición de conexión pendiente. Paquete nuevo reutiliza sólo
 helpers revisados, no reservas/recibos consumidos; una cola y conciliación sin replay.
+
+## 23/11/2026 21:38UTC — Tienda440 publicada interna; iOS aceptado sin duplicar
+
+Mismafuente97af3893/CI45262749872 cuatroSUCCESS, sin cambio de código ni nuevas
+pruebas por documentación. CMAndroid6b04ab73d21ef35dc1e45a9a terminó14SUCCESS.
+AAB2.3.12(440),96855148B/SHA2561e7792c2cee3052316556b2dcfa0886009df6d5f832706b684d452754211ae52.
+Verificador21:36:46UTC confirma paquete/firma/pin/vigencia, release/no debug,
+PROD/adoption-only/AmazonON, StoreReview/finanzas/mediciónTESTOFF y bootstrap
+Analytics/CrashlyticsOFF. AD_ID existente conservado; no cambio de preferencia o
+servicioMeta. Publicación21:36:47UTC comprobada por logCLI: código440, pista interna,
+estado completed, Successfully published. No lectura independiente PlayConsole.
+
+Tras Android terminal y artefacto verificado, ventana iOS21:09:41–21:14:41UTC
+conciliada; único POST21:37UTC aceptó6b04b236418a2b03a8c9e893/ios-testflight,
+mismofuente/tag, versiónprevista2.3.12 sin número anticipado. En preparación,
+sin IPA/carga/disponibilidad acreditados. Observador único root74800.
+ADB21:38UTC sin dispositivos; no instalación/QA física/aceptación atribuidas.
+Recibos/fuentes en mismo paquete distribution, sin repetir solicitudes.
