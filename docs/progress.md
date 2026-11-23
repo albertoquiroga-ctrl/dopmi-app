@@ -10250,3 +10250,19 @@ iOS conserva medición agregada. Seguir moderación/cortes23nov29nov6dic y venta
 por clic. No se creó automatización/cuota diaria ni activó gasto. Ver
 [runbook de la segunda ola](campaign-placement-wave2.md) y reporte de sólo lectura
 `tools/verification/android-campaign-wave2.sql`.
+
+### 23/11/2026 — Seguimiento de los84 envíos, sin contactos nuevos
+
+CortePROD de sólo lectura23:38:24UTC/17:38:24CDMX:84 colocaciones noQA siguen
+habilitadas,15p60/6wave2 por brazo;QA separada. Ambas cohortes conservan0 cuentas
+Android consentidas retenidas con colocación,0 primeras fichas/aprobaciones/
+recibos/saludos/primeros textos/respuestas propias y0 maduras336h. No es un
+conteo de descargas/clics ni todo iOS; sigue pendiente la QA física p60.
+
+RevisiónChrome23:39–23:40UTC sólo de los tres pendientes previos: p60/26 ywave2/9
+continúan pendientes. Wave2/20 no aparece bajo DopMi y el post muestra ningún
+comentario; estado nuevo «no observado actualmente», sin acreditar rechazo o
+eliminación y sin reenviar. No se revisaron los81 antes visibles. Ledgers p60y
+wave2 mantienen SHA256d600c337… y9e680926…; seguimiento separado en archivos
+privados `followups/20261123`, sin datos sociales enGit. No hay ganador ni
+significancia comprobada. [Corte y límites](campaign-placement-wave2.md).

@@ -230,3 +230,20 @@ distintos. Un comentario puede convertir a varios lectores: cuentas por
 comentario es rendimiento, no probabilidad verificada de conversión de la
 rescatista contactada; no tratar lectores como contactos aleatorizados nuevos.
 Las diferencias por especie, grupo o presentación observada son exploratorias.
+
+## Seguimiento — 23/11/2026, 17:38–17:40 CDMX
+
+ConsultaPROD de sólo lectura23nov23:38:24UTC: las dos cohortes conservan los
+84 tokens noQA habilitados; por brazo15p60/6wave2, conQA aparte. Siguen en cero
+las cuentas Android consentidas retenidas con colocación, primeras fichas,
+aprobaciones, recibos de mascotas, saludos, primeros textos y respuestas propias;
+0 cuentas maduras336h. No equivale a cero clics/descargas ni mide todo iOS.
+La QA física p60 sigue pendiente; no hay ganador ni significancia acreditada.
+
+Se revisaron sólo los tres comentarios antes pendientes, no los81 anteriormente
+visibles. P60/26 ywave2/9 siguen mostrando «Pendiente». Wave2/20 ya no aparece
+bajo la identidad DopMi y el post muestra «Aún no hay comentarios»: registrar
+como no observado actualmente, sin inferir rechazo/eliminación ni reenviar.
+No actualizar retrospectivamente los denominadores congelados ni declarar81
+visibles hoy. Los ledgers conservan sus hashes; las observaciones nuevas se
+guardan como seguimiento separado en `followups/20261123` fuera deGit.
