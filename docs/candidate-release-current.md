@@ -1,3 +1,20 @@
+## Correctivo Tienda — 24/nov/2026, CI en curso
+
+Fuente dbac483bc5487a559cfd145fe688c512e90cf725/tag
+codex/store-irlanda-correction-20261124; CI45438832854 en curso. Referencia d9f9aa43
+conservada; sólo se quita bloque adicional de portada y se usan#f5f5f5/#ebebeb en
+las tarjetas. Detalle blanco, afiliación antes de Amazon y producto previo intactos.
+23 pruebas de Tienda PASS/analyze limpio/captura de perfil real PASS; revisión
+independiente del diff y ocho capturas sin P1/P2. No tests nuevos de colores.
+
+Distribución preparada en .tools/store-irlanda-correction-20261124/distribution,
+bases verificadas440/441, versión2.3.12 conservada. Fuente/tag/CI vinculados;
+gates CI pendientes, sin reservas/envíos/artefactos nuevos. Ventana Android
+16:35:50–16:40:50UTC, conciliación de mensajes al final. Mantener una sola cola;
+no repetir envíos de440/441 ni promover públicamente por este correctivo.
+Solicitud de Samsung enviada; ADB se abortó antes de ejecución, sin diagnóstico
+de conexión. QA física, disponibilidad del nuevo binario y aceptación pendientes.
+
 ## Tienda Irlanda — 23/nov/2026, binarios QA publicados
 
 Producto `97af38935422230079c3f14f212f54851c71f6a8`, tag
