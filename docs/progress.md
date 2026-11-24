@@ -10637,3 +10637,14 @@ conectará después según titular; instalación/aceptación pendientes. Sin env
 público, SQL, flags, campañas o servicios nuevos. GA actual sigue sin leer; no
 convertir preferencias/cuentas previas en usuarios activos. Continuidad actualizada
 sólo con hechos nuevos, sin repetir fixtures ni ampliar la mejora de proceso.
+
+## 24/11/2026 CDMX — Tutorial inicial de swipe, verificación local
+
+Implementado en rama codex/swipe-tutorial-20261124 desde408fdde5. Patrón visual
+Tinder adaptado a guardar/pasar, demo local sin catálogo real ni eventos, una vez
+por cuenta y sincronización Auth funcional sin SQL. Mantiene avisos legal/analítica/
+ubicación.84 pruebas afectadas PASS y44 configuración PASS. Nueve capturas Flutter
+con activos reales precargados revisadas; no son prueba física. Revisión
+independiente cerró dos P2 corregidos (catálogo owner y GPS al reanudar). Pendiente
+root analyze/CI exacta/distribución QA; Samsung aplazado por el titular. No nueva
+publicación ni aceptación del tutorial al corte. Tienda442/443 conserva su estado.

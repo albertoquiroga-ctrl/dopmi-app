@@ -1,3 +1,20 @@
+## 24/nov — Tutorial inicial de swipe pedido por el titular
+
+Nuevo alcance del chat, sin reinterpretar otras pantallas del mock: dos prácticas
+con foto local de ejemplo, mano/flecha y corazón/X. Botones alternativos, Omitir y
+Atrás, movimiento reducido y200% de texto.84 pruebas afectadas PASS; capturador
+real Flutter genera nueve vistas normales/320px200%, sin datos ni tráfico real.
+Revisión independiente visual y de código sin P1/P2 abierto. Se reprodujo y
+corrigió la enseñanza indebida al catálogo owner; la práctica conserva el paso
+cuando se reanuda el GPS. Recibo Auth funcional y caché acotada por entorno,
+proyecto y cuenta; prueba de respuesta tardía preserva una sesión SDK diferente.
+No se monta Discovery durante la enseñanza/lectura inicial elegible, por lo que
+la práctica no guarda vistos, likes, mensajes ni vistas de mascotas.
+
+Analyze sin incidencias. Implementado/verificado localmente; CI, publicación e instalación del tutorial
+pendientes al corte. Capturas en .tools/swipe-tutorial-20261124/captures no son
+evidencia de teléfono. Samsung se conectará después según el titular.
+
 ## 24/nov — Dos correcciones de Tienda solicitadas por Irlanda
 
 La revisión humana de440 señala diferencias que no quedaron cerradas en la entrega

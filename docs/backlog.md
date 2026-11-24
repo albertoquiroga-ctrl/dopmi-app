@@ -1,4 +1,15 @@
-# Correctivo vigente — Tienda, 24/nov/2026 CDMX
+# Lote vigente — Tutorial inicial de swipe, 24/nov/2026 CDMX
+
+Implementado: práctica derecha/izquierda, cierre persistente por cuenta, separación
+de avisos iniciales y ausencia de efectos sobre el catálogo real.84 pruebas
+afectadas PASS;44 de configuración PASS; nueve capturas revisadas y revisión
+independiente cerrada (dos P2 corregidos: catálogo owner y GPS al reanudar).
+Analyze limpio. Pendiente root: CI exacta y publicación QA serial Play/TestFlight.
+Pendiente titular: QA físico cuando vuelva a conectar el Samsung; conexión
+expresamente aplazada, no reiterar solicitud. No equivale a aceptación ni
+promoción pública. El correctivo Tienda previo conserva su propio pendiente físico.
+
+# Correctivo anterior — Tienda, 24/nov/2026 CDMX
 
 Dos diferencias de Irlanda corregidas: sin bloque extra bajo banner Amazon y
 foto/borde de tarjetas grises. Referencia d9f9aa43 y producto previo conservados.

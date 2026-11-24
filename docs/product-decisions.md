@@ -1,3 +1,21 @@
+## 24/11/2026 CDMX — Tutorial inicial de swipe en Adoptar
+
+El titular solicita enseñar el swipe con el patrón visual de Tinder para quienes
+no conocen la dinámica. Dos prácticas: derecha guarda en Mis matches; izquierda
+pasa. Mano/flecha animada, corazón/X, alternativa con botones y salida Omitir;
+sin avance por temporizador ni acciones sobre mascotas reales. Marca Dopmi.
+Alcance recomendado comunicado: cuentas nuevas y actuales una sola vez por cuenta
+al entrar a Adoptar, después de términos, elección de medición y ubicación;
+no al entrar a Rescatista ni a un detalle/catálogo de una persona. La pregunta
+opcional sobre incluir cuentas actuales seguía sin respuesta al implementar.
+
+La marca funcional `dopmi_swipe_tutorial_v1` en Auth se sincroniza entre celulares;
+no es consentimiento ni autorización. Cierre local pendiente conserva la decisión
+sin red y reintenta sincronizar; con error de lectura se permite usar la app y
+se reconsulta en una entrada posterior. No cambia likes, vistos, métricas, roles,
+finanzas, ubicación ni declaraciones de privacidad. No requiere SQL ni nuevo
+servicio. La actualización ordinaria del GPS conserva el paso de práctica.
+
 ## 24/11/2026 CDMX — Correctivo visual de Tienda tras revisión de Irlanda
 
 El titular transmite dos diferencias de la440: quitar el bloque marcado de precio,

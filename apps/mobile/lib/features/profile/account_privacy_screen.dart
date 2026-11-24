@@ -9,6 +9,7 @@ import '../../core/ios_cpp_acquisition.dart';
 import '../../core/measurement.dart';
 import '../../core/meta_ads_measurement.dart';
 import '../../core/ui.dart';
+import '../adoption/swipe_tutorial_store.dart';
 import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
@@ -71,6 +72,7 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
 
   Future<void> deleteAccount() async {
     final repo = ref.read(identityRepositoryProvider);
+    final deletingActor = repo.current?.id;
     final passwordIdentity = repo.linkedProviders.contains('email');
     final socialProvider = repo.linkedProviders.contains('apple')
         ? 'apple'
@@ -160,6 +162,16 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
       if (state['status'] == 'completado' &&
           state['auth_cleanup'] != 'pending') {
         await ref.read(identityControllerProvider).logout();
+        if (repo is SupabaseIdentityRepository && deletingActor != null) {
+          try {
+            await repo.preferences.remove(
+              swipeTutorialPreferenceKey(repo.config, deletingActor),
+            );
+          } catch (_) {
+            // Auth deletion already succeeded. Local presentation cleanup
+            // must not misreport that irreversible result as a login error.
+          }
+        }
         if (mounted) context.go('/login', extra: 'Tu cuenta fue eliminada.');
       } else if (mounted) {
         setState(

@@ -1,4 +1,14 @@
-# Checkpoint vigente — correctivo Tienda, 24/nov/2026 CDMX
+# Checkpoint vigente — tutorial de swipe, 24/nov/2026 CDMX
+
+Rama codex/swipe-tutorial-20261124 desde408fdde5, conserva producto dbac483b y
+la referencia Irlanda d9f9aa43. Nuevo alcance pedido en chat: tutorial de Adoptar
+una vez por cuenta, patrón de mano/direcciones, sin efectos en mascotas reales.
+Implementación y nueve capturas revisadas;84 pruebas afectadas y44 configuración
+PASS; analyze limpio. Revisión independiente cerrada tras corregir dos P2. Fuente final/CI y
+distribución QA todavía pendientes; no hay build nueva de este tutorial al corte.
+Samsung diferido por el titular. No reabrir Tienda ni activar moderación preparada.
+
+# Corte anterior — correctivo Tienda, 24/nov/2026 CDMX
 
 Producto dbac483bc5487a559cfd145fe688c512e90cf725/tag
 codex/store-irlanda-correction-20261124, rama vigente y referencia d9f9aa43.
