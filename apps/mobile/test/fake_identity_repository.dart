@@ -97,7 +97,7 @@ class FakeIdentityRepository implements IdentityRepository {
   }
 
   @override
-  Future<void> confirmCode(
+  Future<String?> confirmCode(
     String email,
     String code, {
     required bool recovery,
@@ -109,6 +109,7 @@ class FakeIdentityRepository implements IdentityRepository {
     emit(
       IdentityEvent(Identity('one', email, verified: true), recovery: recovery),
     );
+    return 'one';
   }
 
   @override

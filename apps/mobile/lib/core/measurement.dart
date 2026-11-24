@@ -124,6 +124,10 @@ class MeasurementController extends ChangeNotifier {
   UsageAnalyticsChoice? _analyticsChoice;
   bool _analyticsChoicePending = false;
   bool _analyticsChoiceReview = false;
+  String? _confirmedSignupActor;
+  bool _confirmedSignupPending = false;
+  int _signupSession = 0;
+  bool _signupDisposed = false;
   bool get analyticsChoicePending => ownerId != null && _analyticsChoicePending;
   bool get analyticsChoiceIsReview =>
       analyticsChoicePending && _analyticsChoiceReview;
@@ -260,6 +264,11 @@ class MeasurementController extends ChangeNotifier {
         return Future.value();
       }
     }
+    if (_requestedOwner != value) {
+      _signupSession++;
+      _confirmedSignupActor = null;
+      _confirmedSignupPending = false;
+    }
     _requestedOwner = value;
     final revision = ++_ownerRevision;
     final analyticsRevision = ++_analyticsRevision;
@@ -340,6 +349,7 @@ class MeasurementController extends ChangeNotifier {
       _analyticsChoice = remote;
       _analyticsChoicePending = pendingChoice;
       _analyticsChoiceReview = reviewChoice;
+      if (!pendingChoice && !allowed) _discardConfirmedSignup(value);
       diagnosticsEnabled = diagnosticsAllowed;
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;
@@ -364,13 +374,28 @@ class MeasurementController extends ChangeNotifier {
       notifyListeners();
     });
     _ownerSync = pending;
-    return pending.whenComplete(() {
-      if (identical(_ownerSync, pending)) _ownerSync = null;
-    });
+    return pending
+        .whenComplete(() {
+          if (identical(_ownerSync, pending)) _ownerSync = null;
+        })
+        .then((_) => _flushConfirmedSignup());
   }
 
   Future<void> setAnalytics(bool value) {
-    if (analyticsChoices != null) return _setAnalyticsChoice(value);
+    final actor = ownerId ?? _requestedOwner;
+    final signupSession = _signupSession;
+    // A same-owner refresh temporarily hides ownerId. An explicit OFF still
+    // closes this signup scope before a delayed business ACK can arrive.
+    if (!value) _discardConfirmedSignup(actor, session: signupSession);
+    if (analyticsChoices != null) {
+      return _setAnalyticsChoice(value).then(
+        (_) => _flushConfirmedSignup(),
+        onError: (Object error, StackTrace stack) {
+          _discardConfirmedSignup(actor, session: signupSession);
+          Error.throwWithStackTrace(error, stack);
+        },
+      );
+    }
     final owner = ownerId;
     if (owner == null) return Future.value();
     final preferenceKey = _preferenceKey(owner, 'analytics');
@@ -410,6 +435,7 @@ class MeasurementController extends ChangeNotifier {
     final ownerRevision = _ownerRevision;
     final revision = ++_analyticsRevision;
     final key = _preferenceKey(actor, 'analytics');
+    final signupSession = _signupSession;
     bool current() =>
         ownerRevision == _ownerRevision && revision == _analyticsRevision;
 
@@ -441,6 +467,17 @@ class MeasurementController extends ChangeNotifier {
       await analytics.pause();
       final outcome = await observed;
       final offSaved = await localOff;
+      final result = outcome.result;
+      if (outcome.error != null ||
+          (value &&
+              (result?.applied != true ||
+                  result!.state.consent != true ||
+                  !result.state.hasCurrentExplicitChoice))) {
+        // A same-session refresh can supersede this task before its error is
+        // reported. It must still consume the unconfirmed signup, while a late
+        // result from a previous login cannot consume another session's fact.
+        _discardConfirmedSignup(actor, session: signupSession);
+      }
       if (!offSaved) throw StateError('analytics_preference_not_saved');
       if (!current()) return;
       _analyticsAllowed = false;
@@ -448,7 +485,6 @@ class MeasurementController extends ChangeNotifier {
         notifyListeners();
         throw StateError('analytics_choice_not_confirmed');
       }
-      final result = outcome.result;
       if (result != null) _analyticsChoice = result.state;
       if (value &&
           (result?.applied != true ||
@@ -505,6 +541,7 @@ class MeasurementController extends ChangeNotifier {
     if (ownerId != actor || _analyticsRevision != expectedRevision) {
       return Future.value();
     }
+    _discardConfirmedSignup(actor);
     final ownerRevision = _ownerRevision;
     final revision = ++_analyticsRevision;
     return _queueSettings(() async {
@@ -552,6 +589,61 @@ class MeasurementController extends ChangeNotifier {
       value ? _installErrorHandler() : _removeErrorHandler();
       notifyListeners();
     });
+  }
+
+  /// The two confirmed registration triggers may precede the optional choice.
+  /// Keep only their deduplicated fact in RAM; never reconstruct past signups.
+  Future<void> confirmedSignup(String actor) {
+    if (_signupDisposed ||
+        !preferencesReadyFor(actor) ||
+        _confirmedSignupActor == actor) {
+      return Future.value();
+    }
+    _confirmedSignupActor = actor;
+    _confirmedSignupPending = analyticsConsentCurrent || analyticsChoicePending;
+    return _flushConfirmedSignup();
+  }
+
+  void _discardConfirmedSignup(String? actor, {int? session}) {
+    if (_signupDisposed ||
+        actor == null ||
+        _requestedOwner != actor ||
+        (session != null && session != _signupSession)) {
+      return;
+    }
+    // A decline/error may precede the registration ACK. Remember the terminal
+    // actor for this session even when no pending fact has been observed yet.
+    _confirmedSignupActor ??= actor;
+    if (_confirmedSignupActor == actor) _confirmedSignupPending = false;
+  }
+
+  Future<void> _flushConfirmedSignup() async {
+    final actor = _confirmedSignupActor;
+    if (_signupDisposed ||
+        actor == null ||
+        !_confirmedSignupPending ||
+        !analyticsConsentCurrent) {
+      return;
+    }
+    final ownerRevision = _ownerRevision;
+    final analyticsRevision = _analyticsRevision;
+    // This continuation always runs outside a settings task. Waiting from
+    // inside that queue would make consent wait for itself.
+    await _settingsSync;
+    await consentReady;
+    if (_signupDisposed ||
+        _confirmedSignupActor != actor ||
+        !_confirmedSignupPending ||
+        ownerRevision != _ownerRevision ||
+        analyticsRevision != _analyticsRevision ||
+        !preferencesReadyFor(actor) ||
+        !analyticsConsentCurrent) {
+      return;
+    }
+    // Consume before the SDK hop, so concurrent producers/flushes cannot repeat
+    // an accepted or ambiguous event attempt.
+    _confirmedSignupPending = false;
+    await event('sign_up_completed');
   }
 
   Future<void> event(String name, {Map<String, Object>? parameters}) async {
@@ -624,6 +716,9 @@ class MeasurementController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _signupDisposed = true;
+    _confirmedSignupActor = null;
+    _confirmedSignupPending = false;
     _removeErrorHandler();
     super.dispose();
   }

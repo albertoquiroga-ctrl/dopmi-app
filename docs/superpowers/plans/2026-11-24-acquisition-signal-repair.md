@@ -77,3 +77,10 @@ aviso móvil, HTMLprivacidad del landing; SQLnuevo RPC dopmi_meta_lifecycle_enab
 - [ ] ACK y panel Meta para Install/Activate estándar; repetir message/submissionPROD si quedan en alcance previo.
 - [ ] Publicar el mismo binario probado/declaraciones; conservar campañas hasta cumplir su gate específico.
 - [ ] Registrar resultados/limitaciones reales y pendiente físico/AppStore iOS si corresponde; nunca éxito inferido.
+
+### Adenda Task1 — registro confirmado pendiente de Analytics
+
+- [ ] RED integrado: confirmCode exitoso con elección pendiente no envía; guardar ON emite un único sign_up_completed.
+- [ ] Cubrir dos productores, OFF/errores, cambio/salida/reinicio, respuesta tardía y deduplicación del mismo actor.
+- [ ] Añadir contrato confirmedSignup(actor) sólo RAM y adaptar los dos disparadores actuales; ningún replay histórico ni evento general diferido.
+- [ ] GREEN dirigido y analyzer, conservando las colas y los contratos de adquisición/Meta.

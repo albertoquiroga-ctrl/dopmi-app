@@ -82,3 +82,14 @@ verificados, actualización Samsung sin falsa instalación, y una instalación l
 válida con permiso y recepción estándar en Meta. QA sin permiso no envía; reinicio
 no repite Install. iOS Install real exige AppStore; TestFlight no se afirma prueba.
 No activar campañas de valor hasta que su QA/recepción/público estén confirmados.
+
+## Adenda — registro confirmado antes de la elección de Analytics
+
+El evento actual se descarta si la confirmación de correo o primera aceptación
+legal termina antes de resolver la elección opcional. Sólo ese registro confirmado
+podrá quedar pendiente en RAM para el mismo actor y proceso, sin colección ni
+envío mientras falta consentimiento. ON confirmado lo descarga una sola vez;
+OFF, negativa explícita, error, salida, cambio de cuenta o reinicio lo descartan.
+Los dos productores conservan su disparador de negocio y pasan el actor confirmado;
+no se reconstruyen registros históricos ni se difieren otros eventos. La descarga
+ocurre fuera de la cola de configuración/consentimiento, con barreras vigentes.

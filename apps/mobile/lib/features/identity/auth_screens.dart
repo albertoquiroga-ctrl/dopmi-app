@@ -555,6 +555,7 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
       message = null;
     });
     final repo = ref.read(identityRepositoryProvider);
+    final measurement = ref.read(measurementControllerProvider);
     final navigation = GoRouter.of(context);
     final actor = repo.current?.id;
     final origin = navigation.routeInformationProvider.value.uri.toString();
@@ -595,15 +596,19 @@ class _ConfirmationScreenState extends ConsumerState<ConfirmationScreen> {
           });
         }
       } else {
-        await repo.confirmCode(
+        final confirmedActor = await repo.confirmCode(
           targetEmail,
           targetCode,
           recovery: widget.recovery,
         );
-        if (!widget.recovery) {
-          final measurement = ref.read(measurementControllerProvider);
-          await measurement?.owner(repo.current?.id);
-          await measurement?.event('sign_up_completed');
+        if (!widget.recovery &&
+            confirmedActor != null &&
+            repo.current?.verified == true &&
+            repo.current?.id == confirmedActor) {
+          await measurement?.owner(confirmedActor);
+          if (repo.current?.id == confirmedActor) {
+            await measurement?.confirmedSignup(confirmedActor);
+          }
         }
       }
     } catch (cause) {

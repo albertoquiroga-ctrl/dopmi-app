@@ -126,7 +126,11 @@ abstract class IdentityRepository {
     required String intent,
   });
   Future<void> resendConfirmation(String email);
-  Future<void> confirmCode(String email, String code, {required bool recovery});
+  Future<String?> confirmCode(
+    String email,
+    String code, {
+    required bool recovery,
+  });
   Future<void> requestRecovery(String email);
   Future<void> updatePassword(String password);
   Future<EmailChangeStatus> changeEmail(String email);
@@ -273,16 +277,17 @@ class SupabaseIdentityRepository implements IdentityRepository {
   }
 
   @override
-  Future<void> confirmCode(
+  Future<String?> confirmCode(
     String email,
     String code, {
     required bool recovery,
   }) async {
-    await client.auth.verifyOTP(
+    final response = await client.auth.verifyOTP(
       email: email.trim(),
       token: code.trim(),
       type: recovery ? OtpType.recovery : OtpType.signup,
     );
+    return response.user?.id;
   }
 
   @override

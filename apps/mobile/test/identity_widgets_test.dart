@@ -1258,7 +1258,7 @@ class ControlledRecoveryRepository extends FakeIdentityRepository {
   }
 
   @override
-  Future<void> confirmCode(
+  Future<String?> confirmCode(
     String email,
     String code, {
     required bool recovery,
@@ -1268,6 +1268,6 @@ class ControlledRecoveryRepository extends FakeIdentityRepository {
     if (failCode) {
       throw const AuthException('Invalid code', code: 'otp_expired');
     }
-    await super.confirmCode(email, code, recovery: recovery);
+    return super.confirmCode(email, code, recovery: recovery);
   }
 }

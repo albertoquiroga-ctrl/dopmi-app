@@ -775,19 +775,19 @@ class _ConsentScreenState extends ConsumerState<ConsentScreen> {
     final target = owner;
     final ticket = generation;
     final firstAcceptance = initialAcceptance;
+    final repository = ref.read(identityRepositoryProvider);
+    final measurement = ref.read(measurementControllerProvider);
     setState(() {
       busy = true;
       error = null;
     });
     try {
-      await ref.read(identityRepositoryProvider).acceptTerms();
-      if (!mounted || ticket != generation || identity.identity?.id != target) {
-        return;
-      }
-      if (firstAcceptance) {
-        await ref
-            .read(measurementControllerProvider)
-            ?.event('sign_up_completed');
+      await repository.acceptTerms();
+      if (firstAcceptance && repository.current?.id == target) {
+        await measurement?.owner(target);
+        if (repository.current?.id == target) {
+          await measurement?.confirmedSignup(target!);
+        }
       }
       if (!mounted || ticket != generation || identity.identity?.id != target) {
         return;
