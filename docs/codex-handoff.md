@@ -2,6 +2,16 @@
 
 ## Arranque vigente — atribución y restauraciones, 20/11/2026
 
+Actualización24nov: [tercera ola y diagnóstico de conversión](campaign-placement-wave3.md).
+Landing reciente0fcb962 sobre privacidadf855224 y48 etiquetas nuevas habilitadas;
+**sólo4 comentarios nuevos enviados/visibles**,44 sin contactar. Acumulado88
+en tres cohortes; no sustituir denominadores ni asumir visibilidad simultánea.
+Control beneficio v1 frente a orientación v2; R2/R4 cambian de texto sólo en
+este experimento. QA física p60 sigue pendiente por falta de otra mascota real.
+No hay clics medidos ni ganador; leer límites iOS/consentimiento y plan manual
+de respuestas27nov/1dic antes de continuar. No reaplicar registro ni publicar
+otro binario para esta ampliación de etiquetas.
+
 Entrega a campañas21nov: [contrato de atribución](campaign-attribution-handoff.md)
 y [experimento de adquisición](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).
 El usuario quiere comparar comentarios a independientes de MTY con Meta/Google

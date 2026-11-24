@@ -1,5 +1,9 @@
 # Segunda ola de comentarios MTY — registro prospectivo
 
+Actualización24nov: [tercera ola](campaign-placement-wave3.md), contraste nuevo
+beneficio/orientación y corte parcial4 comentarios visibles. Este ledger de24
+conserva su cierre; los nuevos tokens, denominadores y mensajes son separados.
+
 22/11/2026, CDMX. El titular pidió ampliar la prueba después de los60 envíos
 del [piloto original](campaign-placement-pilot.md). Se fija una segunda ola de
 **24 contactos nuevos** antes de enviarlos:6 por cada brazo y12 publicaciones

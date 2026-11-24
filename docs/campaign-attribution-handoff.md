@@ -1,12 +1,21 @@
 # Atribución para el chat de campañas
 
-Corte:22/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
+Corte:24/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
 Este es el contrato operativo compartido; los contactos orgánicos autorizados
 se distinguen de las campañas pagadas y de su aceptación técnica.
 Implementación autorizada21nov: consultar el [runbook de etiquetas y piloto](campaign-placement-pilot.md)
 para el registro original y la [segunda ola de24](campaign-placement-wave2.md)
 para su cohorte separada. Cliente público y aceptación real permanecen separados;
 los apartados históricos inferiores no sustituyen el estado vigente de esos runbooks.
+La [tercera ola](campaign-placement-wave3.md) añade un contraste de orientación:
+48 etiquetas registradas, **4 envíos visibles y44 sin contactar** al corte24nov.
+R2/R4 significan orientación v2 sólo en ese nuevo experimento; no mezclarlos con
+el mensaje de facilidad anterior. Servidor24nov13:48:59CDMX mantiene0 fuentes
+Android consentidas con colocación y0 hitos en las tres cohortes. No demuestra
+0 clics/descargas: no se recuperaron métricas Vercel y la QA física p60 sigue
+pendiente por falta de otra mascota real. Respuestas públicas se revisarán
+manualmente a72h/7d, separadas de la primera ficha y sin vincular identidades
+sociales con cuentas de la app. No hay ganador ni validación contra pagados.
 El [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md)
 define la hipótesis, las variables, el análisis y la cola de preparación.
 

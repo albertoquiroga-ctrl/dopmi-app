@@ -7,6 +7,10 @@ y [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-expe
 La [segunda ola de24 contactos](campaign-placement-wave2.md) tiene registro,
 tokens y seguimiento separados. Este documento y su manifiesto conservan los
 60 originales y sus denominadores; no ampliar ni regenerar sus etiquetas.
+La [tercera ola24nov](campaign-placement-wave3.md) conserva otros48 tokens
+separados y un mensaje de orientación nuevo: corte parcial4 envíos visibles,
+44 sin contactar. No sumar registros habilitados como contactos ni reabrir los
+ledgers congelados. Consultar allí el diagnóstico y la cobertura de medición.
 
 ## Estado de aceptación
 

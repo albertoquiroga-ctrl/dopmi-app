@@ -10266,3 +10266,48 @@ eliminación y sin reenviar. No se revisaron los81 antes visibles. Ledgers p60y
 wave2 mantienen SHA256d600c337… y9e680926…; seguimiento separado en archivos
 privados `followups/20261123`, sin datos sociales enGit. No hay ganador ni
 significancia comprobada. [Corte y límites](campaign-placement-wave2.md).
+
+### 24/11/2026 — Diagnóstico y tercera ola parcial, sin nuevo binario
+
+El titular pidió más volumen y afinar la invitación. Protocolo prospectivo
+`resc_mty_20261124_wave3_v2`: máximo48 contactos nuevos, control beneficio v1
+frente a orientación v2,12 por R1–R4, hasta24 por especie/identidad, bloques4
+de especie fija antes de asociar candidatas. R2/R4 significan el nuevo texto
+sólo en esta cohorte. Selección0–6 días de calendario aproximados, municipio
+declarado, rescate/responsabilidad propios; independencia explícita separada de
+estatus no verificado. No modificar las dos olas anteriores ni rellenar con
+ubicaciones desconocidas, terceros o avisos de extravío.
+
+Landing0fcb962d2acaad3f3dbe908e3b63577764878836 sobre f855224 reciente,
+main remoto y Vercel dpl_ED93cwDd27S4vC2mQJNEMTTLWdqL READY/production
+comprobados. Suite53PASS y operador privado14PASS, revisión independiente sin
+P1/P2. HTTP19:10:17UTC:17 rutas previas/privacidad idénticas a baseline y48
+nuevas conformes Android/desktop/iOS agregado/404. RegistroPROD aditivo una vez,
+readback19:12:14UTC48 habilitadas12porbrazo0QA,85 previas/fuentes/hitos/recibos/
+funciones/historia conservados por guardas. No DDL persistente, escrituras a
+fuentes/consentimientos, build móvil ni gasto. No reaplicar registro.
+
+Corte operativo13:50CDMX: **4 enviados/4 visibles/0 pendientes nuevos**, uno
+por brazo,2personal/2DopMi,4gatos; Apodaca1,Guadalupe2,SantaCatarina1. Son4
+rescates personales,1independiente autodeclarada/3sinestatusverificado. IDs
+aceptados, textos/tokens y cuatro capturas asentadas revisadas. Quedan44 tokens
+sin asignar/contactar y2candidatas sin asignar (1gato/1perro), sujetas a nueva
+comprobación y completar bloques. No se reunió otro bloque de4perros elegibles
+en resultados revisados; no afirmar agotamiento de todoFacebook ni balance de
+especies alcanzado. Acumulado88 enviados en tres cohortes,44poridentidad,
+48gatos40perros, sin revisión simultánea de visibilidad histórica.
+
+SELECTPROD19:48:59UTC: tres cohortes0 fuentes Android consentidas retenidas con
+colocación,0primerasfichas/aprobaciones/recibos/saludos/primerostextos/respuestas
+propias,0maduras336h;QA aparte. No0clics/descargas. Corte de cola18:45UTC0filas
+actuales submitted, pero16filas retenidas con submitted_at en7d/12dueños,
+incluyendoQA y sin atribuirlas aloutreach. Handler no mide clics humanos;
+Vercelmetricrequest.count devolvió402ObservabilityPlus, no conteos recuperados
+ni gasto habilitado. Unión Firebase/token no acreditada; no inventar funnel.
+
+El titular todavía no tiene otra mascota real: QA física p60 permanece pendiente,
+sin fixture consumido ni ficha fabricada. iOS sigue agregado por brazo. Plan
+manual de respuestas públicas a72h/7d, primer bloque27nov/1dic, sin automatización
+creada; interés/pregunta/agradecimiento/rechazo/norespuesta/noobservable separados
+de fichas. No ganador, significancia o comparación concluyente con pagados.
+Evidencia social/recibos sólo fuera deGit. [Protocolo y límites](campaign-placement-wave3.md).

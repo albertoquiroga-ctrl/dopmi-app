@@ -1,4 +1,16 @@
-# Cola vigente — integración de producción22/nov/2026
+# Cola vigente — integración de producción24/nov/2026
+
+Tercera ola orgánica: [protocolo y corte parcial](campaign-placement-wave3.md),
+48 rutas desplegadas/habilitadas sobre privacidad reciente,4 enviados/visibles
+(2personal/2DopMi,4gatos),44 sin contactar. Hay1 candidata de cada especie aún sin
+asignar: revalidar y completar bloques elegibles, sin ampliar criterios para
+consumir el máximo. Control beneficio v1 frente a orientación v2; R2/R4 sólo
+cambian de texto en esta nueva cohorte. Conservar los84 contactos anteriores.
+Revisión manual de respuestas a72h/7d: primer bloque27nov/1dic; no automatizada.
+Servidor24nov13:48:59CDMX0 fuentes Android consentidas con colocación/0 hitos en
+las tres cohortes; no0 clics/descargas ni ganador. QA física p60 sigue pendiente:
+el titular aún no tiene otra mascota real, no volver a pedirla ni fabricar datos.
+Sin conteos Vercel recuperados (402Plus); iOS sigue agregado por brazo.
 
 Segunda ola orgánica: [24 envíos/22 visibles/2 pendientes](campaign-placement-wave2.md),
 12personal/12DopMi,12gatos/12perros y6porbrazo; seguir moderación de9/R4 y20/R3

@@ -1,0 +1,265 @@
+# Tercera ola MTY — protocolo prospectivo
+
+Preparación24/11/2026, CDMX. El titular autorizó más volumen y afinar la
+invitación. Decisión operativa: **máximo48 contactos nuevos**, sin cuota diaria
+ni obligación de consumir todo el inventario. El protocolo se fijó antes de los
+contactos; el [corte de ejecución inferior](#corte-de-ejecución--24nov2026)
+documenta lo efectivamente desplegado, habilitado y enviado, sin confundirlo con
+el máximo reservado.
+
+## Registro y contraste
+
+Manifiesto `tools/campaigns/rescuer-wave3-48-v2.json`, SHA256
+`4c847a02682a1e20d8072eb9038115ea89404130daacc5dffe245b31c4a6f55f`.
+Nuevo experimento `resc_mty_20261124_wave3_v2`; no reciclar los84 contactos de
+las [olas anteriores](campaign-placement-wave2.md), sus tokens ni sus
+denominadores. El registro previo contiene85 etiquetas contando suQA separada.
+Esta ola añade48 noQA como máximo y no crea una nueva cuenta o fixture QA.
+
+| Brazo | Identidad | Mensaje en esta ola | Máximo |
+| --- | --- | --- | --- |
+| R1 | Perfil personal | Control: beneficio v1 | 12:6 gatos/6 perros |
+| R2 | Perfil personal | Tratamiento: orientación v2 | 12:6 gatos/6 perros |
+| R3 | Página DopMi | Control: beneficio v1 | 12:6 gatos/6 perros |
+| R4 | Página DopMi | Tratamiento: orientación v2 | 12:6 gatos/6 perros |
+
+**R2/R4 ya no significan el mensaje de facilidad de las olas anteriores.**
+El servidor conserva esos IDs/variantes por compatibilidad; su significado se
+determina junto con el nuevo experimento y `copyVersion`/`copyId` del manifiesto.
+No agrupar el R2/R4 antiguo con el tratamiento nuevo como si fueran iguales.
+
+Control literal, `copyVersion=v1`, `copyId=control`, R1/R3:
+
+> También puedes publicar a [mascota] en DopMi para que personas que buscan adoptar puedan conocer su historia. Publicar la ficha es gratis. Soy parte de DopMi. Descarga la app y elige «Publicar una adopción»: [enlace]
+
+Tratamiento literal, `copyVersion=v2`, `copyId=support`, R2/R4:
+
+> Vi que buscas hogar para [mascota]. Si te sirve, puedes publicar su ficha gratis en DopMi. Soy parte de DopMi; si tienes dudas sobre cómo publicarla, con gusto te orientamos aquí. Descarga la app y elige «Publicar una adopción»: [enlace]
+
+Sustituir sólo mascota/plural y enlace; no añadir punto final al enlace, promesas
+de adopción o ayuda distinta de la orientación que efectivamente se pueda dar.
+Oferta gratuita, afiliación, CTA y transporte se conservan. La diferencia prueba
+el paquete de redacción y oferta de orientación: no aísla por sí sola el efecto
+de una frase, longitud, tono o personalización. Responder preguntas reales con
+la misma política útil y transparente en ambos brazos; registrar esfuerzo,
+sin perseguir a quienes no responden ni enviar privados no solicitados.
+
+## Asignación y selección
+
+Semilla24112026, Mulberry32 y Fisher–Yates fijan12 bloques de cuatro, cada uno
+con R1–R4 una vez. Bloques impares de gatos y pares de perros:6 bloques por
+especie, hasta24 publicaciones por especie y24 contactos por identidad. Tokens
+aleatorios128bit generados una sola vez. La especie es un estrato observado,
+no una intervención aleatoria. No cambiar asignaciones por resultados tempranos.
+
+Congelar candidatas elegibles en orden de descubrimiento dentro del bloque
+antes de asociarlas con sus brazos/enlaces. Guardar hora, orden y evidencia de
+elegibilidad. El operador puede haber visto el manifiesto: no afirmar selección
+ciega ni ocultamiento comprobado. Registrar candidatas rechazadas y razón sin
+reasignar contactos ya enviados, pendientes u ocultos.
+
+Cada candidata debe cumplir antes del contacto:
+
+- Publicación original de rescate personal y responsable actual de la mascota;
+  no exigir la palabra «independiente». Distinguir independencia explícitamente
+  declarada de rescate personal con independencia no verificada. Un nombre o
+  avatar personal no demuestra estatus jurídico. Excluir organizaciones,
+  difusión de terceros y camadas propias sin rescate.
+- Oferta activa de adopción, bajo resguardo/responsabilidad actual declarada.
+  Excluir aviso resuelto, búsqueda de mascota perdida, colecta y simple reporte
+  de un animal sin resguardo propio.
+- Fecha exacta visible en Facebook y antigüedad de0–6 días de calendario al
+  seleccionar; no usar sólo «hace una semana» ni una fecha inferida del URL.
+  Guardar el literal de la interfaz y fecha de selección. La zona horaria de
+  Facebook no está comprobada: este filtro no acredita un intervalo exacto de
+ 168 horas. Excluir fechas futuras y ambigüedades que impidan aplicar la regla.
+- Municipio declarado en el post dentro de la lista operativa: Monterrey,
+  Guadalupe, San Nicolás de los Garza, San Pedro Garza García, Apodaca,
+  General Escobedo, Santa Catarina, García, Juárez, Santiago, Cadereyta Jiménez,
+  El Carmen, Salinas Victoria, Ciénega de Flores, General Zuazua o Pesquería.
+  No deducir municipio del grupo, lada o perfil; ubicación desconocida no es
+  elegible en esta ola. La lista delimita esta muestra, no redefine oficialmente
+  la zona metropolitana.
+- Autoría pública y post únicos contra84 contactos anteriores, exclusiones
+  históricas y esta ola. No inferir identidad humana entre cuentas sólo por
+  nombres o fotos; conservar incertidumbre y evitar el caso dudoso.
+- Reglas y participación que permitan ambas identidades. Respetar comentarios
+  cerrados, pedidos de no contacto y revisión de participación. No cambiar de
+  perfil o grupo para eludir una revisión del mismo caso.
+
+Si el inventario elegible no alcanza48, detenerse con el número real y conservar
+los restantes sin contactar. No ampliar antigüedad/geografía/tipo de autora,
+rellenar con casos débiles ni reemplazar pendientes para completar el máximo.
+No presentar a toda la muestra como rescatistas independientes verificadas.
+
+## Transporte, seguridad y gates
+
+Ruta canónica por token: `https://www.dopmi.org/descargar/piloto/{token}`.
+Android conserva exactamente `utm_source=facebook`, `utm_medium=organic_comment`,
+`utm_campaign=dopmi_rescatistas_mty_p60_v1` y `utm_content=token`. El cliente
+público acepta ese transporte; el registro servidor separa esta ola por
+`experiment_id`, sin pedir códigos o login antes de descargar. No cambiar móvil,
+su identidad de distribución, permisos, consentimiento ni arreglos recientes
+para ampliar etiquetas.
+
+iOS conserva descarga directa y `ct=resc_mty_wave3_v2_r1`–`r4` con el proveedor
+público de Apple. Mide agregado por brazo; no acredita atribución individual
+postinstalación a ficha o mensajes. La prueba histórica personal-a no resuelve
+esa limitación. La QA física p60 de instalación limpia, cuenta elegible y primera
+ficha válida sigue pendiente; sólo reutilizar la etiqueta QA original cuando
+el recorrido sea elegible, nunca fixtures ya consumidos ni datos fabricados.
+
+Antes de publicar cualquier enlace: revisión independiente del delta,
+validación de las rutas anteriores/privacidad f855224 y de48 rutas nuevas,
+despliegue comprobado y registro exacto habilitado con guardas de conservación
+de las85 etiquetas previas/fuentes/hitos. Preparar SQL no acredita ejecutarlo:
+seguir el recibo y readback del corte inferior, sin repetir el registro.
+No escribir fuentes, consentimientos o conversiones para probarlo.
+No gasto, SDK ni campaña pagada nuevos; Meta/Google conservan instrumentación y
+cohortes separadas y no reutilizan estos tokens orgánicos.
+
+## Medición y límites
+
+Resultado principal: cuentas elegibles con primera ficha original enviada a
+revisión dentro de336h del clic. Aprobación de esa ficha, mascotas adicionales,
+saludo automático, primer mensaje escrito y primera respuesta propia del
+rescatista se reportan por separado. Mantener fuente elegible inicial,
+deduplicación por cuenta y retirada de consentimiento; excluirQA de ambos
+lados del análisis. No leer ni exportar contenido privado de mensajes.
+
+El [reporte de lectura](../tools/verification/android-campaign-wave3.sql)
+presenta etiquetas registradas:48 filas no significan48 contactos asignados,
+enviados o visibles. Unir con el ledger para los denominadores efectivos y
+conservar incidencias/moderación. Un token puede captar a lectores además de
+la autora: fichas por comentario es rendimiento, no probabilidad verificada
+de conversión de la rescatista contactada.
+
+Registrar búsqueda, lectura, publicación, respuesta y seguimiento; separar labor
+activa de esperas y preparación. Los intervalos selección→comprobante no son
+por sí solos costo total ni CAC. El original60 y ola2 siguen en sus cohortes;
+criterios más estrictos y mensaje nuevo impiden agruparlos causalmente sin más.
+Comparar control y tratamiento dentro de esta ola, conservar grupo/bloque/especie
+y cobertura consentida, y describir desviaciones antes de interpretar resultados.
+El máximo48 no acredita potencia, significancia, ganador ni superioridad frente
+a anuncios pagados. Cero eventos retenidos no equivale a cero clics/descargas.
+
+### Respuestas públicas a72h y siete días
+
+Fijar ambos cortes desde el envío registrado, sin reiniciar el reloj cuando el
+comentario salga de moderación. Registrar hora prevista y real de revisión,
+visibilidad y respuesta pública observable de la autora en el mismo hilo. Guardar
+cada corte como observación nueva; lectores aparte. No vincular autoras con
+cuentas DopMi por nombres, horarios u otras semejanzas.
+
+Clasificar interés explícito en descargar/publicar, pregunta concreta sobre la
+app o cómo publicar, agradecimiento/neutral, rechazo/petición de no contacto y
+sin respuesta visible al corte. Si no puede consultarse el hilo, es **no
+observable**, no ausencia de respuesta. Pueden coexistir categorías: cada autora
+cuenta una sola vez en «interés o pregunta»; rechazos siempre se informan aparte.
+No exportar cuerpos de conversaciones ni datos personales aGit.
+
+Reportar interés/pregunta sobre contactos asignados, con enviados, pendientes,
+visibles y no observables separados. El análisis de visibles es diagnóstico
+adicional. No contar agradecimientos o preguntas como fichas enviadas. Mantener
+orientación útil en ambos mensajes y registrar esfuerzo: ofrecer ayuda puede
+generar preguntas sin mejorar adquisición. El primer bloque tiene cortes
+previstos27nov y1dic, aproximadamente13:15–13:21CDMX. Son un plan manual,
+**no una automatización ni observaciones realizadas**.
+
+### Regla de aprendizaje y ampliación
+
+No elegir un mensaje ni aumentar sólo su asignación por un corte temprano.
+Mantener el contraste y los criterios hasta el máximo o el inventario elegible
+real. Revisar primero preguntas/incidencias a72h y siete días. Si falta interés,
+examinar pertinencia de selección y propuesta; si hay interés sin fuentes
+observables, examinar acceso y cobertura; si hay fuentes sin fichas, separar
+inmadurez y fricción del formulario. Son hipótesis de diagnóstico, no causas
+demostradas por estos conteos.
+
+Antes de otro lote posterior a48, cerrar la QA física pendiente y revisar la
+medición, además de fijar nueva cohorte, contraste y tamaño. Cero eventos no
+justifica prolongar automáticamente el mismo mensaje ni permite calcular un
+CAC finito o declarar equivalencia. La observación de siete días del comentario
+no sustituye las336h individuales de un clic elegible.
+
+## Corte de ejecución — 24nov2026
+
+**Parcial:4 asignados/enviados/visibles,0 pendientes nuevos;44 etiquetas
+reservadas sin asignar ni contactar.** Un envío por R1–R4,2 personales y2 DopMi,
+todos de gatos: Apodaca1,Guadalupe2,SantaCatarina1. Son4 rescates personales
+declarados; sólo1 declara independencia explícitamente. No afirmar4 estatus
+jurídicos verificados. Quedan2 candidatas seleccionadas sin asignar —1gato,
+1perro— que requieren revalidar elegibilidad/disponibilidad y completar su bloque
+antes de contacto. Todavía no se alcanza el balance24/24 de especies.
+
+Envíos24nov19:14:59–19:20:50UTC,13:14:59–13:20:50CDMX. Los4 tienen ID numérico
+aceptado, comprobación del texto/token/identidad y capturas asentadas revisadas
+visualmente, sin «Publicando…». La presentación del enlace varió: una tarjeta
+sin miniatura y tres con miniatura de perro, incluso en posts de gatos. Es una
+observación, no intervención aleatoria ni prueba de clic. No modificar las
+tarjetas dentro del contraste ya iniciado.
+
+Se revisaron resultados y feeds de grupos permitidos, además de búsquedas de
+rescates recientes. Muchos casos eran reenvíos, autoras ya contactadas, avisos
+de extravío, antiguos o sin municipio declarado. No se completó otro bloque de
+cuatro perros elegibles en los resultados inspeccionados. Esto **no demuestra
+agotamiento de todo Facebook**. Conservar el saldo sin contactar y no aflojar
+criterios para llenar48. Respetar grupos excluidos y los tres retenidos por
+moderación, también cuando un resultado global vuelva a mostrarlos.
+
+Los84 envíos históricos conservan sus ledgers: acumulado88 enviados,44 por
+identidad y48gatos/40perros, repartidos en tres cohortes distintas. No afirmar
+visibilidad actual simultánea de los88; los81 visibles históricos no se
+revisitaron hoy. El seguimiento23nov de pendientes conserva sus propios límites.
+
+### Despliegue y conservación comprobados
+
+Landing `0fcb962d2acaad3f3dbe908e3b63577764878836` encima de la privacidad
+reciente `f855224b2c3318054eaffc3177537b654cdfdd71`; main remoto verificado.
+Vercel `dpl_ED93cwDd27S4vC2mQJNEMTTLWdqL`,READY/production, mismo SHA.
+Suite landing53/53PASS; operador privado14/14PASS y revisión independiente sin
+P1/P2. Delta limitado a manifiesto/rutas y pruebas; no nuevo binario móvil,
+SDK, gasto ni cambios a consentimientos/eventos.
+
+HTTP público24nov19:10:17UTC:17 rutas anteriores —incluida privacidad— idénticas
+al baseline19:06:01UTC en status/cabeceras estables/HTML;48 nuevas conformes en
+Android,desktop e iOS agregado, desconocida404. RegistroPROD aditivo ejecutado
+una sola vez después del despliegue:readback19:12:14UTC,48 habilitadas exactas,
+12 por brazo y0QA. Guardas conservaron las85 etiquetas anteriores y fuentes,
+eventos, recibos, funciones e historia. Sin DDL persistente ni escrituras a
+cuentas/fuentes/hitos. **No reaplicar el SQL de registro.**
+
+### Resultado observado y límites pendientes
+
+SELECTPROD24nov19:48:59UTC/13:48:59CDMX: en las tres cohortes, por brazo yQA
+separada,0 cuentas Android consentidas retenidas con colocación,0 primeras
+fichas/aprobaciones,0 recibos de mascotas y0 saludos/primeros textos/respuestas
+propias;0 cuentas maduras336h. Las48 etiquetas nuevas siguen habilitadas,
+pero sólo4 se enviaron. No son0 clics/descargas ni una tasa completa por persona.
+
+La cola actual de revisión tiene0 filas `submitted` en corte18:45:24UTC; eso no
+equivale a ausencia de envíos. En filas retenidas de los últimos7d había16 con
+`submitted_at`,12 dueños, **incluyendoQA**, sin atribuirlos a estos comentarios.
+No usar estado actual mutable como historial completo ni atribución causal.
+
+El handler no cuenta clics humanos ni salidas aPlay. La consulta de métricas
+Vercel falló con402,ObservabilityPlus requerido: **no se obtuvieron conteos**,
+sin activar gasto. Un request/redirect/bot tampoco demostraría clic humano o
+descarga. Eventos Firebase del formulario existen, pero su unión automática
+con token no está comprobada; no inventar un funnel medido. Para avanzar se
+añade la clasificación manual de respuestas, conservando estos límites.
+
+El usuario aún no tiene otra mascota real paraQA. Mantener pendiente instalación
+limpia → primera ficha válida p60 y no fabricar un animal, reutilizar un hito
+consumido ni probar creando conversiones enSQL. iOS sigue agregado por brazo.
+No hay ganador, significancia ni comparación concluyente contra Meta/Google.
+Evidencia social/recibos y plan de revisión permanecen privados fuera deGit.
+
+Auditoría local final0errores,4enviados/4visibles,6candidatas seleccionadas.
+Ledger de este checkpoint SHA256
+`873bd36dd6e8d8ae12638173cf1dc7faacfa8317e0972fb023c955f0f9767e2c`.
+Los ledgers anteriores conservan SHA256 `d600c337…` y `9e680926…` sin cambios.
+Respaldo privado local fuera deGit en
+`C:/Users/betoq/.codex/visualizations/2026/11/12/01a1d1f7-7105-7a10-876f-7fbf39340eea/wave3-20261124-private`:
+27archivos cotejados por hash; manifiesto de respaldo SHA256
+`b63d1c74da1157cdb9285812fae7cdbf506c063cd78822b44ca9bd4398473717`.

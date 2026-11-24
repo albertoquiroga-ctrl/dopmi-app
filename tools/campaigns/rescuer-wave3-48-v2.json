@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "resc_mty_20261124_wave3_v2",
+  "utmCampaign": "dopmi_rescatistas_mty_p60_v1",
+  "appleCampaignPrefix": "resc_mty_wave3_v2",
+  "assignmentSeed": 24112026,
+  "assignmentAlgorithm": "mulberry32-fisher-yates",
+  "maxPublicPlacements": 48,
+  "templates": {
+    "control": {
+      "copyVersion": "v1",
+      "text": "También puedes publicar a [mascota] en DopMi para que personas que buscan adoptar puedan conocer su historia. Publicar la ficha es gratis. Soy parte de DopMi. Descarga la app y elige «Publicar una adopción»: [enlace]"
+    },
+    "support": {
+      "copyVersion": "v2",
+      "text": "Vi que buscas hogar para [mascota]. Si te sirve, puedes publicar su ficha gratis en DopMi. Soy parte de DopMi; si tienes dudas sobre cómo publicarla, con gusto te orientamos aquí. Descarga la app y elige «Publicar una adopción»: [enlace]"
+    }
+  },
+  "placements": [
+    {
+      "token": "b48e60f4328441b99691e5f3e533fe12",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 1,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "f4420e2a924bd8a16926b13e5ffc095a",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 1,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "de4c7cd74429cb94ed36d9f59f677f9f",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 1,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "913ee07718ca7f5c7472d8c7ce5e830e",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 1,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "7fb1be2670d092eef4f0a10adbc633b2",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 2,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "e04a4ff03006f8b1429463a7dd9d2085",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 2,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "c4e0437efe08859688e5445c41226ba2",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 2,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "817f1299698cab4f49cf551c7776340f",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 2,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "91da263b56a27d35dcc134f1aec90cbc",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 3,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "31afa3ac36b19ac42a5feb4f7e397289",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 3,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "d6ddde11c3aa3b8d5129e977c038ff58",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 3,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "fff1252efcc523f6e21120550cc2a726",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 3,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "413cbef9d9f6664b4f4c91d0312ebf9e",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 4,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "560eb97ec4a65327678d0137bf157c62",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 4,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "368af5fb4e0a4fcd49e25ce893769a22",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 4,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "50d6334d968f6b5c412ce5c40e0746cb",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 4,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "3d3af1ca20a51911e97e93e03f3e0023",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 5,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "838f071dd26dc846fbbd607251e32515",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 5,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "b74e09af51c3445db069665f1eaab617",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 5,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "9996a4fc523e13900bc5567354a375ff",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 5,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "c748ccd58d36fc70db8002ab6de85951",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 6,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "9f8a54607e81d3d4fb83dde1e9f43cc9",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 6,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "8579391722524b2b155a26f22fcea554",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 6,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "44c3384c341dd2851a11cd71f47b24ae",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 6,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "ee0ee196f901cf862a0eadecb212381b",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 7,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "545fcbbe6a6853d958bda47d99d116aa",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 7,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "a44de43b9f75756868ae6376947ecf05",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 7,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "2fae0889d34f3a92b5fe973efdaec90f",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 7,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "8960301bd2ac76c4b750be1700a40bf6",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 8,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "cca263a2a44c97fab07c3a72e26e2541",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 8,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "7702b592662cb45ad9a65a67f6c99e1f",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 8,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "0c60ef662c0e3eb6fc5335d5e0d036b0",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 8,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "a80bda85bfc6dfd4c0220113bda00576",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 9,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "962afdc0e9dcec8e1f5380e236ff4f3f",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 9,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "51245d8a4e5f1927c0caaaaee366a3a9",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 9,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "6dff1588ded8c2ac856a7a4af1f11a5a",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 9,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "cabb039975be9a3d260caa119f1e07c1",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 10,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "fc3406d779b7821e8af854e615d6b848",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 10,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "0a88e17326583f154116ad77d76c5508",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 10,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "209400810a5730faf4571b49f8609972",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 10,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "02ef92c6444848f787beeab28b2c407f",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 11,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "16177979f5613af3d7a54d76b050781c",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 11,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "ac2d4dc705805bdf81955261b2957aee",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 11,
+      "species": "cat",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "42f3f5f4767c8750f4fb34f7ea32077d",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 11,
+      "species": "cat",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "cd90c8b0f2f4f4f03c9391b5a3396945",
+      "armId": "R2",
+      "variant": "personal-b",
+      "isQa": false,
+      "block": 12,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "266853fa6a1c3ba6f61dccc57faba1eb",
+      "armId": "R4",
+      "variant": "pagina-b",
+      "isQa": false,
+      "block": 12,
+      "species": "dog",
+      "copyVersion": "v2",
+      "copyId": "support"
+    },
+    {
+      "token": "770c77fc0a387b208a3eebb4616c53b9",
+      "armId": "R1",
+      "variant": "personal-a",
+      "isQa": false,
+      "block": 12,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    },
+    {
+      "token": "f2be13e49b9204c288f1319fc5329995",
+      "armId": "R3",
+      "variant": "pagina-a",
+      "isQa": false,
+      "block": 12,
+      "species": "dog",
+      "copyVersion": "v1",
+      "copyId": "control"
+    }
+  ]
+}
