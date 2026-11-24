@@ -60,8 +60,9 @@ el shell actual y conserva sus pestañas; otro login/reinicio reconsulta si fall
 
 - [x] Escribir y ejecutar RED: secuencia ubicación, cambios de ruta/cuenta y ausencia de likes/vistos/eventos durante demo.
 - [x] Implementar y verificar pruebas afectadas y flutter analyze; revisión independiente de seguridad/UX/código.
-- [ ] Congelar candidato exacto y ejecutar CI completa; registrar evidencia en fuentes existentes.
-- [ ] Preparar/publicar Play interno y TestFlight con una cola y ventanas reales; verificar artefactos y publicación por separado. Samsung físico pendiente hasta que el titular lo conecte; no reiterar solicitud.
+- [x] Congelar candidato exacto y ejecutar CI completa; registrar evidencia en fuentes existentes.
+- [x] Preparar/publicar Play interno y TestFlight con una cola y ventanas reales; verificar artefactos y publicación por separado.
+- [ ] QA física y aceptación: Samsung pendiente hasta que el titular lo conecte; no reiterar solicitud. Grupo TestFlight no leído independientemente.
 
 ## Evidence / rulings
 
@@ -70,3 +71,4 @@ el shell actual y conserva sus pestañas; otro login/reinicio reconsulta si fall
 - Changelog Supabase revisado: v3 es opt-in; se conserva SDK instalado. Docs oficiales Auth updateUser permiten metadata funcional. La marca se elimina junto con Auth al eliminar cuenta.
 - RED de store: lectura remota true obtuvo false con stub. RED visual/gate: componentes ausentes. RED owner: catálogo de persona mostró SwipeTutorial indebidamente. GREEN final afectado:84 pruebas PASS y44 configuración PASS. Dos P2 de revisión cerrados; nueve capturas verificadas independientemente. Analyze/CI/publicación siguen pendientes al corte.
 - CI v1 falló tres regresiones de catálogo (otros tres trabajos SUCCESS), sin envío. Reproducción local70PASS/3FAIL; correctivo de gate revisado sin P1/P2. Suite local completa posterior2169PASS/0FAIL/4SKIP. Se prepara freeze/tag v2; visual sin cambios y nueve capturas aplicables.
+- Cierre20:51UTC: fuente edcdd5aa/tagv2/CI45470332828 cuatro SUCCESS;2169PASS/0FAIL/4SKIP. Android444 AAB/firma/runtime y Play interno comprobados; iOS445 IPA/runtime/carga y procesamiento Apple finished/error=false. Dos POST y ventanas reales. Instalación/aceptación diferidas, sin promoción pública.

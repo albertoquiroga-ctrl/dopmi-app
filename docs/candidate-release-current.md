@@ -1,3 +1,31 @@
+## Tutorial swipe — 24/nov/2026, entrega QA444/445
+
+Fuente `edcdd5aa030685817907bd80c79a91b4bcec8585`, tag
+`codex/swipe-tutorial-20261124-v2`, rama `codex/swipe-tutorial-20261124`.
+[CI45470332828](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45470332828)
+cuatro SUCCESS.2169 Flutter PASS/0FAIL/4SKIP local y CI, analyze limpio,44 pruebas
+de configuración PASS. Nueve capturas y revisión independiente de código/UX
+cerradas sin P1/P2 pendiente. Preserva Tienda/dbac483b y referencia d9f9aa43.
+
+Guía de dos prácticas con mano/flecha, corazón/X, botones y Omitir; sólo una vez
+por cuenta al entrar a Adoptar. Recibo funcional Auth, sin privilegios ni analítica
+de práctica. Catálogo no se monta durante enseñanza y mantiene estado al volver
+de pestañas; GPS no reinicia el paso. Revisión/corrección previa al envío cerró
+tres regresiones del candidato4ad334f4/CI45462196838, que no generó build nativa.
+
+| Plataforma | Artefacto verificado | Publicación acreditada | Pendiente |
+|---|---|---|---|
+| Android2.3.12(444) | CM6b05eac1829095162933baa8,14SUCCESS; AAB96970286B, SHA256`fece8839e54c254b60e99e5a758f9397fb6aabb28518c6679350f90cc3031a05`; firma/pin/identidad/runtime20:19UTC | Log Play interno/completed/Successfully published20:20UTC | Lectura Console independiente, instalación y aceptación |
+| iOS2.3.12(445) | CM6b05f1b776c8d44c4f592cba,15SUCCESS; IPA55047099B, SHA256`1382bf4b935632d151699349577558669fcdc8cf87eec5c0fe5cceb897fdfd64`; estructura/provisión/runtime20:47UTC | Carga correcta; tarea Apple6b05f78e93610bf5c165b30b finished/error=false20:51UTC | Lectura de grupo TestFlight, instalación y aceptación |
+
+Firma iOS: estructura/perfil y aceptación de carga comprobados; no atribuir
+validación criptográfica local independiente. Ambas builds conservan PROD,
+adopciones/Amazon y finanzas cliente OFF. Dos POST, ventanas5min propias y una
+cola serial; sin observadores activos. Paquete consumido:
+`.tools/swipe-tutorial-corrective-20261124/distribution`; no reenviar/descargar.
+Sin SQL, cambios de servicios/flags, publicación pública o aceptación inferida.
+Samsung diferido expresamente por el titular; no reiterar solicitud.
+
 ## Correctivo Tienda — 24/nov/2026, 442/443 publicadas para QA
 
 Fuente dbac483bc5487a559cfd145fe688c512e90cf725/tag

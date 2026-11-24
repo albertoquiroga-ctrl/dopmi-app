@@ -1,20 +1,28 @@
 # Checkpoint vigente — tutorial de swipe, 24/nov/2026 CDMX
 
-19:09UTC: correctivo local de gate tras CI45462196838 fallida (Flutter:2164PASS,
-3FAIL,4SKIP; otros tres trabajos SUCCESS). Source/tag4ad334f4/v1 quedan congelados,
-sin envíos. La lectura del recibo ya precede al catálogo; GPS sólo demora enseñar;
-volver de Favoritos/detalle conserva estado. Tres regresiones originales pasan.
-19:26UTC: revisión independiente cerrada; analyze limpio; suite local completa2169PASS/0FAIL/4SKIP antes de congelar
-codex/swipe-tutorial-20261124-v2 y ejecutar CI exacta nueva. Paquete nuevo aislado
-en .tools/swipe-tutorial-corrective-20261124/distribution, sin ventanas ni reservas.
+20:51UTC: fuente edcdd5aa030685817907bd80c79a91b4bcec8585/tag
+codex/swipe-tutorial-20261124-v2, rama codex/swipe-tutorial-20261124.
+CI45470332828 cuatro SUCCESS;2169 Flutter PASS/0FAIL/4SKIP local y CI,
+analyze limpio,44 configuración PASS y nueve capturas revisadas independientemente.
+Guía derecha/izquierda, botones y Omitir, una vez por cuenta al entrar a Adoptar;
+la práctica no opera mascotas reales. Consulta previa a GPS, estado de catálogo
+conservado al volver de pestañas y práctica conservada al reanudar ubicación.
 
-Rama codex/swipe-tutorial-20261124 desde408fdde5, conserva producto dbac483b y
-la referencia Irlanda d9f9aa43. Nuevo alcance pedido en chat: tutorial de Adoptar
-una vez por cuenta, patrón de mano/direcciones, sin efectos en mascotas reales.
-Implementación y nueve capturas revisadas;84 pruebas afectadas y44 configuración
-PASS; analyze limpio. Revisión independiente cerrada tras corregir dos P2. Fuente final/CI y
-distribución QA todavía pendientes; no hay build nueva de este tutorial al corte.
-Samsung diferido por el titular. No reabrir Tienda ni activar moderación preparada.
+Android2.3.12(444), CM6b05eac1829095162933baa8:14SUCCESS, AAB/firma/pin/runtime
+verificados20:19UTC; log Play internal/completed confirmado20:20UTC.
+iOS2.3.12(445), CM6b05f1b776c8d44c4f592cba:15SUCCESS, IPA/provisión/runtime/carga
+verificados20:47UTC; tarea Apple6b05f78e93610bf5c165b30b finished/error=false20:51UTC.
+Grupo TestFlight no leído independientemente; instalación/QA/aceptación pendientes.
+Samsung expresamente diferido por el titular: no reiterar solicitud.
+
+Dos POST en total, uno por plataforma, ventanas5min propias y cola serial. Ningún
+build/observador activo. Recibos consumidos en .tools/swipe-tutorial-corrective-20261124/distribution:
+no repetir submit ni descargas. V1/source4ad334f4/CI45462196838 falló tres regresiones
+antes de cualquier envío; se conserva evidencia sin reutilizar su ventana.
+Mejora comprobada: regresiones nearby_discovery/community/discovery_motion en
+la suite completa antes del segundo freeze. Sin SQL, servicios, flags, publicación
+pública o aceptación inferida. Conserva producto dbac483b y mock d9f9aa43;
+no reabrir Tienda ni activar moderación preparada.
 
 # Corte anterior — correctivo Tienda, 24/nov/2026 CDMX
 

@@ -10670,3 +10670,22 @@ tres regresiones detectadas por CI y las nuevas pruebas de montaje único y
 bypass sin recibo/reintento al remontar. Revisión independiente del correctivo
 cerrada; visual sin cambios. Log privado full-local-after-corrective.log en
 .tools/swipe-tutorial-20261124. Nueva CI/tagv2 aún pendientes; sin envíos nativos.
+
+## 24/11/2026 20:51UTC — Tutorial swipe entregado a QA444/445
+
+Fuente edcdd5aa030685817907bd80c79a91b4bcec8585/tag codex/swipe-tutorial-20261124-v2,
+rama codex/swipe-tutorial-20261124. CI45470332828 cuatro SUCCESS;2169PASS/0FAIL/
+4SKIP local y CI; analyze limpio. Revisión independiente/capturas cerradas.
+Android2.3.12(444), CM6b05eac1829095162933baa8:14SUCCESS; AAB96970286B/SHA
+fece8839e54c254b60e99e5a758f9397fb6aabb28518c6679350f90cc3031a05, firma/pin/
+identidad/runtime comprobados20:19UTC; log Play internal/completed confirmado20:20.
+iOS2.3.12(445), CM6b05f1b776c8d44c4f592cba:15SUCCESS; IPA55047099B/SHA
+1382bf4b935632d151699349577558669fcdc8cf87eec5c0fe5cceb897fdfd64, perfil/runtime/
+carga comprobados20:47UTC; tarea Apple6b05f78e93610bf5c165b30b finished/error=false
+20:51UTC. No atribuir firma criptográfica local iOS ni lectura independiente del
+grupo. Dos POST/ventanas5min, cola serial y una descarga por artefacto. Ningún
+build/observador activo. Recibo delivery.verified.private.json en paquete correctivo;
+no repetir operaciones. Sin SQL, servicios/flags ni promoción pública. Instalación/
+QA/aceptación pendientes; Samsung expresamente diferido. Auditoría acotada no
+encontró API ASC local para leer grupo; no se pidió nuevo acceso. Mejora de
+regresión quedó comprobada en suite completa antes del segundo freeze.

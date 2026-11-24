@@ -11,8 +11,11 @@ remontar tras error. Revisión independiente del correctivo sin P1/P2 abierto.
 Mejora acotada: incluir esos tres archivos de regresión antes de congelar cuando
 se envuelva Discovery. Efecto comprobado en la suite completa local:2169PASS,
 0FAIL,4SKIP; incluye los tres escenarios originales y los nuevos de lifecycle.
-El componente visual no cambió; nueve capturas previas siguen aplicables. Nada
-publicado de este lote aún; se prepara un paquete v2 separado del candidato fallido.
+El componente visual no cambió; nueve capturas previas siguen aplicables.
+Fuente final edcdd5aa/tagcodex/swipe-tutorial-20261124-v2; CI45470332828 cuatro
+SUCCESS y2169PASS/0FAIL/4SKIP. Android444 verificada y publicada en Play interno;
+iOS445 verificada/cargada y tarea Apple finished/error=false20:51UTC. Paquete v2
+separado y consumido una sola vez por plataforma; v1 nunca se envió a Codemagic.
 
 Nuevo alcance del chat, sin reinterpretar otras pantallas del mock: dos prácticas
 con foto local de ejemplo, mano/flecha y corazón/X. Botones alternativos, Omitir y
@@ -25,9 +28,10 @@ proyecto y cuenta; prueba de respuesta tardía preserva una sesión SDK diferent
 No se monta Discovery durante la enseñanza/lectura inicial elegible, por lo que
 la práctica no guarda vistos, likes, mensajes ni vistas de mascotas.
 
-Analyze sin incidencias. Implementado/verificado localmente; CI, publicación e instalación del tutorial
-pendientes al corte. Capturas en .tools/swipe-tutorial-20261124/captures no son
-evidencia de teléfono. Samsung se conectará después según el titular.
+Analyze sin incidencias. Implementado, verificado y publicado para QA. Grupo
+TestFlight, instalación física y aceptación humana no acreditados; capturas en
+.tools/swipe-tutorial-20261124/captures no son evidencia de teléfono. Samsung se
+conectará después según el titular; no reiterar solicitud. No promoción pública.
 
 ## 24/nov — Dos correcciones de Tienda solicitadas por Irlanda
 
