@@ -193,10 +193,42 @@ jobs:
               raise SystemExit("No available iPhone simulator for native policy tests")
           print(candidates[0])
           ')"
+          mkdir -p build/ios/policy-tests
           xcodebuild test -workspace ios/Runner.xcworkspace -scheme Runner -configuration Debug \
             -destination "platform=iOS Simulator,id=${ios_simulator}" \
-            -only-testing:RunnerTests/RunnerTests CODE_SIGNING_ALLOWED=NO
+            -resultBundlePath build/ios/policy-tests/MetaLifecyclePolicy.xcresult \
+            -only-testing:RunnerTests/RunnerTests CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee build/ios/policy-tests/xcodebuild.log
         working-directory: apps/mobile
+      - name: Collect iOS policy test diagnostics
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p build/ios/policy-tests/diagnostics
+          xcrun simctl list devices available -j > build/ios/policy-tests/diagnostics/simulators.json || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          destination = Path('build/ios/policy-tests/diagnostics')
+          roots = [Path.home() / 'Library/Logs/DiagnosticReports']
+          devices = Path.home() / 'Library/Developer/CoreSimulator/Devices'
+          roots.extend(devices.glob('*/data/Library/Logs/CrashReporter'))
+          for index, root in enumerate(roots):
+              if root.is_dir():
+                  for pattern in ('Runner*.ips', 'Runner*.crash', 'xctest*.ips', 'xctest*.crash'):
+                      for report in root.glob(pattern):
+                          shutil.copy2(report, destination / f'{index}-{report.name}')
+          PY
+        working-directory: apps/mobile
+      - name: Preserve iOS policy test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dopmi-ios-policy-tests
+          path: apps/mobile/build/ios/policy-tests
+          if-no-files-found: warn
+          retention-days: 7
       - name: Verify foreground-only iOS location permissions
         run: python3 scripts/verify-ios-foreground-location.py --app apps/mobile/build/ios/iphonesimulator/Runner.app
   identity-and-adoption-backend:
