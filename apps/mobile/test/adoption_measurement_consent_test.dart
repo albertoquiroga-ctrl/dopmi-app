@@ -298,6 +298,17 @@ void main() {
         SharedPreferences.resetStatic();
       });
       server.states[_alice] = (consent: true, revision: 1);
+      server.readOverride = (request) async {
+        final actor = server.actor(request);
+        return {
+          ...server.state(actor),
+          'has_choice': server.states.containsKey(actor),
+          'notice_version':
+              actor == _alice && server.states[actor]?.revision == 1
+              ? usageAnalyticsNoticeVersion
+              : null,
+        };
+      };
       final analytics = AnalyticsSpy();
       final controller = MeasurementController(
         await SharedPreferences.getInstance(),

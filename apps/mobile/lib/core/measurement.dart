@@ -123,7 +123,12 @@ class MeasurementController extends ChangeNotifier {
   final UsageAnalyticsChoiceStore? analyticsChoices;
   UsageAnalyticsChoice? _analyticsChoice;
   bool _analyticsChoicePending = false;
+  bool _analyticsChoiceReview = false;
   bool get analyticsChoicePending => ownerId != null && _analyticsChoicePending;
+  bool get analyticsChoiceIsReview =>
+      analyticsChoicePending && _analyticsChoiceReview;
+  bool get analyticsChoiceInitialValue =>
+      analyticsChoicePending && !_analyticsChoiceReview;
   Future<void> _consentSync = Future.value();
   Future<void> _settingsSync = Future.value();
   Future<void>? _ownerSync;
@@ -273,16 +278,21 @@ class MeasurementController extends ChangeNotifier {
       var allowed = savedAnalytics ?? false;
       UsageAnalyticsChoice? remote;
       var pendingChoice = false;
+      var reviewChoice = false;
       if (analyticsChoices != null && value != null) {
         // Never turn a restored preference into a new ON write. In particular,
         // a remote OFF/revision0 must survive reinstall and another phone.
         try {
           remote = await analyticsChoices!.read(value);
           if (revision != _ownerRevision) return;
+          pendingChoice = !remote.hasCurrentExplicitChoice;
+          reviewChoice =
+              pendingChoice && (remote.hasChoice || savedAnalytics != null);
           allowed =
-              savedAnalytics != false && remote.hasChoice && remote.consent;
-          pendingChoice = !remote.hasChoice && savedAnalytics != false;
-          if (remote.hasChoice && !remote.consent) {
+              savedAnalytics != false &&
+              remote.hasCurrentExplicitChoice &&
+              remote.consent;
+          if (remote.hasCurrentExplicitChoice && !remote.consent) {
             if (!await preferences.setBool(preference, false)) {
               throw StateError('analytics_preference_not_saved');
             }
@@ -293,13 +303,13 @@ class MeasurementController extends ChangeNotifier {
         }
       }
       if (revision != _ownerRevision) return;
-      // A failed state read is not an opt-out. Keep an already-scoped identity
-      // paused only for this account/environment and without an explicit OFF.
+      // Uncertainty or a pending review is not a new opt-out. Retain the same
+      // account/environment identity while collection stays paused. A failed
+      // read still honors the existing local OFF veto.
       final keepPausedIdentity =
           analyticsChoices != null &&
           value != null &&
-          remote == null &&
-          savedAnalytics != false &&
+          (pendingChoice || (remote == null && savedAnalytics != false)) &&
           preferences.getString(_analyticsOwnerKey) == preference;
       final diagnosticsAllowed =
           value != null &&
@@ -329,6 +339,7 @@ class MeasurementController extends ChangeNotifier {
       _analyticsAllowed = allowed;
       _analyticsChoice = remote;
       _analyticsChoicePending = pendingChoice;
+      _analyticsChoiceReview = reviewChoice;
       diagnosticsEnabled = diagnosticsAllowed;
       lastAnalyticsEvent = null;
       lastAnalyticsResult = null;
@@ -339,7 +350,9 @@ class MeasurementController extends ChangeNotifier {
       if (value != null) {
         if (analyticsChoices == null && savedAnalytics != null) {
           _syncConsent(value, savedAnalytics);
-        } else if (analyticsChoices != null && remote != null) {
+        } else if (analyticsChoices != null &&
+            remote != null &&
+            !pendingChoice) {
           if (allowed) {
             _syncConsent(value, true);
           } else if (savedAnalytics == false &&
@@ -437,7 +450,23 @@ class MeasurementController extends ChangeNotifier {
       }
       final result = outcome.result;
       if (result != null) _analyticsChoice = result.state;
-      if (value && (result?.applied != true || result!.state.consent != true)) {
+      if (value &&
+          (result?.applied != true ||
+              result!.state.consent != true ||
+              !result.state.hasCurrentExplicitChoice)) {
+        // A definitive conflict can reveal another client's explicit OFF.
+        // Observe it without creating a second consent write.
+        if (result?.state.hasCurrentExplicitChoice == true &&
+            !result!.state.consent) {
+          if (!await preferences.setBool(key, false)) {
+            throw StateError('analytics_preference_not_saved');
+          }
+          if (!current()) return;
+          await _setAnalyticsOwner(null);
+          if (!current()) return;
+          _analyticsChoicePending = false;
+          _configuredAnalyticsRevision = revision;
+        }
         notifyListeners();
         throw StateError('analytics_choice_changed');
       }

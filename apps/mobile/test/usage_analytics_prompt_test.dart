@@ -10,6 +10,8 @@ void main() {
     WidgetTester tester, {
     required Future<void> Function(bool) onConfirm,
     VoidCallback? onPrivacy,
+    bool initialValue = true,
+    bool isReview = false,
     Size size = const Size(390, 844),
     double scale = 1,
   }) async {
@@ -26,8 +28,11 @@ void main() {
           child: child!,
         ),
         home: UsageAnalyticsPrompt(
+          key: const ValueKey('analytics-choice:one'),
           onConfirm: onConfirm,
           onPrivacy: onPrivacy ?? () {},
+          initialValue: initialValue,
+          isReview: isReview,
         ),
       ),
     );
@@ -72,6 +77,102 @@ void main() {
     await tester.pumpAndSettle();
     expect(choices, [false]);
   });
+
+  testWidgets('review starts OFF and confirming preserves that choice', (
+    tester,
+  ) async {
+    final choices = <bool>[];
+    await mount(
+      tester,
+      onConfirm: (value) async => choices.add(value),
+      isReview: true,
+    );
+    expect(
+      tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+      isFalse,
+    );
+    expect(find.textContaining('mientras revisas'), findsOneWidget);
+    expect(choices, isEmpty);
+    await tapText(tester, 'Guardar elección y continuar');
+    await tester.pumpAndSettle();
+    expect(choices, [false]);
+  });
+
+  testWidgets(
+    'review can enable analytics only after a deliberate selection and save',
+    (tester) async {
+      final choices = <bool>[];
+      await mount(
+        tester,
+        onConfirm: (value) async => choices.add(value),
+        isReview: true,
+      );
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pump();
+      expect(choices, isEmpty);
+      await tapText(tester, 'Guardar elección y continuar');
+      await tester.pumpAndSettle();
+      expect(choices, [true]);
+    },
+  );
+
+  testWidgets(
+    'a supplied OFF is never replaced by the new-account ON proposal',
+    (tester) async {
+      final choices = <bool>[];
+      await mount(
+        tester,
+        onConfirm: (value) async => choices.add(value),
+        initialValue: false,
+      );
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isFalse,
+      );
+      expect(choices, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'same prompt changes an ON proposal into OFF review without saving',
+    (tester) async {
+      final choices = <bool>[];
+      Future<void> choose(bool value) async => choices.add(value);
+      await mount(tester, onConfirm: choose);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isTrue,
+      );
+      await mount(tester, onConfirm: choose, isReview: true);
+      expect(find.textContaining('mientras revisas'), findsOneWidget);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isFalse,
+      );
+      expect(choices, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'a rebuild in review mode keeps a deliberate selection until save',
+    (tester) async {
+      final choices = <bool>[];
+      Future<void> choose(bool value) async => choices.add(value);
+      await mount(tester, onConfirm: choose, isReview: true);
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pump();
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isTrue,
+      );
+      await mount(tester, onConfirm: choose, isReview: true);
+      expect(
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+        isTrue,
+      );
+      expect(choices, isEmpty);
+    },
+  );
 
   testWidgets('continuing without analytics overrides the ON preselection', (
     tester,

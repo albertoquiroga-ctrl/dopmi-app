@@ -13,6 +13,7 @@ import '../identity/identity_controller.dart';
 import '../identity/identity_repository.dart';
 import '../identity/experience_controller.dart';
 import '../payments/contribution_layout.dart';
+import 'meta_lifecycle_consent_gate.dart';
 
 class AccountPrivacyScreen extends ConsumerStatefulWidget {
   const AccountPrivacyScreen({super.key});
@@ -303,6 +304,7 @@ class _AccountPrivacyScreenState extends ConsumerState<AccountPrivacyScreen> {
           ],
           if (metaAds != null)
             metaAdsControl(metaAds, captureAvailable: metaAdsCaptureAvailable),
+          const MetaLifecyclePrivacyControl(),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Diagnóstico de errores'),

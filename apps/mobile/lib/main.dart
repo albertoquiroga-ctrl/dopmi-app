@@ -20,6 +20,8 @@ import 'core/adoption_measurement_consent.dart';
 import 'core/config.dart';
 import 'core/storage.dart';
 import 'core/measurement.dart';
+import 'core/meta_lifecycle_measurement.dart';
+import 'core/meta_lifecycle_provider.dart';
 import 'core/ui.dart';
 import 'core/content_links.dart';
 import 'core/media/photo_runtime.dart';
@@ -47,6 +49,7 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
   late final Future<IosCppAcquisition?> iosAcquisition;
   IosCppLinkCapture? cppCapture;
   MeasurementController? activeMeasurement;
+  MetaLifecycleController? activeMetaLifecycle;
   bool cppReceived = false;
   late Future<
     ({
@@ -88,12 +91,22 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     activeMeasurement = null;
+    activeMetaLifecycle?.dispose();
+    activeMetaLifecycle = null;
     unawaited(cppCapture?.dispose());
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    final lifecycle = activeMetaLifecycle;
+    if (state == AppLifecycleState.resumed) {
+      unawaited(lifecycle?.foreground().catchError((Object _) {}));
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      lifecycle?.background();
+    }
     if (state != AppLifecycleState.resumed) return;
     final measurement = activeMeasurement;
     final owner = measurement?.ownerId;
@@ -228,6 +241,40 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
         },
       );
     }
+    activeMetaLifecycle?.dispose();
+    final lifecycle = MetaLifecycleController(
+      preferences,
+      namespace,
+      configured: config.metaLifecycleEnabled,
+      appId: config.metaAppId,
+      clientToken: config.metaAppClientToken,
+      readGate: () async {
+        try {
+          final enabled = await Supabase.instance.client
+              .rpc('dopmi_meta_lifecycle_enabled')
+              .timeout(const Duration(seconds: 3));
+          return enabled == true;
+        } catch (_) {
+          return false;
+        }
+      },
+    );
+    activeMetaLifecycle = lifecycle;
+    // Optional measurement never delays login or the product connection.
+    unawaited(
+      lifecycle
+          .initialize()
+          .then((_) async {
+            if (!identical(activeMetaLifecycle, lifecycle)) return;
+            if (WidgetsBinding.instance.lifecycleState ==
+                AppLifecycleState.resumed) {
+              await lifecycle.foreground();
+            } else {
+              lifecycle.background();
+            }
+          })
+          .catchError((Object _) {}),
+    );
     if (supportsPlayInstallReferrer) {
       androidEnrollment = AndroidExperimentEnrollment(
         client: Supabase.instance.client,
@@ -273,6 +320,9 @@ class _BootstrapState extends State<Bootstrap> with WidgetsBindingObserver {
                 ),
                 measurementControllerProvider.overrideWith(
                   (ref) => snapshot.data!.measurement,
+                ),
+                metaLifecycleControllerProvider.overrideWithValue(
+                  activeMetaLifecycle,
                 ),
                 rescueVideosRepositoryProvider.overrideWith((ref) {
                   final repository = VideoRepository.supabase(

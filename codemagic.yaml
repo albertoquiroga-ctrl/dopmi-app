@@ -150,6 +150,11 @@ workflows:
             false) set -- ;;
             *) echo "Unknown Android Meta ads measurement setting." >&2; exit 1 ;;
           esac
+          case "${DOPMI_META_LIFECYCLE_ENABLED-false}" in
+            true) set -- "$@" --meta-lifecycle ;;
+            false) ;;
+            *) echo "Unknown Meta lifecycle setting." >&2; exit 1 ;;
+          esac
           case "${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}" in
             test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test "$@" ;;
             production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta "$@" ;;
@@ -217,6 +222,8 @@ workflows:
               f"Guardian test: {config['ENABLE_GUARDIAN_TEST']}\n"
               f"Measurement test: {config['ENABLE_MEASUREMENT_TEST']}\n"
               f"Meta ads measurement: {config['ENABLE_META_ADS_MEASUREMENT']}\n"
+              f"Meta lifecycle: {config['META_LIFECYCLE_ENABLED']}\n"
+              f"Meta app: {config['META_APP_ID']}\n"
               f"Native wallets test: {config['ENABLE_NATIVE_WALLETS_TEST']}\n"
               f"Firebase project: {firebase_android['project_info']['project_id']}\n"
               f"Firebase Android app: {firebase_client['client_info']['mobilesdk_app_id']}\n"
@@ -266,6 +273,11 @@ workflows:
             true) set -- --meta-ads-measurement ;;
             false) set -- ;;
             *) echo "Unknown Android Meta ads measurement setting." >&2; exit 1 ;;
+          esac
+          case "${DOPMI_META_LIFECYCLE_ENABLED-false}" in
+            true) set -- "$@" --meta-lifecycle ;;
+            false) ;;
+            *) echo "Unknown Meta lifecycle setting." >&2; exit 1 ;;
           esac
           python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public "$@"
       - name: Create matching Guardian Firebase configuration
@@ -390,12 +402,18 @@ workflows:
       - name: Create runtime configuration
         script: |
           set -euo pipefail
+          set --
+          case "${DOPMI_META_LIFECYCLE_ENABLED-false}" in
+            true) set -- --meta-lifecycle ;;
+            false) ;;
+            *) echo "Unknown Meta lifecycle setting." >&2; exit 1 ;;
+          esac
           PROFILE="${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
           case "$PROFILE" in
-            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test ;;
-            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta ;;
-            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
-            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
+            test:false:false:false) python3 ../../scripts/write-mobile-config.py --guardian-test --measurement-test "$@" ;;
+            production:false:false:false) python3 ../../scripts/write-mobile-config.py --production-beta "$@" ;;
+            production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only "$@" ;;
+            production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public "$@" ;;
             *) echo "Unknown Dopmi mobile build profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration
@@ -461,6 +479,8 @@ workflows:
               f"Guardian: {configuration['ENABLE_GUARDIAN']}\n"
               f"Stripe live client: {str(bool(configuration['STRIPE_PUBLISHABLE_KEY'])).lower()}\n"
               f"Guardian test: {configuration['ENABLE_GUARDIAN_TEST']}\n"
+              f"Meta lifecycle: {configuration['META_LIFECYCLE_ENABLED']}\n"
+              f"Meta app: {configuration['META_APP_ID']}\n"
               f"Distribution: {distribution}\n")
           PYINFO
 
@@ -492,10 +512,16 @@ workflows:
       - name: Require the App Store adoption profile
         script: |
           set -euo pipefail
+          set --
+          case "${DOPMI_META_LIFECYCLE_ENABLED-false}" in
+            true) set -- --meta-lifecycle ;;
+            false) ;;
+            *) echo "Unknown Meta lifecycle setting." >&2; exit 1 ;;
+          esac
           PROFILE="${DOPMI_APP_STORE_SUBMISSION-false}:${DOPMI_ENVIRONMENT:-test}:${DOPMI_ADOPTION_ONLY-false}:${DOPMI_STORE_REVIEW-false}:${DOPMI_STORE_AMAZON_PUBLIC-false}"
           case "$PROFILE" in
-            true:production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only ;;
-            true:production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public ;;
+            true:production:true:false:false) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only "$@" ;;
+            true:production:true:false:true) python3 ../../scripts/write-mobile-config.py --production-beta --adoption-only --store-amazon-public "$@" ;;
             *) echo "The App Store workflow requires the production adoption profile." >&2; exit 1 ;;
           esac
       - name: Create Firebase configuration

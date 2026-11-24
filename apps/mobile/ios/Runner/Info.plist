@@ -6,6 +6,8 @@
   <false/>
   <key>FirebaseCrashlyticsCollectionEnabled</key>
   <false/>
+  <key>NSUserTrackingUsageDescription</key>
+  <string>Con tu permiso, Dopmi comparte el identificador publicitario con Meta para medir instalaciones y aperturas de la app y conocer qué anuncios funcionan.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Dopmi usa tu ubicación precisa mientras usas la app para encontrar mascotas a 25 km y proponer la ubicación de las mascotas que publicas. Puedes cambiar ese punto; se guarda de forma privada y sólo su zona es pública.</string>
   <key>DopmiGoogleMapsApiKey</key>

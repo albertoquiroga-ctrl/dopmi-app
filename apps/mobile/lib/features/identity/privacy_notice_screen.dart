@@ -69,6 +69,27 @@ class PrivacyNoticeScreen extends StatelessWidget {
               'los datos que ya recibió conforme a su propia política.',
         ),
         const LegalDocumentSection(
+          'Instalaciones y aperturas: medición opcional con Meta',
+          'Adenda meta-lifecycle-2026-11-24 · 24 de noviembre de 2026. '
+              'Si permites «Instalaciones y aperturas con Meta» en este dispositivo, '
+              'Dopmi comparte directamente con Meta el identificador publicitario '
+              'permitido de Android o iOS, el identificador de la app, las versiones '
+              'de Dopmi y del sistema y la señal de instalación o apertura con su '
+              'hora. Meta utiliza estos datos para atribuir instalaciones y medir '
+              'y optimizar los anuncios de Dopmi. En iOS también se necesita el '
+              'permiso de rastreo del sistema. Este permiso comienza apagado, se '
+              'guarda en este dispositivo y es independiente de Analítica de uso, '
+              'del diagnóstico y de los eventos de adopción con Meta. Continuar sin '
+              'activarlo permite usar la app. Puedes retirarlo en Cuenta y '
+              'privacidad; cerrar sesión no cambia esta elección del dispositivo. '
+              'Dopmi no guarda el identificador publicitario para este envío ni '
+              'adjunta datos de cuenta, mensajes, fichas o ubicación. Conserva '
+              'localmente la elección, la versión de este aviso y marcas mínimas '
+              'para evitar repetir instalaciones. Al apagarlo cancela los envíos '
+              'pendientes; una solicitud ya despachada puede completarse. Meta '
+              'trata los datos recibidos conforme a su propia política de privacidad.',
+        ),
+        const LegalDocumentSection(
           'Ubicación y mapas',
           'Dopmi solicita ubicación precisa mientras usas la app para mostrar adopciones a 25 km de tu ubicación actual. Esta ubicación se mantiene sólo en memoria y se envía para calcular cercanía, sin guardarse en tu perfil. Si niegas el permiso o apagas la ubicación, el listado de adopciones queda vacío y los demás apartados siguen disponibles. En modo Rescatista también explicamos y solicitamos el permiso al entrar: ayuda a encontrar adoptantes cercanos y propone tu ubicación actual como punto inicial de las mascotas nuevas. Puedes cambiar ese punto en Google Maps; si no das permiso, puedes elegirlo manualmente. El punto preciso de la mascota se guarda de forma privada para calcular distancias; públicamente se muestran ciudad y estado. No hacemos seguimiento en segundo plano. Google Maps puede procesar la vista del mapa, el punto preciso, tu consulta, dirección IP y datos técnicos; la geocodificación nativa de Google o Apple recibe el punto para identificar ciudad y estado. Puedes cambiar los permisos en los ajustes del dispositivo.',
         ),

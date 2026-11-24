@@ -10,9 +10,13 @@ import io.flutter.plugin.common.StandardMethodCodec
 import java.util.Locale
 
 class MainActivity : FlutterFragmentActivity() {
+    private var metaLifecycleBridge: MetaLifecycleBridge? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         registerPlayInstallReferrer(flutterEngine, applicationContext)
+        metaLifecycleBridge?.dispose()
+        metaLifecycleBridge = MetaLifecycleBridge(flutterEngine, applicationContext)
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         MethodChannel(
             messenger,
@@ -26,6 +30,22 @@ class MainActivity : FlutterFragmentActivity() {
                 result.notImplemented()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        metaLifecycleBridge?.setForeground(true)
+    }
+
+    override fun onPause() {
+        metaLifecycleBridge?.setForeground(false)
+        super.onPause()
+    }
+
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        metaLifecycleBridge?.dispose()
+        metaLifecycleBridge = null
+        super.cleanUpFlutterEngine(flutterEngine)
     }
 
     @Suppress("DEPRECATION")

@@ -11,6 +11,8 @@ class UsageAnalyticsChoice {
   final bool hasChoice, consent;
   final int revision;
   final String? noticeVersion;
+  bool get hasCurrentExplicitChoice =>
+      hasChoice && revision > 0 && noticeVersion == usageAnalyticsNoticeVersion;
 
   factory UsageAnalyticsChoice.fromJson(Object? value) {
     if (value is! Map ||
@@ -18,7 +20,13 @@ class UsageAnalyticsChoice {
         value['consent'] is! bool ||
         value['revision'] is! int ||
         (value['revision'] as int) < 0 ||
-        (value['has_choice'] == false && value['consent'] == true)) {
+        (value['notice_version'] != null &&
+            value['notice_version'] is! String) ||
+        (value['has_choice'] == false &&
+            (value['consent'] == true ||
+                value['revision'] != 0 ||
+                value['notice_version'] != null)) ||
+        (value['notice_version'] != null && value['revision'] == 0)) {
       throw const FormatException('Elección de analítica no confirmada');
     }
     return UsageAnalyticsChoice(

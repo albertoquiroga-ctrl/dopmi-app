@@ -33,6 +33,7 @@ import 'features/profile/profile_overview.dart';
 import 'features/profile/help_center_screen.dart';
 import 'features/profile/account_privacy_screen.dart';
 import 'features/profile/usage_analytics_prompt.dart';
+import 'features/profile/meta_lifecycle_consent_gate.dart';
 import 'features/profile/impact_screen.dart';
 import 'features/profile/information_screens.dart';
 import 'features/profile/rescuer_profile_edit_screen.dart';
@@ -822,7 +823,9 @@ class DopmiApp extends ConsumerWidget {
             statusBarIconBrightness: Brightness.dark,
             statusBarBrightness: Brightness.light,
           ),
-          child: child ?? const SizedBox.shrink(),
+          child: MetaLifecycleConsentGate(
+            child: child ?? const SizedBox.shrink(),
+          ),
         ),
       ),
     );
@@ -911,7 +914,20 @@ class _LegalAccessGate extends ConsumerWidget {
             measurement!.analyticsChoicePending) {
           return UsageAnalyticsPrompt(
             key: ValueKey('analytics-choice:${currentIdentity!.id}'),
-            onConfirm: measurement.setAnalytics,
+            initialValue: measurement.analyticsChoiceInitialValue,
+            isReview: measurement.analyticsChoiceIsReview,
+            onConfirm: (value) async {
+              final actor = currentIdentity.id;
+              if (!measurement.preferencesReadyFor(actor)) {
+                throw StateError('analytics_owner_changed');
+              }
+              await measurement.setAnalytics(value);
+              if (!measurement.preferencesReadyFor(actor) ||
+                  measurement.analyticsChoicePending ||
+                  (value && !measurement.analyticsConsentCurrent)) {
+                throw StateError('analytics_choice_not_confirmed');
+              }
+            },
             onPrivacy: () => router.push('/privacy-notice'),
           );
         }

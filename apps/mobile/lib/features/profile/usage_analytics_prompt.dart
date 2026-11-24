@@ -10,22 +10,37 @@ class UsageAnalyticsPrompt extends StatefulWidget {
     super.key,
     required this.onConfirm,
     required this.onPrivacy,
+    this.initialValue = true,
+    this.isReview = false,
   });
 
   final Future<void> Function(bool) onConfirm;
   final VoidCallback onPrivacy;
+  final bool initialValue, isReview;
 
   @override
   State<UsageAnalyticsPrompt> createState() => _UsageAnalyticsPromptState();
 }
 
 class _UsageAnalyticsPromptState extends State<UsageAnalyticsPrompt> {
-  bool selected = true;
+  late bool selected;
   bool saving = false;
   bool saved = false;
   String? error;
 
   bool get busy => saving || saved;
+
+  @override
+  void initState() {
+    super.initState();
+    selected = widget.isReview ? false : widget.initialValue;
+  }
+
+  @override
+  void didUpdateWidget(covariant UsageAnalyticsPrompt oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.isReview && widget.isReview) selected = false;
+  }
 
   Future<void> confirm(bool value) async {
     if (busy) return;
@@ -59,9 +74,12 @@ class _UsageAnalyticsPromptState extends State<UsageAnalyticsPrompt> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Heading(
+            Heading(
               'Tú decides qué compartes',
-              'La analítica es opcional. Dopmi funciona igual si la desactivas.',
+              widget.isReview
+                  ? 'La analítica está apagada mientras revisas esta opción. '
+                        'Puedes mantenerla así o activarla al guardar.'
+                  : 'La analítica es opcional. Dopmi funciona igual si la desactivas.',
             ),
             Card(
               margin: EdgeInsets.zero,

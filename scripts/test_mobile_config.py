@@ -51,6 +51,60 @@ class MobileConfigTests(unittest.TestCase):
         self.assertEqual(enabled["ENABLE_META_ADS_MEASUREMENT"], "true")
         self.assertEqual(enabled["ENABLE_MEASUREMENT_TEST"], "false")
 
+    def test_meta_lifecycle_default_off_does_not_copy_injected_credentials(self):
+        generated = config.build_config({**self.env,
+            "DOPMI_META_LIFECYCLE_ENABLED": "true", "META_LIFECYCLE_ENABLED": "true",
+            "DOPMI_META_APP_ID": "1156849688851390",
+            "DOPMI_META_APP_CLIENT_TOKEN": "0123456789abcdef0123456789abcdef"})
+        self.assertEqual(generated.get("META_LIFECYCLE_ENABLED"), "false")
+        self.assertEqual(generated.get("META_APP_ID"), "")
+        self.assertEqual(generated.get("META_APP_CLIENT_TOKEN"), "")
+
+    def test_meta_lifecycle_cli_is_explicit_and_preserves_selected_profile(self):
+        script = Path(__file__).with_name("write-mobile-config.py")
+        token = "0123456789abcdef0123456789abcdef"
+        for production in (False, True):
+            with self.subTest(production=production), tempfile.TemporaryDirectory() as directory:
+                env = {name: value for name, value in os.environ.items()
+                       if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
+                env.update(self.production_env() if production else self.env)
+                env.update(DOPMI_META_APP_ID="1156849688851390", DOPMI_META_APP_CLIENT_TOKEN=token)
+                args = ["--production-beta", "--adoption-only", "--store-amazon-public"] if production else []
+                result = subprocess.run([sys.executable, str(script), *args, "--meta-lifecycle"],
+                    cwd=directory, env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                generated = json.loads(Path(directory, "config.json").read_text())
+                self.assertEqual(generated["META_LIFECYCLE_ENABLED"], "true")
+                self.assertEqual(generated["META_APP_ID"], "1156849688851390")
+                self.assertEqual(generated["META_APP_CLIENT_TOKEN"], token)
+                self.assertEqual(generated["ENABLE_META_ADS_MEASUREMENT"], "false")
+                self.assertEqual(generated["DOPMI_ENVIRONMENT"], "production" if production else "test")
+                self.assertEqual(generated["DOPMI_STORE_AMAZON_PUBLIC"], str(production).lower())
+                self.assertEqual(generated["ENABLE_GUARDIAN"], "false")
+                self.assertEqual(generated["STRIPE_PUBLISHABLE_KEY"], "")
+                self.assertNotIn(token, result.stdout + result.stderr)
+
+    def test_meta_lifecycle_cli_rejects_wrong_app_or_non_client_token_without_echo(self):
+        script = Path(__file__).with_name("write-mobile-config.py")
+        valid_token = "0123456789abcdef0123456789abcdef"
+        invalid = [("", valid_token), ("1156849688851391", valid_token),
+                   ("1156849688851390", ""), ("1156849688851390", "EAA_capi_fixture_token"),
+                   ("1156849688851390", "sb_secret_fixture"),
+                   ("1156849688851390", "a" * 31), ("1156849688851390", "a" * 33),
+                   ("1156849688851390", "g" * 32)]
+        for app_id, token in invalid:
+            with self.subTest(app_id=app_id, token_length=len(token)), tempfile.TemporaryDirectory() as directory:
+                env = {name: value for name, value in os.environ.items()
+                       if name.upper() in {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP"}}
+                env.update(self.env, DOPMI_META_APP_ID=app_id, DOPMI_META_APP_CLIENT_TOKEN=token)
+                Path(directory, "config.json").write_text("stale connected configuration")
+                result = subprocess.run([sys.executable, str(script), "--meta-lifecycle"],
+                    cwd=directory, env=env, capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(Path(directory, "config.json").exists())
+                if token:
+                    self.assertNotIn(token, result.stdout + result.stderr)
+
     def test_production_meta_preserves_public_adoption_profile_and_closed_finance(self):
         enabled = config.build_config(
             self.production_env(), production_beta=True, adoption_only=True,
@@ -468,6 +522,12 @@ class MobileConfigTests(unittest.TestCase):
                 ("staging", None, None, None, None),
             )
             cases = [(*profile, {}) for profile in profiles]
+            for lifecycle_setting, expected in (
+                ("true", [public_calls[0] + " --meta-lifecycle", public_calls[1]]),
+                ("false", public_calls), ("", None), ("yes", None),
+            ):
+                cases.append(("production", "true", "false", "true", expected,
+                              {"DOPMI_META_LIFECYCLE_ENABLED": lifecycle_setting}))
             if platform == "android":
                 for meta_ads_setting, expected in (
                     ("true", [public_calls[0] + " --meta-ads-measurement", public_calls[1]]),
@@ -477,6 +537,9 @@ class MobileConfigTests(unittest.TestCase):
                 ):
                     cases.append(("production", "true", "false", "true", expected,
                                   {"DOPMI_ANDROID_META_ADS_MEASUREMENT": meta_ads_setting}))
+                cases.append(("production", "true", "false", "true",
+                    [public_calls[0] + " --meta-ads-measurement --meta-lifecycle", public_calls[1]],
+                    {"DOPMI_ANDROID_META_ADS_MEASUREMENT": "true", "DOPMI_META_LIFECYCLE_ENABLED": "true"}))
             if workflow_id == "android-play-production":
                 cases += [
                     ("production", "true", "false", "true", public_calls, {"GOOGLE_PLAY_TRACK": "production"}),
@@ -574,6 +637,39 @@ class MobileConfigTests(unittest.TestCase):
                 self.assertIn(f"Stripe live client: {str(production and not adoption).lower()}\n", artifact)
                 self.assertIn("Guardian test: false\n" if production else "Guardian test: true\n", artifact)
                 self.assertIn("Commit: fixture-source\nVersion: 2.3.3 (999)\n", artifact)
+
+    def test_signed_receipts_report_lifecycle_state_and_app_without_client_token(self):
+        codemagic = (Path(__file__).resolve().parents[1] / "codemagic.yaml").read_text(encoding="utf-8")
+        token = "0123456789abcdef0123456789abcdef"
+        for workflow_id in ("android-guardian-internal", "ios-testflight"):
+            workflow = codemagic_workflow(codemagic, workflow_id)
+            embedded = workflow.split("<<'PYINFO'\n", 1)[1].split("          PYINFO", 1)[0]
+            program = "\n".join(line[10:] for line in embedded.splitlines())
+            for enabled in (False, True):
+                with self.subTest(workflow=workflow_id, enabled=enabled), tempfile.TemporaryDirectory() as directory:
+                    generated = config.build_config(self.production_env(), production_beta=True,
+                        adoption_only=True, store_amazon_public=True)
+                    generated.update(META_LIFECYCLE_ENABLED=str(enabled).lower(),
+                        META_APP_ID="1156849688851390" if enabled else "", META_APP_CLIENT_TOKEN=token)
+                    Path(directory, "config.json").write_text(json.dumps(generated))
+                    Path(directory, "build").mkdir()
+                    android = Path(directory, "android/app/google-services.json")
+                    android.parent.mkdir(parents=True)
+                    android.write_text(json.dumps({"project_info": {"project_id": "dopmi-production"},
+                        "client": [{"client_info": {"android_client_info": {"package_name": "com.mycompany.dopmi"},
+                                                     "mobilesdk_app_id": "fixture-firebase-app"}}]}))
+                    ios = Path(directory, "ios/Runner/GoogleService-Info.plist")
+                    ios.parent.mkdir(parents=True)
+                    ios.write_text("fixture-ios-config")
+                    with contextlib.chdir(directory), patch.dict(os.environ, {"RELEASE_NAME": "2.3.11"}), \
+                            patch.object(sys, "argv", ["-", "999"]), \
+                            patch.object(subprocess, "check_output", return_value="fixture-source\n"):
+                        exec(compile(program, f"codemagic.yaml:{workflow_id}-build-info", "exec"), {})
+                    receipt = Path(directory, "build/guardian-build-info.txt").read_text()
+                    self.assertIn(f"Meta lifecycle: {str(enabled).lower()}\n", receipt)
+                    self.assertIn("Meta app: 1156849688851390\n" if enabled else "Meta app: \n", receipt)
+                    self.assertNotIn(token, receipt)
+                    self.assertNotIn("META_APP_CLIENT_TOKEN", receipt)
 
     def test_ios_builds_enforce_foreground_only_location_before_publication(self):
         root = Path(__file__).resolve().parents[1]

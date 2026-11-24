@@ -4,6 +4,7 @@ import GoogleMaps
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
+  private var metaLifecycleBridge: MetaLifecycleBridge?
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -17,5 +18,8 @@ import GoogleMaps
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "DopmiMetaLifecycle") {
+      metaLifecycleBridge = MetaLifecycleBridge(messenger: registrar.messenger())
+    }
   }
 }

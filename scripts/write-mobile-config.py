@@ -8,6 +8,7 @@ import re
 
 
 PRODUCTION_URL = "https://ysaoeuidcvgtlmphmeyb.supabase.co"
+META_APP_ID = "1156849688851390"
 
 
 def client_key(value, project_ref=None, require_project_ref=False):
@@ -31,7 +32,7 @@ def client_key(value, project_ref=None, require_project_ref=False):
 
 def build_config(env, guardian_test=False, measurement_test=False, production_beta=False,
                  adoption_only=False, store_review=False, store_amazon_public=False,
-                 meta_ads_measurement=False):
+                 meta_ads_measurement=False, meta_lifecycle=False):
     endpoint = "".join(env.get("SUPABASE_URL", "").split()).rstrip("/")
     key = "".join(env.get("SUPABASE_PUBLISHABLE_KEY", "").split())
     if not re.fullmatch(r"https://[a-z0-9-]+\.supabase\.co", endpoint):
@@ -78,9 +79,21 @@ def build_config(env, guardian_test=False, measurement_test=False, production_be
         "ENABLE_GUARDIAN_TEST": str(guardian_test).lower(),
         "ENABLE_MEASUREMENT_TEST": str(measurement_test).lower(),
         "ENABLE_META_ADS_MEASUREMENT": str(meta_ads_measurement).lower(),
+        "META_LIFECYCLE_ENABLED": str(meta_lifecycle).lower(),
+        "META_APP_ID": "",
+        "META_APP_CLIENT_TOKEN": "",
         "ENABLE_GUARDIAN": str(production_beta and not adoption_only).lower(),
         "STRIPE_PUBLISHABLE_KEY": "",
     }
+    if meta_lifecycle:
+        app_id = env.get("DOPMI_META_APP_ID", "").strip()
+        client_token = env.get("DOPMI_META_APP_CLIENT_TOKEN", "").strip()
+        if app_id != META_APP_ID:
+            raise ValueError("Meta lifecycle requires the registered DOPMI_META_APP_ID.")
+        if not re.fullmatch(r"[a-fA-F0-9]{32}", client_token):
+            raise ValueError("Meta lifecycle requires a 32-hex public DOPMI_META_APP_CLIENT_TOKEN.")
+        result["META_APP_ID"] = app_id
+        result["META_APP_CLIENT_TOKEN"] = client_token
     for name in ("ENABLE_GOOGLE_AUTH", "ENABLE_APPLE_AUTH", "ENABLE_GOOGLE_MAPS"):
         value = env.get(name, "false").strip().lower() or "false"
         if value not in ("true", "false"):
@@ -133,6 +146,7 @@ def main():
     parser.add_argument("--guardian-test", action="store_true")
     parser.add_argument("--measurement-test", action="store_true")
     parser.add_argument("--meta-ads-measurement", action="store_true")
+    parser.add_argument("--meta-lifecycle", action="store_true")
     parser.add_argument("--production-beta", action="store_true")
     parser.add_argument("--adoption-only", action="store_true")
     parser.add_argument("--store-review", action="store_true")
@@ -148,6 +162,7 @@ def main():
             store_review=args.store_review,
             store_amazon_public=args.store_amazon_public,
             meta_ads_measurement=args.meta_ads_measurement,
+            meta_lifecycle=args.meta_lifecycle,
         )
     except ValueError as error:
         raise SystemExit(str(error)) from None
