@@ -10575,3 +10575,20 @@ Base7877f8aa conservada; PR6/7 y refs verificados. Código por congelar en fuent
 CI nueva pendiente antes de distribución. Paquete de QA preparado sin reservas,
 recibos o ventanas reciclados; bases nativas440/441 confirmadas y cola libre al
 preflight24nov10:30CDMX. Sin nueva publicación pública ni actividad de negocio.
+
+
+## 24/11/2026 17:02UTC — CI del correctivo aprobada y Android aceptado una vez
+
+Producto dbac483b/tagcodex/store-irlanda-correction-20261124, CI45438832854 cuatro
+SUCCESS, fuente intacta. Ventana Android16:35:50–16:40:50UTC conciliada; único
+POST17:00:33UTC aceptó6b05c2b0b2b7c3f08f286bde. Bind local correcto. Primer
+observador se detuvo por BUILD_BINDING_MISMATCH antes de progreso; revisión
+independiente limitada confirmó vínculos locales. GET mismoID17:01:31UTC devuelve
+ID/app/workflow/source exactos, estadowaiting. Se retoma el helper sin cambios ni
+nuevo submit. Causa probable: metadatos iniciales aún incompletos; campo original
+no acreditado. Reserva y recibo intactos, sin descargas ni artefactos aún.
+
+Observador único root35226. Ventana iOS17:02:17–17:07:17UTC abierta, sin envío;
+espera Android terminal y verificación. Titular respondió «Lo conectaré después»
+para Samsung; no repetir solicitud ni atribuir QA física. Sin nueva mejora de
+proceso, tests, cambios de fuente o servicios por el incidente del observador.

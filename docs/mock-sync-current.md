@@ -1,17 +1,21 @@
 # Checkpoint vigente — correctivo Tienda, 24/nov/2026 CDMX
 
 Producto dbac483bc5487a559cfd145fe688c512e90cf725, tag
-codex/store-irlanda-correction-20261124, misma rama vigente y referencia d9f9aa43.
-Dos diferencias de Irlanda corregidas: sin bloque adicional bajo banner Amazon y
+codex/store-irlanda-correction-20261124, rama vigente y referencia d9f9aa43.
+Dos diferencias de Irlanda corregidas: sin bloque extra bajo banner Amazon y
 fotos/bordes de tarjetas grises; detalle blanco y aviso de salida conservados.
-23 pruebas de Tienda PASS, analyze limpio y captura del perfil real PASS.
-Revisión independiente de diff y ocho capturas sin P1/P2. CI45438832854 en curso.
-Paquete nuevo .tools/store-irlanda-correction-20261124/distribution, bases440/441,
-sin reservas/envíos nativos. Ventana Android16:35:50→16:40:50UTC abierta; conciliar
-mensajes y cuatro trabajos SUCCESS antes de enviar. No repetir CI o builds.
-Solicitud de Samsung pendiente; ADB se aborta antes de despacho, no es prueba de
-que esté desconectado. Sin aceptación humana ni publicación pública del correctivo.
-[Cola](backlog.md), [candidato](candidate-release-current.md).
+23 pruebas de Tienda PASS, analyze limpio, captura de perfil real PASS y revisión
+independiente de diff/ocho capturas sin P1/P2. CI45438832854 cuatro SUCCESS.
+
+Android aceptado una vez17:00:33UTC:6b05c2b0b2b7c3f08f286bde; observador único35226,
+en preparación sin artefacto/publicación acreditados. Parada inicial de observador
+por binding conciliada por GET del mismo ID17:01UTC; cuatro vínculos exactos y
+guardas intactas, sin nuevo submit. Ventana Android16:35:50→16:40:50UTC conciliada;
+iOS17:02:17→17:07:17UTC abierta, sin envío. Esperar Android terminal/verificado.
+Paquete .tools/store-irlanda-correction-20261124/distribution; no repetir reservas.
+Samsung: titular lo conectará después; QA física/aceptación pendientes. Sin
+publicación pública ni cambios de servicios. [Cola](backlog.md),
+[candidato](candidate-release-current.md).
 
 # Checkpoint vigente — Tienda Irlanda, 23/nov/2026 CDMX
 
