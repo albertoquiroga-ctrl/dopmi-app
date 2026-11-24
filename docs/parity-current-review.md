@@ -1,5 +1,19 @@
 ## 24/nov — Tutorial inicial de swipe pedido por el titular
 
+Corrección posterior al primer freeze: CI45462196838 detectó tres regresiones
+de estado en nearby_discovery/community/discovery_motion. Reproducidas sin cambiar
+sus expectativas: el gate descartaba una petición del catálogo al resolver GPS y
+reiniciaba el mazo al volver de Favoritos/detalle. Se consulta recibo antes de
+montar el catálogo y se conserva el resultado del gate en el mismo shell. El
+bypass de error no genera recibo y se reintenta en otro login/reinicio. Las tres
+pruebas ya pasan; dos regresiones nuevas comprueban montaje único y reintento al
+remontar tras error. Revisión independiente del correctivo sin P1/P2 abierto.
+Mejora acotada: incluir esos tres archivos de regresión antes de congelar cuando
+se envuelva Discovery. Efecto comprobado en la suite completa local:2169PASS,
+0FAIL,4SKIP; incluye los tres escenarios originales y los nuevos de lifecycle.
+El componente visual no cambió; nueve capturas previas siguen aplicables. Nada
+publicado de este lote aún; se prepara un paquete v2 separado del candidato fallido.
+
 Nuevo alcance del chat, sin reinterpretar otras pantallas del mock: dos prácticas
 con foto local de ejemplo, mano/flecha y corazón/X. Botones alternativos, Omitir y
 Atrás, movimiento reducido y200% de texto.84 pruebas afectadas PASS; capturador

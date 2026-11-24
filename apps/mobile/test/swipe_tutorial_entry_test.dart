@@ -112,7 +112,8 @@ void main() {
       final state = await start(tester, maps: true);
       expect(find.text('Mascotas cerca de ti'), findsOneWidget);
       expect(find.byType(SwipeTutorial), findsNothing);
-      expect(state.receipts.reads, isEmpty);
+      expect(state.receipts.reads, ['one']);
+      expect(state.receipts.writes, isEmpty);
       await tester.tap(find.byKey(const ValueKey('nearby-location-dismiss')));
       await frames(tester);
       expect(find.text('Mascotas cerca de ti'), findsNothing);
@@ -129,6 +130,7 @@ void main() {
     final state = await start(tester, accepted: false);
     expect(find.byType(SwipeTutorial), findsNothing);
     expect(state.receipts.reads, isEmpty);
+    expect(state.receipts.writes, isEmpty);
     expect(state.catalog.reads, 0);
   });
 

@@ -53,6 +53,11 @@ Files: crear gate `swipe_tutorial_gate.dart`; integrar en `app.dart` antes de mo
 
 Interface: gate recibe actor, eligible, ready y child. eligible cambia por ruta/actor; ready sólo habilita el inicio tras ubicación. Reemplaza child mientras comprueba/enseña: Discovery real no se monta ni recibe gestos. Futuros antiguos se invalidan; refresco GPS conserva práctica. Excluir catálogos owner y detalles.
 
+Corrección tras CI v1: la consulta empieza antes de ready para no montar/desmontar
+el catálogo al resolver GPS. ready sólo retrasa enseñar; _showing conserva la
+práctica. El resultado terminado (incluido bypass sin recibo por error) vive en
+el shell actual y conserva sus pestañas; otro login/reinicio reconsulta si falló.
+
 - [x] Escribir y ejecutar RED: secuencia ubicación, cambios de ruta/cuenta y ausencia de likes/vistos/eventos durante demo.
 - [x] Implementar y verificar pruebas afectadas y flutter analyze; revisión independiente de seguridad/UX/código.
 - [ ] Congelar candidato exacto y ejecutar CI completa; registrar evidencia en fuentes existentes.
@@ -64,3 +69,4 @@ Interface: gate recibe actor, eligible, ready y child. eligible cambia por ruta/
 - SDK instalado gotrue 2.27.2: updateUser puede aplicar respuesta vieja a sesión nueva. Se evita esa mutación compartida mediante REST acotado al token capturado; no se actualiza dependencia.
 - Changelog Supabase revisado: v3 es opt-in; se conserva SDK instalado. Docs oficiales Auth updateUser permiten metadata funcional. La marca se elimina junto con Auth al eliminar cuenta.
 - RED de store: lectura remota true obtuvo false con stub. RED visual/gate: componentes ausentes. RED owner: catálogo de persona mostró SwipeTutorial indebidamente. GREEN final afectado:84 pruebas PASS y44 configuración PASS. Dos P2 de revisión cerrados; nueve capturas verificadas independientemente. Analyze/CI/publicación siguen pendientes al corte.
+- CI v1 falló tres regresiones de catálogo (otros tres trabajos SUCCESS), sin envío. Reproducción local70PASS/3FAIL; correctivo de gate revisado sin P1/P2. Suite local completa posterior2169PASS/0FAIL/4SKIP. Se prepara freeze/tag v2; visual sin cambios y nueve capturas aplicables.

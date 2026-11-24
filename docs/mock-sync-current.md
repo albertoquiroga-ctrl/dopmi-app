@@ -1,5 +1,13 @@
 # Checkpoint vigente — tutorial de swipe, 24/nov/2026 CDMX
 
+19:09UTC: correctivo local de gate tras CI45462196838 fallida (Flutter:2164PASS,
+3FAIL,4SKIP; otros tres trabajos SUCCESS). Source/tag4ad334f4/v1 quedan congelados,
+sin envíos. La lectura del recibo ya precede al catálogo; GPS sólo demora enseñar;
+volver de Favoritos/detalle conserva estado. Tres regresiones originales pasan.
+19:26UTC: revisión independiente cerrada; analyze limpio; suite local completa2169PASS/0FAIL/4SKIP antes de congelar
+codex/swipe-tutorial-20261124-v2 y ejecutar CI exacta nueva. Paquete nuevo aislado
+en .tools/swipe-tutorial-corrective-20261124/distribution, sin ventanas ni reservas.
+
 Rama codex/swipe-tutorial-20261124 desde408fdde5, conserva producto dbac483b y
 la referencia Irlanda d9f9aa43. Nuevo alcance pedido en chat: tutorial de Adoptar
 una vez por cuenta, patrón de mano/direcciones, sin efectos en mascotas reales.

@@ -30,19 +30,23 @@ class SwipeTutorialGate extends ConsumerStatefulWidget {
 class _SwipeTutorialGateState extends ConsumerState<SwipeTutorialGate> {
   SwipeTutorialStore? _store;
   int _revision = 0;
-  bool _started = false, _finished = false, _teaching = false;
+  bool _started = false, _finished = false, _teaching = false, _showing = false;
 
   void _reset() {
     _revision++;
-    _started = _finished = _teaching = false;
+    _started = _finished = _teaching = _showing = false;
   }
 
   @override
   void didUpdateWidget(SwipeTutorialGate oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.actor != widget.actor ||
-        oldWidget.eligible != widget.eligible) {
+    if (oldWidget.actor != widget.actor) {
       _reset();
+    } else if (oldWidget.eligible != widget.eligible) {
+      _revision++;
+      // Keep the authenticated shell mounted after completing or bypassing
+      // this presentation check. Tabs must preserve their catalog and requests.
+      if (!_finished) _started = _teaching = _showing = false;
     }
   }
 
@@ -64,7 +68,8 @@ class _SwipeTutorialGateState extends ConsumerState<SwipeTutorialGate> {
       completed = await store.completed(actor);
     } catch (_) {
       // A tutorial preference must never turn a transient Auth read into a
-      // login error. Try again on a later entry, without writing a receipt.
+      // login error. This shell bypasses teaching; a later login/restart reads
+      // again because no completion receipt is written on failure.
     }
     if (!_current(revision, actor, store)) return;
     setState(() {
@@ -95,7 +100,6 @@ class _SwipeTutorialGateState extends ConsumerState<SwipeTutorialGate> {
     }
     final actor = widget.actor;
     if (!widget.eligible || actor == null) return widget.child;
-    if (!_started && !widget.ready) return widget.child;
     final revision = _revision;
     if (!_started) {
       _started = true;
@@ -104,12 +108,13 @@ class _SwipeTutorialGateState extends ConsumerState<SwipeTutorialGate> {
       });
     }
     if (_finished) return widget.child;
-    if (_teaching) {
+    if (_teaching && (widget.ready || _showing)) {
+      _showing = true;
       return SwipeTutorial(
         key: ValueKey('swipe-tutorial:$actor:$revision'),
         onDone: () => _complete(revision, actor, store),
       );
     }
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    return const Scaffold(body: Center(child: Text('Cargando…')));
   }
 }

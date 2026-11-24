@@ -141,7 +141,7 @@ void main() {
     (tester) async {
       await render(tester, ready: false);
       await tester.pump();
-      expect(receipts.reads, isEmpty);
+      expect(find.byType(SwipeTutorial), findsNothing);
       await render(tester);
       await tester.pump();
       await tester.pump();
@@ -156,6 +156,54 @@ void main() {
       await tester.pump();
       expect(find.text('Desliza a la izquierda'), findsOneWidget);
       expect(receipts.reads, ['one']);
+      expect(receipts.writes, isEmpty);
+    },
+  );
+
+  testWidgets(
+    'completed tutorial preserves catalog state across tabs and location startup',
+    (tester) async {
+      receipts.done.add('one');
+      var mounts = 0;
+      await render(tester, ready: false, onCatalog: () => mounts++);
+      await tester.pump();
+      await tester.pump();
+      expect(mounts, 1);
+      await render(tester, onCatalog: () => mounts++);
+      await tester.pump();
+      await tester.pump();
+      expect(mounts, 1);
+      await render(tester, eligible: false, onCatalog: () => mounts++);
+      await render(tester, onCatalog: () => mounts++);
+      expect(find.text('Catálogo real'), findsOneWidget);
+      expect(mounts, 1);
+      expect(receipts.reads, ['one']);
+    },
+  );
+
+  testWidgets(
+    'read failure preserves this shell but remount retries without a receipt',
+    (tester) async {
+      receipts.failRead = true;
+      var mounts = 0;
+      await render(tester, onCatalog: () => mounts++);
+      await tester.pump();
+      await tester.pump();
+      expect(mounts, 1);
+      await render(tester, eligible: false, onCatalog: () => mounts++);
+      await render(tester, onCatalog: () => mounts++);
+      expect(find.text('Catálogo real'), findsOneWidget);
+      expect(mounts, 1);
+      expect(receipts.reads, ['one']);
+      expect(receipts.writes, isEmpty);
+      expect(receipts.done, isEmpty);
+      receipts.failRead = false;
+      await tester.pumpWidget(const SizedBox());
+      await render(tester);
+      await tester.pump();
+      await tester.pump();
+      expect(receipts.reads, ['one', 'one']);
+      expect(find.byType(SwipeTutorial), findsOneWidget);
       expect(receipts.writes, isEmpty);
     },
   );

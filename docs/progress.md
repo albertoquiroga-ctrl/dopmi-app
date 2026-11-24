@@ -10648,3 +10648,25 @@ con activos reales precargados revisadas; no son prueba física. Revisión
 independiente cerró dos P2 corregidos (catálogo owner y GPS al reanudar). Pendiente
 root analyze/CI exacta/distribución QA; Samsung aplazado por el titular. No nueva
 publicación ni aceptación del tutorial al corte. Tienda442/443 conserva su estado.
+
+## 24/11/2026 CDMX — Correctivo de lifecycle del tutorial antes de distribución
+
+CI45462196838/source4ad334f4: iOS, web/base e identidad/adopción SUCCESS; Flutter
+2164PASS/3FAIL/4SKIP. No hubo POST Codemagic. Se reprodujeron las tres regresiones
+localmente (70PASS/3FAIL): GPS descartaba petición y volver de Favoritos/detalle
+reiniciaba mazo. Corregido gate; las tres pruebas originales pasan. Recibo se lee
+antes de montar catálogo y ready sólo demora enseñar; resultado terminado conserva
+shell. Bypass por error no se persiste y reintenta al remontar/login/reinicio.
+Revisión independiente cerrada; dos regresiones nuevas y suite completa local en
+curso. Mejora acotada: incorporar nearby_discovery/community/discovery_motion antes
+de freeze de wrappers de Discovery. Dos pruebas locales se solaparon por error en
+el diagnóstico; la adicional terminó y se restableció una única cola. Fuente/tag
+v1, CI y ventana conservados; paquete v2 nuevo, sin reutilizar envíos/ventanas.
+
+## 24/11/2026 19:24UTC — Suite completa del correctivo de tutorial aprobada
+
+flutter test completo local:2169PASS/0FAIL/4SKIP,14m47s. Incluye intactas las
+tres regresiones detectadas por CI y las nuevas pruebas de montaje único y
+bypass sin recibo/reintento al remontar. Revisión independiente del correctivo
+cerrada; visual sin cambios. Log privado full-local-after-corrective.log en
+.tools/swipe-tutorial-20261124. Nueva CI/tagv2 aún pendientes; sin envíos nativos.

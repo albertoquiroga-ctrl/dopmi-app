@@ -12,7 +12,10 @@ opcional sobre incluir cuentas actuales seguía sin respuesta al implementar.
 La marca funcional `dopmi_swipe_tutorial_v1` en Auth se sincroniza entre celulares;
 no es consentimiento ni autorización. Cierre local pendiente conserva la decisión
 sin red y reintenta sincronizar; con error de lectura se permite usar la app y
-se reconsulta en una entrada posterior. No cambia likes, vistos, métricas, roles,
+se reconsulta al volver a iniciar sesión o reiniciar la app. El bypass por error
+sólo vive en el shell actual, sin guardar recibo. Cambiar de pestaña conserva
+el catálogo y su tarjeta; el recibo se consulta antes de montar ese catálogo,
+mientras ubicación sólo demora la presentación de la guía. No cambia likes, vistos, métricas, roles,
 finanzas, ubicación ni declaraciones de privacidad. No requiere SQL ni nuevo
 servicio. La actualización ordinaria del GPS conserva el paso de práctica.
 
