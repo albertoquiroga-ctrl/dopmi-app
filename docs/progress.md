@@ -10592,3 +10592,23 @@ Observador único root35226. Ventana iOS17:02:17–17:07:17UTC abierta, sin env�
 espera Android terminal y verificación. Titular respondió «Lo conectaré después»
 para Samsung; no repetir solicitud ni atribuir QA física. Sin nueva mejora de
 proceso, tests, cambios de fuente o servicios por el incidente del observador.
+
+
+## 24/11/2026 17:32UTC — Correctivo442 publicado interno; iOS aceptado sin duplicar
+
+Mismafuente dbac483b/CI45438832854 cuatro SUCCESS. Android6b05c2b0b2b7c3f08f286bde
+terminó14SUCCESS tras espera de máquina17:00→17:14. AAB2.3.12(442),96867647B/
+SHA256203a40845874c020cb3f1e64fa9e358cef6ffa5b8f2eb8f86a03f9326b344150.
+Verificador17:31:37UTC: firma criptográfica/pin/identidad/configuración correctos,
+PROD/adopciones/Amazon, finanzas clienteOFF y arranque privado de medición/diagnóstico
+conservados. Log17:31:39UTC confirma pista interna/completed/Successfully published.
+Descargas únicas; sin Console independiente, instalación o aceptación atribuidas.
+
+Tras Android terminal y verificado, ventana iOS17:02:17–17:07:17UTC conciliada;
+POST único17:32UTC aceptó6b05ca1a8bb41fd01384167b. Bind y GET fuente exactos antes
+de observar; root4737. Estadowaiting, sin número/IPA/carga anticipados. Titular
+conectará Samsung después. Chrome se desconectó al abrir el detalle CM; el intento
+acotado de GA en el agente tampoco encontróChrome3. Sin datos GA frescos ni cambios
+de reportes/preferencias/servicios. El wrapper rechazó una consulta global de cola
+antes de red; no se amplió su lista de destinos. Fuente inalterada, sin nuevas
+pruebas o mejora de proceso por esperas. Estado público fuera de este correctivo.

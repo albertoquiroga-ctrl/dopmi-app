@@ -6,8 +6,9 @@ portada sin bloque extra debajo del banner y tarjetas con foto gris#f5f5f5/borde
 Revisión independiente del diff y ocho capturas sin P1/P2 pendientes.
 Conservar aviso previo a Amazon, detalle blanco, catálogo real y demás producto.
 Una cola Flutter/Codemagic, gates y ventana5min antes de cada envío QA; fuente dbac483b/tagcodex/store-irlanda-correction-20261124 y
-CI45438832854 cuatro SUCCESS. Android6b05c2b0b2b7c3f08f286bde aceptado una vez;
-root observa35226. iOS sólo ventana abierta, sin envío. Titular conectará Samsung después. Sin nueva publicación pública, SQL o servicios. Continuar sobre
+CI45438832854 cuatro SUCCESS. Android442/6b05c2b0b2b7c3f08f286bde:14SUCCESS,
+artefacto y log de publicación interna verificados. iOS6b05ca1a8bb41fd01384167b
+aceptado una vez; root observa4737, sin IPA/carga aún. Titular conectará Samsung después. Sin nueva publicación pública, SQL o servicios. Continuar sobre
 7877f8aa en la rama vigente, sin incorporar el Admin pendiente.
 
 # Cola vigente — Tienda de Irlanda, 23/nov/2026 CDMX

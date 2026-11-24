@@ -7,15 +7,15 @@ fotos/bordes de tarjetas grises; detalle blanco y aviso de salida conservados.
 23 pruebas de Tienda PASS, analyze limpio, captura de perfil real PASS y revisión
 independiente de diff/ocho capturas sin P1/P2. CI45438832854 cuatro SUCCESS.
 
-Android aceptado una vez17:00:33UTC:6b05c2b0b2b7c3f08f286bde; observador único35226,
-en preparación sin artefacto/publicación acreditados. Parada inicial de observador
-por binding conciliada por GET del mismo ID17:01UTC; cuatro vínculos exactos y
-guardas intactas, sin nuevo submit. Ventana Android16:35:50→16:40:50UTC conciliada;
-iOS17:02:17→17:07:17UTC abierta, sin envío. Esperar Android terminal/verificado.
-Paquete .tools/store-irlanda-correction-20261124/distribution; no repetir reservas.
-Samsung: titular lo conectará después; QA física/aceptación pendientes. Sin
-publicación pública ni cambios de servicios. [Cola](backlog.md),
-[candidato](candidate-release-current.md).
+Android2.3.12(442), CM6b05c2b0b2b7c3f08f286bde/14SUCCESS: AAB/firma/configuración
+y log de publicación interna verificados17:31UTC. iOS6b05ca1a8bb41fd01384167b
+aceptado una vez17:32UTC, estadowaiting; observador único root4737. Número iOS
+sin anticipar; no repetir POST/descargas ni confundir artefacto con QA instalada.
+Ambas ventanas5min conciliadas; fuente intacta. Paquete
+.tools/store-irlanda-correction-20261124/distribution. Titular conectará Samsung
+después; QA física y aceptación pendientes. Chrome se desconectó al abrir detalle
+CM; lectura GA actual tampoco disponible. Sin nuevos datos GA ni cambios de
+servicios o publicación pública. [Cola](backlog.md), [candidato](candidate-release-current.md).
 
 # Checkpoint vigente — Tienda Irlanda, 23/nov/2026 CDMX
 

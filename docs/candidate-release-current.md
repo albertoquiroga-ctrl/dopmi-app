@@ -1,24 +1,34 @@
-## Correctivo Tienda — 24/nov/2026, distribución QA en curso
+## Correctivo Tienda — 24/nov/2026, Android442 publicado y iOS en preparación
 
 Fuente dbac483bc5487a559cfd145fe688c512e90cf725/tag
 codex/store-irlanda-correction-20261124; CI45438832854 cuatro SUCCESS. Referencia
-d9f9aa43 conservada. Sólo bloque adicional de portada retirado y tarjetas grises;
-detalle blanco, afiliación previa a Amazon y producto anterior conservados.
-23 pruebas de Tienda PASS/analyze limpio/captura de perfil real PASS. Revisión
-independiente del diff y ocho capturas sin P1/P2 pendientes.
+d9f9aa43 conservada. Sólo se retiró bloque adicional de portada y se hicieron
+gris las tarjetas; detalle blanco, afiliación previa a Amazon y producto previo
+conservados.23 pruebas de Tienda PASS/analyze limpio/capturas de perfil real PASS;
+revisión independiente de diff y ocho capturas sin P1/P2.
 
-Android: POST único17:00:33UTC aceptó6b05c2b0b2b7c3f08f286bde, workflow interno,
-base440, versión prevista2.3.12 sin número anticipado. En preparación. Primer
-observador se detuvo con BUILD_BINDING_MISMATCH; lectura del mismo ID17:01:31UTC
-verificó ID/app/workflow/source exactos, retomando el mismo helper sin cambiar
-sus guardas. Metadato inicial incompleto es causa probable, no hay instantánea
-que identifique el campo. No hubo otro submit ni cambio del candidato.
+Android2.3.12(442), CM6b05c2b0b2b7c3f08f286bde/14SUCCESS. Descarga única y
+verificación17:31:37UTC: AAB96867647B/SHA256
+203a40845874c020cb3f1e64fa9e358cef6ffa5b8f2eb8f86a03f9326b344150. Firma/pin,
+identidad y perfilPROD/adoption-only/Amazon comprobados; no nuevos permisos o
+servicios por este correctivo. Log17:31:39UTC confirma internal/completed/
+Successfully published/código442. No lectura independiente de Console ni instalación.
 
-iOS: ventana17:02:17–17:07:17UTC abierta, sin POST; base441. Esperar Android
-terminal y artefacto verificado. Cola secuencial, recibos y reservas conservados.
-Paquete .tools/store-irlanda-correction-20261124/distribution. Samsung se conectará
-después según titular. Instalación, publicación y aceptación del correctivo
-siguen pendientes; no se promueve a público ni se cambian SQL/flags/servicios.
+Primer observador Android se detuvo por binding; GET del mismo ID verificó los
+cuatro campos y se retomó sin modificar guardas ni repetir submit. Se desconoce
+qué campo faltaba inicialmente. Espera de máquina17:00→17:14UTC resuelta sin
+cancelar. Un POST y una descarga por artefacto, recibos/reservas intactos.
+
+iOS: ventana17:02:17–17:07:17UTC conciliada sin cambios de producto; único POST
+17:32UTC aceptó6b05ca1a8bb41fd01384167b/ios-testflight, base441, versiónprevista
+2.3.12 sin número anticipado. GET previo verifica ID/app/workflow/source; observador
+root4737 en curso. No IPA/carga/disponibilidad iOS acreditados aún. Fuente/CI/tag
+iguales; cola secuencial. Paquete .tools/store-irlanda-correction-20261124/distribution.
+
+Titular conectará Samsung después. QA física/aceptación pendientes; no publicación
+pública, SQL, flags ni servicios cambiados. Chrome se desconectó al consultar el
+detalle de CM y el intento acotado de GA tampoco encontró Chrome. Sin cifras GA
+nuevas atribuidas; los conteos anteriores de preferencias no equivalen a actividad.
 
 ## Tienda Irlanda — 23/nov/2026, binarios QA publicados
 
