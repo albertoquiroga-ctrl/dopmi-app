@@ -174,60 +174,56 @@ void main() {
     },
   );
 
-  testWidgets(
-    'a captured analytics prompt cannot save for a different owner',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      final repository = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final store = ChoiceStore();
-      final preferences = await SharedPreferences.getInstance();
-      final measurement = MeasurementController(
-        preferences,
-        'test',
-        AnalyticsSpy(),
-        DiagnosticsSpy(),
-        analyticsChoices: store,
-      );
-      final container = ProviderContainer(
-        overrides: [
-          configProvider.overrideWithValue(
-            const AppConfig(url: '', key: '', redirect: ''),
-          ),
-          identityRepositoryProvider.overrideWithValue(repository),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          accountPhotoRepositoryProvider.overrideWithValue(
-            emptyAccountPhotoRepository(repository),
-          ),
-          measurementControllerProvider.overrideWith((ref) => measurement),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await repository.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const DopmiApp(),
+  testWidgets('a captured analytics prompt cannot save for a different owner', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final repository = FakeIdentityRepository()
+      ..user = const Identity('one', 'fixture@example.test', verified: true);
+    final store = ChoiceStore();
+    final preferences = await SharedPreferences.getInstance();
+    final measurement = MeasurementController(
+      preferences,
+      'test',
+      AnalyticsSpy(),
+      DiagnosticsSpy(),
+      analyticsChoices: store,
+    );
+    final container = ProviderContainer(
+      overrides: [
+        configProvider.overrideWithValue(
+          const AppConfig(url: '', key: '', redirect: ''),
         ),
-      );
-      await tester.pumpAndSettle();
-      final confirm = tester
-          .widget<UsageAnalyticsPrompt>(find.byType(UsageAnalyticsPrompt))
-          .onConfirm;
+        identityRepositoryProvider.overrideWithValue(repository),
+        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        accountPhotoRepositoryProvider.overrideWithValue(
+          emptyAccountPhotoRepository(repository),
+        ),
+        measurementControllerProvider.overrideWith((ref) => measurement),
+        routerInitialLocationProvider.overrideWithValue('/adoptions'),
+      ],
+    );
+    addTearDown(() async {
+      container.dispose();
+      await repository.changes.close();
+    });
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const DopmiApp()),
+    );
+    await tester.pumpAndSettle();
+    final confirm = tester
+        .widget<UsageAnalyticsPrompt>(find.byType(UsageAnalyticsPrompt))
+        .onConfirm;
 
-      // The old rendered callback can still run before the next frame removes
-      // it. It must reject the changed actor before reserving any intention.
-      await measurement.owner('two');
-      await expectLater(confirm(true), throwsStateError);
-      expect(store.writes, isEmpty);
-      expect(preferences.getBool('dopmi.test.two.analytics'), isNull);
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(tester.takeException(), isNull);
-    },
-  );
+    // The old rendered callback can still run before the next frame removes
+    // it. It must reject the changed actor before reserving any intention.
+    await measurement.owner('two');
+    await expectLater(confirm(true), throwsStateError);
+    expect(store.writes, isEmpty);
+    expect(preferences.getBool('dopmi.test.two.analytics'), isNull);
+    expect(measurement.analyticsEnabled, isFalse);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets(
     'location gate waits for the optional analytics state to resolve',

@@ -177,6 +177,8 @@ jobs:
       - name: iOS simulator compilation (device signing is separate)
         run: flutter build ios --simulator --no-codesign --dart-define-from-file=config.example.json --dart-define=ENABLE_GUARDIAN_TEST=true
         working-directory: apps/mobile
+      - name: Validate app-owned tracking declaration and Runner resource
+        run: python3 scripts/test_ios_privacy.py
       - name: Verify iOS lifecycle consent and installation policy
         shell: bash
         run: |

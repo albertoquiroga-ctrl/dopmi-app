@@ -1,3 +1,34 @@
+## 24/nov — Tutorial inicial de swipe pedido por el titular
+
+Corrección posterior al primer freeze: CI45462196838 detectó tres regresiones
+de estado en nearby_discovery/community/discovery_motion. Reproducidas sin cambiar
+sus expectativas: el gate descartaba una petición del catálogo al resolver GPS y
+reiniciaba el mazo al volver de Favoritos/detalle. Se consulta recibo antes de
+montar el catálogo y se conserva el resultado del gate en el mismo shell. El
+bypass de error no genera recibo y se reintenta en otro login/reinicio. Las tres
+pruebas ya pasan; dos regresiones nuevas comprueban montaje único y reintento al
+remontar tras error. Revisión independiente del correctivo sin P1/P2 abierto.
+Mejora acotada: incluir esos tres archivos de regresión antes de congelar cuando
+se envuelva Discovery. Efecto comprobado en la suite completa local:2169PASS,
+0FAIL,4SKIP; incluye los tres escenarios originales y los nuevos de lifecycle.
+El componente visual no cambió; nueve capturas previas siguen aplicables. Nada
+publicado de este lote aún; se prepara un paquete v2 separado del candidato fallido.
+
+Nuevo alcance del chat, sin reinterpretar otras pantallas del mock: dos prácticas
+con foto local de ejemplo, mano/flecha y corazón/X. Botones alternativos, Omitir y
+Atrás, movimiento reducido y200% de texto.84 pruebas afectadas PASS; capturador
+real Flutter genera nueve vistas normales/320px200%, sin datos ni tráfico real.
+Revisión independiente visual y de código sin P1/P2 abierto. Se reprodujo y
+corrigió la enseñanza indebida al catálogo owner; la práctica conserva el paso
+cuando se reanuda el GPS. Recibo Auth funcional y caché acotada por entorno,
+proyecto y cuenta; prueba de respuesta tardía preserva una sesión SDK diferente.
+No se monta Discovery durante la enseñanza/lectura inicial elegible, por lo que
+la práctica no guarda vistos, likes, mensajes ni vistas de mascotas.
+
+Analyze sin incidencias. Implementado/verificado localmente; CI, publicación e instalación del tutorial
+pendientes al corte. Capturas en .tools/swipe-tutorial-20261124/captures no son
+evidencia de teléfono. Samsung se conectará después según el titular.
+
 ## 24/nov — Dos correcciones de Tienda solicitadas por Irlanda
 
 La revisión humana de440 señala diferencias que no quedaron cerradas en la entrega

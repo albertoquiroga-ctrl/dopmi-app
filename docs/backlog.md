@@ -1,4 +1,22 @@
-# Correctivo vigente — Tienda, 24/nov/2026 CDMX
+# Lote vigente — Tutorial inicial de swipe, 24/nov/2026 CDMX
+
+Correctivo de ciclo de vida en curso: CI45462196838 del candidato4ad334f4 falló
+en tres regresiones de catálogo, con los otros tres trabajos SUCCESS. No hubo
+envíos Codemagic. Corregido el desmontaje al resolver GPS o volver de una pestaña;
+las tres pruebas originales ya pasan y la revisión independiente está cerrada.
+Suite Flutter completa local:2169PASS/0FAIL/4SKIP y analyze limpio. Pendiente nueva CI v2.
+El tag v1 y su ventana se conservan como evidencia; no se reutilizan para enviar v2.
+
+Implementado: práctica derecha/izquierda, cierre persistente por cuenta, separación
+de avisos iniciales y ausencia de efectos sobre el catálogo real.84 pruebas
+afectadas PASS;44 de configuración PASS; nueve capturas revisadas y revisión
+independiente cerrada (dos P2 corregidos: catálogo owner y GPS al reanudar).
+Analyze limpio. Pendiente root: CI exacta y publicación QA serial Play/TestFlight.
+Pendiente titular: QA físico cuando vuelva a conectar el Samsung; conexión
+expresamente aplazada, no reiterar solicitud. No equivale a aceptación ni
+promoción pública. El correctivo Tienda previo conserva su propio pendiente físico.
+
+# Correctivo anterior — Tienda, 24/nov/2026 CDMX
 
 Dos diferencias de Irlanda corregidas: sin bloque extra bajo banner Amazon y
 foto/borde de tarjetas grises. Referencia d9f9aa43 y producto previo conservados.

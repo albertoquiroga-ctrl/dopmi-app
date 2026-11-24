@@ -4,6 +4,8 @@ import 'features/rescue/publish_choice_screen.dart';
 import 'features/store/store_screen.dart';
 import 'features/adoption/community_ui.dart';
 import 'features/adoption/nearby_location_gate.dart';
+import 'features/adoption/nearby_location_controller.dart';
+import 'features/adoption/swipe_tutorial_gate.dart';
 import 'features/payments/guardian_repository.dart';
 import 'features/payments/guardian_promotion_screen.dart';
 import 'features/payments/payment_activity_screen.dart';
@@ -207,7 +209,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       ShellRoute(
         builder: (_, state, child) =>
-            _LegalAccessGate(path: state.uri.path, child: child),
+            _LegalAccessGate(uri: state.uri, child: child),
         routes: [
           // Published links from earlier profile layouts keep reaching the real
           // account screens. Financial result aliases only reload server state.
@@ -835,8 +837,9 @@ class DopmiApp extends ConsumerWidget {
 // The Router stays mounted while its matched screen is withheld. This lets
 // permitted legal/account navigation resolve without initializing payment UIs.
 class _LegalAccessGate extends ConsumerWidget {
-  const _LegalAccessGate({required this.path, required this.child});
-  final String path;
+  const _LegalAccessGate({required this.uri, required this.child});
+  final Uri uri;
+  String get path => uri.path;
   final Widget child;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -931,6 +934,19 @@ class _LegalAccessGate extends ConsumerWidget {
             onPrivacy: () => router.push('/privacy-notice'),
           );
         }
+        Widget entryChild = child;
+        if (!exempt && currentIdentity?.verified == true && accepted) {
+          entryChild = _SwipeTutorialEntry(
+            actor: currentIdentity!.id,
+            eligible:
+                !identityController.recovering &&
+                experience.value == AccountExperience.donor &&
+                const {'/home', '/adoptions'}.contains(path) &&
+                !(path == '/adoptions' &&
+                    uri.queryParameters.containsKey('owner')),
+            child: child,
+          );
+        }
         if (ref.read(configProvider).mapsEnabled &&
             currentIdentity?.verified == true &&
             accepted) {
@@ -942,11 +958,47 @@ class _LegalAccessGate extends ConsumerWidget {
               'nearby:${currentIdentity!.id}:${experience.value.name}',
             ),
             promptAllowed: entry,
-            child: child,
+            child: entryChild,
           );
         }
-        return child;
+        return entryChild;
       },
+    );
+  }
+}
+
+/// Legal/analytics gates above this widget resolve before either location or
+/// the tutorial. Location retains ownership of its native permission dialog.
+class _SwipeTutorialEntry extends ConsumerWidget {
+  const _SwipeTutorialEntry({
+    required this.actor,
+    required this.eligible,
+    required this.child,
+  });
+  final String actor;
+  final bool eligible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Widget gate(bool ready) => SwipeTutorialGate(
+      actor: actor,
+      eligible: eligible,
+      ready: ready,
+      child: child,
+    );
+    if (!ref.watch(configProvider).mapsEnabled) return gate(true);
+    final nearby = ref.watch(nearbyLocationControllerProvider);
+    return ListenableBuilder(
+      listenable: nearby,
+      builder: (context, _) => gate(
+        nearby.ownerId == actor &&
+            nearby.isAdopter &&
+            nearby.ready &&
+            nearby.promptSeen &&
+            !nearby.explaining &&
+            !nearby.busy,
+      ),
     );
   }
 }
