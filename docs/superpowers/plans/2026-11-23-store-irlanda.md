@@ -75,4 +75,7 @@ Referencia d9f9aa43 reconsultada sin cambios. Corregir esos dos puntos, reutiliz
 el test de salida segura y las capturas existentes, conservar detalle blanco y
 aviso antes de Amazon. No nuevo plan, tablero, dependencias, SQL o cambio público.
 El capturador permite salida distinta para conservar la evidencia de440/441.
-Fuente/CI por congelar; QA instalada y aceptación permanecen pendientes.
+Fuente dbac483b/tagcodex/store-irlanda-correction-20261124, CI45438832854 cuatro
+SUCCESS. Android442 publicado interno y verificado; iOS443 cargado/verificado y
+posproceso Apple terminado sin error18:11UTC. Un envío por plataforma; capturas
+nuevas y revisión cerradas. QA instalada y aceptación permanecen pendientes.

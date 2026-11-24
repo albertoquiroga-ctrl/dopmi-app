@@ -1,34 +1,36 @@
-## Correctivo Tienda — 24/nov/2026, Android442 publicado y iOS en preparación
+## Correctivo Tienda — 24/nov/2026, 442/443 publicadas para QA
 
 Fuente dbac483bc5487a559cfd145fe688c512e90cf725/tag
-codex/store-irlanda-correction-20261124; CI45438832854 cuatro SUCCESS. Referencia
-d9f9aa43 conservada. Sólo se retiró bloque adicional de portada y se hicieron
-gris las tarjetas; detalle blanco, afiliación previa a Amazon y producto previo
-conservados.23 pruebas de Tienda PASS/analyze limpio/capturas de perfil real PASS;
-revisión independiente de diff y ocho capturas sin P1/P2.
+codex/store-irlanda-correction-20261124. [CI45438832854](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45438832854)
+cuatro SUCCESS. Referencia d9f9aa43 conservada y reconsultada al cierre sin cambios.
+Sólo se retiró el bloque adicional bajo el banner y se hicieron grises las fotos
+(#f5f5f5)/bordes(#ebebeb) de las tarjetas. Detalle blanco, aviso antes de Amazon,
+catálogo, variantes, enlaces y producto previo conservados.23 pruebas de Tienda
+PASS/analyze limpio/captura de perfil real PASS; revisión independiente del diff
+y ocho capturas sin P1/P2. Sin tests nuevos que sólo reflejen colores.
 
-Android2.3.12(442), CM6b05c2b0b2b7c3f08f286bde/14SUCCESS. Descarga única y
-verificación17:31:37UTC: AAB96867647B/SHA256
-203a40845874c020cb3f1e64fa9e358cef6ffa5b8f2eb8f86a03f9326b344150. Firma/pin,
-identidad y perfilPROD/adoption-only/Amazon comprobados; no nuevos permisos o
-servicios por este correctivo. Log17:31:39UTC confirma internal/completed/
-Successfully published/código442. No lectura independiente de Console ni instalación.
+| Plataforma | Artefacto y compilación | Publicación acreditada | Pendiente |
+|---|---|---|---|
+| Android2.3.12(442) | CM6b05c2b0b2b7c3f08f286bde/14SUCCESS; AAB/firma/pin/configuración verificados17:31UTC | Log Publishing: internal/completed/Successfully published/código442 | Console independiente, instalación y aceptación |
+| iOS2.3.12(443) | CM6b05ca1a8bb41fd01384167b/15SUCCESS; IPA/configuración/provisionamiento verificados18:06UTC | Carga correcta; tarea Apple6b05d1f593610bf5c165a5f0 finished/error=false18:11UTC | Disponibilidad de grupo TestFlight, instalación y aceptación |
 
-Primer observador Android se detuvo por binding; GET del mismo ID verificó los
-cuatro campos y se retomó sin modificar guardas ni repetir submit. Se desconoce
-qué campo faltaba inicialmente. Espera de máquina17:00→17:14UTC resuelta sin
-cancelar. Un POST y una descarga por artefacto, recibos/reservas intactos.
+AAB96867647B/SHA256 `203a40845874c020cb3f1e64fa9e358cef6ffa5b8f2eb8f86a03f9326b344150`.
+IPA55027129B/SHA256 `5dfc7546491a666eea628963430a810fab6bed99ffb9f3f48f6cc6a6c3ce8fe3`.
+Verificación criptográfica local de firma iOS no atribuida; estructura de perfil,
+identidad y configuración sí comprobadas. Ventanas5min conciliadas, cola secuencial,
+un POST por plataforma y una descarga/verificación por artefacto. Recibos y reservas
+conservados en .tools/store-irlanda-correction-20261124/distribution.
 
-iOS: ventana17:02:17–17:07:17UTC conciliada sin cambios de producto; único POST
-17:32UTC aceptó6b05ca1a8bb41fd01384167b/ios-testflight, base441, versiónprevista
-2.3.12 sin número anticipado. GET previo verifica ID/app/workflow/source; observador
-root4737 en curso. No IPA/carga/disponibilidad iOS acreditados aún. Fuente/CI/tag
-iguales; cola secuencial. Paquete .tools/store-irlanda-correction-20261124/distribution.
+Arranque de observador Android se concilió leyendo el mismo ID, sin modificar
+sus guardas ni repetir submit. Observador iOS4737 llegó al límite temporal mientras
+la build seguía activa; se retomó la misma85129 y terminó15SUCCESS. No fueron nuevas
+compilaciones. Ambos envíos esperaron máquina; no fallo de producto atribuido.
+Ningún observador o build pendiente para estos dos IDs.
 
-Titular conectará Samsung después. QA física/aceptación pendientes; no publicación
-pública, SQL, flags ni servicios cambiados. Chrome se desconectó al consultar el
-detalle de CM y el intento acotado de GA tampoco encontró Chrome. Sin cifras GA
-nuevas atribuidas; los conteos anteriores de preferencias no equivalen a actividad.
+Titular conectará Samsung después. QA física y aceptación pendientes. Chrome se
+desconectó al consultar CM y el intento acotado de GA tampoco encontróChrome3;
+sin cifras GA nuevas ni conciliación de ingesta atribuida. No nuevo envío público,
+SQL, flags, campañas, datos reales de prueba o cambios de servicios/preferencias.
 
 ## Tienda Irlanda — 23/nov/2026, binarios QA publicados
 

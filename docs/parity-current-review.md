@@ -19,6 +19,12 @@ perfil real PASS. Revisión independiente de diff y ocho capturas sin P1/P2; el
 contraste de esos selectores detecta ahora la ausencia del bloque y los grises
 correctos en el siguiente trabajo necesario.440/441 no se marcan aceptadas por ello.
 
+Correctivo fuente dbac483b/CI45438832854 cuatro SUCCESS: Android442 con AAB y
+publicación interna verificados; iOS443 con IPA/carga y posproceso Apple sin error.
+Capturas nuevas en .tools/store-irlanda-correction-20261124/captures. Instalación,
+disponibilidad de grupo TestFlight y aceptación humana pendientes; titular conectará
+Samsung después. No ampliar este cierre a otras pantallas o publicación pública.
+
 ## 23/nov — Tienda de Irlanda, inventario acotado
 
 Solicitud: igualar Tienda al mock. Referencia congelada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c

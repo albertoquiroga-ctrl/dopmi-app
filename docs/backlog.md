@@ -1,15 +1,21 @@
 # Correctivo vigente — Tienda, 24/nov/2026 CDMX
 
-Dos diferencias señaladas por Irlanda sobre440, referencia d9f9aa43 sin cambio:
-portada sin bloque extra debajo del banner y tarjetas con foto gris#f5f5f5/borde
-#ebebeb. Implementado;23 pruebas de Tienda PASS, analyze limpio y capturas verificadas.
-Revisión independiente del diff y ocho capturas sin P1/P2 pendientes.
-Conservar aviso previo a Amazon, detalle blanco, catálogo real y demás producto.
-Una cola Flutter/Codemagic, gates y ventana5min antes de cada envío QA; fuente dbac483b/tagcodex/store-irlanda-correction-20261124 y
-CI45438832854 cuatro SUCCESS. Android442/6b05c2b0b2b7c3f08f286bde:14SUCCESS,
-artefacto y log de publicación interna verificados. iOS6b05ca1a8bb41fd01384167b
-aceptado una vez; root observa4737, sin IPA/carga aún. Titular conectará Samsung después. Sin nueva publicación pública, SQL o servicios. Continuar sobre
-7877f8aa en la rama vigente, sin incorporar el Admin pendiente.
+Dos diferencias de Irlanda corregidas: sin bloque extra bajo banner Amazon y
+foto/borde de tarjetas grises. Referencia d9f9aa43 y producto previo conservados.
+Producto dbac483b/tagcodex/store-irlanda-correction-20261124, CI45438832854 cuatro
+SUCCESS.23 pruebas de Tienda/analyze/capturas aprobadas y revisión independiente
+sin P1/P2. [Candidato y recibos](candidate-release-current.md).
+
+Android442: AAB/firma/configuración y publicación interna verificados. iOS443:
+IPA/configuración/carga verificados; posproceso Apple finished/error=false18:11UTC.
+Un envío por plataforma, ninguna build o lectura larga activa. No repetir builds,
+reservas o descargas. Sin publicación pública del correctivo.
+
+Pendientes finitos: root verifica canales y actualización/portada/tarjetas/aviso
+antes de Amazon cuando el titular conecte Samsung; titular revisa y acepta o señala
+el delta. Ya dijo que lo conectará después; conservar sesión y preferencias. La
+disponibilidad en el grupo TestFlight y QA física iOS tampoco están acreditadas.
+Sin nueva fuente, esquema, servicio, campaña ni aceptación humana por inferencia.
 
 # Cola vigente — Tienda de Irlanda, 23/nov/2026 CDMX
 

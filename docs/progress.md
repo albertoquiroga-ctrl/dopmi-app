@@ -10612,3 +10612,28 @@ acotado de GA en el agente tampoco encontróChrome3. Sin datos GA frescos ni cam
 de reportes/preferencias/servicios. El wrapper rechazó una consulta global de cola
 antes de red; no se amplió su lista de destinos. Fuente inalterada, sin nuevas
 pruebas o mejora de proceso por esperas. Estado público fuera de este correctivo.
+
+
+## 24/11/2026 18:11UTC — Correctivo442/443 verificado y publicado para QA
+
+Misma fuente dbac483b/tagcodex/store-irlanda-correction-20261124 y CI45438832854
+cuatro SUCCESS; sin cambio de código ni nuevas suites por documentación. iOS
+6b05ca1a8bb41fd01384167b terminó15SUCCESS. IPA2.3.12(443),55027129B/SHA256
+5dfc7546491a666eea628963430a810fab6bed99ffb9f3f48f6cc6a6c3ce8fe3. Descarga única y
+verificación18:06:33UTC: identidad/versión/esquema, provisionamiento estructural,
+FirebasePROD, perfil adopciones/Amazon y arranque privado de medición/diagnóstico
+conservados. Firma criptográfica local iOS no atribuida. Carga correcta; tarea
+Apple6b05d1f593610bf5c165a5f0 finished/error=false18:11:06UTC. Grupo/instalación no
+acreditados. Android442 conserva verificación y log de publicación17:31UTC.
+
+Observador iOS4737 se detuvo por límite temporal, no por fallo de build; se retomó
+el mismo ID en85129 hasta15SUCCESS. Ningún nuevo POST/descarga/retest por esa pausa.
+Dos recibos de submit/attempts1, ventanas5min conciliadas, cola secuencial y fuente
+intacta. Referencia remota al cierre sigue d9f9aa43. Árbol de producto no cambió.
+
+Se cierran implementación, pruebas/capturas y revisión del delta de dos elementos;
+publicación QA acreditada con los límites del candidato vigente. Samsung se
+conectará después según titular; instalación/aceptación pendientes. Sin envío
+público, SQL, flags, campañas o servicios nuevos. GA actual sigue sin leer; no
+convertir preferencias/cuentas previas en usuarios activos. Continuidad actualizada
+sólo con hechos nuevos, sin repetir fixtures ni ampliar la mejora de proceso.

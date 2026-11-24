@@ -1,21 +1,25 @@
 # Checkpoint vigente — correctivo Tienda, 24/nov/2026 CDMX
 
-Producto dbac483bc5487a559cfd145fe688c512e90cf725, tag
+Producto dbac483bc5487a559cfd145fe688c512e90cf725/tag
 codex/store-irlanda-correction-20261124, rama vigente y referencia d9f9aa43.
-Dos diferencias de Irlanda corregidas: sin bloque extra bajo banner Amazon y
-fotos/bordes de tarjetas grises; detalle blanco y aviso de salida conservados.
-23 pruebas de Tienda PASS, analyze limpio, captura de perfil real PASS y revisión
-independiente de diff/ocho capturas sin P1/P2. CI45438832854 cuatro SUCCESS.
+Bloque extra bajo banner Amazon retirado; fotos/bordes de tarjetas grises y detalle
+blanco. Aviso de salida y producto previo conservados.23 pruebas Tienda PASS,
+analyze limpio, captura de perfil real PASS y revisión independiente de diff/ocho
+capturas sin P1/P2. CI45438832854 cuatro SUCCESS. Mock remoto igual al cierre.
 
 Android2.3.12(442), CM6b05c2b0b2b7c3f08f286bde/14SUCCESS: AAB/firma/configuración
-y log de publicación interna verificados17:31UTC. iOS6b05ca1a8bb41fd01384167b
-aceptado una vez17:32UTC, estadowaiting; observador único root4737. Número iOS
-sin anticipar; no repetir POST/descargas ni confundir artefacto con QA instalada.
-Ambas ventanas5min conciliadas; fuente intacta. Paquete
-.tools/store-irlanda-correction-20261124/distribution. Titular conectará Samsung
-después; QA física y aceptación pendientes. Chrome se desconectó al abrir detalle
-CM; lectura GA actual tampoco disponible. Sin nuevos datos GA ni cambios de
-servicios o publicación pública. [Cola](backlog.md), [candidato](candidate-release-current.md).
+y log de publicación interna verificados17:31UTC. iOS2.3.12(443),
+CM6b05ca1a8bb41fd01384167b/15SUCCESS: IPA/configuración/carga verificados18:06UTC;
+tarea Apple6b05d1f593610bf5c165a5f0 finished/error=false18:11UTC. Un POST y una
+descarga por artefacto/plataforma; ambas ventanas5min conciliadas. Ningún build o
+observador sigue activo. No repetir envíos ni descargas del paquete
+.tools/store-irlanda-correction-20261124/distribution.
+
+Pendientes: lectura independiente de canales/grupo TestFlight y QA instalada;
+titular conectará Samsung después, sin volver a pedirlo. No aceptación humana
+inferida. Chrome se desconectó y lectura GA actual tampoco disponible; sin cifras
+GA nuevas. No publicación pública, SQL, flags o servicios por este correctivo.
+[Cola](backlog.md), [candidato](candidate-release-current.md).
 
 # Checkpoint vigente — Tienda Irlanda, 23/nov/2026 CDMX
 
