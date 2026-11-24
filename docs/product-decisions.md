@@ -1,3 +1,14 @@
+## 24/11/2026 CDMX — Correctivo visual de Tienda tras revisión de Irlanda
+
+El titular transmite dos diferencias de la440: quitar el bloque marcado de precio,
+pago y afiliación debajo del banner, y cambiar el fondo beige de las tarjetas a
+gris. Se mantiene la referencia d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c,
+reconsultada sin cambios remotos. Alcance: portada Amazon sin ese bloque; fondo de
+foto #f5f5f5 y borde #ebebeb para las tarjetas de ambas especies. El detalle sigue
+blanco. Banner, fotos/ASIN, variantes, filtros, navegación y aviso de afiliación
+previo a abrir Amazon se conservan. Avisos legacy/TEST mantienen su función.
+No implica nueva aprobación de la440 ni publicación pública del correctivo.
+
 ## 23/11/2026 CDMX — Igualar Tienda al mock de Irlanda
 
 El titular pide igualar la Tienda de la app al mock. Se congela únicamente este

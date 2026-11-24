@@ -189,7 +189,12 @@ Future<void> _prepareStoreCapture(WidgetTester tester) async {
 
 Future<void> _captureAmazonStore(WidgetTester tester) async {
   await _prepareStoreCapture(tester);
-  final out = Directory('../../.tools/store-irlanda-20261123');
+  final out = Directory(
+    const String.fromEnvironment(
+      'STORE_CAPTURE_OUTPUT',
+      defaultValue: '../../.tools/store-irlanda-20261123',
+    ),
+  );
   await tester.runAsync(() => out.create(recursive: true));
   final fixtures =
       await tester.runAsync(_readStoreCaptureImages) ?? <String, Uint8List>{};

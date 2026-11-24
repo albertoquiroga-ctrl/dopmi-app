@@ -716,12 +716,13 @@ class _StoreContentState extends ConsumerState<_StoreContent> {
         children: [
           _StoreHero(amazonProductLinks: widget.catalog.amazonProductLinks),
           const SizedBox(height: 12),
-          _StoreCatalogNotice(
-            preview: widget.catalog.preview,
-            externalLinksEnabled: widget.catalog.externalLinksEnabled,
-            amazonProductLinks: widget.catalog.amazonProductLinks,
-          ),
-          const SizedBox(height: 12),
+          if (!widget.catalog.amazonProductLinks) ...[
+            _StoreCatalogNotice(
+              preview: widget.catalog.preview,
+              externalLinksEnabled: widget.catalog.externalLinksEnabled,
+            ),
+            const SizedBox(height: 12),
+          ],
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -1367,12 +1368,10 @@ class _StoreCatalogNotice extends StatelessWidget {
   const _StoreCatalogNotice({
     required this.preview,
     required this.externalLinksEnabled,
-    required this.amazonProductLinks,
   });
 
   final bool preview;
   final bool externalLinksEnabled;
-  final bool amazonProductLinks;
 
   static const _noticeStyle = TextStyle(
     fontFamily: DopmiTokens.bodyFont,
@@ -1395,28 +1394,13 @@ class _StoreCatalogNotice extends StatelessWidget {
       ),
       const SizedBox(width: 7),
       Expanded(
-        child: amazonProductLinks
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Precio y pago en Amazon México',
-                    style: _noticeStyle.copyWith(
-                      color: DopmiTokens.ink,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  const Text(_amazonAffiliateDisclosure, style: _noticeStyle),
-                ],
-              )
-            : Text(
-                preview
-                    ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
-                          '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
-                    : 'Compra y paga en el comercio. Dopmi puede recibir una comisión por compras que cumplan los requisitos.',
-                style: _noticeStyle,
-              ),
+        child: Text(
+          preview
+              ? 'Catálogo TEST. No permite compras reales. Imágenes de referencia.'
+                    '${externalLinksEnabled ? ' Sólo abre destinos de prueba autorizados.' : ''}'
+              : 'Compra y paga en el comercio. Dopmi puede recibir una comisión por compras que cumplan los requisitos.',
+          style: _noticeStyle,
+        ),
       ),
     ],
   );
@@ -2030,7 +2014,7 @@ class _StoreCard extends StatelessWidget {
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: _storeBorder),
+        side: const BorderSide(color: Color(0xffebebeb)),
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -2203,11 +2187,7 @@ class _StoreProductArtwork extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(detail ? 20 : 13),
               child: ColoredBox(
-                color: detail
-                    ? Colors.white
-                    : (product.species == 'cat'
-                          ? const Color(0xffedf0e8)
-                          : _storeCream),
+                color: detail ? Colors.white : const Color(0xfff5f5f5),
                 child: image == null
                     ? const _StoreCategoryArtwork()
                     : usesTemplate

@@ -1,3 +1,14 @@
+# Correctivo vigente — Tienda, 24/nov/2026 CDMX
+
+Dos diferencias señaladas por Irlanda sobre440, referencia d9f9aa43 sin cambio:
+portada sin bloque extra debajo del banner y tarjetas con foto gris#f5f5f5/borde
+#ebebeb. Implementado;23 pruebas de Tienda PASS, analyze limpio y capturas verificadas.
+Revisión independiente del diff y ocho capturas sin P1/P2 pendientes.
+Conservar aviso previo a Amazon, detalle blanco, catálogo real y demás producto.
+Una cola Flutter/Codemagic, gates y ventana5min antes de cada envío QA; fuente/CI
+por congelar. Sin nueva publicación pública, SQL o servicios. Continuar sobre
+7877f8aa en la rama vigente, sin incorporar el Admin pendiente.
+
 # Cola vigente — Tienda de Irlanda, 23/nov/2026 CDMX
 
 Seis grupos implementados: cabecera/banner, especie/búsqueda/orden, filtros,

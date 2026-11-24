@@ -159,13 +159,13 @@ void main() {
         find.text('Elige un producto y compra en Amazon MX.'),
         findsOneWidget,
       );
-      expect(find.text('Precio y pago en Amazon México'), findsOneWidget);
+      expect(find.text('Precio y pago en Amazon México'), findsNothing);
       final fundingHeading = find.text(_adoptionFunding);
       final affiliateNotice = find.text(_affiliateDisclosure);
       expect(fundingHeading, findsOneWidget);
-      expect(affiliateNotice, findsOneWidget);
+      expect(affiliateNotice, findsNothing);
       expect(
-        tester.getBottomLeft(affiliateNotice).dy,
+        tester.getBottomLeft(fundingHeading).dy,
         lessThan(
           tester.getTopLeft(find.byKey(const ValueKey('store-search'))).dy,
         ),

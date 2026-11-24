@@ -66,3 +66,13 @@ error22:00UTC. Ventanas de5min y un POST por plataforma; cola secuencial sin rep
 Disponibilidad de canales, instalación y aceptación siguen pendientes y separadas.
 El mock permanece d9f9aa43 al cierre. Root probará Samsung cuando vuelva ADB; titular
 recibió solicitud TestFlight441. No cambios públicos, SQL, flags ni servicios.
+
+
+## Correctivo acotado24/nov tras feedback de Irlanda
+
+El titular señala el bloque adicional de portada y el beige de las tarjetas.
+Referencia d9f9aa43 reconsultada sin cambios. Corregir esos dos puntos, reutilizar
+el test de salida segura y las capturas existentes, conservar detalle blanco y
+aviso antes de Amazon. No nuevo plan, tablero, dependencias, SQL o cambio público.
+El capturador permite salida distinta para conservar la evidencia de440/441.
+Fuente/CI por congelar; QA instalada y aceptación permanecen pendientes.

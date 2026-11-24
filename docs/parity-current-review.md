@@ -1,3 +1,24 @@
+## 24/nov — Dos correcciones de Tienda solicitadas por Irlanda
+
+La revisión humana de440 señala diferencias que no quedaron cerradas en la entrega
+previa. Referencia remota reconsultada: d9f9aa43, sin pushes nuevos que incorporar.
+
+| Corrección | Evidencia del mock | Estado |
+|---|---|---|
+| Quitar bloque debajo del banner | App.tsx6841→6843 pasa del banner a especies | Implementado y captura final comprobada |
+| Fondo gris de tarjetas | styles.css3475 borde#ebebeb y3487 media#f5f5f5 | Implementado y verificado en capturas; detalle blanco conservado |
+
+Retrabajo acotado: se conservaron un bloque adicional y colores heredados que no
+correspondían a esos elementos del mock. Revisión independiente limitada al delta
+y capturas, sin reabrir otras pantallas. Comprobación de proceso: contrastar estos
+dos selectores concretos antes de congelar el correctivo y verificar su efecto en
+las capturas ya necesarias. Sin tests nuevos que sólo dupliquen colores; se adapta
+el test existente para exigir ausencia del bloque en portada y conservar la
+confirmación/divulgación antes de Amazon.23 pruebas PASS/analyze limpio/captura de
+perfil real PASS. Revisión independiente de diff y ocho capturas sin P1/P2; el
+contraste de esos selectores detecta ahora la ausencia del bloque y los grises
+correctos en el siguiente trabajo necesario.440/441 no se marcan aceptadas por ello.
+
 ## 23/nov — Tienda de Irlanda, inventario acotado
 
 Solicitud: igualar Tienda al mock. Referencia congelada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c

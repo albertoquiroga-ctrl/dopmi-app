@@ -10554,3 +10554,24 @@ implementación, pruebas, builds ni cambios productivos. Candidato vigente y
 coverage-20261123.private.json contienen el corte y los límites. Referencias de
 Google sobre usuarios activos y latencia consultadas; no se atribuye el desfase
 completo a la latencia ni se promete igualdad entre GA y Auth.
+
+
+## 24/11/2026 16:35UTC — Correctivo de Tienda tras feedback humano
+
+Titular transmite dos diferencias de Irlanda sobre440: bloque de precio/afiliación
+bajo el banner y fondos beige. Referencia d9f9aa43 reconsultada sin cambio remoto;
+CSS de tarjeta pide fondo#f5f5f5/borde#ebebeb y detalle blanco. Implementadas sólo
+esas correcciones en StoreScreen; aviso de salida a Amazon, banner, catálogo y
+comportamiento legacy/TEST conservados. No payload, permiso, dependencia o esquema.
+
+Se adapta un test existente;23 pruebas de Tienda PASS, analyze sin incidencias y
+capturador del perfilPROD/adoption-only/Amazon PASS, normal/115%/320px200%. Reutiliza
+15 fixtures de imagen por URL exacta, sin red/compras/cuentas reales; salida nueva
+conserva las capturas anteriores. Revisión independiente de diff y ocho capturas
+sin P1/P2. Retrabajo y comprobación acotada de selectores registrados en tablero
+único; no otra revisión global ni nuevas pruebas que reflejen sólo los colores.
+
+Base7877f8aa conservada; PR6/7 y refs verificados. Código por congelar en fuente/tag,
+CI nueva pendiente antes de distribución. Paquete de QA preparado sin reservas,
+recibos o ventanas reciclados; bases nativas440/441 confirmadas y cola libre al
+preflight24nov10:30CDMX. Sin nueva publicación pública ni actividad de negocio.
