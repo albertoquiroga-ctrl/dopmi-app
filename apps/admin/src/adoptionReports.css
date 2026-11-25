@@ -1,0 +1,11 @@
+.report-filters{display:flex;gap:16px;align-items:end;flex-wrap:wrap;padding:0 26px 24px}
+.report-filters label:first-child{flex:1;min-width:200px}
+.report-filters label:nth-child(2){min-width:170px}
+.adoption-report .table-scroll:focus-visible{outline:3px solid var(--purple);outline-offset:-3px}
+.adoption-report tbody th{background:white;color:inherit;font-size:13px;font-weight:400;border-top:0;border-bottom:1px solid var(--line)}
+.report-count{font-variant-numeric:tabular-nums;text-align:right}
+.adoption-report thead th:nth-child(n+4){text-align:right;white-space:normal;min-width:130px;max-width:170px}
+.report-definitions{padding:24px 4px;max-width:1000px}
+.report-definitions h2{margin-bottom:14px}
+.report-definitions p{font-size:13px;margin-bottom:12px}
+@media(max-width:600px){.report-filters{padding:0 20px 20px;align-items:stretch;flex-direction:column}.report-filters label:first-child,.report-filters label:nth-child(2){min-width:0}.adoption-report .pagination{gap:12px;flex-wrap:wrap}}

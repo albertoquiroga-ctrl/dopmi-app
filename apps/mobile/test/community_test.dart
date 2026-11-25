@@ -123,6 +123,7 @@ class CommunityDiagnosticsSpy implements ErrorDiagnostics {
 
 class FakeCommunity implements CommunityRepository {
   final seen = <String>{};
+  final detailViews = <String>[];
   @override
   Future<Set<String>> seenAdoptions() async => Set.of(seen);
   @override
@@ -280,6 +281,14 @@ class FakeCommunity implements CommunityRepository {
     String postId, {
     required bool consent,
   }) async {}
+
+  @override
+  Future<void> recordAdoptionDetailView(
+    String postId, {
+    required bool consent,
+  }) async {
+    if (consent) detailViews.add(postId);
+  }
 
   @override
   Future<DataPage<Json>> rescuerThreads(
@@ -755,6 +764,78 @@ void main() {
       expect(repo.post.saved, true);
       expect(find.byTooltip('Guardada'), findsOneWidget);
       expect(tester.takeException(), isNull);
+    },
+  );
+  testWidgets(
+    'detail observation excludes discovery cards and does not repeat after a favorite refresh',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final measurement = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        CommunityAnalyticsSpy(),
+        CommunityDiagnosticsSpy(),
+      );
+      await measurement.owner('one');
+      await measurement.setAnalytics(true);
+      final repo = FakeCommunity();
+      await start(tester, repo, '/adoptions', measurement: measurement);
+      expect(repo.detailViews, isEmpty);
+      await tester.tap(find.text('Luna'));
+      await tester.pumpAndSettle();
+      expect(repo.detailViews, ['post']);
+      await tester.tap(find.byTooltip('Guardar'));
+      await tester.pumpAndSettle();
+      expect(repo.detailViews, ['post']);
+    },
+  );
+
+  for (final ownerView in [false, true]) {
+    testWidgets(
+      'detail observation skips ${ownerView ? 'the owner' : 'disabled consent'}',
+      (tester) async {
+        SharedPreferences.setMockInitialValues({});
+        final measurement = MeasurementController(
+          await SharedPreferences.getInstance(),
+          'test',
+          CommunityAnalyticsSpy(),
+          CommunityDiagnosticsSpy(),
+        );
+        await measurement.owner('one');
+        if (ownerView) await measurement.setAnalytics(true);
+        final repo = FakeCommunity();
+        if (ownerView) {
+          repo.post = Adoption({...repo.post.data, 'owner_id': 'one'});
+        }
+        await start(tester, repo, '/adoptions/post', measurement: measurement);
+        expect(find.text('Luna'), findsOneWidget);
+        expect(repo.detailViews, isEmpty);
+      },
+    );
+  }
+  testWidgets(
+    'detail observation follows opting in and withdrawal while the detail remains visible',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final measurement = MeasurementController(
+        await SharedPreferences.getInstance(),
+        'test',
+        CommunityAnalyticsSpy(),
+        CommunityDiagnosticsSpy(),
+      );
+      await measurement.owner('one');
+      final repo = FakeCommunity();
+      await start(tester, repo, '/adoptions/post', measurement: measurement);
+      expect(repo.detailViews, isEmpty);
+      await measurement.setAnalytics(true);
+      await tester.pumpAndSettle();
+      expect(repo.detailViews, ['post']);
+      await measurement.setAnalytics(false);
+      await tester.pumpAndSettle();
+      expect(repo.detailViews, ['post']);
+      await measurement.setAnalytics(true);
+      await tester.pumpAndSettle();
+      expect(repo.detailViews, ['post', 'post']);
     },
   );
   testWidgets(

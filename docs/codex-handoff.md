@@ -1,3 +1,13 @@
+## Encargo aislado — Reportes de adopción, 25/nov/2026 CDMX
+
+Para este encargo continuar en `codex/adoption-metrics-20261125`, base61fa88d4,
+no en el checkout histórico1094e29c. Titular resolvió personas únicas por mascota
+y sólo adopciones; [ficha](admin-adoption-report.md). Implementados reporte agregado,
+medición consentida del detalle y pruebas, sin SQL remoto, publicación o binario.
+Revisión independiente código/seguridad/producto/visual cerrada tras dos P2
+corregidos. Estado y evidencia de gates/CI en la última entrada de progress.md.
+Preservar las entregas de otros checkouts y el paquete separado de moderación.
+
 ## Continuación vigente — Meta439 de producción, 22/nov/2026 CDMX
 
 Reanudar en `codex/meta-production-events-20261122` y leer inmediatamente

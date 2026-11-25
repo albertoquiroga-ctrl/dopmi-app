@@ -10670,3 +10670,49 @@ tres regresiones detectadas por CI y las nuevas pruebas de montaje único y
 bypass sin recibo/reintento al remontar. Revisión independiente del correctivo
 cerrada; visual sin cambios. Log privado full-local-after-corrective.log en
 .tools/swipe-tutorial-20261124. Nueva CI/tagv2 aún pendientes; sin envíos nativos.
+
+## 25/11/2026 — Reporte administrativo de adopciones, fuente preparada
+
+Implementado en `codex/adoption-metrics-20261125` desde61fa88d40f0088b84a37c7369da7fb4950b18ef6;
+el checkout original1094e29c y sus cambios ajenos se preservan. [Ficha de alcance](admin-adoption-report.md).
+Decisiones explícitas del titular: una persona única por mascota y sólo adopciones.
+RPC administrativa agregada, favoritos actuales, personas con mensajes y una primera
+respuesta por conversación; registro privado separado de impresiones para el detalle,
+sin histórico inventado, deduplicado entre dispositivos y con retirada de consentimiento.
+UI con búsqueda, especie, paginación, errores/carga y definiciones en español mexicano.
+
+Gates locales actuales: Flutter analyze limpio y suite2264PASS/4SKIP/0FAIL;
+Admin180PASS/buildPASS; configuración móvil48PASS; nuevas pruebas SQL8PASS en
+PGlite y9PASS en PostgreSQL local aislado (incluye dos dispositivos y observación
+bloqueada por retirada de consentimiento), pgTAP12PASS por Supabase CLI.
+Suite completa backend1408PASS/16SKIP/0FAIL (1424casos), antes de añadir la
+comprobación de concurrencia PG como caso opcional de esa misma suite; ese caso
+y los ocho anteriores pasaron9/9 en PostgreSQL con creación/retiro de su base
+local aislada, y su ejecución quedó incluida en el gate existente de CI.
+CI del SHA congelado se concilia en la siguiente entrada. Sin suite Flutter simultánea.
+
+Revisión independiente: producto/especificación y seguridad/estándares examinaron
+fuentes reales. Dos P2 demostrados y corregidos antes del freeze: origen histórico
+unknown y clasificación confirmada con timestamp de inicio de transacción anterior
+al contacto. Dos regresiones fallaron0vs1 antes y pasaron tras el fix; revisores
+comprobaron el cierre, sin otros defectos materiales en su alcance. No aprobación humana.
+
+Demo ejecutada del React real con datos sintéticos: navegación Reportes,23filas,
+página2/2, filtro de gatos11 y búsqueda Luna1 con12/4/3/2. Capturas privadas
+`.tools/report-desktop.jpg` y `report-narrow.jpg`; a390px body375px, tabla342px
+y desplazamiento de teclado449.6px muestran todas las columnas sin desbordar
+la página. Revisión visual independiente sin defecto material; estados de error
+están cubiertos por tests, no por esas capturas. No son datos de producción.
+
+Preflight PROD de sólo lectura comprobó reporte/recorder ausentes, cuatro columnas
+necesarias de mensajes presentes, consentimiento existente e historia más reciente
+20261124203244. Ningún SQL remoto aplicado ni flags/configuración financiera tocados.
+Referencia Irlanda d9f9aa43 observada; no se absorbió otro delta. Moderación preparada
+en su paquete aparte se preserva. Pendientes: CI exacta y autorización de publicación
+del panel/migración, después integración del cliente en la siguiente entrega móvil
+y prueba instalada. La app instalada actual no registra entradas al detalle.
+
+Retro acotada: la primera cobertura sólo usaba RPC nuevos y omitía dos fronteras
+históricas/temporales. Se probó añadir esos dos ejemplos concretos antes de cerrar
+la consulta: ambos detectaron el defecto y ambos pasan tras la corrección. Se conserva
+esa cobertura; no se infiere ahorro ni se añade un gate global o nueva política.

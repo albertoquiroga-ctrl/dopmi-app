@@ -49,6 +49,14 @@ function api(overrides: Partial<AdminApi> = {}): AdminApi {
   };
 }
 describe('administración de usuarios', () => {
+  it('opens pet reports from the real navigation after authorization', async () => {
+    const adoptionReport = vi.fn(async () => ({ total: 0, items: [], generated_at: '2026-11-25T20:00:00Z', detail_tracking_started_at: '2026-11-25T18:00:00Z' }));
+    const client = api({ adoptionReport }); render(<App api={client} />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Reportes' }));
+    await screen.findByText('No hay adopciones publicadas');
+    expect(adoptionReport).toHaveBeenCalledWith('', '', 1);
+    expect(screen.getByRole('button', { name: 'Reportes' })).toHaveAttribute('aria-current', 'page');
+  });
   it('preserves the PDF review when refocusing confirms the identical authenticated session', async () => {
     const record: RescueRecord = {
       id: 'verification-fixture', owner_id: 'rescuer-fixture', kind: 'verification', parent_id: null,

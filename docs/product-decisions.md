@@ -1,3 +1,7 @@
+## 25/11/2026 CDMX — Reporte administrativo de adopciones
+
+Petición directa del titular: tabla de mascotas publicadas en adopción con vistas del detalle, favoritos actuales, personas que contactaron y primeras respuestas de su rescatista. Respuestas explícitas posteriores: **una persona única por mascota** y **sólo adopciones por ahora**. Se excluyen los casos de apoyo de esta tabla. [Ficha de alcance y aceptación](admin-adoption-report.md). Conservar consentimiento de analítica, contadores del catálogo separados y chats privados. El nuevo registro del detalle no permite reconstruir visitas anteriores. Publicación y SQL remoto no se acreditan por esta decisión.
+
 ## 24/11/2026 CDMX — Tutorial inicial de swipe en Adoptar
 
 El titular solicita enseñar el swipe con el patrón visual de Tinder para quienes

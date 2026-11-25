@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { supportRequests, type SupportPage } from './supportApi';
+import { createAdoptionReportReader, type AdoptionReportReader } from './adoptionReportApi';
 import { createStoreCatalogApi, type StoreCatalogApi } from './StoreCatalog';
 import { createVideoModerationApi, type VideoModerationApi } from './VideoModeration';
 import { createAdminPushApi, revokeAdminPushOnLogout, type AdminPushApi } from './adminPush';
@@ -83,6 +84,7 @@ export type FirstPublicationSummary = {
   stalled_draft_authors: number;
 };
 export type AdminApi = {
+  adoptionReport?: AdoptionReportReader;
   readonly environment?: AdminEnvironment;
   storeCatalog?: StoreCatalogApi;
   videoModeration?: VideoModerationApi;
@@ -162,6 +164,7 @@ export function createAdminApi(client: SupabaseClient, environment: AdminEnviron
     })();
   }
   return {
+    adoptionReport: createAdoptionReportReader(client),
     environment,
     pushNotifications,
     storeCatalog: createStoreCatalogApi(client),

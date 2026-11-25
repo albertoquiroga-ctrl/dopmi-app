@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -348,6 +350,59 @@ class AdoptionDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
+  final observedDetails = <String>{};
+
+  void observeDetail(Adoption post, CommunityRepository repository) {
+    final measurement = ref.read(measurementControllerProvider);
+    final actor = repository.userId;
+    if (measurement == null || !measurement.analyticsConsentCurrent) {
+      observedDetails.clear();
+      return;
+    }
+    if (actor == null ||
+        actor == post.owner ||
+        measurement.ownerId != actor ||
+        post.id != widget.id) {
+      return;
+    }
+    final key = '$actor:${post.id}';
+    if (!observedDetails.add(key)) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(recordDetail(post, repository, measurement, actor, key));
+    });
+  }
+
+  Future<void> recordDetail(
+    Adoption post,
+    CommunityRepository repository,
+    MeasurementController measurement,
+    String actor,
+    String key,
+  ) async {
+    try {
+      await measurement.consentReady;
+      if (!mounted ||
+          ModalRoute.of(context)?.isCurrent != true ||
+          (WidgetsBinding.instance.lifecycleState != null &&
+              WidgetsBinding.instance.lifecycleState !=
+                  AppLifecycleState.resumed) ||
+          !identical(ref.read(communityRepositoryProvider), repository) ||
+          !identical(ref.read(measurementControllerProvider), measurement) ||
+          repository.userId != actor ||
+          ref.read(identityControllerProvider).identity?.id != actor ||
+          widget.id != post.id ||
+          measurement.ownerId != actor ||
+          !measurement.analyticsConsentCurrent) {
+        observedDetails.remove(key);
+        return;
+      }
+      await repository.recordAdoptionDetailView(post.id, consent: true);
+    } catch (_) {
+      // Optional measurement must never prevent reading, saving or contacting.
+      observedDetails.remove(key);
+    }
+  }
+
   bool busy = false;
   bool? savedOverride;
   String? error;
@@ -440,6 +495,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final repo = ref.read(communityRepositoryProvider);
+    ref.watch(measurementControllerProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -457,6 +513,7 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
                 ),
               );
             }
+            observeDetail(post, repo);
             return AdoptionDetailLayout(
               key: ValueKey(post.id),
               post: Adoption({

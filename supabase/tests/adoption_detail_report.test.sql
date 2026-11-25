@@ -1,0 +1,17 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(12);
+select ok(to_regprocedure('public.dopmi_admin_adoption_report(text,text,integer)') is not null,'aggregate report exists');
+select ok(to_regprocedure('public.dopmi_record_adoption_detail_view(uuid,boolean)') is not null,'detail recorder exists');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_adoption_detail_views'::regclass),'observations have RLS');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_adoption_detail_tracking'::regclass),'tracking date has RLS');
+select ok(not has_table_privilege('authenticated','private.dopmi_adoption_detail_views','select'),'clients cannot read detail people');
+select ok(not has_table_privilege('authenticated','private.dopmi_adoption_detail_views','insert'),'clients cannot insert raw observations');
+select ok(not has_function_privilege('anon','public.dopmi_admin_adoption_report(text,text,integer)','execute'),'anonymous report denied');
+select ok(not has_function_privilege('service_role','public.dopmi_admin_adoption_report(text,text,integer)','execute'),'report requires an authenticated administrator');
+select ok(not has_function_privilege('anon','public.dopmi_record_adoption_detail_view(uuid,boolean)','execute'),'anonymous recorder denied');
+select ok(has_function_privilege('authenticated','public.dopmi_admin_adoption_report(text,text,integer)','execute'),'authenticated report entry has internal membership checks');
+select is((select count(*)::integer from private.dopmi_adoption_detail_tracking),1,'one tracking start');
+select is((select count(*)::integer from private.dopmi_adoption_detail_views),0,'no historical views invented by migration');
+select * from finish();
+rollback;

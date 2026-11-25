@@ -75,6 +75,10 @@ jobs:
           DOPMI_VALUE_SIGNALS_POSTGRES_TEST: 'true'
           PGPASSWORD: postgres
         run: node --test tools/verification/adoption-value-signals-sql.test.mjs
+      - name: Adoption reports, unique details and consent withdrawal against PostgreSQL
+        env:
+          DOPMI_REPORT_POSTGRES_TEST: 'true'
+        run: node --test tools/verification/adoption-detail-reports-sql.test.mjs
       - name: Acquisition messaging and consent races against PostgreSQL
         env:
           DOPMI_ACQUISITION_POSTGRES_TEST: 'true'

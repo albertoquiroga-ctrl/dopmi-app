@@ -1,3 +1,7 @@
+# Encargo en este checkout — Reportes de adopción, 25/nov/2026 CDMX
+
+Implementación aislada en `codex/adoption-metrics-20261125` desde61fa88d4. [Decisiones](product-decisions.md#25112026-cdmx--reporte-administrativo-de-adopciones) y [ficha única](admin-adoption-report.md): una persona única por mascota al abrir detalle, sólo adopciones publicadas, favoritos actuales, contactos y primeras respuestas. Gates locales/revisión/demostración en curso; SQL remoto y publicación todavía no ejecutados. No absorbe ni cancela las entregas inferiores de otros checkouts.
+
 # Lote vigente — Tutorial inicial de swipe, 24/nov/2026 CDMX
 
 Correctivo de ciclo de vida en curso: CI45462196838 del candidato4ad334f4 falló

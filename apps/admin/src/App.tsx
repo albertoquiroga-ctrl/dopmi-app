@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { errorMessage, type AdminApi, type AdminUser, type UserPage } from './api';
 import Adoptions from './Adoptions';
+import AdoptionReports from './AdoptionReports';
 import Rescues from './Rescues';
 import Contributions from './Contributions';
 import ModerationQueues, { type ModerationView } from './ModerationQueues';
@@ -15,7 +16,7 @@ function Notice({ text }: { text: string }) { return <div className="notice" rol
 export default function App({ api }: { api: AdminApi | null }) {
   const [access, setAccess] = useState<'loading' | 'guest' | 'denied' | 'admin' | 'error'>('loading');
   const [error, setError] = useState('');
-  const [section, setSection] = useState<'dashboard' | 'users' | 'adoptions' | 'rescues' | 'contributions' | 'moderation' | 'store' | 'videos'>('dashboard');
+  const [section, setSection] = useState<'dashboard' | 'users' | 'adoptions' | 'reports' | 'rescues' | 'contributions' | 'moderation' | 'store' | 'videos'>('dashboard');
   const [menuOpen, setMenuOpen] = useState(false);
   const [moderationView, setModerationView] = useState<ModerationView>('updates');
   const [rescueKind, setRescueKind] = useState<'case' | 'verification'>('case');
@@ -78,6 +79,7 @@ export default function App({ api }: { api: AdminApi | null }) {
     { key: 'dashboard', label: 'Pendientes' },
     { key: 'rescues', label: 'Casos y necesidades' },
     { key: 'adoptions', label: 'Adopciones' },
+    { key: 'reports', label: 'Reportes' },
     { key: 'moderation', label: 'Moderación' },
     { key: 'videos', label: 'Videos', available: !!api.videoModeration },
     { key: 'users', label: 'Usuarios' },
@@ -96,7 +98,7 @@ export default function App({ api }: { api: AdminApi | null }) {
     </aside>
     <main id="admin-workspace" ref={main} className="workspace" tabIndex={-1}>
       {error && <Notice text={error} />}
-      {section === 'dashboard' ? <Dashboard api={api} onOpen={applyDestination}/> : section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'rescues' ? <Rescues key={rescueKind} api={api} initialKind={rescueKind} /> : section === 'contributions' ? <Contributions api={api} /> : section === 'store' && api.storeCatalog ? <StoreCatalog api={api.storeCatalog} /> : section === 'videos' && api.videoModeration ? <VideoModeration api={api.videoModeration} /> : <ModerationQueues key={moderationView} api={api} initialView={moderationView}/>}
+      {section === 'dashboard' ? <Dashboard api={api} onOpen={applyDestination}/> : section === 'users' ? <Users api={api} /> : section === 'adoptions' ? <Adoptions api={api} /> : section === 'reports' ? <AdoptionReports api={api} /> : section === 'rescues' ? <Rescues key={rescueKind} api={api} initialKind={rescueKind} /> : section === 'contributions' ? <Contributions api={api} /> : section === 'store' && api.storeCatalog ? <StoreCatalog api={api.storeCatalog} /> : section === 'videos' && api.videoModeration ? <VideoModeration api={api.videoModeration} /> : <ModerationQueues key={moderationView} api={api} initialView={moderationView}/>}
     </main>
   </div>;
 }
@@ -106,6 +108,7 @@ function NavIcon({ name }: { name: string }) {
     dashboard: 'M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h6v6h-6z',
     rescues: 'M12 20s-8-5-8-11a4 4 0 0 1 8-2 4 4 0 0 1 8 2c0 6-8 11-8 11z',
     adoptions: 'M4 10 12 3l8 7v10h-6v-6h-4v6H4z',
+    reports: 'M4 20h16 M7 16v-4 M12 16V4 M17 16V8',
     moderation: 'm12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6z M8 11l3 3 5-5',
     videos: 'M3 5h13v14H3z m13 5 5-3v10l-5-3',
     users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M20 21v-2a4 4 0 0 0-3-4 M16 3a4 4 0 0 1 0 8',
