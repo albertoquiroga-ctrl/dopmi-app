@@ -10311,3 +10311,35 @@ manual de respuestas públicas a72h/7d, primer bloque27nov/1dic, sin automatizac
 creada; interés/pregunta/agradecimiento/rechazo/norespuesta/noobservable separados
 de fichas. No ganador, significancia o comparación concluyente con pagados.
 Evidencia social/recibos sólo fuera deGit. [Protocolo y límites](campaign-placement-wave3.md).
+
+### 25/11/2026 — Tres contactos adicionales; bloque parcial documentado
+
+Titular pide más comentarios. Se revalidaron los tres perros ya seleccionados
+con municipio explícito y se congeló a16:21:56.085UTC, antes de asignar, una
+enmienda operativa del prefijo5–7. Mensajes, tokens y orden originales conservados;
+8 queda sin autora. Helper privado con registro durable previo y excepción
+acotada de auditoría:21/21testsPASS incluyendo14guardas previas, revisión
+independiente sinP1/P2. Auditoría mantiene `incomplete_amended_block`, sin
+afirmar ocultamiento o causalidad limpia. No cambio de cliente/landing/SQL.
+
+Envíos16:26:43–16:28:49UTC/10:26:43–10:28:49CDMX:3nuevos visibles conIDaceptado,
+2personal/1DopMi,3perros;Guadalupe/GeneralEscobedo/Monterrey uno cada uno.
+Capturas5/6 revisadas independientemente;7 se reemplazó desde la URL aceptada
+para mostrar su comentario entero, sin reenviar, y root verificó el JPEGfinal.
+Ledgerola3:7enviados/7conpruebavisible/0pendingnuevo,41reserved; R1/R2/R3dos yR4uno,
+4personal/3DopMi,4gatos/3perros. Los4primeros no se revisitaron hoy. Tres
+candidatas de gatos sin asignar no cuentan como envíos. Acumulado91 entre
+trescohortes,46personal/45DopMi,48gatos/43perros; no91visiblesactuales.
+
+SELECTPROD16:25:29UTC previo a nuevos envíos:60/24/48 etiquetas noQA habilitadas,
+QA aparte,0fuentesAndroidconsentidasretenidas/primerasfichas/aprobaciones/maduras
+336h en cada cohorte. No0clics/descargas ni resultado posterior de los3comentarios.
+Se añadió plan manual72h/7d de los3para28nov/2dic; primeros4conservan27nov/1dic.
+No se creó automatización. QA física p60 sin mascota real continúa pendiente.
+
+Pregunta al titular sobre incluir «zona probable, sin confirmar» de gruposMTY
+separada del municipio declarado: pendiente al corte, sin aplicar ampliación.
+Se conservaron exclusiones de geografía, antigüedad, terceros, grupos retenidos
+y origen no acreditado. No ganador ni significancia. LedgerSHAe6b0efe4…;36archivos
+privados respaldados y cotejados fuera deGit en wave3-20261125-private, sin
+alterar backup24nov ni ledgers60/24. [Evidencia y límites](campaign-placement-wave3.md).

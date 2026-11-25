@@ -1,4 +1,14 @@
-# Cola vigente — integración de producción24/nov/2026
+# Cola vigente — integración de producción25/nov/2026
+
+Continuación25nov de la [tercera ola](campaign-placement-wave3.md):3 comentarios
+nuevos verificados (2personal/1DopMi,3perros); ledger7 enviados/7conpruebavisible,
+0pendientes nuevos,41 sin asignar/contactar. Acumulado91 enviados en trescohortes.
+Prefijo parcial5–7 documentado antes de asignar;8sin autora, advertenciaexplícita
+de bloque incompleto. Hay3candidatas de gatos no asignadas: revalidar/completar
+antes de enviar. Consulta sobre zona probable pendiente; se conserva municipio
+explícito, sin ampliar geografía ni fabricar ubicación. Plan manual nuevo28nov/2dic,
+conservando27nov/1dic. No nuevo build/despliegue/registro; QA física sigue pendiente.
+El corte24nov inferior se conserva como historial supersedido por este estado.
 
 Tercera ola orgánica: [protocolo y corte parcial](campaign-placement-wave3.md),
 48 rutas desplegadas/habilitadas sobre privacidad reciente,4 enviados/visibles

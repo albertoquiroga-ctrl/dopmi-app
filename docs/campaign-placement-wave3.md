@@ -184,6 +184,26 @@ no sustituye las336h individuales de un clic elegible.
 
 ## Corte de ejecución — 24nov2026
 
+### Enmienda operativa prospectiva — 25nov10:21:56CDMX
+
+El titular volvió a pedir más contactos. Antes de asociar los siguientes casos,
+se congeló el prefijo de tres perros ya seleccionados en orden de descubrimiento.
+Se permite asignarlos únicamente a los ordinales5–7 originales del bloque2;
+el8 queda sin autora hasta la siguiente candidata elegible. No se cambian
+criterios, textos, tokens, especie ni orden de brazos y no se completa o cierra
+el bloque según respuestas. Este ajuste sustituye sólo para ese prefijo la
+disciplina operativa de reunir cuatro antes de asociar; no acredita envíos.
+Conservar las fechas originales y la revalidación actual antes de publicar.
+
+La secuencia aleatoria se conserva, pero el operador conoce el manifiesto.
+Seleccionar el cuarto caso conociendo el brazo restante permite sesgo: no
+afirmar ocultamiento ni comparación causal limpia. Mientras falte habrá
+desequilibrio real; registrar tiempos/grupos aunque se complete después, no
+excluir el bloque por sus resultados ni contar un lugar vacío como contacto o
+conversión cero. La evidencia sigue siendo exploratoria y sin ganador.
+
+### Corte previo congelado — 24nov
+
 **Parcial:4 asignados/enviados/visibles,0 pendientes nuevos;44 etiquetas
 reservadas sin asignar ni contactar.** Un envío por R1–R4,2 personales y2 DopMi,
 todos de gatos: Apodaca1,Guadalupe2,SantaCatarina1. Son4 rescates personales
@@ -263,3 +283,66 @@ Respaldo privado local fuera deGit en
 `C:/Users/betoq/.codex/visualizations/2026/11/12/01a1d1f7-7105-7a10-876f-7fbf39340eea/wave3-20261124-private`:
 27archivos cotejados por hash; manifiesto de respaldo SHA256
 `b63d1c74da1157cdb9285812fae7cdbf506c063cd78822b44ca9bd4398473717`.
+
+## Continuación — 25nov2026, corte10:50CDMX
+
+El titular pidió más comentarios. Se conservaron las48 etiquetas existentes,
+las copias y la geografía explícita; no se desplegó código móvil/landing/SQL.
+Chrome enumeró Facebook pero falló el control de pestaña; el navegador integrado
+permitió continuar tras una recuperación de error de conexión. No se observó
+restricción de publicación de Facebook ni se cambió de perfil para eludirla.
+
+La enmienda prospectiva10:21:56CDMX se guardó antes de asociar los tres perros
+ya seleccionados a5/R1,6/R3,7/R2. Registro durable previo a asignación; ordinal8
+sin autora. El helper privado y su excepción de auditoría pasaron revisión
+independiente sinP1/P2; gate local21/21PASS —14 existentes y7 del ajuste—.
+La auditoría conserva la advertencia explícita `incomplete_amended_block`;
+no convertirla en bloque balanceado ni borrarla porque el resto pasó.
+El helper excepcional sólo asigna5–7; `freeze(2)` general rechaza un bloque ya
+ocupado. Cuando exista el cuarto perro elegible, preparar una continuación
+acotada para8 que preserve esas tres asignaciones y su evidencia; no reutilizar
+el helper del prefijo ni reconstruir el bloque para forzar la asignación.
+
+**Tres envíos nuevos verificados**,10:26:43–10:28:49CDMX:2 personales y1 DopMi,
+todos de perros, Guadalupe/GeneralEscobedo/Monterrey uno en cada municipio.
+Rescate propio declarado y estatus independiente no verificado en los tres.
+IDs numéricos aceptados, mismo token/texto/identidad y capturas asentadas.
+La primera captura7 no mostraba el comentario: se reemplazó al abrir su URL
+aceptada bajo el perfil original, sin reenviar ni cambiar el ID. Las tres
+capturas finales fueron revisadas visualmente.
+
+Estado del ledger de esta ola:7 enviados con prueba visible,0 pendientes nuevos,
+R1/R2/R3 dos cada uno yR4 uno;4personales/3DopMi,4gatos/3perros. Los primeros4
+comprobantes son del24nov, no revisión simultánea hoy. **41 etiquetas siguen
+sin asignar ni contactar**, incluyendo8. Hay3 candidatas de gatos sin asignar;
+no son contactos ni resultados y requieren completar/revalidar el bloque antes
+de publicar. Una corresponde a hallazgo en casa y oferta propia: conservar esa
+interpretación del rescate, sin atribuirle una declaración literal de «rescaté».
+
+Acumulado de tres cohortes:91 enviados,46personales/45DopMi,48gatos/43perros;
+no91visibles actuales ni rescatistas independientes verificadas. Los ledgers
+anteriores mantienen sus hashes y sus propias observaciones de moderación.
+
+SELECTPROD25nov16:25:29UTC/10:25:29CDMX:60/24/48 etiquetas noQA habilitadas yQA
+separada,0 cuentas Android consentidas retenidas con colocación,0 primeras fichas,
+0 primeras aprobaciones y0 maduras336h en cada cohorte. Es anterior a estos
+tres envíos; no se presentó como resultado posterior de ellos. No acredita0
+clics/descargas, cobertura completa iOS ni aceptación física p60.
+
+Se prepararon cortes manuales de los nuevos comentarios para28nov y2dic,
+10:27–10:29CDMX aproximadamente, desde cada envío; los cortes27nov/1dic de los
+primeros4 se conservan. Sin automatización ni observaciones de respuesta aún.
+Una respuesta o interés no se cuenta como primera ficha y no se declaró ganador.
+
+Preferencia de selección consultada al titular: incluir rescates propios de
+gruposMTY sin municipio como «zona probable, sin confirmar», separados en el
+análisis, o conservar sólo municipio explícito. **Pendiente de respuesta en este
+corte**: no se aplicó esa ampliación ni se rellenaron municipios a partir del
+grupo/perfil/lada. Los casos sin ubicación se conservan como descartados y no
+se enviaron; no perder su motivo de exclusión si luego cambia el protocolo.
+
+Auditoría final:0errores, una advertencia de bloque incompleto. LedgerSHA256
+`e6b0efe4555990676782347ca285e5115dcf8341a0c8719a02031ad453262d37`.
+Respaldo fuera deGit `wave3-20261125-private`, junto al respaldo24nov ya documentado:
+36archivos cotejados por hash; manifiestoSHA256
+`5d4932b5b0f349df663efa14d5cb2adaccf008fe8ebc4f87da6fe32b6bf526de`.

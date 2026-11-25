@@ -1,6 +1,6 @@
 # Atribución para el chat de campañas
 
-Corte:24/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
+Corte:25/11/2026, CDMX. Destinatario: **Revisar campañas de Google y Facebook**.
 Este es el contrato operativo compartido; los contactos orgánicos autorizados
 se distinguen de las campañas pagadas y de su aceptación técnica.
 Implementación autorizada21nov: consultar el [runbook de etiquetas y piloto](campaign-placement-pilot.md)
@@ -8,7 +8,9 @@ para el registro original y la [segunda ola de24](campaign-placement-wave2.md)
 para su cohorte separada. Cliente público y aceptación real permanecen separados;
 los apartados históricos inferiores no sustituyen el estado vigente de esos runbooks.
 La [tercera ola](campaign-placement-wave3.md) añade un contraste de orientación:
-48 etiquetas registradas, **4 envíos visibles y44 sin contactar** al corte24nov.
+48 etiquetas registradas, ledger7 envíos con prueba visible —3nuevos25nov— y41
+sin contactar. Prefijo5–7 parcial documentado antes de asignar,8sin autora;
+no atribuir balance completo ni visibilidad simultánea a todos los cortes.
 R2/R4 significan orientación v2 sólo en ese nuevo experimento; no mezclarlos con
 el mensaje de facilidad anterior. Servidor24nov13:48:59CDMX mantiene0 fuentes
 Android consentidas con colocación y0 hitos en las tres cohortes. No demuestra
@@ -16,6 +18,9 @@ Android consentidas con colocación y0 hitos en las tres cohortes. No demuestra
 pendiente por falta de otra mascota real. Respuestas públicas se revisarán
 manualmente a72h/7d, separadas de la primera ficha y sin vincular identidades
 sociales con cuentas de la app. No hay ganador ni validación contra pagados.
+El SELECT25nov10:25:29CDMX confirma0 fuentes/fichas/aprobaciones/maduras336h;
+precede a los tres nuevos envíos y no mide sus resultados posteriores. La
+consulta de zona probable está pendiente, sin ampliar el filtro de municipio.
 El [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md)
 define la hipótesis, las variables, el análisis y la cola de preparación.
 
