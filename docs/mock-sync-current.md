@@ -1,4 +1,29 @@
-# Checkpoint vigente — Tienda Rescatista, 24/nov/2026 CDMX
+# Checkpoint vigente — Capturas App Store, 25/nov/2026 CDMX
+
+El titular observa fotos legacy en la ficha pública y pide sustituirlas. Consulta
+oficial de App Store/lookup confirma pública2.3.10; seis capturas iPhone y seis
+iPad aún muestran tarjetas amarillas/navegación antigua (PNG descargadas y vistas).
+No confundir ficha pública con QA446/447. Se congeló la fuente pública a24408be
+(tagcodex/analytics-quality-a24408be, iOS438), exportada sólo para renderizar.
+
+Listas16PNG RGB/sin alfa en cuatro tamaños Apple; cuatro escenas: Adoptar,
+detalle, Mis match y chat, con datos sintéticos/fotos locales. Capturador4PASS;
+revisión independiente de las16imágenes sin P1/P2/datos privados y213archivos
+lib cotejados sin delta de contenido. Son renders de widgets reales Flutter,
+no capturas nativas/dispositivo. No appcode/SQL/servicios/build nuevos.
+Paquete Descargas/DopMi-AppStore-Capturas-2.3.10-20261125.zip,19232810B,
+SHAccc88770…9f3bdf. Evidencia .tools/appstore-screenshots-20261125 en este worktree.
+
+NO subidas, enviadas a revisión ni sustituidas públicamente. Chrome se recuperó
+con pestaña nueva1756668379; sesión Apple caducada, login visible/markHandoff y
+lecturas suspendidas. Titular: completar acceso/verificación y avisar. Integrador:
+revisar locale/tamaños/PPO ajeno antes de crear tratamiento sólo de screenshots,
+subir/enviar metadata, esperar aprobación y aplicar a ficha2.3.10; luego comprobar
+galería pública. Asset Library/CPP/TestFlight no acreditan esa sustitución.
+No promover QA447 para resolver las fotos. Rama documental codex/appstore-screenshots-20261125;
+fuente móvil36f8e47f conservada. Pendiente íntegro de publicación hasta login.
+
+# Corte anterior — Tienda Rescatista, 24/nov/2026 CDMX
 
 Producto36f8e47f0cf2203cee92e7868ab7672f81a98c3c/tagcodex/rescuer-store-20261124-v1,
 rama codex/rescuer-store-20261124, sobre edcdd5aa/c58eb51d. Mock d9f9aa43

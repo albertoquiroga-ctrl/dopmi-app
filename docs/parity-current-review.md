@@ -1,3 +1,27 @@
+## 25/nov — Capturas para la ficha pública App Store
+
+La ficha pública2.3.10 aún sirve seis fotos legacy por dispositivo (lookupApple,
+primeras imágenes iPhone/iPad vistas). No hay recibo previo de reemplazo de
+capturas en las fuentes acotadas; carga de binarios y App Privacy no lo acreditan.
+Lote gráfico congelado en a24408be/iOS438, no en QA447: cuatro escenas deDopmiApp
+real, fixtures locales y TargetPlatform.iOS.16PNG a1206x2622/1290x2796/1242x2688/
+2064x2752, RGB3/sin alfa, sin estirar. Inter/Fraunces/MaterialIcons reales.
+
+Capturador4PASS/0FAIL. Revisión independiente de los16PNG sin P1/P2, placeholders
+o datos privados; favoritos Toby/Luna y chat Rocky coherentes.213archivoslib
+cotejados con a24408be: sólo finales de línea, sin delta de contenido. Dos fallos
+locales de harness quedaron corregidos antes del lote válido: restauración de
+variables de test y aserción genérica tras separar favoritos/chat. Sin error o
+cambio de la app pública. No simulador, dispositivo, escritura PROD o build nuevo.
+
+Preparado y verificado localmente, NO subido/revisado por Apple/publicado.
+Chrome recuperado; sesiónApplecaducada/tab1756668379 a cargo del titular, lecturas
+suspendidas. Revisar PPO existente, locale y overrides de tamaños al retomar;
+subir y enviar screenshots, aplicar tratamiento aprobado a la ficha original y
+comprobar CDN/ficha. No sustituir esa prueba por biblioteca/CPP/TestFlight.
+Paquete verificado Descargas/DopMi-AppStore-Capturas-2.3.10-20261125.zip;
+evidencia y manifest en .tools/appstore-screenshots-20261125.
+
 ## 24/nov — Tienda Rescatista del mock de Irlanda
 
 Scope congelado: d9f9aa43, tarjeta CroquetasConCausaCard al final de RescuerHome.

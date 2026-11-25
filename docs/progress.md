@@ -10735,3 +10735,39 @@ OFF y selectores Meta previos; sin SQL, flags/servicios o promoción pública.
 Implementado/verificado/distribuido para QA; instalación/aceptación pendientes.
 Samsung diferido por el titular; no reiterar solicitud. Inactividad sigue pendiente
 de definición de negocio y queda fuera de este lote.
+
+### 25/nov/2026 CDMX — Galería App Store preparada; acceso Apple pendiente
+
+Titular pide cambiar imágenes legacy de la ficha pública. App Store México y
+lookup oficial confirman versión2.3.10;6screenshots iPhone/6iPad. Las primeras
+PNG descargadas vía curl y vistas conservan la interfaz antigua (tarjetas
+amarillas y3destinos). El timeout de Invoke-WebRequest no acreditó descarga;
+curlIPv4 sí. Inventario acotado no encontró paquete previo listo para Apple ni
+recibo de sustitución; no se interpretó carga438/TestFlight como cambio de galería.
+
+Fuente pública a24408beeb664d48f15b1bd90e9a8c578602659e/tagcodex/analytics-quality-a24408be,
+iOS438, exportada con git archive para capturar sin tocar la app vigente36f8e47f.
+16PNG renderizadas deDopmiApp real: AdoptarRocky, detalle, favoritosToby/Luna con
+chatRocky y conversación explícitamente demostrativa. Cuatro tamaños Apple,
+RGBsin alfa, fuentes reales y fotos locales; datos sintéticos, sin red/backend.
+Capturador4PASS/0FAIL; revisión independiente de16PNG sin P1/P2/PII, dimensiones/
+metadatos comprobados y213lib cotejados sin cambio de contenido. No captura
+nativa/simulador ni aceptación física. Primer arnés falló limpieza de var debug;
+Variant/finally lo corrige. Separar Rocky de favoritos exigió aserción específica
+de la escena; corregida antes de aceptar assets. No cambios de app/SQL/servicios,
+tests de producto, nuevas builds o promoción de QA447.
+
+Evidencia .tools/appstore-screenshots-20261125; images.manifest.private.json y
+capture-validation.log. ZIP verificado en Descargas/DopMi-AppStore-Capturas-2.3.10-20261125.zip,
+19232810B/SHA256ccc88770162ab4c9a4e6d3c23453bc3bc4a3a720bcd89af40348af74b49f3bdf.
+
+Chrome inicialmente agotó getTab(CDPfocus) y get_window_state; se recuperó con
+una pestaña nueva1756668379. Apple redirigió authResultFAILED; login visible,
+markHandoff y lecturas suspendidas para que el titular complete acceso/2FA.
+NO archivos enviados, metadata en revisión ni imágenes públicas reemplazadas.
+Consulta Appleprimaria confirma PPO+ApplyTreatment como ruta de screenshots sin
+otro binario; aprobación de AssetsLibrary/CPP por sí sola no cambia la ficha.
+Retomartraslogin: comprobar versión/locale/tamaños y testsajenos, preparar
+tratamiento sólo de screenshots, enviar revisión, aplicar aprobado a2.3.10 y
+verificar galería pública. Sin decisión/permiso extra solicitado para lo ya
+autorizado; falta técnicamente la sesión del titular.

@@ -1,4 +1,20 @@
-# Lote vigente — Acceso a Tienda Rescatista, 24/nov/2026 CDMX
+# Lote vigente — Galería pública App Store, 25/nov/2026 CDMX
+
+Solicitud: reemplazar screenshots legacy. Pública2.3.10 confirmada vía Apple;
+fuente a24408be/iOS438. Preparadas16PNG RGB/sin alfa, cuatro escenas por cuatro
+tamaños iPhone/iPad,4capturas PASS y revisión independiente sin P1/P2. Sólo
+fixtures/renderFlutter;213lib intactos. Paquete ZIP en Descargas, SHAccc88770…9f3bdf.
+Sin appcode, binario, SQL o servicios nuevos. QA446/447 no se promociona por esto.
+
+Bloqueo concreto: sesión Apple caducada. Chrome ya recuperado y login abierto
+en tab1756668379, lecturas suspendidas. Dueño titular: iniciar sesión/verificar.
+Siguiente integrador: inspeccionar tamaños/localizaciones/tests existentes,
+configurar tratamiento PPO sólo con capturas, enviar metadata a revisión y
+aplicar el tratamiento aprobado a la ficha pública2.3.10. Verificar después sus
+imágenes públicas, no sólo Assets Library ni TestFlight. Actualmente NO subidas,
+revisión ni publicación. Evidencia .tools/appstore-screenshots-20261125.
+
+# Lote anterior — Acceso a Tienda Rescatista, 24/nov/2026 CDMX
 
 Implementado en codex/rescuer-store-20261124 sobre c58eb51d/producto edcdd5aa,
 mock d9f9aa43. Inicio muestra «Croquetas con causa» y abre la Tienda compartida;
