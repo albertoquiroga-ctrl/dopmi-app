@@ -8,19 +8,23 @@ para el registro original y la [segunda ola de24](campaign-placement-wave2.md)
 para su cohorte separada. Cliente público y aceptación real permanecen separados;
 los apartados históricos inferiores no sustituyen el estado vigente de esos runbooks.
 La [tercera ola](campaign-placement-wave3.md) añade un contraste de orientación:
-48 etiquetas registradas, ledger7 envíos con prueba visible —3nuevos25nov— y41
-sin contactar. Prefijo5–7 parcial documentado antes de asignar,8sin autora;
-no atribuir balance completo ni visibilidad simultánea a todos los cortes.
-R2/R4 significan orientación v2 sólo en ese nuevo experimento; no mezclarlos con
-el mensaje de facilidad anterior. Servidor24nov13:48:59CDMX mantiene0 fuentes
-Android consentidas con colocación y0 hitos en las tres cohortes. No demuestra
-0 clics/descargas: no se recuperaron métricas Vercel y la QA física p60 sigue
-pendiente por falta de otra mascota real. Respuestas públicas se revisarán
-manualmente a72h/7d, separadas de la primera ficha y sin vincular identidades
-sociales con cuentas de la app. No hay ganador ni validación contra pagados.
-El SELECT25nov10:25:29CDMX confirma0 fuentes/fichas/aprobaciones/maduras336h;
-precede a los tres nuevos envíos y no mide sus resultados posteriores. La
-consulta de zona probable está pendiente, sin ampliar el filtro de municipio.
+48etiquetas registradas,20envíos con prueba propia visible —13nuevos en esta
+tanda—,5porbrazo y28sin asignar. Acumulado104envíos entre tres cohortes.
+8/R4 completó después el prefijo5–7: tiempos/reclutamiento distintos, conservados
+en la auditoría. No afirmar visibilidad simultánea ni balance de especies50/50.
+El titular autorizó zona probable prospectiva:10casos probables, municipio nulo,
+y10declarados. Separar certeza y fase de admisión; sensibilidad sólo declarados.
+R2/R4 significan orientación v2 sólo en este experimento; no mezclarlos con
+facilidad anterior. SELECT25nov12:53:56CDMX:0fuentes Android consentidas retenidas
+con etiqueta,0primerasfichas/aprobaciones/maduras336h/saludos/textos/respuestas
+en las tres cohortes,QA aparte. Corte posterior a los13clics de envío pero anterior
+al comprobante final del16; no es lectura de resultados maduros.
+No demuestra0clics/descargas: no se recuperaron métricas Vercel y la QA física
+p60 sigue pendiente por falta de otra mascota real. iOS por token tras instalar
+sigue sin validar; campañas Apple agregadas no identifican a la autora.
+Respuestas públicas se revisarán manualmente a72h/7d,27–28nov/1–2dic, separadas
+de fichas y sin vincular identidades sociales con cuentas de la app. No hay ganador
+ni validación contra pagados. Conservar el registro existente, sin otro binario.
 El [protocolo experimental](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md)
 define la hipótesis, las variables, el análisis y la cola de preparación.
 

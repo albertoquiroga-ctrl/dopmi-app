@@ -1,14 +1,18 @@
 # Cola vigente — integración de producción25/nov/2026
 
-Continuación25nov de la [tercera ola](campaign-placement-wave3.md):3 comentarios
-nuevos verificados (2personal/1DopMi,3perros); ledger7 enviados/7conpruebavisible,
-0pendientes nuevos,41 sin asignar/contactar. Acumulado91 enviados en trescohortes.
-Prefijo parcial5–7 documentado antes de asignar;8sin autora, advertenciaexplícita
-de bloque incompleto. Hay3candidatas de gatos no asignadas: revalidar/completar
-antes de enviar. Consulta sobre zona probable pendiente; se conserva municipio
-explícito, sin ampliar geografía ni fabricar ubicación. Plan manual nuevo28nov/2dic,
-conservando27nov/1dic. No nuevo build/despliegue/registro; QA física sigue pendiente.
-El corte24nov inferior se conserva como historial supersedido por este estado.
+Continuación25nov12:55CDMX de la [tercera ola](campaign-placement-wave3.md):
+13comentarios nuevos con comprobante propio visible; ola3 suma20envíos,5porbrazo,
+10poridentidad,12gatos/8perros,0pendientes nuevos. Acumulado104 envíos en trescohortes.
+Quedan28tokens sin asignar y0prospectos listos sin contactar: reunir/revalidar
+otros bloques, priorizando perros para acercarse al50/50, sin consumir cuotas.
+Zona probable autorizada prospectivamente:10casos de grupos locales permitidos,
+municipio nulo;10declarados. Analizar separados certeza geográfica y fase.
+8/R4 completó el prefijo5–7 en otro momento; conservar advertencia de auditoría.
+Plan manual72h/7d para20envíos:27–28nov/1–2dic; no automatización creada.
+Servidor25nov12:53:56CDMX mantiene0fuentes/fichas Android consentidas con etiqueta;
+no conteos de clics/descargas, ganador ni comparación concluyente contra pagados.
+Sin nuevo build/despliegue/registro; QA física p60 pendiente por falta de mascota real.
+Los cortes inferiores se conservan como historial supersedido por este estado.
 
 Tercera ola orgánica: [protocolo y corte parcial](campaign-placement-wave3.md),
 48 rutas desplegadas/habilitadas sobre privacidad reciente,4 enviados/visibles

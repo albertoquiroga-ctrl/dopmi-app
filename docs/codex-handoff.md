@@ -2,18 +2,19 @@
 
 ## Arranque vigente — atribución y restauraciones, 20/11/2026
 
-Actualización25nov: [tercera ola y diagnóstico de conversión](campaign-placement-wave3.md).
-Landing reciente0fcb962 sobre privacidadf855224 y48 etiquetas nuevas habilitadas;
-ledger7 enviados con prueba visible —3 nuevos hoy— y41 sin contactar. Acumulado91
-en tres cohortes; no sustituir denominadores ni asumir visibilidad simultánea.
-Se documentó antes de asignar el prefijo parcial5–7;8 sigue sin autora y la
-auditoría advierte bloque incompleto. Hay3 candidatas de gatos aún sin asignar.
-Preferencia sobre geografía probable consultada, sin respuesta/aplicación al corte.
-Control beneficio v1 frente a orientación v2; R2/R4 cambian de texto sólo en
-este experimento. QA física p60 sigue pendiente por falta de otra mascota real.
-No hay clics medidos ni ganador; leer límites iOS/consentimiento y plan manual
-de respuestas27nov/1dic y28nov/2dic antes de continuar. No reaplicar registro ni publicar
-otro binario para esta ampliación de etiquetas.
+Actualización25nov12:55CDMX: [tercera ola y diagnóstico de conversión](campaign-placement-wave3.md).
+Se añadieron13 comentarios con prueba propia visible:6personal/7DopMi,8gatos/5perros.
+Ola3 suma20envíos,5porbrazo,10poridentidad,12gatos/8perros;28tokens sin asignar.
+Acumulado104 envíos entre tres cohortes, sin afirmar visibilidad simultánea.
+El titular autorizó prospectivamente zona probable de grupos locales permitidos:
+10casos probables con municipio nulo y10declarados; separar certeza y fase de admisión.
+8/R4 completó después el prefijo5–7 conservado: auditoría advierte tiempos y
+reclutamiento distintos. Protocolo, textos/enlaces y límites en el runbook.
+Servidor25nov12:53:56CDMX:0fuentes Android consentidas con colocación/0fichas;
+no mide clics/descargas ni prueba ausencia de efecto. iOS individual sigue pendiente.
+Plan manual72h/7d de20envíos:27–28nov/1–2dic, sin automatización creada.
+Landing0fcb962 sobre privacidadf855224 y48etiquetas siguen vigentes; no reaplicar
+registro ni publicar otro binario. QA física p60 pendiente por falta de mascota real.
 
 Entrega a campañas21nov: [contrato de atribución](campaign-attribution-handoff.md)
 y [experimento de adquisición](superpowers/specs/2026-11-21-rescuer-acquisition-experiment-design.md).

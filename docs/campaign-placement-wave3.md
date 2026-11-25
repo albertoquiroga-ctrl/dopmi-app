@@ -1,5 +1,71 @@
 # Tercera ola MTY — protocolo prospectivo
 
+Actualización prospectiva25nov12:22:15CDMX: el titular autorizó incluir rescates
+propios de grupos locales permitidos sin municipio declarado, como **zona
+probable, sin confirmar**, separada del municipio explícito en el análisis.
+Aplica sólo a candidatas no asignadas; no reetiquetar los7 envíos previos.
+Conservar `municipality=null`, el grupo observado y la fase de admisión; no
+deducir ciudad de nombre del grupo, lada o perfil. Excluir ubicación explícita
+fuera de la zona, grupos retenidos/antipromoción, terceros y avisos resueltos.
+Los demás criterios, mensajes, identidades y48tokens permanecen iguales.
+Esta enmienda supersede desde ese momento el rechazo absoluto por municipio
+desconocido y la consulta pendiente del corte anterior; no acredita nuevos envíos.
+Los bloques completos disponibles pueden continuar aunque el8 siga pendiente;
+conservar su orden interno y el horario real, sin reasignar autores o tokens.
+Fase de admisión y certeza geográfica son campos distintos. Las tres candidatas
+declaradas preseleccionadas se conservan como tales y registran admisión en la
+fase ampliada al incorporarse después de esta decisión. Si8/R4 queda probable
+y5–7 declarados, el contraste de ese bloque mezcla identidad/mensaje con certeza
+y momento: desglosar ambos factores y hacer sensibilidad sólo de declarados,
+sin atribuir diferencias a un factor aislado ni afirmar ocultamiento.
+
+## Corte de ejecución — 25nov2026, fase ampliada
+
+Se publicaron **13 comentarios adicionales** entre12:33:42 y12:53:38CDMX,
+comprobados como asentados conIDaceptado y token propio; último comprobante
+12:54:05.894CDMX. Son6personal/7DopMi,8gatos/5perros y3municipios declarados/
+10zonas probables. Se conservaron las asignaciones del manifiesto, el orden de
+descubrimiento dentro de cada bloque y el horario real de contacto. Los bloques
+3y5 completos pudieron avanzar antes de completar el4; no se reasignaron tokens.
+
+Ola3: **20envíos/20comprobantes propios visibles/0pendientes nuevos**,5porbrazo,
+10personal/10DopMi,12gatos/8perros;28sin asignar/contactar y0prospectos listos sin
+contactar. De los20casos,10declaran municipio y10sólo tienen indicio del grupo;
+1independiente autodeclarada y19rescates personales sin independencia verificada.
+Priorizar perros en la siguiente selección para acercar especies al50/50, sin
+forzar casos no elegibles. Acumulado104envíos entre tres cohortes,52poridentidad,
+56gatos/48perros. Los7comprobantes previos no se revisitaron en esta tanda; tampoco
+se revisó simultáneamente la visibilidad de los84envíos históricos.
+
+8/R4 se asignó al siguiente perro pendiente bajo enmienda durable previa,
+`wave3-block2-completion-20261125`, después de la autorización geográfica. El
+prefijo5–7 y todos los tokens permanecen intactos. Auditoría:0errores y advertencia
+`completed_amended_block` por tiempos/reclutamiento distintos. No interpretar
+ese bloque como reclutado de una sola vez ni como contraste causal aislado.
+Guía privada de operación y guardas:29/29pruebasPASS, incluidas geografía,
+duplicados, preservación, envío único y recuperación del registro interrumpido.
+
+SELECTPROD25nov18:53:56.919929UTC/12:53:56CDMX:60/24/48etiquetas noQA habilitadas,
+QA separada,0fuentes Android consentidas retenidas con colocación,0primerasfichas/
+aprobaciones/maduras336h/saludos/primerostextos/respuestaspropias/fichastotales en
+las tres cohortes. Es posterior a los13clics de envío pero precede al comprobante
+final del16 a18:54:05.894UTC; no acredita resultados maduros ni0clics/descargas.
+Se conserva el límite iOS agregado por brazo y la QA física p60 pendiente por
+falta de otra mascota real. No hay ganador, significancia o comparación pagada.
+
+Plan manual72h/7d extendido a20envíos: los13nuevos corresponden a28nov/2dic;
+se preservan las fechas anteriores27nov/1dic y28nov/2dic. No se creó automatización.
+Capturas20 revisadas visualmente;17y20 tienen fragmentos mal renderizados en el
+JPEG, por lo que la comprobación literal usa el DOM asentado. Las capturas
+acreditan la vista propia, no visibilidad independiente para terceros.
+Ledger privadoSHA256 `8a00d89768d44cad0e51c9f30d877d2ae8b5bfae7dbc08efe2414d9db0cc2bf0`.
+Respaldo privado `wave3-20261125-geo-private`:59archivos copiados y cotejados;
+manifiestoSHA256 `1e90a522e8ccdce11307a84cad0b630af8a21bbeb56eae4bd848f46fabafd9cb`.
+IDs,autoras,URLs y capturas permanecen fuera deGit; ledgers60/24 sin modificaciones.
+Esta continuación no cambió cliente, landing, registroPROD ni gasto.
+
+## Preparación original — 24nov2026
+
 Preparación24/11/2026, CDMX. El titular autorizó más volumen y afinar la
 invitación. Decisión operativa: **máximo48 contactos nuevos**, sin cuota diaria
 ni obligación de consumir todo el inventario. El protocolo se fijó antes de los

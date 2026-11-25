@@ -10343,3 +10343,40 @@ Se conservaron exclusiones de geografía, antigüedad, terceros, grupos retenido
 y origen no acreditado. No ganador ni significancia. LedgerSHAe6b0efe4…;36archivos
 privados respaldados y cotejados fuera deGit en wave3-20261125-private, sin
 alterar backup24nov ni ledgers60/24. [Evidencia y límites](campaign-placement-wave3.md).
+
+### 25/11/2026 — Trece comentarios nuevos bajo ampliación geográfica autorizada
+
+Titular autorizó a18:22:15UTC incluir rescates propios de gruposMTY permitidos
+sin municipio explícito: zona probable separada, municipio nulo y fase de admisión
+registrada. Los7envíos previos no se reetiquetaron; se preservaron grupos retenidos/
+antipromoción, exclusiones, antigüedad y autores/posts ya contactados. Se descartó
+un caso con CDMX explícita pese a aparecer en grupo local y otro de disponibilidad
+ambigua. La zona probable no verifica por sí sola municipio o independencia.
+
+Envíos18:33:42–18:53:38UTC:13nuevos,6personal/7DopMi,8gatos/5perros,3declarados/
+10probables. Comprobantes asentados conIDaceptado y token propio, último18:54:05.894UTC;
+13capturas nuevas revisadas independientemente. En17y20 hay fragmentos mal
+renderizados enJPEG; texto literal acreditado por DOM, sin afirmar visibilidad ajena.
+Ola3:20envíos/20comprobantes visibles/0pendientes nuevos,5porbrazo,10poridentidad,
+12gatos/8perros,10declarados/10probables;28tokens sin asignar y0prospectos listos
+sin contactar. Acumulado104envíos,52poridentidad,56gatos/48perros; visibilidad
+histórica no revisada simultáneamente. Siguiente selección prioriza perros para
+aproximarse al50/50 sin forzar elegibilidad.
+
+8/R4 completó después el prefijo5–7 con primer perro pendiente, registro durable
+previo y snapshots conservados. Bloques3y5 avanzaron completos antes de4, según
+protocolo prospectivo. Guardas privadas29/29PASS y revisión independiente sinP1/P2;
+auditoría final0errores, sólo `completed_amended_block` por tiempos/reclutamiento.
+Análisis separa fase de admisión y certeza geográfica, con sensibilidad declarados;
+no causalidad aislada, ganador ni significancia.
+
+SELECTPROD18:53:56.919929UTC:60/24/48etiquetas noQA habilitadas,QA aparte,0fuentes
+Android consentidas con colocación/primerasfichas/aprobaciones/maduras336h/saludos/
+primerostextos/respuestas/fichastotales en las tres cohortes. Corte tras13clics de
+envío pero anterior al comprobante final16; no0clics/descargas ni resultados maduros.
+iOS sigue agregado por brazo. QA física p60 pendiente por falta de otra mascota real.
+Plan manual72h/7d de20envíos preserva fechas previas y añade28nov/2dic; sin agenda
+automática. Sin build móvil, despliegue, registro repetido, DDL ni gasto.
+LedgerSHA8a00d897…; respaldo privado wave3-20261125-geo-private de59archivos,
+copias cotejadas, manifiestoSHA1e90a522…; ledgers60/24 intactos. Sin datos reales enGit.
+[Protocolo y relevo](campaign-placement-wave3.md).
