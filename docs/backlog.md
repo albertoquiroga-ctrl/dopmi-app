@@ -1,4 +1,17 @@
-# Lote vigente — Tutorial inicial de swipe, 24/nov/2026 CDMX
+# Lote vigente — Acceso a Tienda Rescatista, 24/nov/2026 CDMX
+
+Implementado en codex/rescuer-store-20261124 sobre c58eb51d/producto edcdd5aa,
+mock d9f9aa43. Inicio muestra «Croquetas con causa» y abre la Tienda compartida;
+conserva las cinco pestañas y el modo. Sin SQL, flags o cambios económicos.
+Verificación local nueva: perfil PROD/adopciones/Amazon9PASS/1SKIP; adopciones
+sin Amazon4PASS/6SKIP; capturas2PASS/cinco PNG. Revisión independiente de código
+y visual sin P1/P2. Regresiones144PASS/1SKIP, analyze sin incidencias y44 checks
+de configuración aprobados. CI completa en preparación; todavía
+no publicado ni instalado. Integrador: terminar gates y distribuir por Play
+interno/TestFlight con ventanas propias y cola única. QA física sigue diferida
+por el titular; no reiterar solicitud. Plan: superpowers/plans/2026-11-24-rescuer-store.md.
+
+# Lote anterior — Tutorial inicial de swipe, 24/nov/2026 CDMX
 
 Entregado para QA: Android2.3.12(444) en Play interno e iOS2.3.12(445) cargada y
 procesada por Apple sin error. Fuente edcdd5aa/tagcodex/swipe-tutorial-20261124-v2;

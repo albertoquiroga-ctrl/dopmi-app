@@ -8,7 +8,9 @@ import 'store_repository.dart';
 import '../../core/design_tokens.dart';
 
 class StorePromotion extends ConsumerWidget {
-  const StorePromotion({super.key});
+  const StorePromotion({super.key}) : rescuer = false;
+  const StorePromotion.rescuer({super.key}) : rescuer = true;
+  final bool rescuer;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final preview =
@@ -22,84 +24,176 @@ class StorePromotion extends ConsumerWidget {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: () => context.push('/store'),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 18, 8, 18),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final copy = Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        preview ? 'Vista previa de Tienda' : 'Tienda Dopmi',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        preview
-                            ? 'Catálogo TEST privado. No permite compras reales.'
-                            : 'Encuentra alimento y compra en comercios autorizados. Las comisiones ayudan a mantener Dopmi.',
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: DopmiTokens.orangeButton,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
+            child: rescuer
+                ? _RescuerStoreCard(preview: preview)
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 18, 8, 18),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final copy = Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Ver más',
-                              style: TextStyle(
+                              preview
+                                  ? 'Vista previa de Tienda'
+                                  : 'Tienda Dopmi',
+                              style: const TextStyle(
+                                fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
                               ),
                             ),
-                            Icon(
-                              Icons.chevron_right,
-                              size: 20,
-                              color: Colors.white,
+                            const SizedBox(height: 8),
+                            Text(
+                              preview
+                                  ? 'Catálogo TEST privado. No permite compras reales.'
+                                  : 'Encuentra alimento y compra en comercios autorizados. Las comisiones ayudan a mantener Dopmi.',
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: DopmiTokens.orangeButton,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Ver más',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  );
-                  final image = SvgPicture.asset(
-                    'assets/profile/croquetas-banner-pet.svg',
-                    width: 110,
-                    height: 138,
-                    excludeFromSemantics: true,
-                  );
-                  if (constraints.maxWidth < 300 ||
-                      MediaQuery.textScalerOf(context).scale(16) > 24) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        copy,
-                        Align(alignment: Alignment.centerRight, child: image),
-                      ],
-                    );
-                  }
-                  return Row(
-                    children: [
-                      Expanded(child: copy),
-                      image,
-                    ],
-                  );
-                },
-              ),
-            ),
+                        );
+                        final image = SvgPicture.asset(
+                          'assets/profile/croquetas-banner-pet.svg',
+                          width: 110,
+                          height: 138,
+                          excludeFromSemantics: true,
+                        );
+                        if (constraints.maxWidth < 300 ||
+                            MediaQuery.textScalerOf(context).scale(16) > 24) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              copy,
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: image,
+                              ),
+                            ],
+                          );
+                        }
+                        return Row(
+                          children: [
+                            Expanded(child: copy),
+                            image,
+                          ],
+                        );
+                      },
+                    ),
+                  ),
           ),
         ),
       ),
     );
   }
+}
+
+class _RescuerStoreCard extends StatelessWidget {
+  const _RescuerStoreCard({required this.preview});
+  final bool preview;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final copy = Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              preview ? 'Vista previa de Tienda' : 'Croquetas con causa',
+              style: const TextStyle(
+                color: DopmiTokens.ink,
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              preview ? 'Catálogo TEST privado. No permite compras reales.' : 'Compra a través de nuestra tienda y ayuda a que las mascotas en DopMi lleguen a más personas.',
+              style: const TextStyle(
+                color: DopmiTokens.muted,
+                fontSize: 12,
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              constraints: const BoxConstraints(minHeight: 48),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: DopmiTokens.orangeButton,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      'Ver más',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.chevron_right, color: Colors.white, size: 20),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+      Widget photo(double width, double height) => Image.asset(
+        'assets/welcome-pets.png',
+        width: width,
+        height: height,
+        fit: BoxFit.cover,
+        alignment: const Alignment(0, -.3),
+        excludeFromSemantics: true,
+      );
+      if (constraints.maxWidth < 300 ||
+          MediaQuery.textScalerOf(context).scale(16) > 24) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [copy, photo(constraints.maxWidth, 150)],
+        );
+      }
+      return IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: copy),
+            photo(constraints.maxWidth * .36, 132),
+          ],
+        ),
+      );
+    },
+  );
 }

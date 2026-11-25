@@ -10689,3 +10689,19 @@ no repetir operaciones. Sin SQL, servicios/flags ni promoción pública. Instala
 QA/aceptación pendientes; Samsung expresamente diferido. Auditoría acotada no
 encontró API ASC local para leer grupo; no se pidió nuevo acceso. Mejora de
 regresión quedó comprobada en suite completa antes del segundo freeze.
+
+### 24/nov/2026 CDMX — Tienda desde Inicio Rescatista, implementación local
+
+Solicitud nueva del titular, base c58eb51d/producto edcdd5aa; mock congelado
+d9f9aa43. Inventario independiente encontró banner existente detrás del guard
+adoptionOnlyBuild y confirmó cinco pestañas, sin nueva Tienda en navbar. Se
+admite Amazon disponible y se incorpora variante con texto/foto del mock.
+StoreEntry, ruta compartida, modo, retorno y handoff se conservan; sin SQL/flags.
+9PASS/1SKIP con PROD/Amazon;4PASS/6SKIP sin Amazon; capturas2PASS/cinco PNG y
+revisión independiente código/visual sin P1/P2. La primera fixture usaba términos
+TEST con perfil PROD: corregida la fixture, se reprodujo el acceso ausente con
+el guard original antes del green. El harness espera el layout tras scroll y
+exige hitTestable para no confundir un tap fuera de pantalla con navegación.
+Análisis limpio(77,8s), regresiones144PASS/1SKIP y44 checks de configuración
+aprobados. CI/distribución aún pendientes; no instalado/aceptado.
+Samsung sigue diferido. Inactividad queda fuera, pendiente criterio del titular.

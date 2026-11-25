@@ -1,3 +1,18 @@
+## 24/11/2026 CDMX — Tienda desde Inicio Rescatista
+
+El titular pide recuperar la Tienda del modo Rescatista del mock de Irlanda.
+Referencia congelada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c: tarjeta
+«Croquetas con causa» al final de Inicio, con fotografía welcome-pets, texto y
+CTA «Ver más». Abre la misma Tienda y permite regresar sin cambiar de modo.
+Se conservan las cinco pestañas Inicio/Casos/Publicar/Mensajes/Perfil; el mock
+no añade una pestaña Tienda para Rescatista.
+
+La entrada acepta la disponibilidad Amazon del perfil de adopciones y mantiene
+las comprobaciones de catálogo y actor. Conserva la advertencia de la vista
+privada TEST. Sin cambios de catálogo, enlaces, confirmación de salida a Amazon,
+consentimientos, SQL, servicios o finanzas. La suspensión por falta de respuesta
+es otra tarea: sigue pendiente definir su criterio, no se incorpora a este lote.
+
 ## 24/11/2026 CDMX — Tutorial inicial de swipe en Adoptar
 
 El titular solicita enseñar el swipe con el patrón visual de Tinder para quienes

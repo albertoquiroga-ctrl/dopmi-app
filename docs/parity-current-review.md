@@ -1,3 +1,20 @@
+## 24/nov — Tienda Rescatista del mock de Irlanda
+
+Scope congelado: d9f9aa43, tarjeta CroquetasConCausaCard al final de RescuerHome.
+El acceso existente estaba oculto por adoptionOnlyBuild; ahora admite Amazon
+disponible sin exponer la entrada ante catálogo OFF/error o actor distinto.
+Variante Rescatista con fotografía y texto del mock; componente donante y
+catálogo compartido conservados. Mantiene push('/store'), retorno y cinco tabs.
+
+Prueba real del router y StoreScreen: apertura, Back, regreso por Inicio/Casos/
+Perfil, modo intacto, guardas y reflujo320px/text200. PROD/Amazon9PASS/1SKIP;
+perfil adoption-only sin Amazon4PASS/6SKIP. Cinco PNG del widget real (capturas
+2PASS), fuentes reales y catálogo bundled; revisión independiente de código/
+visual sin P1/P2. No acredita imágenes remotas ni dispositivo. Evidencia privada
+.tools/qa-rescuer-store-20261124. Análisis limpio, regresiones144PASS/1SKIP y
+44 checks de configuración aprobados. CI/distribución pendientes;
+QA física expresamente diferida. Sin SQL, flags, sexta pestaña o cambio de giro.
+
 ## 24/nov — Tutorial inicial de swipe pedido por el titular
 
 Corrección posterior al primer freeze: CI45462196838 detectó tres regresiones
