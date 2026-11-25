@@ -1,3 +1,28 @@
+## Tienda Rescatista — 24/nov/2026, entrega QA446/447
+
+Fuente `36f8e47f0cf2203cee92e7868ab7672f81a98c3c`, tag
+`codex/rescuer-store-20261124-v1`, rama `codex/rescuer-store-20261124`.
+[CI45535907438](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45535907438)
+cuatro SUCCESS;2178 Flutter PASS/0FAIL/5SKIP en la suite completa de CI.
+144 regresiones locales PASS/1SKIP, analyze limpio y44 checks de configuración.
+Nueve escenarios PROD/Amazon y cuatro sinAmazon aprobados; cinco capturas y
+revisión independiente código/visual sin P1/P2. No suite completa local nueva.
+Mock congelado d9f9aa43: Croquetas con causa al final de Inicio; Tienda compartida,
+retorno y cinco pestañas Rescatista. Conserva tutorial y producto previo.
+
+| Plataforma | Artefacto verificado | Publicación acreditada | Pendiente |
+|---|---|---|---|
+| Android2.3.12(446) | CM6b0653808ecb7ad6ba92f5b7,14SUCCESS; AAB96973399B, SHA256`617b5a101132fcc421f6139f96af81346b2cc27cafd4221a6873bd5e6cfa1a09`; firma/pin/identidad/runtime03:33UTC25/nov | Log Play interno/completed/Successfully published03:33UTC | Lectura Console independiente, instalación y aceptación |
+| iOS2.3.12(447) | CM6b0657362e0ce1beaab595c1,15SUCCESS; IPA55044633B, SHA256`9130981f5b2bd3fa3b1f50950d4eeb2ec5d48c9f5fa3a69ad82b2d0a55edcce1`; estructura/provisión/runtime03:48UTC25/nov | Carga correcta; tarea Apple6b065a5a93610bf5c165cd96 finished/error=false03:53UTC | Lectura de grupo TestFlight, instalación y aceptación |
+
+Firma iOS: estructura/perfil/carga comprobados, sin validación criptográfica local
+independiente. PROD/adopciones/Amazon, finanzas cliente OFF, Android Meta actual
+conservado/iOS Meta OFF. Dos POST y ventanas5min reales, cola serial; builds y
+observadores nativos cerrados. Paquete consumido `.tools/qa-rescuer-store-20261124/distribution`;
+no reenviar/descargar. Sin SQL, servicios/flags, promoción pública o aceptación
+inferida. Samsung expresamente diferido; no reiterar solicitud. Recibo final
+delivery.verified.private.json, SHA6387530e…e6692, en el paquete consumido.
+
 ## Tutorial swipe — 24/nov/2026, entrega QA444/445
 
 Fuente `edcdd5aa030685817907bd80c79a91b4bcec8585`, tag

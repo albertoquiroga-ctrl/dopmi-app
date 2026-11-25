@@ -6,10 +6,12 @@ conserva las cinco pestañas y el modo. Sin SQL, flags o cambios económicos.
 Verificación local nueva: perfil PROD/adopciones/Amazon9PASS/1SKIP; adopciones
 sin Amazon4PASS/6SKIP; capturas2PASS/cinco PNG. Revisión independiente de código
 y visual sin P1/P2. Regresiones144PASS/1SKIP, analyze sin incidencias y44 checks
-de configuración aprobados. CI completa en preparación; todavía
-no publicado ni instalado. Integrador: terminar gates y distribuir por Play
-interno/TestFlight con ventanas propias y cola única. QA física sigue diferida
-por el titular; no reiterar solicitud. Plan: superpowers/plans/2026-11-24-rescuer-store.md.
+de configuración aprobados. Fuente36f8e47f/tagcodex/rescuer-store-20261124-v1,
+CI45535907438 cuatro SUCCESS;2178PASS/0FAIL/5SKIP en suite completa de CI.
+Android446 verificada y publicada en Play interno; iOS447 verificada y cargada,
+Apple finished/error=false03:53UTC25/nov. No builds u observadores activos;
+no reenviar ni descargar otra vez. Grupo TestFlight, instalación/aceptación pendientes; QA física sigue
+diferida por el titular, no reiterar solicitud. Plan: superpowers/plans/2026-11-24-rescuer-store.md.
 
 # Lote anterior — Tutorial inicial de swipe, 24/nov/2026 CDMX
 

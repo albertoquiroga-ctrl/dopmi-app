@@ -10705,3 +10705,33 @@ exige hitTestable para no confundir un tap fuera de pantalla con navegación.
 Análisis limpio(77,8s), regresiones144PASS/1SKIP y44 checks de configuración
 aprobados. CI/distribución aún pendientes; no instalado/aceptado.
 Samsung sigue diferido. Inactividad queda fuera, pendiente criterio del titular.
+
+### 24/nov/2026 CDMX — Tienda Rescatista, entrega QA446/447 verificada
+
+Fuente36f8e47f0cf2203cee92e7868ab7672f81a98c3c, tagcodex/rescuer-store-20261124-v1,
+rama codex/rescuer-store-20261124. CI45535907438 cuatro SUCCESS;2178PASS/0FAIL/
+5SKIP en la suite completa de CI, sin suite completa local repetida. Regresiones
+locales144PASS/1SKIP, perfiles PROD/Amazon9PASS/1SKIP y sinAmazon4PASS/6SKIP,
+analyze sin incidencias,44 checks de configuración y cinco capturas revisadas
+independientemente sin P1/P2. La prueba de ruta real verifica entrada/pop/regreso
+por Inicio/Casos/Perfil, modo conservado y cinco pestañas; texto320px/200% accesible.
+
+Android2.3.12(446), CM6b0653808ecb7ad6ba92f5b7,14SUCCESS. AAB96973399B/SHA256
+617b5a101132fcc421f6139f96af81346b2cc27cafd4221a6873bd5e6cfa1a09; identidad,
+firma/pin/runtime comprobados03:33UTC25/nov, logPlay internal/completed/Successfully
+published03:33UTC. Console independiente y prueba física siguen pendientes.
+iOS2.3.12(447), CM6b0657362e0ce1beaab595c1,15SUCCESS. IPA55044633B/SHA256
+9130981f5b2bd3fa3b1f50950d4eeb2ec5d48c9f5fa3a69ad82b2d0a55edcce1; estructura,
+provisión/runtime/carga03:48UTC. Tarea Apple6b065a5a93610bf5c165cd96 finished,
+error=false03:53UTC. No atribuir firma criptográfica local iOS ni lectura del grupo.
+
+Dos POST, uno/plataforma. Ventanas reales Android02:52:47→02:58:37UTC e
+iOS03:28:01→03:33:03UTC, cada una con mínimo300s y conciliación sin cambios;
+cola serial. Builds/observadores cerrados, descargas consumidas una vez por
+artefacto. Recibo .tools/qa-rescuer-store-20261124/distribution/delivery.verified.private.json,
+SHA6387530e2e8ca077f62f12528dc3eea96013e2f6f9a3d0362a35a874458e6692.
+No repetir envíos/descargas. Conserva PROD/adopciones/Amazon, cliente financiero
+OFF y selectores Meta previos; sin SQL, flags/servicios o promoción pública.
+Implementado/verificado/distribuido para QA; instalación/aceptación pendientes.
+Samsung diferido por el titular; no reiterar solicitud. Inactividad sigue pendiente
+de definición de negocio y queda fuera de este lote.

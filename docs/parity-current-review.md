@@ -12,8 +12,11 @@ perfil adoption-only sin Amazon4PASS/6SKIP. Cinco PNG del widget real (capturas
 2PASS), fuentes reales y catálogo bundled; revisión independiente de código/
 visual sin P1/P2. No acredita imágenes remotas ni dispositivo. Evidencia privada
 .tools/qa-rescuer-store-20261124. Análisis limpio, regresiones144PASS/1SKIP y
-44 checks de configuración aprobados. CI/distribución pendientes;
-QA física expresamente diferida. Sin SQL, flags, sexta pestaña o cambio de giro.
+44 checks de configuración aprobados. Fuente36f8e47f/tagv1, CI45535907438 cuatro
+SUCCESS;2178PASS/0FAIL/5SKIP en la suite completa de CI. Android446 AAB/firma/
+runtime/Play interno comprobados03:33UTC25/nov; iOS447 IPA/provisión/runtime y
+carga03:48UTC, tarea Apple finished/error=false03:53UTC. No acredita grupo TestFlight, instalación
+o aceptación. QA física expresamente diferida. Sin SQL, flags o cambio de giro.
 
 ## 24/nov — Tutorial inicial de swipe pedido por el titular
 

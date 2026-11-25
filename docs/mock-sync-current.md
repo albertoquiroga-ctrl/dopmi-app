@@ -1,4 +1,25 @@
-# Checkpoint vigente — tutorial de swipe, 24/nov/2026 CDMX
+# Checkpoint vigente — Tienda Rescatista, 24/nov/2026 CDMX
+
+Producto36f8e47f0cf2203cee92e7868ab7672f81a98c3c/tagcodex/rescuer-store-20261124-v1,
+rama codex/rescuer-store-20261124, sobre edcdd5aa/c58eb51d. Mock d9f9aa43
+congelado: tarjeta «Croquetas con causa» al final de Inicio Rescatista, foto/texto
+del mock, acceso a la Tienda compartida y regreso conservando modo/cinco pestañas.
+CI45535907438 cuatro SUCCESS; suite completa2178PASS/0FAIL/5SKIP. Local:144
+regresiones PASS/1SKIP, PROD/Amazon9PASS/1SKIP, perfil sinAmazon4PASS/6SKIP,
+analyze limpio,44 configuración PASS, cinco capturas/revisión independiente
+de código y visual sin P1/P2. Sin SQL, servicios, flags o cambio financiero.
+
+Android2.3.12(446), CM6b0653808ecb7ad6ba92f5b7:14SUCCESS; AAB/firma/pin/runtime
+verificados03:33UTC25/nov; log Play internal/completed confirmado03:33UTC.
+iOS2.3.12(447), CM6b0657362e0ce1beaab595c1:15SUCCESS; IPA/provisión/runtime/carga
+verificados03:48UTC. Apple6b065a5a93610bf5c165cd96 finished/error=false03:53UTC.
+Grupo TestFlight, instalación/QA y aceptación no acreditados. Samsung diferido
+por el titular; no reiterar solicitud. Dos POST, ventanas5min propias, cola serial;
+ningún build/observador nativo activo. Paquete .tools/qa-rescuer-store-20261124/distribution
+consumido: no repetir envíos/descargas. Recibo delivery.verified.private.json.
+Conserva tutorial y correctivo gris de Tienda. Inactividad: criterio aún pendiente.
+
+# Corte anterior — tutorial de swipe, 24/nov/2026 CDMX
 
 20:51UTC: fuente edcdd5aa030685817907bd80c79a91b4bcec8585/tag
 codex/swipe-tutorial-20261124-v2, rama codex/swipe-tutorial-20261124.
