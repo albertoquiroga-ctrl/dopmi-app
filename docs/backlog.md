@@ -1,6 +1,6 @@
 # Encargo en este checkout — Reportes de adopción, 25/nov/2026 CDMX
 
-Implementación aislada en `codex/adoption-metrics-20261125` desde61fa88d4. [Decisiones](product-decisions.md#25112026-cdmx--reporte-administrativo-de-adopciones) y [ficha única](admin-adoption-report.md): una persona única por mascota al abrir detalle, sólo adopciones publicadas, favoritos actuales, contactos y primeras respuestas. Gates locales/revisión/demostración en curso; SQL remoto y publicación todavía no ejecutados. No absorbe ni cancela las entregas inferiores de otros checkouts.
+Implementación aislada en `codex/adoption-metrics-20261125` desde61fa88d4; fuentea8601c257a133a96dd2053a34eb182ea4ddd1e8b. [Decisiones](product-decisions.md#25112026-cdmx--reporte-administrativo-de-adopciones) y [ficha única](admin-adoption-report.md): una persona única por mascota al abrir detalle, sólo adopciones publicadas, favoritos actuales, contactos y primeras respuestas. Gates locales y [CI45717438879](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45717438879) aprobados (cuatro SUCCESS); revisión independiente/demo cerradas técnicamente. **Pendiente activación:** SQL remoto, publicación del panel, integración en siguiente entrega móvil autorizada y QA instalada. No absorbe ni cancela las entregas inferiores de otros checkouts.
 
 # Lote vigente — Tutorial inicial de swipe, 24/nov/2026 CDMX
 

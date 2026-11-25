@@ -10716,3 +10716,28 @@ Retro acotada: la primera cobertura sólo usaba RPC nuevos y omitía dos fronter
 históricas/temporales. Se probó añadir esos dos ejemplos concretos antes de cerrar
 la consulta: ambos detectaron el defecto y ambos pasan tras la corrección. Se conserva
 esa cobertura; no se infiere ahorro ni se añade un gate global o nueva política.
+
+## 25/11/2026 — Reportes de adopción: CI exacta aprobada, activación pendiente
+
+Fuente de producto `a8601c257a133a96dd2053a34eb182ea4ddd1e8b`, publicada en la
+rama `codex/adoption-metrics-20261125`. [CI45717438879](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45717438879)
+terminó **completed/success** para ese mismo SHA, confirmado por API de GitHub.
+Los cuatro trabajos terminaron SUCCESS: web-and-database, identity-and-adoption-backend,
+flutter e ios. Incluye pruebas/build del panel, migraciones/permisos/pgTAP y la
+prueba PostgreSQL nueva de unicidad/retirada; integración local real de identidad,
+adopción y comunidad; APK de desarrollo, análisis/suite/capturas Flutter;
+compilación de simulador iOS y pruebas nativas de consentimiento/instalación/ubicación.
+No es publicación de un candidato firmado, prueba en teléfono o aceptación humana.
+
+Revisiones independientes y demo local descritas arriba conservan su evidencia.
+Referencia de Irlanda reconsultada al cierre, sin cambios: d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c.
+Los cambios posteriores a a8601c25 son sólo documentación de recibo/recorrido;
+no invalidan sus gates de producto ni crean otro candidato. Sin CI ni builds duplicados.
+
+**Implementado y verificado técnicamente; no activado ni publicado.** Falta la
+operación autorizada de migración/panel y la inclusión del cliente en una entrega
+móvil autorizada, seguida de QA instalada. [Orden de activación y recorrido propuesto](admin-adoption-report.md#demostración-y-activación-pendiente).
+No se aplicó SQL remoto ni se alteraron campañas, permisos de conversaciones,
+flags financieros, dinero, publicación pública o entregas de otros checkouts.
+La medición nueva todavía no existe en el proyecto PROD consultado; las vistas
+anteriores del detalle no pueden reconstruirse y la app instalada no las registra.

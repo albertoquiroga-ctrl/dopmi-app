@@ -18,3 +18,11 @@ Ejemplo sintético de aceptación: Luna con12personas que abrieron detalle,4favo
 Rama aislada codex/adoption-metrics-20261125 desde61fa88d40f0088b84a37c7369da7fb4950b18ef6, conservando las fuentes posteriores conciliadas por la exploración de base. El checkout original1094e29c con cambios ajenos se preserva. Referencia Irlanda observada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c; el reporte usa el patrón del panel actual, sin absorber nuevos alcances del mock. Paquete separado codex/admin-report-context-20261122 trata moderación y no se activa aquí.
 
 La implementación local no aplica SQL remoto ni publica el panel ni un binario. Publicación y recorrido instalado requieren su evidencia y autorización vigente. La app instalada anterior no envía observaciones del detalle. Estado y resultados finales se registran en progress.md.
+
+## Demostración y activación pendiente
+
+Demo ejecutada en navegador con el React real y datos ficticios: Reportes → página2/2 → filtro Gatos11 → búsqueda Luna1 → cifras12/4/3/2. A390px la tabla permite llegar por teclado a las últimas columnas sin desbordar la página. Capturas privadas en `.tools/report-desktop.jpg` y `.tools/report-narrow.jpg`; no son datos remotos ni aceptación del titular.
+
+Recorrido propuesto tras la publicación: abrir **Reportes** con una cuenta administrativa → localizar una adopción publicada → contrastar los cuatro agregados. Con una cuenta controlada y cliente actualizado, abrir dos veces el detalle debe sumar una persona; guardar/quitar debe subir/bajar favoritos; contactar debe sumar una persona; leer no debe sumar respuesta y responder varias veces debe sumar una primera respuesta. Retirar consentimiento debe eliminar la observación del detalle. Estas acciones de QA instalada aún no se han ejecutado ni se han creado fixtures para ellas.
+
+Orden preparado de activación: preflight actualizado de historia/cuerpos/ACL en el proyecto elegido, migración aditiva una sola vez y postflight; publicar el panel con su entorno existente; incluir la medición en la siguiente entrega móvil autorizada y verificar su versión instalada. Conservar publicación móvil, moderación pendiente y configuración financiera por separado; ningún gate se abre por aprobar esta tabla.
