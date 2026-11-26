@@ -10829,3 +10829,26 @@ No envío iOS, fixtures nuevos, cambios de dinero/flags servidor o campañas.
 Referencia Irlanda reconsultada: d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c,
 sin cambios. El código de producto permanece idéntico al SHA validado; cierre
 posterior sólo documental, sin nueva CI ni builds duplicados.
+
+## 26/11/2026 — Consulta de consentimiento de Reportes, sin cambios de producto
+
+Titular confirmó «El contador si funciono, no retomes esa revision». Funcionamiento
+cerrado por su instrucción; no se reabrió durante la investigación posterior.
+Nueva solicitud: contrastar los datos reales de estas métricas con requisitos
+de Apple y Google, especialmente si obligan a una casilla de Analítica.
+
+[Investigación y auditoría de código](adoption-report-consent-review-20261126.md):
+fuente280b3186/HEAD documental8624b618. UUID de cuenta + mascota + primera fecha
+son la nueva captura de detalle, sóloSupabase; tres agregados restantes usan filas
+operativas existentes. El nuevo RPC no envía esos registros a Firebase/Meta.
+Investigación independiente acotada y contraste del integrador con fuentes
+oficiales actuales: no hay mandato de ese interruptor o pantalla por el reporte;
+sí obligaciones diferentes de divulgación, finalidad, consentimiento/base legal.
+Las políticas reconocen excepciones legales que se omitían en la explicación
+anterior; no se acreditó una base alternativa aplicable a Dopmi. El aviso vigente
+declara Analítica opcional y no se interpreta aceptación genérica como activación.
+
+No cambios de producto, consentimientos, datos remotos, fichas de tienda o builds.
+No pruebas repetidas por documentación. Precisión conservada: revisar la frase
+completa de la política y clasificar captura nueva frente a agregado antes de
+atribuir un formato de UI a una obligación de tienda; sin añadir gates globales.

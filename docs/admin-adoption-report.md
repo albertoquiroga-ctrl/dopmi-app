@@ -2,6 +2,11 @@
 
 Solicitud y decisiones del titular en esta conversación: tabla de todas las mascotas actualmente publicadas en adopción, perros y gatos; **una persona única por mascota** que entra al detalle, favoritos que siguen guardados, personas que contactaron y conversaciones con una primera respuesta de su rescatista. Sólo adopciones en este alcance. No incluye casos de apoyo ni denuncias de moderación.
 
+26/11/2026: el titular confirmó que el contador funciona y cerró su revisión.
+La consulta posterior sobre privacidad se resolvió como investigación separada:
+[datos reales y requisitos de Apple/Google](adoption-report-consent-review-20261126.md).
+No se cambió consentimiento, recopilación o producto por esa consulta.
+
 ## Comportamiento y aceptación
 
 - Sección **Reportes**, accesible desde la navegación administrativa existente. Buscar por mascota/rescatista, filtrar especie y paginar en servidor de20en20. Muestra todas las publicaciones vigentes de cuentas activas, incluyendo las que tienen cero actividad.
