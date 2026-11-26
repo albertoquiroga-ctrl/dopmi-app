@@ -372,10 +372,10 @@ class _RescuerHomeDashboardState extends ConsumerState<RescuerHomeDashboard> {
             );
           },
         ),
-        if (!adoptionOnlyBuild) ...[
+        if (!adoptionOnlyBuild || storeAmazonAvailable) ...[
           const SizedBox(height: 20),
           const SizedBox(height: 20),
-          const StorePromotion(),
+          const StorePromotion.rescuer(),
         ],
       ],
     );

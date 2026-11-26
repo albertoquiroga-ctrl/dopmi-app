@@ -10741,3 +10741,22 @@ No se aplicó SQL remoto ni se alteraron campañas, permisos de conversaciones,
 flags financieros, dinero, publicación pública o entregas de otros checkouts.
 La medición nueva todavía no existe en el proyecto PROD consultado; las vistas
 anteriores del detalle no pueden reconstruirse y la app instalada no las registra.
+
+## 25/11/2026 CDMX — Activación autorizada y candidato móvil conciliado
+
+Respuesta humana «Dale» autoriza migración/panel y cliente interno. PROD:
+migración20261126030428 aplicada y postflight exacto, historia76→77/prior76 y
+funciones anteriores intactas; RLS/ACL/inicio único/0vistasPASS. Auditoría actualizada.
+Panel: un deploy desdea8601c25 a proyecto Vercel dopmi-app, producción,
+`dpl_F9K8wePuPjZp7hpGgmos67wdLHr3`, READY con aliasdopmi-app.vercel.app.
+Verificación positiva en sesión administrativa y lectura del bundle aún pendientes.
+
+Conciliación independiente encontró QA móvil446/447 posterior al baseline del
+reporte: fuente36f8e47f0cf2203cee92e7868ab7672f81a98c3c, tienda en Rescatista.
+Se importan sus cuatro archivos exactos (dos componentes, prueba y capturador),
+sin absorber documentación contradictoria. Mismos hashes Admin y de los archivos
+del reporte antes del delta; ancestro comúne dcdd se documenta por Git (edcdd5aa).
+Formato4/0 cambios y52pruebas dirigidas/1SKIP PASS; no suite Flutter paralela.
+Nuevo candidato integrado requiere su propio SHA/CI antes de un único envío.
+Runtime base previsto Android446, misma firma/identidad/grupos/perfilPROD,
+Playinternal y finanzasOFF; Meta lifecycle opcional se conservaOFF.

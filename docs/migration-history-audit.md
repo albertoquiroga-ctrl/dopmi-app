@@ -1,5 +1,23 @@
 # Auditoría del historial de migraciones
 
+## 25/11/2026 CDMX — Reportes de adopción en PROD
+
+Autorización humana de esta conversación: «Dale». Fuentea8601c25/CI45717438879
+cuatroSUCCESS. Aplicada en `ysaoeuidcvgtlmphmeyb` una sola migración confirmada:
+**20261126030428 / adoption_detail_reports_20261125** (fechaUTC26; CDMX25).
+Mapea `20261125222901_adoption_detail_reports.sql`, SHA256
+`8e8e3d2ce1c8d2646c1163211a8f7375aefef18d4b1e26f8dd63123dc232eb05`.
+Wrapper transaccional revisado SHA256
+`e8eb7b09e1bbfc7b807a59e60776437e2b1f8d0962ba65fc2082294f03c54aa5`.
+Postflight confirmó SQL guardado exacto, historia76→77 con prefijo76 intacto
+(`cabd8b8e970d585faca91f2560a7b733`), funciones anteriores intactas
+(`e0cc31586a0089bc08b40bccc91d575e`), RLS/ACL correctas, inicio único y cero vistas.
+Sin reparaciones, renombrados ni replay. Una llamada inicial perdió el transporte;
+reconciliación comprobó ausencia de objetos, historia76 exacta y mutex libre antes
+del intento confirmado. No se presume fallo/éxito sólo por el error de transporte.
+No otras funciones, conversaciones, finanzas, flags o campañas modificadas.
+
+
 ## 22/11/2026 — Eventos Meta de adopción aplicados en PROD, medición cerrada
 
 Fuente `b471bdafbac8e092915601c4155d04ffe3979f50`,
