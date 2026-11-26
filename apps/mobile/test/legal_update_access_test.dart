@@ -137,7 +137,8 @@ void main() {
             .widgetList<LegalDocumentSection>(find.byType(LegalDocumentSection))
             .map((section) => section.body)
             .join(' ');
-        expect(copy, contains('preseleccionada'));
+        expect(copy, isNot(contains('preseleccionada')));
+        expect(copy, contains('Cuenta y privacidad'));
         expect(copy, contains('no activa la analítica'));
         expect(copy, contains('por separado'));
       },

@@ -825,7 +825,7 @@ class TermsScreen extends StatelessWidget {
         ),
         const LegalDocumentSection(
           'Medición de uso opcional',
-          'La analítica ayuda a mejorar Dopmi y a evaluar qué difusión ayuda a que más personas publiquen o contacten. Si aún no tienes una elección registrada, puede aparecer preseleccionada, pero sólo se activa cuando guardas esa elección con la opción marcada. Puedes desmarcarla o continuar sin analítica. Aceptar estos términos no activa la analítica. Si ya la desactivaste, respetamos tu elección. Puedes cambiarla en Cuenta y privacidad sin perder las funciones principales. El diagnóstico de errores y la medición de publicaciones se eligen por separado.',
+          'La analítica opcional con Firebase ayuda a mejorar Dopmi y a evaluar qué difusión ayuda a que más personas publiquen o contacten. Puedes activarla o desactivarla en Cuenta y privacidad sin perder las funciones principales. Para una cuenta sin elección registrada comienza apagada. Aceptar estos términos no activa la analítica; respetamos las elecciones que ya guardaste. El diagnóstico de errores y la medición de publicaciones se eligen por separado. Los reportes automáticos de adopciones se explican en el Aviso de Privacidad y funcionan independientemente de esta elección.',
         ),
         const LegalDocumentSection(
           'Adopciones, casos y moderación',
