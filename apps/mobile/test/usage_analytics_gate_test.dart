@@ -1,16 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dopmi_mobile/app.dart';
 import 'package:dopmi_mobile/core/config.dart';
 import 'package:dopmi_mobile/core/measurement.dart';
-import 'package:dopmi_mobile/core/splash.dart';
 import 'package:dopmi_mobile/core/usage_analytics_choice.dart';
 import 'package:dopmi_mobile/features/adoption/community_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
-import 'package:dopmi_mobile/features/profile/usage_analytics_prompt.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,253 +20,161 @@ import 'fake_account_photo_repository.dart';
 import 'fake_identity_repository.dart';
 import 'measurement_test.dart' show AnalyticsSpy, DiagnosticsSpy;
 import 'usage_analytics_choice_test.dart' show ChoiceStore;
+import '../tool/capture_design_test.dart' show saveCapture;
 
 void main() {
-  testWidgets(
-    'a cached legacy OFF reaches the review prompt with OFF selected',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({
-        'dopmi.test.one.analytics': false,
-      });
-      final repository = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final store = ChoiceStore()
-        ..state = const UsageAnalyticsChoice(
-          hasChoice: true,
-          consent: false,
-          revision: 5,
-        );
-      final analytics = AnalyticsSpy();
-      final measurement = MeasurementController(
-        await SharedPreferences.getInstance(),
-        'test',
-        analytics,
-        DiagnosticsSpy(),
-        analyticsChoices: store,
-      );
-      final container = ProviderContainer(
-        overrides: [
-          configProvider.overrideWithValue(
-            const AppConfig(url: '', key: '', redirect: ''),
-          ),
-          identityRepositoryProvider.overrideWithValue(repository),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          accountPhotoRepositoryProvider.overrideWithValue(
-            emptyAccountPhotoRepository(repository),
-          ),
-          measurementControllerProvider.overrideWith((ref) => measurement),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await repository.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const DopmiApp(),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final prompt = tester.widget<UsageAnalyticsPrompt>(
-        find.byType(UsageAnalyticsPrompt),
-      );
-      expect(prompt.isReview, isTrue);
-      expect(prompt.initialValue, isFalse);
-      expect(
-        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
-        isFalse,
-      );
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(analytics.events, isEmpty);
-      expect(store.writes, isEmpty);
-      expect(store.state.revision, 5);
-      final confirm = find.text('Guardar elección y continuar');
-      await tester.ensureVisible(confirm);
-      await tester.tap(confirm);
-      await tester.pumpAndSettle();
-      expect(store.writes, [false]);
-      expect(store.state.hasCurrentExplicitChoice, isTrue);
-      expect(store.state.revision, 6);
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(find.byType(UsageAnalyticsPrompt), findsNothing);
-      expect(repository.consentCount, 0);
-      expect(tester.takeException(), isNull);
-    },
-  );
-
-  testWidgets(
-    'a superseded failed choice remains retryable after same-owner refresh',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      final repository = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final save = Completer<UsageAnalyticsChoiceResult>();
-      final store = ChoiceStore()..pendingSave = save;
-      final analytics = AnalyticsSpy();
-      final measurement = MeasurementController(
-        await SharedPreferences.getInstance(),
-        'test',
-        analytics,
-        DiagnosticsSpy(),
-        analyticsChoices: store,
-      );
-      final container = ProviderContainer(
-        overrides: [
-          configProvider.overrideWithValue(
-            const AppConfig(url: '', key: '', redirect: ''),
-          ),
-          identityRepositoryProvider.overrideWithValue(repository),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          accountPhotoRepositoryProvider.overrideWithValue(
-            emptyAccountPhotoRepository(repository),
-          ),
-          measurementControllerProvider.overrideWith((ref) => measurement),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await repository.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const DopmiApp(),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final confirm = find.text('Guardar elección y continuar');
-      await tester.ensureVisible(confirm);
-      await tester.tap(confirm);
-      await tester.pump();
-      expect(store.writes, [true]);
-      expect(measurement.analyticsEnabled, isFalse);
-
-      // Refresh reserves a newer owner revision while the save is in flight.
-      // Its unchanged legacy/absent state must not confirm the superseded save.
-      final refresh = measurement.owner('one', refresh: true);
-      save.completeError(StateError('network'));
-      await refresh;
-      await tester.pumpAndSettle();
-      expect(find.byType(UsageAnalyticsPrompt), findsOneWidget);
-      expect(find.textContaining('No pudimos guardar'), findsOneWidget);
-      expect(
-        tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged,
-        isNotNull,
-      );
-      expect(measurement.analyticsChoicePending, isTrue);
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(analytics.events, isEmpty);
-
-      store.pendingSave = null;
-      final off = find.text('Continuar sin analítica');
-      await tester.ensureVisible(off);
-      await tester.tap(off);
-      await tester.pumpAndSettle();
-      expect(store.writes, [true, false]);
-      expect(store.state.hasCurrentExplicitChoice, isTrue);
-      expect(store.state.consent, isFalse);
-      expect(find.byType(UsageAnalyticsPrompt), findsNothing);
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(tester.takeException(), isNull);
-    },
-  );
-
-  testWidgets('a captured analytics prompt cannot save for a different owner', (
-    tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final repository = FakeIdentityRepository()
+  Future<
+    ({
+      MeasurementController measurement,
+      AnalyticsSpy analytics,
+      FakeCommunity community,
+      GlobalKey boundary,
+      ProviderContainer container,
+    })
+  >
+  start(
+    WidgetTester tester,
+    ChoiceStore store, {
+    bool? cached,
+    bool settle = true,
+  }) async {
+    SharedPreferences.setMockInitialValues({
+      'dopmi.test.one.analytics': ?cached,
+    });
+    if (const bool.fromEnvironment('CAPTURE_AUTOMATIC_REPORT')) {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      for (final family in ['Inter', 'Fraunces']) {
+        final loader = FontLoader(family)
+          ..addFont(rootBundle.load('assets/fonts/$family.ttf'));
+        await tester.runAsync(loader.load);
+      }
+      final icons = FontLoader('MaterialIcons')
+        ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
+      await tester.runAsync(icons.load);
+    }
+    final identity = FakeIdentityRepository()
       ..user = const Identity('one', 'fixture@example.test', verified: true);
-    final store = ChoiceStore();
-    final preferences = await SharedPreferences.getInstance();
+    final analytics = AnalyticsSpy();
     final measurement = MeasurementController(
-      preferences,
+      await SharedPreferences.getInstance(),
       'test',
-      AnalyticsSpy(),
+      analytics,
       DiagnosticsSpy(),
       analyticsChoices: store,
     );
+    final community = FakeCommunity();
     final container = ProviderContainer(
       overrides: [
         configProvider.overrideWithValue(
           const AppConfig(url: '', key: '', redirect: ''),
         ),
-        identityRepositoryProvider.overrideWithValue(repository),
-        communityRepositoryProvider.overrideWithValue(FakeCommunity()),
+        identityRepositoryProvider.overrideWithValue(identity),
+        communityRepositoryProvider.overrideWithValue(community),
         accountPhotoRepositoryProvider.overrideWithValue(
-          emptyAccountPhotoRepository(repository),
+          emptyAccountPhotoRepository(identity),
         ),
         measurementControllerProvider.overrideWith((ref) => measurement),
-        routerInitialLocationProvider.overrideWithValue('/adoptions'),
+        routerInitialLocationProvider.overrideWithValue('/adoptions/post'),
       ],
     );
     addTearDown(() async {
       container.dispose();
-      await repository.changes.close();
+      await identity.changes.close();
     });
+    final boundary = GlobalKey();
     await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const DopmiApp()),
-    );
-    await tester.pumpAndSettle();
-    final confirm = tester
-        .widget<UsageAnalyticsPrompt>(find.byType(UsageAnalyticsPrompt))
-        .onConfirm;
-
-    // The old rendered callback can still run before the next frame removes
-    // it. It must reject the changed actor before reserving any intention.
-    await measurement.owner('two');
-    await expectLater(confirm(true), throwsStateError);
-    expect(store.writes, isEmpty);
-    expect(preferences.getBool('dopmi.test.two.analytics'), isNull);
-    expect(measurement.analyticsEnabled, isFalse);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets(
-    'location gate waits for the optional analytics state to resolve',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      final repository = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final pending = Completer<UsageAnalyticsChoice>();
-      final store = ChoiceStore()..pendingRead = pending;
-      final measurement = MeasurementController(
-        await SharedPreferences.getInstance(),
-        'test',
-        AnalyticsSpy(),
-        DiagnosticsSpy(),
-        analyticsChoices: store,
-      );
-      final container = ProviderContainer(
-        overrides: [
-          configProvider.overrideWithValue(
-            const AppConfig(url: '', key: '', redirect: ''),
-          ),
-          identityRepositoryProvider.overrideWithValue(repository),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          accountPhotoRepositoryProvider.overrideWithValue(
-            emptyAccountPhotoRepository(repository),
-          ),
-          measurementControllerProvider.overrideWith((ref) => measurement),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await repository.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
+      RepaintBoundary(
+        key: boundary,
+        child: UncontrolledProviderScope(
           container: container,
           child: const DopmiApp(),
         ),
-      );
+      ),
+    );
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
       await tester.pump(const Duration(seconds: 1));
-      expect(find.byType(DopmiSplash), findsOneWidget);
-      expect(find.byType(UsageAnalyticsPrompt), findsNothing);
+    }
+    return (
+      measurement: measurement,
+      analytics: analytics,
+      community: community,
+      boundary: boundary,
+      container: container,
+    );
+  }
+
+  for (final choice in ['new', 'legacy-off', 'review', 'on', 'read-error']) {
+    testWidgets(
+      'entry has no analytics screen for $choice and preserves the optional preference',
+      (tester) async {
+        final store = ChoiceStore();
+        if (choice == 'legacy-off' || choice == 'review' || choice == 'on') {
+          store.state = UsageAnalyticsChoice(
+            hasChoice: true,
+            consent: choice != 'legacy-off',
+            revision: 3,
+            noticeVersion: choice == 'on' ? usageAnalyticsNoticeVersion : null,
+          );
+        }
+        if (choice == 'read-error') store.failRead = true;
+        final result = await start(
+          tester,
+          store,
+          cached: choice == 'legacy-off' ? false : null,
+        );
+        expect(find.text('Tú decides qué compartes'), findsNothing);
+        expect(find.text('Guardar elección y continuar'), findsNothing);
+        expect(find.text('Luna'), findsOneWidget);
+        expect(result.community.detailViews, ['post']);
+        expect(result.measurement.analyticsEnabled, choice == 'on');
+        expect(store.writes, isEmpty);
+        expect(result.analytics.events, isEmpty);
+        expect(tester.takeException(), isNull);
+        if (choice == 'new' &&
+            const bool.fromEnvironment('CAPTURE_AUTOMATIC_REPORT')) {
+          final output = Directory(
+            '../../.tools/design-review/automatic-report-20261126',
+          );
+          await tester.runAsync(() => output.create(recursive: true));
+          await tester.runAsync(
+            () => saveCapture(
+              result.boundary,
+              '${output.path}/entry-without-choice.png',
+            ),
+          );
+          result.container.read(routerProvider).go('/privacy-notice');
+          await tester.pumpAndSettle();
+          await tester.ensureVisible(
+            find.text('Reportes de actividad de adopciones'),
+          );
+          await tester.pumpAndSettle();
+          await tester.runAsync(
+            () => saveCapture(
+              result.boundary,
+              '${output.path}/privacy-report-activity.png',
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  testWidgets(
+    'a pending optional analytics read does not block detail activity or enable Firebase',
+    (tester) async {
+      final pending = Completer<UsageAnalyticsChoice>();
+      final store = ChoiceStore()..pendingRead = pending;
+      final result = await start(tester, store, settle: false);
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Luna'), findsOneWidget);
+      expect(result.community.detailViews, ['post']);
+      expect(result.measurement.analyticsEnabled, isFalse);
+      expect(store.writes, isEmpty);
       pending.complete(
         const UsageAnalyticsChoice(
           hasChoice: false,
@@ -275,60 +183,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(UsageAnalyticsPrompt), findsOneWidget);
-      expect(store.writes, isEmpty);
-    },
-  );
-  testWidgets(
-    'current legal acceptance does not skip optional analytics choice',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      final repository = FakeIdentityRepository()
-        ..user = const Identity('one', 'fixture@example.test', verified: true);
-      final store = ChoiceStore();
-      final measurement = MeasurementController(
-        await SharedPreferences.getInstance(),
-        'test',
-        AnalyticsSpy(),
-        DiagnosticsSpy(),
-        analyticsChoices: store,
-      );
-      final container = ProviderContainer(
-        overrides: [
-          configProvider.overrideWithValue(
-            const AppConfig(url: '', key: '', redirect: ''),
-          ),
-          identityRepositoryProvider.overrideWithValue(repository),
-          communityRepositoryProvider.overrideWithValue(FakeCommunity()),
-          accountPhotoRepositoryProvider.overrideWithValue(
-            emptyAccountPhotoRepository(repository),
-          ),
-          measurementControllerProvider.overrideWith((ref) => measurement),
-          routerInitialLocationProvider.overrideWithValue('/adoptions'),
-        ],
-      );
-      addTearDown(() async {
-        container.dispose();
-        await repository.changes.close();
-      });
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: const DopmiApp(),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byType(UsageAnalyticsPrompt), findsOneWidget);
-      expect(measurement.analyticsEnabled, isFalse);
-      expect(repository.consentCount, 0);
-      final off = find.text('Continuar sin analítica');
-      await tester.ensureVisible(off);
-      await tester.tap(off);
-      await tester.pumpAndSettle();
-      expect(find.byType(UsageAnalyticsPrompt), findsNothing);
-      expect(store.writes, [false]);
-      expect(repository.consentCount, 0);
-      expect(tester.takeException(), isNull);
+      expect(result.community.detailViews, ['post']);
+      expect(result.analytics.events, isEmpty);
     },
   );
 }

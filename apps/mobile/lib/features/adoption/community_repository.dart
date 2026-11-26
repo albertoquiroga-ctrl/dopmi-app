@@ -124,7 +124,7 @@ abstract class CommunityRepository {
   }) => Future.error(UnsupportedError('Conversaciones no disponibles'));
   Future<void> recordAdoptionView(String postId, {required bool consent}) =>
       Future.value();
-  Future<void> recordAdoptionDetailView(String postId, {required bool consent});
+  Future<void> recordAdoptionDetailView(String postId);
   Future<DataPage<Json>> rescuerGroupThreads(
     String groupId,
     int page, {
@@ -419,15 +419,8 @@ class SupabaseCommunityRepository implements CommunityRepository {
   }
 
   @override
-  Future<void> recordAdoptionDetailView(
-    String postId, {
-    required bool consent,
-  }) async {
-    if (!consent) return;
-    await rpc('dopmi_record_adoption_detail_view', {
-      'post_id': postId,
-      'consent': consent,
-    });
+  Future<void> recordAdoptionDetailView(String postId) async {
+    await rpc('dopmi_record_adoption_detail_activity', {'post_id': postId});
   }
 
   @override

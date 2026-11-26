@@ -78,7 +78,7 @@ jobs:
       - name: Adoption reports, unique details and consent withdrawal against PostgreSQL
         env:
           DOPMI_REPORT_POSTGRES_TEST: 'true'
-        run: node --test tools/verification/adoption-detail-reports-sql.test.mjs
+        run: node --test --test-concurrency=1 tools/verification/adoption-detail-reports-sql.test.mjs tools/verification/automatic-adoption-detail-activity-sql.test.mjs
       - name: Acquisition messaging and consent races against PostgreSQL
         env:
           DOPMI_ACQUISITION_POSTGRES_TEST: 'true'

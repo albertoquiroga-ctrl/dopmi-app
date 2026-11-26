@@ -353,52 +353,43 @@ class _AdoptionDetailState extends ConsumerState<AdoptionDetailScreen> {
   final observedDetails = <String>{};
 
   void observeDetail(Adoption post, CommunityRepository repository) {
-    final measurement = ref.read(measurementControllerProvider);
     final actor = repository.userId;
-    if (measurement == null || !measurement.analyticsConsentCurrent) {
+    if (actor == null) {
       observedDetails.clear();
       return;
     }
-    if (actor == null ||
-        actor == post.owner ||
-        measurement.ownerId != actor ||
-        post.id != widget.id) {
+    if (actor == post.owner || post.id != widget.id) {
       return;
     }
     final key = '$actor:${post.id}';
     if (!observedDetails.add(key)) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(recordDetail(post, repository, measurement, actor, key));
+      unawaited(recordDetail(post, repository, actor, key));
     });
   }
 
   Future<void> recordDetail(
     Adoption post,
     CommunityRepository repository,
-    MeasurementController measurement,
     String actor,
     String key,
   ) async {
     try {
-      await measurement.consentReady;
       if (!mounted ||
           ModalRoute.of(context)?.isCurrent != true ||
           (WidgetsBinding.instance.lifecycleState != null &&
               WidgetsBinding.instance.lifecycleState !=
                   AppLifecycleState.resumed) ||
           !identical(ref.read(communityRepositoryProvider), repository) ||
-          !identical(ref.read(measurementControllerProvider), measurement) ||
           repository.userId != actor ||
           ref.read(identityControllerProvider).identity?.id != actor ||
-          widget.id != post.id ||
-          measurement.ownerId != actor ||
-          !measurement.analyticsConsentCurrent) {
+          widget.id != post.id) {
         observedDetails.remove(key);
         return;
       }
-      await repository.recordAdoptionDetailView(post.id, consent: true);
+      await repository.recordAdoptionDetailView(post.id);
     } catch (_) {
-      // Optional measurement must never prevent reading, saving or contacting.
+      // Activity reporting must never prevent reading, saving or contacting.
       observedDetails.remove(key);
     }
   }

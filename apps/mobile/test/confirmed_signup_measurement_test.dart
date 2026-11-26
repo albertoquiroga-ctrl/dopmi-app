@@ -45,7 +45,7 @@ void main() {
   });
 
   test(
-    'only a confirmed current-actor signup waits for the first ON',
+    'signup without optional analytics is not backfilled by enabling it later',
     () async {
       final before = {
         for (final key in preferences.getKeys()) key: preferences.get(key),
@@ -60,7 +60,7 @@ void main() {
       await controller.setAnalytics(true);
       await controller.confirmedSignup('one');
       await controller.owner('one', refresh: true);
-      expect(analytics.events, ['sign_up_completed']);
+      expect(analytics.events, isEmpty);
     },
   );
 
@@ -146,8 +146,8 @@ void main() {
       response.completeError(StateError('old session network failure'));
       await Future.wait([oldSave, switchToB, returnToA]);
       store.pendingSave = null;
-      await controller.confirmedSignup('one');
       await controller.setAnalytics(true);
+      await controller.confirmedSignup('one');
       expect(analytics.events, ['sign_up_completed']);
     },
   );
@@ -326,8 +326,8 @@ void main() {
       );
       addTearDown(measured.dispose);
       await measured.owner('one');
-      await measured.confirmedSignup('one');
       await measured.setAnalytics(true);
+      await measured.confirmedSignup('one');
       await measured.confirmedSignup('one');
       await measured.owner('one', refresh: true);
       expect(failing.attempts, 1);

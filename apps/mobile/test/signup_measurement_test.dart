@@ -9,7 +9,6 @@ import 'package:dopmi_mobile/features/identity/auth_screens.dart';
 import 'package:dopmi_mobile/features/identity/identity_controller.dart';
 import 'package:dopmi_mobile/features/identity/identity_repository.dart';
 import 'package:dopmi_mobile/features/profile/account_photo_repository.dart';
-import 'package:dopmi_mobile/features/profile/usage_analytics_prompt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -79,7 +78,7 @@ void main() {
 
   for (final firstLegal in [false, true]) {
     testWidgets(
-      'confirmed signup waits for ON and emits once (first legal: $firstLegal)',
+      'confirmed signup enters without analytics choice or collection (first legal: $firstLegal)',
       (tester) async {
         final repository = FakeIdentityRepository();
         if (firstLegal) {
@@ -115,13 +114,13 @@ void main() {
           expect(repository.consentCount, 1);
           expect(analytics.events, isEmpty);
         }
-        expect(find.byType(UsageAnalyticsPrompt), findsOneWidget);
-        await tap(tester, 'Guardar elección y continuar');
-        expect(store.writes, [true]);
-        expect(analytics.events, ['sign_up_completed']);
-        expect(measurement.analyticsEnabled, isTrue);
+        expect(find.text('Tú decides qué compartes'), findsNothing);
+        expect(find.byType(ConfirmationScreen), findsNothing);
+        expect(store.writes, isEmpty);
+        expect(analytics.events, isEmpty);
+        expect(measurement.analyticsEnabled, isFalse);
         await tester.pumpAndSettle();
-        expect(analytics.events, ['sign_up_completed']);
+        expect(analytics.events, isEmpty);
         expect(tester.takeException(), isNull);
       },
     );
@@ -135,8 +134,8 @@ void main() {
     await tap(tester, 'Verificar código');
     expect(repository.current?.id, 'two');
     expect(measurement.ownerId, 'two');
-    await tap(tester, 'Guardar elección y continuar');
-    expect(store.writes, [true]);
+    expect(find.text('Tú decides qué compartes'), findsNothing);
+    expect(store.writes, isEmpty);
     expect(analytics.events, isEmpty);
     expect(tester.takeException(), isNull);
   });
@@ -152,14 +151,13 @@ void main() {
       await tap(tester, 'Verificar código');
       expect(repository.started.isCompleted, isTrue);
       expect(find.byType(ConfirmationScreen), findsNothing);
-      expect(find.byType(UsageAnalyticsPrompt), findsOneWidget);
+      expect(find.text('Tú decides qué compartes'), findsNothing);
       expect(analytics.events, isEmpty);
       repository.release.complete();
       await tester.pumpAndSettle();
       expect(measurement.analyticsEnabled, isFalse);
       expect(store.writes, isEmpty);
-      await tap(tester, 'Guardar elección y continuar');
-      expect(analytics.events, ['sign_up_completed']);
+      expect(analytics.events, isEmpty);
       expect(tester.takeException(), isNull);
     },
   );

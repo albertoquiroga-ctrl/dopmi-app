@@ -41,10 +41,10 @@ export default function AdoptionReports({ api }: { api: Pick<AdminApi, 'adoption
       <footer className="pagination"><span>Página {request.page}{data ? ` de ${Math.max(request.page, Math.ceil(data.total / 20), 1)}` : ''}</span><div><button className="secondary" disabled={loading || request.page === 1} onClick={() => setRequest(r => ({ ...r, page: r.page - 1 }))}>Anterior</button><button className="secondary" disabled={loading || !data || request.page * 20 >= data.total} onClick={() => setRequest(r => ({ ...r, page: r.page + 1 }))}>Siguiente</button></div></footer>
     </section>
     <section id="report-definitions" className="report-definitions" aria-label="Cómo se cuentan las cifras"><h2>Cómo se cuentan las cifras</h2>
-      <p><strong>Detalle:</strong> Una persona cuenta una vez por mascota, aunque entre varias veces o desde otro dispositivo, usando la misma cuenta y con Analítica de uso activada. Se excluyen las visitas de su autor y las vistas de tarjetas.</p>
+      <p><strong>Detalle:</strong> En la app actualizada las visitas se registran automáticamente. Una persona cuenta una vez por mascota, aunque entre varias veces o desde otro dispositivo usando la misma cuenta con sesión iniciada. Se excluyen las visitas de su autor y las vistas de tarjetas.</p>
       {data && <p>Medición del detalle desde {date(data.detail_tracking_started_at)} (Ciudad de México); no se incluyen vistas anteriores. Cifras consultadas el {date(data.generated_at)}.</p>}
       <p><strong>Favoritos:</strong> Personas que la tienen guardada ahora; disminuye al quitarla. <strong>Contactos:</strong> Personas que enviaron al menos un mensaje, incluido el saludo confirmado al contactar. <strong>Primeras respuestas:</strong> Conversaciones en las que la rescatista respondió al contacto al menos una vez. Leer el chat no cuenta como respuesta.</p>
-      <p>Favoritos, contactos y respuestas se calculan con los registros disponibles, incluidas conversaciones cerradas. Retirar el consentimiento elimina las vistas de esa persona. Se muestran cifras agregadas, sin mensajes privados.</p>
+      <p>Favoritos, contactos y respuestas se calculan con los registros disponibles, incluidas conversaciones cerradas. La actividad del reporte es independiente de Analítica de uso; las vistas de versiones anteriores conservan sus reglas de privacidad. Se muestran cifras agregadas, sin mensajes privados.</p>
     </section>
   </>;
 }

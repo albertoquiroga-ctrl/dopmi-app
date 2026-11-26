@@ -1,0 +1,15 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(10);
+select ok(to_regprocedure('public.dopmi_record_adoption_detail_activity(uuid)') is not null,'operational detail recorder exists');
+select ok((select relrowsecurity from pg_class where oid='private.dopmi_adoption_detail_activity'::regclass),'operational activity has RLS');
+select ok(not has_table_privilege('authenticated','private.dopmi_adoption_detail_activity','select'),'clients cannot read people from operational activity');
+select ok(not has_table_privilege('authenticated','private.dopmi_adoption_detail_activity','insert'),'clients cannot insert arbitrary operational activity');
+select ok(not has_function_privilege('anon','public.dopmi_record_adoption_detail_activity(uuid)','execute'),'anonymous activity denied');
+select ok(not has_function_privilege('service_role','public.dopmi_record_adoption_detail_activity(uuid)','execute'),'service role has no activity grant');
+select ok(has_function_privilege('authenticated','public.dopmi_record_adoption_detail_activity(uuid)','execute'),'authenticated recorder internally validates actor');
+select ok(not has_function_privilege('authenticated','private.dopmi_erase_adoption_detail_activity_on_delete()','execute'),'account deletion trigger remains private');
+select ok(to_regprocedure('public.dopmi_record_adoption_detail_view(uuid,boolean)') is not null,'legacy consent-bound recorder remains compatible');
+select is((select count(*)::integer from private.dopmi_adoption_detail_activity),0,'no operational history fabricated by migration');
+select * from finish();
+rollback;

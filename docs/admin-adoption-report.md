@@ -1,5 +1,44 @@
 # Reporte administrativo de adopciones — 25/11/2026
 
+## Cambio solicitado el 26/11/2026: actividad automática
+
+Retirar la pantalla inicial de Analítica; entrar al producto sin confirmar esa
+elección. Registrar automáticamente el detalle real para cuentas con sesión,
+independiente de Firebase apagado, elección pendiente, error de su lectura o falta
+de su controlador. Mantener autor/precargas/fondo/sesión como exclusiones y
+deduplicación por persona/mascota. No activar Firebase/Meta/diagnóstico ni reconstruir
+registros históricos o conversiones de alta al optar después desde ajustes.
+
+Nuevo registro operativo privado/RLS y RPC autenticado separados de las vistas
+anteriores consentidas; sumar ambas fuentes con deduplicación por cuenta, sin
+exponer personas o mensajes en el panel. Conservar retirada de datos anteriores
+y borrar actividad operativa al eliminar la cuenta. Ajustar aviso y definiciones.
+
+Aceptación: cuenta nueva entra sin pantalla de elección; Firebase sigueOFF.
+Detalle visitado dos veces con FirebaseOFF/pending suma una persona; activar o
+retirar Firebase no cambia ese conteo operativo. Dos personas suman dos; autor,
+anónimo, borrador, cuenta suspendida y vista sólo precargada no suman. Un registro
+anterior y uno operativo de la misma persona cuentan una vez. Eliminar cuenta
+retira sus observaciones. Favoritos/contactos/primeras respuestas y privacidad de
+chat se conservan. Pruebas en fronteras: entrada real de app, registrador de detalle
+y RPC/reporte PostgreSQL; una sola cola Flutter. Fuente base280b3186/HEAD2b2df036,
+último runtime Android448 verificado; referencia Irlanda d9f9aa43 congelada.
+
+Validación del cambio automático: backend completo 1415 PASS/19 SKIP; PostgreSQL
+real 9/9, incluyendo concurrencia de dispositivos y eliminación de cuenta; pgTAP
+22/22 (reporte anterior y nuevo); admin 180/180. Flutter analyze sin incidencias;
+suite completa en curso al congelar este paquete. Revisión independiente de
+cliente/producto y SQL/seguridad cerrada sin bloqueos tras corregir orden de
+bloqueos Auth → perfil → publicación. Capturas Flutter sintéticas de entrada sin
+elección y acceso a la nueva sección del aviso, no prueba de teléfono. Aviso público
+preparado en rama aislada desde e84451b; activación y distribución se registran
+después de comprobarlas. La investigación anterior permanece como antecedente,
+sin convertir la decisión del titular en un dictamen jurídico de tiendas.
+
+Los apartados siguientes documentan la entrega original consentida del 25/11;
+sus referencias a consentimiento de detalle y al cliente448 quedan sustituidas
+por este cambio cuando se active y se distribuya el cliente actualizado.
+
 Solicitud y decisiones del titular en esta conversación: tabla de todas las mascotas actualmente publicadas en adopción, perros y gatos; **una persona única por mascota** que entra al detalle, favoritos que siguen guardados, personas que contactaron y conversaciones con una primera respuesta de su rescatista. Sólo adopciones en este alcance. No incluye casos de apoyo ni denuncias de moderación.
 
 26/11/2026: el titular confirmó que el contador funciona y cerró su revisión.

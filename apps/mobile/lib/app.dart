@@ -34,7 +34,6 @@ import 'features/profile/profile_screen.dart';
 import 'features/profile/profile_overview.dart';
 import 'features/profile/help_center_screen.dart';
 import 'features/profile/account_privacy_screen.dart';
-import 'features/profile/usage_analytics_prompt.dart';
 import 'features/profile/meta_lifecycle_consent_gate.dart';
 import 'features/profile/impact_screen.dart';
 import 'features/profile/information_screens.dart';
@@ -847,7 +846,6 @@ class _LegalAccessGate extends ConsumerWidget {
     final router = ref.read(routerProvider);
     final experience = ref.watch(experienceProvider);
     final identityController = ref.watch(identityControllerProvider);
-    final measurement = ref.watch(measurementControllerProvider);
     return ListenableBuilder(
       listenable: Listenable.merge([experience, identityController]),
       builder: (context, _) {
@@ -902,37 +900,6 @@ class _LegalAccessGate extends ConsumerWidget {
             );
           }
           if (experience.loading) return const DopmiSplash();
-        }
-        if (!exempt &&
-            currentIdentity?.verified == true &&
-            accepted &&
-            measurement?.analyticsChoices != null &&
-            !measurement!.preferencesReadyFor(currentIdentity!.id)) {
-          return const DopmiSplash();
-        }
-        if (!exempt &&
-            currentIdentity?.verified == true &&
-            accepted &&
-            measurement?.preferencesReadyFor(currentIdentity!.id) == true &&
-            measurement!.analyticsChoicePending) {
-          return UsageAnalyticsPrompt(
-            key: ValueKey('analytics-choice:${currentIdentity!.id}'),
-            initialValue: measurement.analyticsChoiceInitialValue,
-            isReview: measurement.analyticsChoiceIsReview,
-            onConfirm: (value) async {
-              final actor = currentIdentity.id;
-              if (!measurement.preferencesReadyFor(actor)) {
-                throw StateError('analytics_owner_changed');
-              }
-              await measurement.setAnalytics(value);
-              if (!measurement.preferencesReadyFor(actor) ||
-                  measurement.analyticsChoicePending ||
-                  (value && !measurement.analyticsConsentCurrent)) {
-                throw StateError('analytics_choice_not_confirmed');
-              }
-            },
-            onPrivacy: () => router.push('/privacy-notice'),
-          );
         }
         Widget entryChild = child;
         if (!exempt && currentIdentity?.verified == true && accepted) {

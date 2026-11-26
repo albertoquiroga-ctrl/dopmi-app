@@ -1,3 +1,20 @@
+## 26/11/2026 — Reportes automáticos sin pantalla de Analítica
+
+El titular pide retirar la pantalla inicial de Analítica de uso y contabilizar
+automáticamente las acciones del reporte. Supersede para el cliente actualizado
+la dependencia de las vistas del detalle respecto de la elección de Firebase.
+Una cuenta con sesión cuenta una vez por mascota publicada; no se suman tarjetas,
+precargas, visitas del autor o visitantes sin cuenta, como en el reporte vigente.
+Favoritos actuales, contactos y primeras respuestas conservan sus reglas.
+
+La pantalla deja de bloquear la entrada. Firebase/diagnóstico/publicidad conservan
+sus elecciones: no se activan automáticamente por esta petición. La actividad
+operativa nueva queda separada de las observaciones anteriores consentidas;
+esas observaciones conservan sus reglas de retirada y no se reconstruyen históricos.
+El aviso de privacidad y las definiciones del reporte explicarán el tratamiento
+automático. Esta decisión de producto no acredita una base legal alternativa o
+una aprobación de las tiendas. Dinero y promoción pública conservan sus gates.
+
 ## 25/11/2026 CDMX — Reporte administrativo de adopciones
 
 Autorización posterior del titular: «Dale», en respuesta a activar la migración,

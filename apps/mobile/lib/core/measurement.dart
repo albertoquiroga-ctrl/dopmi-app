@@ -591,8 +591,8 @@ class MeasurementController extends ChangeNotifier {
     });
   }
 
-  /// The two confirmed registration triggers may precede the optional choice.
-  /// Keep only their deduplicated fact in RAM; never reconstruct past signups.
+  /// Record a confirmed registration only with consent already effective.
+  /// Enabling optional analytics later never reconstructs a past signup.
   Future<void> confirmedSignup(String actor) {
     if (_signupDisposed ||
         !preferencesReadyFor(actor) ||
@@ -600,7 +600,7 @@ class MeasurementController extends ChangeNotifier {
       return Future.value();
     }
     _confirmedSignupActor = actor;
-    _confirmedSignupPending = analyticsConsentCurrent || analyticsChoicePending;
+    _confirmedSignupPending = analyticsConsentCurrent;
     return _flushConfirmedSignup();
   }
 

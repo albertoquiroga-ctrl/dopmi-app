@@ -283,11 +283,8 @@ class FakeCommunity implements CommunityRepository {
   }) async {}
 
   @override
-  Future<void> recordAdoptionDetailView(
-    String postId, {
-    required bool consent,
-  }) async {
-    if (consent) detailViews.add(postId);
+  Future<void> recordAdoptionDetailView(String postId) async {
+    detailViews.add(postId);
   }
 
   @override
@@ -792,7 +789,7 @@ void main() {
 
   for (final ownerView in [false, true]) {
     testWidgets(
-      'detail observation skips ${ownerView ? 'the owner' : 'disabled consent'}',
+      'detail observation ${ownerView ? 'skips the owner' : 'counts with optional analytics off'}',
       (tester) async {
         SharedPreferences.setMockInitialValues({});
         final measurement = MeasurementController(
@@ -809,12 +806,12 @@ void main() {
         }
         await start(tester, repo, '/adoptions/post', measurement: measurement);
         expect(find.text('Luna'), findsOneWidget);
-        expect(repo.detailViews, isEmpty);
+        expect(repo.detailViews, ownerView ? isEmpty : ['post']);
       },
     );
   }
   testWidgets(
-    'detail observation follows opting in and withdrawal while the detail remains visible',
+    'detail activity remains counted once while optional analytics changes',
     (tester) async {
       SharedPreferences.setMockInitialValues({});
       final measurement = MeasurementController(
@@ -826,7 +823,7 @@ void main() {
       await measurement.owner('one');
       final repo = FakeCommunity();
       await start(tester, repo, '/adoptions/post', measurement: measurement);
-      expect(repo.detailViews, isEmpty);
+      expect(repo.detailViews, ['post']);
       await measurement.setAnalytics(true);
       await tester.pumpAndSettle();
       expect(repo.detailViews, ['post']);
@@ -835,7 +832,7 @@ void main() {
       expect(repo.detailViews, ['post']);
       await measurement.setAnalytics(true);
       await tester.pumpAndSettle();
-      expect(repo.detailViews, ['post', 'post']);
+      expect(repo.detailViews, ['post']);
     },
   );
   testWidgets(
