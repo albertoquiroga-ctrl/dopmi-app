@@ -955,3 +955,32 @@ prod-immediate-before, prod-after-catalog, prod-data-before/after,
 prod-postflight.actual, advisors-comparison y prod-after.verified.
 Esto acredita esquema y autorización; instalación limpia, primera ficha y
 disponibilidad pública del cliente se comprueban por separado antes del piloto.
+
+## 26/11/2026 CDMX — Actividad automática de adopciones en PROD
+
+Fuente de producto0e3f3a9d46a90876223020a6d53f682327c8208d. Archivo
+20261126202302_automatic_adoption_detail_activity.sql, SHA256 del blob Git/LF
+d4375b122e2b6c4c5aaab7fb1b237cd5207b3782121a1ebe8c2772e6c57d5063.
+El checkout Windows/CRLF tiene SHA256377426d7…6748bb0; coincide al normalizar LF.
+Aplicado una sola vez mediante MCP como **20261126205952 /
+automatic_adoption_detail_activity_20261126**, con guard transaccional de historia
+y catálogo previos y bloqueo asesor. No replay, push, renombrado ni repair.
+
+Postflight: historia77→78; prefijo77 íntegro. De363funciones previas sólo cambia
+intencionalmente dopmi_admin_adoption_report; añade registrador operativo y
+borrado por eliminación. SQL remoto exacto al paquete con guard. Once condiciones
+de catálogo PASS: RLS, ACL, autenticación, seguridad de funciones, cascadas,
+unicidad, trigger y ausencia de backfill. Registrador/retirada consentidos previos
+intactos. Recibos privados en .tools/automatic-report-20261126/server.*.
+
+Comprobación real de Data API: nuevo RPC presente y llamada anónima rechazada
+HTTP401/42501; sin sesión de usuario ni observaciones creadas por la prueba.
+
+Advisors posteriores del delta: [RLS sin políticas](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)
+INFO en la tabla privada es deliberado: no hay CRUD directo y el acceso pasa por
+funciones autorizadas. [RPC SECURITY DEFINER autenticado](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable)
+WARN es intencional, revisado con actor de sesión, cuenta activa, publicación
+vigente ajena, search_path vacío y ACL restringida. [Índice aún sin uso](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index)
+INFO corresponde a la tabla recién creada vacía; se conserva para FK/borrado por
+cuenta. No se alteran políticas o índices para silenciar estos avisos. Hallazgos
+de otras áreas quedan fuera del delta, sin afirmar una auditoría global nueva.

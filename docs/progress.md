@@ -10852,3 +10852,44 @@ No cambios de producto, consentimientos, datos remotos, fichas de tienda o build
 No pruebas repetidas por documentación. Precisión conservada: revisar la frase
 completa de la política y clasificar captura nueva frente a agregado antes de
 atribuir un formato de UI a una obligación de tienda; sin añadir gates globales.
+
+
+## Reportes automáticos sin pantalla inicial — 26/11/2026
+
+Titular: quitar pantalla inicial de Analítica y registrar automáticamente el reporte.
+Implementado en `codex/adoption-metrics-20261125`, producto `0e3f3a9d46a90876223020a6d53f682327c8208d`,
+tag `codex/automatic-adoption-reports-20261126-v1`, CI45894194662 cuatroSUCCESS.
+**Android2.3.12(449) publicado en Play interno**, único CM6b08a0d1ee7c9341cfe42976,
+14SUCCESS; AAB/firma/configuración/marcador y Publishing internal/completed verificados.
+PROD20261126205952 e interfaz pública del panel verificados; aviso y Términos publicados.
+Firebase/Meta/diagnóstico conservan elecciones; reporte independiente para cuentas
+con sesión, una cuenta por mascota, sin históricos inventados. El titular confirmó
+que el contador anterior funcionaba: no retomar esa investigación.
+
+Pendiente: teléfono/aceptación (ADB sin equipo), cotejar Data Safety App interactions
+requerida antes de cliente público; navegador sin acceso. No promoción pública ni
+envío iOS. No repetir SQL, compilación, descarga o envío449; cero observadores activos.
+Este encargo no absorbe ni cancela el trabajo de otros checkouts.
+
+Verificación: backend1415PASS/19SKIP; PostgreSQL real9/9 con carreras de borrado;
+pgTAP22/22; admin180/180 y buildPASS; configuración48+26PASS. Analyze local sin
+incidencias y CI exacta con suite completa/Android/iOS/backend/capturas SUCCESS.
+La suite local inicial tuvo expectativa antigua corregida y un timeout de ayuda
+no reproducido en CI; no se alteró esa prueba. Demo real Flutter con repositorio
+sintético: cuenta sin elección llega al detalle y registra una observación con
+FirebaseOFF. Capturas revisadas; no equivalen a teléfono ni lectura expandida del aviso.
+
+Esquema: historia77→78, SQL exacto y funciones anteriores intactas excepto agregador
+intencional; RLS/ACL/PK/FK/borrado11checksPASS. Data API nuevo RPC responde401/42501
+al anónimo, sin crear actividad. Publicaciones: admin dpl_GxGtm5AB8QW3nU53jpaqugKqppLR;
+legal e4016c3/dpl_12qJZc6zgawNeusZxwEbN87z5Wk9, HTTP200 y textos cotejados.
+Revisión independiente cliente/producto/SQL/seguridad cerrada. Firma del AAB449 y
+tres marcadores Dart del nuevo RPC comprobados; Publishing leído por separado.
+Console y dispositivo no cotejados. Referencia Irlanda congelada d9f9aa43 sin expansión.
+
+Retro breve: la carrera real PostgreSQL detectó inversión de bloqueos; se corrigió
+Auth→perfil→publicación y pasó9/9. La revisión de preparación corrigió tres constantes
+del lector Publishing y estados heredados del candidato antes del único POST.
+Experimento acotado conservado: comprobar contrato entre lector de artefacto y
+lector Publishing y rechazar explícitamente la build anterior; siete guardas PASS
+antes del envío. No se añaden gates globales ni se atribuye ahorro causal a esta muestra.

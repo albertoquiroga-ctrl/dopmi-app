@@ -1,3 +1,22 @@
+## Reportes automáticos sin pantalla inicial — 26/11/2026
+
+Titular: quitar pantalla inicial de Analítica y registrar automáticamente el reporte.
+Implementado en `codex/adoption-metrics-20261125`, producto `0e3f3a9d46a90876223020a6d53f682327c8208d`,
+tag `codex/automatic-adoption-reports-20261126-v1`, CI45894194662 cuatroSUCCESS.
+**Android2.3.12(449) publicado en Play interno**, único CM6b08a0d1ee7c9341cfe42976,
+14SUCCESS; AAB/firma/configuración/marcador y Publishing internal/completed verificados.
+PROD20261126205952 e interfaz pública del panel verificados; aviso y Términos publicados.
+Firebase/Meta/diagnóstico conservan elecciones; reporte independiente para cuentas
+con sesión, una cuenta por mascota, sin históricos inventados. El titular confirmó
+que el contador anterior funcionaba: no retomar esa investigación.
+
+Pendiente: teléfono/aceptación (ADB sin equipo), cotejar Data Safety App interactions
+requerida antes de cliente público; navegador sin acceso. No promoción pública ni
+envío iOS. No repetir SQL, compilación, descarga o envío449; cero observadores activos.
+Este encargo no absorbe ni cancela el trabajo de otros checkouts.
+
+Ficha única y recorrido: [admin-adoption-report.md](admin-adoption-report.md).
+
 # Encargo en este checkout — Reportes de adopción, 25/nov/2026 CDMX
 
 Implementación aislada en `codex/adoption-metrics-20261125` desde61fa88d4. [Decisiones](product-decisions.md#25112026-cdmx--reporte-administrativo-de-adopciones) y [ficha única](admin-adoption-report.md): una persona única por mascota al abrir detalle, sólo adopciones publicadas, favoritos actuales, contactos y primeras respuestas. Titular autorizó activar con «Dale». **Esquema y panel publicados/verificados en PROD** desdea8601c257a133a96dd2053a34eb182ea4ddd1e8b, CI45717438879 cuatroSUCCESS; demo real administrativa cerrada. **Android2.3.12(448) disponible en Play interno**: fuente integrada280b3186d15db26d5641847cff9acdc694614602, CI45746827546 cuatroSUCCESS, CM6b07a763e4b8406fd5893ddc14SUCCESS, AAB/configuración/firma/Publishing/Console verificados. Conserva tienda Rescatista446. **Pendiente QA instalada y aceptación:** ADB sin dispositivo; recorrido en la ficha. No se promovió el cliente público ni se envió iOS. No absorbe ni cancela las entregas inferiores de otros checkouts.

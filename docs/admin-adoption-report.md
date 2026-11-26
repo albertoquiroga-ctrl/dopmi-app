@@ -26,18 +26,59 @@ y RPC/reporte PostgreSQL; una sola cola Flutter. Fuente base280b3186/HEAD2b2df03
 
 Validación del cambio automático: backend completo 1415 PASS/19 SKIP; PostgreSQL
 real 9/9, incluyendo concurrencia de dispositivos y eliminación de cuenta; pgTAP
-22/22 (reporte anterior y nuevo); admin 180/180. Flutter analyze sin incidencias;
-suite completa en curso al congelar este paquete. Revisión independiente de
+22/22 (reporte anterior y nuevo); admin 180/180 y buildPASS. CI exacta
+[45894194662](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45894194662)
+del producto0e3f3a9d46a90876223020a6d53f682327c8208d: cuatroSUCCESS, incluyendo
+analyze, suite Flutter completa, compilaciones Android/iOS, backend real y
+capturas. Configuración local48+26PASS. La primera suite Flutter local terminó
+2260PASS/5SKIP/2FAIL: expectativa antigua de preselección corregida y un timeout
+de ayuda no reproducido en la CI completa; no se alteró esa prueba. Revisión independiente de
 cliente/producto y SQL/seguridad cerrada sin bloqueos tras corregir orden de
 bloqueos Auth → perfil → publicación. Capturas Flutter sintéticas de entrada sin
-elección y acceso a la nueva sección del aviso, no prueba de teléfono. Aviso público
-preparado en rama aislada desde e84451b; activación y distribución se registran
-después de comprobarlas. La investigación anterior permanece como antecedente,
+elección y acceso a la nueva sección del aviso, no prueba de teléfono. La investigación anterior permanece como antecedente,
 sin convertir la decisión del titular en un dictamen jurídico de tiendas.
 
 Los apartados siguientes documentan la entrega original consentida del 25/11;
 sus referencias a consentimiento de detalle y al cliente448 quedan sustituidas
 por este cambio cuando se active y se distribuya el cliente actualizado.
+
+Activación comprobada26/nov: PROD **20261126205952 /
+automatic_adoption_detail_activity_20261126**, archivo20261126202302, historia77→78
+intacta; sólo se modifica intencionalmente el agregador y se añaden las dos
+funciones operativas. Once comprobaciones de catálogo PASS, sin backfill.
+[Auditoría](migration-history-audit.md#26112026-cdmx--actividad-automática-de-adopciones-en-prod).
+Panel desplegado desde0e3f3a9d en **dpl_GxGtm5AB8QW3nU53jpaqugKqppLR**, READY;
+alias, HTTP200 y bundle con la explicación nueva comprobados. No se repitió el
+recorrido con sesión administrativa ni se generó actividad de usuarios en PROD.
+
+Aviso y Términos públicos desde landinge4016c3ebfa9a8b79ece342dee40197703890c62,
+deploy **dpl_12qJZc6zgawNeusZxwEbN87z5Wk9** READY; ambas rutas HTTP200 y texto
+exacto al origen tras normalizar LF. Declaran datos/finalidad/Supabase, eliminación
+e independencia de Firebase/Meta y retiran la descripción de elección inicial.
+[Delta preparado para fichas de tienda](h10-store-privacy-declarations.md#delta-de-reportes-automáticos--26112026):
+conciliar App interactions requerida antes del cliente público. Console actual
+sin cotejar: navegador sin acceso de automatización. No se enviaron formularios.
+
+Cliente actualizado: tag **codex/automatic-adoption-reports-20261126-v1** en0e3f3a9d;
+único envío Android interno a Codemagic **6b08a0d1ee7c9341cfe42976**,14SUCCESS.
+Base448 conciliada, misma identidad/firma/perfil y tiendas Rescatista preservadas;
+Meta lifecycle explícitamenteOFF. **Android2.3.12(449) publicado en Play interno**:
+AAB97052138B, SHA256ef690ab5…03a94f3, firma registrada/configuración de producción
+y marcador del RPC operativo verificados en los tres binarios Dart. Log Publishing
+leído por separado: código449, internal, completed y Successfully published.
+Console actual no leído de forma independiente. ADB sigue sin dispositivo al cierre.
+iOS no enviado; cliente público, teléfono y aceptación siguen pendientes. No repetir
+envío, descargas o SQL; cero observadores activos al cerrar.
+
+Demo ejecutada: app Flutter real con repositorio sintético → cuenta sin elección
+de Analítica → detalle Luna accesible y una observación, mientras Firebase sigueOFF.
+Capturas privadas .tools/design-review/automatic-report-20261126, revisadas sin
+recortes; la captura del aviso acredita acceso al apartado, no su contenido expandido.
+Recorrido propuesto para el cliente instalado: entrar sin elección inicial → abrir
+dos veces una mascota publicada ajena → detalle aumenta una cuenta; mantener
+FirebaseOFF no impide contar. Guardar/quitar ajusta favoritos; contactar y responder
+siguen las reglas anteriores. Señales de problema: aparece la pantalla inicial,
+se necesita FirebaseON para contar o la misma cuenta suma de nuevo al reabrir.
 
 Solicitud y decisiones del titular en esta conversación: tabla de todas las mascotas actualmente publicadas en adopción, perros y gatos; **una persona única por mascota** que entra al detalle, favoritos que siguen guardados, personas que contactaron y conversaciones con una primera respuesta de su rescatista. Sólo adopciones en este alcance. No incluye casos de apoyo ni denuncias de moderación.
 

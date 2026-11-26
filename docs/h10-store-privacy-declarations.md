@@ -170,3 +170,34 @@ aproximada por conexión y usa identificadores técnicos.
 
 Fuentes de clasificación: [Apple](https://developer.apple.com/app-store/app-privacy-details/),
 [Google Play](https://support.google.com/googleplay/android-developer/answer/10787469?hl=en).
+
+## Delta de reportes automáticos — 26/11/2026
+
+Producto0e3f3a9d46a90876223020a6d53f682327c8208d retira la pantalla inicial y
+registra cuenta + mascota + primera fecha en Supabase, sin depender de Firebase.
+El reporte administrativo usa agregados; el registro sigue vinculado a la cuenta.
+Firebase, diagnóstico y publicidad conservan sus controles opcionales. Este delta
+no reconstruye históricos ni envía las observaciones a Firebase/Meta.
+
+La matriz de tiendas debe reflejar ese tratamiento al preparar el cliente público:
+
+| Categoría | Delta de este reporte |
+|---|---|
+| Play User IDs | Continúa requerida/no efímera. El uso analítico propio se suma a los usos de cuenta ya declarados; no convertir todo el tipo a opcional por Firebase. |
+| Play App interactions | El reporte automático hace requerida la recopilación de esta categoría para quienes usan el detalle con sesión. Conservar Analytics y los demás usos reales existentes; no marcar todo opcional por los controles de SDK. |
+| Apple User ID / Product Interaction | Vinculados a la cuenta, usados para Analytics; este flujo propio no añade tracking publicitario ni un tipo nuevo. Conciliar con los usos previos, sin alterar los de otros SDK. |
+
+El corte publicado aquí del21/nov marca App interactions opcional; **la consola
+actual no se cotejó** en este cambio. El26/nov la comprobación de navegador devolvió
+“Local browser access is unavailable for this chat”. Se preparó este delta, sin
+modificar ni enviar formularios de tienda ni atribuirles aprobación. Conciliar la
+declaración efectiva antes de promover el cliente público. La versión interna,
+la publicación del formulario y la aprobación del binario son estados distintos.
+
+Avisos públicos publicados desde landinge4016c3ebfa9a8b79ece342dee40197703890c62,
+Verceldpl_12qJZc6zgawNeusZxwEbN87z5Wk9 READY; `/privacy-policy` y `/terms` HTTP200
+y exactos al texto actualizado tras normalizar finales de línea. Recibo privado
+.tools/automatic-report-20261126/legal.verified.private.json. Las versiones generales
+se conservan; se añadió la actualización de reportes y se eliminó la descripción
+de la pantalla inicial. Véase la investigación de requisitos y sus límites en
+[adoption-report-consent-review-20261126.md](adoption-report-consent-review-20261126.md).

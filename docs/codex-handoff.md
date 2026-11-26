@@ -1,3 +1,22 @@
+## Reportes automáticos sin pantalla inicial — 26/11/2026
+
+Titular: quitar pantalla inicial de Analítica y registrar automáticamente el reporte.
+Implementado en `codex/adoption-metrics-20261125`, producto `0e3f3a9d46a90876223020a6d53f682327c8208d`,
+tag `codex/automatic-adoption-reports-20261126-v1`, CI45894194662 cuatroSUCCESS.
+**Android2.3.12(449) publicado en Play interno**, único CM6b08a0d1ee7c9341cfe42976,
+14SUCCESS; AAB/firma/configuración/marcador y Publishing internal/completed verificados.
+PROD20261126205952 e interfaz pública del panel verificados; aviso y Términos publicados.
+Firebase/Meta/diagnóstico conservan elecciones; reporte independiente para cuentas
+con sesión, una cuenta por mascota, sin históricos inventados. El titular confirmó
+que el contador anterior funcionaba: no retomar esa investigación.
+
+Pendiente: teléfono/aceptación (ADB sin equipo), cotejar Data Safety App interactions
+requerida antes de cliente público; navegador sin acceso. No promoción pública ni
+envío iOS. No repetir SQL, compilación, descarga o envío449; cero observadores activos.
+Este encargo no absorbe ni cancela el trabajo de otros checkouts.
+
+Ficha única y recorrido: [admin-adoption-report.md](admin-adoption-report.md).
+
 ## Encargo aislado — Reportes de adopción, 25/nov/2026 CDMX
 
 Para este encargo continuar en `codex/adoption-metrics-20261125`, base61fa88d4,
