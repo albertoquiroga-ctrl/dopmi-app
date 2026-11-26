@@ -1,3 +1,16 @@
+## Reportes de adopción — 25/nov/2026 CDMX, Android448 disponible interno
+
+Fuente280b3186d15db26d5641847cff9acdc694614602/tagcodex/adoption-report-20261125-v1,
+CI45746827546 cuatroSUCCESS. CM6b07a763e4b8406fd5893ddc14SUCCESS, único POST;
+Android2.3.12(448), identidadcom.mycompany.dopmi. AAB97098252B/SHA256
+4c03bd324b46da356bc01e5482aa2bc1abe0811007a4a0813b803ea99ef65c32, estructura,
+firma/pin vigente/configuraciónPROD y marcador del nuevo RPC comprobados.
+Publishing internal/completed y Console release238: Available to internal testers,
+código448, 25nov21:52CDMX. Conserva tienda Rescatista446/los cuatro blobs36f8e47f;
+Meta lifecycle opcionalOFF, Guardian/Stripe cliente/walletstestOFF. No envío iOS,
+promoción pública ni cambio de flags servidor. QA física/aceptación pendientes:
+ADB sin dispositivo. [Ficha y recorrido](admin-adoption-report.md).
+
 ## Correctivo Tienda — 24/nov/2026, 442/443 publicadas para QA
 
 Fuente dbac483bc5487a559cfd145fe688c512e90cf725/tag

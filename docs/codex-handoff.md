@@ -3,7 +3,13 @@
 Para este encargo continuar en `codex/adoption-metrics-20261125`, base61fa88d4,
 no en el checkout histórico1094e29c. Titular resolvió personas únicas por mascota
 y sólo adopciones; [ficha](admin-adoption-report.md). Implementados reporte agregado,
-medición consentida del detalle y pruebas, sin SQL remoto, publicación o binario.
+medición consentida del detalle y pruebas. Titular autorizó con «Dale»; migración
+PROD20261126030428 y paneldopmi-app.vercel.app publicados/verificados desdea8601c25.
+Cliente integrado280b3186/tagcodex/adoption-report-20261125-v1 conserva tienda
+Rescatista446; CI45746827546 cuatroSUCCESS. Android2.3.12(448) disponible en Play
+interno, CM6b07a763e4b8406fd5893ddc14SUCCESS; AAB/firma/configuración/Publishing/
+Console verificados. No repetir SQL/builds ya enviados. QA instalada y aceptación
+pendientes; ADB sin dispositivo. No promoción pública ni envío iOS.
 Revisión independiente código/seguridad/producto/visual cerrada tras dos P2
 corregidos. Estado y evidencia de gates/CI en la última entrada de progress.md.
 Preservar las entregas de otros checkouts y el paquete separado de moderación.

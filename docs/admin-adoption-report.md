@@ -17,12 +17,20 @@ Ejemplo sintético de aceptación: Luna con12personas que abrieron detalle,4favo
 
 Rama aislada codex/adoption-metrics-20261125 desde61fa88d40f0088b84a37c7369da7fb4950b18ef6, conservando las fuentes posteriores conciliadas por la exploración de base. El checkout original1094e29c con cambios ajenos se preserva. Referencia Irlanda observada d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c; el reporte usa el patrón del panel actual, sin absorber nuevos alcances del mock. Paquete separado codex/admin-report-context-20261122 trata moderación y no se activa aquí.
 
-La implementación local no aplica SQL remoto ni publica el panel ni un binario. Publicación y recorrido instalado requieren su evidencia y autorización vigente. La app instalada anterior no envía observaciones del detalle. Estado y resultados finales se registran en progress.md.
+El titular autorizó la activación y la versión interna con «Dale». El esquema y el panel ya están publicados y verificados; el cliente anterior no envía observaciones del detalle. Estado del candidato móvil y resultados finales en progress.md.
 
-## Demostración y activación pendiente
+## Demostración y activación
+
+PROD: migración remota **20261126030428 / adoption_detail_reports_20261125**, correspondiente al archivo20261125222901, aplicada una sola vez. Postflight independiente: historia76→77 con prefijo y funciones anteriores intactos, SQL exacto, RLS/ACL y estado inicial correctos. [Auditoría](migration-history-audit.md#25112026-cdmx--reportes-de-adopción-en-prod). No repetir SQL ni reparar timestamps.
+
+Panel [dopmi-app.vercel.app](https://dopmi-app.vercel.app), deploy **dpl_F9K8wePuPjZp7hpGgmos67wdLHr3** desde **a8601c257a133a96dd2053a34eb182ea4ddd1e8b**, READY y alias confirmado. HTTP200/bundle PROD comprobados. Demo real con sesión administrativa:21adopciones, paginación20+1, filtro Gatos4 y búsqueda de una publicación con cifras0/9/4/2; sin leer mensajes privados ni crear actividad de prueba. Captura privada `.tools/report-activation/production-report.jpg`.
+
+Cliente móvil integrado **280b3186d15db26d5641847cff9acdc694614602**, tag **codex/adoption-report-20261125-v1**, CI45746827546 cuatroSUCCESS. **Android2.3.12(448) disponible en Google Play interno**, comprobado en Console (release238) y log Publishing internal/completed; Codemagic6b07a763e4b8406fd5893ddc terminó14SUCCESS. AAB/firma registrada/configuración y marcador del nuevo RPC verificados. Conserva los cuatro archivos exactos de la entrega de tienda Rescatista36f8e47f y usa el perfil Android446, con Meta lifecycle opcional explícitamenteOFF y finanzasOFF. No se envió iOS ni se promovió a producción pública. El cliente público anterior aún no envía estas vistas.
 
 Demo ejecutada en navegador con el React real y datos ficticios: Reportes → página2/2 → filtro Gatos11 → búsqueda Luna1 → cifras12/4/3/2. A390px la tabla permite llegar por teclado a las últimas columnas sin desbordar la página. Capturas privadas en `.tools/report-desktop.jpg` y `.tools/report-narrow.jpg`; no son datos remotos ni aceptación del titular.
 
 Recorrido propuesto tras la publicación: abrir **Reportes** con una cuenta administrativa → localizar una adopción publicada → contrastar los cuatro agregados. Con una cuenta controlada y cliente actualizado, abrir dos veces el detalle debe sumar una persona; guardar/quitar debe subir/bajar favoritos; contactar debe sumar una persona; leer no debe sumar respuesta y responder varias veces debe sumar una primera respuesta. Retirar consentimiento debe eliminar la observación del detalle. Estas acciones de QA instalada aún no se han ejecutado ni se han creado fixtures para ellas.
 
-Orden preparado de activación: preflight actualizado de historia/cuerpos/ACL en el proyecto elegido, migración aditiva una sola vez y postflight; publicar el panel con su entorno existente; incluir la medición en la siguiente entrega móvil autorizada y verificar su versión instalada. Conservar publicación móvil, moderación pendiente y configuración financiera por separado; ningún gate se abre por aprobar esta tabla.
+Señales de problema durante ese recorrido: recargar el detalle aumenta el contador, un favorito retirado sigue contado, o leer/responder otra vez suma una nueva primera respuesta. La demo web descrita arriba sí fue ejecutada; este recorrido instalado sigue propuesto.
+
+Pendiente de aceptación instalada: cliente actualizado → abrir una ficha dos veces → una persona en detalle; retirar consentimiento → se elimina su observación. El teléfono no está conectado al comprobar ADB. La publicación móvil, la moderación pendiente y la configuración financiera conservan sus propios gates.

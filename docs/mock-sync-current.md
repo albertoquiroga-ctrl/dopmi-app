@@ -1,4 +1,15 @@
-# Checkpoint vigente — tutorial de swipe, 24/nov/2026 CDMX
+# Encargo aislado vigente — Reportes, 25/nov/2026 CDMX
+
+Fuente280b3186/tagcodex/adoption-report-20261125-v1/CI45746827546 cuatroSUCCESS.
+Panel y esquemaPROD publicados/verificados; Android2.3.12(448) disponible Play
+interno, CM6b07a763e4b8406fd5893ddc14SUCCESS, AAB/firma/configuración/Publishing/
+Console verificados. Conserva tienda Rescatista446. [Ficha](admin-adoption-report.md)
+y última entrada de progress.md; QA instalada/aceptación pendientes (ADB sin equipo).
+No repetir SQL/build/envío. Cliente público e iOS no se promovieron. Referencia
+Irlanda d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c reconsultada y sin cambios.
+No se reabre el delta histórico inferior ni la moderación del paquete separado.
+
+# Checkpoint anterior — tutorial de swipe, 24/nov/2026 CDMX
 
 19:09UTC: correctivo local de gate tras CI45462196838 fallida (Flutter:2164PASS,
 3FAIL,4SKIP; otros tres trabajos SUCCESS). Source/tag4ad334f4/v1 quedan congelados,

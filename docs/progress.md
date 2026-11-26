@@ -10736,7 +10736,7 @@ no invalidan sus gates de producto ni crean otro candidato. Sin CI ni builds dup
 
 **Implementado y verificado técnicamente; no activado ni publicado.** Falta la
 operación autorizada de migración/panel y la inclusión del cliente en una entrega
-móvil autorizada, seguida de QA instalada. [Orden de activación y recorrido propuesto](admin-adoption-report.md#demostración-y-activación-pendiente).
+móvil autorizada, seguida de QA instalada. [Orden de activación y recorrido propuesto](admin-adoption-report.md#demostración-y-activación).
 No se aplicó SQL remoto ni se alteraron campañas, permisos de conversaciones,
 flags financieros, dinero, publicación pública o entregas de otros checkouts.
 La medición nueva todavía no existe en el proyecto PROD consultado; las vistas
@@ -10749,14 +10749,83 @@ migración20261126030428 aplicada y postflight exacto, historia76→77/prior76 y
 funciones anteriores intactas; RLS/ACL/inicio único/0vistasPASS. Auditoría actualizada.
 Panel: un deploy desdea8601c25 a proyecto Vercel dopmi-app, producción,
 `dpl_F9K8wePuPjZp7hpGgmos67wdLHr3`, READY con aliasdopmi-app.vercel.app.
-Verificación positiva en sesión administrativa y lectura del bundle aún pendientes.
+HTTP200/bundle PROD y verificación positiva en sesión administrativa completados.
+Demo real:21adopciones, páginas20+1, gatos4 y búsqueda con cifras0/9/4/2.
+Captura privada `.tools/report-activation/production-report.jpg`; sin leer chats,
+crear mensajes/favoritos o alterar cuentas. Se dejó el panel abierto al titular.
 
 Conciliación independiente encontró QA móvil446/447 posterior al baseline del
 reporte: fuente36f8e47f0cf2203cee92e7868ab7672f81a98c3c, tienda en Rescatista.
 Se importan sus cuatro archivos exactos (dos componentes, prueba y capturador),
 sin absorber documentación contradictoria. Mismos hashes Admin y de los archivos
-del reporte antes del delta; ancestro comúne dcdd se documenta por Git (edcdd5aa).
+del reporte antes del delta; ancestro común se documenta por Git (edcdd5aa).
 Formato4/0 cambios y52pruebas dirigidas/1SKIP PASS; no suite Flutter paralela.
 Nuevo candidato integrado requiere su propio SHA/CI antes de un único envío.
 Runtime base previsto Android446, misma firma/identidad/grupos/perfilPROD,
 Playinternal y finanzasOFF; Meta lifecycle opcional se conservaOFF.
+
+## 25/11/2026 CDMX — Candidato integrado aprobado y único envío interno
+
+Fuente **280b3186d15db26d5641847cff9acdc694614602**, tag remoto inmutable
+`codex/adoption-report-20261125-v1`. [CI45746827546](https://github.com/albertoquiroga-ctrl/dopmi-app/actions/runs/45746827546)
+terminó completed/success para el SHA exacto: cuatro trabajos SUCCESS, incluidos
+análisis/suite/capturas/compilación Flutter, backend real, permisos y pruebas iOS.
+Conserva por hash los cuatro archivos de tienda Rescatista36f8e47f; no afirma
+que esa fuente sea ancestro del candidato. Ancestro real exigidoedcdd5aa.
+
+Una sola petición Codemagic, recibida como **6b07a763e4b8406fd5893ddc**,
+workflow `android-guardian-internal`. Ventana de cinco minutos consumida y mensajes
+conciliados; tag/CI/cola vacía/base Android446 comprobados antes del POST. Grupos,
+firma/identidad/perfil heredados de446; única precisión no secreta del runtime:
+Meta lifecycle opcional explícitamentefalse tras rechazar una baseON. No iOS,
+promoción pública, cambios de campañas o dinero. Artefacto/publicación interna
+todavía pendientes; observar este mismo build, sin repetir el envío.
+
+Revisión independiente de producto y seguridad del helper cerrada. Ajuste pequeño
+del método: probar ausencia/false/ON del flag y metadatos incorrectos antes de
+enviar. Tres casos negativos detectaron la omisión del verificador; corregido,
+los cinco casos pasan. Se conserva el guard en este paquete, sin nuevo gate global
+ni afirmaciones de ahorro. El artefacto real aún debe comprobarse.
+
+## 25/11/2026 CDMX — Reportes activados; Android 448 disponible interno
+
+Codemagic **6b07a763e4b8406fd5893ddc** terminó **finished / 14 SUCCESS**.
+Fuente **280b3186d15db26d5641847cff9acdc694614602**, tag
+`codex/adoption-report-20261125-v1`, CI **45746827546**, Android **2.3.12 (448)**,
+identidad `com.mycompany.dopmi`. Único POST, sin reenvíos, builds activos u observadores
+locales pendientes de este paquete. La demora final correspondió a la compilación
+y al cierre de Codemagic; no se relajaron las guardas para omitirlos.
+
+AAB de **97,098,252 bytes**, SHA256
+`4c03bd324b46da356bc01e5482aa2bc1abe0811007a4a0813b803ea99ef65c32`.
+ZIP de metadatos748bytes/SHA256
+`726f5257fd9bda658f5bf27c5c24399252a3586ecbcbe77560f5b8c3d41bd871`.
+Verificador04:00:18UTC26nov: estructura/versión/SDK/firma criptográfica y pin
+registrado vigente correctos; tres binarios nativos con marcador PROD y del nuevo
+RPC. Metadatos y runtime confirman Meta lifecycleOFF/app vacía, Guardian/Stripe
+live cliente/walletstestOFF y destino Playinternal, sin promoción pública.
+La cadena pública CA no se atribuye: certificado Android de carga autofirmado,
+pin exacto y firma vigente verificados, jarsigner strict4 documentado.
+
+**Publicación y disponibilidad comprobadas por separado:** Publishing confirma
+código448, internal/completed/Successfully published; Play Console muestra release238,
+2.3.12, código448, Active y Available to internal testers, publicado25nov21:52CDMX.
+Captura privada `distribution/android/play-console.jpg`; recibos de descarga,
+artefacto, Publishing y Console bajo `.tools/report-release-20261125/`.
+Revisión independiente final releyó los recibos y calculó hashes del AAB/ZIP/informe
+y captura: consistentes, sin bloqueadores materiales en su alcance. Instalación,
+QA física y aceptación humana siguen falsas.
+
+Panel PROD y esquema ya verificados arriba; recibos privados bajo
+`.tools/report-activation/`. Mini recorrido ejecutado: Reportes → filtro/búsqueda/
+paginación → agregados de publicaciones reales; sin lectura de chats. Recorrido
+instalado **propuesto**, con resultados y señales de problema en la
+[ficha](admin-adoption-report.md#demostración-y-activación). ADB reconsultado al cierre:
+ningún dispositivo conectado. Titular respondió que revisará el panel después;
+no equivale a aceptación. El cliente público anterior no registra estas vistas:
+empiezan con el cliente actualizado y consentimiento, sin históricos reconstruidos.
+No envío iOS, fixtures nuevos, cambios de dinero/flags servidor o campañas.
+
+Referencia Irlanda reconsultada: d9f9aa430ffc4b1d9df76e49e7efbe9f0e5cae1c,
+sin cambios. El código de producto permanece idéntico al SHA validado; cierre
+posterior sólo documental, sin nueva CI ni builds duplicados.
